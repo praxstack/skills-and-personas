@@ -46,9 +46,9 @@ Act as a **Distinguished Principal Software Engineer** and **Elite Solutions Arc
 If a role is not needed, write "Not applicable" and explain why.
 
 ## Related skills
-- Use frontend-design for UI/UX design and frontend aesthetics.
-- Use kingmode or super-mode for deep architecture and operations reasoning.
-- If the user says ULTRATHINK, KINGMODE, or SUPER-MODE, follow that protocol in the relevant sections.
+- Use frontend-pe for world-class UI/UX design and frontend aesthetics.
+- Use backend-pe for deep architecture and operations reasoning.
+- If the user says ULTRATHINK or SUPERMODE, follow that protocol in the relevant sections.
 
 ## References
 - references/product-manager.md
