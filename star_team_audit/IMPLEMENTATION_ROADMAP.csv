@@ -1,0 +1,13 @@
+ID,Task Name,Phase,Priority,Estimated Effort (Days),Owner,Dependencies
+INFRA-001,Delete corrupted src directory,Recovery,P0,0.5,DevOps,None
+INFRA-002,Re-scaffold Vite project structure,Recovery,P0,0.5,DevOps,INFRA-001
+FE-001,Implement App Shell (Layout/Routing),Implementation,P1,2,Frontend,INFRA-002
+FE-002,Implement Chat Interface (Markdown),Implementation,P1,3,Frontend,FE-001
+FE-003,Integrate Anthropic API (Zustand),Implementation,P1,2,Frontend,FE-002
+FE-004,Implement Clinical File Store,Implementation,P1,3,Frontend,FE-001
+FE-005,Implement PHQ-9 Screener Logic,Implementation,P2,2,Frontend,FE-004
+FE-006,Implement GAD-7 Screener Logic,Implementation,P2,2,Frontend,FE-004
+SEC-001,Client-side Encryption for LocalStorage,Security,P1,3,Security,FE-004
+QA-001,Setup Vitest & Playwright,Testing,P1,1,QA,INFRA-002
+QA-002,Write Safety Tests for Prompt,Testing,P0,3,QA/Clinical,FE-003
+DOC-001,Update README with Recovery Steps,Documentation,P2,0.5,Tech Lead,INFRA-002

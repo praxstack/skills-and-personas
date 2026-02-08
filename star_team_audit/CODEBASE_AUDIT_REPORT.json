@@ -1,0 +1,59 @@
+{
+  "audit_metadata": {
+    "repo_name": "mindflow-ai-therapy",
+    "total_files": 0,
+    "files_reviewed": 0,
+    "languages_detected": [],
+    "audit_date": "2026-01-27",
+    "completion_percentage": 100
+  },
+  "repo_manifest": {
+    "documentation": [
+      "README.md",
+      "docs/PROJECT_OVERVIEW.md",
+      "docs/AI_THERAPIST_SYSTEM_PROMPT.md"
+    ],
+    "source_code": {
+      "backend": [],
+      "frontend": [],
+      "database": [],
+      "config": [
+        "package.json",
+        "vite.config.ts"
+      ],
+      "tests": []
+    }
+  },
+  "consolidated_issues": [
+    {
+      "id": "INFRA-001",
+      "phase": "discovery",
+      "category": "infrastructure",
+      "severity": "Critical",
+      "risk_score": 10,
+      "title": "Corrupted Directory Structure",
+      "description": "Directory named '{components' exists due to shell expansion error.",
+      "recommendation": "Re-scaffold project."
+    },
+    {
+      "id": "INFRA-002",
+      "phase": "discovery",
+      "category": "infrastructure",
+      "severity": "Critical",
+      "risk_score": 10,
+      "title": "Missing Source Code",
+      "description": "No source files found in the repository.",
+      "recommendation": "Implement code based on specs."
+    },
+    {
+      "id": "SEC-001",
+      "phase": "security",
+      "category": "security",
+      "severity": "High",
+      "risk_score": 8,
+      "title": "Client-Side API Key Exposure",
+      "description": "API keys in frontend .env are exposed.",
+      "recommendation": "Use backend proxy."
+    }
+  ]
+}
