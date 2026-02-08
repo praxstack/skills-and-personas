@@ -166,10 +166,72 @@ For each set of notes, produce a markdown document with:
 7. **Add a text summary** of key relationships below diagrams
 8. **Match the domain** - use domain-appropriate terminology and diagram choices
 
+## Topic Inventory Verification
+
+If a Topic Inventory was provided from Stage 1, verify that every concept from the inventory appears in at least one diagram. Report:
+
+```markdown
+## Concept Coverage
+- Concepts in diagrams: [N] / [N] from inventory
+- Concepts not diagrammed: [list] (with reason: "too granular" or "no visual relationship")
+```
+
+## Enhanced Diagram Types (Best-in-Class)
+
+### 7. Learning Path / Prerequisite Map
+Shows what to learn in what order.
+
+```mermaid
+graph LR
+    A[Linear Algebra] --> B[Neural Network Basics]
+    A --> C[Gradient Descent]
+    B --> D[Backpropagation]
+    C --> D
+    D --> E[Training Loop]
+    E --> F[PyTorch Implementation]
+```
+
+**Use when:** Content has concepts that build on each other. Always generate this for educational content.
+
+### 8. Difficulty Landscape
+Visual guide to concept difficulty and importance.
+
+```mermaid
+quadrantChart
+    title Concept Difficulty vs Importance
+    x-axis Low Difficulty --> High Difficulty
+    y-axis Low Importance --> High Importance
+    Neuron anatomy: [0.3, 0.7]
+    Backpropagation: [0.8, 0.9]
+    Activation functions: [0.5, 0.8]
+    Learning rate tuning: [0.6, 0.7]
+```
+
+**Use when:** Content has concepts of varying difficulty -- helps prioritize study time.
+
+### 9. Before/After Mental Model
+Shows how understanding should shift.
+
+```mermaid
+graph LR
+    subgraph Before
+        B1["Neural network = black box"]
+        B2["Training = magic"]
+    end
+    subgraph After
+        A1["Neural network = layers of math functions"]
+        A2["Training = iterative error minimization"]
+    end
+    B1 -.->|"this lecture"| A1
+    B2 -.->|"this lecture"| A2
+```
+
+**Use when:** Lecture fundamentally changes how a concept should be understood.
+
 ## Pipeline Position
 
 This skill is **Stage 3** in the lecture processing pipeline:
-1. **transcribe-refiner** → clean transcript
+1. **transcribe-refiner** → clean transcript + Topic Inventory
 2. **lecture-alchemist** → structured study notes
-3. **concept-cartographer** (this) → visual diagrams
+3. **concept-cartographer** (this) → visual diagrams (verifies against inventory)
 4. **obsidian-markdown** → Obsidian vault formatting

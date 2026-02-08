@@ -95,24 +95,86 @@ I'll extract:
 
 Then immediately proceed to full output.
 
+## Topic Inventory Verification (Anti-Loss System)
+
+If a Topic Inventory was provided from Stage 1 (transcribe-refiner), perform mandatory cross-verification:
+
+1. **Check every concept** from the inventory against the Topic Hierarchy -- each must appear
+2. **Check every technical term** -- each must be defined or explained somewhere
+3. **Check every code/command** -- each must appear in Code Artifacts
+4. **Check every Q&A item** -- each must appear in the Q&A section
+5. **Report coverage** in Processing Stats:
+
+```markdown
+## Inventory Verification
+- Concepts from inventory: [N] / [N] covered (100%)
+- Technical terms: [N] / [N] covered
+- Code references: [N] / [N] covered
+- Q&A items: [N] / [N] covered
+- **MISSING:** [list any items not covered, or "None"]
+```
+
+If ANY item is missing, add it before finalizing.
+
+## Enhanced Sections (Best-in-Class Features)
+
+### Difficulty Scoring Per Concept
+Rate each concept in the detailed breakdown:
+- **Difficulty:** [1-5 stars] | **Importance:** [Core / Supporting / Nice-to-know]
+
+### Interview/Exam Angle
+For each major concept, include:
+> **If asked in an interview:** [How to explain this in 30 seconds]
+
+### Common Misconceptions
+For tricky concepts:
+> **People often think:** [misconception]
+> **Actually:** [correction]
+
+### Cross-Lecture Links
+When a concept connects to other sessions:
+> **Previously covered:** [Topic] in [Session X]
+> **Coming up next:** [Topic] in future sessions
+
+### Learning Dependency Graph
+At the end, include a text-based dependency list:
+```
+Concept A (prerequisite for B, C)
+├── Concept B (prerequisite for D)
+│   └── Concept D
+└── Concept C
+```
+
 ## Special Cases
 
 - **Long transcripts (2+ hours):** Break into logical segments with intermediate summaries
 - **Heavy Q&A sessions:** Separate Q&A section, note common confusions
 - **Live coding sessions:** Document code evolution step-by-step, note debugging
 - **Multiple instructors:** Attribute teachings when distinguishable
+- **With Topic Inventory:** Always verify 100% coverage before output
 
 ## Quality Checklist
 
 Before output, verify:
 - Every topic from transcript is in the hierarchy
+- Topic Inventory (if provided) shows 100% coverage
 - All code extracted and cleaned with language specified
 - All tables properly formatted with closing pipes
 - No unicode box-drawing characters or LaTeX
 - Difficult concepts have intuition builders
+- Each concept has difficulty score and interview angle
 - Technical analysis matches the domain
 - Action items are concrete and actionable
 - All three summary levels exist
+- Cross-lecture links added where applicable
+
+## Pipeline Position
+
+This skill is **Stage 2** in the lecture processing pipeline:
+1. **transcribe-refiner** → clean transcript + Topic Inventory
+2. **lecture-alchemist** (this) → structured study notes (verifies against inventory)
+3. **concept-cartographer** → visual diagrams
+4. **obsidian-markdown** → Obsidian vault formatting
 
 ## Reference Files
 

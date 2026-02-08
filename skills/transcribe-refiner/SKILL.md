@@ -95,22 +95,81 @@ When uncertain about a correction, keep the original and flag it: `[unclear: "or
 **Instructor:** [Answer]
 ```
 
+## Topic Inventory (Anti-Loss System)
+
+This is the critical mechanism that prevents data loss across the pipeline. After cleaning, generate a **Topic Inventory** at the end of output -- a manifest of every substantive item found in the transcript.
+
+```markdown
+## Topic Inventory
+
+### Concepts Mentioned
+1. [Concept] - paragraph [N]
+2. [Concept] - paragraph [N]
+...
+
+### Technical Terms Introduced
+- [term]: first mentioned in paragraph [N]
+...
+
+### Code/Commands Referenced
+- [code snippet or command] - paragraph [N]
+...
+
+### Questions Asked (Q&A)
+- Q: [question summary] - paragraph [N]
+...
+
+### Names/Resources Mentioned
+- [name, URL, tool, book, etc.]
+...
+
+### Corrections Applied
+| Original Caption | Corrected To | Confidence |
+|-----------------|-------------|------------|
+| "lowest function" | "loss function" | High |
+| "epic" | "epoch" | High |
+| [unclear text] | [kept as-is] | Low |
+
+### Stats
+- Raw caption blocks: [N]
+- Substantive paragraphs produced: [N]
+- Filler instances removed: [N]
+- Transcription errors corrected: [N]
+- Uncertain corrections flagged: [N]
+```
+
+This inventory travels to the next stage (lecture-alchemist) for cross-verification. Every item in this inventory MUST appear in the final notes.
+
+## Timestamp Anchors
+
+Preserve approximate timestamps as hidden anchors for key topic transitions. Format:
+
+```markdown
+<!-- T:20:36:30 --> Neural network architecture introduction
+<!-- T:20:45:12 --> Activation functions
+<!-- T:21:03:45 --> Training loop
+```
+
+These allow the reader to jump back to the recording at specific points.
+
 ## Quality Checklist
 
 Before output, verify:
 - Every teaching point from raw input is in the output
+- Topic Inventory is complete and accurate
 - Transcription errors corrected using domain context
 - Uncertain corrections flagged with `[unclear: ...]`
 - Filler words removed without losing meaning
 - Sentences properly merged (no mid-word breaks)
 - Q&A segments clearly separated
 - Technical interruptions removed
+- Timestamp anchors placed at topic transitions
 - Output reads as natural, flowing text
 
 ## Pipeline Position
 
 This skill is **Stage 1** in the lecture processing pipeline:
-1. **transcribe-refiner** (this) → clean transcript
-2. **lecture-alchemist** → structured study notes
-3. **concept-cartographer** → visual diagrams
+1. **transcribe-refiner** (this) → clean transcript + Topic Inventory
+2. **lecture-alchemist** → structured study notes (verifies against inventory)
+3. **concept-cartographer** → visual diagrams (verifies against inventory)
 4. **obsidian-markdown** → Obsidian vault formatting
