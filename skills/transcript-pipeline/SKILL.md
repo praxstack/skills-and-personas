@@ -18,9 +18,10 @@ Run a 4-stage transcript processing pipeline with deterministic accountability.
 
 1. Stage order is fixed: Stage 1 -> Stage 2 -> Stage 3 -> Stage 4.
 2. Deterministic components are scripts, not LLM judgment.
-3. Every major note claim should be traceable via `[source: <segment_id>]`.
+3. Traceability must be preserved in `.pipeline` artifacts; learner-facing notes can be sanitized for readability.
 4. No silent low-confidence correction.
 5. Final status is PASS/FAIL from validation script.
+6. Stage 3 must pass the Tutorial Tech Bar-Raiser gate.
 
 ## Required Outputs
 
@@ -75,6 +76,7 @@ Use:
 
 - `references/stage3-enhance-guide.md`
 - `references/output-template.md`
+- `references/tutorial-tech-bar-raiser.md`
 
 Mark all added pedagogical material using `[ENHANCED: ...]`.
 

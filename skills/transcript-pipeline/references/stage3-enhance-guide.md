@@ -16,8 +16,9 @@
 
 1. Do not overwrite original lecture meaning.
 2. Mark added pedagogical content with `[ENHANCED: ...]`.
-3. Keep source mapping `[source: <segment_id>]`.
+3. Keep deterministic traceability in `.pipeline` artifacts.
 4. Preserve major timestamp anchors as `<!-- T:HH:MM:SS -->` when available.
+5. Apply `references/tutorial-tech-bar-raiser.md` before finalizing.
 
 ## Required Enhancements
 
@@ -29,6 +30,9 @@
 6. FAQ block
 7. Mermaid diagrams (preferred)
 8. ASCII diagram fallback (when Mermaid is unsuitable)
+9. Math-intuition blocks for math-heavy concepts
+10. "Next improvement" steps per major concept
+11. Emoji headings for learner-facing `final_notes.md`
 
 ## Diagram Policy
 
@@ -39,7 +43,7 @@
 ## Packaging Guidance
 
 - `.pipeline/enhanced_notes.md`: full fidelity + pedagogy layer.
-- `final_notes.md`: learner-first polished output with traceability intact.
+- `final_notes.md`: learner-first tutorial guide (sanitized readability, emoji headings, intuition-first flow).
 - `bootcamp_index.md`: cross-lecture links and concept navigation.
 
 ## Stage 3 Exit Checklist
@@ -47,4 +51,8 @@
 - All added content is explicitly marked `[ENHANCED]`.
 - No unsupported factual additions.
 - Mermaid count and enhanced-claim count are reported.
-- Final notes remain source-traceable.
+- Final notes pass bar-raiser checks:
+  - tutorial structure present
+  - intuition-first concept sections present
+  - HOTS + FAQ + practice roadmap present
+  - code walkthroughs include purpose + explanation bullets

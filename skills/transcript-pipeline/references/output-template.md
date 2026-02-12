@@ -1,86 +1,85 @@
-# Output Template (Final Notes)
+# Output Template (Bar-Raiser)
 
-Use this as the default structure for `final_notes.md`.
+Use this structure for learner-facing `final_notes.md`.
 
-## 1. Session Header
+## Header
 
-- Session title
-- Domain
-- Source file
-- Processed date
+```markdown
+---
+title: "<Session Title> - Master Study Guide"
+domain: "<Domain>"
+tags: [study-guide, bootcamp, <domain-tag>]
+type: "tutorial-note"
+status: "ready"
+---
+```
 
-## 2. Session Overview
+## Mandatory Sections
 
-- What this session covered
-- Why it matters
-- Prerequisites
+1. `# 🎓 <Session Title> - Master Study Guide`
+2. `## 🧠 Session Focus`
+3. `## 🎯 Prerequisites`
+4. `## ✅ Learning Outcomes`
+5. `## 🧭 Topic Index`
+6. `## 🗺️ Conceptual Roadmap` (Mermaid)
+7. `## 🏗️ Systems Visualization` (Mermaid)
+8. `## 🌆 Skyline Intuition Diagram` (ASCII)
+9. `## 📚 Core Concepts (Intuition First)`
+10. `## ➗ Mathematical Intuition` (when relevant)
+11. `## 💻 Coding Walkthroughs`
+12. `## 🚀 Advanced Real-World Scenario`
+13. `## 🧩 HOTS (High-Order Thinking)`
+14. `## ❓ FAQ`
+15. `## 🛠️ Practice Roadmap`
+16. `## 🔭 Next Improvements`
+17. `## 🔗 Related Notes`
+18. `## 🧾 Traceability`
 
-## 3. Topic Hierarchy
+## Concept Block Template
 
-- Topic A
-- Subtopic A.1
-- Subtopic A.2
-- Topic B
+```markdown
+### <Concept Name>
+**What it is:** ...
+**Why it matters:** ...
+**Intuition first:** ...
+**Common mistake:** ...
+**Next improvement:** ...
+```
 
-## 4. Detailed Notes
+## Code Example Template
 
-For each topic:
+```markdown
+### <Example Title>
+**Why this example:** ...
 
-- Concept explanation
-- Core steps or formula
-- Mini examples
-- Common mistakes
-- Source mapping tags
+```<lang>
+<code>
+```
 
-Example tag:
+**What this code is doing:**
+- ...
+- ...
+- ...
+```
 
-`[source: <segment_id>]`
+## Math Intuition Template
 
-## 5. Code/Command Artifacts
+```markdown
+### <Formula Name>
+- Formula: `<expression>`
+- Intuition: ...
+- Failure mode if misunderstood: ...
+```
 
-- Commands
-- Snippets
-- Usage notes
+## Traceability Note Template
 
-## 6. Uncertainty and Clarifications
-
-- Open uncertainties (if any)
-- Human review required items
-
-## 7. Pedagogy Enhancements
-
-- `[ENHANCED]` intuition builders
-- `[ENHANCED]` deeper examples
-- `[ENHANCED]` misconceptions and fixes
-
-## 8. Visuals
-
-- Mermaid diagrams
-- ASCII fallback diagrams (optional)
-
-## 9. HOTS Questions
-
-- Analysis-level questions
-- Synthesis-level questions
-- Evaluation-level questions
-
-## 10. FAQ
-
-- Common learner questions
-- Source-backed answers
-
-## 11. Summary Blocks
-
-- Quick recap
-- Detailed recap
-- Action plan for revision
-
-## 12. Source Index
-
-- Segment references grouped by section
-
-## 13. Cross-Lecture Links
-
-- Related session(s)
-- Prerequisite links
-- Next-session links
+```markdown
+## 🧾 Traceability
+> [!info] Audit Trail
+> Learner-facing notes are sanitized for readability.
+> Deterministic traceability remains in:
+> - `.pipeline/segment_ledger.jsonl`
+> - `.pipeline/coverage_matrix.json`
+> - `.pipeline/validation_report.md`
+> - `.pipeline/topic_inventory.json`
+```
