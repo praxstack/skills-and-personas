@@ -6,7 +6,7 @@ Use this structure for learner-facing `final_notes.md`.
 
 ```markdown
 ---
-title: "<Session Title> - Master Study Guide"
+title: "<Domain> Class <NN> [DD/MM/YYYY] - <Topic>"
 domain: "<Domain>"
 tags: [study-guide, bootcamp, <domain-tag>]
 type: "tutorial-note"
@@ -16,7 +16,7 @@ status: "ready"
 
 ## Mandatory Sections
 
-1. `# 🎓 <Session Title> - Master Study Guide`
+1. `# 🎓 <Domain> Class <NN> [DD/MM/YYYY] - <Topic>`
 2. `## 🧠 Session Focus`
 3. `## 🎯 Prerequisites`
 4. `## ✅ Learning Outcomes`
@@ -83,3 +83,14 @@ status: "ready"
 > - `.pipeline/validation_report.md`
 > - `.pipeline/topic_inventory.json`
 ```
+
+## Publish Filename Convention
+
+Also generate a learner-facing published copy:
+
+`<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`
+
+Where:
+- `AI/ML` -> `AI-ML`
+- `WebDev` -> `WebDev`
+- `Web3` -> `Web3`

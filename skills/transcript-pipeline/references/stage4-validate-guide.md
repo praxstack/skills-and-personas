@@ -39,6 +39,10 @@ python scripts/validate_coverage.py \
 3. Orphan claims:
 - Referenced source IDs must exist in ledger.
 
+Note:
+- `final_notes.md` can be sanitized and may not contain inline `[source: ...]` tags.
+- Hard accountability remains deterministic through `.pipeline/coverage_matrix.json` + ledger checks.
+
 ## Recovery Loop
 
 If FAIL:

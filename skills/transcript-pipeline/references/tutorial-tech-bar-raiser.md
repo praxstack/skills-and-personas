@@ -21,7 +21,7 @@ The learner should understand:
 
 ## Required Structure (Emoji Headings)
 
-1. `# 🎓 <Session Title> - Master Study Guide`
+1. `# 🎓 <Domain> Class <NN> [DD/MM/YYYY] - <Topic>`
 2. `## 🧠 Session Focus`
 3. `## 🎯 Prerequisites`
 4. `## ✅ Learning Outcomes`
@@ -39,6 +39,16 @@ The learner should understand:
 16. `## 🔭 Next Improvements`
 17. `## 🔗 Related Notes`
 18. `## 🧾 Traceability`
+
+## Naming Policy (Mandatory)
+
+1. `final_notes.md` must have frontmatter `title` matching the H1 format.
+2. Also create a learner-facing published tutorial filename:
+   - `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`
+3. Domains:
+   - `AI/ML` -> `AI-ML` (filename)
+   - `WebDev` -> `WebDev`
+   - `Web3` -> `Web3`
 
 ## Concept-Level Requirements
 
@@ -96,6 +106,12 @@ Deterministic traceability must remain in `.pipeline` artifacts:
 3. `validation_report.md`
 4. `topic_inventory.json`
 
+## Sanitization Policy (Mandatory)
+
+1. Remove inline `[source: <segment_id>]` tags from learner-facing `final_notes.md`.
+2. Keep source-rich traceability in `.pipeline/enhanced_notes.md` and coverage artifacts.
+3. Do not remove source data from `.pipeline` files.
+
 ## Stage 3 Exit Gate (Bar-Raiser)
 
 Do not finalize Stage 3 unless all checks pass:
@@ -106,3 +122,5 @@ Do not finalize Stage 3 unless all checks pass:
 5. Code walkthrough count >= 2.
 6. HOTS + FAQ + practice roadmap present.
 7. Final note reads like a tutorial, not a summary list.
+8. `final_notes.md` has no inline `[source: ...]` tags.
+9. Class naming convention is applied.

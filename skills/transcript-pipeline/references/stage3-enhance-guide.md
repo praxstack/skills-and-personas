@@ -19,6 +19,12 @@
 3. Keep deterministic traceability in `.pipeline` artifacts.
 4. Preserve major timestamp anchors as `<!-- T:HH:MM:SS -->` when available.
 5. Apply `references/tutorial-tech-bar-raiser.md` before finalizing.
+6. Keep `[source: ...]` tags in `.pipeline/enhanced_notes.md` only.
+7. Remove inline `[source: ...]` tags from learner-facing `final_notes.md`.
+8. Apply class naming convention in learner-facing title/H1:
+   - `<Domain> Class <NN> [DD/MM/YYYY] - <Topic>`
+9. Produce learner-facing published filename:
+   - `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`
 
 ## Required Enhancements
 
@@ -43,8 +49,15 @@
 ## Packaging Guidance
 
 - `.pipeline/enhanced_notes.md`: full fidelity + pedagogy layer.
-- `final_notes.md`: learner-first tutorial guide (sanitized readability, emoji headings, intuition-first flow).
+- `final_notes.md`: learner-first tutorial guide (sanitized readability, emoji headings, intuition-first flow, no inline source tags).
+- `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`: published learner filename copy.
 - `bootcamp_index.md`: cross-lecture links and concept navigation.
+
+Run publisher (after Stage 4 PASS):
+
+```bash
+python scripts/publish_tutorial_notes.py --root "<sessions_root>" --session-dir "<session_dir>"
+```
 
 ## Stage 3 Exit Checklist
 
@@ -56,3 +69,4 @@
   - intuition-first concept sections present
   - HOTS + FAQ + practice roadmap present
   - code walkthroughs include purpose + explanation bullets
+- published class filename exists and bootcamp index links to it

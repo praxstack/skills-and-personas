@@ -22,13 +22,15 @@ Run a 4-stage transcript processing pipeline with deterministic accountability.
 4. No silent low-confidence correction.
 5. Final status is PASS/FAIL from validation script.
 6. Stage 3 must pass the Tutorial Tech Bar-Raiser gate.
+7. Final learner note naming is mandatory across domains.
 
 ## Required Outputs
 
 Learner outputs:
 
 1. `final_notes.md`
-2. `bootcamp_index.md`
+2. `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`
+3. `bootcamp_index.md`
 
 Pipeline outputs:
 
@@ -79,6 +81,7 @@ Use:
 - `references/tutorial-tech-bar-raiser.md`
 
 Mark all added pedagogical material using `[ENHANCED: ...]`.
+Keep `[source: ...]` only in `.pipeline/enhanced_notes.md`, not in learner-facing `final_notes.md`.
 
 ### Stage 4: Deterministic Validation
 
@@ -97,6 +100,21 @@ Hard gates:
 1. Segment accountability
 2. Uncertainty retention
 3. No orphan claims
+
+### Stage 5: Tutorial Publish + Naming
+
+Run learner-facing publishing step:
+
+```bash
+python scripts/publish_tutorial_notes.py --root "<sessions_root>" --session-dir "<session_dir>"
+```
+
+This step must:
+
+1. enforce title/H1 class naming convention
+2. remove inline source tags from learner-facing notes
+3. create published tutorial filename
+4. refresh `bootcamp_index.md`
 
 If FAIL, patch earliest failing stage and retry up to 3 times.
 
@@ -142,3 +160,4 @@ Before completion, verify:
 3. PASS/FAIL status is explicit.
 4. Any unresolved uncertainty is listed in review queue.
 5. Final notes remain source-traceable.
+6. Published tutorial filename exists and bootcamp index points to it.

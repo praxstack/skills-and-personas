@@ -173,3 +173,11 @@ This skill is **Stage 1** in the lecture processing pipeline:
 2. **lecture-alchemist** → structured study notes (verifies against inventory)
 3. **concept-cartographer** → visual diagrams (verifies against inventory)
 4. **obsidian-markdown** → Obsidian vault formatting
+
+## Downstream Packaging Contract
+
+1. Keep source-rich traceability in pipeline artifacts (`segment_ledger`, `coverage_matrix`, `enhanced_notes`).
+2. Learner-facing final tutorial note should be sanitized for readability (no inline `[source: ...]` tags).
+3. Final published naming should follow:
+   - `<Domain> Class <NN> [DD/MM/YYYY] - <Topic>` (title/H1)
+   - `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md` (published filename)

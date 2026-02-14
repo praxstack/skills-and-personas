@@ -168,6 +168,23 @@ Before output, verify:
 - All three summary levels exist
 - Cross-lecture links added where applicable
 
+## Tutorial Bar-Raiser Handoff (Mandatory)
+
+When this skill output is consumed by downstream packaging, enforce:
+
+1. Learner-facing tutorial format:
+   - emoji-led section headings
+   - Mermaid diagrams
+   - HOTS + FAQ + practice roadmap
+   - intuition-first explanations before formalism
+2. Naming convention in final published note:
+   - `<Domain> Class <NN> [DD/MM/YYYY] - <Topic>`
+3. Learner-facing sanitization:
+   - remove inline `[source: ...]` tags from final tutorial note
+   - keep traceability in sidecar artifacts (coverage matrix + segment ledger)
+4. Publish an explicit learner filename:
+   - `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`
+
 ## Pipeline Position
 
 This skill is **Stage 2** in the lecture processing pipeline:
