@@ -1,163 +1,206 @@
 ---
 name: transcript-pipeline
-description: "End-to-end transcript-to-notes pipeline with deterministic ingestion and validation. Use when user asks to process Zoom/class transcripts into high-quality notes with full traceability, strict no-loss accountability, staged execution, uncertainty handling, coverage matrices, and PASS/FAIL hard-gate validation. Works with chunked large transcripts and produces learner outputs plus .pipeline audit artifacts."
+description: This skill should be used when the user asks to "process this transcript", "convert lecture to notes", "run transcript pipeline", "generate class tutorial from Zoom captions", "validate transcript coverage", or "enrich class resources" (Notion/Canva/Drive links) for bootcamp notes.
+version: 0.2.0
 ---
 
-# Transcript Pipeline
+# Transcript Pipeline Skill
 
-Run a 4-stage transcript processing pipeline with deterministic accountability.
+Run a deterministic, auditable transcript-to-tutorial workflow with optional resource enrichment.
 
-## Use This Skill When
+## Purpose
 
-- User asks to process class/lecture transcripts into notes.
-- User requires no-loss accountability and source traceability.
-- User needs uncertainty-aware correction + deterministic validation.
-- User wants one repeatable workflow across Codex/OpenCode/Claude.
+Use this skill to convert raw class captions into high-quality study notes while preserving accountability through ledger + validation artifacts.
+
+Use scripts for deterministic work. Use chat/stage prompts for language-heavy transformation.
 
 ## Core Contract
 
-1. Stage order is fixed: Stage 1 -> Stage 2 -> Stage 3 -> Stage 4.
-2. Deterministic components are scripts, not LLM judgment.
-3. Traceability must be preserved in `.pipeline` artifacts; learner-facing notes can be sanitized for readability.
-4. No silent low-confidence correction.
-5. Final status is PASS/FAIL from validation script.
-6. Stage 3 must pass the Tutorial Tech Bar-Raiser gate.
-7. Final learner note naming is mandatory across domains.
+1. Keep stage order: ingest -> refine -> synthesize -> enhance -> validate -> publish.
+2. Run deterministic gates with scripts, never with LLM self-certification.
+3. Preserve traceability in `.pipeline/*` artifacts.
+4. Keep learner-facing notes readable and sanitized.
+5. Treat validation status as PASS/FAIL source of truth.
 
-## Required Outputs
+## Scripts
 
-Learner outputs:
+Use these scripts from `scripts/`:
 
-1. `final_notes.md`
-2. `<DomainFile> Class <NN> [DD-MM-YYYY] - <Topic>.md`
-3. `bootcamp_index.md`
-
-Pipeline outputs:
-
-1. `.pipeline/segment_ledger.jsonl`
-2. `.pipeline/segment_manifest.jsonl`
-3. `.pipeline/refined_transcript.md`
-4. `.pipeline/topic_inventory.json`
-5. `.pipeline/corrections_log.csv`
-6. `.pipeline/uncertainty_report.json`
-7. `.pipeline/structured_notes.md`
-8. `.pipeline/coverage_matrix.json`
-9. `.pipeline/enhanced_notes.md`
-10. `.pipeline/validation_report.md`
-11. `.pipeline/exceptions.json` (conditional)
-12. `.pipeline/human_review_queue.md` (conditional)
+- `ingest_zoom_captions.py` - deterministic ingestion and segment ledger creation
+- `run_chat_pipeline.py` - guided orchestration for stage handoffs and validation
+- `validate_coverage.py` - hard-gate coverage validation
+- `publish_tutorial_notes.py` - learner-facing file naming and sanitization
+- `merge_chunks.py` - merge chunk outputs for large transcripts
+- `run_colab_notebook_pipeline.py` - AI/ML Colab appendix and code explainer pipeline
+- `update_ai_notes_with_resources_and_colab.py` - AI/ML notes enrichment utility
+- `resource_enrichment.py` - authenticated enrichment for Notion/Canva/Drive resources
 
 ## Stage Workflow
 
-### Stage 1: Ingest + Refine
+### Stage 0: Ingest (Deterministic)
 
-Run deterministic ingestion first:
+Run:
 
 ```bash
-python scripts/ingest_captions.py "<input_path>"
+python scripts/ingest_zoom_captions.py "<transcript_or_session_path>"
 ```
 
-Then perform uncertainty-aware refinement guided by:
+Required outputs:
 
-- `references/stage1-refine-guide.md`
-- `references/domain-corrections.md`
+- `.pipeline/segment_ledger.jsonl`
+- `.pipeline/segment_manifest.jsonl`
 
-Never skip corrections log or uncertainty report.
+### Stage 1: Refine (Chat Stage)
 
-### Stage 2: Structured Synthesis
+Load `references/stage1-refine.md`.
 
-Use:
+Produce:
 
-- `references/stage2-synthesize-guide.md`
+- `.pipeline/refined_transcript.md`
+- `.pipeline/topic_inventory.json`
+- `.pipeline/corrections_log.csv`
+- `.pipeline/uncertainty_report.json`
 
-Produce structured notes and coverage matrix with segment mappings.
+### Stage 2: Synthesize (Chat Stage)
 
-### Stage 3: Enhancement + Packaging
+Load `references/stage2-synthesize.md`.
 
-Use:
+Produce:
 
-- `references/stage3-enhance-guide.md`
-- `references/output-template.md`
+- `.pipeline/structured_notes.md`
+- `.pipeline/coverage_matrix.json`
+
+### Stage 3: Enhance (Chat Stage)
+
+Load:
+
+- `references/stage3-enhance.md`
 - `references/tutorial-tech-bar-raiser.md`
 
-Mark all added pedagogical material using `[ENHANCED: ...]`.
-Keep `[source: ...]` only in `.pipeline/enhanced_notes.md`, not in learner-facing `final_notes.md`.
+Produce:
 
-### Stage 4: Deterministic Validation
+- `.pipeline/enhanced_notes.md`
+- `final_notes.md`
+- `bootcamp_index.md`
 
-Run validator:
+### Stage 4: Validate (Deterministic)
+
+Run:
 
 ```bash
 python scripts/validate_coverage.py --pipeline-dir .pipeline
 ```
 
-Validation guidance:
-
-- `references/stage4-validate-guide.md`
+Validation guidance: `references/stage4-validate.md`.
 
 Hard gates:
 
-1. Segment accountability
+1. Segment coverage accountability
 2. Uncertainty retention
 3. No orphan claims
 
-### Stage 5: Tutorial Publish + Naming
+### Stage 5: Publish
 
-Run learner-facing publishing step:
+Run:
 
 ```bash
 python scripts/publish_tutorial_notes.py --root "<sessions_root>" --session-dir "<session_dir>"
 ```
 
-This step must:
+Result:
 
-1. enforce title/H1 class naming convention
-2. remove inline source tags from learner-facing notes
-3. create published tutorial filename
-4. refresh `bootcamp_index.md`
+- Published tutorial filename in canonical format
+- Learner-safe note without noisy source tags
+- Updated course index links
 
-If FAIL, patch earliest failing stage and retry up to 3 times.
+## One-Command Guided Mode
+
+Use guided runner for chat-window workflows:
+
+```bash
+python scripts/run_chat_pipeline.py run "<transcript_or_session_path>" --deep-pass
+```
+
+This enforces required handoffs and deep quality gates.
+
+## Optional Resource Enrichment Stage
+
+Run when class notes include external links (Notion/Canva/Drive):
+
+```bash
+python scripts/resource_enrichment.py --all-sessions
+```
+
+Single session:
+
+```bash
+python scripts/resource_enrichment.py --session-dir "<session_dir>"
+```
+
+Auth options:
+
+- Notion: `NOTION_TOKEN_V2`, `NOTION_ACTIVE_USER`
+- Canva: `RESOURCE_PLAYWRIGHT_STORAGE_STATE`
+
+Reference: `references/resource-enrichment-authenticated-flow.md`.
+
+## Optional AI/ML Colab Enrichment
+
+Run for Colab-backed AI/ML classes:
+
+```bash
+python scripts/run_colab_notebook_pipeline.py
+```
+
+Reference: `references/colab-notebook-explainer-pipeline.md`.
 
 ## Large Transcript Handling
 
-If transcript is too large for one stage context:
+If input exceeds context comfort:
 
-1. Split Stage 1 into chunks.
-2. Run Stage 1 per chunk.
-3. Merge with:
+1. Run Stage 1 by chunks.
+2. Merge chunk artifacts:
 
 ```bash
-python scripts/merge_chunks.py --chunk-dirs <chunkA/.pipeline> <chunkB/.pipeline> --output-dir <session/.pipeline>
+python scripts/merge_chunks.py --chunk-dirs "<chunkA/.pipeline>" "<chunkB/.pipeline>" --output-dir "<session/.pipeline>"
 ```
 
-4. Continue Stage 2-4 on merged artifacts.
+3. Continue Stage 2 onward on merged artifacts.
 
-## Progressive Disclosure Rules
+## Required Outputs Checklist
 
-- Load only stage-specific reference file(s) for the current stage.
-- Do not preload all references when not needed.
-- Keep stage outputs isolated and explicit.
+Learner-facing:
 
-## Tool-Enabled vs Tool-Restricted
+- `final_notes.md`
+- `<Domain> Class <NN> [DD-MM-YYYY] - <Topic>.md`
+- `bootcamp_index.md`
 
-Tool-enabled:
+Pipeline/audit:
 
-- Write files directly.
-- Always run deterministic scripts.
+- `.pipeline/segment_ledger.jsonl`
+- `.pipeline/segment_manifest.jsonl`
+- `.pipeline/refined_transcript.md`
+- `.pipeline/topic_inventory.json`
+- `.pipeline/corrections_log.csv`
+- `.pipeline/uncertainty_report.json`
+- `.pipeline/structured_notes.md`
+- `.pipeline/coverage_matrix.json`
+- `.pipeline/enhanced_notes.md`
+- `.pipeline/validation_report.md`
+- `.pipeline/exceptions.json` (if fail)
 
-Tool-restricted:
+Quality gates:
 
-- Run one stage per conversation.
-- Emit artifacts in fenced blocks.
-- Mark validation as non-deterministic unless script output is provided.
+- `.pipeline/deep_pass_report.md` (when `--deep-pass`)
+- `.pipeline/deep_pass_exceptions.json` (when `--deep-pass`)
 
-## Execution Checklist
+Resource enrichment (optional):
 
-Before completion, verify:
+- `.resources/resource_enrichment_report.json`
 
-1. All required artifacts exist.
-2. Validation script executed.
-3. PASS/FAIL status is explicit.
-4. Any unresolved uncertainty is listed in review queue.
-5. Final notes remain source-traceable.
-6. Published tutorial filename exists and bootcamp index points to it.
+## Execution Rules
+
+- Fail fast on missing required artifacts.
+- Report missing outputs explicitly by file path.
+- Retry only from earliest failing stage.
+- Keep resource extraction status explicit (success/fallback/blocked).

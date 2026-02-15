@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
-"""Deterministic ingestion of Zoom captions into pipeline artifacts.
+"""Ingest Zoom caption text into deterministic segment artifacts.
 
 No API usage. Pure local processing.
-
-Outputs:
-- .pipeline/segment_ledger.jsonl
-- .pipeline/segment_manifest.jsonl
 """
 
 from __future__ import annotations
@@ -19,19 +15,21 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-HEADER_RE = re.compile(r"^\[(?P<speaker>[^\]]+)\]\s+(?P<timestamp>\d{1,2}:\d{2}:\d{2})\s*$")
+HEADER_RE = re.compile(r"^\[(?P<speaker>[^\]]+)\]\s+(?P<timestamp>\d{2}:\d{2}:\d{2})\s*$")
 
 NOISE_EXACT = {
-    "ok",
-    "ok.",
+    "cool",
+    "cool.",
+    "mm-hmm",
+    "mm-hmm.",
     "okay",
     "okay.",
+    "ok",
+    "ok.",
     "yes",
     "yes.",
     "right",
     "right.",
-    "cool",
-    "cool.",
     "hmm",
     "hmm.",
 }
@@ -39,11 +37,10 @@ NOISE_EXACT = {
 NOISE_CONTAINS = (
     "can you hear me",
     "can you see me",
-    "is my screen visible",
-    "let me share my screen",
     "testing",
-    "join fast",
-    "rejoin",
+    "let me share my screen",
+    "is my screen visible",
+    "hello my testing",
 )
 
 
@@ -86,7 +83,9 @@ def resolve_input(path: Path) -> Path:
         txts = sorted(path.glob("*.txt"))
         if len(txts) == 1:
             return txts[0]
-        raise FileNotFoundError(f"Could not resolve unique transcript .txt in: {path}")
+        raise FileNotFoundError(
+            f"Could not resolve unique transcript .txt in directory: {path}"
+        )
     raise FileNotFoundError(f"Input path not found: {path}")
 
 
@@ -95,37 +94,27 @@ def parse_segments(lines: list[str]) -> list[Segment]:
     i = 0
     while i < len(lines):
         line = lines[i].rstrip("\n")
-        match = HEADER_RE.match(line.strip())
-        if not match:
-            # Attach stray non-header text to previous segment to avoid accidental loss.
+        m = HEADER_RE.match(line.strip())
+        if not m:
             if segments and line.strip():
                 segments[-1].raw_text = (segments[-1].raw_text + " " + line.strip()).strip()
             i += 1
             continue
 
-        raw_speaker = match.group("speaker").strip()
-        timestamp = match.group("timestamp")
+        raw_speaker = m.group("speaker").strip()
+        timestamp = m.group("timestamp")
         i += 1
 
         text_lines: list[str] = []
         while i < len(lines):
             current = lines[i].rstrip("\n")
-            current_stripped = current.strip()
-            if HEADER_RE.match(current_stripped):
+            if HEADER_RE.match(current.strip()):
                 break
-            if current_stripped == "":
-                i += 1
-                break
-            text_lines.append(current_stripped)
+            if current.strip():
+                text_lines.append(current.strip())
             i += 1
 
-        segments.append(
-            Segment(
-                raw_speaker=raw_speaker,
-                timestamp=timestamp,
-                raw_text=" ".join(text_lines).strip(),
-            )
-        )
+        segments.append(Segment(raw_speaker=raw_speaker, timestamp=timestamp, raw_text=" ".join(text_lines).strip()))
 
     return segments
 
@@ -137,10 +126,14 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Ingest Zoom captions into deterministic pipeline artifacts.")
+    parser = argparse.ArgumentParser(description="Ingest Zoom captions into segment artifacts.")
     parser.add_argument("input_path", help="Path to transcript file or session folder")
-    parser.add_argument("--output-dir", default=None, help="Output directory (default: <session>/.pipeline)")
-    parser.add_argument("--session-id", default=None, help="Explicit session id override")
+    parser.add_argument(
+        "--output-dir",
+        help="Output directory (default: <session>/.pipeline)",
+        default=None,
+    )
+    parser.add_argument("--session-id", help="Explicit session id", default=None)
     args = parser.parse_args()
 
     input_path = resolve_input(Path(args.input_path).expanduser().resolve())
@@ -162,43 +155,41 @@ def main() -> int:
 
     for idx, seg in enumerate(parsed, start=1):
         segment_id = f"{session_id}-seg-{idx:05d}"
-        segment_type, noise_reason = classify_segment(seg.raw_text)
-        normalized_speaker = normalize_speaker(seg.raw_speaker)
+        seg_type, noise_reason = classify_segment(seg.raw_text)
+        norm_speaker = normalize_speaker(seg.raw_speaker)
         text_hash = hashlib.sha1(seg.raw_text.encode("utf-8")).hexdigest()[:12]
 
-        ledger_row = {
+        ledger = {
             "session_id": session_id,
             "segment_id": segment_id,
             "segment_index": idx,
             "timestamp": seg.timestamp,
             "raw_speaker": seg.raw_speaker,
-            "normalized_speaker": normalized_speaker,
+            "normalized_speaker": norm_speaker,
             "raw_text": seg.raw_text,
-            "segment_type": segment_type,
-            "type": segment_type,
+            "type": seg_type,
             "noise_reason": noise_reason,
             "word_count": len(seg.raw_text.split()),
             "text_sha1_12": text_hash,
             "source_file": str(input_path),
         }
-        manifest_row = {
+        manifest = {
             "session_id": session_id,
             "segment_id": segment_id,
             "segment_index": idx,
             "timestamp": seg.timestamp,
-            "speaker": normalized_speaker,
-            "segment_type": segment_type,
-            "type": segment_type,
+            "speaker": norm_speaker,
+            "type": seg_type,
         }
-        ledger_rows.append(ledger_row)
-        manifest_rows.append(manifest_row)
+        ledger_rows.append(ledger)
+        manifest_rows.append(manifest)
 
     ledger_path = output_dir / "segment_ledger.jsonl"
     manifest_path = output_dir / "segment_manifest.jsonl"
     write_jsonl(ledger_path, ledger_rows)
     write_jsonl(manifest_path, manifest_rows)
 
-    content_count = sum(1 for row in ledger_rows if row["segment_type"] == "content")
+    content_count = sum(1 for row in ledger_rows if row["type"] == "content")
     noise_count = len(ledger_rows) - content_count
 
     print(f"input: {input_path}")
@@ -213,3 +204,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
