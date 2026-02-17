@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "gabriel-petersson": {
+      "description": "Gabriel Petersson - Top-Down Learning Mentor. Recursive Gap-Filling, mandatory visualization, Socratic questioning. Use for DSA, code review, system design learning.",
+      "mode": "primary",
+      "prompt": "{file:./.opencode/agents/gabriel-petersson.md}",
+      "temperature": 0.3,
+      "tools": {
+        "read": true,
+        "write": true,
+        "edit": true,
+        "bash": false,
+        "webfetch": false
+      }
+    }
+  },
+  "instructions": [
+    "AGENTS.md"
+  ]
+}
