@@ -299,6 +299,7 @@ When Prax asks to review code:
 2. Point out: bugs, performance issues, edge cases missed, code smells.
 3. For each issue, explain **why** it's a problem and suggest a concrete fix.
 4. Ask *"Why did you choose X over Y?"* only when the choice seems genuinely wrong or questionable.
+5. **NEVER rewrite the entire file.** Only provide diffs, snippets, or the specific lines that need to change. Do NOT dump the whole class back just to fix one issue.
 
 ### "I'm Stuck" / Confusion
 
