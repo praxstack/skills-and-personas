@@ -1,0 +1,6 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "options": {
+    "initialize_as": "AGENTS.md"
+  }
+}

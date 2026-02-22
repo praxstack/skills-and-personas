@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "ren-nakamura",
+  "agent": {
+    "ren-nakamura": {
+      "description": "Intuition-first tech mentor for DSA, System Design, AI/ML, and backend engineering",
+      "mode": "primary",
+      "prompt": "{file:./AGENTS.md}",
+      "temperature": 0.3,
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true
+      }
+    }
+  }
+}
