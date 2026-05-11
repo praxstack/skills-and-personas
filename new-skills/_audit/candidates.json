@@ -1,0 +1,325 @@
+{
+  "_comment": "Canonical skill manifest for new-skills/. Each entry = one SKILL.md to be authored. Source files are absolute paths to the skills-and-personas repo. References live under new-skills/<slug>/references/.",
+  "total_skills": 38,
+  "candidates": [
+    {
+      "slug": "backend-pe",
+      "batch": "A",
+      "tier": "orchestrator",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-pe/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/BACKEND-PE.md"
+      ],
+      "action": "merge-existing",
+      "rationale": "skills/backend-pe is the orchestrator; md-persona version becomes references/methodology.md"
+    },
+    {
+      "slug": "backend-pe-cpp",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-cpp-pro-max/SKILL.md",
+      "action": "rename-and-forward",
+      "rationale": "Shorten slug to meet 64-char spec; content ready"
+    },
+    {
+      "slug": "backend-pe-java",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-java-pro-max/SKILL.md",
+      "action": "rename-and-forward"
+    },
+    {
+      "slug": "backend-pe-javascript",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-javascript-pro-max/SKILL.md",
+      "action": "rename-and-forward"
+    },
+    {
+      "slug": "backend-pe-nodejs",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-nodejs-pro-max/SKILL.md",
+      "action": "rename-and-forward"
+    },
+    {
+      "slug": "backend-pe-python",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-python-pro-max/SKILL.md",
+      "action": "rename-and-forward"
+    },
+    {
+      "slug": "backend-pe-python-ml",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-python-ml-pro-max/SKILL.md",
+      "action": "rename-and-forward"
+    },
+    {
+      "slug": "backend-pe-typescript",
+      "batch": "A",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-typescript-pro-max/SKILL.md",
+      "action": "rename-and-forward"
+    },
+
+    {
+      "slug": "blueprint-creator",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/blueprint-creator/SKILL.md",
+      "action": "forward-as-is"
+    },
+    {
+      "slug": "concept-cartographer",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/concept-cartographer/SKILL.md",
+      "action": "forward-as-is"
+    },
+    {
+      "slug": "constellation-team",
+      "batch": "B",
+      "tier": "orchestrator",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/constellation-team/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/CONSTELLATION-TEAM.md"
+      ],
+      "action": "merge-existing",
+      "rationale": "Keep as orchestrator; 6 role-specific skills (principal-engineer, backend-system-design-expert, devops-sre-engineer, frontend-uiux-designer, product-manager, qa-security-engineer) are siblings, not sub-files"
+    },
+    {
+      "slug": "frontend-pe",
+      "batch": "B",
+      "tier": "orchestrator",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/frontend-pe/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/FRONTEND-PE.md"
+      ],
+      "action": "merge-existing"
+    },
+    {
+      "slug": "idea-capturer",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/idea-capturer/SKILL.md",
+      "action": "forward-as-is"
+    },
+    {
+      "slug": "obsidian-cli",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/obsidian-cli/SKILL.md",
+      "action": "split-into-references",
+      "rationale": "934 lines → compress SKILL.md to <400, move command tables to references/commands.md, references/properties.md, references/queries.md"
+    },
+    {
+      "slug": "spec-creator",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/spec-creator/SKILL.md",
+      "action": "forward-as-is"
+    },
+    {
+      "slug": "svg-logo-designer",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/svg-logo-designer/SKILL.md",
+      "action": "forward-as-is"
+    },
+    {
+      "slug": "transcribe-refiner",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/transcribe-refiner/SKILL.md",
+      "action": "forward-as-is"
+    },
+    {
+      "slug": "transcript-pipeline",
+      "batch": "B",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/transcript-pipeline/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/transcript-pipeline/README.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/transcript-pipeline/USAGEGUIDE.md"
+      ],
+      "action": "forward-as-is"
+    },
+
+    {
+      "slug": "chronicle",
+      "batch": "D",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ChronicleYourPersonalJournalIntelligence/01_MAIN_SYSTEM_PROMPT.md",
+      "alt_primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/chronicle/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ChronicleYourPersonalJournalIntelligence/PSYCHOLOGICAL_FRAMEWORKS.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ChronicleYourPersonalJournalIntelligence/PATTERN_LIBRARY.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ChronicleYourPersonalJournalIntelligence/PRAX_CONTEXT.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ChronicleYourPersonalJournalIntelligence/PLATFORM_CONFIGS.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ChronicleYourPersonalJournalIntelligence/EXAMPLES.md"
+      ],
+      "action": "enrich-existing",
+      "rationale": "Use skills/chronicle frontmatter style, body from persona system prompt, 5 reference files"
+    },
+    {
+      "slug": "lecture-alchemist",
+      "batch": "D",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/LectureAlchemistTechnicalLearningTransformer/01_MAIN_SYSTEM_PROMPT.md",
+      "alt_primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/lecture-alchemist/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/LectureAlchemistTechnicalLearningTransformer/DOMAIN_KNOWLEDGE.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/LectureAlchemistTechnicalLearningTransformer/PLATFORM_CONFIGS.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/LectureAlchemistTechnicalLearningTransformer/EXAMPLES.md"
+      ],
+      "action": "enrich-existing"
+    },
+    {
+      "slug": "techtutor",
+      "batch": "D",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ren-nakamura-all-agents-persona/AGENTS.md",
+      "alt_primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/techtutor/SKILL.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ren-nakamura-all-agents-persona/CLAUDE.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/ren-nakamura-all-agents-persona/GEMINI.md"
+      ],
+      "action": "enrich-existing",
+      "rationale": "Keep techtutor slug (matches official Claude Code naming); use Ren Nakamura persona as authoritative body"
+    },
+
+    {
+      "slug": "frontend-design-excellence",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/FRONTEND-DESIGN.md",
+      "action": "create-new"
+    },
+    {
+      "slug": "kingmode",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/KINGMODE.md",
+      "action": "create-new"
+    },
+    {
+      "slug": "ultrathink-frontend",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/ULTRATHINK-FRONTEND.md",
+      "action": "create-new"
+    },
+    {
+      "slug": "super-mode-core",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/SUPER-MODE.md",
+      "action": "create-new-from-split",
+      "split_section": "core"
+    },
+    {
+      "slug": "backend-architecture-standards",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/SUPER-MODE.md",
+      "action": "create-new-from-split",
+      "split_section": "backend"
+    },
+    {
+      "slug": "frontend-excellence-standards",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/SUPER-MODE.md",
+      "action": "create-new-from-split",
+      "split_section": "frontend"
+    },
+    {
+      "slug": "security-compliance-standards",
+      "batch": "C",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/SUPER-MODE.md",
+      "action": "create-new-from-split",
+      "split_section": "security"
+    },
+
+    {
+      "slug": "baron-von-markup",
+      "batch": "D",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/Baron von Markup/Baron von Markup.md",
+      "action": "create-new"
+    },
+    {
+      "slug": "gabriel-petersson-topdown-mentor",
+      "batch": "D",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/Gabriel Petersson — Top-Down Learning Mentor/Gabriel Petersson — Top-Down Learning Mentor.md",
+      "reference_sources": [
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/ATLAS_Recursive_Learning_Mentor_Prompt.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/v2/00_Gabriel_Petersson_Mentor_Prompt.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/v2/01_Prax_Profile.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/v2/02_Java_Quick_Reference.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/v2/03_DSA_Patterns_Map.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/v2/04_Design_Principles_Cheatsheet.md",
+        "/Users/praxlannister/Documents/workspace/skills-and-personas/knowledge-packs/atlas/v2/05_Learning_Tracker_Template.md"
+      ],
+      "action": "create-new",
+      "rationale": "Knowledge-packs feed here as references/"
+    },
+    {
+      "slug": "professor-alex-interview",
+      "batch": "D",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/personas/Professor Alex/Professor Alex.md",
+      "action": "create-new"
+    },
+
+    {
+      "slug": "principal-engineer",
+      "batch": "E1",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/team-personas/constellation-team/PRINCIPAL-ENGINEER-SKILL.md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "1285 lines → SKILL.md <400 lines + references/decision-frameworks.md, references/approval-checkpoints.md"
+    },
+    {
+      "slug": "backend-system-design-expert",
+      "batch": "E1",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/team-personas/constellation-team/BACKEND-SYSTEM-DESIGN-EXPERT-SKILL.md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "1565 lines → core + references/api-design.md, references/database-patterns.md, references/distributed-systems.md"
+    },
+    {
+      "slug": "devops-sre-engineer",
+      "batch": "E1",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/team-personas/constellation-team/DEVOPS-SRE-ENGINEER-SKILL.md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "1281 lines → core + references/iac.md, references/cicd.md, references/observability.md"
+    },
+    {
+      "slug": "frontend-uiux-designer",
+      "batch": "E2",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/team-personas/constellation-team/FRONTEND-UIUX-DESIGNER-SKILL.md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "2472 lines → core + references/design-systems.md, references/accessibility.md, references/frontend-stacks.md"
+    },
+    {
+      "slug": "product-manager",
+      "batch": "E2",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/team-personas/constellation-team/PRODUCT-MANAGER-SKILL.md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "2907 lines → core + references/prioritization.md, references/prd-templates.md, references/metrics.md"
+    },
+    {
+      "slug": "qa-security-engineer",
+      "batch": "E2",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/team-personas/constellation-team/QA-SECURITY-ENGINEER-SKILL.md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "2926 lines → core + references/testing-strategy.md, references/security-methodologies.md, references/compliance.md"
+    },
+
+    {
+      "slug": "ai-therapist-mdd-adhd",
+      "batch": "F",
+      "primary_source": "/Users/praxlannister/Documents/workspace/skills-and-personas/prompts/agents/AI Therapist Agent Prompt/AI Therapy Assistant Web Application - Complete Project/v3 - AI Master Therapeutic Agent (Flexible + Session Tracking).md",
+      "action": "create-new-with-heavy-compression",
+      "rationale": "1076 lines → core + references/clinical-file-template.md, references/validated-screeners.md, references/intake-pathways.md"
+    }
+  ],
+  "skipped": [
+    {"path": "personas/ Chronicle: Your Personal Journal Intelligence", "reason": "duplicate of ChronicleYourPersonalJournalIntelligence"},
+    {"path": "personas/Lecture Alchemist : Technical Learning Transformer", "reason": "duplicate of LectureAlchemistTechnicalLearningTransformer"},
+    {"path": "personas/Ren Nakamura — Intuition-First Tech Mentor", "reason": "duplicate of ren-nakamura-all-agents-persona"},
+    {"path": "personas/prax-lannister", "reason": "personal memory context, not teachable"},
+    {"path": "md-personas/GEMINI-KING-MODE.md", "reason": "low knowledge delta; overlaps with ultrathink-frontend and frontend-pe"},
+    {"path": "prompts/agents/AI Therapist Agent Prompt/1 - AI Therapist Agent Prompt - MDD & Adult ADHD Specialist.md", "reason": "hardcoded client info; superseded by v3"},
+    {"path": "prompts/agents/AI Therapist Agent Prompt/2 - AI Master Therapeutic Agent - MDD & Adult ADHD Specialist (GENERALIZED VERSION).md", "reason": "superseded by v3"},
+    {"path": "prompts/agents/AI Therapist Agent Prompt/3 - AI Master Therapeutic Agent - MDD & Adult ADHD Specialist (v2.1 - WITH VALIDATED SCREENERS).md", "reason": "superseded by v3"},
+    {"path": "prompts/builders/baron-von-markup/Baron-von-Markup-Agent-Builder-Prompt.md", "reason": "superseded by richer persona version"},
+    {"path": "prompts/rules/clinerules/Cline's Memory Bank v2.md", "reason": "Cline-specific; not generalizable"},
+    {"path": "prompts/templates/Agent-Session-Tracker.md", "reason": "template, not a skill"},
+    {"path": "ui-ux-pro-max-skill/", "reason": "empty directory"}
+  ],
+  "batches": {
+    "A": {"count": 8, "description": "backend-pe orchestrator + 7 language variants (shared template)"},
+    "B": {"count": 10, "description": "other existing skills/ (mostly forward-as-is with minor cleanup)"},
+    "C": {"count": 7, "description": "md-personas + SUPER-MODE 4-way split"},
+    "D": {"count": 6, "description": "persona conversions (3 new + 3 enriched)"},
+    "E1": {"count": 3, "description": "team-personas compression wave 1 (principal, backend-sd, devops)"},
+    "E2": {"count": 3, "description": "team-personas compression wave 2 (frontend-uiux, pm, qa-security)"},
+    "F": {"count": 1, "description": "AI therapist from prompts/"}
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "batch": "E1",
+  "completed": 3,
+  "skills": [
+    {
+      "slug": "principal-engineer",
+      "skill_md_lines": 113,
+      "source_lines": 1285,
+      "compression_ratio": 11.37,
+      "references_created": [
+        "references/approval-checkpoints.md (188 lines)",
+        "references/decision-frameworks.md (180 lines)",
+        "references/architecture-review-process.md (192 lines)"
+      ],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 16,
+      "notes": "Stripped all 'Senior Principal Engineer with 15+ years' persona framing, repeated role descriptions, ASCII workflow diagrams, and generic platitudes ('trust but verify'). Kept expert-only content: severity rubric calibration (critical=reverts-from-prod), distributed-monolith detection, shared-DB anti-pattern reasoning, technology evaluation weights, tech-debt classification tiers, STRIDE per trust boundary, and the non-negotiable auto-reject list. SKILL.md contains the decision framework table and approval checkpoint summary; deep review templates live in references/architecture-review-process.md; severity rubric, code-smell catalog, and tech standards live in references/decision-frameworks.md; checkpoint rubrics live in references/approval-checkpoints.md. Description is 619 chars with WHAT + WHEN + KEYWORDS + routing hints ('Not for hands-on implementation — use backend-system-design-expert')."
+    },
+    {
+      "slug": "backend-system-design-expert",
+      "skill_md_lines": 171,
+      "source_lines": 1565,
+      "compression_ratio": 9.15,
+      "references_created": [
+        "references/api-design.md (192 lines)",
+        "references/database-patterns.md (178 lines)",
+        "references/distributed-systems.md (232 lines)",
+        "references/caching-strategies.md (179 lines)",
+        "references/messaging-event-driven.md (236 lines)"
+      ],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 17,
+      "notes": "Source file was incomplete past section 5 (explicitly asked user which format to continue in); I synthesized the missing sections 6-13 into targeted reference files with expert-only content. Stripped 'Senior Backend Engineer with 10+ years' framing, workflow-position ASCII diagrams, and surface-level knowledge (HTTP status code list, what 1NF/2NF/3NF means, 'use parameterized queries'). Kept non-obvious trade-offs: UUIDv4 vs UUIDv7 B-tree locality, offset-vs-cursor pagination cost, optimistic vs pessimistic locking picker, why 2PC fails for microservices, eventual-consistency as UX problem not tech problem, timeout laddering, idempotency keys as not optional. Decision tables for API style / DB style / consistency model / cache strategy / messaging model live in SKILL.md body; deep patterns (DataLoader, saga code, circuit breaker impl, Redis data-structure use, cache stampede protection, outbox pattern, Kafka/SQS/RabbitMQ gotchas) live in references. Description 567 chars with routing hints."
+    },
+    {
+      "slug": "devops-sre-engineer",
+      "skill_md_lines": 176,
+      "source_lines": 1281,
+      "compression_ratio": 7.28,
+      "references_created": [
+        "references/iac.md (281 lines)",
+        "references/cicd.md (232 lines)",
+        "references/observability.md (262 lines)",
+        "references/incident-response.md (281 lines)"
+      ],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 16,
+      "notes": "Stripped 'DevOps/SRE Engineer with 8+ years' framing and workflow-position ASCII diagram. Kept expert-only content: SLO tier -> cost/effort mapping (99.99% requires multi-region + chaos + funded on-call), multi-window burn-rate alerts (14.4x fast / 6x slow), canary-needs-comparable-traffic, liveness-vs-readiness distinction, PDB mandate, resource requests+limits calibration including when NOT to cap CPU, immutable image tags, untested-backup-is-no-backup, SLO error budget as deploy-gate (not decoration), incident roles (IC does not debug), blameless postmortem with contributing factors rather than 'root cause'. SKILL.md has the deployment strategy selector, observability coverage table, SLO tier table, secret storage selector, and non-obvious trade-offs. References hold: iac.md (Terraform/K8s module patterns, VPC/EKS/RDS hygiene, NetworkPolicy), cicd.md (pipeline stages with security gates, progressive delivery, rollback criteria, OIDC), observability.md (RED/USE, Prometheus patterns, SLO burn-rate math, cardinality control, structured log schema), incident-response.md (severity ladder, IC/Ops/Comms/Scribe roles, runbook structure, postmortem template, RTO/RPO tiers, failover patterns, chaos engineering). Description 626 chars."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "batch": "A",
+  "completed": 8,
+  "skills": [
+    {
+      "slug": "backend-pe",
+      "skill_md_lines": 105,
+      "references_created": ["references/methodology.md"],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 16,
+      "notes": "Orchestrator skill. Routes to 7 language variants via decision table. Merged md-personas/BACKEND-PE.md 'Supermode/Antigravity' methodology into references/methodology.md (116 lines). Stripped all 'You are / Act as' persona framing. Replaced with Audience/Goal + Core Principles + Decision Framework + Anti-Patterns + Standard Workflow + Deliverables Contract. Routing keywords cover backend-pe / supermode / antigravity / principal engineer triggers."
+    },
+    {
+      "slug": "backend-pe-cpp",
+      "skill_md_lines": 122,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 18,
+      "notes": "Complete rewrite from terse 84-line source. Heavy C++-specific knowledge: RAII + ownership, UB avoidance, sanitizers (ASan/UBSan/TSan), fuzzing, lock-free vs. message-passing concurrency, allocator strategy, C++20/23 features (std::expected, std::span, std::bit_cast), compiler hardening flags. Source cpp-core.md folded into main SKILL.md; no separate reference needed at current line count."
+    },
+    {
+      "slug": "backend-pe-java",
+      "skill_md_lines": 110,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 17,
+      "notes": "Complete rewrite from 96-line source. JDK 21 LTS virtual threads as the inflection point (imperative is back for most services). Covers Spring Boot 3 vs. Micronaut vs. Quarkus, reactive vs. imperative, JPA/jOOQ/JDBC decision, HikariCP sizing via Little's Law, Resilience4j patterns, records/sealed types. Source java-core.md folded in; JVM/GC tuning and virtual threads are primary knowledge delta."
+    },
+    {
+      "slug": "backend-pe-javascript",
+      "skill_md_lines": 115,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 14,
+      "notes": "Plain JS non-TypeScript focus. Key differentiator: runtime validation is not optional without a compiler, JSDoc + checkJs for 70% of TS at zero migration cost, prototype pollution as first-class security concern, ESM-only, pnpm default. Fastify/Hono/Ajv defaults. Smaller knowledge delta vs. TS variant but distinct audience (teams that can't or won't adopt TS)."
+    },
+    {
+      "slug": "backend-pe-nodejs",
+      "skill_md_lines": 113,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 19,
+      "notes": "Runtime-focused - deliberately scoped to Node internals not language choice. Event loop, streams backpressure, worker_threads, AsyncLocalStorage, heap/RSS distinction, libuv threadpool, cluster vs. worker vs. horizontal scale, UV_THREADPOOL_SIZE, shutdown coordinator, diagnostic playbooks for event-loop lag / memory leak / CPU spike / throughput regression. This is the skill someone paged at 3am needs."
+    },
+    {
+      "slug": "backend-pe-python",
+      "skill_md_lines": 99,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 17,
+      "notes": "Complete rewrite from 96-line source. Python-specific: async is infectious (blocking-in-async as primary failure mode), GIL reality for CPU work, Pydantic v2 at boundaries + dataclasses inside, strict pyright, SQLAlchemy 2.0 async + asyncpg, uv/ruff as 2026 tooling default. FastAPI vs. Django vs. Litestar decision. Lifespan migration from deprecated on_event. Source python-core.md folded in."
+    },
+    {
+      "slug": "backend-pe-python-ml",
+      "skill_md_lines": 133,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 22,
+      "notes": "Highest knowledge delta in batch - ML-specific failure modes most backend engineers miss. Leakage taxonomy (time/target/group/preprocessing), train-serve skew, reproducibility as engineering discipline, offline-metrics-insufficient-alone, shadow-before-canary mandatory, monitor-the-model-not-just-the-service. Decision tables for training orchestrators, serving stacks, feature stores, model registries, batching. Longest SKILL.md in batch at 133 lines but still well under 500."
+    },
+    {
+      "slug": "backend-pe-typescript",
+      "skill_md_lines": 108,
+      "references_created": [],
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 16,
+      "notes": "Complete rewrite from 96-line source. TS-specific: types erased at runtime so Zod/Valibot at every boundary, strict tsconfig non-negotiable (strict + noUncheckedIndexedAccess + exactOptionalPropertyTypes), discriminated unions over optional chaining, ESM-only with NodeNext, Bun vs. Node 22 LTS, Drizzle vs. Prisma, biome default, AbortSignal.timeout pattern. Clear separation from backend-pe-javascript (has compiler) and backend-pe-nodejs (runtime not language)."
+    }
+  ],
+  "conventions_applied": {
+    "frontmatter": "name + description only; descriptions 656-841 chars (all under 1024); includes 'Use when' / 'Not for' routing hints",
+    "body_structure": "Audience + Goal + Priority Model + Core Principles + Decision Framework + Anti-Patterns + Standard Workflow + Default Stack + Deliverables Contract",
+    "persona_stripped": "No 'You are a/an/the' anywhere; replaced with Audience/Goal pattern",
+    "no_ascii_art": "All tables use standard pipes; no box-drawing or arrow characters",
+    "no_readme": "All README-worthy content inline in SKILL.md body or references/methodology.md for backend-pe only",
+    "subdirs": "Only references/ directory created (backend-pe only); other 7 skills fit in single SKILL.md under 135 lines",
+    "line_budget": "All SKILL.md under 500 (max 133, min 99); methodology.md reference at 116 lines"
+  },
+  "design_decisions": [
+    "backend-pe methodology.md preserves the 'Supermode/Antigravity' maximum-rigor protocol explicitly - kept as a gated mode (MANDATORY: Read references/methodology.md when user invokes those keywords), not the default mode, to reduce token bloat for routine queries.",
+    "Each language skill replicates the same section skeleton (Priority / Core Principles / Decision Framework / Anti-Patterns / Workflow / Stack / Deliverables). Variation is in the 5-6 Core Principles and Anti-Patterns which are language-specific expert knowledge.",
+    "backend-pe-nodejs scope deliberately narrowed to runtime internals (event loop, streams, workers, memory, GC, signals) to differentiate from the TS/JS language skills. This is the skill you reach for during incident response, not during feature design.",
+    "backend-pe-python-ml kept as a peer to backend-pe-python (not a sub-skill) because ML failure modes (leakage, train-serve skew, drift) dominate over shared Python concerns, warranting its own decision framework."
+  ]
+}

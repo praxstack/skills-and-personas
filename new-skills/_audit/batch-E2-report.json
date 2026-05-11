@@ -1,0 +1,73 @@
+{
+  "batch": "E2",
+  "completed": 3,
+  "skills": [
+    {
+      "slug": "frontend-uiux-designer",
+      "skill_md_lines": 131,
+      "source_lines": 2472,
+      "compression_ratio": 18.87,
+      "references_created": [
+        "references/design-systems.md",
+        "references/accessibility-wcag.md",
+        "references/frontend-stacks.md",
+        "references/interaction-design.md",
+        "references/user-research.md"
+      ],
+      "references_line_counts": {
+        "design-systems.md": 100,
+        "accessibility-wcag.md": 127,
+        "frontend-stacks.md": 121,
+        "interaction-design.md": 146,
+        "user-research.md": 153
+      },
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 16,
+      "notes": "Cut ~2.3k lines of generic 'Nielsen heuristics list', 'Disney 12 principles', 'What is RICE', 'What is cohort analysis'. Kept non-obvious tradeoffs: state-management by data lifecycle, framework selection by context, WHEN to pick which motion pattern, contrast/focus/keyboard gotchas that bite in production. Role-play framing (`ROLE: Senior Frontend Engineer & UI/UX Designer`, `EXPERIENCE: 10+ years`) fully removed. All 14 source sections distilled into Decision Framework + Anti-Patterns + 5 references. Heavy reference usage is mandatory given source size; SKILL.md stays 131 lines."
+    },
+    {
+      "slug": "product-manager",
+      "skill_md_lines": 144,
+      "source_lines": 2907,
+      "compression_ratio": 20.19,
+      "references_created": [
+        "references/prioritization-frameworks.md",
+        "references/prd-templates.md",
+        "references/metrics-and-analytics.md",
+        "references/agile-sprint-planning.md",
+        "references/go-to-market.md"
+      ],
+      "references_line_counts": {
+        "prioritization-frameworks.md": 127,
+        "prd-templates.md": 243,
+        "metrics-and-analytics.md": 187,
+        "agile-sprint-planning.md": 172,
+        "go-to-market.md": 272
+      },
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 15,
+      "notes": "Removed 2.8k lines of PRD-in-full-example, three giant persona cards, RICE arithmetic worked through twice, competitive matrix for a fictional productivity app. Kept: PM/eng decision boundary (the load-bearing PM concept), non-obvious framework-selection tradeoffs, metric-gaming warnings, A/B testing pitfalls, how-to-say-no scripts. Anti-patterns section has 12 'NEVER' lines with reasoning. Source's role-play framing (`ROLE: Product/Program Manager`, `EXPERIENCE: 8+ years`) deleted. References include full PRD templates since those remain useful but don't belong in core."
+    },
+    {
+      "slug": "qa-security-engineer",
+      "skill_md_lines": 175,
+      "source_lines": 2926,
+      "compression_ratio": 16.72,
+      "references_created": [
+        "references/testing-strategy.md",
+        "references/security-methodologies.md",
+        "references/compliance-frameworks.md",
+        "references/performance-testing.md"
+      ],
+      "references_line_counts": {
+        "testing-strategy.md": 198,
+        "security-methodologies.md": 262,
+        "compliance-frameworks.md": 211,
+        "performance-testing.md": 195
+      },
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 17,
+      "notes": "Largest source (2926 lines) compressed hardest. Cut giant Cypress/Playwright/k6/pytest/Jest code blocks (Claude knows these tools); kept WHEN to pick which, what to actually look for. Removed pyramid ASCII art (was in source); replaced with table + risk-shifted explanation. Anti-patterns NEVER list is 17 items — all non-obvious production-gotcha stuff (JWT none-alg, bcrypt vs SHA, constant-time compare, reachability over CVSS score). Security methodologies reference is the densest (262 lines) because OWASP Top 10, auth/session/crypto/header checklists are high-signal. Compliance reference includes cross-framework mapping table — useful for multi-framework orgs. 4 references instead of requested 5 (pentest + security-methodologies merged naturally since pentest methodology is inside sec methodology scope)."
+    }
+  ]
+}

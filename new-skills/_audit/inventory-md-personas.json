@@ -1,0 +1,103 @@
+[
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/BACKEND-PE.md",
+    "name_current": "BACKEND-PE",
+    "name_proposed": "backend-pe",
+    "line_count": 100,
+    "classification": "convert-with-rework",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Distinguished Principal Backend Engineer persona that enforces maximum compute deployment, infinite context usage, and world-class code standards. Delivers Antigravity-tier solutions with deep system analysis, modern tech stacks (Rust/Go, gRPC, CQRS), and mandatory defensive engineering.",
+    "knowledge_delta_hint": "high",
+    "rationale": "Strong expertise content but conflates persona language ('Act as', role-play framing) with skill mechanics; needs reframing to focus on Backend-PE methodology rather than LLM persona adoption."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/CONSTELLATION-TEAM.md",
+    "name_current": "CONSTELLATION-TEAM",
+    "name_proposed": "constellation-team-workflow",
+    "line_count": 57,
+    "classification": "convert-as-is",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Cross-functional orchestration framework enforcing Product Manager → Principal Engineer → Backend/Frontend → QA/Security → DevOps workflow with explicit checkpoint gates. Maps role responsibilities and output formats for end-to-end product delivery.",
+    "knowledge_delta_hint": "medium",
+    "rationale": "Clean, actionable workflow guide; ready for immediate skill conversion with minimal formatting adjustments; focuses on process, not persona."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/FRONTEND-DESIGN.md",
+    "name_current": "FRONTEND-DESIGN",
+    "name_proposed": "frontend-design-excellence",
+    "line_count": 41,
+    "classification": "convert-as-is",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Design thinking framework emphasizing bold aesthetic direction, distinctive typography, cohesive motion, and production-grade frontend implementation. Rejects generic AI-slop aesthetics in favor of intentional, context-specific visual choices.",
+    "knowledge_delta_hint": "medium",
+    "rationale": "Focused, actionable design principles; strong guidance on what NOT to do (generic aesthetics); minimal rework needed; directly translatable to skill format."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/FRONTEND-PE.md",
+    "name_current": "FRONTEND-PE",
+    "name_proposed": "frontend-pe",
+    "line_count": 80,
+    "classification": "convert-with-rework",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Distinguished Principal Frontend Engineer persona operating at intersection of high-performance engineering and elite product design. Enforces ULTRAFRONTEND 3-phase workflow (design strategy → luxury audit → implementation) with modern stack (Next.js/React 19, Tailwind, Framer Motion).",
+    "knowledge_delta_hint": "high",
+    "rationale": "Rich expertise but heavily persona-framed ('You are FrontendPE'); needs extraction of methodology (3-phase workflow, luxury audit, stack standards) as skill guidance rather than role-play."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/GEMINI-KING-MODE.md",
+    "name_current": "GEMINI-KING-MODE",
+    "name_proposed": "skip",
+    "line_count": 46,
+    "classification": "skip",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Placeholder or stub file defining a Senior Frontend Architect role with operational directives and design philosophy around intentional minimalism. No substantial knowledge delta beyond generic principles.",
+    "knowledge_delta_hint": "low",
+    "rationale": "Appears to be an incomplete or redundant variant; overlaps substantially with ULTRATHINK-FRONTEND and FRONTEND-PE without adding distinct methodology; better to consolidate into those existing skills."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/KINGMODE.md",
+    "name_current": "KINGMODE",
+    "name_proposed": "kingmode",
+    "line_count": 47,
+    "classification": "convert-as-is",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Concise architecture-first guidance for system design, scalability, performance, and reliability. Defines three modes (default, ULTRATHINK, KINGMODE) with verification checkpoints and references to detailed domain standards.",
+    "knowledge_delta_hint": "high",
+    "rationale": "Clean, modular, and immediately actionable; references external knowledge artifacts; minimal rework needed; strong methodology focus."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/SUPER-MODE.md",
+    "name_current": "SUPER-MODE",
+    "name_proposed": "super-mode",
+    "line_count": 318,
+    "classification": "split-into-multiple",
+    "split_into": [
+      "super-mode-core",
+      "backend-architecture-standards",
+      "frontend-excellence-standards",
+      "security-compliance-standards"
+    ],
+    "merge_with": null,
+    "summary": "Comprehensive 300+ line principal engineer methodology spanning frontend, backend, infrastructure, security, and observability. Delivers production-ready solutions across all domains with emphasis on correctness, resilience, and maintainability.",
+    "knowledge_delta_hint": "high",
+    "rationale": "Mega-skill containing 4+ distinct domain standards (backend, frontend, devops, security, testing, data, observability) warranting separation for reusability; core orchestration logic should remain as 'super-mode-core', others as composable references."
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/md-personas/ULTRATHINK-FRONTEND.md",
+    "name_current": "ULTRATHINK-FRONTEND",
+    "name_proposed": "ultrathink-frontend",
+    "line_count": 259,
+    "classification": "convert-as-is",
+    "split_into": null,
+    "merge_with": null,
+    "summary": "Senior Frontend Architect skill with two operational modes: default (efficient execution) and ULTRATHINK (deep multi-dimensional reasoning). Emphasizes intentional minimalism, library discipline, accessibility-first design, and production-ready code with complete artifacts.",
+    "knowledge_delta_hint": "high",
+    "rationale": "Well-structured, mode-based methodology; rich design philosophy and implementation standards; clear response formats; ready for direct conversion with frontmatter addition; no splits or merges needed."
+  }
+]

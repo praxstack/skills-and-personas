@@ -1,0 +1,233 @@
+[
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-pe",
+    "name_current": "backend-pe",
+    "name_proposed": "backend-pe",
+    "description_current": "Distinguished Principal Engineer backend/system architecture skill. Use when the user demands \"BackendPE\", \"Supermode\", \"Antigravity\", or requests high-performance, unlimited-context, world-class backend and distributed systems design. This skill maximizes depth, rigor, and production readiness.",
+    "line_count": 100,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear singular purpose (principal-level backend architecture), under 500 lines, strong description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-cpp-pro-max",
+    "name_current": "backend-principle-eng-cpp-pro-max",
+    "name_proposed": "backend-pe-cpp",
+    "description_current": "Principal backend engineering intelligence for C++ systems and performance-critical services. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale backend code and architectures. Focus: correctness, memory safety, latency, reliability, observability, scalability, operability.",
+    "line_count": 84,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, single clear scope (C++ backend PE), under 500 lines, well-described.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-java-pro-max",
+    "name_current": "backend-principle-eng-java-pro-max",
+    "name_proposed": "backend-pe-java",
+    "description_current": "Principal backend engineering intelligence for Java services and distributed systems. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale backend code and architectures. Focus: correctness, reliability, performance, security, observability, scalability, operability, cost.",
+    "line_count": 96,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, focused scope (Java backend PE), under 500 lines, clear description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-javascript-pro-max",
+    "name_current": "backend-principle-eng-javascript-pro-max",
+    "name_proposed": "backend-pe-javascript",
+    "description_current": "Principal backend engineering intelligence for JavaScript services. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale backend code and architectures. Focus: correctness, reliability, performance, security, observability, scalability, operability, cost.",
+    "line_count": 95,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, focused scope (JavaScript backend), under 500 lines, clear purpose.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-nodejs-pro-max",
+    "name_current": "backend-principle-eng-nodejs-pro-max",
+    "name_proposed": "backend-pe-nodejs",
+    "description_current": "Principal backend engineering intelligence for Node.js runtime systems. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale backend code and architectures. Focus: correctness, reliability, performance, security, observability, scalability, operability, cost.",
+    "line_count": 89,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, focused scope (Node.js runtime), under 500 lines, clear description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-python-ml-pro-max",
+    "name_current": "backend-principle-eng-python-ml-pro-max",
+    "name_proposed": "backend-pe-python-ml",
+    "description_current": "Principal backend engineering intelligence for Python AI/ML systems. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale ML services and pipelines. Focus: data quality, reproducibility, reliability, performance, security, observability, model evaluation, MLOps.",
+    "line_count": 89,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear singular focus (ML/Python backend), under 500 lines, well-described.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-python-pro-max",
+    "name_current": "backend-principle-eng-python-pro-max",
+    "name_proposed": "backend-pe-python",
+    "description_current": "Principal backend engineering intelligence for Python services and data systems. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale backend code and architectures. Focus: correctness, reliability, performance, security, observability, scalability, operability, cost.",
+    "line_count": 96,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, focused scope (Python backend), under 500 lines, clear description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/backend-principle-eng-typescript-pro-max",
+    "name_current": "backend-principle-eng-typescript-pro-max",
+    "name_proposed": "backend-pe-typescript",
+    "description_current": "Principal backend engineering intelligence for TypeScript services. Actions: plan, design, build, implement, review, fix, optimize, refactor, debug, secure, scale backend code and architectures. Focus: correctness, reliability, performance, security, observability, scalability, operability, cost.",
+    "line_count": 96,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, single clear scope (TypeScript backend), under 500 lines, well-defined.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/blueprint-creator",
+    "name_current": "blueprint-creator",
+    "name_proposed": "blueprint-creator",
+    "description_current": "Create exhaustive BLUEPRINT.md files — the implementation bible that expands a SPEC.md into maximum granular detail so an AI coding agent can translate it line-by-line into code with zero interpretation. This skill REQUIRES a SPEC.md to already exist.",
+    "line_count": 264,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, singular clear purpose (expand SPEC to BLUEPRINT), under 500 lines, comprehensive description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/chronicle",
+    "name_current": "chronicle",
+    "name_proposed": "chronicle",
+    "description_current": "Personal journal intelligence that transforms raw, unorganized thoughts into structured diary entries with psychological analysis. Use when the user provides journal entries, diary text, stream-of-consciousness writing, voice memo transcriptions, or asks to process daily thoughts into a structured format.",
+    "line_count": 111,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, single clear purpose (journal processing with psychology), under 500 lines, well-defined.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/concept-cartographer",
+    "name_current": "concept-cartographer",
+    "name_proposed": "concept-cartographer",
+    "description_current": "Generate visual concept maps, flowcharts, architecture diagrams, and relationship diagrams from structured notes or technical content using Mermaid syntax. Use when the user has lecture notes, study materials, or technical documentation and wants visual diagrams to aid understanding.",
+    "line_count": 237,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, singular purpose (Mermaid diagram generation), under 500 lines, clear scope.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/constellation-team",
+    "name_current": "constellation-team",
+    "name_proposed": "constellation-team",
+    "description_current": "Coordinate a cross-functional star-team workflow (Product Manager, Principal Engineer, Backend, Frontend, QA/Security, DevOps) with mandatory architecture and code-review checkpoints. Use when a request needs end-to-end product delivery, multi-role collaboration.",
+    "line_count": 60,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, focused purpose (cross-functional team coordination), under 500 lines, clear description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/frontend-pe",
+    "name_current": "frontend-pe",
+    "name_proposed": "frontend-pe",
+    "description_current": "ACTIVATION TRIGGER. Use this skill when the user demands \"Ultrafrontend\", \"High-End UX\", \"Awwwards Style\", or world-class UI design. This skill enforces a design-first workflow with zero-compromise aesthetics.",
+    "line_count": 80,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, singular focused purpose (principal-level frontend design), under 500 lines, clear trigger.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/idea-capturer",
+    "name_current": "idea-capturer",
+    "name_proposed": "idea-capturer",
+    "description_current": "Provides a structured system for capturing fleeting thoughts, developing raw ideas into actionable concepts, and organizing your creative thinking.",
+    "line_count": 471,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, comprehensive single scope (idea capture system), under 500 lines, well-described with templates.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/lecture-alchemist",
+    "name_current": "lecture-alchemist",
+    "name_proposed": "lecture-alchemist",
+    "description_current": "Transform raw lecture transcripts (Zoom, YouTube, etc.) into structured, retention-optimized study notes. Use when the user provides a lecture transcript, class recording text, or asks to process/convert lecture notes. Handles WebDev, AI/ML, Web3, DSA, and general tech domains.",
+    "line_count": 199,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear singular purpose (lecture-to-notes conversion), under 500 lines, comprehensive and multi-domain.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/obsidian-cli",
+    "name_current": "obsidian-cli",
+    "name_proposed": "obsidian-cli",
+    "description_current": "Control Obsidian from the terminal using CLI v2 (1.12+). Create, read, append, search files; manage properties, tags, tasks; query bases; use templates; analyze links. Use when performing vault operations, automating note workflows, appending content to notes, managing frontmatter properties, or searching the vault from the command line.",
+    "line_count": 934,
+    "has_valid_frontmatter": true,
+    "classification": "skill-needs-rework",
+    "rationale": "Valid frontmatter, clear purpose (Obsidian CLI), but 934 lines is excessive for a reference skill — should be split or condensed.",
+    "reference_material_detected": true
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/spec-creator",
+    "name_current": "spec-creator",
+    "name_proposed": "spec-creator",
+    "description_current": "Create production-grade SPEC.md files — portable implementation contracts that any AI coding agent can build from without follow-up questions. Use this skill whenever the user wants to write a spec, specification, technical spec, implementation contract, SPEC.md, or service specification for any software task.",
+    "line_count": 237,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear singular purpose (spec creation), under 500 lines, comprehensive and domain-agnostic.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/svg-logo-designer",
+    "name_current": "svg-logo-designer",
+    "name_proposed": "svg-logo-designer",
+    "description_current": "Elite SVG logo design intelligence. Creates professional hand-crafted SVG logos, brand marks, icons, wordmarks, lettermarks, emblems, abstract marks, and visual identities. Uses a rigorous multi-phase discovery interview (2-3 rounds) to extract brand DNA, emotional tone, and design intent before generating.",
+    "line_count": 352,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear singular purpose (SVG logo design), under 500 lines, comprehensive discovery and quality framework.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/techtutor",
+    "name_current": "techtutor",
+    "name_proposed": "techtutor",
+    "description_current": "Intuition-first tech mentor who makes complex concepts click through visuals, analogies, and the 6-layer explanation framework. Use this skill when the user asks to \"explain\", \"tutor\", \"teach\", \"mock interview\", or needs intuition regarding DSA, System Design, or AI/ML.",
+    "line_count": 39,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear purpose (tech tutoring), under 500 lines, focused description.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/transcribe-refiner",
+    "name_current": "transcribe-refiner",
+    "name_proposed": "transcribe-refiner",
+    "description_current": "Clean and reconstruct raw auto-generated captions (Zoom, YouTube, Teams, Google Meet, Otter.ai, etc.) into readable, coherent transcripts. Use when the user provides raw caption files (.txt, .vtt, .srt), meeting transcripts with timestamps and speaker tags.",
+    "line_count": 183,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear singular purpose (transcript cleanup), under 500 lines, comprehensive with pipeline contract.",
+    "reference_material_detected": false
+  },
+  {
+    "path": "/Users/praxlannister/Documents/workspace/skills-and-personas/skills/transcript-pipeline",
+    "name_current": "transcript-pipeline",
+    "name_proposed": "transcript-pipeline",
+    "description_current": "This skill should be used when the user asks to \"process this transcript\", \"convert lecture to notes\", \"run transcript pipeline\", \"generate class tutorial from Zoom captions\", \"validate transcript coverage\", or \"enrich class resources\" (Notion/Canva/Drive links) for bootcamp notes.",
+    "line_count": 206,
+    "has_valid_frontmatter": true,
+    "classification": "skill-ready",
+    "rationale": "Valid frontmatter, clear purpose (multi-stage transcript pipeline), under 500 lines, script-oriented workflow.",
+    "reference_material_detected": false
+  }
+]

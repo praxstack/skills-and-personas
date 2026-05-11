@@ -1,0 +1,550 @@
+{
+  "summary": {
+    "skills_linted": 38,
+    "total_fails": 0,
+    "total_warns": 1,
+    "passed": true
+  },
+  "lint_results": [
+    {
+      "slug": "backend-architecture-standards",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-cpp",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-java",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-javascript",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-nodejs",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-python",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-python-ml",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-pe-typescript",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "backend-system-design-expert",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "baron-von-markup",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "blueprint-creator",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "chronicle",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "concept-cartographer",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "constellation-team",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "devops-sre-engineer",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "frontend-design-excellence",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "frontend-excellence-standards",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "frontend-pe",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "frontend-uiux-designer",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "gabriel-petersson-topdown-mentor",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "idea-capturer",
+      "fails": 0,
+      "warns": 1,
+      "issues": [
+        {
+          "severity": "WARN",
+          "code": "APPROACHING_LIMIT",
+          "msg": "SKILL.md is 471 lines (approaching 500-line limit)"
+        }
+      ]
+    },
+    {
+      "slug": "kingmode",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "lecture-alchemist",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "mental-health-screening-companion",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "obsidian-cli",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "principal-engineer",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "product-manager",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "professor-alex-interview",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "qa-security-engineer",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "security-compliance-standards",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "spec-creator",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "super-mode-core",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "svg-logo-designer",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "techtutor",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "transcribe-refiner",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "transcript-pipeline",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
+    {
+      "slug": "ultrathink-frontend",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    }
+  ],
+  "portfolio_audit": [
+    {
+      "name": "backend-architecture-standards",
+      "dir": "backend-architecture-standards",
+      "lines": 141,
+      "desc_chars": 691,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe",
+      "dir": "backend-pe",
+      "lines": 105,
+      "desc_chars": 836,
+      "status": "OK",
+      "refs": 1
+    },
+    {
+      "name": "backend-pe-cpp",
+      "dir": "backend-pe-cpp",
+      "lines": 122,
+      "desc_chars": 743,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe-java",
+      "dir": "backend-pe-java",
+      "lines": 110,
+      "desc_chars": 652,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe-javascript",
+      "dir": "backend-pe-javascript",
+      "lines": 115,
+      "desc_chars": 742,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe-nodejs",
+      "dir": "backend-pe-nodejs",
+      "lines": 113,
+      "desc_chars": 824,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe-python",
+      "dir": "backend-pe-python",
+      "lines": 99,
+      "desc_chars": 696,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe-python-ml",
+      "dir": "backend-pe-python-ml",
+      "lines": 133,
+      "desc_chars": 837,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-pe-typescript",
+      "dir": "backend-pe-typescript",
+      "lines": 108,
+      "desc_chars": 702,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "backend-system-design-expert",
+      "dir": "backend-system-design-expert",
+      "lines": 171,
+      "desc_chars": 567,
+      "status": "OK",
+      "refs": 5
+    },
+    {
+      "name": "baron-von-markup",
+      "dir": "baron-von-markup",
+      "lines": 164,
+      "desc_chars": 797,
+      "status": "OK",
+      "refs": 3
+    },
+    {
+      "name": "blueprint-creator",
+      "dir": "blueprint-creator",
+      "lines": 193,
+      "desc_chars": 927,
+      "status": "OK",
+      "refs": 5
+    },
+    {
+      "name": "chronicle",
+      "dir": "chronicle",
+      "lines": 119,
+      "desc_chars": 690,
+      "status": "OK",
+      "refs": 5
+    },
+    {
+      "name": "concept-cartographer",
+      "dir": "concept-cartographer",
+      "lines": 246,
+      "desc_chars": 574,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "constellation-team",
+      "dir": "constellation-team",
+      "lines": 61,
+      "desc_chars": 478,
+      "status": "OK",
+      "refs": 8
+    },
+    {
+      "name": "devops-sre-engineer",
+      "dir": "devops-sre-engineer",
+      "lines": 176,
+      "desc_chars": 626,
+      "status": "OK",
+      "refs": 4
+    },
+    {
+      "name": "frontend-design-excellence",
+      "dir": "frontend-design-excellence",
+      "lines": 87,
+      "desc_chars": 619,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "frontend-excellence-standards",
+      "dir": "frontend-excellence-standards",
+      "lines": 133,
+      "desc_chars": 694,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "frontend-pe",
+      "dir": "frontend-pe",
+      "lines": 88,
+      "desc_chars": 843,
+      "status": "OK",
+      "refs": 1
+    },
+    {
+      "name": "frontend-uiux-designer",
+      "dir": "frontend-uiux-designer",
+      "lines": 131,
+      "desc_chars": 606,
+      "status": "OK",
+      "refs": 5
+    },
+    {
+      "name": "gabriel-petersson-topdown-mentor",
+      "dir": "gabriel-petersson-topdown-mentor",
+      "lines": 305,
+      "desc_chars": 891,
+      "status": "HEAVY",
+      "refs": 6
+    },
+    {
+      "name": "idea-capturer",
+      "dir": "idea-capturer",
+      "lines": 471,
+      "desc_chars": 525,
+      "status": "HEAVY",
+      "refs": 0
+    },
+    {
+      "name": "kingmode",
+      "dir": "kingmode",
+      "lines": 109,
+      "desc_chars": 604,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "lecture-alchemist",
+      "dir": "lecture-alchemist",
+      "lines": 234,
+      "desc_chars": 767,
+      "status": "OK",
+      "refs": 3
+    },
+    {
+      "name": "mental-health-screening-companion",
+      "dir": "mental-health-screening-companion",
+      "lines": 206,
+      "desc_chars": 920,
+      "status": "OK",
+      "refs": 5
+    },
+    {
+      "name": "obsidian-cli",
+      "dir": "obsidian-cli",
+      "lines": 213,
+      "desc_chars": 697,
+      "status": "OK",
+      "refs": 3
+    },
+    {
+      "name": "principal-engineer",
+      "dir": "principal-engineer",
+      "lines": 113,
+      "desc_chars": 619,
+      "status": "OK",
+      "refs": 3
+    },
+    {
+      "name": "product-manager",
+      "dir": "product-manager",
+      "lines": 144,
+      "desc_chars": 654,
+      "status": "OK",
+      "refs": 5
+    },
+    {
+      "name": "professor-alex-interview",
+      "dir": "professor-alex-interview",
+      "lines": 187,
+      "desc_chars": 930,
+      "status": "OK",
+      "refs": 6
+    },
+    {
+      "name": "qa-security-engineer",
+      "dir": "qa-security-engineer",
+      "lines": 175,
+      "desc_chars": 734,
+      "status": "OK",
+      "refs": 4
+    },
+    {
+      "name": "security-compliance-standards",
+      "dir": "security-compliance-standards",
+      "lines": 151,
+      "desc_chars": 727,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "spec-creator",
+      "dir": "spec-creator",
+      "lines": 237,
+      "desc_chars": 801,
+      "status": "OK",
+      "refs": 4
+    },
+    {
+      "name": "super-mode-core",
+      "dir": "super-mode-core",
+      "lines": 168,
+      "desc_chars": 961,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "svg-logo-designer",
+      "dir": "svg-logo-designer",
+      "lines": 353,
+      "desc_chars": 840,
+      "status": "HEAVY",
+      "refs": 0
+    },
+    {
+      "name": "techtutor",
+      "dir": "techtutor",
+      "lines": 174,
+      "desc_chars": 808,
+      "status": "OK",
+      "refs": 6
+    },
+    {
+      "name": "transcribe-refiner",
+      "dir": "transcribe-refiner",
+      "lines": 184,
+      "desc_chars": 661,
+      "status": "OK",
+      "refs": 0
+    },
+    {
+      "name": "transcript-pipeline",
+      "dir": "transcript-pipeline",
+      "lines": 208,
+      "desc_chars": 530,
+      "status": "OK",
+      "refs": 2
+    },
+    {
+      "name": "ultrathink-frontend",
+      "dir": "ultrathink-frontend",
+      "lines": 169,
+      "desc_chars": 933,
+      "status": "OK",
+      "refs": 0
+    }
+  ]
+}

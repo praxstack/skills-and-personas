@@ -1,0 +1,17 @@
+{
+  "batch": "B",
+  "completed": 10,
+  "note": "7 skills from initial subagent + 3 recovered + 1 fix (spec-creator arrow cleanup)",
+  "skills": [
+    {"slug": "blueprint-creator", "skill_md_lines": 193, "references_created": [], "linter_issues": [], "notes": "completed initial run"},
+    {"slug": "concept-cartographer", "skill_md_lines": 246, "references_created": [], "linter_issues": [], "notes": "completed initial run"},
+    {"slug": "constellation-team", "skill_md_lines": 61, "references_created": [], "linter_issues": [], "notes": "completed initial run"},
+    {"slug": "frontend-pe", "skill_md_lines": 88, "references_created": [], "linter_issues": [], "notes": "completed initial run"},
+    {"slug": "idea-capturer", "skill_md_lines": 471, "references_created": [], "linter_issues": [], "notes": "completed initial run"},
+    {"slug": "obsidian-cli", "skill_md_lines": 213, "references_created": ["commands.md","properties.md","queries.md"], "linter_issues": [], "notes": "compressed from 934 with 3 references"},
+    {"slug": "spec-creator", "skill_md_lines": 237, "references_created": [], "linter_issues": [], "notes": "arrow characters replaced with em-dash in prose"},
+    {"slug": "svg-logo-designer", "skill_md_lines": 353, "references_created": [], "linter_issues": [], "notes": "recovered from stall; forwarded as single SKILL.md; persona reframed as Audience/Goal"},
+    {"slug": "transcribe-refiner", "skill_md_lines": 184, "references_created": [], "linter_issues": [], "notes": "recovered from stall; forwarded as single SKILL.md; arrows in pipeline-position list replaced with prose"},
+    {"slug": "transcript-pipeline", "skill_md_lines": 208, "references_created": ["readme.md","usage-guide.md"], "linter_issues": [], "notes": "recovered from stall; README+USAGEGUIDE moved into references/; removed unsupported 'version' frontmatter field; pipeline order rendered as prose not arrows"}
+  ]
+}

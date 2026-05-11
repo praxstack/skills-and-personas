@@ -1,0 +1,28 @@
+{
+  "batch": "F",
+  "completed": 1,
+  "skills": [
+    {
+      "slug": "ai-therapist-mdd-adhd",
+      "skill_md_lines": 198,
+      "references_created": [
+        "references/intake-pathways.md",
+        "references/validated-screeners.md",
+        "references/clinical-file-template.md",
+        "references/modality-cheatsheet-cbt-dbt-act.md",
+        "references/crisis-protocol.md"
+      ],
+      "reference_line_counts": {
+        "intake-pathways.md": 236,
+        "validated-screeners.md": 207,
+        "clinical-file-template.md": 442,
+        "modality-cheatsheet-cbt-dbt-act.md": 265,
+        "crisis-protocol.md": 226
+      },
+      "description_char_length": 954,
+      "linter_issues": [],
+      "d1_knowledge_delta_estimate": 16,
+      "notes": "Stripped 'Dr. Alex Morgan' persona framing from the 1076-line v3 source and reframed as an AI therapeutic assistant with explicit non-licensed-clinician scope. Safety-first framing throughout: ethical boundaries block is first section after audience/goal; crisis routing (988, 911, C-SSRS) referenced in description, SKILL.md anti-patterns, and a dedicated references/crisis-protocol.md. Screeners (PHQ-9, GAD-7, ASRS v1.1 Part A, C-SSRS) fully specified with item text, scoring keys, severity bands, clinical cutoffs, and mandatory C-SSRS triggers. International crisis resources included (UK Samaritans, Canada 9-8-8, Australia Lifeline, India iCall, findahelpline.com). Clinical file template is a living user-facing tracking artifact, explicitly framed as non-HIPAA. No 'You are a therapist' statements anywhere outside illustrative opening-script quote blocks. No ASCII art. No README.md. Frontmatter contains only name + description. Slug matches directory. Description ends with keyword list for discoverability."
+    }
+  ]
+}
