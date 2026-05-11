@@ -1,8 +1,11 @@
 ---
 tags: [session-log, skill-expansion, autonomous-run]
 date: 2026-05-11
-status: in-progress
+finish-date: 2026-05-12
+status: SHIPPED
 canonical-stack: [skill-creator, skill-linter, skill-judge, skill-auditor]
+commits: [1379055, 23ef218]
+remote: praxstack/skills-and-personas
 ---
 
 # Skill Expansion Autonomous Session — 2026-05-11
@@ -101,9 +104,57 @@ Commit to main, push to praxstack/skills-and-personas, mirror to ~/.claude/skill
 | T+author | spec-creator → convert Unicode arrows to em-dash in prose | Linter flags box-drawing + arrow chars outside code blocks as ASCII-art waste. |
 | T+E2 | qa-security-engineer gets 4 references not 5 (pentest merged into security-methodologies) | Subagent judgment call; pentest is subset of security methodology, not peer. |
 
-## Open risks / watch items
+## Phase 3 — Lint (COMPLETE)
 
-- Batch D must finish cleanly; if it stalls, dispatch recovery same pattern.
-- Install collision risk: `~/.claude/skills/` already has `techtutor`, `frontend-pe`, `obsidian-cli`, `constellation-team`, `frontend-design`, `ultrathink-frontend`, `blueprint-creator`, `spec-creator`, `concept-cartographer`, `idea-capturer`, `svg-logo-designer`. Install step must back these up before overwrite (timestamped backup dir).
-- Some new slugs collide with existing ecosystem skills (e.g. `frontend-pe`, `ultrathink-frontend`, `obsidian-cli` are in the available-skills list). Installing over the top will shadow the existing ones for the user's scope. Need to surface this in final report.
-- `description` length check: linter allows ≤1024 chars; some of my batch descriptions are 600–950, fine. But combined `description` + `when_to_use` is capped at 1536 in Claude Code display. Spot-check post-lint.
+Built deterministic linter at `_audit/lint.py` mirroring skill-linter spec. First run: 9 FAILs (YAML parse errors from colons in unquoted descriptions) + 11 WARNs (ASCII arrow chars in prose). Built `_audit/fix_lint_issues.py` auto-fixer: single-quote-wraps description values, replaces Unicode arrows with em-dash outside code blocks. Post-fix: **0 FAILs, 1 WARN** (idea-capturer 471 lines, under the 500 hard cap).
+
+Also refined linter's marketing-copy rule to not flag quoted trigger phrases (false positive on "world-class UI" as a user-language quote).
+
+## Phase 4 — Council + Code Review (COMPLETE)
+
+**llm-council-plus (conversation fbcd1101-7630-40e8-8cd6-adef31fdb054):** All 4 models unanimous HOLD with 3 blockers. Stage 3 synthesis errored (provider_error); decisions extracted from stages 1-2. Full verdict + mitigations in `_audit/COUNCIL_REVIEW.md`.
+
+Blockers + mitigations applied:
+1. **ai-therapist public distribution** → Renamed to `mental-health-screening-companion`, added `/SAFETY.md` at repo root with instrument attribution (PHQ-9, GAD-7, ASRS, C-SSRS), added hardcoded un-suppressible preamble in SKILL.md, international crisis resources listed.
+2. **Router competition (kingmode / super-mode-core / ultrathink-frontend / frontend-pe)** → Added explicit "Not for X — use Y" disambiguation clauses to descriptions of the 3 without them (kingmode already had scoping). Did NOT merge — merging would break the user-facing vs orchestrator distinction.
+3. **Backend 4-way overlap** → Verified all 3 (backend-pe, principal-engineer, backend-system-design-expert) already had "Not for" clauses. No change needed.
+4. **Namespace collision** → Install script backs up colliding skills to timestamped dir; did NOT prefix with `prax-` (would break every future `/skill-name` invocation the user already uses). Documented restore command in install script output.
+
+**code-review-expert report** (`_audit/code-review-report.md`): SHIP WITH FIXES verdict. 12 issues, 3 HIGH (all broken-reference bugs), 5 MED, 4 LOW. All 3 HIGH + M5 applied in commit 23ef218. MED + LOW deferred as polish.
+
+## Phase 5 — Ship (COMPLETE)
+
+Commits:
+- `1379055` — 138 files, 25,206 lines, initial 38-skill portfolio
+- `23ef218` — 16 files, +1,632 lines, code-review HIGH fixes (11 reference files created + SKILL.md edits)
+
+Both pushed to `origin/main` at `praxstack/skills-and-personas`.
+
+Install: 38 skills in `~/.claude/skills/`, 38 colliding originals backed up at `_backup-20260512-001128/` (re-install after fixes also backed up the intermediate state at `_backup-20260511-233803/`).
+
+Smoke test (`_audit/smoke-test-report.json`): **38 tested, 0 FAILs, 0 WARNs.** Every reference link resolves, every SKILL.md parses, every persona check passes.
+
+## Final deliverables
+
+- **38 skills** in `new-skills/` and `~/.claude/skills/`
+- **12 files** formally skipped with reasoning in `_audit/candidates.json`
+- **5 inventory JSON fragments** per source bucket
+- **7 batch reports** (A, B, C, D, E1, E2, F)
+- **1 lint report** (`lint-report.json`) — 0 FAILs, 1 acceptable WARN
+- **1 smoke-test report** (`smoke-test-report.json`) — 0 FAILs, 0 WARNs
+- **1 council review** (`COUNCIL_REVIEW.md`) — HOLD → mitigations applied
+- **1 code-review report** (`code-review-report.md`) — SHIP WITH FIXES → HIGH+M5 resolved
+- **1 SAFETY.md** at repo root — instrument attribution, international crisis resources, redistribution restrictions
+- **Deterministic lint script** (`_audit/lint.py`) — re-runnable CI gate
+- **Auto-fixer** (`_audit/fix_lint_issues.py`) — YAML quoting + arrow replacement
+- **Collision-safe installer** (`_audit/install.sh`) — timestamped backup + restore command
+- **Smoke-test harness** (`_audit/smoke_test.py`) — runtime validation
+
+## Lessons learned (for future runs)
+
+1. **Subagent stream-watchdog timeouts are cosmetic for batch work** — if the batch-report JSON isn't written but all individual skills landed on disk, orchestrator-write the report and move on. Don't re-dispatch the whole batch.
+2. **YAML colon-in-description** is the single most common authoring error. Always single-quote-wrap descriptions or use folded-YAML. Built-in to the fixer now.
+3. **Code-review-expert catches what deterministic linter can't** — broken reference paths, description vagueness, scope overlap. Worth the tool-call budget.
+4. **Council-plus stage 3 failure doesn't block a decision** — stages 1-2 give 4 independent model verdicts, which is enough signal to act. Don't retry on provider_error if stages 1-2 converged.
+5. **Install collision policy needs to be declared upfront** — backup-first is the safe default when the target directory is a user's existing portfolio, not a clean install.
+6. **Broken references are the #1 runtime risk** — skill-linter doesn't catch them because they're content-level, not structure-level. Smoke-test after install is the right gate.
