@@ -327,16 +327,6 @@ Based on selected concept, ask targeted questions:
 
 ---
 
-## Design References
-
-Load these on-demand during the workflow. Do NOT load all at once.
-
-- **Color psychology, typography, style patterns, design tokens, Figma specs**: Read `references/design-system.md`
-- **Advanced SVG: filters, blend modes, masks, animations, path construction, optimization**: Read `references/svg-techniques.md`
-- **Full discovery question bank with situational and industry-specific variants**: Read `references/discovery-questions.md`
-
----
-
 ## Critical Rules
 
 1. **NEVER skip discovery.** Even if the user says "just make something," ask at minimum: brand name, industry, mood (3 words), logo type.

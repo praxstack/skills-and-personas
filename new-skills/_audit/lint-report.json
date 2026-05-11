@@ -408,7 +408,7 @@
       "lines": 305,
       "desc_chars": 891,
       "status": "HEAVY",
-      "refs": 6
+      "refs": 7
     },
     {
       "name": "idea-capturer",
@@ -509,10 +509,10 @@
     {
       "name": "svg-logo-designer",
       "dir": "svg-logo-designer",
-      "lines": 353,
+      "lines": 343,
       "desc_chars": 840,
       "status": "HEAVY",
-      "refs": 0
+      "refs": 3
     },
     {
       "name": "techtutor",
@@ -536,7 +536,7 @@
       "lines": 208,
       "desc_chars": 530,
       "status": "OK",
-      "refs": 2
+      "refs": 9
     },
     {
       "name": "ultrathink-frontend",

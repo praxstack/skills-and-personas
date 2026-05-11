@@ -1,0 +1,466 @@
+{
+  "summary": {
+    "skills_tested": 38,
+    "total_fails": 0,
+    "total_warns": 0,
+    "passed": true
+  },
+  "results": [
+    {
+      "slug": "backend-architecture-standards",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-cpp",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-java",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-javascript",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-nodejs",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-python",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-python-ml",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-pe-typescript",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "backend-system-design-expert",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "baron-von-markup",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "blueprint-creator",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "chronicle",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "concept-cartographer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "constellation-team",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "devops-sre-engineer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "frontend-design-excellence",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "frontend-excellence-standards",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "frontend-pe",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "frontend-uiux-designer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "gabriel-petersson-topdown-mentor",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "idea-capturer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "kingmode",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "lecture-alchemist",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "mental-health-screening-companion",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "obsidian-cli",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "principal-engineer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "product-manager",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "professor-alex-interview",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "qa-security-engineer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "security-compliance-standards",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "spec-creator",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "super-mode-core",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "svg-logo-designer",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "techtutor",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "transcribe-refiner",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "transcript-pipeline",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
+    {
+      "slug": "ultrathink-frontend",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    }
+  ]
+}
