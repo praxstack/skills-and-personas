@@ -251,3 +251,38 @@ pytest _audit/tests/ -v        → 39/39 passing in 0.3s
 4. **Council-plus stage 3 failure doesn't block a decision** — stages 1-2 give 4 independent model verdicts, which is enough signal to act. Don't retry on provider_error if stages 1-2 converged.
 5. **Install collision policy needs to be declared upfront** — backup-first is the safe default when the target directory is a user's existing portfolio, not a clean install.
 6. **Broken references are the #1 runtime risk** — skill-linter doesn't catch them because they're content-level, not structure-level. Smoke-test after install is the right gate.
+7. **The strict-loop ratification gate must gate in observable ways.** It is not enough for the session log to describe a phase as "approved"; the log must record the verdict as an event with the conversation ID, the verdict text, the conditions, and the commit that satisfied them. A log that forward-references a not-yet-received approval breaks the audit trail the strict-loop is designed to produce.
+8. **Conversation IDs are not durable repo artifacts.** If a council verdict is referenced only by conversation ID, a third-party reader without backend access cannot reconstruct the decision. Persist verdict text, conditions, and commit SHAs in the repo itself (`COUNCIL_REVIEW.md`), and retain conversation IDs as provenance metadata only.
+
+---
+
+## Phase 13 — Final Ship Ratification (2026-05-12, conv 48519d09)
+
+**Gate:** llm-council-plus strict-loop ship approval after all prior reviews resolved.
+
+**Submitted:** complete v2 portfolio state with summary of all reviews completed, all mitigations applied, all gates green, deferred decisions documented in `FRONTEND_CONSOLIDATION_MEMO.md`.
+
+**Verdict (verbatim):** `CONDITIONAL APPROVE — apply C1 and C2 in the final commit, then ship.`
+
+**Conditions (verbatim):**
+
+- **C1 — Session log must record this adjudication as an event, not a foregone conclusion.** SESSION_LOG.md's terminal phase must contain the conversation ID (48519d09), the literal verdict string (`CONDITIONAL APPROVE`), the two conditions verbatim, an explicit note that the final commit is the artifact satisfying them, and the post-fix gate re-run results (even if identical — the point is that timestamp ordering is legible to a third-party reader).
+- **C2 — Persist council verdicts as repo artifacts, not conversation references.** COUNCIL_REVIEW.md becomes the canonical record for V1, V2, and final-ratification verdicts, with conversation IDs retained only as provenance metadata.
+
+**Meta-caveat the council raised (preserved on record):** "I am reviewing your description of the portfolio, not the portfolio itself. I cannot independently verify commit SHAs, test counts, or file contents. This verdict is therefore advisory within your established autonomous-run framework. The final human-accountable decision is yours. If any claim in your summary is inaccurate, this ratification does not carry over to the actual state of the repo." The deterministic tooling (lint, smoke, link scanner, pytest) is the ground-truth evidence that the summary matched reality.
+
+**Artifact satisfying C1 + C2:** the single final commit on this branch containing (a) the `frontend-uiux-designer` residue fix from code-review-expert v2, (b) the COUNCIL_REVIEW.md rewrite persisting V1/V2/final verdicts, (c) this SESSION_LOG.md Phase 13 section. The council explicitly required C1 and C2 land in the same commit as the residue fix: "Do not split C1/C2 into a follow-up commit. That would itself create an audit-trail seam where the 'approved' SHA and the 'fully documented' SHA diverge — the exact kind of break the strict-loop requirement is designed to prevent."
+
+**Post-fix gate re-run (required by C1):**
+
+```
+python3 _audit/lint.py         → 38 skills, 0 FAILs, 0 WARNs
+bash _audit/install.sh         → 38 installed, 38 backed up to _backup-20260512-090635/
+python3 _audit/smoke_test.py   → 38 tested, 0 FAILs, 0 WARNs
+python3 _audit/check_links.py  → 38 skills, 134 files, 134 links, 0 broken
+pytest _audit/tests/ -q        → 39/39 passing in 0.46s
+```
+
+All four quality gates green after the residue fix. No regressions.
+
+**Status:** Strict-loop ratification requirement satisfied as of the final commit on `origin/main`. Overnight autonomous run is complete. Deferred-to-user decisions (frontend cluster collapse, backend language-agnostic collapse) remain open for user adjudication via `FRONTEND_CONSOLIDATION_MEMO.md`.

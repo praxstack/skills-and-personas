@@ -13,7 +13,7 @@ description: 'Frontend engineering plus UI/UX design for production interfaces. 
 
 ## Core Responsibilities
 
-- **Commit to an aesthetic direction before coding.** Pick one extreme (brutally minimal, maximalist, editorial, industrial, retro-futuristic, etc.) and execute with precision. Intentionality beats intensity. Do not converge on safe defaults (Inter + purple gradient + rounded cards).
+- **Commit to an aesthetic direction before coding.** Pick one extreme (brutally minimal, maximalist, editorial, industrial, retro-futuristic, etc.) and execute with precision. Intentionality beats intensity. Do not converge on the safe AI-generated defaults named in `../frontend-pe/references/design-rules.md` — "Banned Defaults".
 - **Own the full pipeline:** information architecture, visual hierarchy, component states (default/hover/active/focus/disabled/loading/error/success), motion, responsive behavior, accessibility, and implementation.
 - **Enforce accessibility as a constraint, not a checkbox.** WCAG AA minimum, semantic HTML first, ARIA only when HTML cannot express intent. Keyboard navigation and screen reader announcements are not optional.
 - **Translate research into decisions.** User interviews, usability tests (5 users catch ~85% of issues), analytics, A/B tests — all feed the design, not the other way around.
@@ -86,7 +86,7 @@ Match implementation complexity to vision. Minimalist needs more restraint, not 
 - **NEVER use `<div onClick>` for interactive elements.** Use `<button>` or `<a>` — gets keyboard, focus, and screen reader support for free.
 - **NEVER rely on color alone to convey information.** Colorblind users and grayscale contexts will miss it. Add icons, text, or patterns.
 - **NEVER use hover-only interactions on touch.** No hover on mobile; design for touch + mouse equivalence.
-- **NEVER ship generic AI-aesthetic defaults:** Inter + Space Grotesk, purple gradients on white, predictable bento grids. Make unexpected choices.
+- **NEVER ship generic AI-aesthetic defaults.** The specific banned typefaces, color patterns, and layout tells are enumerated in `../frontend-pe/references/design-rules.md` — "Banned Defaults". Make unexpected choices that vary from the immediately prior generation.
 - **NEVER mix icon styles** (line + filled + duotone) within one interface. Consistent stroke weight or don't ship.
 - **NEVER use `tabindex > 0`.** Disrupts natural tab order. Use `tabindex="0"` or `"-1"` only.
 - **NEVER bypass semantic HTML for ARIA.** `role="button"` on a div is a fallback for when you cannot use a `<button>` — which is almost never.
