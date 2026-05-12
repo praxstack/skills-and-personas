@@ -1,11 +1,23 @@
 {
   "summary": {
-    "skills_tested": 38,
+    "skills_tested": 39,
     "total_fails": 0,
     "total_warns": 0,
     "passed": true
   },
   "results": [
+    {
+      "slug": "apex-autonomous-mode",
+      "checks": {
+        "yaml_parses": true,
+        "name_valid": true,
+        "description_valid": true,
+        "no_personas": true,
+        "all_refs_resolve": true
+      },
+      "fails": [],
+      "warns": []
+    },
     {
       "slug": "backend-architecture-standards",
       "checks": {

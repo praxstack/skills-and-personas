@@ -1,11 +1,17 @@
 {
   "summary": {
-    "skills_linted": 38,
+    "skills_linted": 39,
     "total_fails": 0,
     "total_warns": 0,
     "passed": true
   },
   "lint_results": [
+    {
+      "slug": "apex-autonomous-mode",
+      "fails": 0,
+      "warns": 0,
+      "issues": []
+    },
     {
       "slug": "backend-architecture-standards",
       "fails": 0,
@@ -236,6 +242,14 @@
     }
   ],
   "portfolio_audit": [
+    {
+      "name": "apex-autonomous-mode",
+      "dir": "apex-autonomous-mode",
+      "lines": 117,
+      "desc_chars": 921,
+      "status": "OK",
+      "refs": 3
+    },
     {
       "name": "backend-architecture-standards",
       "dir": "backend-architecture-standards",
