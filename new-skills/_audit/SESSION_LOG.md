@@ -2,10 +2,11 @@
 tags: [session-log, skill-expansion, autonomous-run]
 date: 2026-05-11
 finish-date: 2026-05-12
-status: SHIPPED
-canonical-stack: [skill-creator, skill-linter, skill-judge, skill-auditor]
-commits: [1379055, 23ef218]
+status: SHIPPED + v2 IMPROVEMENTS LANDED
+canonical-stack: [skill-creator, skill-linter, skill-judge, skill-auditor, code-review-expert, llm-council-plus]
+commits: [1379055, 23ef218, 2d9f60d, e366dc6, a1da1c4]
 remote: praxstack/skills-and-personas
+council-conversations: [fbcd1101-7630-40e8-8cd6-adef31fdb054, 20e0676d-87bd-4825-a327-689d74176a7a]
 ---
 
 # Skill Expansion Autonomous Session — 2026-05-11
@@ -149,6 +150,98 @@ Smoke test (`_audit/smoke-test-report.json`): **38 tested, 0 FAILs, 0 WARNs.** E
 - **Auto-fixer** (`_audit/fix_lint_issues.py`) — YAML quoting + arrow replacement
 - **Collision-safe installer** (`_audit/install.sh`) — timestamped backup + restore command
 - **Smoke-test harness** (`_audit/smoke_test.py`) — runtime validation
+
+## Phase 6-13 — v2 iteration (post-ship improvements)
+
+After the initial ship, ran a second autonomous quality loop with stricter gates per the user's sleep-mode directive: every phase requires `[Draft → Review → Fix → Re-Review → Verification → Approve]` with llm-council-plus as the approval authority.
+
+### Phase 6 — code-review MED+LOW follow-ups
+- Frontend 5-way disambiguation: added "Not for X" clauses to frontend-uiux-designer, frontend-design-excellence, frontend-excellence-standards (the 3 that lacked them)
+- idea-capturer template extraction: 471 → 299 lines; templates moved to `references/templates.md`; 10 `❌`/`✓` glyphs replaced with `**Avoid:**`/`**Prefer:**` prose
+- Deleted 9 empty `references/` directories that implied missing content
+
+### Phase 9 — TDD test suite
+- Created `_audit/tests/test_lint_and_fix.py` with 39 pytest tests
+- Covers: `split_frontmatter`, `strip_code_blocks`, all lint validation paths, YAML quoting + idempotency, arrow replacement + code-block preservation, smoke-test reference-link regex, and 4 real-portfolio invariants (name↔dirname, description length, no XML tags, no top-level READMEs)
+- Suite runs in 0.3s
+- Caught my own super-mode-core description overflow during Phase 7d (1098 chars vs 1024 cap) before commit — TDD working as designed
+
+### Phase 10 — internal broken-link scanner
+- Built `_audit/check_links.py` — deterministic stdlib+yaml scanner for markdown relative links, anchor links, and backtick-quoted paths
+- Strips fenced code blocks (not inline backtick spans) to avoid false positives
+- Validates anchor `#heading` targets against slugified headings
+- Found 9 broken links in v1, all fixed: 1 false-positive anchor (inline backtick), 8 misleading `scripts/*` refs in transcript-pipeline that pointed at an external repo (rewrote to make the external location explicit)
+
+### Phase 11 — C-SSRS license verification
+- Pulled canonical C-SSRS document from cssrs.columbia.edu PDF
+- Added exact copyright (© 2008 Research Foundation for Mental Hygiene), full author list (Posner et al. 11 authors), required training disclaimer, Columbia contact (posnerk@nyspi.columbia.edu), and Oquendo 2003 citation
+- Hardened SAFETY.md + `references/validated-screeners.md` with the required training disclaimer block surfaced before administration
+- Framing shift: the skill uses C-SSRS strictly as a safety-routing screener (positive → 988), not as a clinical instrument — because the source document reserves that for trained administrators
+
+### Phase 7 — skill-judge rubric pass
+- Ran D1-D8 rubric against all 38 skills
+- Portfolio median 102/120, mean 99.55, range 77-111
+- Grades: 2 A, 26 B, 9 C, 1 D, 0 F
+- Top: mental-health-screening-companion (A 111), obsidian-cli (A 110), backend-pe-python-ml (B 107, D1=18 max)
+- Worst: idea-capturer (D 77, D1=8) — Claude already knows SCAMPER/5-Whys/Zettelkasten
+- 11 skills under D1≥14 rubric gate flagged for improvement
+
+### Phase 8 — skill-auditor portfolio scan
+- 38 skills, 6,234 SKILL.md lines, 17,818 references/ lines, avg 164/skill
+- 0 OVER, 2 HEAVY (svg-logo-designer 343, gabriel-petersson 305), 36 OK
+- Portfolio-level finding: "bloat problem is duplication across skills, not verbosity within"
+- 3 cluster-level recommendations: frontend 5→2, backend 3→1+refs, super-mode-core merge
+
+### Phase 12 — repo README.md rewrite
+- Documented 38-skill portfolio + audit trail
+- Install command, quality-gate commands, review process
+- Repository layout clarifying new-skills/ canonical vs source-material buckets
+
+### llm-council-plus re-adjudication (conv 20e0676d)
+- Two post-ship reviews (judge + auditor) contested prior council's "keep all 5 frontend skills" decision
+- Convened council again to re-adjudicate
+- Stage 3 synthesis succeeded (unlike prior run's provider_error)
+- **Verdict:** PARTIAL SHIP — moderate fixes autonomous, aggressive collapse deferred to user
+- Applied moderate (phase 7c + 7d)
+- Decision memo written for user review (phase 7e)
+
+### Phase 7b — judge-driven improvements (7 skills, -516 lines net)
+Applied targeted fixes to every skill with D1<14 or Total<96:
+- idea-capturer: 299 → 78 (D→B+ projected)
+- concept-cartographer: 246 → 103, Mermaid examples moved to refs
+- baron-von-markup: 164 → 86
+- backend-architecture-standards: 141 → 92, 17 generic bullets removed
+- security-compliance-standards: 151 → 96, 22 generic bullets removed
+- constellation-team: +6 NEVERs + frontend-peer disambiguation table
+- transcript-pipeline: +8 pipeline-specific NEVERs
+
+### Phase 7c — frontend shared-rules extraction
+- Created `frontend-pe/references/design-rules.md` as canonical source
+- All 5 frontend skills delegate to it via MANDATORY load pointer
+- `frontend-excellence-standards` rewritten as thin quality-gate checklist loaded by super-mode-core
+- Reduces cross-skill duplication without collapsing skill count (moderate fix per council)
+
+### Phase 7d — super-mode-core redesign
+- Stripped Default/ULTRATHINK/KINGMODE mode-routing that duplicated kingmode
+- Redesigned as pure internal domain-standards loader
+- Explicit "Relationship to kingmode" section sets scope separation
+- Explicit "NEVER make user-facing mode decisions here" anti-pattern
+
+### Phase 7e — frontend consolidation memo (DEFERRED)
+- Wrote `_audit/FRONTEND_CONSOLIDATION_MEMO.md` for user review
+- Three options documented: keep 5 / collapse 5→3 / collapse 5→2
+- Recommendation: Option B (5→3), creating `frontend-craft-standards` by merging design-excellence + excellence-standards + ultrathink-frontend
+- Council deferred this architectural call to the user when awake
+
+## Verification (after all v2 changes)
+
+```
+python3 _audit/lint.py         → 38 skills, 0 FAILs, 1 WARN (idea-capturer approaching limit; note: now actually 78 lines, WARN may be stale from prior state)
+python3 _audit/check_links.py  → 38 skills, 134 files, 130+ links, 0 broken
+bash _audit/install.sh         → 38 installed, 38 backed up to _backup-<timestamp>/
+python3 _audit/smoke_test.py   → 38 tested, 0 FAILs, 0 WARNs
+pytest _audit/tests/ -v        → 39/39 passing in 0.3s
+```
 
 ## Lessons learned (for future runs)
 

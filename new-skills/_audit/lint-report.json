@@ -2,7 +2,7 @@
   "summary": {
     "skills_linted": 38,
     "total_fails": 0,
-    "total_warns": 1,
+    "total_warns": 0,
     "passed": true
   },
   "lint_results": [
@@ -201,14 +201,8 @@
     {
       "slug": "super-mode-core",
       "fails": 0,
-      "warns": 1,
-      "issues": [
-        {
-          "severity": "WARN",
-          "code": "ASCII_ART",
-          "msg": "box-drawing/arrow chars on 6 lines outside code blocks: [39, 40, 41, 60, 61]"
-        }
-      ]
+      "warns": 0,
+      "issues": []
     },
     {
       "slug": "svg-logo-designer",

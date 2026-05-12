@@ -41,9 +41,9 @@ When invoked, classify the task by which domains it touches. Load the correspond
 
 ## When to NOT route here
 
-- User types "ULTRATHINK" or "KINGMODE" alone → that's mode selection; route to `kingmode`.
-- Task is single-domain (e.g., "write a Python FastAPI endpoint") → load the domain skill directly (`backend-pe-python` in this case). Skipping super-mode-core saves a context load.
-- Task is a narrow prototype or a one-file refactor → the domain skill is enough; no need for the standards layer.
+- User types "ULTRATHINK" or "KINGMODE" alone — that's mode selection; route to `kingmode`.
+- Task is single-domain (e.g., "write a Python FastAPI endpoint") — load the domain skill directly (`backend-pe-python` in this case). Skipping super-mode-core saves a context load.
+- Task is a narrow prototype or a one-file refactor — the domain skill is enough; no need for the standards layer.
 
 ## Anti-Patterns
 
@@ -69,6 +69,6 @@ That's it. The actual response to the user comes from the caller skill using the
 
 ## Example invocations
 
-- kingmode (in KINGMODE mode) classifies "design a payment processing system" as backend + security multi-domain → invokes super-mode-core → super-mode-core loads `backend-architecture-standards` + `security-compliance-standards` + `backend-pe-python` (or whichever language) → control returns to kingmode for the KINGMODE-shaped output.
-- User types `SUPER-MODE: design a dashboard with secure auth` → super-mode-core classifies as frontend + backend + security multi-domain → loads all three standards → invokes kingmode (if the user implied depth) or lets the domain skills drive otherwise.
-- User asks "write a Python FastAPI endpoint" → super-mode-core is NOT the right skill; route directly to `backend-pe-python`.
+- kingmode (in KINGMODE mode) classifies "design a payment processing system" as backend + security multi-domain — invokes super-mode-core — super-mode-core loads `backend-architecture-standards` + `security-compliance-standards` + `backend-pe-python` (or whichever language) — control returns to kingmode for the KINGMODE-shaped output.
+- User types `SUPER-MODE: design a dashboard with secure auth` — super-mode-core classifies as frontend + backend + security multi-domain — loads all three standards — invokes kingmode (if the user implied depth) or lets the domain skills drive otherwise.
+- User asks "write a Python FastAPI endpoint" — super-mode-core is NOT the right skill; route directly to `backend-pe-python`.
