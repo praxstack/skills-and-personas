@@ -1,0 +1,34 @@
+{
+  "phase": "6-code-review-follow-ups",
+  "task1_frontend_disambig": {
+    "updated": ["frontend-uiux-designer", "frontend-design-excellence", "frontend-excellence-standards"],
+    "desc_lens": {
+      "frontend-uiux-designer": 871,
+      "frontend-design-excellence": 832,
+      "frontend-excellence-standards": 880
+    }
+  },
+  "task2_idea_capturer": {
+    "before_lines": 471,
+    "after_lines": 299,
+    "template_md_lines": 189,
+    "glyphs_replaced": 10
+  },
+  "task3_empty_refs_deleted": [
+    "transcribe-refiner/references",
+    "backend-pe-typescript/references",
+    "backend-pe-python/references",
+    "backend-pe-nodejs/references",
+    "backend-pe-cpp/references",
+    "concept-cartographer/references",
+    "backend-pe-javascript/references",
+    "backend-pe-java/references",
+    "backend-pe-python-ml/references"
+  ],
+  "task4_verification": {
+    "lint_fails": 0,
+    "lint_warns": 0,
+    "smoke_fails": 0,
+    "smoke_warns": 0
+  }
+}

@@ -135,188 +135,16 @@ Refined idea: "Build a minimalist productivity tool for solopreneurs that does o
 | Search ideas | "find ideas about [keyword]" |
 
 ## Idea Templates
-### Quick Capture Template
-```
-IDEA: [One sentence summary]
 
-FULL THOUGHT:
-[Everything in your head about this]
+All capture/development templates live in `references/templates.md`. Load the section matching the current mode:
 
-TYPE: [ ] Project [ ] Question [ ] Insight [ ] Observation [ ] Spark
+- **Quick Capture Template** — fleeting thought, minimum friction
+- **Developed Idea Template** — expand a raw idea into a fleshed-out concept
+- **Brainstorming Session Template** — divergent + convergent ideation on a topic
+- **Idea Synthesis Template** — connect multiple ideas into new insight
+- **Project Idea Template** — full project concept with feasibility and next steps
 
-SOURCE: [Where this came from - book, conversation, shower thought]
-
-TAGS: [3-5 keywords]
-
-WHY THIS MATTERS:
-[Quick note on significance]
-
-NEXT ACTION:
-[ ] Develop this now
-[ ] Research first
-[ ] Let it marinate
-[ ] Review in [timeframe]
-[ ] Just archive it
-
-CAPTURED: [Date/Time]
-```
-
-### Developed Idea Template
-```
-TITLE: [Descriptive title]
-
-CORE CONCEPT:
-[2-3 sentence explanation]
-
-WHY THIS IS INTERESTING:
-[What makes this worth developing]
-
-QUESTIONS THIS RAISES:
--
--
-
-RELATED IDEAS/CONCEPTS:
-- [Link to other notes]
-- [Link to other notes]
-
-POTENTIAL APPLICATIONS:
--
--
-
-WHAT I NEED TO LEARN:
--
--
-
-NEXT STEPS:
-1. [Specific action]
-2. [Specific action]
-
-TAGS: [Keywords]
-
-CREATED: [Date]
-UPDATED: [Date]
-```
-
-### Brainstorming Session Template
-```
-SESSION: [Topic/Problem]
-DATE: [Date]
-GOAL: [What we're trying to generate]
-
-DIVERGENT PHASE (No judgment, quantity over quality):
-1.
-2.
-3.
-[...continue to at least 20]
-
-CLUSTERING:
-Group A - [Theme]:
--
--
-
-Group B - [Theme]:
--
--
-
-CONVERGENT PHASE:
-Top 5 Most Promising:
-1. [Idea + why it's strong]
-2.
-3.
-4.
-5.
-
-SELECTED FOR DEVELOPMENT:
-[Which idea(s) to pursue]
-
-WHY:
-[Selection rationale]
-
-NEXT ACTIONS:
-- [ ] Action 1
-- [ ] Action 2
-```
-
-### Idea Synthesis Template
-```
-SYNTHESIS: [Title]
-
-CONTRIBUTING IDEAS:
-- [Idea 1]
-- [Idea 2]
-- [Idea 3]
-
-THE PATTERN I SEE:
-[What connects these]
-
-NEW INSIGHT:
-[What emerges from the combination]
-
-IMPLICATIONS:
--
--
-
-WHERE THIS COULD GO:
-- [Application 1]
-- [Application 2]
-
-OPEN QUESTIONS:
--
--
-
-CREATED: [Date]
-TAGS: [Keywords]
-```
-
-### Project Idea Template
-```
-PROJECT IDEA: [Name]
-
-THE PROBLEM:
-[What issue does this address?]
-
-THE SOLUTION:
-[How does this solve it?]
-
-WHO IS THIS FOR:
-[Target audience/user]
-
-WHY NOW:
-[Why is this timely?]
-
-SIMILAR THINGS THAT EXIST:
--
--
-
-WHAT MAKES THIS DIFFERENT:
-[Unique angle or approach]
-
-FEASIBILITY:
-EASY [ ]  MODERATE [ ]  HARD [ ]
-
-RESOURCE REQUIREMENTS:
-- Time:
-- Money:
-- Skills:
-- Other:
-
-VALIDATION NEEDED:
-- [ ] Check 1
-- [ ] Check 2
-
-DECISION:
-[ ] Pursue
-[ ] Explore further
-[ ] Shelve for now
-[ ] Abandon
-
-NEXT STEPS (if pursuing):
-1.
-2.
-3.
-
-TAGS: [Keywords]
-```
+See `references/templates.md` for all template bodies.
 
 ## Best Practices
 - **Capture immediately** - Don't trust your memory
@@ -397,24 +225,24 @@ This skill works well with:
 
 ## Common Idea Capture Mistakes
 - **Capture Without Context**
-  - ❌ "That thing Sarah mentioned"
-  - ✓ "Sarah's approach to async standups - record video updates instead of meetings"
+  - **Avoid:** "That thing Sarah mentioned"
+  - **Prefer:** "Sarah's approach to async standups - record video updates instead of meetings"
 
 - **Elaborate Capture Systems That Don't Get Used**
-  - ❌ Complex tagging taxonomy, perfect formatting
-  - ✓ Simple, fast capture method you'll actually use
+  - **Avoid:** Complex tagging taxonomy, perfect formatting
+  - **Prefer:** Simple, fast capture method you'll actually use
 
 - **Capturing But Never Reviewing**
-  - ❌ 1000 notes, never looked at again
-  - ✓ Weekly review process to develop or discard
+  - **Avoid:** 1000 notes, never looked at again
+  - **Prefer:** Weekly review process to develop or discard
 
 - **Judging Ideas During Capture**
-  - ❌ "This is probably stupid..."
-  - ✓ Capture everything, judge later in review
+  - **Avoid:** "This is probably stupid..."
+  - **Prefer:** Capture everything, judge later in review
 
 - **No Connections**
-  - ❌ Isolated notes
-  - ✓ Linked ideas create compound insights
+  - **Avoid:** Isolated notes
+  - **Prefer:** Linked ideas create compound insights
 
 ## Example Idea Capture Session
 **User:** "capture idea"

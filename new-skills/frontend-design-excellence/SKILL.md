@@ -1,6 +1,6 @@
 ---
 name: frontend-design-excellence
-description: 'Create distinctive, production-grade frontend interfaces that reject generic AI aesthetics. Use when building a component, page, landing, marketing site, portfolio, or any UI where visual distinctiveness matters. Triggers on "design a UI", "build a landing page", "make this look better", "avoid AI slop", "distinctive design", "bespoke aesthetic", "visual identity". Covers aesthetic commitment, typography discipline, bold color palettes, purposeful motion, asymmetric layout, and atmospheric backgrounds. Not for: pure layout fixes, component library wrapper work, or tasks that explicitly require template-matching.'
+description: 'Create distinctive, production-grade frontend interfaces that reject generic AI aesthetics. Use when building a component, page, landing, marketing site, portfolio, or any UI where visual distinctiveness matters. Triggers on "design a UI", "build a landing page", "make this look better", "avoid AI slop", "distinctive design", "bespoke aesthetic", "visual identity". Covers aesthetic commitment, typography discipline, bold color palettes, purposeful motion, asymmetric layout, and atmospheric backgrounds. Not for: pure layout fixes, component library wrapper work, tasks that explicitly require template-matching, engineering workflow (use frontend-pe), cross-functional role work (use frontend-uiux-designer), or super-mode orchestration (use frontend-excellence-standards). This is aesthetic commitment discipline, not process.'
 ---
 
 # Frontend Design Excellence

@@ -2,7 +2,7 @@
   "summary": {
     "skills_linted": 38,
     "total_fails": 0,
-    "total_warns": 1,
+    "total_warns": 0,
     "passed": true
   },
   "lint_results": [
@@ -135,14 +135,8 @@
     {
       "slug": "idea-capturer",
       "fails": 0,
-      "warns": 1,
-      "issues": [
-        {
-          "severity": "WARN",
-          "code": "APPROACHING_LIMIT",
-          "msg": "SKILL.md is 471 lines (approaching 500-line limit)"
-        }
-      ]
+      "warns": 0,
+      "issues": []
     },
     {
       "slug": "kingmode",
@@ -374,7 +368,7 @@
       "name": "frontend-design-excellence",
       "dir": "frontend-design-excellence",
       "lines": 87,
-      "desc_chars": 619,
+      "desc_chars": 832,
       "status": "OK",
       "refs": 0
     },
@@ -382,7 +376,7 @@
       "name": "frontend-excellence-standards",
       "dir": "frontend-excellence-standards",
       "lines": 133,
-      "desc_chars": 694,
+      "desc_chars": 880,
       "status": "OK",
       "refs": 0
     },
@@ -398,7 +392,7 @@
       "name": "frontend-uiux-designer",
       "dir": "frontend-uiux-designer",
       "lines": 131,
-      "desc_chars": 606,
+      "desc_chars": 871,
       "status": "OK",
       "refs": 5
     },
@@ -413,10 +407,10 @@
     {
       "name": "idea-capturer",
       "dir": "idea-capturer",
-      "lines": 471,
+      "lines": 299,
       "desc_chars": 525,
-      "status": "HEAVY",
-      "refs": 0
+      "status": "OK",
+      "refs": 1
     },
     {
       "name": "kingmode",

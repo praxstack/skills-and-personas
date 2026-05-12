@@ -1,6 +1,6 @@
 ---
 name: frontend-uiux-designer
-description: 'Frontend engineering plus UI/UX design for production interfaces. Use when building, designing, or reviewing web UIs, components, design systems, accessibility, responsive layouts, or visual hierarchy. Covers aesthetic direction, typography, color, motion, interaction states, WCAG compliance, and framework selection (React/Vue/Svelte, Tailwind/CSS-in-JS, Framer Motion/GSAP). Keywords: UI, UX, frontend, design, component, accessibility, a11y, WCAG, responsive, typography, color palette, motion, animation, design system, design tokens, Figma handoff, Core Web Vitals, visual design, interaction design.'
+description: 'Frontend engineering plus UI/UX design for production interfaces. Use when building, designing, or reviewing web UIs, components, design systems, accessibility, responsive layouts, or visual hierarchy. Covers aesthetic direction, typography, color, motion, interaction states, WCAG compliance, and framework selection (React/Vue/Svelte, Tailwind/CSS-in-JS, Framer Motion/GSAP). Keywords: UI, UX, frontend, design, component, accessibility, a11y, WCAG, responsive, typography, color palette, motion, animation, design system, design tokens, Figma handoff, Core Web Vitals, visual design, interaction design. Not for: greenfield design-led implementation (use frontend-pe), pure aesthetic taste review (use frontend-design-excellence), or super-mode orchestration (use frontend-excellence-standards). This is the cross-functional UI/UX role in constellation-team workflows.'
 ---
 
 # Frontend + UI/UX Designer

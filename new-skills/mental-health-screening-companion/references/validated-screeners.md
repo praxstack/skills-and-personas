@@ -140,6 +140,14 @@ Count positives. Range: 0–6.
 
 ## C-SSRS — Columbia Suicide Severity Rating Scale (Screener)
 
+**Attribution and source disclaimer (surface this to the user before administration):**
+
+> Columbia-Suicide Severity Rating Scale — © 2008 The Research Foundation for Mental Hygiene, Inc. Authors: Posner, K.; Brent, D.; Lucas, C.; Gould, M.; Stanley, B.; Brown, G.; Fisher, P.; Zelazny, J.; Burke, A.; Oquendo, M.; Mann, J.
+>
+> *"This scale is intended to be used by individuals who have received training in its administration. The questions contained in the Columbia-Suicide Severity Rating Scale are suggested probes. Ultimately, the determination of the presence of suicidal ideation or behavior depends on the judgment of the individual administering the scale."*
+>
+> This AI tool is not a trained administrator. The questions below are used here strictly as a **safety-routing screener** — any positive response triggers immediate surfacing of crisis resources (988 in the US, local equivalents elsewhere) and a firm recommendation to connect with a licensed clinician or emergency service. This tool does not interpret your answers clinically.
+
 **Use:** Suicide risk assessment. **MANDATORY** whenever any of the following occur:
 
 - PHQ-9 item 9 > 0.
