@@ -1,0 +1,286 @@
+{
+  "run_date": "2026-05-12",
+  "rubric": "/Users/praxlannister/.claude/skills/skill-judge/SKILL.md",
+  "scale": "D1..D8 total /120 -- A>=108, B 96-107, C 84-95, D 72-83, F<72",
+  "skills": [
+    {
+      "slug": "backend-architecture-standards",
+      "D1": 13, "D2": 11, "D3": 11, "D4": 14, "D5": 11, "D6": 12, "D7": 8, "D8": 11,
+      "total": 91, "grade": "C",
+      "ear_ratio": {"expert": 0.60, "activation": 0.30, "redundant": 0.10},
+      "notes": "Solid principles and anti-patterns. D1 docked because many bullets are high-signal but generic best-practices (define SLOs, validate inputs) that Claude already knows. NEVER list is specific but terse. No refs dir despite description claiming to be loaded by super-mode-core."
+    },
+    {
+      "slug": "backend-pe-cpp",
+      "D1": 17, "D2": 13, "D3": 13, "D4": 15, "D5": 12, "D6": 13, "D7": 9, "D8": 13,
+      "total": 105, "grade": "B",
+      "ear_ratio": {"expert": 0.80, "activation": 0.15, "redundant": 0.05},
+      "notes": "Dense expert content: C++ specific UB discipline, allocator decision tree, sanitizer matrix, hardening flags with exact values. NEVER list carries WHY (reinterpret_cast violates strict aliasing; shared_ptr cache-line ping-pong). High D1. Strong description with triggers."
+    },
+    {
+      "slug": "backend-pe-java",
+      "D1": 16, "D2": 13, "D3": 13, "D4": 15, "D5": 11, "D6": 13, "D7": 9, "D8": 12,
+      "total": 102, "grade": "B",
+      "ear_ratio": {"expert": 0.78, "activation": 0.18, "redundant": 0.04},
+      "notes": "Virtual-threads thesis is post-training-cutoff-relevant; HikariCP + Little's Law; Jackson reflection hazards. NEVER list is Java-specific (Lombok @Data on entities, @Transactional spanning I/O). Good routing boundaries in description."
+    },
+    {
+      "slug": "backend-pe-javascript",
+      "D1": 16, "D2": 13, "D3": 13, "D4": 15, "D5": 11, "D6": 13, "D7": 9, "D8": 12,
+      "total": 102, "grade": "B",
+      "ear_ratio": {"expert": 0.76, "activation": 0.19, "redundant": 0.05},
+      "notes": "Non-TS JS specific value: JSDoc+checkJs, prototype pollution vectors named (__proto__, _.merge). NEVER catches subtle cases (for...in, Object.assign(target, userInput))."
+    },
+    {
+      "slug": "backend-pe-nodejs",
+      "D1": 17, "D2": 14, "D3": 13, "D4": 15, "D5": 11, "D6": 13, "D7": 9, "D8": 13,
+      "total": 105, "grade": "B",
+      "ear_ratio": {"expert": 0.82, "activation": 0.14, "redundant": 0.04},
+      "notes": "Runtime-internals focus is rare and high-delta. Event-loop lag diagnostic workflow, UV_THREADPOOL_SIZE, AsyncLocalStorage context propagation. Diagnostic playbooks (lag spike / leak / CPU / regression) are authentic principal-level procedures."
+    },
+    {
+      "slug": "backend-pe-python-ml",
+      "D1": 18, "D2": 14, "D3": 14, "D4": 15, "D5": 11, "D6": 13, "D7": 9, "D8": 13,
+      "total": 107, "grade": "B",
+      "ear_ratio": {"expert": 0.85, "activation": 0.12, "redundant": 0.03},
+      "notes": "Very strong D1. Leakage taxonomy (time/target/group/preprocessing) with WHY each fails; train-serve skew; inference-is-a-distributed-system framing; offline metrics insufficient. Deep ML anti-patterns (pickle = RCE, TimeSeriesSplit over random). Near-A."
+    },
+    {
+      "slug": "backend-pe-python",
+      "D1": 16, "D2": 13, "D3": 14, "D4": 15, "D5": 11, "D6": 13, "D7": 9, "D8": 12,
+      "total": 103, "grade": "B",
+      "ear_ratio": {"expert": 0.78, "activation": 0.18, "redundant": 0.04},
+      "notes": "Async-is-infectious principle, asyncpg/async SQLAlchemy detail, pool sizing formula, uv > poetry > pip-tools routing. NEVER list catches mutable default args, f-string logging evaluation, @app.on_event deprecation."
+    },
+    {
+      "slug": "backend-pe-typescript",
+      "D1": 16, "D2": 13, "D3": 13, "D4": 15, "D5": 11, "D6": 13, "D7": 9, "D8": 12,
+      "total": 102, "grade": "B",
+      "ear_ratio": {"expert": 0.78, "activation": 0.18, "redundant": 0.04},
+      "notes": "Strict-mode non-negotiable flags, discriminated union over optional chain, Zod/Valibot/Typia matrix. Nice specificity on AbortSignal.timeout and p-limit concurrency bounds."
+    },
+    {
+      "slug": "backend-pe",
+      "D1": 13, "D2": 11, "D3": 12, "D4": 14, "D5": 13, "D6": 12, "D7": 9, "D8": 12,
+      "total": 96, "grade": "B",
+      "ear_ratio": {"expert": 0.60, "activation": 0.30, "redundant": 0.10},
+      "notes": "Orchestrator pattern. Routing table is clean; strong MANDATORY ref trigger for methodology.md. Core principles are good but more 'activation' than 'expert' given it's an umbrella. Earns D5 bump for clean progressive disclosure."
+    },
+    {
+      "slug": "backend-system-design-expert",
+      "D1": 15, "D2": 12, "D3": 13, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 102, "grade": "B",
+      "ear_ratio": {"expert": 0.72, "activation": 0.22, "redundant": 0.06},
+      "notes": "Decision-tree-dense skill: API style, DB, consistency, caching, messaging selectors all as tables. Non-obvious-tradeoffs section is pure expert delta (UUIDv4 B-tree locality, 2PC broken, cursor vs offset). Strong CONDITIONAL refs. Minor overlap with backend-architecture-standards."
+    },
+    {
+      "slug": "baron-von-markup",
+      "D1": 11, "D2": 10, "D3": 12, "D4": 14, "D5": 12, "D6": 13, "D7": 8, "D8": 12,
+      "total": 92, "grade": "C",
+      "ear_ratio": {"expert": 0.55, "activation": 0.30, "redundant": 0.15},
+      "notes": "Pattern discipline (content integrity, preserve literals, one emoji per heading) is a real commitment. Anti-pattern list is precise and domain-earned. D1 is middling because Markdown syntax is heavily in Claude's training. Content-integrity and the Baron Standard are the deltas."
+    },
+    {
+      "slug": "blueprint-creator",
+      "D1": 14, "D2": 12, "D3": 12, "D4": 15, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 101, "grade": "B",
+      "ear_ratio": {"expert": 0.70, "activation": 0.22, "redundant": 0.08},
+      "notes": "Clear pipeline position (SPEC->BLUEPRINT->code), hard prerequisite gate, SPEC-vs-Blueprint delta table is the expert insight. Four anti-pattern traps (copy-paste, novel, completionism, tech-stack, orphan) are specific."
+    },
+    {
+      "slug": "chronicle",
+      "D1": 14, "D2": 13, "D3": 13, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 102, "grade": "B",
+      "ear_ratio": {"expert": 0.72, "activation": 0.20, "redundant": 0.08},
+      "notes": "Strong role-blending methodology (Archivist + Friend + Psychologist-reflective). Anti-patterns catch specific failure modes (toxic positivity, sanitizing voice, over-pathologizing). Zero-omission rule is load-bearing. CBT/ACT/DBT pointer integrated with crisis branching."
+    },
+    {
+      "slug": "concept-cartographer",
+      "D1": 12, "D2": 10, "D3": 9, "D4": 13, "D5": 9, "D6": 12, "D7": 8, "D8": 12,
+      "total": 85, "grade": "C",
+      "ear_ratio": {"expert": 0.50, "activation": 0.30, "redundant": 0.20},
+      "notes": "Mermaid syntax is well-known to Claude -- big chunks are examples of things Claude already generates. Domain-focus table and topic-inventory verification are the deltas. Weak NEVER list. No refs, no anti-patterns section."
+    },
+    {
+      "slug": "constellation-team",
+      "D1": 10, "D2": 10, "D3": 7, "D4": 13, "D5": 14, "D6": 11, "D7": 9, "D8": 11,
+      "total": 85, "grade": "C",
+      "ear_ratio": {"expert": 0.40, "activation": 0.40, "redundant": 0.20},
+      "notes": "Pure Navigation-pattern router at 61 lines -- correct for role. Workflow + checkpoints are standard team-process. Most expert content is in references, correctly delegated. D3 weak (no NEVER list beyond 'do not claim tests'). Strong D5."
+    },
+    {
+      "slug": "devops-sre-engineer",
+      "D1": 16, "D2": 13, "D3": 14, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 105, "grade": "B",
+      "ear_ratio": {"expert": 0.78, "activation": 0.17, "redundant": 0.05},
+      "notes": "Non-obvious-tradeoffs section earns its keep: liveness vs readiness, backup restore discipline, spot eviction 2min, log sampling cost, drift detection. SLO tier table with cost realism. Specific NEVER list (never alert without runbook, never claim 99.99 without multi-region)."
+    },
+    {
+      "slug": "frontend-design-excellence",
+      "D1": 16, "D2": 13, "D3": 13, "D4": 14, "D5": 12, "D6": 14, "D7": 10, "D8": 11,
+      "total": 103, "grade": "B",
+      "ear_ratio": {"expert": 0.80, "activation": 0.15, "redundant": 0.05},
+      "notes": "Textbook Mindset pattern (~87 lines). Aesthetic commitment + variation across generations is the expert compression. Banned fonts + purple-gradient-on-white call-out is exactly the kind of anti-pattern Claude doesn't know."
+    },
+    {
+      "slug": "frontend-excellence-standards",
+      "D1": 14, "D2": 12, "D3": 12, "D4": 14, "D5": 12, "D6": 13, "D7": 8, "D8": 12,
+      "total": 97, "grade": "B",
+      "ear_ratio": {"expert": 0.68, "activation": 0.22, "redundant": 0.10},
+      "notes": "Overlaps heavily with frontend-design-excellence (same banned fonts, same anti-patterns) plus a11y/perf generic content. D1 docked for duplication. Has super-mode-core loading context."
+    },
+    {
+      "slug": "frontend-pe",
+      "D1": 14, "D2": 12, "D3": 11, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 11,
+      "total": 97, "grade": "B",
+      "ear_ratio": {"expert": 0.65, "activation": 0.25, "redundant": 0.10},
+      "notes": "Ultra-frontend workflow is committed and opinionated. Stack is prescriptive (Next.js + Framer Motion + Zustand). Mostly Navigation pattern delegating to methodology.md. Constraints light (no alerts, desktop-first)."
+    },
+    {
+      "slug": "frontend-uiux-designer",
+      "D1": 15, "D2": 13, "D3": 13, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 103, "grade": "B",
+      "ear_ratio": {"expert": 0.72, "activation": 0.22, "redundant": 0.06},
+      "notes": "Cross-functional role skill. Decision framework is well-calibrated (pick ONE aesthetic axis; motion budget with concrete ms; state-management decision by data-lifecycle). NEVER list catches semantic-HTML failures specifically (div onClick, tabindex>0). Conditional refs."
+    },
+    {
+      "slug": "gabriel-petersson-topdown-mentor",
+      "D1": 15, "D2": 14, "D3": 13, "D4": 15, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 105, "grade": "B",
+      "ear_ratio": {"expert": 0.72, "activation": 0.22, "redundant": 0.06},
+      "notes": "Strong methodology (Recursive Gap-Filling Loop), mandatory intermediate-state visualization (with worked examples), 5 response modes with triggers. Anti-pattern list is specific (don't accept 'I think I understand', no solutions without drilling). Long but each section earns tokens."
+    },
+    {
+      "slug": "idea-capturer",
+      "D1": 8, "D2": 9, "D3": 9, "D4": 13, "D5": 9, "D6": 12, "D7": 6, "D8": 11,
+      "total": 77, "grade": "D",
+      "ear_ratio": {"expert": 0.30, "activation": 0.35, "redundant": 0.35},
+      "notes": "Heavy redundancy: SCAMPER, 5 Whys, Zettelkasten tiers are all in Claude's training. Workflow bullets are generic brainstorming steps Claude already does. 299 lines is too long for the knowledge delta. Example session is illustrative but padding. D3 weak - anti-patterns are common-sense."
+    },
+    {
+      "slug": "kingmode",
+      "D1": 12, "D2": 11, "D3": 12, "D4": 14, "D5": 11, "D6": 13, "D7": 8, "D8": 12,
+      "total": 93, "grade": "C",
+      "ear_ratio": {"expert": 0.55, "activation": 0.30, "redundant": 0.15},
+      "notes": "Three-mode routing is useful. Non-hallucination discipline (no invented metrics, no 'ran tests' lies) is an explicit expert anti-pattern. Output templates per mode are concrete. Overlaps with super-mode-core (mode/routing logic duplicated)."
+    },
+    {
+      "slug": "lecture-alchemist",
+      "D1": 14, "D2": 13, "D3": 12, "D4": 15, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 102, "grade": "B",
+      "ear_ratio": {"expert": 0.70, "activation": 0.22, "redundant": 0.08},
+      "notes": "Three-role methodology (Transcriber/Tutor/Architect), hard zero-loss rule, enhance-don't-replace [ENHANCED] marker. Domain-aware technical-analysis switching. Pipeline-position declaration clear. Anti-patterns concrete."
+    },
+    {
+      "slug": "mental-health-screening-companion",
+      "D1": 17, "D2": 14, "D3": 14, "D4": 15, "D5": 14, "D6": 14, "D7": 9, "D8": 14,
+      "total": 111, "grade": "A",
+      "ear_ratio": {"expert": 0.80, "activation": 0.15, "redundant": 0.05},
+      "notes": "Highest scorer. Mandatory preamble is load-bearing; ethical boundaries is a 10-point NEVER list with specific clinical reasoning; C-SSRS triggers rule-based not vibes; validated screener routing table. MANDATORY reference loads with explicit triggers. Description signals clear scope (NOT therapist/clinician)."
+    },
+    {
+      "slug": "obsidian-cli",
+      "D1": 17, "D2": 14, "D3": 13, "D4": 15, "D5": 14, "D6": 14, "D7": 9, "D8": 14,
+      "total": 110, "grade": "A",
+      "ear_ratio": {"expert": 0.82, "activation": 0.13, "redundant": 0.05},
+      "notes": "Tool-pattern skill done right. CLI v2 is post-training-cutoff material (Obsidian 1.12+) - high delta. MANDATORY ref triggers on every file op, property op, query. Decision tree by user intent ('I want to...'). Safety guidelines pattern list is specific (overwrite, trash vs permanent, active-file ambiguity)."
+    },
+    {
+      "slug": "principal-engineer",
+      "D1": 15, "D2": 13, "D3": 14, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 104, "grade": "B",
+      "ear_ratio": {"expert": 0.74, "activation": 0.20, "redundant": 0.06},
+      "notes": "Severity rubric for code-review comments is tight. Approve-with-conditions vs needs-revision distinction is principal-level. Non-obvious-tradeoffs section (sync chains, shared DB, retrofit security 5-10x) earns tokens. NEVER approve own design/code is the kind of rule only experience teaches."
+    },
+    {
+      "slug": "product-manager",
+      "D1": 14, "D2": 12, "D3": 13, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 101, "grade": "B",
+      "ear_ratio": {"expert": 0.68, "activation": 0.25, "redundant": 0.07},
+      "notes": "PM-vs-Eng decision boundary is well-framed. Prioritization matrix usefully notes 'no framework is neutral' insight. NEVER list catches feature-parity-as-strategy, HiPPO, literal user requests. Standard but well-compressed."
+    },
+    {
+      "slug": "professor-alex-interview",
+      "D1": 15, "D2": 13, "D3": 13, "D4": 15, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 104, "grade": "B",
+      "ear_ratio": {"expert": 0.72, "activation": 0.22, "redundant": 0.06},
+      "notes": "Guided-discovery-by-default thesis is the knowledge delta. Anti-gaming mechanisms (require evidence, block mid-problem switches) are concrete. Company-specific framing (Citadel vs Google) is useful routing. Good trigger discipline."
+    },
+    {
+      "slug": "qa-security-engineer",
+      "D1": 16, "D2": 13, "D3": 15, "D4": 14, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 106, "grade": "B",
+      "ear_ratio": {"expert": 0.78, "activation": 0.17, "redundant": 0.05},
+      "notes": "NEVER list is the strongest in the portfolio - 17 items with specific reasoning (constant-time compare, JWT alg:none, bcrypt/scrypt/Argon2 specifically, CORS * on auth endpoints). SAST/DAST/IAST/SCA distinction is the kind of matrix Claude needs."
+    },
+    {
+      "slug": "security-compliance-standards",
+      "D1": 13, "D2": 11, "D3": 13, "D4": 14, "D5": 11, "D6": 12, "D7": 8, "D8": 11,
+      "total": 93, "grade": "C",
+      "ear_ratio": {"expert": 0.58, "activation": 0.30, "redundant": 0.12},
+      "notes": "Threat-model-first is valuable but many bullets are generic security best-practices Claude already knows. NEVER list is solid but shorter than qa-security-engineer's. Framed as internal super-mode-core dep; no refs dir despite that role."
+    },
+    {
+      "slug": "spec-creator",
+      "D1": 16, "D2": 14, "D3": 13, "D4": 15, "D5": 13, "D6": 13, "D7": 9, "D8": 14,
+      "total": 107, "grade": "B",
+      "ear_ratio": {"expert": 0.78, "activation": 0.17, "redundant": 0.05},
+      "notes": "Near-A. 10 knowledge domains framing is pedagogy-for-specs. Drafting rules with concrete transformations ('handle errors gracefully' -> 'workspace_creation_failed; fail, orchestrator retries') are textbook expert-delta. Anti-patterns (PRD trap, HLD trap, tutorial trap, over/under-prescription) are specific."
+    },
+    {
+      "slug": "super-mode-core",
+      "D1": 12, "D2": 10, "D3": 12, "D4": 14, "D5": 13, "D6": 12, "D7": 8, "D8": 11,
+      "total": 92, "grade": "C",
+      "ear_ratio": {"expert": 0.50, "activation": 0.35, "redundant": 0.15},
+      "notes": "Overlaps heavily with kingmode (mode routing duplicated). Main delta is the MANDATORY-load trigger for backend-architecture-standards / frontend-excellence-standards / security-compliance-standards. Quality gate is useful but high-level."
+    },
+    {
+      "slug": "svg-logo-designer",
+      "D1": 14, "D2": 13, "D3": 13, "D4": 15, "D5": 13, "D6": 12, "D7": 8, "D8": 13,
+      "total": 101, "grade": "B",
+      "ear_ratio": {"expert": 0.68, "activation": 0.22, "redundant": 0.10},
+      "notes": "Discovery-first rule with minimum viable brief is good discipline. 7-criterion scoring rubric with 21/35 gate is concrete. Critical-rules list is specific (never raster in SVG, never external fonts, test mental scalability). 343 lines is heavy but mostly earns it."
+    },
+    {
+      "slug": "techtutor",
+      "D1": 15, "D2": 14, "D3": 14, "D4": 15, "D5": 13, "D6": 13, "D7": 9, "D8": 13,
+      "total": 106, "grade": "B",
+      "ear_ratio": {"expert": 0.75, "activation": 0.20, "redundant": 0.05},
+      "notes": "6-layer framework is teachable and specific; 'simpler' = different angle rule; counterexample-over-correction; follow-ups addressed immediately are rules Claude doesn't default to. Request-type-matcher is tight. 14-anti-pattern list catches fabrication, sycophantic reversal, 'I'll cover later'."
+    },
+    {
+      "slug": "transcribe-refiner",
+      "D1": 14, "D2": 12, "D3": 11, "D4": 14, "D5": 11, "D6": 13, "D7": 9, "D8": 12,
+      "total": 96, "grade": "B",
+      "ear_ratio": {"expert": 0.68, "activation": 0.22, "redundant": 0.10},
+      "notes": "Smart-error-correction table is the delta (lowest -> loss, epic -> epoch, know JS -> Node.js). Topic Inventory as an anti-loss system is the load-bearing pattern. No refs dir but content self-contained."
+    },
+    {
+      "slug": "transcript-pipeline",
+      "D1": 12, "D2": 12, "D3": 9, "D4": 13, "D5": 14, "D6": 14, "D7": 9, "D8": 12,
+      "total": 95, "grade": "C",
+      "ear_ratio": {"expert": 0.55, "activation": 0.30, "redundant": 0.15},
+      "notes": "Navigation-pattern skill routing to scripts + per-stage reference files. Low-freedom calibration on deterministic scripts is appropriate (gate validation, no LLM self-certification). D3 weak - 'execution rules' is only 4 bullets. D5 strong (9 refs with clear per-stage mapping)."
+    },
+    {
+      "slug": "ultrathink-frontend",
+      "D1": 13, "D2": 11, "D3": 12, "D4": 14, "D5": 11, "D6": 13, "D7": 9, "D8": 12,
+      "total": 95, "grade": "C",
+      "ear_ratio": {"expert": 0.60, "activation": 0.25, "redundant": 0.15},
+      "notes": "Duplicates much of frontend-design-excellence and frontend-excellence-standards (intentional-minimalism, banned fonts, UI library discipline). ULTRATHINK lens set (psych/technical/a11y/scalability) is useful but pattern-level. Example login lens is actionable."
+    }
+  ],
+  "summary": {
+    "mean_total": 99.55,
+    "median_total": 102,
+    "mean_d1": 14.34,
+    "median_d1": 15,
+    "min_total": 77,
+    "max_total": 111,
+    "worst_d1_skill": "idea-capturer",
+    "worst_d1_score": 8,
+    "best_d1_skill": "backend-pe-python-ml",
+    "best_d1_score": 18,
+    "grades": {"A": 2, "B": 26, "C": 9, "D": 1, "F": 0}
+  }
+}

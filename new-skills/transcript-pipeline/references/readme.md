@@ -6,7 +6,7 @@ A provider-agnostic, deterministic transcript-to-tutorial system for Zoom class 
 
 LLM transformations are probabilistic. This kit guarantees accountability by splitting responsibilities:
 
-- Scripts for deterministic stages (`ingest`, `validate`, publish).
+- Scripts for deterministic stages (ingest, `validate`, publish).
 - Chat providers for language-heavy stages (refine, synthesize, enhance).
 - Traceability artifacts in `.pipeline/` for every session.
 
@@ -28,13 +28,15 @@ flowchart TD
 
 ## What You Get
 
-- End-to-end run orchestration: `scripts/run_chat_pipeline.py`
-- Deterministic ingestion: `scripts/ingest_zoom_captions.py`
-- Deterministic validation: `scripts/validate_coverage.py`
-- Standardized publishing: `scripts/publish_tutorial_notes.py`
-- Chunk merge utility: `scripts/merge_chunks.py`
-- Dedicated Colab explainer pipeline: `scripts/run_colab_notebook_pipeline.py`
-- Authenticated resource enrichment (Notion/Canva): `scripts/resource_enrichment.py`
+Scripts below live in the external transcript-pipeline-kit repo under its own `scripts/` directory, NOT inside this skill. File names are referenced here conceptually so users know what each stage does; the skill does not bundle these files.
+
+- End-to-end run orchestration: **run_chat_pipeline.py**
+- Deterministic ingestion: **ingest_zoom_captions.py**
+- Deterministic validation: **validate_coverage.py**
+- Standardized publishing: **publish_tutorial_notes.py**
+- Chunk merge utility: **merge_chunks.py**
+- Dedicated Colab explainer pipeline: **run_colab_notebook_pipeline.py**
+- Authenticated resource enrichment (Notion/Canva): **resource_enrichment.py**
 
 ## Strict Quality Gate (`--deep-pass`)
 

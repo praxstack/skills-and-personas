@@ -1,74 +1,10 @@
 {
-  "broken": {
-    "transcript-pipeline": {
-      "transcript-pipeline/references/readme.md": [
-        {
-          "exists": false,
-          "link": "scripts/run_chat_pipeline.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/run_chat_pipeline.py",
-          "type": "backtick_path"
-        },
-        {
-          "exists": false,
-          "link": "scripts/ingest_zoom_captions.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/ingest_zoom_captions.py",
-          "type": "backtick_path"
-        },
-        {
-          "exists": false,
-          "link": "scripts/validate_coverage.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/validate_coverage.py",
-          "type": "backtick_path"
-        },
-        {
-          "exists": false,
-          "link": "scripts/publish_tutorial_notes.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/publish_tutorial_notes.py",
-          "type": "backtick_path"
-        },
-        {
-          "exists": false,
-          "link": "scripts/merge_chunks.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/merge_chunks.py",
-          "type": "backtick_path"
-        },
-        {
-          "exists": false,
-          "link": "scripts/run_colab_notebook_pipeline.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/run_colab_notebook_pipeline.py",
-          "type": "backtick_path"
-        },
-        {
-          "exists": false,
-          "link": "scripts/resource_enrichment.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/resource_enrichment.py",
-          "type": "backtick_path"
-        }
-      ],
-      "transcript-pipeline/references/stage3-enhance.md": [
-        {
-          "exists": false,
-          "link": "#topic-3-caching",
-          "reason": "heading not found",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/references/stage3-enhance.md",
-          "type": "anchor"
-        }
-      ],
-      "transcript-pipeline/references/usage-guide.md": [
-        {
-          "exists": false,
-          "link": "scripts/validate_coverage.py",
-          "resolved": "/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills/transcript-pipeline/scripts/validate_coverage.py",
-          "type": "backtick_path"
-        }
-      ]
-    }
-  },
+  "broken": {},
   "summary": {
     "files_scanned": 134,
-    "links_scanned": 139,
-    "passed": false,
+    "links_scanned": 130,
+    "passed": true,
     "skills_scanned": 38,
-    "total_broken": 9
+    "total_broken": 0
   }
 }

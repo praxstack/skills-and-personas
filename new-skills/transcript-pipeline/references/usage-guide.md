@@ -127,7 +127,7 @@ Run each chat stage in a fresh conversation for best context hygiene.
 
 ### Stage 4: Validate
 - Prompt (chat assist): `docs/prompts/stages/stage4-validate.md`
-- Deterministic source of truth: `scripts/validate_coverage.py`
+- Deterministic source of truth: `validate_coverage.py` (in the kit's `scripts/` dir)
 
 ## Chat Provider Portability
 

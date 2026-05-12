@@ -39,14 +39,17 @@ def slugify_heading(text: str) -> str:
     return text.strip('-')
 
 
-def strip_code_blocks(text: str) -> str:
-    """Remove fenced code blocks so we don't report links inside code examples."""
+INLINE_CODE_RE = re.compile(r'`[^`\n]+`')
+
+
+def strip_fenced_blocks(text: str) -> str:
+    """Remove fenced ``` blocks but keep inline backtick spans intact."""
     out = []
     in_fence = False
     for line in text.split("\n"):
         if line.lstrip().startswith("```"):
             in_fence = not in_fence
-            out.append("")  # preserve line number
+            out.append("")
             continue
         if in_fence:
             out.append("")
@@ -55,9 +58,21 @@ def strip_code_blocks(text: str) -> str:
     return "\n".join(out)
 
 
+def strip_code_blocks(text: str) -> str:
+    """Strip fenced blocks AND inline backtick code so we don't flag
+    links appearing only inside code examples."""
+    text = strip_fenced_blocks(text)
+    while True:
+        new = INLINE_CODE_RE.sub("", text)
+        if new == text:
+            break
+        text = new
+    return text
+
+
 def collect_headings(text: str) -> set:
-    """Collect slugified heading anchors from a markdown document (outside code blocks)."""
-    stripped = strip_code_blocks(text)
+    """Collect slugified heading anchors from a markdown document (outside fenced blocks)."""
+    stripped = strip_fenced_blocks(text)
     anchors = set()
     for line in stripped.split("\n"):
         m = HEADING_RE.match(line)
@@ -78,7 +93,12 @@ def scan_file(md_path: Path, skill_dir: Path) -> list:
         end = body.find("\n---\n", 4)
         if end != -1:
             body = body[end + 5:]
+    # For md links and anchor links, we must ignore inline backtick spans
+    # (those are literal code examples, not real links).
     body_clean = strip_code_blocks(body)
+    # For backtick_path detection we only strip fenced blocks —
+    # backtick-quoted paths are themselves inside inline code spans.
+    body_fence_only = strip_fenced_blocks(body)
     headings = collect_headings(body)
 
     findings = []
@@ -142,7 +162,7 @@ def scan_file(md_path: Path, skill_dir: Path) -> list:
             })
 
     # 3. Backtick-quoted relative paths (references/, scripts/, assets/)
-    for m in BACKTICK_PATH_RE.finditer(body_clean):
+    for m in BACKTICK_PATH_RE.finditer(body_fence_only):
         rel = m.group(1).strip()
         # Resolve against the skill dir (where references/ lives)
         candidate = (skill_dir / rel).resolve()
@@ -222,10 +242,11 @@ def main():
                 end = text.find("\n---\n", 4)
                 if end != -1:
                     text = text[end + 5:]
-            text = strip_code_blocks(text)
-            links_scanned += len(MD_LINK_RE.findall(text))
-            links_scanned += len(ANCHOR_LINK_RE.findall(text))
-            links_scanned += len(BACKTICK_PATH_RE.findall(text))
+            text_no_code = strip_code_blocks(text)
+            text_no_fence = strip_fenced_blocks(text)
+            links_scanned += len(MD_LINK_RE.findall(text_no_code))
+            links_scanned += len(ANCHOR_LINK_RE.findall(text_no_code))
+            links_scanned += len(BACKTICK_PATH_RE.findall(text_no_fence))
 
     report = {
         "summary": {
