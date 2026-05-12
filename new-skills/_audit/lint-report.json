@@ -2,7 +2,7 @@
   "summary": {
     "skills_linted": 38,
     "total_fails": 0,
-    "total_warns": 0,
+    "total_warns": 1,
     "passed": true
   },
   "lint_results": [
@@ -201,8 +201,14 @@
     {
       "slug": "super-mode-core",
       "fails": 0,
-      "warns": 0,
-      "issues": []
+      "warns": 1,
+      "issues": [
+        {
+          "severity": "WARN",
+          "code": "ASCII_ART",
+          "msg": "box-drawing/arrow chars on 6 lines outside code blocks: [39, 40, 41, 60, 61]"
+        }
+      ]
     },
     {
       "slug": "svg-logo-designer",
@@ -239,7 +245,7 @@
     {
       "name": "backend-architecture-standards",
       "dir": "backend-architecture-standards",
-      "lines": 141,
+      "lines": 92,
       "desc_chars": 691,
       "status": "OK",
       "refs": 0
@@ -319,7 +325,7 @@
     {
       "name": "baron-von-markup",
       "dir": "baron-von-markup",
-      "lines": 164,
+      "lines": 86,
       "desc_chars": 797,
       "status": "OK",
       "refs": 3
@@ -343,15 +349,15 @@
     {
       "name": "concept-cartographer",
       "dir": "concept-cartographer",
-      "lines": 246,
+      "lines": 103,
       "desc_chars": 574,
       "status": "OK",
-      "refs": 0
+      "refs": 1
     },
     {
       "name": "constellation-team",
       "dir": "constellation-team",
-      "lines": 61,
+      "lines": 80,
       "desc_chars": 478,
       "status": "OK",
       "refs": 8
@@ -367,7 +373,7 @@
     {
       "name": "frontend-design-excellence",
       "dir": "frontend-design-excellence",
-      "lines": 87,
+      "lines": 85,
       "desc_chars": 832,
       "status": "OK",
       "refs": 0
@@ -375,23 +381,23 @@
     {
       "name": "frontend-excellence-standards",
       "dir": "frontend-excellence-standards",
-      "lines": 133,
-      "desc_chars": 880,
+      "lines": 50,
+      "desc_chars": 804,
       "status": "OK",
       "refs": 0
     },
     {
       "name": "frontend-pe",
       "dir": "frontend-pe",
-      "lines": 88,
+      "lines": 90,
       "desc_chars": 843,
       "status": "OK",
-      "refs": 1
+      "refs": 2
     },
     {
       "name": "frontend-uiux-designer",
       "dir": "frontend-uiux-designer",
-      "lines": 131,
+      "lines": 133,
       "desc_chars": 871,
       "status": "OK",
       "refs": 5
@@ -407,7 +413,7 @@
     {
       "name": "idea-capturer",
       "dir": "idea-capturer",
-      "lines": 299,
+      "lines": 78,
       "desc_chars": 525,
       "status": "OK",
       "refs": 1
@@ -479,7 +485,7 @@
     {
       "name": "security-compliance-standards",
       "dir": "security-compliance-standards",
-      "lines": 151,
+      "lines": 96,
       "desc_chars": 727,
       "status": "OK",
       "refs": 0
@@ -495,8 +501,8 @@
     {
       "name": "super-mode-core",
       "dir": "super-mode-core",
-      "lines": 168,
-      "desc_chars": 961,
+      "lines": 74,
+      "desc_chars": 946,
       "status": "OK",
       "refs": 0
     },
@@ -527,7 +533,7 @@
     {
       "name": "transcript-pipeline",
       "dir": "transcript-pipeline",
-      "lines": 208,
+      "lines": 219,
       "desc_chars": 530,
       "status": "OK",
       "refs": 9
@@ -535,7 +541,7 @@
     {
       "name": "ultrathink-frontend",
       "dir": "ultrathink-frontend",
-      "lines": 169,
+      "lines": 155,
       "desc_chars": 933,
       "status": "OK",
       "refs": 0

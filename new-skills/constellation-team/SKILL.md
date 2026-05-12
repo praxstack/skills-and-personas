@@ -54,8 +54,27 @@ Load per-role detail on demand. Do not preload all references.
 - `references/devops-sre.md` — CI/CD, observability, incident response, rollback.
 - `references/related-skills.md` — related skills and when to invoke them.
 
+## Anti-Patterns
+
+- **NEVER** skip Checkpoint 1 because the PM said the spec is urgent — uncaught architecture issues compound into rewrites that cost 10x the checkpoint time.
+- **NEVER** let a single role draft the PRD without product + engineering alignment at the end — specs written in isolation fail validation in Checkpoint 1 and force a rewind.
+- **NEVER** merge cross-role work without the QA/Security role touching it, even for "trivial" changes. "Trivial" changes are where the bypassed control decays.
+- **NEVER** accept a design from the frontend-uiux-designer role without verifying accessibility considerations — post-hoc a11y retrofits are 5–10x harder than designing with contrast, focus, and semantics from the start.
+- **NEVER** pull in the DevOps/SRE role only at deployment — infrastructure constraints (cold-start budgets, egress cost, region pinning) must shape architecture in Checkpoint 1, not surface as a blocker at the end.
+- **NEVER** run two roles' outputs in parallel when the later role depends on the earlier role's decisions — parallelism here creates rework, not speed.
+
+## Choosing the right frontend peer skill
+
+Within this constellation workflow, three frontend-adjacent skills are distinct. Pick one — do not combine.
+
+| Skill | Invoke when | Role in the constellation |
+|---|---|---|
+| `frontend-uiux-designer` | Cross-functional delivery needs UX flows, UI structure, a11y, and visual direction together | Default for the Frontend role in this workflow |
+| `frontend-pe` | Greenfield, design-led product where aesthetic direction is load-bearing | Replaces the Frontend role when the brand/design bar is the primary constraint |
+| `ultrathink-frontend` | Deep, multi-pass analysis of a specific frontend surface | Invoked *inside* the Frontend role for a particular decision, not as a replacement |
+| `frontend-design-excellence` | Pure taste / design-commitment review pass | Invoked *after* the Frontend role's output as a polish critique |
+
 ## Related skills
 
-- Use `frontend-pe` for world-class UI/UX design direction and frontend aesthetics.
 - Use `backend-pe` for deep backend architecture and operations reasoning.
 - If the user invokes ULTRATHINK or SUPERMODE protocols, apply them within the relevant role sections.

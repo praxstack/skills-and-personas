@@ -1,0 +1,100 @@
+{
+  "run_date": "2026-05-12",
+  "level": "project-local",
+  "scope": "new-skills/",
+  "skills": [
+    {"slug": "svg-logo-designer", "lines": 343, "desc_chars": 842, "refs": 3, "has_allowed_tools": false, "status": "HEAVY", "verdict": "TRIM", "issues": ["redundant goal/audience restatement", "discovery questions enumerated inline AND in references file", "workflow overview duplicates section headers"], "suggested_savings_lines": 30, "notes": "Strong skill; tighten body and move inline examples to references/"},
+    {"slug": "gabriel-petersson-topdown-mentor", "lines": 305, "desc_chars": 911, "refs": 7, "has_allowed_tools": false, "status": "HEAVY", "verdict": "RESTRUCTURE", "issues": ["long inline ASCII visualizations belong in references", "overlap with techtutor on trigger keywords"], "suggested_savings_lines": 40, "notes": "Consider merging with techtutor into one mentor skill with two modes."},
+    {"slug": "idea-capturer", "lines": 299, "desc_chars": 527, "refs": 1, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "concept-cartographer", "lines": 246, "desc_chars": 576, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "TRIM", "issues": ["0 references despite 246 lines of inline examples", "Claude can generate Mermaid natively; much of the skill restates default capability"], "suggested_savings_lines": 80, "notes": "Consider retirement; if kept, externalise examples."},
+    {"slug": "spec-creator", "lines": 237, "desc_chars": 805, "refs": 4, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Uses multi-line YAML description; parse tooling should use a YAML parser, not awk."},
+    {"slug": "lecture-alchemist", "lines": 234, "desc_chars": 779, "refs": 3, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["minor overlap with transcript-pipeline"], "suggested_savings_lines": 0, "notes": "Distinct from techtutor (pipeline vs. conversation)."},
+    {"slug": "obsidian-cli", "lines": 213, "desc_chars": 699, "refs": 3, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "transcript-pipeline", "lines": 208, "desc_chars": 544, "refs": 9, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["minor overlap with lecture-alchemist on transcript ingestion"], "suggested_savings_lines": 0, "notes": "Pipeline-style skill with 9 references — legitimate."},
+    {"slug": "mental-health-screening-companion", "lines": 206, "desc_chars": 922, "refs": 5, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["description is 922 chars — can trim while keeping safety disclaimers"], "suggested_savings_lines": 0, "notes": "Safety-critical skill; keep the clinical disclaimers."},
+    {"slug": "blueprint-creator", "lines": 193, "desc_chars": 929, "refs": 5, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["description exceeds 900 chars"], "suggested_savings_lines": 0, "notes": "Description could compress 'also trigger when...' clauses."},
+    {"slug": "professor-alex-interview", "lines": 187, "desc_chars": 948, "refs": 6, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["description is 948 chars with 13 named HFT firms — could use a shorter keyword bundle"], "suggested_savings_lines": 0, "notes": "Distinct from general tutors due to quant/HFT + anti-gaming."},
+    {"slug": "transcribe-refiner", "lines": 184, "desc_chars": 673, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "devops-sre-engineer", "lines": 176, "desc_chars": 628, "refs": 4, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Clean 'Not for X' disambiguation."},
+    {"slug": "qa-security-engineer", "lines": 175, "desc_chars": 736, "refs": 4, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "techtutor", "lines": 174, "desc_chars": 822, "refs": 6, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["overlaps gabriel-petersson-topdown-mentor on triggers and on DSA/system-design tutoring"], "suggested_savings_lines": 0, "merge_target": "gabriel-petersson-topdown-mentor (or keep both, tighten scoping)", "notes": "Different framing (6-layer vs. 5-step loop) but same target audience."},
+    {"slug": "backend-system-design-expert", "lines": 171, "desc_chars": 569, "refs": 5, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["near-complete overlap with backend-pe and backend-architecture-standards on API style / consistency / caching / messaging / reliability"], "suggested_savings_lines": 171, "merge_target": "backend-pe (fold into references/)", "notes": "Cleanest single source of truth would be backend-pe + one architecture reference."},
+    {"slug": "ultrathink-frontend", "lines": 169, "desc_chars": 935, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["overlaps frontend-pe (anti-generic, library discipline, hero motion)", "ULTRATHINK mode could be a flag inside frontend-pe"], "suggested_savings_lines": 169, "merge_target": "frontend-pe", "notes": "Analysis vs. workflow split is not sharp enough to justify a separate skill."},
+    {"slug": "super-mode-core", "lines": 168, "desc_chars": 963, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["near-duplicate of kingmode (same Default/ULTRATHINK/KINGMODE modes, same 4-step workflow, same output formats)"], "suggested_savings_lines": 168, "merge_target": "kingmode (with domain-standards loading added)", "notes": "Only unique piece is the 'load backend/frontend/security standards' routing — absorb into kingmode."},
+    {"slug": "baron-von-markup", "lines": 164, "desc_chars": 815, "refs": 3, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "security-compliance-standards", "lines": 151, "desc_chars": 729, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["description says 'loaded by super-mode-core' — unclear whether it should be user-invocable"], "suggested_savings_lines": 0, "notes": "Resolve the 'internal vs. first-class skill' ambiguity."},
+    {"slug": "product-manager", "lines": 144, "desc_chars": 656, "refs": 5, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "backend-architecture-standards", "lines": 141, "desc_chars": 693, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["overlaps backend-pe and backend-system-design-expert", "description says 'Loaded by super-mode-core'"], "suggested_savings_lines": 141, "merge_target": "backend-pe references/", "notes": "Same internal-only ambiguity as security-compliance-standards."},
+    {"slug": "frontend-excellence-standards", "lines": 133, "desc_chars": 882, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["~95% duplicate of frontend-design-excellence (same anti-patterns, typography rules, motion budget)", "description says 'Not for standalone user invocation'"], "suggested_savings_lines": 133, "merge_target": "frontend-design-excellence", "notes": "Clearest merge candidate in the portfolio."},
+    {"slug": "backend-pe-python-ml", "lines": 133, "desc_chars": 839, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Language variant covers ML-specific failure modes (train-serve skew, drift). Keep."},
+    {"slug": "frontend-uiux-designer", "lines": 131, "desc_chars": 873, "refs": 5, "has_allowed_tools": false, "status": "OK", "verdict": "MERGE", "issues": ["overlaps frontend-pe on workflow + aesthetic direction"], "suggested_savings_lines": 131, "merge_target": "frontend-pe (or retain as constellation-team role only)", "notes": "Disambiguation clause is weak — 'cross-functional UI/UX role' is not a strong routing signal for direct user prompts."},
+    {"slug": "backend-pe-cpp", "lines": 122, "desc_chars": 745, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "UB, RAII, sanitizers — valuable C++-specific content."},
+    {"slug": "chronicle", "lines": 119, "desc_chars": 706, "refs": 5, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "backend-pe-javascript", "lines": 115, "desc_chars": 744, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["could arguably fold into backend-pe-typescript with a plain-JS mode flag"], "suggested_savings_lines": 0, "notes": "Low priority merge candidate; current separation is cleaner."},
+    {"slug": "principal-engineer", "lines": 113, "desc_chars": 621, "refs": 3, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Role-focused (governance/approval), distinct from backend-pe."},
+    {"slug": "backend-pe-nodejs", "lines": 113, "desc_chars": 826, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Node runtime internals (event loop, streams) — distinct from language-level JS/TS."},
+    {"slug": "backend-pe-java", "lines": 110, "desc_chars": 654, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "kingmode", "lines": 109, "desc_chars": 606, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": ["near-duplicate of super-mode-core — they should be one skill"], "suggested_savings_lines": 0, "notes": "Keep as the consolidated depth router; absorb super-mode's domain-loading."},
+    {"slug": "backend-pe-typescript", "lines": 108, "desc_chars": 704, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "backend-pe", "lines": 105, "desc_chars": 838, "refs": 1, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Orchestrator role is legitimate; retains cross-cutting methodology."},
+    {"slug": "backend-pe-python", "lines": 99, "desc_chars": 698, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": ""},
+    {"slug": "frontend-pe", "lines": 88, "desc_chars": 845, "refs": 1, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Good candidate to absorb ultrathink-frontend and frontend-excellence-standards merges."},
+    {"slug": "frontend-design-excellence", "lines": 87, "desc_chars": 834, "refs": 0, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Good merge target for frontend-excellence-standards (which is ~95% duplicate)."},
+    {"slug": "constellation-team", "lines": 61, "desc_chars": 480, "refs": 8, "has_allowed_tools": false, "status": "OK", "verdict": "OK", "issues": [], "suggested_savings_lines": 0, "notes": "Clean router skill — references do the heavy lifting."}
+  ],
+  "clusters": {
+    "frontend": {
+      "skills": ["frontend-pe", "frontend-uiux-designer", "frontend-design-excellence", "frontend-excellence-standards", "ultrathink-frontend"],
+      "overlap_assessment": "70-95% content overlap on anti-patterns, typography rules, motion discipline, library discipline, WCAG targets. The 'Not for X' clauses added recently help at the margin but do not substantively separate the skills — users invoking 'design a UI' have no clear basis to pick among 5 nearly-identical rulesets. frontend-excellence-standards and frontend-design-excellence are near-duplicates. ultrathink-frontend could be a mode flag inside frontend-pe. frontend-uiux-designer is justifiable only as the constellation-team role.",
+      "action": "Collapse to 2 skills: frontend-pe (absorbing ultrathink-frontend ULTRATHINK mode + frontend-excellence-standards content) and frontend-design-excellence (keep standalone). Optionally retain frontend-uiux-designer strictly as a constellation-role doc.",
+      "estimated_line_savings": 300
+    },
+    "backend": {
+      "skills": ["backend-pe", "backend-architecture-standards", "backend-system-design-expert", "backend-pe-python", "backend-pe-python-ml", "backend-pe-typescript", "backend-pe-javascript", "backend-pe-nodejs", "backend-pe-java", "backend-pe-cpp"],
+      "overlap_assessment": "Three language-agnostic skills (backend-pe + backend-architecture-standards + backend-system-design-expert) overlap ~80% — identical decision tables for API style, consistency, caching, messaging, reliability. backend-pe is the only one doing routing; the other two duplicate its cross-cutting content. Seven language variants are LEAN (99-133 lines) and surface language-specific failure modes (GIL, event-loop lag, UB/RAII, virtual threads, tsconfig strictness) that a generic skill cannot capture.",
+      "action": "Merge backend-architecture-standards and backend-system-design-expert into backend-pe/references/architecture-patterns.md (or retire). Keep all 7 language variants — the specialization is genuinely valuable. Optional: fold backend-pe-javascript into backend-pe-typescript with a plain-JS mode flag (low priority).",
+      "estimated_line_savings": 312,
+      "opinion": "Language variants ARE valuable — do not consolidate them. The redundancy is in the three language-agnostic 'architecture' skills, not in the language specializations."
+    },
+    "learning": {
+      "skills": ["techtutor", "gabriel-petersson-topdown-mentor", "lecture-alchemist", "professor-alex-interview"],
+      "overlap_assessment": "techtutor and gabriel-petersson-topdown-mentor overlap on triggers and audience (senior engineers rebuilding DSA/system-design intuition, mandatory visualizations, intuition-before-formalism). Stylistic differences (6-layer framework vs. 5-step recursive loop with 5 response modes) are real but shallow. lecture-alchemist is a transcript-to-notes PIPELINE, not a conversational tutor — distinct. professor-alex-interview is specific to FAANG/HFT prep with anti-gaming safeguards + quant content — distinct.",
+      "action": "Consider merging techtutor and gabriel-petersson-topdown-mentor into one mentor skill with two modes (layered-explanation vs. recursive-gap-filling). Defer to user on whether the two distinct 'voices' are worth keeping. Keep lecture-alchemist and professor-alex-interview.",
+      "estimated_line_savings_if_merged": 200
+    },
+    "orchestrators": {
+      "skills": ["kingmode", "super-mode-core", "constellation-team"],
+      "overlap_assessment": "kingmode and super-mode-core are near-duplicates — same 3 modes (Default/ULTRATHINK/KINGMODE), same 4-step workflow (clarify/decide/implement/validate), same anti-hallucination rules, same output formats per mode. Only unique piece of super-mode-core is 'load backend/frontend/security standards on demand' — that is ~10 lines of content. constellation-team operates on a different axis (role-based delivery: PM -> PE -> BE -> FE -> QA -> DevOps) and is genuinely complementary.",
+      "action": "Merge super-mode-core into kingmode (absorb the domain-standards-loading section). Keep constellation-team.",
+      "estimated_line_savings": 100
+    }
+  },
+  "totals": {
+    "total_skills": 38,
+    "total_skill_md_lines": 6234,
+    "total_references_md_lines": 17818,
+    "avg_lines": 164,
+    "status_distribution": {"OVER": 0, "HEAVY": 2, "OK": 36},
+    "skills_with_allowed_tools": 0,
+    "portfolio_level_estimated_savings_lines": 900
+  },
+  "portfolio_recommendations": [
+    {"priority": 1, "action": "Collapse frontend cluster 5 -> 2 skills (merge frontend-excellence-standards + ultrathink-frontend + optionally frontend-uiux-designer into frontend-pe and frontend-design-excellence).", "estimated_savings_lines": 300},
+    {"priority": 2, "action": "Consolidate backend architecture skills 3 -> 1 (retire or fold backend-architecture-standards and backend-system-design-expert into backend-pe references/).", "estimated_savings_lines": 312},
+    {"priority": 3, "action": "Merge super-mode-core into kingmode (near-duplicate depth routers).", "estimated_savings_lines": 100},
+    {"priority": 4, "action": "Add allowed-tools frontmatter to every skill (0/38 currently declare it).", "estimated_savings_lines": 0, "note": "Quality/security upgrade, not a line saving."},
+    {"priority": 5, "action": "Trim descriptions that exceed 900 chars (professor-alex-interview 948, blueprint-creator 929, mental-health 922, gabriel-petersson 911, ultrathink-frontend 935, super-mode-core 963).", "estimated_savings_chars": 1500},
+    {"priority": 6, "action": "Decide on the learning cluster: techtutor vs. gabriel-petersson-topdown-mentor merge (user taste call).", "estimated_savings_lines_if_merged": 200},
+    {"priority": 7, "action": "Externalise inline examples from HEAVY skills into references/ (svg-logo-designer, gabriel-petersson-topdown-mentor, concept-cartographer).", "estimated_savings_lines": 100},
+    {"priority": 8, "action": "Resolve the 'internal reference vs. first-class skill' ambiguity on backend-architecture-standards, frontend-excellence-standards, security-compliance-standards.", "estimated_savings_lines": 0},
+    {"priority": 9, "action": "Document a house frontmatter style (role sentence + triggers + 'Not for X' disambiguation) as a new-skill template.", "estimated_savings_lines": 0},
+    {"priority": 10, "action": "Consider retiring concept-cartographer (246 lines of Mermaid guidance Claude can produce natively).", "estimated_savings_lines": 246}
+  ],
+  "retirement_candidates": [
+    {"slug": "frontend-excellence-standards", "reason": "~95% duplicate of frontend-design-excellence; self-describes as 'not for standalone user invocation'."},
+    {"slug": "backend-architecture-standards", "reason": "Duplicates backend-pe and backend-system-design-expert; self-describes as loaded-only-by-super-mode-core."},
+    {"slug": "super-mode-core", "reason": "Duplicates kingmode with ~10 extra lines of domain-standards loading."},
+    {"slug": "concept-cartographer", "reason": "246 lines for Mermaid diagram generation; 0 references; mostly restates Claude's default capability."},
+    {"slug": "backend-system-design-expert", "reason": "Overlaps backend-pe + backend-architecture-standards on all decision trees (API style / consistency / caching / messaging)."}
+  ]
+}

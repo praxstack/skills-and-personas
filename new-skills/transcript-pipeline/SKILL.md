@@ -206,3 +206,14 @@ Resource enrichment (optional):
 - Report missing outputs explicitly by file path.
 - Retry only from earliest failing stage.
 - Keep resource extraction status explicit (success/fallback/blocked).
+
+## Anti-Patterns
+
+- **NEVER** let Claude self-certify coverage — always run `validate_coverage.py`. Self-certification drifts 5–10% per stage and compounds; by Stage 3 the reported coverage is meaningfully wrong.
+- **NEVER** skip segment-ledger creation (Stage 0). The ledger is the only source of truth for what was in the raw input vs what survived synthesis — without it, you cannot prove no-orphan-claims later.
+- **NEVER** merge chunks (`merge_chunks.py`) without first aligning their topic inventories. Unaligned merges create duplicate topics, drop unique ones at the seam, and silently degrade coverage.
+- **NEVER** override `--deep-pass` failures by hand-editing `final_notes.md`. If deep-pass flags a missing section, re-run the stage that should have produced it — hand-edits detach the output from the audit trail.
+- **NEVER** run the Colab-notebook pipeline on a non-ML session. The prompts in `run_colab_notebook_pipeline.py` are tuned for code commentary and produce bizarre output on generic lecture content.
+- **NEVER** publish (Stage 5) before validation (Stage 4) has returned PASS. The publish step sanitizes for learner view, which masks validation failures you would have caught before distribution.
+- **NEVER** treat `exceptions.json` as "interesting notes" — it's a fail-report. If it exists after validation, the pipeline failed; re-run from the earliest referenced stage.
+- **NEVER** modify `.pipeline/segment_ledger.jsonl` by hand, even to fix a typo. The ledger is hashed downstream; any edit invalidates every later artifact.

@@ -5,137 +5,88 @@ description: 'Principal-engineer standards for backend services, APIs, data mode
 
 # Backend Architecture Standards
 
-**Audience:** Backend engineers and architects building or reviewing production services — APIs, data layers, distributed systems, and the operational plumbing around them.
+**Audience:** Backend engineers and architects reviewing or designing across multiple languages and services — the cross-cutting layer above any single `backend-pe-*` skill.
 
-**Goal:** Produce backend designs and code that are correct under failure, maintainable at scale, and operationally honest. Every choice traces to a specific access pattern, failure mode, or growth assumption — never "because it's standard".
+**Goal:** Capture the decisions that are cross-cutting and load-bearing but not language-specific. Language-specific failure modes live in `backend-pe-{python,typescript,java,cpp,nodejs,javascript,python-ml}` — this skill only holds what they all share.
 
-## Core Principles
+Generic best practices (define SLOs, validate inputs at boundaries, use parameterized queries, enable TLS 1.3, deny by default) are Claude-default output and are not repeated here.
 
-- Design schemas around access patterns and constraints, not the other way around.
-- Validate inputs at boundaries; sanitize and log failures.
-- Use migrations that are reversible and tested.
-- Choose consistency models explicitly — strong vs eventual, per operation.
-- Separate hot paths from batch workloads.
-- Observability from day one: structured logs with correlation IDs, metrics, traces.
-- Define SLIs, SLOs, and error budgets per service.
-- Plan for HA and DR with clear RTO/RPO targets.
+## Cross-cutting decisions
 
-## Decision Framework
+### HA/DR targets with explicit RTO/RPO
 
-### Monolith vs Microservices
+Every production service needs numbers, not adjectives:
 
-Choose based on team size and domain complexity — not on resume-driven architecture.
+- **RTO** (recovery time objective) — how long until service is back, measured from outage declaration. Typical tiers: 15 min (payments, auth), 1 hour (core product), 4 hours (internal tools).
+- **RPO** (recovery point objective) — how much data loss is acceptable, measured in wall-clock time. Typical tiers: 0 (transactions), 5 min (user content), 1 hour (analytics).
 
-- Single team, tight domain: start monolithic, split later along proven seams.
-- Multiple teams with independent release cycles, distinct data ownership, or extreme scaling asymmetry: services make sense.
-- Never split because "microservices are modern". Split when coordination cost exceeds service cost.
+The architecture is wrong if the replication strategy cannot physically meet the RPO (async replication across regions cannot deliver RPO=0, regardless of how the runbook reads).
 
-### API Style
+### Event-driven consistency patterns
 
-- **REST** — use nouns, HTTP verbs, and status codes correctly. Document pagination, filtering, versioning.
-- **GraphQL** — schema-first design, depth limits, query complexity limits, persisted queries for untrusted clients.
-- **gRPC** — protobuf with versioned backward-compatible evolution (never reuse field numbers, additive-only for shared protos).
+- **Exactly-once semantics is a myth at the transport layer.** Build idempotency into consumers — deterministic request IDs with a dedup window sized to the retry horizon. Transport provides at-least-once; consumers make it effectively-once.
+- **Sagas over distributed transactions.** Every saga step needs a compensating action that is itself idempotent and runnable out-of-order. Document the failure matrix: which step failures can be retried, which trigger compensation, which require manual intervention.
+- **Outbox pattern** for write-then-publish consistency. The database transaction that writes business state also writes the event row; a separate relay ships the row to the broker. Never write to the broker directly from application code inside a database transaction.
+- **Event schema evolution must be additive only.** Removed or renamed fields break consumers that redeploy on a different cadence than producers. Deprecate for at least one full consumer rollout cycle before removal.
 
-Pick one per service boundary and stay consistent.
+### Migration reversibility discipline
 
-### Data Store Selection
+Every migration PR is required to include:
 
-- Relational when transactions and constraints matter.
-- Document when schema is emergent and access is document-shaped.
-- Key-value when access is by primary key and scale dominates.
-- Normalize for transactions; denormalize for read-heavy paths only when reads dominate and the write amplification is acceptable.
-- Avoid cross-service database sharing — each service owns its data.
+1. The forward migration.
+2. The rollback script, executed at least once in a non-prod environment before merge.
+3. The read-path compatibility plan — old code reading after new migration must still work until old code is drained.
+4. The write-path compatibility plan — new code writing before old code drains must produce data readable by old code (or gated behind a flag).
 
-### Consistency and Messaging
+Irreversible migrations (column drops, table renames, type narrowings) are multi-step: deploy dual-write, backfill, verify, drop old column, deploy read-only-new. One-step destructive migrations are forbidden on any table with user data.
 
-- Choose consistency models explicitly (strong vs eventual) per operation.
-- Async processing must be idempotent and retry-safe.
-- Document message ordering and deduplication rules.
-- Use async messaging only when it simplifies coupling or throughput — not as a default.
+### Hot-path / batch separation
 
-### Caching
+Hot paths (user-facing latency budgets <200ms) and batch paths (throughput-optimized, latency-tolerant) compete for the same shared resources — database connections, cache bandwidth, network egress. Separation is architectural, not configurational:
 
-- Cache-aside where correctness matters.
-- Define TTLs and invalidation strategies up front.
-- Avoid schema drift between cache and source of truth; document ownership.
-- Never treat the cache as the source of truth for correctness-sensitive paths.
+- Different DB read replicas (or different connection pools on the same replica with hard limits).
+- Different queues with different consumer pools.
+- Different deployment units so a batch regression cannot degrade hot-path SLOs.
 
-### Scaling
+Co-locating them means every batch job is a potential outage.
 
-- Horizontal scaling for stateless services.
-- Vertical scaling for stateful storage.
-- Load balancing with health checks and backoff.
-- Apply caching tiers and rate limits to protect core systems.
+### Cross-service data ownership
 
-### Reliability Patterns
+- One service owns each table. Other services read via API, not via direct DB access — even if "just for reporting" and "just temporarily".
+- Shared database for multiple services is a distributed monolith with distributed-system failure modes and none of the benefits.
+- Cross-service joins happen in the application layer, with explicit pagination and timeout budgets, or via a dedicated analytics pipeline with its own copy of the data.
 
-- Timeouts and retries with exponential backoff.
-- Circuit breakers and bulkheads for dependency isolation.
-- Graceful degradation when upstreams fail.
+## Anti-patterns specific to this layer
 
-## Anti-Patterns
-
-- **NEVER** share a database across services.
-- **NEVER** ship async processing without idempotency and a dedup strategy.
-- **NEVER** write migrations without a tested rollback path.
+- **NEVER** share a database across services — not "for convenience", not "temporarily", not "just for reporting".
+- **NEVER** ship async processing without idempotency and a dedup strategy — at-least-once delivery is the transport default.
+- **NEVER** write migrations without a tested rollback path — a migration PR without a verified rollback is not ready.
+- **NEVER** claim RTO/RPO targets you have not measured with a game day.
+- **NEVER** use microservices to solve a team-communication problem — the coordination cost becomes a distributed-systems cost.
+- **NEVER** reuse gRPC/protobuf field numbers when evolving schemas — additive-only, forever.
+- **NEVER** treat the cache as the source of truth for correctness-critical data — document the failure mode when the cache is cold or wrong.
 - **NEVER** invent hard performance or cost numbers without measurement or explicit inputs.
-- **NEVER** return untyped 200s for errors; use correct HTTP status codes.
-- **NEVER** use microservices to solve a team-communication problem.
-- **NEVER** let the cache become the source of truth for correctness-critical data.
-- **NEVER** skip input validation at the boundary.
-- **NEVER** reuse gRPC/protobuf field numbers when evolving schemas.
-- **NEVER** claim SLOs you are not measuring.
+- **NEVER** colocate hot paths and batch paths on the same connection pool.
 
-## Standard Workflow
+## Cross-references
 
-1. **Define requirements.** Functional requirements plus non-functional: throughput, latency, availability targets, data volume, growth, compliance.
+Language-specific knowledge — ownership graphs (C++), virtual threads (Java), prototype pollution (JS), train-serve skew (ML), async runtime choice (Python/TS/Node), GC tuning — lives in the appropriate `backend-pe-{language}` skill.
 
-2. **Identify critical paths and failure domains.** What is the blast radius if component X fails? What is the recovery path?
+Security, authentication, and audit-log patterns live in `security-compliance-standards` and `qa-security-engineer`.
 
-3. **Specify the data model.** Schemas designed around actual access patterns. Indexes and constraints with intent. Document table ownership.
+## Deliverables contract
 
-4. **Design service boundaries and contracts.** Clear data ownership per service. API style chosen and justified. Version strategy defined.
+Backend architecture delivery includes:
 
-5. **Pick consistency, caching, and messaging posture.** Explicit per operation. TTLs and invalidation written down. Idempotency guaranteed where async is used.
-
-6. **Plan reliability.** Timeouts, retries with backoff, circuit breakers, bulkheads. Graceful degradation paths for each upstream.
-
-7. **Plan operations.** CI/CD with rollback. Blue-green or canary for risky changes. Immutable deploys. Config separated from build artifacts. Secrets in secret stores. Resource requests and limits in orchestrators.
-
-8. **Plan observability.** SLIs and SLOs per service with error budgets. Structured logs with correlation IDs. Metrics and traces. Alert thresholds tied to SLOs.
-
-9. **Define migration and rollout.** Reversible migrations. Feature flags for risky paths. Rollback criteria documented.
-
-10. **Validate.** Load test or profile before claiming performance. Run integration tests at boundaries. Report what was actually run.
-
-## Deliverables Contract
-
-Backend delivery includes:
-
-- **Requirements summary** — functional plus non-functional with numbers where provided.
-- **API contract** — endpoints or schema, status codes, error formats, pagination, filtering, versioning.
-- **Data model** — schemas, indexes, constraints, ownership per table.
-- **Service boundaries** — what each service owns, contracts between them.
-- **Consistency and messaging posture** — per-operation choices with justification.
-- **Caching strategy** — what is cached, TTLs, invalidation, failure mode.
-- **Reliability plan** — timeouts, retries, circuit breakers, graceful degradation.
-- **Operational plan** — deploy strategy, rollback criteria, monitoring, alert thresholds.
-- **Observability plan** — SLIs, SLOs, error budgets, correlation ID strategy.
-- **Migration plan** — reversible steps, rollback path, feature-flag strategy.
-- **Tests actually run** — listed with results. What was not run is listed too.
-- **Known risks and open questions.**
-
-## Documentation Expectations
-
-- Public APIs and system boundaries are documented.
-- Major architectural decisions captured as ADRs.
-- Architecture diagrams maintained for critical flows.
-- Runbooks exist for deploy, rollback, and incident response.
-- API docs and examples stay in sync with implementation.
-
-## Performance and Cost
-
-- Identify bottlenecks with measurement or profiling — not intuition.
-- Separate steady-state costs from peak-load costs.
-- Prefer simple scaling over premature optimization.
-- State cost assumptions explicitly; avoid hard numbers without inputs.
+- Requirements summary — functional + non-functional with numbers where provided.
+- **RTO/RPO targets** for each critical path, with the replication strategy that physically meets them.
+- API contract — endpoints/schema, status codes, error formats, pagination, versioning.
+- Data model — schemas, indexes, ownership per table.
+- Service boundaries — what each service owns, contracts between them.
+- Consistency + messaging posture — per-operation, with idempotency and dedup strategy where async.
+- Caching strategy — what, TTL, invalidation, failure mode.
+- **Migration plan** — reversible steps, tested rollback, read/write compatibility windows.
+- Reliability plan — timeouts, retries, circuit breakers, degradation paths.
+- Observability plan — SLIs/SLOs with error budgets, correlation IDs.
+- Tests actually run — and what was not run, with reasons.
+- Known risks and open questions.

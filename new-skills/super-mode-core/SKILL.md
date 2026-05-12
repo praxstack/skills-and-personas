@@ -1,168 +1,74 @@
 ---
 name: super-mode-core
-description: 'Orchestration layer for principal-engineer-grade delivery across frontend, backend, infrastructure, and security. Routes between Default, ULTRATHINK, and KINGMODE reasoning depths and loads domain-specific standards on demand. Use when the user types "SUPER-MODE", asks for a cross-domain production solution, requests a full-stack architecture with code, or invokes "ULTRATHINK" / "KINGMODE" on a task that spans multiple domains. Covers the unified clarify/decide/implement/validate workflow, non-hallucination discipline, tool discipline, quality gate before delivery, and the loading triggers for backend-architecture-standards, frontend-excellence-standards, and security-compliance-standards. Not for: single-domain tasks (use the domain skill directly), user-facing depth-only prompts (use kingmode), or frontend-only work (use ultrathink-frontend or frontend-pe). This is an internal orchestrator — do not route to it when a more specific skill applies.'
+description: 'Internal loader for principal-engineer domain standards across backend, frontend, and security. Invoked by kingmode (or a calling skill) when a task spans multiple domains and needs the relevant standards loaded together. Does NOT make user-facing mode decisions — that is kingmode''s job. Takes an already-selected mode + domain tags and loads the matching domain-standards skills (backend-architecture-standards, frontend-excellence-standards, security-compliance-standards). Triggers only as a downstream loader: kingmode classified a task as multi-domain, a caller asks for "super-mode", or a user typed "SUPER-MODE" to signal cross-domain scope. Not for: single-domain tasks (use the domain skill directly), mode selection or depth routing (use kingmode), frontend-only analysis (use ultrathink-frontend), greenfield frontend workflow (use frontend-pe), or any user-facing depth decision. Pure loader — no mode routing, no user-facing output.'
 ---
 
-# SUPER-MODE Core
+# SUPER-MODE Core — Domain-Standards Loader
 
-**Audience:** Engineers handling multi-domain production requests (frontend + backend + infra + security) who need one decision router to pick reasoning depth and load the right domain standards on demand.
+**Audience:** Other skills (primarily `kingmode`) that need multi-domain standards loaded for a cross-cutting task. Occasionally invoked directly by a user typing `SUPER-MODE` to signal cross-domain scope.
 
-**Goal:** Select the correct reasoning mode, clarify scope, load the domain-specific standards needed for the task, produce complete work, and pass the quality gate before delivery — without hallucinating metrics or test results.
+**Goal:** Detect which domains a task touches, load the matching domain-standards skills, and hand control back to the caller. This skill does NOT choose reasoning depth, does NOT run workflows, does NOT produce output — it's a loader and nothing else.
 
-## Core Principles
+## Relationship to kingmode
 
-- **Production readiness is mandatory, not optional.** Treat every delivery as shippable work.
-- **Correctness, resilience, maintainability — always ahead of shortcuts.**
-- **Follow instructions exactly** and honor constraints.
-- **Output working code or concrete steps**, never vague advice.
-- **Plan first, implement second.** Validate the approach before writing code.
-- **Design for failure** with graceful degradation.
-- **Prefer proven libraries and patterns**; avoid reinvention.
-- **Challenge assumptions and confirm requirements** before committing.
+The two skills used to overlap on mode routing. After the 2026-05-12 council re-adjudication (conversation `20e0676d-87bd-4825-a327-689d74176a7a`), that duplication is removed:
 
-## Decision Framework
+- **kingmode** is the sole source of mode selection (Default / ULTRATHINK / KINGMODE). User-facing depth decisions live there.
+- **super-mode-core** (this skill) is a pure internal loader. It assumes a mode has already been chosen and loads the cross-cutting domain standards for the task.
 
-### Mode Selection
+If you (as a caller) need mode selection, invoke `kingmode` first, then super-mode-core. If you only need one domain, load that domain's standards skill directly — don't route through super-mode-core.
 
-Three reasoning depths. Pick one before responding.
+## Domain-Tag Detection Table
 
-**Default** — concise answers with production-ready code.
-- Use when: scope is narrow, one domain, no explicit deep-reasoning trigger.
-- Response format: brief context, the code or steps, key notes.
+When invoked, classify the task by which domains it touches. Load the corresponding standards skills. Multi-domain tasks load multiple.
 
-**ULTRATHINK** — deep multi-dimensional analysis, then code.
-- Trigger: user types "ULTRATHINK".
-- Override brevity. Analyze through every relevant lens: psychological, technical, accessibility, scalability, security, maintainability.
-- Never use surface-level reasoning. Justify key decisions.
-- Response format: Deep Reasoning, Edge Cases, Performance, Alternatives, The Code.
+| Task touches | Load |
+|---|---|
+| Services, databases, APIs, distributed systems, messaging, caching, data modeling, service boundaries | **MANDATORY:** `backend-architecture-standards` |
+| UI, components, pages, accessibility, frontend performance, design aesthetics, motion, typography, color | **MANDATORY:** `frontend-excellence-standards` |
+| Authentication, authorization, secrets, input validation, data protection, threat modeling, encryption, compliance (GDPR/SOC2/PCI/HIPAA) | **MANDATORY:** `security-compliance-standards` |
+| Language-specific backend implementation (Python asyncio, Java concurrency, C++ RAII, Node.js event loop, TypeScript types, Python-ML training) | Load the matching `backend-pe-{language}` skill in addition to the standards |
+| Pure taste / aesthetic commitment (reject AI slop, bold aesthetic direction) | `frontend-design-excellence` |
+| Cross-functional UI/UX role (product + design + frontend together) | `frontend-uiux-designer` |
+| Deep frontend analysis / review (ULTRATHINK mode applied to frontend) | `ultrathink-frontend` |
 
-**KINGMODE** — architecture-first delivery with organizational and operational context.
-- Trigger: user types "KINGMODE", or requests system design / architecture review / scalability plan.
-- Lead with verification checkpoints before implementation.
-- Consider organizational impact, operational complexity, cost.
-- Response format: Executive Summary, Architecture, Components, Data, Scalability, Security, Operations, Trade-offs, Roadmap, The Code.
+## Loader Rules
 
-### Domain Standards Loading
+- **Load only what the task needs.** Loading irrelevant standards bloats context and weakens reasoning.
+- **Load once per session.** If a standards skill is already in context, don't reload it.
+- **Defer to the caller's mode.** Whatever mode kingmode chose (Default / ULTRATHINK / KINGMODE) remains authoritative. super-mode-core does not override it.
+- **Return control after loading.** This skill does not produce final output — it hands back to the caller (kingmode, or the user directly if they typed SUPER-MODE).
 
-This skill is the router. Load the matching domain standards skills based on what the task actually touches. Do not load skills the task does not need — bloat weakens reasoning.
+## When to NOT route here
 
-- **MANDATORY:** Load `backend-architecture-standards` when the task involves services, databases, APIs, distributed systems, messaging, caching, data modeling, or service boundaries.
-- **MANDATORY:** Load `frontend-excellence-standards` when the task involves UI, components, pages, accessibility, frontend performance, or design aesthetics.
-- **MANDATORY:** Load `security-compliance-standards` when the task involves auth, authz, secrets, input validation, data protection, threat modeling, or compliance.
-- Multi-domain tasks load multiple standards skills in one session.
-
-### Architecture Checklist (for KINGMODE and any design-heavy task)
-
-Before producing the design, cover:
-
-- Functional and non-functional requirements
-- Critical paths, failure domains, and blast radius
-- Data flow, ownership, and consistency model
-- Integration points and contracts
-- SLIs, SLOs, and alert thresholds
-- Rollout, rollback, and migration strategy
-- Security posture and compliance needs
-- Cost drivers and scaling risks at a high level
+- User types "ULTRATHINK" or "KINGMODE" alone → that's mode selection; route to `kingmode`.
+- Task is single-domain (e.g., "write a Python FastAPI endpoint") → load the domain skill directly (`backend-pe-python` in this case). Skipping super-mode-core saves a context load.
+- Task is a narrow prototype or a one-file refactor → the domain skill is enough; no need for the standards layer.
 
 ## Anti-Patterns
 
-- **NEVER** over-engineer without evidence of the constraint that demands it.
-- **NEVER** ignore error handling or input validation.
-- **NEVER** ship without tests on critical paths.
-- **NEVER** use magic numbers without justification.
-- **NEVER** claim results, benchmarks, or test runs that were not actually executed.
-- **NEVER** invent hard numbers for cost or performance — label estimates and list assumptions.
-- **NEVER** cite sources the user or repo did not provide; say "no source" instead.
-- **NEVER** skip the clarify step on ambiguous requirements.
-- **NEVER** make destructive changes without explicit request.
-- **NEVER** write outside the workspace or invoke network access without asking first.
-
-## Standard Workflow
-
-Every request runs this four-step loop. Mode changes the output shape, not the process.
-
-### 1. Clarify
-
-- Ask for missing requirements: scale, users, data, latency, budgets, timelines, compliance.
-- If proceeding without answers, state assumptions explicitly.
-- Confirm scope boundaries — what is in, what is out.
-
-### 2. Decide
-
-- Choose an approach and state the trade-offs.
-- Name the alternatives considered and why the chosen path wins.
-- For KINGMODE: run the architecture checklist above before committing.
-- Select and load the domain standards skills needed for the task.
-
-### 3. Implement
-
-- Produce complete code or concrete steps.
-- No TODOs. No placeholders.
-- Follow the domain standards loaded in step 2.
-- Use tools only when needed to answer accurately.
-- Avoid destructive commands unless explicitly requested.
-
-### 4. Validate
-
-- List the checks and tests actually run.
-- Explicitly mark what was not run and why.
-- Note remaining risks and open questions.
-- Run the Quality Gate before declaring done.
-
-## Quality Gate Before Delivery
-
-Confirm all of these before returning the work:
-
-- Requirements are met and assumptions are stated.
-- Security basics addressed for inputs and secrets.
-- Error handling and failure modes are covered.
-- Tests and checks actually run are listed — as are the ones that were not.
-- Known risks or missing context are noted.
-- Clear next steps given if work is incomplete.
-- Steps and outputs are reproducible and deterministic where possible.
+- **NEVER** make user-facing mode decisions here. That's kingmode's job. If a caller hasn't picked a mode, route back to kingmode.
+- **NEVER** load all three standards skills by default. Detect the domain and load only what applies.
+- **NEVER** produce final user-facing output from this skill. It's a loader; the caller produces output.
+- **NEVER** override the caller's selected mode. If the caller is in Default mode, don't escalate to KINGMODE because the task looks complex — that's the caller's call.
+- **NEVER** duplicate mode-routing logic that belongs in kingmode. If you find yourself writing a Default/ULTRATHINK/KINGMODE decision tree here, that's the signal to delete it and delegate to kingmode.
 
 ## Deliverables Contract
 
-**Default response shape:**
+When invoked, this skill's "output" is a loader report, not user-facing content:
 
-1. Brief context.
-2. The code or concrete steps.
-3. Key notes — risks, follow-ups, what was not validated.
+```
+Loaded for [task description]:
+- backend-architecture-standards (because [domain tag])
+- security-compliance-standards (because [domain tag])
 
-**ULTRATHINK response shape:**
+Control returned to [caller: kingmode / user].
+```
 
-1. Deep Reasoning Chain.
-2. Edge Case Analysis.
-3. Performance Implications.
-4. Alternatives and Trade-offs.
-5. The Code.
+That's it. The actual response to the user comes from the caller skill using the loaded standards.
 
-**KINGMODE response shape:**
+## Example invocations
 
-1. Executive Summary.
-2. Architecture.
-3. Components.
-4. Data architecture.
-5. Scalability analysis.
-6. Security design.
-7. Operational runbook.
-8. Trade-off analysis.
-9. Implementation roadmap.
-10. The Code.
-
-## Example Triggers
-
-- "Design a scalable system for X" — KINGMODE, load backend-architecture-standards + security-compliance-standards.
-- "Review our architecture for Y" — KINGMODE, load whichever domain applies.
-- "Optimize performance for Z" — ULTRATHINK if cross-cutting, Default if narrow.
-- "ULTRATHINK: ..." — ULTRATHINK.
-- "KINGMODE: ..." — KINGMODE.
-- "SUPER-MODE: ..." — full multi-domain routing, load standards as needed.
-- "Build a landing page that calls our API securely" — Default or ULTRATHINK, load frontend-excellence-standards + security-compliance-standards.
-
-## Tool and Action Discipline
-
-- Use tools only when needed to answer accurately.
-- Avoid destructive commands unless explicitly requested.
-- Ask before actions that write outside the workspace or require network access.
-- Never claim a command or check was run unless it actually was.
+- kingmode (in KINGMODE mode) classifies "design a payment processing system" as backend + security multi-domain → invokes super-mode-core → super-mode-core loads `backend-architecture-standards` + `security-compliance-standards` + `backend-pe-python` (or whichever language) → control returns to kingmode for the KINGMODE-shaped output.
+- User types `SUPER-MODE: design a dashboard with secure auth` → super-mode-core classifies as frontend + backend + security multi-domain → loads all three standards → invokes kingmode (if the user implied depth) or lets the domain skills drive otherwise.
+- User asks "write a Python FastAPI endpoint" → super-mode-core is NOT the right skill; route directly to `backend-pe-python`.

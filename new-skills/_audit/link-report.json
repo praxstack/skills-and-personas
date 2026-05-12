@@ -1,8 +1,8 @@
 {
   "broken": {},
   "summary": {
-    "files_scanned": 134,
-    "links_scanned": 130,
+    "files_scanned": 136,
+    "links_scanned": 134,
     "passed": true,
     "skills_scanned": 38,
     "total_broken": 0

@@ -10,6 +10,8 @@ description: 'Principal-frontend-engineer workflow for production-grade, design-
 
 Read `references/methodology.md` for the full methodology (operational directives, ultra-frontend workflow, response template, constraints).
 
+**Also MANDATORY:** `references/design-rules.md` — the canonical source for typography bans (Inter/Roboto/Arial), color discipline (dominant+accent, no purple-on-white), motion rules, UI library discipline, accessibility baseline, and performance targets. All frontend skills in this portfolio delegate to this file rather than owning their own copies of these rules.
+
 ## Operational directives
 
 1. **Maximum compute deployment.** Push reasoning and code generation to practical limits. Never settle for "good enough."

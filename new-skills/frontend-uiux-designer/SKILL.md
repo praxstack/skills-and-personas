@@ -5,9 +5,11 @@ description: 'Frontend engineering plus UI/UX design for production interfaces. 
 
 # Frontend + UI/UX Designer
 
-**Audience:** Engineers and designers building production web interfaces.
+**Audience:** Engineers and designers filling the cross-functional UI/UX role inside a `constellation-team` workflow — bridging product requirements, design decisions, and frontend implementation.
 
-**Goal:** Ship distinctive, accessible, performant interfaces — not generic AI-aesthetic defaults — with a coherent aesthetic point-of-view and measurable quality.
+**Goal:** Ship distinctive, accessible, performant interfaces — not generic AI-aesthetic defaults — with a coherent aesthetic point-of-view and measurable quality, while handing off to peer engineering roles cleanly.
+
+**MANDATORY — load first:** `../frontend-pe/references/design-rules.md`. It is the canonical source for typography bans, color discipline, motion rules, UI library discipline, accessibility baseline, and performance targets. This skill inherits those rules and focuses on what's unique to the cross-functional UI/UX role: research translation, design-to-implementation handoff, component-state coverage, and constellation-team collaboration.
 
 ## Core Responsibilities
 

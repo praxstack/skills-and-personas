@@ -9,15 +9,13 @@ description: 'Two-mode frontend architecture skill — Default for concise produ
 
 **Goal:** Deliver frontend code that is bespoke, library-disciplined, accessible by default, and performance-aware. Route between fast execution and deep multi-dimensional analysis based on the trigger.
 
-## Core Principles
+## Shared discipline (load first)
 
-- **Intentional minimalism.** Reduction is the ultimate sophistication. Every element justifies its existence — no purpose, no element.
-- **Anti-generic.** Reject template-like layouts. Bespoke beats bootstrapped. Asymmetry and distinctive typography create visual interest without chaos.
-- **Whitespace is a design element**, not empty space.
-- **Typography carries 70% of perceived design quality.** Distinctive display + readable body. Arial/Inter/Roboto/system are rejected unless the brief mandates them.
-- **Every color choice has a functional purpose.**
-- **Accessibility is native, not bolted on.**
-- **UI library discipline is non-negotiable** — if a library exists in the project, use its primitives.
+**MANDATORY:** Read `../frontend-pe/references/design-rules.md`. It is the canonical source for typography bans, color discipline, motion rules, UI library discipline, accessibility baseline, and performance targets. This skill does NOT restate those rules — it adds depth-analysis discipline on top of them.
+
+## Unique to this skill — depth-routing and the 4-lens analysis
+
+What separates ULTRATHINK from the default frontend skills is not the rules (those are shared). It's the *depth of reasoning*: when the user invokes ULTRATHINK, every design decision gets analyzed through four lenses before code is written.
 
 ## Decision Framework
 
@@ -40,30 +38,18 @@ Two modes. Route by explicit trigger.
   - **Scalability** — long-term maintenance, modularity, component reusability
 - Prohibition: never surface-level logic. If reasoning feels easy, dig deeper until irrefutable.
 
-**UI Library Discipline (Both Modes).**
-1. Check project context for existing library usage automatically.
-2. Use library components for all UI primitives (modals, dropdowns, buttons, forms, popovers, tooltips).
-3. Never build from scratch what the library provides.
-4. Exception: may wrap or style library components for avant-garde aesthetics, but the underlying primitive must be from the library. Rationale: stability, accessibility, no CSS pollution.
+**UI library + technology defaults:** See `../frontend-pe/references/design-rules.md` — UI Library Discipline, Typography/Color/Motion/Layout sections. This skill inherits those rules unchanged.
 
-**Technology defaults:**
-- Frameworks: modern React/Vue/Svelte with current patterns.
-- Styling: Tailwind CSS or custom CSS with design tokens.
-- HTML: semantic HTML5 with proper ARIA.
-- Performance: code-splitting, lazy loading, optimized re-renders.
-- State: minimal state, derived values, proper memoization.
+## Anti-Patterns (depth-specific)
 
-## Anti-Patterns
+Shared anti-patterns (banned fonts, purple-on-white, scattered animations, library-primitive rebuild, generic templates) live in `../frontend-pe/references/design-rules.md`. Additional anti-patterns specific to depth-analysis mode:
 
-- **NEVER** build a custom modal, dropdown, combobox, or form primitive when the project's UI library provides it.
-- **NEVER** produce generic, template-like designs — bespoke layouts always.
-- **NEVER** add elements without clear functional purpose.
-- **NEVER** bolt on accessibility after the fact — ARIA, keyboard nav, focus states are designed in.
-- **NEVER** use `localStorage` or `sessionStorage` in artifacts that will render in claude.ai (not supported).
+- **NEVER** claim ULTRATHINK output without actually running all four lenses. Skipping lenses is the #1 failure mode.
+- **NEVER** stop at surface-level reasoning. If the reasoning feels easy, the analysis hasn't gone deep enough — dig until a non-obvious insight surfaces.
+- **NEVER** use ULTRATHINK depth on single-component work the user asked for briefly. Reserve depth for the trigger.
+- **NEVER** stay in default mode when the user typed "ULTRATHINK" — the mode is persistent for the rest of the conversation.
+- **NEVER** output Edge Case Analysis without Alternative Approaches compared — one without the other is half the value.
 - **NEVER** ship code with TODO comments or placeholders — complete or do not claim complete.
-- **NEVER** ignore the existing UI library in the project.
-- **NEVER** use excessive bold, headers, or bullet dumps in code files themselves.
-- **NEVER** converge on the same visual choices across generations (Space Grotesk, purple-on-white, evenly-distributed palettes).
 
 ## Standard Workflow
 

@@ -1,0 +1,62 @@
+{
+  "phase": "7b-judge-fixes",
+  "fixes_applied": {
+    "idea-capturer": {
+      "before_lines": 299,
+      "after_lines": 78,
+      "never_items_added": 10,
+      "notes": "Deleted SCAMPER/5-Whys/Zettelkasten explanations and full example session. Led with capture-vs-develop-vs-organize decision tree and 'could I forget this?' heuristic. Added mode discipline and idea-type pivot table."
+    },
+    "constellation-team": {
+      "never_items_added": 6,
+      "disambig_table_added": true,
+      "notes": "Kept Navigation pattern (80 lines). Added anti-patterns for multi-role orchestration and a disambiguation table distinguishing frontend-pe vs frontend-uiux-designer vs ultrathink-frontend vs frontend-design-excellence within the constellation workflow."
+    },
+    "concept-cartographer": {
+      "before_lines": 246,
+      "after_lines": 103,
+      "mermaid_blocks_removed": 8,
+      "never_items_added": 7,
+      "notes": "Moved mermaid syntax examples to references/mermaid-examples.md (one per type). Kept domain-focus table, topic-inventory verification, max-15-nodes rule. Added 7 non-obvious anti-patterns."
+    },
+    "transcript-pipeline": {
+      "never_items_added": 8,
+      "before_lines": 208,
+      "after_lines": 219,
+      "notes": "Kept the Navigation skill structure; added a specific Anti-Patterns section covering self-certification drift, segment ledger tampering, unaligned chunk merges, deep-pass override, Colab prompt misuse, premature publish, exceptions.json handling, and ledger edits."
+    },
+    "baron-von-markup": {
+      "before_lines": 164,
+      "after_lines": 86,
+      "notes": "Deleted sections restating basic Markdown rules (heading hierarchy, list markers, code-fence basics, ambiguity handling restating intent). Led with the three Baron Standard pillars. Kept emoji palette table, four operating modes table, and strengthened anti-pattern list. Consolidated workflow from 14 to 13 steps."
+    },
+    "backend-architecture-standards": {
+      "before_lines": 141,
+      "after_lines": 92,
+      "generic_bullets_removed": 17,
+      "cross_refs_added": 2,
+      "notes": "Stripped generic best-practice bullets (define SLOs, validate inputs, TLS, least privilege, circuit breakers as category, caching basics). Kept cross-cutting content: RTO/RPO discipline, exactly-once/saga/outbox patterns, migration reversibility, hot-path/batch separation, cross-service data ownership. Cross-referenced backend-pe-{language} and qa-security-engineer."
+    },
+    "security-compliance-standards": {
+      "before_lines": 151,
+      "after_lines": 96,
+      "generic_bullets_removed": 22,
+      "cross_refs_added": 2,
+      "notes": "Stripped generic security best practices (don't hardcode secrets, use TLS, validate inputs, deny by default, rotate tokens). Kept authN protocol decision tree (OIDC/SAML/mTLS/IAP/cloud IAM by context), encryption-at-rest criteria (KMS vs app-level vs HSM vs envelope), audit-log tamper-evidence patterns (append-only, chaining, external anchoring, signing). Cross-referenced qa-security-engineer and backend-architecture-standards."
+    }
+  },
+  "verification": {
+    "lint_fails": 0,
+    "lint_warns": 0,
+    "link_broken": 0,
+    "smoke_fails": 0,
+    "smoke_warns": 0,
+    "pytest_passing": 39,
+    "skills_total": 38
+  },
+  "portfolio_line_reduction": {
+    "before_total": 1270,
+    "after_total": 754,
+    "lines_saved": 516
+  }
+}

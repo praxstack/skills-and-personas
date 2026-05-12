@@ -5,147 +5,92 @@ description: 'Principal-engineer standards for security, privacy, and compliance
 
 # Security and Compliance Standards
 
-**Audience:** Engineers and architects building or reviewing systems where authentication, data protection, and compliance boundaries matter — which is most production systems.
+**Audience:** Engineers and architects reviewing cross-cutting security and compliance posture. The methodology for attacking and defending specific surfaces (OWASP Top 10, injection classes, severity calibration, SAST/DAST/IAST/SCA matrix) lives in `qa-security-engineer` — this skill is for the high-level decision trees that shape architecture.
 
-**Goal:** Deliver designs and code that defend against plausible attackers, handle secrets correctly, minimize data collection, preserve audit trails, and meet the compliance posture the workload demands. Every control traces to a threat; every exception is explicit.
+**Goal:** Give the non-obvious calls: which auth protocol for which context, when encryption-at-rest moves from KMS to HSM to app-level, how to make audit logs actually tamper-evident. Every control traces to a threat; every exception is explicit.
 
-## Core Principles
+Generic best practices (use TLS, don't hardcode secrets, validate inputs, deny by default, rotate tokens) are Claude-default output and are not repeated here.
 
-- Perform lightweight threat modeling before building: assets, actors, entry points.
-- Enforce least privilege everywhere — identities, services, database roles, CI tokens.
-- Strong authentication and authorization on every trust boundary.
-- Never hardcode secrets; use a secret store.
-- Encrypt data in transit; encrypt data at rest when required by sensitivity or regulation.
-- Log security events with enough detail to investigate; preserve audit trails.
-- Minimize data collection to what is actually required.
-- Mask or redact sensitive fields in logs.
-- Follow retention and deletion policies.
+## Authentication protocol decision tree
 
-## Decision Framework
+Picking the wrong protocol is the error that compounds. Pick from this tree, not by familiarity:
 
-### Threat Modeling (Lightweight)
+```
+Is this user-to-service or service-to-service?
+├─ User-to-service
+│  ├─ Browser/SPA with federated identity  → OIDC (OAuth2 Authorization Code + PKCE)
+│  ├─ Enterprise SSO, existing IdP is SAML → SAML 2.0 (only; do not mix with OIDC in one flow)
+│  ├─ Native mobile app                    → OIDC + PKCE + system browser (never embedded webview)
+│  └─ Internal tools behind IdP proxy      → IAP/zero-trust proxy; app trusts signed header
+└─ Service-to-service
+   ├─ Same trust zone, low-latency critical → mTLS with short-lived SPIFFE/SPIRE identities
+   ├─ Cross-zone or untrusted path          → Signed JWTs with `aud` validation + mTLS underlay
+   ├─ Cloud-native same-VPC                 → Cloud IAM (workload identity, AWS IAM roles, GCP service accounts)
+   └─ Webhook receiver from 3rd party       → HMAC signature + replay protection (timestamp + nonce)
+```
 
-Before any significant design, enumerate:
+Common misapplications:
 
-- **Assets.** What is valuable? Credentials, PII, payment data, proprietary data, availability of the service itself.
-- **Actors.** External attackers, malicious insiders, compromised dependencies, accidental misuse.
-- **Entry points.** Every ingress: public endpoints, webhooks, message queues, file uploads, admin surfaces, CI/CD.
-- **Trust boundaries.** Where does untrusted data become trusted? That is where validation and authorization live.
+- OIDC for service-to-service — works but forces human-auth flows into machine paths. Prefer mTLS or cloud IAM.
+- SAML for SPAs — the redirect dance and XML parsing are a larger attack surface than OIDC.
+- Mixing OIDC and SAML in the same flow — fail open in practice; a bug in either breaks both.
 
-Document the threats you are defending against and the ones you are explicitly not.
+## Encryption-at-rest criteria
 
-### Authentication Patterns
+The question is not "should we encrypt at rest" (yes, usually) but "at which layer".
 
-- Prefer OAuth2 or OIDC for user authentication when applicable.
-- Use short-lived access tokens with refresh token rotation.
-- Validate tokens on every request — never cache a trust decision longer than the token's effective lifetime.
-- Rotate signing keys on a schedule; support multiple active keys during rotation.
-- Service-to-service auth: mTLS or signed tokens with audience validation.
+| Layer | When | Trade-off |
+|---|---|---|
+| **Cloud KMS + managed encryption** (default) | PII, payment data, credentials, health data | Transparent; encryption is automatic. Attacker with DB creds still reads plaintext via the DB. |
+| **Application-level field encryption** | Regulated high-sensitivity fields within a larger non-sensitive table | Breaks indexing/search on those fields; query patterns must be redesigned around deterministic or searchable-encryption schemes. |
+| **Dedicated HSM** (CloudHSM, nShield) | Compliance mandate (FIPS 140-2 Level 3, some PCI scopes), high-value signing keys | Operational overhead (key ceremonies, HSM failure modes); cost is 10–100x KMS. |
+| **Envelope encryption** (DEK per row/object, KEK in KMS) | Massive data volumes where per-record key isolation matters | Key-rotation rotates the KEK, not every DEK — plan for two-phase re-encryption. |
 
-### Authorization
+Default: cloud KMS. Escalate to app-level only when the threat model names an attacker with DB read access; escalate to HSM only when compliance mandates it explicitly.
 
-- Enforce least privilege at every layer: application roles, database roles, cloud IAM, object ACLs.
-- Deny by default; allow explicitly.
-- Check authorization on every request at the resource level — not only at route level.
-- For multi-tenant systems, tenant isolation must be tested, not assumed.
+## Audit-log tamper-evidence
 
-### Input Validation
+An audit log that can be silently edited is not an audit log.
 
-- Validate inputs at every trust boundary.
-- Use schema validators rather than ad-hoc regex.
-- Reject, sanitize, or encode as appropriate for the sink — SQL, HTML, shell, LDAP, XPath all have different escape rules.
-- Size-limit every input to prevent resource exhaustion.
+- **Append-only storage** (WORM, S3 Object Lock in compliance mode, immutable ledger DBs) — the minimum bar. Attacker with admin creds cannot edit past entries.
+- **Cryptographic chaining** — each record contains a hash of the previous record. Detects deletion or reordering after the fact. Implement as a Merkle chain for efficient proof of inclusion; a plain hash chain works for smaller volumes.
+- **External anchoring** — periodically publish the chain head to a write-once external system (another cloud account, a blockchain, a trusted time-stamping service). Detects coordinated tampering where the attacker owns the primary log store.
+- **Signed records** — per-record HMAC or signature with a key the log writer cannot reach after writing (KMS sign-only grant, ratcheted keys). Detects individual-record forgery.
 
-### Secret Management
+For SOX/HIPAA/PCI scope, append-only is insufficient on its own; pair with chaining and external anchoring. Document the tamper-evidence posture explicitly in the threat model.
 
-- Secrets live in a secret store (cloud KMS, HashiCorp Vault, 1Password, AWS Secrets Manager, equivalent).
-- Never check secrets into source control — pre-commit and CI scanning enforce this.
-- Rotate on a schedule; automate rotation where the system supports it.
-- Separate secrets per environment; production secrets never appear in dev.
-- Secrets delivered to workloads via environment variables or mounted files from the store — never baked into images.
+## Authorization calibration
 
-### Encryption
+- **Per-resource authorization**, not just per-route — the route-level check tells you the caller is authenticated; the resource-level check tells you the caller owns *that specific* resource. Every `/users/:id/...` route needs both.
+- **Tenant isolation is tested, never assumed.** The integration test suite must contain explicit cross-tenant attempts that are expected to fail. A system without these tests has unknown tenant-isolation posture.
+- **Default-deny with explicit grants** — an unknown permission check fails closed. A `role.can('undefined_action')` that returns `true` is a vulnerability, not a convenience.
 
-- TLS for everything on the wire — internal and external. Disable legacy protocol versions.
-- At rest: encrypt when the workload handles PII, payment data, credentials, or regulated data. Cloud-managed KMS is usually enough; application-layer encryption adds complexity, reserve for fields with heightened sensitivity.
-- Key rotation planned and tested.
+## Anti-patterns specific to this layer
 
-### Vulnerability Management
+- **NEVER** issue long-lived bearer tokens without rotation — session tokens >24h without re-auth are a credential on the loose.
+- **NEVER** assume tenant isolation without explicit cross-tenant test coverage.
+- **NEVER** rely on append-only storage alone for high-compliance audit logs — pair with chaining or external anchoring.
+- **NEVER** use OIDC for pure service-to-service authentication when mTLS or cloud IAM fits.
+- **NEVER** mix SAML and OIDC in the same authentication flow — a bug in either breaks both.
+- **NEVER** disable TLS certificate verification in production code — not even "temporarily for debugging".
+- **NEVER** claim compliance posture (SOC 2, HIPAA, PCI, GDPR) you are not actively measuring and attesting.
+- **NEVER** log passwords, tokens, API keys, full PANs, or full payment data — redact at log-emission time, not at ingestion time.
+- **NEVER** store field-level encryption keys in the same blast radius as the data they protect.
 
-- Dependency scanning in CI; patch high-risk issues on a defined SLA.
-- Input validation prevents injection and XSS.
-- Rate limits and abuse detection on public endpoints and sensitive actions.
-- Use SAST and DAST where available; document findings and remediation.
+## Cross-references
 
-### Privacy and Data Handling
+- `qa-security-engineer` — the attack-surface methodology: OWASP Top 10 coverage, SAST/DAST/IAST/SCA matrix, severity classification with CVSS-plus-context, password-hashing choice (bcrypt/scrypt/Argon2), JWT `alg:none` class attacks, constant-time compare.
+- `backend-architecture-standards` — event-driven consistency, HA/DR targets, migration reversibility. Security decisions often hinge on these architectural calls.
 
-- Minimize data collection to what the feature actually needs.
-- Mask or redact sensitive fields in logs — PII, credentials, tokens, payment data.
-- Define retention and deletion policies; implement them, do not just document them.
-- For regulated data (GDPR, HIPAA, PCI DSS, SOC 2 scope), confirm the control posture before shipping.
-
-### Audit Logging
-
-- Log authentication events, authorization decisions, privileged actions, and security-relevant configuration changes.
-- Include actor, resource, action, timestamp, source IP, and correlation ID.
-- Make audit logs tamper-evident — append-only storage or signed logs.
-- Retain for the period the compliance regime requires.
-
-## Anti-Patterns
-
-- **NEVER** hardcode secrets in code, config, or CI pipeline definitions.
-- **NEVER** commit `.env` files or plaintext credentials to source control.
-- **NEVER** log passwords, tokens, API keys, or full payment data.
-- **NEVER** trust client-side validation alone — server re-validates every input.
-- **NEVER** issue long-lived bearer tokens without rotation.
-- **NEVER** assume tenant isolation without explicit test coverage.
-- **NEVER** use string concatenation for SQL, shell, or any injection-sensitive sink — use parameterized APIs.
-- **NEVER** expose internal errors or stack traces to untrusted clients.
-- **NEVER** skip authorization at the resource level because the route is "protected".
-- **NEVER** claim compliance posture you are not measuring.
-- **NEVER** disable TLS certificate verification in production code.
-
-## Standard Workflow
-
-1. **Threat model first.** Enumerate assets, actors, entry points, trust boundaries. Write down what is in scope and what is explicitly not.
-
-2. **Classify the data.** Public, internal, confidential, regulated. The classification drives encryption, logging, retention, and access-control choices.
-
-3. **Design authentication.** Pick the protocol (OAuth2, OIDC, mTLS). Define token lifetimes, rotation, and key management.
-
-4. **Design authorization.** Per-resource checks. Deny by default. Tenant isolation if multi-tenant.
-
-5. **Plan input validation.** Schema-based, size-limited, sink-aware encoding.
-
-6. **Plan secret management.** Store, rotation schedule, delivery mechanism, per-environment separation.
-
-7. **Plan encryption.** In transit always; at rest per classification; key rotation schedule.
-
-8. **Plan logging and audit.** What events, what fields, how masked, how retained, how tamper-evident.
-
-9. **Plan privacy posture.** Data minimization, redaction, retention, deletion, right-to-access or right-to-delete if regulated.
-
-10. **Plan vulnerability management.** Dependency scanning, SAST/DAST, rate limits, abuse detection, patch SLA.
-
-11. **Validate.** Run the checks that exist (SAST, DAST, dependency scan). Explicitly list what was run and what was not. Never claim a test result that did not execute.
-
-## Deliverables Contract
+## Deliverables contract
 
 Security and compliance delivery includes:
 
-- **Threat model** — assets, actors, entry points, trust boundaries, in-scope vs out-of-scope threats.
-- **Data classification** — what data is collected, its classification, and the resulting controls.
-- **Authn design** — protocol, token strategy, key rotation, service-to-service plan.
-- **Authz design** — role model, per-resource checks, tenant isolation strategy if applicable.
-- **Input validation plan** — what is validated where, what is rejected vs sanitized vs encoded.
-- **Secret management plan** — store, rotation, delivery, per-environment separation.
-- **Encryption plan** — in transit posture, at rest posture, key rotation.
-- **Logging and audit plan** — what is logged, what is masked, retention, tamper-evidence.
-- **Privacy plan** — minimization, redaction, retention, deletion, regulated-data-specific controls.
-- **Vulnerability management plan** — scanning cadence, patch SLA, SAST/DAST coverage, rate limits.
-- **Tests actually run** — and what was not run, with reasons.
+- **Threat model** — assets, actors, entry points, trust boundaries; in-scope vs out-of-scope threats.
+- **Authentication design** — protocol chosen from the decision tree, with the reason; token lifetimes, key rotation, service-to-service strategy.
+- **Authorization design** — per-resource checks, tenant isolation strategy, test coverage for cross-tenant access.
+- **Encryption plan** — in-transit posture, at-rest layer chosen from the criteria table, key rotation schedule.
+- **Audit-log posture** — tamper-evidence approach (append-only, chaining, anchoring, signing), retention period, access controls on the audit system itself.
+- **Privacy plan** — data minimization, redaction-at-emission, retention, deletion, regulated-data-specific controls.
 - **Known risks and accepted risks** — with owner and review date.
-
-## Compliance Posture
-
-If the workload is in scope for a compliance regime (SOC 2, GDPR, HIPAA, PCI DSS, ISO 27001, etc.), confirm the specific controls the regime requires and map them to the design. Do not claim compliance posture that is not being measured or attested.
+- **Tests actually run** — SAST/DAST/dependency scan results; what was not run, with reasons.

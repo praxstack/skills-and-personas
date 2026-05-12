@@ -9,14 +9,13 @@ description: 'Create distinctive, production-grade frontend interfaces that reje
 
 **Goal:** Ship interfaces that look intentionally designed — not defaulted. Every design choice traces to an aesthetic commitment, not a framework preset.
 
-## Core Principles
+## Shared discipline (load first)
 
-1. **Commit to one aesthetic direction.** Bold maximalism and refined minimalism both work. What fails is the uncommitted middle: faintly purple gradients on white, Inter + Tailwind defaults, symmetric grids everywhere.
-2. **Typography carries 70% of perceived quality.** Pair a distinctive display face with a readable body face. Arial, Inter, Roboto, and system fonts are banned unless an explicit brand or constraint requires them.
-3. **Palettes are dominant + accent, not evenly-distributed.** One color owns 60–70% of the surface; one accent cuts through. Use CSS variables so the commitment is enforced.
-4. **Motion has one hero moment.** A single orchestrated page-load or interaction beats a dozen scattered micro-animations. Use `transform` and `opacity` for 60fps.
-5. **Whitespace and asymmetry are tools, not leftovers.** Break the grid with intent. Overlap elements. Use diagonal flow. Controlled density is valid too.
-6. **Backgrounds create atmosphere.** Gradient meshes, noise, geometric patterns, layered transparencies, grain overlays, dramatic shadows. Flat fills are a last resort, not a default.
+**MANDATORY:** Before doing anything else, read `../frontend-pe/references/design-rules.md`. It is the canonical source for typography bans (Inter/Roboto/Arial), color discipline (dominant+accent, no purple-on-white), motion rules (one hero moment), UI-library discipline, accessibility baseline, and performance targets. This skill inherits those rules and focuses only on what's unique to aesthetic commitment.
+
+## Unique to this skill — aesthetic commitment
+
+The difference between a defaulted UI and a committed one is whether every choice traces back to a single stated direction. The shared rules tell you what NOT to do. This skill tells you how to pick and commit.
 
 ## Decision Framework
 
@@ -37,16 +36,15 @@ description: 'Create distinctive, production-grade frontend interfaces that reje
 
 **Match complexity to the vision.** Maximalist designs need elaborate code with extensive animations. Minimalist designs need restraint, precision, and meticulous spacing. Elegance comes from executing the chosen vision well, not from doing less.
 
-## Anti-Patterns
+## Anti-Patterns (aesthetic commitment only — shared rules in design-rules.md)
 
-- **NEVER** ship Inter/Roboto/Arial/system-ui as the primary face unless the brief mandates it — these signal "AI default".
-- **NEVER** use purple gradients on white backgrounds — the defining cliche of generated UI.
-- **NEVER** produce evenly-distributed palettes. Dominant + accent wins over balanced triads.
-- **NEVER** default to solid flat backgrounds when the aesthetic allows texture or depth.
-- **NEVER** scatter micro-interactions across every element. Pick one high-impact sequence.
-- **NEVER** converge on the same choices across generations. Variation is a requirement, not a nice-to-have.
-- **NEVER** use template-like symmetry as a default — break the grid with intent.
-- **NEVER** add elements without a functional or atmospheric purpose.
+- **NEVER** ship without first committing to a single aesthetic direction in one sentence. The uncommitted middle is where AI-generated UI lives.
+- **NEVER** converge on the same choices across successive generations. Each new brief should pick a different flavor unless continuity is the explicit goal.
+- **NEVER** add elements without either a functional role or an atmospheric purpose. Decorative-by-default collapses into noise.
+- **NEVER** use template-like symmetry as a default — break the grid with intent when the commitment calls for it.
+- **NEVER** let the aesthetic commitment and the technical execution disagree. Maximalist visions need elaborate code; minimalist visions need meticulous spacing.
+
+For typography bans (Inter/Roboto/Arial), color rules (dominant+accent, no purple-on-white), motion discipline, UI library discipline, accessibility baseline, and performance targets — see `../frontend-pe/references/design-rules.md`.
 
 ## Standard Workflow
 
