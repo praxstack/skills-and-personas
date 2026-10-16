@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="06d6a528ab6862f8bfcae48f93b9a24d6f2fb04ad41cfe72d33865b36bfd13db">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lost-update lesson</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lost-update-lesson">Lost-update lesson</h1>
+<h2 id="learner-turn-1">Learner turn 1</h2>
+<p>Create a focused lesson that teaches me to diagnose a two-thread lost update. Include an unseen transfer task and do not reveal its answer before my attempt.</p>
+<h2 id="tutor-turn-1">Tutor turn 1</h2>
+<p>Goal: diagnose a lost update from an execution trace and explain the exact conflicting operations.</p>
+<p>We’ll work through one case, then you’ll get an unseen transfer task. Its answer stays hidden until you attempt it.</p>
+<p>Shared balance starts at <code>100</code>:</p>
+<pre><code class="language-text">Thread A: read balance → 100
+Thread B: read balance → 100
+Thread A: compute 100 + 30 → 130
+Thread A: write balance ← 130
+Thread B: compute 100 - 20 → 80
+Thread B: write balance ← 80
+</code></pre>
+<p>Diagnose this in one sentence: what update was lost, and which operation erased it? “I don’t know” is a valid answer.</p>
+<h2 id="learner-turn-2">Learner turn 2</h2>
+<p>I think neither update was lost because both calculations completed; the final value should combine them as 110.</p>
+<h2 id="tutor-turn-2">Tutor turn 2</h2>
+<p>Hint 1: follow the writes, not merely the completed calculations. Thread B writes a value computed from its earlier read.</p>
+<p>Revise your diagnosis: what value remains in shared balance, and which update is absent from it?</p>
+<h2 id="learner-turn-3">Learner turn 3</h2>
+<p>The shared balance ends at 80 because Thread B writes last from its stale read of 100. Thread A's +30 update is absent, so B's write erased A's update.</p>
+<h2 id="tutor-turn-3">Tutor turn 3</h2>
+<p>Correct. Both calculations completed, but only Thread B’s result remained in shared memory. Its stale <code>100</code> produced <code>80</code>, which overwrote Thread A’s <code>130</code>.</p>
+<p>A reliable diagnostic is:</p>
+<ol>
+<li>Expand each update into <code>read → compute → write</code>.</li>
+<li>Find a write based on a value that became stale.</li>
+<li>Check whether that write overwrote another thread’s completed change.</li>
+</ol>
+<p>Your diagnosis was correct with one hint, so this is scaffolded evidence—not yet independent transfer.</p>
+<p>Unseen transfer task:</p>
+<pre><code class="language-text">Initial shared profile:
+{ theme: "light", fontSize: 14 }
+
+Thread A reads:
+{ theme: "light", fontSize: 14 }
+
+Thread B reads:
+{ theme: "light", fontSize: 14 }
+
+Thread A changes its copy’s theme to "dark"
+Thread A writes:
+{ theme: "dark", fontSize: 14 }
+
+Thread B changes its copy’s fontSize to 18
+Thread B writes:
+{ theme: "light", fontSize: 18 }
+</code></pre>
+<p>Diagnose the final shared state and identify any update that disappeared, including the exact stale operation responsible.</p>
+<h2 id="learner-turn-4">Learner turn 4</h2>
+<p>The final shared state is { theme: "light", fontSize: 18 }. Thread A's dark-theme update disappeared because Thread B wrote its whole stale copy, whose theme was still "light", after changing only fontSize. That stale full-object write overwrote A's theme change.</p>
+<h2 id="tutor-turn-4">Tutor turn 4</h2>
+<p>Correct. You traced the final write, identified its stale source, and caught that a whole-object replacement can erase a change to a different field.</p>
+<p>Teach it back in your own words: why doesn’t “both threads completed their calculations” prevent a lost update, and what rule would you use to spot one in a new trace?</p>
+<h2 id="learner-turn-5">Learner turn 5</h2>
+<p>Completed calculations do not protect an update because the shared result is determined by writes, and a later write can be based on a stale read. In a new trace I expand each update into read, compute, write; then I find any write derived from an older snapshot and check whether it overwrote a newer committed change.</p>
+<h2 id="tutor-turn-5">Tutor turn 5</h2>
+<p>Lesson outcome met with limited evidence:</p>
+<ul>
+<li>Initial diagnosis: correct after Hint 1.</li>
+<li>Unseen transfer: correct without hints.</li>
+<li>Teach-back: accurately identified stale-read-derived writes as the diagnostic signal.</li>
+</ul>
+<p>Your explanation is strong, but durable recall and discrimination from other race conditions remain untested.</p>
+<p>Retention horizon: one week (provisional). Next retrieval: one fresh, unassisted trace in three days. No files or learner state were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>06d6a528ab6862f8bfcae48f93b9a24d6f2fb04ad41cfe72d33865b36bfd13db</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="LEARNER-STATE.md">
+  <meta name="source-sha256" content="d08424e85040547aa2be2aaf8d49dd3402908fdc89971215c36b207e9edc33cb">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Learner-state contract</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./LEARNER-STATE.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="learner-state-contract">Learner-state contract</h1>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#principles">Principles</a></li>
+<li><a href="#workspace-files">Workspace files</a></li>
+<li><a href="#observation-schema">Observation schema</a></li>
+<li><a href="#concept-state">Concept state</a></li>
+<li><a href="#misconceptions">Misconceptions</a></li>
+<li><a href="#review-scheduling">Review scheduling</a></li>
+<li><a href="#consent-and-correction">Consent and correction</a></li>
+<li><a href="#resume-and-migration">Resume and migration</a></li>
+<li><a href="#validation-invariants">Validation invariants</a></li>
+</ol>
+<h2 id="principles">Principles</h2>
+<ul>
+<li>Store raw observations separately from interpreted state.</li>
+<li>Link every inference to evidence IDs.</li>
+<li>Keep learner-authored content distinct from agent-authored inference.</li>
+<li>Represent uncertainty and contradictory evidence.</li>
+<li>Track concept dimensions rather than a personality or global ability label.</li>
+<li>Let the learner inspect, correct, retest, export, and delete state.</li>
+<li>Minimize data and never persist without explicit consent.</li>
+<li>Version content, items, models, prompts, and sources that affect interpretation.</li>
+</ul>
+<h2 id="workspace-files">Workspace files</h2>
+<pre><code class="language-text">state/
+├── learner.json
+├── concepts.json
+├── misconceptions.json
+├── reviews.jsonl
+├── sessions.jsonl
+└── sources.json
+</code></pre>
+<h3 id="learnerjson"><code>learner.json</code></h3>
+<p>Store only learner-approved settings:</p>
+<pre><code class="language-json">{
+  "schema_version": "1",
+  "learner_id": "local-pseudonym",
+  "consent": {
+    "persistent_state": true,
+    "granted_at": "2026-08-03T12:00:00.000000Z",
+    "scope": ["goal", "practice_evidence", "reviews", "access_preferences"]
+  },
+  "goal": {
+    "statement": "Choose and justify database indexes for production queries",
+    "target_performance": "Solve unseen schema and workload cases without hints",
+    "retention_horizon_days": 30
+  },
+  "preferences": {
+    "response_pace": "concise",
+    "reduced_motion": true,
+    "response_modes": ["text", "code"]
+  }
+}
+</code></pre>
+<p>Do not store diagnoses, protected traits, health data, or inferred “learning styles.” Access preferences are functional choices, not ability labels.</p>
+<h3 id="sessionsjsonl"><code>sessions.jsonl</code></h3>
+<p>Append one observation or session event per line. Never edit history silently. Corrections are new events referencing the corrected event.</p>
+<h3 id="conceptsjson"><code>concepts.json</code></h3>
+<p>Store the current derived view and evidence links. It may be rebuilt from observations.</p>
+<h3 id="misconceptionsjson"><code>misconceptions.json</code></h3>
+<p>Store specific incorrect rules or mental models only when supported by learner reasoning. Do not equate one wrong answer with a stable misconception.</p>
+<h3 id="reviewsjsonl"><code>reviews.jsonl</code></h3>
+<p>Store scheduler inputs, outputs, performance-derived ratings, overrides, and due-item events.</p>
+<h3 id="sourcesjson"><code>sources.json</code></h3>
+<p>Store the canonical machine-validated source library. Every record is bound by
+<code>source_id</code> plus <code>version_or_date</code> and includes the title, absolute URL,
+author/publisher, source type, retrieval date, license/use note, supported claim
+or item IDs, and limitations. An observation cannot be appended unless every
+versioned source reference resolves here. <code>RESOURCES.md</code> remains the curated
+human-readable guide; it is exported alongside this registry but does not
+replace it.</p>
+<p>An evidence append or projection rebuild commits <code>sessions.jsonl</code>,
+<code>reviews.jsonl</code>, <code>concepts.json</code>, and <code>misconceptions.json</code> through one private,
+content-bound state journal. Each target records its preimage and final SHA-256
+digest. A later locked operation completes an interrupted journal only when
+every current file is either that preimage or exact target; divergent state
+fails closed. Recovery happens before a consent-withdrawal write, preventing an
+interrupted append from becoming permanently uninspectable once persistence is
+disabled.</p>
+<h2 id="observation-schema">Observation schema</h2>
+<p>Record at minimum:</p>
+<pre><code class="language-json">{
+  "schema_version": "1",
+  "event_id": "evt-3769e2077bb08a470f12c9a13e4f1d48",
+  "event_type": "observation",
+  "session_id": "session-1",
+  "timestamp": "2026-08-03T12:34:56.000000Z",
+  "content_id": "lesson-index-prefixes",
+  "content_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "objective_id": "objective:index-choice",
+  "concept_id": "composite-index-prefix",
+  "item_id": "item-transfer-03",
+  "item_version": "v1",
+  "response": "The range column should follow the equality prefix.",
+  "response_ref": null,
+  "result": {
+    "correct": false,
+    "score": 0.75
+  },
+  "rubric": {
+    "score": 0.75,
+    "dimensions": {
+      "recognition": null,
+      "recall": null,
+      "explanation": null,
+      "application": null,
+      "discrimination": null,
+      "transfer": 0.75
+    }
+  },
+  "dimension": "transfer",
+  "confidence": {
+    "provenance": "learner_reported",
+    "value": 0.8
+  },
+  "hint_level": 2,
+  "attempt_number": 2,
+  "source_provenance": [
+    {
+      "source_id": "postgres-index-docs",
+      "version_or_date": "PostgreSQL-18-2026-08-04"
+    }
+  ],
+  "model_and_prompt_version": "prax-teach-v2-core-1.0.0",
+  "agent_inference": {
+    "summary": "Understands prefix matching; transfer remains uncertain",
+    "certainty": 0.62
+  },
+  "learner_authored": null
+}
+</code></pre>
+<p>Store either the exact inline <code>response</code> or an exact <code>response_ref</code> to a
+consented artifact or transcript location, never both. The unused field is
+explicitly <code>null</code>. <code>learner_authored</code> is exact learner text or <code>null</code>;
+<code>agent_inference</code> is a separate summary/certainty object or <code>null</code>, never a
+substitute for the learner's words. The rubric always names all six dimensions,
+using <code>null</code> where no dimension was scored. Its primary dimension and overall
+score must agree with <code>result</code>; <code>correct</code> is derived from the executable <code>0.8</code>
+threshold rather than supplied independently.</p>
+<p>Each <code>source_provenance</code> entry binds both the stable source ID and the exact
+version/date registered in <code>sources.json</code>. Source-based invalidation requires
+that same pair, so withdrawing one version cannot silently invalidate a newer
+version with the same source ID. Export revalidates the references and includes
+the source library, its digest, each active source-record digest, and the active
+event IDs supported by that record in <code>manifest.json</code>.</p>
+<p>Use <code>null</code> rather than invented precision. Do not record keystroke-level or response-time data unless it serves an explicit, consented purpose.</p>
+<p>The observation caller must supply <code>content_id</code>, <code>objective_id</code>, and the actual
+tutor/model/prompt version or content digest. The engine validates and preserves
+those values; it does not derive them from the concept or replace them with its
+own runtime version. Accepted timestamps are normalized to UTC with exactly six
+fractional-second digits (<code>YYYY-MM-DDTHH:MM:SS.ffffffZ</code>). Projection order is by
+the represented instant, not by the input timestamp spelling.</p>
+<h2 id="concept-state">Concept state</h2>
+<p>Represent each dimension separately:</p>
+<pre><code class="language-json">{
+  "confidence": 0.875,
+  "concept_id": "composite-index-prefix",
+  "contradictions": [],
+  "dimensions": {
+    "recognition": {"estimate": 0.9, "evidence_ids": ["evt-11111111111111111111111111111111"]},
+    "recall": {"estimate": 0.85, "evidence_ids": ["evt-22222222222222222222222222222222"]},
+    "explanation": {"estimate": null, "evidence_ids": []},
+    "application": {"estimate": null, "evidence_ids": []},
+    "discrimination": {"estimate": null, "evidence_ids": []},
+    "transfer": {"estimate": null, "evidence_ids": []}
+  },
+  "evidence_ids": [
+    "evt-11111111111111111111111111111111",
+    "evt-22222222222222222222222222222222"
+  ],
+  "higher_order_evidence_ids": [],
+  "last_updated": "2026-08-03T12:40:00.000000Z",
+  "status": "developing",
+  "status_reason": "Independent evidence spans dimensions but lacks an unassisted higher-order item.",
+  "unassisted_dimensions": ["recall", "recognition"]
+}
+</code></pre>
+<h3 id="current-executable-status-vocabulary">Current executable status vocabulary</h3>
+<ul>
+<li><code>emerging</code>: partial or highly scaffolded evidence;</li>
+<li><code>developing</code>: some independent evidence but incomplete dimensions or contradictions;</li>
+<li><code>provisional</code>: multiple independent demonstrations without later-session confirmation;</li>
+<li><code>durable</code>: later-session unassisted recall plus independent evidence in at
+least two dimensions, including application, discrimination, or transfer.</li>
+</ul>
+<p>The projection materializes only concepts that have at least one active
+observation. A concept with no usable evidence is therefore absent; it does not
+carry a stored <code>unobserved</code> status. A correction or explicit version
+invalidation excludes the superseded observation from the current projection
+while its observation and compensating event remain in <code>sessions.jsonl</code>; the
+current implementation does not emit a stored <code>stale</code> status.</p>
+<p>Status is an explainable convenience, not a psychometric fact.</p>
+<h3 id="current-executable-update-rules">Current executable update rules</h3>
+<ul>
+<li>Treat an unassisted score of at least <code>0.8</code> as positive independent evidence.</li>
+<li>Reduce the weight of evidence as hint level rises, with a nonzero floor.</li>
+<li>Give application, discrimination, and transfer evidence a modestly higher
+weight than recognition, recall, or explanation evidence.</li>
+<li>Keep observations below <code>0.6</code> visible as contradictions and prevent them from
+supporting a durable status.</li>
+<li>Require independent evidence in at least two dimensions, at least one
+higher-order item, and recall in a later session after higher-order evidence
+before emitting <code>durable</code>.</li>
+<li>Rebuild from active observations after a correction or explicit invalidation
+instead of rewriting historical events.</li>
+<li>Never treat a model-generated estimate as ground truth.</li>
+</ul>
+<p>The current algorithm does not apply time decay by itself. Materializing
+<code>unobserved</code> or <code>stale</code>, adding time decay, or changing the aggregation model
+requires a versioned schema/algorithm migration and new replay tests. BKT or
+another interpretable model remains a possible future extension only after
+calibration and held-out evaluation. Predictive accuracy alone would not show
+that model-driven adaptation improves learning.</p>
+<h2 id="misconceptions">Misconceptions</h2>
+<p>Use this shape:</p>
+<pre><code class="language-json">{
+  "claim": "Column order does not matter in a composite index",
+  "concept_id": "composite-index-prefix",
+  "evidence_ids": ["evt-33333333333333333333333333333333"],
+  "last_tested": "2026-08-03T12:45:00.000000Z",
+  "learner_confirmed": false,
+  "misconception_id": "mis-0123456789abcdef01234567",
+  "provenance": ["tutor_inference"],
+  "state": "suspected"
+}
+</code></pre>
+<h3 id="current-executable-misconception-vocabulary">Current executable misconception vocabulary</h3>
+<ul>
+<li><code>suspected</code>: one active observation contains the exact claim and learner
+reasoning;</li>
+<li><code>supported</code>: two or more active observations for the same concept contain the
+exact claim.</li>
+</ul>
+<p>Every claim records <code>learner_reported</code> or <code>tutor_inference</code> provenance. Tutor
+inferences default to unconfirmed and cannot be relabeled learner-confirmed;
+only an explicit learner report can be confirmed. A learner rejection appends a
+separate auditable event and excludes that supporting observation from the
+current misconception projection without rewriting the original observation.
+The claim remains projected when other active, unrejected observations still
+support it.</p>
+<p>The current projection does <strong>not</strong> automate <code>repairing</code>, <code>resolved</code>, or
+<code>recurred</code> states. Targeted practice and later transfer can still be recorded as
+ordinary evidence, but the system does not infer those misconception lifecycle
+labels. Adding them would require explicit evidence-transition rules, schema and
+algorithm versioning, replay tests, and a migration; until then they are future
+extension guidance, not implemented behavior.</p>
+<h2 id="review-scheduling">Review scheduling</h2>
+<p>Keep item scheduling separate from concept state.</p>
+<p>Scheduler input:</p>
+<ul>
+<li>item ID/version;</li>
+<li>actual correctness or rubric result;</li>
+<li>response independence and hint level;</li>
+<li>prior schedule state;</li>
+<li>desired retention horizon;</li>
+<li>learner override.</li>
+</ul>
+<p>Scheduler output:</p>
+<ul>
+<li>due time;</li>
+<li>target retention probability if the scheduler exposes one;</li>
+<li>chosen performance rating and its derivation;</li>
+<li>reason;</li>
+<li>algorithm/version.</li>
+</ul>
+<p>The current adapter maps observed performance in this order: a score below
+<code>0.8</code> is <code>Again</code>; at or above <code>0.8</code>, hint level <code>3</code> or higher is <code>Hard</code>; an
+otherwise unassisted application, discrimination, or transfer score of at least
+<code>0.9</code> is <code>Easy</code>; and every remaining score at or above <code>0.8</code> is <code>Good</code>. These
+are transparent engineering thresholds, not learner-outcome evidence or a
+claim of optimal scheduling.</p>
+<p>Never turn “the learner seemed comfortable” into a scheduler rating. The
+executable scheduler requires the pinned tested FSRS implementation and fails
+clearly when it is unavailable; it never substitutes an unlabeled heuristic.
+Review replay re-invokes that pinned implementation and compares the complete
+card and review-log transition. Item IDs have stable concept/dimension bindings,
+card IDs are deterministic, review time is monotonic, and learner-disabled
+review scheduling rejects new reviews without changing the log.</p>
+<p>Scheduler event version <code>2</code> accepts only a validated, active observation event
+ID. Under the learner-workspace lock, the scheduler derives item/version,
+concept, objective, content/version, session, dimension, score, hint level,
+source/version references, and tutor/model/prompt provenance from that exact
+observation. A caller cannot submit a second free-form performance description,
+and one observation cannot create two FSRS reviews. Each stored review carries
+the complete minimal causal snapshot, which must continue to match the
+referenced observation during validation and replay.</p>
+<p>Correcting or invalidating an observation atomically replaces the evidence log,
+review log, and projections. It removes a review derived from that observation
+and every later review, snooze, or reschedule for the same item because those
+rows depend on the removed card transition. Global learner review-enable/disable
+choices remain separate. Scoped event or session deletion uses the recorded
+observation/session link instead of guessing and applies the same causal-suffix
+rule.</p>
+<h2 id="consent-and-correction">Consent and correction</h2>
+<p>Before state creation, resolve the exact workspace and obtain consent. Show material updates at session close.</p>
+<p>Support these operations:</p>
+<ul>
+<li>show my learner model;</li>
+<li>explain why a concept has this status;</li>
+<li>correct this inference;</li>
+<li>mark this note as learner-authored;</li>
+<li>retest this concept;</li>
+<li>export my data;</li>
+<li>delete this exact item, session, concept inference, or all state;</li>
+<li>disable persistence or review scheduling.</li>
+</ul>
+<p>Withdrawing persistence consent records the withdrawal reason and time, sets
+<code>persistent_state</code> to false, and then blocks new evidence, correction,
+invalidation, projection, review, and scheduler writes. It does not erase data
+already stored. Inspection, export, scoped deletion, and full-state deletion
+remain available so the learner is not locked out of control after withdrawal.
+Export derives projections in memory and performs no workspace write after
+withdrawal.</p>
+<p>On POSIX, a state operation holds verified workspace and state-directory
+descriptors for the full workspace-lock scope. State reads and atomic
+replacements use those descriptors and revalidate the lexical parent
+generation, so an ancestor rename or symlink swap cannot redirect a control or
+evidence write into another learner workspace.</p>
+<p>Scoped deletion must preview not only the selected observations but also
+dependent events, required invalidation rewrites, and matching review records.
+For unchanged input, confirmation returns the identical plan before persisting
+a private, content-bound deletion journal and replacing the evidence log,
+review log, and both projections. A later locked operation idempotently
+completes an interrupted journal, including after persistence withdrawal, so a
+partially applied deletion cannot strand a removed concept in a stale
+projection. Full deletion separately previews counts and a non-revealing
+SHA-256 fingerprint of the exact workspace tree, and rejects symlinks or
+non-regular entries before removing that workspace. Confirmation first writes
+a private parent-side tombstone bound to the original path, deterministic
+quarantine path, workspace device/inode, and preview plan. It then renames the
+workspace into that quarantine. If interruption occurs at any point during
+recursive removal, a retry under the parent-generation lock finishes deleting
+the same bound generation—even if only part of the tree remains—and removes the
+tombstone last. A partially deleted quarantine is never restored to the live
+workspace path. A preview is not a lock;
+compare the confirmation plan whenever state may have changed between the two
+commands. If backups or external exports exist, explain their retention
+separately.</p>
+<p>Deletion previews name the causal observation/session/concept/item matching
+basis, every scheduler row in the dependent same-item suffix, and the remaining
+event/review counts. Confirmation revalidates that exact plan before the
+content-bound transaction replaces any state file.</p>
+<h2 id="resume-and-migration">Resume and migration</h2>
+<p>On resume:</p>
+<ol>
+<li>Resolve the intended workspace; do not guess among similar paths.</li>
+<li>Validate schema versions and JSON/JSONL parseability.</li>
+<li>Read consent scope before other state.</li>
+<li>Summarize the goal, due reviews, recent evidence, uncertainty, and conflicts.</li>
+<li>Start with a due retrieval or current-goal check, not a long recap.</li>
+<li>Update only after new observable evidence.</li>
+</ol>
+<p>On schema migration:</p>
+<ul>
+<li>back up the exact state files;</li>
+<li>migrate deterministically with a versioned script;</li>
+<li>preserve event IDs and provenance;</li>
+<li>emit a migration report;</li>
+<li>validate invariants;</li>
+<li>let the learner inspect changes.</li>
+</ul>
+<p>Scheduler event version <code>1</code> cannot be migrated automatically because it lacks
+the observation, session, content, source-version, and tutor/model/prompt
+provenance needed to establish causality truthfully. This candidate rejects v1
+review rows. A learner-controlled migration must back up the workspace and
+regenerate review state only from still-valid observation events; it must not
+infer or fabricate the missing link.</p>
+<p>Do not silently reconstruct missing history from model memory.</p>
+<h2 id="validation-invariants">Validation invariants</h2>
+<ul>
+<li>Every concept evidence ID exists in <code>sessions.jsonl</code>.</li>
+<li>Every inferred status has a non-empty reason.</li>
+<li><code>durable</code> includes later-session, unassisted evidence.</li>
+<li>Learner-authored and agent-inferred fields never share the same storage slot.</li>
+<li>Every misconception links to an observation of reasoning, not only a wrong choice.</li>
+<li>Every review decision records algorithm/version and an exact active
+observation-event input, including session/content/item/source/model/prompt
+versions; the stored snapshot matches that observation and is used at most
+once.</li>
+<li>Each observation item ID has one concept/objective/content/dimension binding,
+and each item-ID/version pair has one content digest.</li>
+<li>Review card IDs match their item IDs; stored FSRS transitions replay exactly.</li>
+<li>No durable state exists without consent metadata.</li>
+<li>Timestamps, IDs, and schema versions are valid and unique where required.</li>
+<li>Explicit source, content, or item-version invalidation leaves an auditable
+event and excludes matching evidence from the current projection; it does not
+assign a <code>stale</code> status.</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./LEARNER-STATE.md">LEARNER-STATE.md</a><br>
+    SHA-256: <code>d08424e85040547aa2be2aaf8d49dd3402908fdc89971215c36b207e9edc33cb</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

@@ -1,0 +1,2 @@
+2026-08-17T00:00:00+05:30 | INIT | OpenSpec zero-api-visual-runtime validated; implementation resumed on candidate main.
+2026-08-17T00:00:00+05:30 | ZV-00 | Baseline capture in progress; OpenSpec files are the only current untracked changes.

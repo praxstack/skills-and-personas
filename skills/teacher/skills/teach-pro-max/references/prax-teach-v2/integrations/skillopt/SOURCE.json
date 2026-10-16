@@ -1,0 +1,11 @@
+{
+  "name": "Microsoft SkillOpt",
+  "repository": "https://github.com/microsoft/SkillOpt.git",
+  "release": "v0.2.0",
+  "commit": "e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+  "license": "MIT",
+  "python": ">=3.10",
+  "status": "alpha",
+  "installation_note": "Use a detached source checkout at this commit for custom benchmark registration. Do not use moving main or treat the wheel import as a benchmark smoke."
+}
+

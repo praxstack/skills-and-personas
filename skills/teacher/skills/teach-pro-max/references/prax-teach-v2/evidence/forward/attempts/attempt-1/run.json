@@ -1,0 +1,37 @@
+{
+  "cases": [
+    {"case_id": "quick-bounded-explanation", "fresh_task": "/root/forward_behavior_final/forward_case_01", "h1_wrapper_added": true, "output": "evidence/forward/outputs/quick-bounded-explanation.md", "output_sha256": "c359eeb9cbff9bb3057ad5b574f7f8dcff1d9b55fefe8d29a6c697d339a2152a"},
+    {"case_id": "answer-now-override", "fresh_task": "/root/forward_behavior_final/forward_case_02", "h1_wrapper_added": true, "output": "evidence/forward/outputs/answer-now-override.md", "output_sha256": "28b95f1689adcf4029031f72ddf7178ade1b3c99a4c735c65d4e8cf6f1f93937"},
+    {"case_id": "lesson-attempt-before-transfer-answer", "fresh_task": "/root/forward_behavior_final/forward_case_03", "h1_wrapper_added": true, "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md", "output_sha256": "0408229f3795dfcfa802dcf6d374e40abb4246c6fd54c7738ded7cc61ca76c40"},
+    {"case_id": "course-consent-boundary", "fresh_task": "/root/forward_behavior_final/forward_case_04", "h1_wrapper_added": true, "output": "evidence/forward/outputs/course-consent-boundary.md", "output_sha256": "a2bdecd5c980c249321ff5b0301e8f22cdbdfebe1b330122020747fbef91379d"},
+    {"case_id": "resume-hinted-evidence", "fresh_task": "/root/forward_behavior_final/forward_case_05", "h1_wrapper_added": true, "output": "evidence/forward/outputs/resume-hinted-evidence.md", "output_sha256": "1b1c92abe8e182dd6f2e3a1ecd3ea974e20f7cb613e717f215e8e8dc070341f0"},
+    {"case_id": "visual-none", "fresh_task": "/root/forward_behavior_final/forward_case_06", "h1_wrapper_added": true, "output": "evidence/forward/outputs/visual-none.md", "output_sha256": "b62862780d75d6d9b0082d8f13049e4a999fff6633beee6b82ed66c338bf7442"},
+    {"case_id": "visual-essential-static", "fresh_task": "/root/forward_behavior_final/forward_case_07", "h1_wrapper_added": true, "output": "evidence/forward/outputs/visual-essential-static.md", "output_sha256": "6d0f7c6dadbb514c6067900b54b3e87112c74c8f558924e3a84cc8ac198fe554"},
+    {"case_id": "accessible-interaction-fallback", "fresh_task": "/root/forward_behavior_final/forward_case_08", "h1_wrapper_added": true, "output": "evidence/forward/outputs/accessible-interaction-fallback.md", "output_sha256": "f4d68d4534ca107b7e6df725d200812717ac7a4681f2fd019104a1337e1c85f5"}
+  ],
+  "claim_boundary": "Public forward behavior only; not held-out, candidate-superiority, accessibility-field, or learner-outcome evidence.",
+  "fresh_context_contract": {
+    "coordinator_did_not_supply_prior_case_outputs": true,
+    "fork_turns": "none",
+    "one_child_task_per_case": true
+  },
+  "generated_at": "2026-08-04T12:00:00Z",
+  "model": {
+    "exact_identifier": null,
+    "limitation": "The collaboration harness did not expose an exact provider model identifier to the coordinator.",
+    "reported_as_unavailable": true
+  },
+  "rubric": "evals/forward-behavior.json",
+  "rubric_sha256": "36da453222249cf530b7f0a2d802572ee8dc0cb49d16745192d9dbbb3c0d3e73",
+  "runner_harness": "Codex collaboration child tasks",
+  "schema_version": 1,
+  "scored_by_runner": false,
+  "source_files": {
+    "SKILL.md": "affa83e81b1d68d39ab131c25d8c1ad6542a3dd30a6662cdfe2e7352fd6ed771",
+    "references/ARTIFACT-CONTRACT.md": "7577904e8bf5163a280b7cce7fb38df2b1f419f5b12f1656f75f71b8d80294ed",
+    "references/MODE-CONTRACT.md": "932c38ca5bb3fc921706cac5fc35057f0f4bb1bc630d9c2dcad479ccfb698584",
+    "references/TEACHING-PROTOCOL.md": "2b66879410bc980797aa783ea48242de9a3f6e3b748a3613e71f08d02f1ad93f",
+    "scripts/prax_teach.py": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+    "scripts/praxteach/routing.py": "50b4b9fc61842ee8e79cd7f68a9426917c0fe71c0682997f39ac76066c867a67"
+  }
+}

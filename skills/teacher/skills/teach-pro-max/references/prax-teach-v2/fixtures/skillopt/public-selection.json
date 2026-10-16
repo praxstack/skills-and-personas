@@ -1,0 +1,11 @@
+{
+  "eligibility": "public_development_only",
+  "items": [
+    {
+      "id": "selection-discriminate-1",
+      "prompt": "Teach a learner to compare two plausible answers without revealing the answer before an attempt.",
+      "task_type": "discrimination"
+    }
+  ],
+  "schema_version": 1
+}

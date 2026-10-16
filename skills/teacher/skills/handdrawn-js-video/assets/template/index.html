@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Hand-drawn film</title>
+<style>
+html,body{margin:0;background:#16130f;height:100%;overflow:hidden}
+canvas{display:block;width:100vw;height:56.25vw;max-height:100vh;max-width:177.78vh;margin:auto}
+#hud{position:fixed;left:8px;bottom:6px;font:12px monospace;color:#bbb}
+</style></head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<div id="hud"></div>
+<!-- order matters: timing, theme and style first, then the kit, then the film, then main -->
+<script src="vendor/opentype.min.js"></script>
+<script src="timing.js"></script>
+<script src="theme.js"></script>   <!-- window.THEME: null = the style's own palette -->
+<script src="kit/styles/index.js"></script>   <!-- the style interface; then one file per extra style -->
+<script src="kit/styles/whiteboard.js"></script>
+<script src="kit/styles/papercraft-riso.js"></script>
+<script src="kit/styles/watercolor.js"></script>
+<script src="style.js"></script>
+<script src="kit/core.js"></script>
+<script src="kit/ink.js"></script>
+<script src="kit/type.js"></script>
+<script src="kit/parts.js"></script>
+<script src="kit/graph.js"></script>
+<script src="kit/mascot.js"></script>
+<script src="kit/boards.js"></script>
+<script src="scenes.js"></script>
+<script src="main.js"></script>
+</body></html>

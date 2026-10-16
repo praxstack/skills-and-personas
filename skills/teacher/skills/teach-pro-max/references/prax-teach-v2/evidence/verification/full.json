@@ -1,0 +1,1633 @@
+{
+  "dependencies": {
+    "installed": {
+      "fsrs": "6.3.1",
+      "node": "v22.23.1",
+      "npm": "10.9.8",
+      "python": "3.12.13",
+      "python_implementation": "CPython",
+      "ruff": "ruff 0.16.3"
+    },
+    "locks": {
+      "integrations/flint/package-lock.json": "8605e8bff36e1b6bf39f8dc349ad9d11a3d719d4c1f49ecab2a29aed3d2a1d8f",
+      "integrations/skillopt/SOURCE.json": "2a2d8e0d7add0d1667de04b6f795c8c9ab18832a78e880b91f6543b1049fb456",
+      "package-lock.json": "84760d79ac193dea8247f2186f162a418320ab5368bc824f46937526e745c526",
+      "uv.lock": "3fc286bdf2c465d888df898f578f95a6a030d4d639073094c0ba366e2ce7535d"
+    }
+  },
+  "evidence_level": "engineering-verification",
+  "external_human_learning_gates_satisfied": false,
+  "gates": [
+    {
+      "command": [
+        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "name": "python-tests",
+      "output_sha256": "46a65c0acb7a879553d6e421eba45c74f4e2f9db1747e139173afc6052bc0136",
+      "output_tail": [
+        "test_verifier_refuses_to_replace_a_symlink_output (test_zero_api_runtime.ZeroApiRuntimeTests.test_verifier_refuses_to_replace_a_symlink_output) ... ok",
+        "test_visual_lesson_schema_matches_runtime_shape_boundaries (test_zero_api_runtime.ZeroApiRuntimeTests.test_visual_lesson_schema_matches_runtime_shape_boundaries) ... ok",
+        "test_visual_schemas_accept_shipped_lessons_and_generated_receipt (test_zero_api_runtime.ZeroApiRuntimeTests.test_visual_schemas_accept_shipped_lessons_and_generated_receipt) ... ok",
+        "test_deferred_lean_decision_remains_pending (test_zero_api_tracker.ZeroApiTrackerTests.test_deferred_lean_decision_remains_pending) ... ok",
+        "test_json_status_cannot_turn_failure_into_verified (test_zero_api_tracker.ZeroApiTrackerTests.test_json_status_cannot_turn_failure_into_verified) ... ok",
+        "test_tracker_timestamp_is_source_date_epoch_derived (test_zero_api_tracker.ZeroApiTrackerTests.test_tracker_timestamp_is_source_date_epoch_derived) ... ok",
+        "test_tracker_updates_the_repository_catalog_not_a_missing_copy (test_zero_api_tracker.ZeroApiTrackerTests.test_tracker_updates_the_repository_catalog_not_a_missing_copy) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 238 tests in 75.280s",
+        "",
+        "OK"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "npm",
+        "test",
+        "--silent"
+      ],
+      "exit_code": 0,
+      "name": "node-tests",
+      "output_sha256": "7ad5607ffcc4037c1e5bdf3d09b0edce1fd141e15c003edc3e9cf6409d0cb994",
+      "output_tail": [
+        "  duration_ms: 95.577375",
+        "  type: 'test'",
+        "  ...",
+        "1..20",
+        "# tests 20",
+        "# suites 0",
+        "# pass 20",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0",
+        "# duration_ms 2329.031791"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "scripts/test_visualization_registry.py"
+      ],
+      "exit_code": 0,
+      "name": "visual-registry-tests",
+      "output_sha256": "052bc59ce8d63a25d282280b0650f4a7aaae780310b2e0ccb008a53a287cf29e",
+      "output_tail": [
+        "test_ids_are_unique (__main__.VisualizationRegistryTests.test_ids_are_unique) ... ok",
+        "test_official_resources_use_http (__main__.VisualizationRegistryTests.test_official_resources_use_http) ... ok",
+        "test_query_probes_relative_skill_paths_at_runtime (__main__.VisualizationRegistryTests.test_query_probes_relative_skill_paths_at_runtime) ... ok",
+        "test_registry_is_portable_and_does_not_assert_installation (__main__.VisualizationRegistryTests.test_registry_is_portable_and_does_not_assert_installation) ... ok",
+        "test_retired_engine_remains_inspectable_by_exact_name (__main__.VisualizationRegistryTests.test_retired_engine_remains_inspectable_by_exact_name) ... ok",
+        "test_route_filter_only_returns_route (__main__.VisualizationRegistryTests.test_route_filter_only_returns_route) ... ok",
+        "test_visual_router_technologies_are_covered (__main__.VisualizationRegistryTests.test_visual_router_technologies_are_covered) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 12 tests in 0.633s",
+        "",
+        "OK"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "scripts/find_visualization_tool.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "name": "visual-registry-count",
+      "output_sha256": "1330dc281deb270ccdeb696885c996a0bdbf9edbeb393a8261ba78b65347593d",
+      "output_tail": [
+        "registry valid: 38 tools"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/render_all.mjs",
+        "--check",
+        "."
+      ],
+      "exit_code": 0,
+      "name": "html-exact-parity",
+      "output_sha256": "9aa1503e9a78e0cb14ec9a68dbfbb3fe4ba546c2393592d7474913a466b6a128",
+      "output_tail": [
+        "Checked 41 Markdown/HTML pair(s)"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "scripts/validate_workspace.py",
+        "--json",
+        "."
+      ],
+      "exit_code": 0,
+      "name": "package-validator",
+      "output_sha256": "c4b8867c63e7beab3b53e00d2e94e23671205b1ec997c1ee9b9e5f540f084669",
+      "output_tail": [
+        "  \"mode\": \"full\",",
+        "  \"root\": \"/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2\",",
+        "  \"security\": {",
+        "    \"dangerous_tags\": 4,",
+        "    \"duplicate_ids\": 0,",
+        "    \"event_attributes\": 0,",
+        "    \"external_assets\": 0,",
+        "    \"missing_image_alt\": 0,",
+        "    \"unsafe_urls\": 0",
+        "  },",
+        "  \"status\": \"passed\"",
+        "}"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "ruff",
+        "check",
+        "scripts",
+        "integrations/skillopt",
+        "tests"
+      ],
+      "exit_code": 0,
+      "name": "python-lint",
+      "output_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "output_tail": [
+        "All checks passed!"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "ruff",
+        "format",
+        "--check",
+        "scripts",
+        "integrations/skillopt",
+        "tests"
+      ],
+      "exit_code": 0,
+      "name": "python-format",
+      "output_sha256": "c3c36fcff1e28b14cae0ee73be45b9f119bbadb20f7d5eb8ab829feeabf5769d",
+      "output_tail": [
+        "58 files already formatted"
+      ],
+      "policy_failures": [],
+      "status": "passed"
+    }
+  ],
+  "generated_at": "2026-08-04T12:00:00+00:00",
+  "level": "full",
+  "log_retention": {
+    "full_logs_persisted": false,
+    "retained": [
+      "sha256",
+      "tail"
+    ],
+    "tail_line_limit": 12
+  },
+  "postflight_validation": {
+    "command": [
+      "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+      "scripts/validate_workspace.py",
+      "--json",
+      "."
+    ],
+    "exit_code": 0,
+    "output_sha256": "c4b8867c63e7beab3b53e00d2e94e23671205b1ec997c1ee9b9e5f540f084669",
+    "output_tail": [
+      "  \"mode\": \"full\",",
+      "  \"root\": \"/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2\",",
+      "  \"security\": {",
+      "    \"dangerous_tags\": 4,",
+      "    \"duplicate_ids\": 0,",
+      "    \"event_attributes\": 0,",
+      "    \"external_assets\": 0,",
+      "    \"missing_image_alt\": 0,",
+      "    \"unsafe_urls\": 0",
+      "  },",
+      "  \"status\": \"passed\"",
+      "}"
+    ],
+    "status": "passed"
+  },
+  "root_manifest": {
+    "algorithm": "sha256(canonical-json(files[path,mode,sha256]))",
+    "excluded": [
+      "evidence/verification/full.json",
+      ".git/",
+      "runtime/cache directories"
+    ],
+    "file_count": 275,
+    "files": [
+      {
+        "mode": "0644",
+        "path": ".gitignore",
+        "sha256": "01e6d926a692d4c466e8b68f74ac71cfb1cd4f5db331d24c1ae6fe9571f7563f"
+      },
+      {
+        "mode": "0644",
+        "path": "DEPENDENCIES.json",
+        "sha256": "10d76586f4bc47516776d1478fca232bd17f33c985d17f735c282618e9dc6c8d"
+      },
+      {
+        "mode": "0644",
+        "path": "GLOSSARY-FORMAT.html",
+        "sha256": "ed8c6dc857aa41e1fe1e7d1009abd6f970ad0cbaff9a7babe82b947ae0233e9c"
+      },
+      {
+        "mode": "0644",
+        "path": "GLOSSARY-FORMAT.md",
+        "sha256": "d177def491519d97873291f2e860d8f1d60ead78feecb82eee022177958069c6"
+      },
+      {
+        "mode": "0644",
+        "path": "LEARNING-RECORD-FORMAT.html",
+        "sha256": "9eecfe9304777812c7791ba448f39a8310708a3a455cd2c8a35cd7b008ca959f"
+      },
+      {
+        "mode": "0644",
+        "path": "LEARNING-RECORD-FORMAT.md",
+        "sha256": "855f81017625256584bbf62bd5edb9b0c86605c4cc1139c56acc36b802595d17"
+      },
+      {
+        "mode": "0644",
+        "path": "MISSION-FORMAT.html",
+        "sha256": "e9b1e6562a9701adb0c057c0161847285703afd2136ec5d6d1e80c20152a0fe8"
+      },
+      {
+        "mode": "0644",
+        "path": "MISSION-FORMAT.md",
+        "sha256": "8da6d3ac84eb2eb19f17c260b6acf01c560d3ac7a4501c415eea0e985602f4d7"
+      },
+      {
+        "mode": "0644",
+        "path": "RESOURCES-FORMAT.html",
+        "sha256": "cc8d5dbb18b1d0ded75164eb19e5ec7bce405260f2e4d96819a6882efa6e9a18"
+      },
+      {
+        "mode": "0644",
+        "path": "RESOURCES-FORMAT.md",
+        "sha256": "2bc634a64b0d0daa10904f9222e7aa0d361420dfacabbf092fbe3a72222edc08"
+      },
+      {
+        "mode": "0644",
+        "path": "SKILL.html",
+        "sha256": "ef8a22953745ad5399b105c963f675a0345c76ba1d252e3e29a1267748d5c50b"
+      },
+      {
+        "mode": "0644",
+        "path": "SKILL.md",
+        "sha256": "4a33806843f31a046677fb80d7e72a523ac4c23dae28f7ddd086cd90bbca0e68"
+      },
+      {
+        "mode": "0644",
+        "path": "STATUS.html",
+        "sha256": "8ab4b5ce5f164143f077b87c9b757277979a1e9d847b7908b17c9f62fb883961"
+      },
+      {
+        "mode": "0644",
+        "path": "STATUS.json",
+        "sha256": "3c67382f690c37d84d402b07a346516175311b599c2162781438af03fc12b849"
+      },
+      {
+        "mode": "0644",
+        "path": "STATUS.md",
+        "sha256": "71dc754ecc7e80e18ddf5b6b67cdf58b2385ec00c7980e327afc3b5f2871d423"
+      },
+      {
+        "mode": "0644",
+        "path": "agents/openai.yaml",
+        "sha256": "bcddac32c64ad654baa0cbeaee47c1335f2330f81a57a212bacdb3a7f2bf20c0"
+      },
+      {
+        "mode": "0644",
+        "path": "assets/visualization-router.png",
+        "sha256": "d0bac957cc158c5077049b20d9a5254a3071d8f62b859222860bf09022e11b2b"
+      },
+      {
+        "mode": "0644",
+        "path": "assets/visualization-router.svg",
+        "sha256": "d00e719eac853ee52580c41d1af57cda8f6c6a4bd683795ee0534d1e1dd06175"
+      },
+      {
+        "mode": "0644",
+        "path": "evals/evals.json",
+        "sha256": "b2014d8cb5b1cb3b852e74171310cb346bb35f4fccb56c678d77370cc2fe522b"
+      },
+      {
+        "mode": "0644",
+        "path": "evals/forward-behavior.json",
+        "sha256": "05dfe63533966d99f0e987cf6258281f93840d66fac1679f56347c8351020bce"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/README.html",
+        "sha256": "f0aa1aeae6554cb36458ea0b0a2871a21e6353ba1ba53f7b8a72e892795e8e30"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/README.md",
+        "sha256": "4ef7e1ef53dca3188e14ec9ec5a8d5ef341467f4afefbe24cbe13c66919c4e8d"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/context/resume-hinted.json",
+        "sha256": "fc284afe08daeaf3954780e2471efade865d3e49f6c1521409af992eac4beed9"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/execution/practical_gradient_descent.py",
+        "sha256": "5883d9904eeff1940e582c6e46efd7e0f5e2ece11e23fbc1031a415dc9e05eaa"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/execution/practical_gradient_descent.stdout",
+        "sha256": "245d4954b7b37a7440430406d50387e7aee958de74f2f56037e9e05fb6297ded"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/answer-now-override.html",
+        "sha256": "a94a0763bfacf3e90305a737e8ca5e8685fc6dc33f37535a2ea1037d3b72d087"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/answer-now-override.md",
+        "sha256": "793acd9c2e51ee6845ec7f3e06bff6f0f4f6bcc0426efed67f3a82f2e9e47f28"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/course-consent-boundary.html",
+        "sha256": "ae15a21d2395ce006e3f7cf1ddd516dbcb40368be14b098ad22c1dc4825a1626"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/course-consent-boundary.md",
+        "sha256": "d243a72be5ce6931919bdabf598dc1740ef6a1e87ef79e625d15478f6f3f12a5"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.html",
+        "sha256": "cf2d27cf0205e3f1eba9f90b25237a9986046ab4f29002122028ca35b590b7b9"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+        "sha256": "7870522539c9acf4f9e8dd3b487e8b1d876895cb9dc50eec884109071bd47103"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/practical-executable-learning.html",
+        "sha256": "6321c4a2b0660cc38dcd18ee74f67eb9cab6a17a6e0ac52f19c476525ded5d88"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/practical-executable-learning.md",
+        "sha256": "4a1c850b3b5beacb71f6c687aebabc21360936945aabb86901b635a26c314da4"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/quick-bounded-explanation.html",
+        "sha256": "e5f8e4e6aca566b24f26b345ce0eea8be8cab897e99038e18613c2426dd34fa0"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/quick-bounded-explanation.md",
+        "sha256": "afa1a3e1fe88b397ad979022fe988329153002815f442fe3b18ea1ba768ddde1"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/resume-hinted-evidence.html",
+        "sha256": "dda457f15c2abf526673b952d4fda92557b1c1971122cd57b6cef7949474e303"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/resume-hinted-evidence.md",
+        "sha256": "7ea4645e5357e77dae0cf78cb6e990193b110b63cbc482e6c6f90b0136ea49a5"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/visual-essential-static.html",
+        "sha256": "0507d9afca235995ae224c5d70dc4eae7888685b39f16d949eb86e181a1ce1fd"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/visual-essential-static.md",
+        "sha256": "622277512c60c8876bb266a77d774cab4e9f266d460ec3b5a6ebc3a614e087d2"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/visual-none.html",
+        "sha256": "abf9a771b5520dd0909d75aa3ad351f382f241544833e76ccbdf9963acb4b21e"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/outputs/visual-none.md",
+        "sha256": "7341656b646f058cd5e999d9d516aa38bce530a8927111bbd0110c027e812bae"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/receipt.json",
+        "sha256": "9fb172fbc015a617b7204d22d3341ed959beca8395c9196b32ca9a2100ff4480"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/forward/run.json",
+        "sha256": "abd5d6042737c5c0f607143ec183ed785d4b4df85d4740caaefc9f5c6c2b0106"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/inspection/browser.json",
+        "sha256": "ca79b8d9486d8ff999bda48dfaf716d254a84b5baabc3810c7c2715a16e4004e"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/evaluator-sandbox/adversarial-summary.json",
+        "sha256": "7c68b0f3a12f533719c2697d6089d7f30c12d87f11e86f3a63b54c2be710d3f8"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/evaluator-sandbox/manifest.json",
+        "sha256": "15d17e50d989125e71aeb52691aaee4c275747c09c278a577717a7637fb6c8f8"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/evaluator-sandbox/receipts/run-e5df8484d511d46a06f4e241.json",
+        "sha256": "b98629358306809ddeb391ee9a724a5f330c55e463dc43521d0d0af28d7337b0"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/evaluator-sandbox/receipts/run-fe51f89547d24fbe33402911.json",
+        "sha256": "78d46c44bffd5b53e873164dac575f016dc9b47d724595346bc139a1767f516e"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/evaluator-sandbox/report.json",
+        "sha256": "9c5c5d61b98117f23ee83d7233dc06c59a650b9c6c3163991bf8195b7c7a6283"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/evaluator-sandbox/results.jsonl",
+        "sha256": "951da1148b84b2839d9a022a40db55db9d3e1191276387f24f119a63de7cc6ff"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/chart.data.json",
+        "sha256": "ea2efa14a29c73719ecb611376eeae83a4f4ab6940463770eb20e1ffb60b53f3"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/chart.semantic-spec.json",
+        "sha256": "f463fb239948d1322f50d0d04f8f2fc791473569b98fa4799d6bfe15526473e3"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/chart.source.flint.json",
+        "sha256": "a750f68b725912a4927ca020834982a79980e280018ac0f1f9310231a4b53f96"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/chart.svg",
+        "sha256": "655f19683ca0a956c9e81ff2dd4d4d84036d2756dc5426b72601d1e9ac810702"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/chart.table.html",
+        "sha256": "b549f6bd0b35c95a124e5c642559dfa07c1d1b27681c7f6c985ed826e146af17"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/chart.vega-lite.json",
+        "sha256": "3344fab4300ff9100ae42d026be2e97c3abc89607c6a046b0b8dcaf626207360"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/flint-smoke/manifest.json",
+        "sha256": "3ade0f750e46be557b809e74e98a5ca513022682ffd4379fdbeab75eef68c921"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/skillopt-smoke/adapter-receipt.json",
+        "sha256": "78ba40694dabc8bfa791d7374f322bc3682ad8848777b99c1c558e1d5d8678ea"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/integrations/skillopt-smoke/sandbox-e2e-status.json",
+        "sha256": "9a4360a19ea6936e3e78f7121a3cd51b99bd53ad675f5e1fad8587f340ec2803"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/provenance/legacy-assets.json",
+        "sha256": "adac68b84eb5ec87dee369f279689363a13f346cf62ba4e67cb425c3a08ac7e2"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/review-history/attempt-1.json",
+        "sha256": "e0d07ad33762ea2743e2e43cf9406ca6bcee6ac5581be053a4a6337c88939d42"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/review-history/attempt-2.json",
+        "sha256": "67b673ee8eb460b1d2bcb272da4d06a9e22edf9cabda60053516542f45d9343e"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/reviews/architecture-council.json",
+        "sha256": "8240f28dd175fcabea023cb4af16cfb42da67bfbd38ee8f56de570c05baf5a98"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/reviews/code-standards.json",
+        "sha256": "e4592fbed575a3a9353de1a8acc19b2020e4a51ebb17b9f21854cb8a1e27639b"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/reviews/frozen-spec.json",
+        "sha256": "0b11930a29b78325d85671786b00e571945c717bca16aa9b5b8fd8af75192dc3"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/reviews/payload.json",
+        "sha256": "4ff26fde759a8b3dd7b4c5cff3ae9fab1c1c24b106410dc190dc3ba81a8b22af"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/README.html",
+        "sha256": "5990e8c383f1f3186ac61d5ed16c48c0bdeaf610bff940b4169e3b5c74c273cd"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/README.md",
+        "sha256": "39353233309278aa0b008c779a13173977a703bc883be084430bd0e54fc30c2b"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/archive-receipt.json",
+        "sha256": "9b8d18098ca4a882b496146b43292caa3a7d9aa1b47695ea5f1a4cfa98b153ad"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/baseline.json",
+        "sha256": "e15deb48aa867a23c3d031cf5cade29119955aa0a4c9a45a8ab08ac81aa0cc72"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/clean-room.json",
+        "sha256": "37951a15784a60273442a638721270d8cf8a97491e4854dfc939f71a21a6d83d"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/evidence-receipt.json",
+        "sha256": "748b8927a4582982752d9988767488e96b84049b472e4ef5823361253aa2046c"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/lean-decision.json",
+        "sha256": "1acdb50106848dbb6aa01419ff1469fc6621d6670b30ab6376740284268a8057"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/optional-adapters.json",
+        "sha256": "0a3928aaeaceec6ba2edb970d4b886142a16f60c4ae71e2b6d218eed6ca7696a"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/pilot-review.json",
+        "sha256": "5e0afb792c5845cf545fb095172f2c1b6ec8fd75ef85ba03df151c7d5e105e2a"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/rollback.html",
+        "sha256": "42b4b50735743f9771c7db6000dfc9fd79d892d0336fcea72f1376838307022c"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/rollback.md",
+        "sha256": "d1f5c74f4989adeb24b49cfc1eed8c1adbbd6ef891ed2e18d3c32e5423760aae"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/sandbox-limit.html",
+        "sha256": "4e7ebea873f0d296d6afe9ee5047d7dfd49305a7cd31336ab83471043db28653"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/sandbox-limit.md",
+        "sha256": "ad896dc0159f304d0912f14fb1f06ee7be51712968dec277c7b40ef17f06ef80"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/study-operations.json",
+        "sha256": "59d776caa77abc62ca631eec68d443b2e3a7eef6ee91499f157070dc72ff5046"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/truthful-handoff.html",
+        "sha256": "b6323edf72402030f798b505c21d87b37e503b8c9091309f1e5367972421a053"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/truthful-handoff.md",
+        "sha256": "8c5aeaf231f8f55a9f3a1d16d175befb4de3b2a9498d0a549ff01420c3a6ec38"
+      },
+      {
+        "mode": "0644",
+        "path": "evidence/zero-api-visual-runtime/verification.json",
+        "sha256": "42d5826f23ed4462a79a363f27ab8c2ab9721c1f93d1c9ac10a1b11c1a2fe959"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/lean-proof-state/Proof.lean",
+        "sha256": "ef393115871a962e8e9caf97c2a3b6632c51787e3dbfc912c8387560bdf45fcf"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/lean-proof-state/lesson.json",
+        "sha256": "a7967c88eb6efd374ccadf47513172935242b70cf255b6f925f35c916d7a7db8"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/lean-proof-state/proof-state.json",
+        "sha256": "c63e8c6034ef84ee75c460b849e9084aeee66c629fc028328783d070c4164a51"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/lost-update-lab/lesson.json",
+        "sha256": "e3a5ada6bf8d4f35d5cc640cee8a85d8bb0ec2732cc4319f309d2736f749a8ec"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/python-floating-point/lesson.json",
+        "sha256": "2e22a88261d9340a3aeb37c97ef0d468dbb218366ec743cd1aff9eb38892d327"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/python-floating-point/parity-vectors.json",
+        "sha256": "86adaf4ff9c33d2eae9fa5450c06a55eb6a3243169fa411077d2c766f0eb5548"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/python-floating-point/pilot.py",
+        "sha256": "fb857b28f24506b6c656f832b4158316e7dde7a39aa7fe09f7158b7eced625e5"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/python-floating-point/test_pilot.py",
+        "sha256": "6da02e4fb2b982fb26641b9f117dd0cfe5a365cea7340bf14ed512e7f181e657"
+      },
+      {
+        "mode": "0644",
+        "path": "examples/visual-lab/rubiks-move-lab/lesson.json",
+        "sha256": "1d4eb8b89ad9b465bb156cb0de52fcd1aec901149097b78cd557bf49ef9bc786"
+      },
+      {
+        "mode": "0755",
+        "path": "fixtures/evaluation/fixture_agent.py",
+        "sha256": "b501869fec760642bd074fddf80f1eb328ef88a1f04590a82474d04220e39b17"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/flint/invalid-remote-data.flint.json",
+        "sha256": "0e313806963b40723c1163f1fb3e3e80e2e8a4a6491707303ebd5654725bdaac"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/flint/invalid-semantic-field.flint.json",
+        "sha256": "20ef839b155b213d6095ffb52f4b4e1bf22cd3095ca1c1e4bde33f3f18fa1c0a"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/flint/retrieval-by-session.flint.json",
+        "sha256": "e018815687e857acfb8fb14205c672e0557f90bebfa47710336a6613338c1af8"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/flint/warning-pyramid.flint.json",
+        "sha256": "8164b1cc83e1bec1966d46b8a96fde86a118dfb796a91472092d08050a58b53d"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/learning-receipt-invalid.json",
+        "sha256": "9c37b1e749bc544add3b9b894668a6dbcf478b944c1d6d633ccb995b4c2a2488"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/learning-receipt-valid.json",
+        "sha256": "e8ac573580e1d63468ed517e461bbc322f83b2d0ea6dad08799d7ebd25b4a602"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/routing-cases.json",
+        "sha256": "50324e8229ea6041f1c352c764b0d9d317a4002145df05b98c2662e05efa0cf5"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/concepts.json",
+        "sha256": "2eb142a361fe9e95b95c391f726e96561791833f4bae200d9791f95dbeafcd7c"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/events.jsonl",
+        "sha256": "b04fc279dfd43b7e433fd1c5f9139647664b934f34b825312c23cd054ea8858f"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/learner.json",
+        "sha256": "365e618a6bdc58ecd48a80be9020c482b92cd077eded3089367384757bfdd450"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/learning-items.json",
+        "sha256": "50d97ff582543bfa769b8f8e8347af76fa7ad5b3c8a5bad561b89426decdd9fc"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/misconceptions.json",
+        "sha256": "287c5c4d8eaa544c27d2aef09d2c2f7b9df441f1023b2669762ec2bda1b9b767"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/reviews.jsonl",
+        "sha256": "234f47bfd4d796861aff3344242fe1775cf8f5287d15f173924face0095d7912"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/sources.json",
+        "sha256": "43e5a5f6b1048f340c7b840f73bfb6373dd8b37780d067d0d26f5624e9a1ff21"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/study-protocol.json",
+        "sha256": "9be8264270170fcbc1f082636531424afe28670d2de7e8fb6719460f38621e8d"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/study-score.jsonl",
+        "sha256": "72dce4cf1bb317669c971bee7f7e7e53fc4decd7fcc3d93d5880a73e372ff47f"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/schema-valid/study-task-bank.json",
+        "sha256": "1cd3244da360ceb6ed36a8a090d9fc37ebcea707bac2249c93d86044014f9644"
+      },
+      {
+        "mode": "0755",
+        "path": "fixtures/skillopt/fixture_target.py",
+        "sha256": "341497e3f6510dcbbf5eca01968ccfe6298c7d8f1b6d43387729b741c81ce98a"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/skillopt/public-selection.json",
+        "sha256": "5c6a1c24996ae0a7b875a26dbaf3bf0d8772f3e9a194f4cb69d8ac9e10ea91ed"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/skillopt/public-train.json",
+        "sha256": "1f215b2c5f66670e5149ab317d0d81bc11b315267163d25b933e60489027a596"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-lesson-valid.json",
+        "sha256": "812108129b8142e60f4358d0f8d27f14e15928cc4b5149cbf7367d0c3497e569"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/interactive-receipt.json",
+        "sha256": "5d39a66447e2169c7679e7b1745d0f8f67be8d7ce73f0d314a69e3898cde9d62"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/interactive-route.json",
+        "sha256": "dfdc3f3f047dc71799ae480ed50abd047aa5ad8108343dd0646f8488c9399236"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/interactive.html",
+        "sha256": "d0eff2ccfc75f79705ecbd437e67bfe65e9efd3b49cfb337de51d24596fff359"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/interactive.md",
+        "sha256": "23c2a62a44acdb1941d132ae0e38fb849c5b4581d3f89917776ae4c715cb2be6"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/manifest.json",
+        "sha256": "3d031f40596aa9f65dd84e27d58d4558a1a0a59595f7b4947a2794e27c8b08e6"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/motion-receipt.json",
+        "sha256": "98a26fa72308ea8fe03ace8e13d14837bd7b946c20edc78343d726ad18ecd2ac"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/motion-route.json",
+        "sha256": "2a3aa61c76557c98d15d677d63fe05e9a08bca4ec6372f8842bdff213add1c7c"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/motion.html",
+        "sha256": "68e34558973fae288ad8f750cf2e0c63ca05b44045ebedd512a78e4dc7502c66"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/motion.md",
+        "sha256": "f2a5b4de7a165f4625edcadb9476840781e20cfabe2f483cdcbe0f43369cecc4"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/none-receipt.json",
+        "sha256": "020423e87893718797f34c3db4e256a72eddf7f1183c8ccedba6ce46b18e069b"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/none-route.json",
+        "sha256": "81ed2118ce39532f21808c4b5563917af20c9f23cab86be8022bb9330393707b"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/none.html",
+        "sha256": "91f2bc9a01cb400f3d3b364741cf99720466610493ebc1c4b55f09e095fe735a"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/none.md",
+        "sha256": "830abf1f58dec805e91b090f2e6e22556ae46a568d899dc3f31953525efd0001"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/rubric.json",
+        "sha256": "dad19b8261d06fe5a5bb4e5d6c2271795209a3c0f1e0ed480309698dc7f55ab5"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/static-receipt.json",
+        "sha256": "a337a9d427ef5ba9e4791da978051b81f256e9197f787e78b04fa78a91dacdc2"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/static-route.json",
+        "sha256": "68e75c637e7f2045aa2fa9387d5cbbe4eda3a55ffc27bab0cfa2a5a2f80fe8bf"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/static.html",
+        "sha256": "adb8ac9f6be5e21e35a4875832aed81df8d5ad37e21f065b4de629230ef7fe8b"
+      },
+      {
+        "mode": "0644",
+        "path": "fixtures/visual-verification/static.md",
+        "sha256": "96afb99ce4f8fd3bebbdfcd319c5f7f672a9697f925ff22547c4984877363016"
+      },
+      {
+        "mode": "0644",
+        "path": "integrations/flint/package-lock.json",
+        "sha256": "8605e8bff36e1b6bf39f8dc349ad9d11a3d719d4c1f49ecab2a29aed3d2a1d8f"
+      },
+      {
+        "mode": "0644",
+        "path": "integrations/flint/package.json",
+        "sha256": "41e72c9267b6b0366b675b93967e2d579e77c4fd5bd26a7ddb548a704d1cf7bc"
+      },
+      {
+        "mode": "0755",
+        "path": "integrations/flint/render_flint.mjs",
+        "sha256": "2293c12ba1fb82b47703b069f54341f367b4ea087c746d1de26bbaba25b8c863"
+      },
+      {
+        "mode": "0755",
+        "path": "integrations/formal/lean/adapter.py",
+        "sha256": "afdd4b8c0419e49cb08ee41f8d405c9f7493dc7b51545952af1eaf00ce312d84"
+      },
+      {
+        "mode": "0644",
+        "path": "integrations/skillopt/SOURCE.json",
+        "sha256": "2a2d8e0d7add0d1667de04b6f795c8c9ab18832a78e880b91f6543b1049fb456"
+      },
+      {
+        "mode": "0644",
+        "path": "integrations/skillopt/__init__.py",
+        "sha256": "5724dc02632c4f337b06f006be5a2d449cf3f7b66b07fecff3ae728acaa3a180"
+      },
+      {
+        "mode": "0755",
+        "path": "integrations/skillopt/prax_teach_adapter.py",
+        "sha256": "a3ff4ecceba1072f785817231d0ce03d2ca34a806c230ae41dd7a49bcd9d10e1"
+      },
+      {
+        "mode": "0755",
+        "path": "integrations/skillopt/prepare_source.py",
+        "sha256": "13ae4bde80e54c8a43fc6c9356fe566dc8a82c2d57e3bbef313345f8e06ff1e2"
+      },
+      {
+        "mode": "0644",
+        "path": "integrations/skillopt/requirements.lock.txt",
+        "sha256": "babd35f9a41d7f8883c12b749d68e3e61571638194a1242df0591cd116b421ef"
+      },
+      {
+        "mode": "0755",
+        "path": "integrations/skillopt/stage_proposal.py",
+        "sha256": "f15a9b96764f8dc99108d3251d5a1e8795bbd82736d9be80e8f81e5400d0c81b"
+      },
+      {
+        "mode": "0644",
+        "path": "package-lock.json",
+        "sha256": "84760d79ac193dea8247f2186f162a418320ab5368bc824f46937526e745c526"
+      },
+      {
+        "mode": "0644",
+        "path": "package.json",
+        "sha256": "c448145db0d113a21eea7d1661f0ae6a6e283a03875ad599753d727ab8cd3f2d"
+      },
+      {
+        "mode": "0644",
+        "path": "pyproject.toml",
+        "sha256": "36393d2a980a2a91a63dd1b087636a774bf6e3e80cd3b08eb78375d7b365cbdf"
+      },
+      {
+        "mode": "0644",
+        "path": "references/ARTIFACT-CONTRACT.html",
+        "sha256": "8230a71aae1ab947dff52901c5f0ebfa5d350136802af338e439a44c12b69556"
+      },
+      {
+        "mode": "0644",
+        "path": "references/ARTIFACT-CONTRACT.md",
+        "sha256": "ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120"
+      },
+      {
+        "mode": "0644",
+        "path": "references/CAPABILITY-ADAPTIVE-EXECUTION.html",
+        "sha256": "98997080d18fb45d79bcd1af85852fce441cd5215018fb45445c419edc35b367"
+      },
+      {
+        "mode": "0644",
+        "path": "references/CAPABILITY-ADAPTIVE-EXECUTION.md",
+        "sha256": "a65261ca2f82bbf2f822d945bebd3c6d5e95aaceb10fbc4d9e83dde06b383103"
+      },
+      {
+        "mode": "0644",
+        "path": "references/EVALUATION.html",
+        "sha256": "dd275254f07bffd086344cda5364ab80f81a1bbcb6f9bb3575079acc144c17c9"
+      },
+      {
+        "mode": "0644",
+        "path": "references/EVALUATION.md",
+        "sha256": "8191f14167097656dc91494e5039f601544ccb2933c32aec190e3fec665e0bd6"
+      },
+      {
+        "mode": "0644",
+        "path": "references/EVIDENCE-PROTOCOL.html",
+        "sha256": "e570ae213771c06ef43c5e597c6e8425697d77f24bdaff5377e344aba1deb8fb"
+      },
+      {
+        "mode": "0644",
+        "path": "references/EVIDENCE-PROTOCOL.md",
+        "sha256": "2bced2eb43fab617282180421559001ad5066b99763220dc7e4c96e2545965c0"
+      },
+      {
+        "mode": "0644",
+        "path": "references/FLINT-CHARTS.html",
+        "sha256": "6d2dfd0277ae167905badf1110be417e3c8526bf51ea1f717b2cedbcca940514"
+      },
+      {
+        "mode": "0644",
+        "path": "references/FLINT-CHARTS.md",
+        "sha256": "a23d3dfdd84c2f84b5f8ca802ab43bc05d1c7277b39d9b0886e0692cb69530ce"
+      },
+      {
+        "mode": "0644",
+        "path": "references/FORMAL-VERIFICATION.html",
+        "sha256": "69f09ab34a28013c691db2b579ca8468740956d7245a76eb24fced13f317d8b6"
+      },
+      {
+        "mode": "0644",
+        "path": "references/FORMAL-VERIFICATION.md",
+        "sha256": "3d6acefa5911768ecbf86b6b8f0dd903433067c384da334aef43b8b506cada03"
+      },
+      {
+        "mode": "0644",
+        "path": "references/LEARNER-STATE.html",
+        "sha256": "bd5607d1ef5b9bb0a64812b18f992783af453aaa5209dd111a143b287276d06d"
+      },
+      {
+        "mode": "0644",
+        "path": "references/LEARNER-STATE.md",
+        "sha256": "d08424e85040547aa2be2aaf8d49dd3402908fdc89971215c36b207e9edc33cb"
+      },
+      {
+        "mode": "0644",
+        "path": "references/LEGACY-VISUALIZATION-ROUTER.html",
+        "sha256": "2a0498a52847905f0265b1e60b738155c760056ff6b7cc89a6a39c90c146b376"
+      },
+      {
+        "mode": "0644",
+        "path": "references/LEGACY-VISUALIZATION-ROUTER.md",
+        "sha256": "8162c0d4aa523167ede4fc8eebea40ef3c74b21f1e51f844df36716203759eb0"
+      },
+      {
+        "mode": "0644",
+        "path": "references/MODE-CONTRACT.html",
+        "sha256": "98081bf360a84cb14586afe8d2eff64434f9d8135d1dd23b692a400bf2e8c39c"
+      },
+      {
+        "mode": "0644",
+        "path": "references/MODE-CONTRACT.md",
+        "sha256": "39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc"
+      },
+      {
+        "mode": "0644",
+        "path": "references/NO-API-ARCHITECTURE.html",
+        "sha256": "dc752a1647fa96a177d9b44d1368dac9749dfbcf121769bb4d6e8064fbb28bf6"
+      },
+      {
+        "mode": "0644",
+        "path": "references/NO-API-ARCHITECTURE.md",
+        "sha256": "46e1658b5e63027e05d8e77ff7879a8dc9e10e68b2f96e67c8111e5bd3440c4c"
+      },
+      {
+        "mode": "0644",
+        "path": "references/OPERATIONS.html",
+        "sha256": "45546754d48c1316cfaba71494094f2d4242177e1ef23fdff80bb78269dad07c"
+      },
+      {
+        "mode": "0644",
+        "path": "references/OPERATIONS.md",
+        "sha256": "53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22"
+      },
+      {
+        "mode": "0644",
+        "path": "references/SKILLOPT-OPTIMIZATION.html",
+        "sha256": "16ccfcd609a723fa122ecfb65888648701a84bdbf97f8dc768278f2703af202c"
+      },
+      {
+        "mode": "0644",
+        "path": "references/SKILLOPT-OPTIMIZATION.md",
+        "sha256": "ab42e16e9b54c8a083a0015af7593611b271ff630038ee4933dd08f1708a1dbf"
+      },
+      {
+        "mode": "0644",
+        "path": "references/SOURCES-AND-PRIVACY.html",
+        "sha256": "0c5a5a8ded20e0f0d9734025e28a441ccae4b589d5e9766c67f5dac8e1b7580f"
+      },
+      {
+        "mode": "0644",
+        "path": "references/SOURCES-AND-PRIVACY.md",
+        "sha256": "8cf8c9d19b0f5952c79bdd58efda4ac4d42f0d22977e2663d5e27919e88d6314"
+      },
+      {
+        "mode": "0644",
+        "path": "references/TEACHING-PROTOCOL.html",
+        "sha256": "f838db398f74fae341ce4f318d6c9dc4f48466ec9a387484e93821b25469116f"
+      },
+      {
+        "mode": "0644",
+        "path": "references/TEACHING-PROTOCOL.md",
+        "sha256": "6e7b61957b18673ebfd23cc0bcde034f288082aac5081eab6f984312e80ce98e"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUAL-RUNTIME.html",
+        "sha256": "5e83fa5a8d58ab3a096685df2e098290a20890d68660bb1149cc008132f1f4d4"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUAL-RUNTIME.md",
+        "sha256": "c80a619ddcc9972d3bb2a6ae2a028adb427affd239c5d7246f7d508e94230c45"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUALIZATION-RESEARCH.html",
+        "sha256": "bb265306d5f5e508588dfea3647391741c1cb900794bbb448bf383bfe826aa49"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUALIZATION-RESEARCH.md",
+        "sha256": "2931faf70bfd631f880444d5cda3a1513f5190ffdfb87ebb41ae580020ac0ed3"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUALIZATION-ROUTER.html",
+        "sha256": "b6a898c331e2b397b69699fd63c2b17412984ad062e71d4e8a89cd95d15f13ff"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUALIZATION-ROUTER.md",
+        "sha256": "c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUALIZATION-TOOL-REGISTRY.html",
+        "sha256": "27e66a5a885e2549fb07bf7cd34f729c17f26568b634f22ad6c95112175f3472"
+      },
+      {
+        "mode": "0644",
+        "path": "references/VISUALIZATION-TOOL-REGISTRY.md",
+        "sha256": "e6fe26230685f87d5914491a1a450b0b16d53a90e0a1ed653a84ee199c42f98a"
+      },
+      {
+        "mode": "0644",
+        "path": "references/eval-cases.json",
+        "sha256": "5f48956217466da7d0bcfb9f80edfbaf04c18bcaf952684c4ccae673d36978ef"
+      },
+      {
+        "mode": "0644",
+        "path": "references/visualization-tool-registry.json",
+        "sha256": "6c5e01a4191e81db53c318085864fa970b2f67b750a1be78fe9fc8d433b00d9b"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/build.mjs",
+        "sha256": "e2cf499b8e146e5f984d6599694dbb46ea7913e97e5f3225fcc7f5304a3464f7"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/contracts/formal-verification-receipt.schema.json",
+        "sha256": "ee8dbb47c26de88645a04504809c825e9deb23e3a1797c453d58baa691664c8a"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/contracts/learning-receipt.schema.json",
+        "sha256": "2ebaec910ab804ebca6708e5cced7229c14532810e0c95754bbff335548be3c9"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/contracts/visual-lesson.schema.json",
+        "sha256": "6a759b9c8007706e79e476b5b485cbe7029146e4e93cc3d08f1941235ec4cab8"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/contracts/visual-manifest.schema.json",
+        "sha256": "f81413f34b5dbb3dcbb8508f8173872ebfccad3b46f96bd5408dbfae03e4cea5"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/components.css",
+        "sha256": "c19b5325f0586a8027d8b83103ca3b62b48fb33f1b382dd4d7eb57663b39c527"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/components.mjs",
+        "sha256": "bab43514c5007d24f23bf686707a3a91e776c72f8935ccd01b22dc6ba61d756d"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/core.mjs",
+        "sha256": "d5845a8030c200dcb6b168abeb10edaae5df42aacbedb7bb7c0b99fe6976ed60"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/index.html",
+        "sha256": "65ac34a732bf9123c855c6603c29328c0334050914ae1c32cd207e94a9e5a690"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/index.mjs",
+        "sha256": "79cb44c21108304dd88f93fc7de68fb3faee0f6897461a5e9a16223c71b192c9"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/lesson-floating-point.mjs",
+        "sha256": "262318f9dcebf8cdd0e2d6f3408b1b22f7fff6a8c35ca9f43768484b5dadce04"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/manifest.json",
+        "sha256": "fbee13927a7a7416b1c45b0c99514ce8507a2a3a101a6f48a1a1612f5d5bd621"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/dist/styles.css",
+        "sha256": "644c372b3d2f4d125b9230fe68c95e81a54e5b6fcdc5303c0ccec0fccfb03d82"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/package.json",
+        "sha256": "9a799c2e9788b6a1b01a76d00fe6a321a315142f7dbd47ae9300f53213a1302a"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/components.css",
+        "sha256": "c19b5325f0586a8027d8b83103ca3b62b48fb33f1b382dd4d7eb57663b39c527"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/components.mjs",
+        "sha256": "bab43514c5007d24f23bf686707a3a91e776c72f8935ccd01b22dc6ba61d756d"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/core.mjs",
+        "sha256": "d5845a8030c200dcb6b168abeb10edaae5df42aacbedb7bb7c0b99fe6976ed60"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/index.html",
+        "sha256": "65ac34a732bf9123c855c6603c29328c0334050914ae1c32cd207e94a9e5a690"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/index.mjs",
+        "sha256": "79cb44c21108304dd88f93fc7de68fb3faee0f6897461a5e9a16223c71b192c9"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/lesson-floating-point.mjs",
+        "sha256": "262318f9dcebf8cdd0e2d6f3408b1b22f7fff6a8c35ca9f43768484b5dadce04"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/src/styles.css",
+        "sha256": "644c372b3d2f4d125b9230fe68c95e81a54e5b6fcdc5303c0ccec0fccfb03d82"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/tests/build.test.mjs",
+        "sha256": "5b2c70b1d9a2f6aaaea1f50ab107bc0f436c1ed2bad9a7effdeac61ade4bb91f"
+      },
+      {
+        "mode": "0644",
+        "path": "runtime/prax-visual-lab/tests/core.test.mjs",
+        "sha256": "6d37f1035075ee9f35bc6c56dc5f1650bca7f8aec540a686d8a951c68d0c7663"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/concepts.schema.json",
+        "sha256": "9cd82589353faa70b25d9e491ff59f5e36e46f3ee768e34c4132872c21b3de20"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/event.schema.json",
+        "sha256": "c2daf78e3f5c0cb3d20691d0a910231be6a80179541950f2d5ac62b29df45d62"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/learner.schema.json",
+        "sha256": "80ad7d81ebc67b33bf27a17ca5454b454ea3538bfdb61c6283cb77d94449f7c3"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/learning-items.schema.json",
+        "sha256": "e3fa72623fbdb272bdfca6e7b91c59cc803f8dd4ed19662b8c91ea0d84aebc96"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/misconceptions.schema.json",
+        "sha256": "5584f2eacbeeb7b9cfc3012d136c5a725fe49a4525ef8612491905828aa8cafe"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/reviews.schema.json",
+        "sha256": "42c5ec3bf221e580ba31c8f08cd993650e7c558e20591e4d60b8479de7e3fc8e"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/sources.schema.json",
+        "sha256": "789aebf8debf739186a932e3b44b783051e81651d34e29e10ea9697c65fd3bb4"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/study-protocol.schema.json",
+        "sha256": "ad12fb739075d5448bde0479f2bbfb7ef6d1d50fd76a9f6d5810d0eaee1d946d"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/study-score.schema.json",
+        "sha256": "fa70a10c74ac29f0571e1ce6c882b708cbc0471c88a80dede33b50aa5c2f8ad9"
+      },
+      {
+        "mode": "0644",
+        "path": "schemas/study-task-bank.schema.json",
+        "sha256": "4794b4272c6b03c1ecae7e4eea6287c48ed9d54edb72f110e93249a18af02956"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/build_package.py",
+        "sha256": "ec3497493f5454afff4983f882698661b9cfd4722ec751cdbb15d64387e0d587"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/check_optional_integrations.py",
+        "sha256": "eeb0334f3fc8f060526981b0a055a4bd341595a4074b7098ba82c3e2798e61bd"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/evaluate.py",
+        "sha256": "5684a2950e4f05ab273b3b0786d7d1a73f1c02e0a89fa0187d0b3e27cfdabe90"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/export_learning.py",
+        "sha256": "a9fda0391f6c0d373219e5a34ca904c43c76fed75430318ad1a8254ec2910032"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/find_visualization_tool.py",
+        "sha256": "6ea0ad0f11f5bc43903cafcd18a94f466567aa5cb8de672307688f63a499db7d"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/prax_teach.py",
+        "sha256": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxexports/__init__.py",
+        "sha256": "b8ccad8573914d947d43ff8fa88a1a8b886e85d05963b3c26e09af270712c937"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxexports/core.py",
+        "sha256": "4d0da763b3196449629deb3a084e79dac7a90628c2e3cd3957c15cb242f807dd"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/__init__.py",
+        "sha256": "5aaed2d34dd4be983b2b8fec68c761fbeba1bf811fcc7c548ac3796665d5f18e"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/cli.py",
+        "sha256": "38f99494665c11f5b98615449fcc743d38a2d0076a18b559c5466e8461a854ee"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/errors.py",
+        "sha256": "a6d028fdae0f1588fbf493336abad42223cec4c2d346e9ac47b72ab3649b07e3"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/export.py",
+        "sha256": "c1a3c644a4a8fad0660624ac46a4281002284cf44512298cd8c0045aafd96fe5"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/io.py",
+        "sha256": "750dddf9b6f55d64c7a5208c28081f114977af4f7607c59b065640dc34e563eb"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/review_records.py",
+        "sha256": "55ca29dd0c147d59c7f2c7878361e75db61b893ad8c8633636a91b1aa740d429"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/routing.py",
+        "sha256": "6a994bd187f281a7df4de7887ede53fdee2a2ed76ab369df85b38500d99ab11a"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/scheduler.py",
+        "sha256": "bf9bc70dcefcc59341d1cb96eb504c5fcadd8bca8f68542fff729525e452fb64"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/state.py",
+        "sha256": "6c1dd5d5a996721929bba8d50214368cd3585f1417133b9cbf3dddca835fac12"
+      },
+      {
+        "mode": "0644",
+        "path": "scripts/praxteach/visual_verify.py",
+        "sha256": "141441810a63fcd73acfaeea2ddf152027fc18973a2ea15ee4bc8a9378dd26bb"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/render_all.mjs",
+        "sha256": "c9b2e0510f22cb9f3bf38d9c2ca547b4279f3ac3fc1747a6262f4797b5b15d53"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/render_markdown.mjs",
+        "sha256": "91e6dc2163465fc7417673234f99a6b1edc5f0d5a798df299d4afb49d3593342"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/review_payload.py",
+        "sha256": "44f7cd352869f2272134d85acea7f60d6546dc62ca1fccae383d778ce20e89ff"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/study.py",
+        "sha256": "a67bfad818dc756781f322a095dd41711b07561278ed285f8bcb709e984c2795"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/test_visualization_registry.py",
+        "sha256": "43d28b12a824e1e0ba3ab1da4bbcdb932b9572ff6623456031185689a83e13c7"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/update_zero_api_tracker.py",
+        "sha256": "c16a56d12f35657c7d8091890c22c733b5cba764969c5c4ccd7840e6c277b320"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/validate_workspace.py",
+        "sha256": "e718c7f0929d231d226efb236534a01b90ab580eaaf01478288ff0cdb22e7017"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/verify.py",
+        "sha256": "acf53a9345c127012bec3d7460c4dbe11b6513c18e708665611025154fcb2f87"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/verify_visual_runtime.py",
+        "sha256": "71c7154fe369d9b1c6c182db1571df351dcefbe3548e532515d338241d742151"
+      },
+      {
+        "mode": "0755",
+        "path": "scripts/visual_evidence.py",
+        "sha256": "b9a92cccca1f12eff2659c4bd6b5316a4fd2a070a78f4ece7c2e398941fdaddd"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/flint_adapter.test.mjs",
+        "sha256": "e6a86a056e1a9120d60e3cfc7ed7348a11ffce9e9299d626ac0ae0c8dcdda3f1"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/render_markdown.test.mjs",
+        "sha256": "6a253f40b54527aa45e6ad59afe57294098e2320f46bc4afa904f04c0b2b938d"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_build_package.py",
+        "sha256": "a99f7aad9536e29fd4194a81fef3e4ec695c7900a91dec58de23feb97b539ffa"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_core_cli.py",
+        "sha256": "79219f5dd646acb3d0e5864f7a5ccbe4cab964d6608277859b370ff89870fae0"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_evaluation_harness.py",
+        "sha256": "09eb7a3f4eafb2bfc5245665cfaeb61f9becacee673636e9141a2c1950307bc4"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_event_schema_variants.py",
+        "sha256": "5789d01853ed3e6ea768c83dd989cb527310e28b78e46dfc483ef8bc187ae676"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_export_provenance.py",
+        "sha256": "bae90e4d0863fd5732f11f9cb47e68e6e517b6213071a079ec98aba8564a3b5d"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_exports_cli.py",
+        "sha256": "2a500515b89c4a681a50244dcd0c5a93051e992531d168faf6d1127a540a3f37"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_formal_adapter.py",
+        "sha256": "01d9e351808e84f19deb7c8200689e2ab0f9d1eba6aa4bba21042f82872d50a8"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_private_paths.py",
+        "sha256": "697b4966b210880f11954aab42c93db0697fc2451618a3702d1276f4730a56b8"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_release_status_ledger.py",
+        "sha256": "d99a10e4665653896077ed7079dfac43bf401415986c4270560ae32668f74886"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_review_payload.py",
+        "sha256": "3156effc3be135cda3444b43d96774f1287cbd3a338e1a8880541834464d422b"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_review_receipts.py",
+        "sha256": "c4d5bcf6637f86913510959b0982b47f64729d740a7edb82731989ccf65019c6"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_scheduler_cli.py",
+        "sha256": "54fb49373642a71aa9838c0ba3becbe876a68013777e7ab451a29a6f1106e8eb"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_scheduler_review_records.py",
+        "sha256": "d0aa714ded53ce980cd61274803251bbe61f91f49787a6462e97fcf71a4c2e0d"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_schema_validator_parity.py",
+        "sha256": "db44e864cafdea2662e1963c702575787fb5052ad14346ee14d33bc524106586"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_skill_contract.py",
+        "sha256": "ab4ee7b76957d847133c8a3be4a0a69c8502a331bcc9ed0de7013192648502f3"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_skillopt_adapter.py",
+        "sha256": "6d056b7a3ec7ff38d66183bf2c98c591e35ac913cb562062391ba435c395d4e9"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_source_library.py",
+        "sha256": "9e141628bdee589d0aa0492e401e4cc5eb6df0340835a76d4ab2e9071ef58fc2"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_state_contract_hardening.py",
+        "sha256": "66b2dcd8407cb19ea982501fec26a1dad2fc875009371a1faa866afb3ad62073"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_state_scheduler_causality.py",
+        "sha256": "37a1628f67c5906e3c8eb59a1c90ac246aa8104c42e9ec0839e9609a4a4b1c80"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_state_security.py",
+        "sha256": "ca827271c0b584aba4438051d8ec5adc4b2166d37a34c4ce8f0763753612aa10"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_study_cli.py",
+        "sha256": "60cdcf299127623894bc862b834ee403d3fa5df11b2a794874ab41824b77d74a"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_validator_cli.py",
+        "sha256": "27dae7b1cf2e2bb2eb59f381270a52b17a3796ef679cfe0f1c8a9dd822b668bd"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_visual_fixture_matrix.py",
+        "sha256": "c54ae864bf590da0b4db4deeeb99e06f2ac99d1cea0f00205cfbc9abbebf6928"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_visual_lab_pilot.py",
+        "sha256": "64de2b1771347cea7dd592b34991a9910b2db929906186a35824291d11ebacaa"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_visual_routing.py",
+        "sha256": "cc9c580e2f8a10e8e0d9163272885de9d4672a0b2b8d38acb23f35dde89a231e"
+      },
+      {
+        "mode": "0755",
+        "path": "tests/test_visual_verification.py",
+        "sha256": "0c859e550c42f9c0842be7c3b1728365d2dad4072888bf5082adcfe101454cc5"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_zero_api_runtime.py",
+        "sha256": "a623a336d169aa73c50649365980f9afa70baa145604ec889f75e995e1fe7e8e"
+      },
+      {
+        "mode": "0644",
+        "path": "tests/test_zero_api_tracker.py",
+        "sha256": "446650f1f8b2f42a8f100f582ce3f3a1ada9d22a6b60dfdaeb342f64682a964d"
+      },
+      {
+        "mode": "0644",
+        "path": "uv.lock",
+        "sha256": "3fc286bdf2c465d888df898f578f95a6a030d4d639073094c0ba366e2ce7535d"
+      }
+    ],
+    "sha256": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72"
+  },
+  "run_id": "61fcca356dcc68697c43ca779b0fb83a",
+  "schema_version": 3,
+  "scientific_learning_claim_supported": false,
+  "skillopt_source": {
+    "commit": "e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+    "path": "/Users/prax/Documents/Codex/2026-08-03/hey/work/dependencies/SkillOpt-v0.2.0",
+    "tree": "5a603e937a20f1078059f94039a50028c022487a",
+    "worktree_clean": true
+  },
+  "source_date_epoch": "1785844800",
+  "status": "passed",
+  "trusted_macos_sandbox_tests_required": true,
+  "verification_script_sha256": "acf53a9345c127012bec3d7460c4dbe11b6513c18e708665611025154fcb2f87"
+}

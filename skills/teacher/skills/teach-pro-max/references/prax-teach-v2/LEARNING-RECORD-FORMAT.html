@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="LEARNING-RECORD-FORMAT.md">
+  <meta name="source-sha256" content="855f81017625256584bbf62bd5edb9b0c86605c4cc1139c56acc36b802595d17">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Learning Record Format</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./LEARNING-RECORD-FORMAT.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="learning-record-format">Learning Record Format</h1>
+<p>Learning records live in <code>./learning-records/</code> and use sequential numbering: <code>0001-slug.md</code>, <code>0002-slug.md</code>, etc. Create the directory lazily — only when the first record is written.</p>
+<p>They are the teaching equivalent of ADRs: they capture non-obvious lessons, key insights, and stated prior knowledge that will steer future sessions. They are used to calculate the zone of proximal development.</p>
+<h2 id="template">Template</h2>
+<pre><code class="language-md"># {Short title of what was learned or established}
+
+{1-3 sentences: what was learned (or what prior knowledge was established), and why it matters for future sessions.}
+</code></pre>
+<p>That is the whole format. A learning record can be a single paragraph. The value is recording <em>that</em> this is now known and <em>why</em> it changes what to teach next — not in filling out sections.</p>
+<h2 id="optional-sections">Optional sections</h2>
+<p>Only include these when they add genuine value. Most records won't need them.</p>
+<ul>
+<li><strong>Status</strong> frontmatter (<code>active | superseded by LR-NNNN</code>) — useful when an earlier understanding turns out to be wrong and is replaced.</li>
+<li><strong>Evidence</strong> — how the user demonstrated the understanding (a question answered, an exercise completed, prior experience cited). Useful when the claim might be revisited.</li>
+<li><strong>Implications</strong> — what this unlocks or rules out for future sessions. Worth recording when non-obvious.</li>
+</ul>
+<h2 id="numbering">Numbering</h2>
+<p>Scan <code>./learning-records/</code> for the highest existing number and increment by one.</p>
+<h2 id="when-to-write-a-learning-record">When to write a learning record</h2>
+<p>Write one when any of these is true:</p>
+<ol>
+<li><strong>The user demonstrated genuine understanding of something non-trivial</strong> — not just exposure, but evidence they can use the concept correctly. This sets a new floor for what to teach next.</li>
+<li><strong>The user disclosed prior knowledge</strong> — "I already know X." Record it so future sessions don't re-teach it. Also record the <em>depth</em> claimed.</li>
+<li><strong>A misconception was corrected</strong> — the user previously believed something wrong and now sees why. These are high-value: they predict future stumbling blocks for related topics.</li>
+<li><strong>The mission shifted in response to learning</strong> — the user discovered they cared about something different than they thought. Cross-link to [[MISSION.md]] and update it.</li>
+</ol>
+<h3 id="what-does-not-qualify">What does <em>not</em> qualify</h3>
+<ul>
+<li>Material that was merely covered. Coverage is not learning. Wait for evidence.</li>
+<li>Anything already captured tersely in [[GLOSSARY.md]] as a term definition. Don't duplicate.</li>
+<li>Session-by-session activity logs. Learning records are not a journal — they are decision-grade insights.</li>
+</ul>
+<h2 id="supersession">Supersession</h2>
+<p>When a later record contradicts an earlier one (the user's understanding deepened or corrected), mark the old record <code>Status: superseded by LR-NNNN</code> rather than deleting it. The history of how understanding evolved is itself useful signal.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./LEARNING-RECORD-FORMAT.md">LEARNING-RECORD-FORMAT.md</a><br>
+    SHA-256: <code>855f81017625256584bbf62bd5edb9b0c86605c4cc1139c56acc36b802595d17</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

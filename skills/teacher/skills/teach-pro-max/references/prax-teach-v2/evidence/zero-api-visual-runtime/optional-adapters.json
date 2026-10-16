@@ -1,0 +1,7 @@
+{
+  "schema_version":"prax.optional-adapter-gate/v1",
+  "status":"gated-off",
+  "adapters":{"SkillOpt":{"present":"existing project integration","runtime_dependency":false,"auto_adopt":false,"named_job":"skill instruction benchmark not run for this visual runtime"},"Flint":{"present":"existing project integration","runtime_dependency":false,"job":"chart authoring only; no visual-lab lesson requires it"}},
+  "future_adapters":"Only add after a named job, baseline, hard gates, held-out split, and human approval.",
+  "evidence_level":"engineering-policy"
+}

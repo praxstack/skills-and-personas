@@ -1,0 +1,34 @@
+{
+  "bundled_renderer_supported": true,
+  "default_medium": "text and one aligned example",
+  "delivery_reason": "The bundled Markdown renderer can deliver this route directly.",
+  "delivery_route": "none",
+  "delivery_surface": "bundled-static-artifact",
+  "fallback": "Prose and a worked example.",
+  "flint_eligible": false,
+  "flint_required": false,
+  "reason": "Explicit none route override; the caller remains responsible for accuracy and accessibility.",
+  "requested_medium": "text and one aligned example",
+  "retrieval_safety": {
+    "checks_performed": false,
+    "required": true,
+    "required_checks": [
+      "attempt_before_reveal",
+      "accessible_reveal",
+      "fallback_preserves_order"
+    ],
+    "surfaces_to_check": [
+      "visible_labels",
+      "alt_text",
+      "captions",
+      "default_state",
+      "poster_frame",
+      "source_code"
+    ],
+    "verification_status": "not_run"
+  },
+  "route": "none",
+  "runtime_requirement": null,
+  "visual_runtime": null,
+  "visual_runtime_supported": false
+}

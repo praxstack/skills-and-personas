@@ -1,0 +1,50 @@
+{
+  "checks": {
+    "actual_bytes_scanned_for_declared_textual_leakage": true,
+    "animated_or_unvalidated_assets_absent": true,
+    "attempt_before_reveal": "passed",
+    "linked_textual_assets_scanned": true,
+    "markdown_html_exact_parity": true,
+    "raster_semantics_automatically_verified": false,
+    "semantic_visual_leakage": "manual_review_required",
+    "static_fallback_verified": true,
+    "unbundled_runtime_promoted": false
+  },
+  "claim_boundary": "Automated static-delivery bytes passed deterministic structure and declared textual-leakage checks. Geometry, color, emphasis, and other semantic visual leakage still require human review. No browser, assistive-technology, field-accessibility, factual-correctness, or human-learning claim is supported.",
+  "delivery_route": "static",
+  "inputs": {
+    "forbidden_answer_rubric": {
+      "path": "fixtures/visual-verification/rubric.json",
+      "sha256": "dad19b8261d06fe5a5bb4e5d6c2271795209a3c0f1e0ed480309698dc7f55ab5"
+    },
+    "generated_html": {
+      "path": "fixtures/visual-verification/static.html",
+      "sha256": "adb8ac9f6be5e21e35a4875832aed81df8d5ad37e21f065b4de629230ef7fe8b"
+    },
+    "route_output": {
+      "path": "fixtures/visual-verification/static-route.json",
+      "sha256": "68e75c637e7f2045aa2fa9387d5cbbe4eda3a55ffc27bab0cfa2a5a2f80fe8bf"
+    },
+    "source": {
+      "path": "fixtures/visual-verification/static.md",
+      "sha256": "96afb99ce4f8fd3bebbdfcd319c5f7f672a9697f925ff22547c4984877363016"
+    }
+  },
+  "linked_textual_assets": [],
+  "requested_runtime_applicable": false,
+  "requested_runtime_verified": false,
+  "route": "static",
+  "schema_version": 1,
+  "status": "passed",
+  "verifier": {
+    "implementation": {
+      "path": "scripts/praxteach/visual_verify.py",
+      "sha256": "141441810a63fcd73acfaeea2ddf152027fc18973a2ea15ee4bc8a9378dd26bb"
+    },
+    "renderer": {
+      "path": "scripts/render_markdown.mjs",
+      "sha256": "91e6dc2163465fc7417673234f99a6b1edc5f0d5a798df299d4afb49d3593342"
+    },
+    "version": "prax-teach-visual-verifier/1.1.0"
+  }
+}

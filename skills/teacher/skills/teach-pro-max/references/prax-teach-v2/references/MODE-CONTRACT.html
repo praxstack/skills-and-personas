@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="MODE-CONTRACT.md">
+  <meta name="source-sha256" content="39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Mode contract</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./MODE-CONTRACT.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="mode-contract">Mode contract</h1>
+<h2 id="purpose">Purpose</h2>
+<p>Route each request to the least costly teaching experience that can achieve the learner’s stated outcome. Persistence, rich artifacts, and long intake are capabilities—not default ceremony.</p>
+<h2 id="decision-sequence">Decision sequence</h2>
+<ol>
+<li>Honor an explicit <code>quick</code>, <code>lesson</code>, <code>course</code>, <code>keep it concise</code>, <code>go deeper</code>, or <strong>Answer now</strong> request.</li>
+<li>Identify the requested outcome: understand, perform, retain, transfer, or build a course.</li>
+<li>Choose <code>quick</code> when one response plus an optional check can plausibly satisfy it.</li>
+<li>Choose <code>lesson</code> when success needs a guided sequence, transfer task, or reusable artifact.</li>
+<li>Choose <code>course</code> only for explicit multi-session intent, cumulative prerequisites, or accepted durable tracking.</li>
+<li>Ask one clarifying question only when a different answer would materially change the route.</li>
+</ol>
+<h2 id="routing-table">Routing table</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Route</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“What does X mean?”</td>
+<td><code>quick</code></td>
+<td>Answer directly; diagnose only if ambiguity matters</td>
+</tr>
+<tr>
+<td>“Explain X in five minutes”</td>
+<td><code>quick</code></td>
+<td>Respect the timebox; one visual only if it materially helps</td>
+</tr>
+<tr>
+<td>“Quiz me on X”</td>
+<td><code>quick</code> or <code>lesson</code></td>
+<td>Quick for a short check; lesson for diagnosis plus remediation</td>
+</tr>
+<tr>
+<td>“Teach me to do X today”</td>
+<td><code>lesson</code></td>
+<td>One observable competency and transfer task</td>
+</tr>
+<tr>
+<td>“Make me an interactive lesson”</td>
+<td><code>lesson</code></td>
+<td>Use host chat plus a complete static Markdown/HTML representation unless an approved interaction runtime is available</td>
+</tr>
+<tr>
+<td>“Help me learn X over six weeks”</td>
+<td><code>course</code></td>
+<td>Confirm mission, horizon, persistence, and review policy</td>
+</tr>
+<tr>
+<td>“Continue where we stopped”</td>
+<td><code>course</code> if state exists</td>
+<td>Read state only after resolving the intended workspace</td>
+</tr>
+<tr>
+<td>“Just give me the answer”</td>
+<td>current mode → direct answer</td>
+<td>Stop the Socratic loop immediately</td>
+</tr>
+<tr>
+<td>Ordinary task completion</td>
+<td>no trigger</td>
+<td>Teach only when requested or clearly the goal</td>
+</tr>
+</tbody></table></div>
+<h2 id="quick-mode">Quick mode</h2>
+<h3 id="contract">Contract</h3>
+<ul>
+<li>Do not initialize a workspace or write durable learner state by default.</li>
+<li>Adapt to the learner within the current conversation.</li>
+<li>Ask at most one high-value diagnostic question when the request is already answerable.</li>
+<li>Prefer: concise explanation → concrete example → optional retrieval/application check.</li>
+<li>Offer a deeper lesson or review prompt; do not pressure the learner into one.</li>
+</ul>
+<h3 id="allowed-outputs">Allowed outputs</h3>
+<ul>
+<li>Chat explanation.</li>
+<li>Small semantic table, exact SVG, Mermaid source, or a host-chat attempt with a complete static representation when it earns its cost.</li>
+<li>A one-off file only when the user requests an artifact.</li>
+</ul>
+<h2 id="lesson-mode">Lesson mode</h2>
+<h3 id="contract-2">Contract</h3>
+<ul>
+<li>Define one observable outcome.</li>
+<li>Use the complete teaching loop at least through guided attempt and transfer.</li>
+<li>Ask once before persisting a session summary or learner evidence.</li>
+<li>If creating a durable lesson, make Markdown canonical and generate its HTML companion.</li>
+<li>Close with evidence observed, remaining uncertainty, and one next retrieval.</li>
+</ul>
+<h3 id="avoid">Avoid</h3>
+<ul>
+<li>Creating a course tree for one competency.</li>
+<li>Writing a personality-style learner profile.</li>
+<li>Treating a polished artifact as proof of learning.</li>
+</ul>
+<h2 id="course-mode">Course mode</h2>
+<h3 id="contract-3">Contract</h3>
+<ul>
+<li>Obtain explicit persistence consent.</li>
+<li>Establish the mission, target independent performance, desired retention horizon, source constraints, and access needs.</li>
+<li>Diagnose prerequisites before fixing a long syllabus.</li>
+<li>Store raw observations separately from inferred concept state.</li>
+<li>Maintain a review queue and use later-session evidence before durable-mastery claims.</li>
+<li>Let learner questions, annotations, errors, and goals change the next lesson.</li>
+<li>Show every material learner-state update at session close.</li>
+<li>Resume with exactly one next learner action selected from current goals, due
+review, and the strongest unresolved evidence gap.</li>
+</ul>
+<h2 id="host-adapters">Host adapters</h2>
+<p>Adapters contain no teaching policy. They may map host capabilities, file
+locations, tool names, and input/output formats onto the core mode and teaching
+contracts, but must not redefine routing, evidence, hinting, mastery, or visual
+selection. Describe required capabilities rather than hardcoding one agent
+harness when an equivalent native capability can satisfy the contract.</p>
+<h2 id="persistence-consent">Persistence consent</h2>
+<p>Before the first durable write, say in one sentence:</p>
+<blockquote>
+<p>I can store your goal, practice evidence, misconceptions, and review schedule in <code>&lt;resolved path&gt;</code> so later sessions can adapt; you can inspect, correct, export, or delete it. Shall I persist this course?</p>
+</blockquote>
+<p>If the learner declines:</p>
+<ul>
+<li>continue in ephemeral lesson mode;</li>
+<li>do not create learner-state files;</li>
+<li>offer a copyable summary if useful.</li>
+</ul>
+<p>Consent to lesson files does not automatically grant consent to behavioral analytics or inferred learner state.</p>
+<h2 id="escalation-and-demotion">Escalation and demotion</h2>
+<p>Escalate only when the current outcome cannot be met cleanly:</p>
+<ul>
+<li><code>quick</code> → <code>lesson</code>: several dependent steps, practice, or a reusable artifact becomes necessary;</li>
+<li><code>lesson</code> → <code>course</code>: the learner requests resumption, a sequence, or review over time.</li>
+</ul>
+<p>Before escalation, explain the benefit and added persistence/artifact cost in one sentence.</p>
+<p>Demote without resistance when the learner requests speed, an answer, or less ceremony. Preserve already consented state but do not update it unless the learner continues the course.</p>
+<h2 id="time-and-cognitive-load-budgets">Time and cognitive-load budgets</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Mode</th>
+<th align="right">Intake budget</th>
+<th align="right">Default content budget</th>
+<th align="right">Questions per turn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>quick</code></td>
+<td align="right">0–1 question</td>
+<td align="right">One concept, one example, optional check</td>
+<td align="right">Usually 1</td>
+</tr>
+<tr>
+<td><code>lesson</code></td>
+<td align="right">1–3 focused questions</td>
+<td align="right">One competency and one transfer</td>
+<td align="right">1 at a time</td>
+</tr>
+<tr>
+<td><code>course</code></td>
+<td align="right">Mission plus diagnostic</td>
+<td align="right">One bounded step per lesson</td>
+<td align="right">1 at a time; compact batches only for setup</td>
+</tr>
+</tbody></table></div>
+<p>These are defaults, not hard limits. Match the learner’s urgency and expertise.</p>
+<h2 id="failure-routing">Failure routing</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Learner is frustrated</td>
+<td>Shorten, change representation, or offer <strong>Answer now</strong>; do not infer low ability</td>
+</tr>
+<tr>
+<td>Source is missing or disputed</td>
+<td>State uncertainty and research before teaching the disputed claim</td>
+</tr>
+<tr>
+<td>Visual fails</td>
+<td>Continue with the static/text fallback; do not block the lesson</td>
+</tr>
+<tr>
+<td>Durable state is missing</td>
+<td>Explain the gap, reconstruct only from learner-confirmed evidence, and avoid invented history</td>
+</tr>
+<tr>
+<td>Durable state conflicts with current performance</td>
+<td>Record contradictory evidence, lower certainty, and offer a retest</td>
+</tr>
+<tr>
+<td>Learner asks for a high-stakes answer</td>
+<td>Give appropriately scoped information, use authoritative sources, and avoid pretending tutoring replaces a professional</td>
+</tr>
+</tbody></table></div>
+<h2 id="trigger-examples">Trigger examples</h2>
+<p>Should trigger:</p>
+<ul>
+<li>“Teach me why database indexes speed up some queries.”</li>
+<li>“Help me build intuition for Fourier transforms.”</li>
+<li>“Quiz me on these notes, but don’t give answers away.”</li>
+<li>“Make a short accessible HTML lesson from this paper.”</li>
+<li>“Resume my networking course and review what is due.”</li>
+</ul>
+<p>Should not trigger automatically:</p>
+<ul>
+<li>“Add an index to this migration.”</li>
+<li>“Summarize this meeting.”</li>
+<li>“Fix this failing test.”</li>
+<li>“What version of PostgreSQL is installed?”</li>
+</ul>
+<p>For adjacent tasks, complete the task unless the user asks to learn from it.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./MODE-CONTRACT.md">MODE-CONTRACT.md</a><br>
+    SHA-256: <code>39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

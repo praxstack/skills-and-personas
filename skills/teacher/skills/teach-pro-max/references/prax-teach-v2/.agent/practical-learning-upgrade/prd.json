@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "feature": "teach-pro-max-practical-learning",
+  "spec": "SPEC.md",
+  "atoms": [
+    {"id": "TPM-01", "criterion": "AC1,AC2,AC6", "title": "Add the practical executable-learning protocol", "status": "passed", "evidence": ["references/TEACHING-PROTOCOL.md", "tests/test_skill_contract.py"]},
+    {"id": "TPM-02", "criterion": "AC3,AC4,AC8,AC9,AC10", "title": "Strengthen the visual-model and dependency invariants", "status": "passed", "evidence": ["references/ARTIFACT-CONTRACT.md", "references/MODE-CONTRACT.md", "tests/test_skill_contract.py"]},
+    {"id": "TPM-03", "criterion": "AC5", "title": "Reconcile every normative film route", "status": "passed", "evidence": ["references/VISUALIZATION-ROUTER.md", "references/LEGACY-VISUALIZATION-ROUTER.md", "references/visualization-tool-registry.json", "tests/test_visual_routing.py", "scripts/test_visualization_registry.py"]},
+    {"id": "TPM-04", "criterion": "AC7", "title": "Add the one-next-action course-resume rule", "status": "passed", "evidence": ["references/MODE-CONTRACT.md", "tests/test_skill_contract.py"]},
+    {"id": "TPM-05", "criterion": "AC11", "title": "Add practical-learning evaluation coverage", "status": "passed", "evidence": ["evals/forward-behavior.json", "evidence/forward/run.json", "evidence/forward/receipt.json"]},
+    {"id": "TPM-06", "criterion": "AC12", "title": "Regenerate docs, review, verify, receipt, and promote exact bytes", "status": "todo", "evidence": []}
+  ]
+}

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="spec.md">
+  <meta name="source-sha256" content="d0e270d10a9a338c55fe309f34cd28b57c0303fa9c21dab764ecf11f1353426d">
+  <meta name="generated-at" content="2026-08-17T09:15:41.734Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>spec</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./spec.md">Markdown source</a></div></header>
+  <main id="main-content"><h2 id="purpose">Purpose</h2>
+<p>Connect the host tutor and local visual lessons through an explicit receipt bridge while keeping open-ended interpretation in the host conversation and deterministic behavior in the local artifact.</p>
+<h2 id="added-requirements">ADDED Requirements</h2>
+<h3 id="requirement-host-and-runtime-responsibilities-shall-remain-separate">Requirement: Host and runtime responsibilities SHALL remain separate</h3>
+<p>The host tutor SHALL interpret natural-language explanations and misconceptions, while the local runtime SHALL own deterministic transitions, exact graders, static fallbacks, and receipt production.</p>
+<h4 id="scenario-ambiguous-learner-explanation">Scenario: Ambiguous learner explanation</h4>
+<ul>
+<li><strong>WHEN</strong> a learner submits an open-ended explanation that cannot be judged structurally</li>
+<li><strong>THEN</strong> the runtime preserves the text and routes interpretation to the human-operated host tutor</li>
+</ul>
+<h3 id="requirement-receipt-sharing-shall-be-learner-controlled">Requirement: Receipt sharing SHALL be learner-controlled</h3>
+<p>The runtime SHALL provide copy and export actions but SHALL never automatically upload a receipt, scrape a host conversation, or infer subscription credentials.</p>
+<h4 id="scenario-learner-does-not-share-a-receipt">Scenario: Learner does not share a receipt</h4>
+<ul>
+<li><strong>WHEN</strong> a learner completes a local lesson and declines to export</li>
+<li><strong>THEN</strong> the receipt remains local and no host request is made</li>
+</ul>
+<h3 id="requirement-static-fallback-shall-be-the-universal-route">Requirement: Static fallback SHALL be the universal route</h3>
+<p>If a separately versioned interactive runtime is missing, incompatible, or unverified, the teaching skill SHALL route to host chat or a static state sequence without implying that the artifact grades or persists interaction.</p>
+<h4 id="scenario-runtime-unavailable">Scenario: Runtime unavailable</h4>
+<ul>
+<li><strong>WHEN</strong> the interactive renderer cannot be verified for the current lesson</li>
+<li><strong>THEN</strong> the skill delivers a static equivalent and states the runtime limitation</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./spec.md">spec.md</a><br>
+    SHA-256: <code>d0e270d10a9a338c55fe309f34cd28b57c0303fa9c21dab764ecf11f1353426d</code><br>
+    Generated: 2026-08-17T09:15:41.734Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

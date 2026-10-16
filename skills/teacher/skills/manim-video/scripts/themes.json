@@ -1,0 +1,659 @@
+{
+ "version": 1,
+ "roles": [
+  "bg",
+  "panel",
+  "line",
+  "text",
+  "muted",
+  "accent",
+  "warm",
+  "good",
+  "bad",
+  "cool",
+  "gold",
+  "violet"
+ ],
+ "families": [
+  {
+   "id": "pastel",
+   "name": "Pastel",
+   "source": "original to this repo (no upstream palette)",
+   "variants": [
+    {
+     "id": "pastel-cream",
+     "name": "Cream",
+     "slot": "light",
+     "colors": {
+      "bg": "#FFF7F0",
+      "panel": "#F6EBE2",
+      "line": "#E6D6CB",
+      "text": "#3B3245",
+      "muted": "#7A6E85",
+      "accent": "#5B6CC9",
+      "warm": "#D9734E",
+      "good": "#3E9E7E",
+      "bad": "#D2557A",
+      "cool": "#3C9DB5",
+      "gold": "#E0A43A",
+      "violet": "#9A6FD0"
+     }
+    },
+    {
+     "id": "pastel-lavender",
+     "name": "Lavender mist",
+     "slot": "mid",
+     "colors": {
+      "bg": "#E9E4F5",
+      "panel": "#DED7EE",
+      "line": "#C9C0E0",
+      "text": "#2F2A45",
+      "muted": "#6A6382",
+      "accent": "#5560B8",
+      "warm": "#C0663F",
+      "good": "#2F8A6B",
+      "bad": "#C2457A",
+      "cool": "#2F86A3",
+      "gold": "#B9862A",
+      "violet": "#8458C2"
+     }
+    },
+    {
+     "id": "pastel-night",
+     "name": "Pastel night",
+     "slot": "dark",
+     "colors": {
+      "bg": "#2B2738",
+      "panel": "#353046",
+      "line": "#4A4460",
+      "text": "#F2EAF7",
+      "muted": "#B9AFC8",
+      "accent": "#A9B8FF",
+      "warm": "#FFC3A0",
+      "good": "#9FE2C4",
+      "bad": "#F6A6C1",
+      "cool": "#A0DCEB",
+      "gold": "#FFE3A3",
+      "violet": "#D3B8FF"
+     }
+    }
+   ]
+  },
+  {
+   "id": "tokyonight",
+   "name": "Tokyo Night",
+   "source": "https://github.com/folke/tokyonight.nvim (lua/tokyonight/colors, extras/kitty/tokyonight_day.conf)",
+   "variants": [
+    {
+     "id": "tokyonight-day",
+     "name": "Tokyo Night Day",
+     "slot": "light",
+     "colors": {
+      "bg": "#E1E2E7",
+      "panel": "#D0D5E3",
+      "line": "#C4C8DA",
+      "text": "#3760BF",
+      "muted": "#6172B0",
+      "accent": "#2E7DE9",
+      "warm": "#B15C00",
+      "good": "#587539",
+      "bad": "#F52A65",
+      "cool": "#007197",
+      "gold": "#8C6C3E",
+      "violet": "#9854F1"
+     }
+    },
+    {
+     "id": "tokyonight-storm",
+     "name": "Tokyo Night Storm",
+     "slot": "mid",
+     "colors": {
+      "bg": "#24283B",
+      "panel": "#292E42",
+      "line": "#3B4261",
+      "text": "#C0CAF5",
+      "muted": "#A9B1D6",
+      "accent": "#7AA2F7",
+      "warm": "#FF9E64",
+      "good": "#9ECE6A",
+      "bad": "#F7768E",
+      "cool": "#7DCFFF",
+      "gold": "#E0AF68",
+      "violet": "#BB9AF7"
+     }
+    },
+    {
+     "id": "tokyonight-night",
+     "name": "Tokyo Night Night",
+     "slot": "dark",
+     "colors": {
+      "bg": "#1A1B26",
+      "panel": "#292E42",
+      "line": "#3B4261",
+      "text": "#C0CAF5",
+      "muted": "#A9B1D6",
+      "accent": "#7AA2F7",
+      "warm": "#FF9E64",
+      "good": "#9ECE6A",
+      "bad": "#F7768E",
+      "cool": "#7DCFFF",
+      "gold": "#E0AF68",
+      "violet": "#BB9AF7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "catppuccin",
+   "name": "Catppuccin",
+   "source": "https://github.com/catppuccin/palette (palette.json: base, surface0, surface1, text, subtext0, blue, peach, green, red, teal, yellow, mauve)",
+   "variants": [
+    {
+     "id": "catppuccin-latte",
+     "name": "Catppuccin Latte",
+     "slot": "light",
+     "colors": {
+      "bg": "#EFF1F5",
+      "panel": "#CCD0DA",
+      "line": "#BCC0CC",
+      "text": "#4C4F69",
+      "muted": "#6C6F85",
+      "accent": "#1E66F5",
+      "warm": "#FE640B",
+      "good": "#40A02B",
+      "bad": "#D20F39",
+      "cool": "#179299",
+      "gold": "#DF8E1D",
+      "violet": "#8839EF"
+     }
+    },
+    {
+     "id": "catppuccin-macchiato",
+     "name": "Catppuccin Macchiato",
+     "slot": "mid",
+     "colors": {
+      "bg": "#24273A",
+      "panel": "#363A4F",
+      "line": "#494D64",
+      "text": "#CAD3F5",
+      "muted": "#A5ADCB",
+      "accent": "#8AADF4",
+      "warm": "#F5A97F",
+      "good": "#A6DA95",
+      "bad": "#ED8796",
+      "cool": "#8BD5CA",
+      "gold": "#EED49F",
+      "violet": "#C6A0F6"
+     }
+    },
+    {
+     "id": "catppuccin-mocha",
+     "name": "Catppuccin Mocha",
+     "slot": "dark",
+     "colors": {
+      "bg": "#1E1E2E",
+      "panel": "#313244",
+      "line": "#45475A",
+      "text": "#CDD6F4",
+      "muted": "#A6ADC8",
+      "accent": "#89B4FA",
+      "warm": "#FAB387",
+      "good": "#A6E3A1",
+      "bad": "#F38BA8",
+      "cool": "#94E2D5",
+      "gold": "#F9E2AF",
+      "violet": "#CBA6F7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "rosepine",
+   "name": "Rosé Pine",
+   "source": "https://github.com/rose-pine/neovim (lua/rose-pine/palette.lua: base, overlay, highlight_med, text, subtle, foam/pine, gold, leaf, love, pine/foam, rose, iris)",
+   "variants": [
+    {
+     "id": "rosepine-dawn",
+     "name": "Rosé Pine Dawn",
+     "slot": "light",
+     "colors": {
+      "bg": "#FAF4ED",
+      "panel": "#F2E9E1",
+      "line": "#DFDAD9",
+      "text": "#464261",
+      "muted": "#797593",
+      "accent": "#286983",
+      "warm": "#EA9D34",
+      "good": "#6D8F89",
+      "bad": "#B4637A",
+      "cool": "#56949F",
+      "gold": "#D7827E",
+      "violet": "#907AA9"
+     }
+    },
+    {
+     "id": "rosepine-moon",
+     "name": "Rosé Pine Moon",
+     "slot": "mid",
+     "colors": {
+      "bg": "#232136",
+      "panel": "#393552",
+      "line": "#44415A",
+      "text": "#E0DEF4",
+      "muted": "#908CAA",
+      "accent": "#9CCFD8",
+      "warm": "#F6C177",
+      "good": "#95B1AC",
+      "bad": "#EB6F92",
+      "cool": "#3E8FB0",
+      "gold": "#EA9A97",
+      "violet": "#C4A7E7"
+     }
+    },
+    {
+     "id": "rosepine-main",
+     "name": "Rosé Pine Main",
+     "slot": "dark",
+     "colors": {
+      "bg": "#191724",
+      "panel": "#26233A",
+      "line": "#403D52",
+      "text": "#E0DEF4",
+      "muted": "#908CAA",
+      "accent": "#9CCFD8",
+      "warm": "#F6C177",
+      "good": "#95B1AC",
+      "bad": "#EB6F92",
+      "cool": "#31748F",
+      "gold": "#EBBCBA",
+      "violet": "#C4A7E7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "nord",
+   "name": "Nord",
+   "source": "https://github.com/nordtheme/nord (src/nord.css: nord0-nord15)",
+   "variants": [
+    {
+     "id": "nord-snow",
+     "name": "Nord Snow Storm",
+     "slot": "light",
+     "colors": {
+      "bg": "#ECEFF4",
+      "panel": "#E5E9F0",
+      "line": "#D8DEE9",
+      "text": "#2E3440",
+      "muted": "#4C566A",
+      "accent": "#5E81AC",
+      "warm": "#D08770",
+      "good": "#A3BE8C",
+      "bad": "#BF616A",
+      "cool": "#88C0D0",
+      "gold": "#EBCB8B",
+      "violet": "#B48EAD"
+     }
+    },
+    {
+     "id": "nord-frost",
+     "name": "Nord Frost",
+     "slot": "mid",
+     "colors": {
+      "bg": "#3B4252",
+      "panel": "#434C5E",
+      "line": "#4C566A",
+      "text": "#ECEFF4",
+      "muted": "#D8DEE9",
+      "accent": "#88C0D0",
+      "warm": "#D08770",
+      "good": "#A3BE8C",
+      "bad": "#BF616A",
+      "cool": "#8FBCBB",
+      "gold": "#EBCB8B",
+      "violet": "#B48EAD"
+     }
+    },
+    {
+     "id": "nord-polar",
+     "name": "Nord Polar Night",
+     "slot": "dark",
+     "colors": {
+      "bg": "#2E3440",
+      "panel": "#3B4252",
+      "line": "#434C5E",
+      "text": "#ECEFF4",
+      "muted": "#D8DEE9",
+      "accent": "#88C0D0",
+      "warm": "#D08770",
+      "good": "#A3BE8C",
+      "bad": "#BF616A",
+      "cool": "#8FBCBB",
+      "gold": "#EBCB8B",
+      "violet": "#B48EAD"
+     }
+    }
+   ]
+  },
+  {
+   "id": "gruvbox",
+   "name": "Gruvbox",
+   "source": "https://github.com/morhetz/gruvbox (colors/gruvbox.vim: light0/dark0 tones, faded_* on light, bright_* on dark)",
+   "variants": [
+    {
+     "id": "gruvbox-light",
+     "name": "Gruvbox Light",
+     "slot": "light",
+     "colors": {
+      "bg": "#FBF1C7",
+      "panel": "#EBDBB2",
+      "line": "#D5C4A1",
+      "text": "#3C3836",
+      "muted": "#7C6F64",
+      "accent": "#076678",
+      "warm": "#AF3A03",
+      "good": "#79740E",
+      "bad": "#9D0006",
+      "cool": "#427B58",
+      "gold": "#B57614",
+      "violet": "#8F3F71"
+     }
+    },
+    {
+     "id": "gruvbox-soft",
+     "name": "Gruvbox Soft dark",
+     "slot": "mid",
+     "colors": {
+      "bg": "#32302F",
+      "panel": "#3C3836",
+      "line": "#504945",
+      "text": "#EBDBB2",
+      "muted": "#A89984",
+      "accent": "#83A598",
+      "warm": "#FE8019",
+      "good": "#B8BB26",
+      "bad": "#FB4934",
+      "cool": "#8EC07C",
+      "gold": "#FABD2F",
+      "violet": "#D3869B"
+     }
+    },
+    {
+     "id": "gruvbox-hard",
+     "name": "Gruvbox Hard dark",
+     "slot": "dark",
+     "colors": {
+      "bg": "#1D2021",
+      "panel": "#3C3836",
+      "line": "#504945",
+      "text": "#EBDBB2",
+      "muted": "#A89984",
+      "accent": "#83A598",
+      "warm": "#FE8019",
+      "good": "#B8BB26",
+      "bad": "#FB4934",
+      "cool": "#8EC07C",
+      "gold": "#FABD2F",
+      "violet": "#D3869B"
+     }
+    }
+   ]
+  },
+  {
+   "id": "everforest",
+   "name": "Everforest",
+   "source": "https://github.com/sainnhe/everforest (autoload/everforest.vim: medium light, medium dark, hard dark)",
+   "variants": [
+    {
+     "id": "everforest-light",
+     "name": "Everforest Light",
+     "slot": "light",
+     "colors": {
+      "bg": "#FDF6E3",
+      "panel": "#EFEBD4",
+      "line": "#E0DCC7",
+      "text": "#5C6A72",
+      "muted": "#829181",
+      "accent": "#3A94C5",
+      "warm": "#F57D26",
+      "good": "#8DA101",
+      "bad": "#F85552",
+      "cool": "#35A77C",
+      "gold": "#DFA000",
+      "violet": "#DF69BA"
+     }
+    },
+    {
+     "id": "everforest-medium",
+     "name": "Everforest Medium",
+     "slot": "mid",
+     "colors": {
+      "bg": "#2D353B",
+      "panel": "#3D484D",
+      "line": "#4F585E",
+      "text": "#D3C6AA",
+      "muted": "#9DA9A0",
+      "accent": "#7FBBB3",
+      "warm": "#E69875",
+      "good": "#A7C080",
+      "bad": "#E67E80",
+      "cool": "#83C092",
+      "gold": "#DBBC7F",
+      "violet": "#D699B6"
+     }
+    },
+    {
+     "id": "everforest-hard",
+     "name": "Everforest Hard",
+     "slot": "dark",
+     "colors": {
+      "bg": "#272E33",
+      "panel": "#374145",
+      "line": "#495156",
+      "text": "#D3C6AA",
+      "muted": "#9DA9A0",
+      "accent": "#7FBBB3",
+      "warm": "#E69875",
+      "good": "#A7C080",
+      "bad": "#E67E80",
+      "cool": "#83C092",
+      "gold": "#DBBC7F",
+      "violet": "#D699B6"
+     }
+    }
+   ]
+  },
+  {
+   "id": "kanagawa",
+   "name": "Kanagawa",
+   "source": "https://github.com/rebelot/kanagawa.nvim (lua/kanagawa/colors.lua: lotus*, sumiInk/fuji/wave*, dragon*)",
+   "variants": [
+    {
+     "id": "kanagawa-lotus",
+     "name": "Kanagawa Lotus",
+     "slot": "light",
+     "colors": {
+      "bg": "#F2ECBC",
+      "panel": "#E5DDB0",
+      "line": "#D5CEA3",
+      "text": "#545464",
+      "muted": "#716E61",
+      "accent": "#4D699B",
+      "warm": "#CC6D00",
+      "good": "#6F894E",
+      "bad": "#C84053",
+      "cool": "#597B75",
+      "gold": "#DE9800",
+      "violet": "#624C83"
+     }
+    },
+    {
+     "id": "kanagawa-wave",
+     "name": "Kanagawa Wave",
+     "slot": "mid",
+     "colors": {
+      "bg": "#1F1F28",
+      "panel": "#2A2A37",
+      "line": "#363646",
+      "text": "#DCD7BA",
+      "muted": "#C8C093",
+      "accent": "#7E9CD8",
+      "warm": "#FFA066",
+      "good": "#98BB6C",
+      "bad": "#E46876",
+      "cool": "#7AA89F",
+      "gold": "#E6C384",
+      "violet": "#957FB8"
+     }
+    },
+    {
+     "id": "kanagawa-dragon",
+     "name": "Kanagawa Dragon",
+     "slot": "dark",
+     "colors": {
+      "bg": "#181616",
+      "panel": "#282727",
+      "line": "#393836",
+      "text": "#C5C9C5",
+      "muted": "#A6A69C",
+      "accent": "#8BA4B0",
+      "warm": "#B6927B",
+      "good": "#87A987",
+      "bad": "#C4746E",
+      "cool": "#8EA4A2",
+      "gold": "#C4B28A",
+      "violet": "#8992A7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "github",
+   "name": "GitHub",
+   "source": "https://github.com/projekt0n/github-nvim-theme (palette/primitives: Primer scales)",
+   "variants": [
+    {
+     "id": "github-light",
+     "name": "GitHub Light",
+     "slot": "light",
+     "colors": {
+      "bg": "#FFFFFF",
+      "panel": "#F6F8FA",
+      "line": "#D0D7DE",
+      "text": "#1F2328",
+      "muted": "#656D76",
+      "accent": "#0969DA",
+      "warm": "#BC4C00",
+      "good": "#1A7F37",
+      "bad": "#CF222E",
+      "cool": "#1B7C83",
+      "gold": "#9A6700",
+      "violet": "#8250DF"
+     }
+    },
+    {
+     "id": "github-dimmed",
+     "name": "GitHub Dimmed",
+     "slot": "mid",
+     "colors": {
+      "bg": "#22272E",
+      "panel": "#2D333B",
+      "line": "#444C56",
+      "text": "#ADBAC7",
+      "muted": "#768390",
+      "accent": "#539BF5",
+      "warm": "#F69D50",
+      "good": "#57AB5A",
+      "bad": "#E5534B",
+      "cool": "#76E3EA",
+      "gold": "#C69026",
+      "violet": "#986EE2"
+     }
+    },
+    {
+     "id": "github-dark",
+     "name": "GitHub Dark",
+     "slot": "dark",
+     "colors": {
+      "bg": "#0D1117",
+      "panel": "#161B22",
+      "line": "#30363D",
+      "text": "#E6EDF3",
+      "muted": "#7D8590",
+      "accent": "#2F81F7",
+      "warm": "#F0883E",
+      "good": "#3FB950",
+      "bad": "#F85149",
+      "cool": "#76E3EA",
+      "gold": "#D29922",
+      "violet": "#A371F7"
+     }
+    }
+   ]
+  },
+  {
+   "id": "ayu",
+   "name": "Ayu",
+   "source": "https://github.com/Shatur/neovim-ayu (lua/ayu/colors.lua: bg, line, guide_active, fg, ui, entity, keyword, string, error, regexp, func, constant)",
+   "variants": [
+    {
+     "id": "ayu-light",
+     "name": "Ayu Light",
+     "slot": "light",
+     "colors": {
+      "bg": "#F8F9FA",
+      "panel": "#E7EAED",
+      "line": "#D2D5D8",
+      "text": "#5C6166",
+      "muted": "#8A9199",
+      "accent": "#399EE6",
+      "warm": "#FA8D3E",
+      "good": "#86B300",
+      "bad": "#E65050",
+      "cool": "#4CBF99",
+      "gold": "#F2AE49",
+      "violet": "#A37ACC"
+     }
+    },
+    {
+     "id": "ayu-mirage",
+     "name": "Ayu Mirage",
+     "slot": "mid",
+     "colors": {
+      "bg": "#1F2430",
+      "panel": "#1C212B",
+      "line": "#444A55",
+      "text": "#CCCAC2",
+      "muted": "#707A8C",
+      "accent": "#73D0FF",
+      "warm": "#FFAD66",
+      "good": "#D5FF80",
+      "bad": "#FF6666",
+      "cool": "#95E6CB",
+      "gold": "#FFD173",
+      "violet": "#DFBFFF"
+     }
+    },
+    {
+     "id": "ayu-dark",
+     "name": "Ayu Dark",
+     "slot": "dark",
+     "colors": {
+      "bg": "#0B0E14",
+      "panel": "#0F131A",
+      "line": "#3C414A",
+      "text": "#BFBDB6",
+      "muted": "#565B66",
+      "accent": "#59C2FF",
+      "warm": "#FF8F40",
+      "good": "#AAD94C",
+      "bad": "#D95757",
+      "cool": "#95E6CB",
+      "gold": "#FFB454",
+      "violet": "#D2A6FF"
+     }
+    }
+   ]
+  }
+ ]
+}

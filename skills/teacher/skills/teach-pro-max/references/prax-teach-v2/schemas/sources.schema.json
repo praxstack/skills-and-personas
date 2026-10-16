@@ -1,0 +1,102 @@
+{
+  "$id": "https://prax.local/prax-teach-v2/schemas/sources.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/source_record"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "sources"
+  ],
+  "title": "Prax Teach versioned source library",
+  "type": "object",
+  "$defs": {
+    "identifier": {
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "type": "string"
+    },
+    "nonempty_text": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "type": "string"
+    },
+    "source_record": {
+      "additionalProperties": false,
+      "properties": {
+        "author_or_publisher": {
+          "maxLength": 1000,
+          "$ref": "#/$defs/nonempty_text"
+        },
+        "license_or_use_note": {
+          "maxLength": 2000,
+          "$ref": "#/$defs/nonempty_text"
+        },
+        "limitations": {
+          "maxLength": 4000,
+          "$ref": "#/$defs/nonempty_text"
+        },
+        "retrieved_at": {
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "type": "string"
+        },
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_type": {
+          "enum": [
+            "official-doc",
+            "primary-study",
+            "review",
+            "repository",
+            "social"
+          ]
+        },
+        "supports": {
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "title": {
+          "maxLength": 1000,
+          "$ref": "#/$defs/nonempty_text"
+        },
+        "url": {
+          "maxLength": 4096,
+          "pattern": "^(file:/|https?://|urn:).+",
+          "type": "string"
+        },
+        "version_or_date": {
+          "maxLength": 256,
+          "$ref": "#/$defs/nonempty_text"
+        }
+      },
+      "required": [
+        "author_or_publisher",
+        "license_or_use_note",
+        "limitations",
+        "retrieved_at",
+        "source_id",
+        "source_type",
+        "supports",
+        "title",
+        "url",
+        "version_or_date"
+      ],
+      "type": "object"
+    }
+  }
+}

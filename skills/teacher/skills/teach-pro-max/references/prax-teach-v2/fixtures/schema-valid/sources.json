@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "sources": [
+    {
+      "author_or_publisher": "Prax Teach fixture authors",
+      "license_or_use_note": "Synthetic fixture content for package validation.",
+      "limitations": "Not evidence for a real-world teaching claim.",
+      "retrieved_at": "2026-08-04",
+      "source_id": "fixture-source",
+      "source_type": "official-doc",
+      "supports": [
+        "index-selection"
+      ],
+      "title": "Index selection fixture source",
+      "url": "https://example.invalid/index-selection-fixture",
+      "version_or_date": "2026-08-04"
+    }
+  ]
+}

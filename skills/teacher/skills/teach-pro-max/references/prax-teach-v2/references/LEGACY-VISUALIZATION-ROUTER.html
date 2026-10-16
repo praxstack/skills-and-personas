@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="LEGACY-VISUALIZATION-ROUTER.md">
+  <meta name="source-sha256" content="8162c0d4aa523167ede4fc8eebea40ef3c74b21f1e51f844df36716203759eb0">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Visualization Router</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./LEGACY-VISUALIZATION-ROUTER.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="visualization-router">Visualization Router</h1>
+<p>Use this reference only when a lesson benefits materially from a visual. Visuals are teaching instruments, not decoration.</p>
+<h2 id="production-loop">Production Loop</h2>
+<p>Follow this order:</p>
+<pre><code class="language-text">Learning objective
+→ visual brief
+→ no visual / static / interactive / motion
+→ representation family
+→ accuracy, editability, and delivery constraints
+→ available renderer or verified fallback
+→ editable semantic source
+→ render in the lesson environment
+→ visual, semantic, accessibility, and provenance QA
+→ revise locally
+→ lesson placement, static fallback, and retrieval task
+</code></pre>
+<p>Do not escalate from prose to SVG, SVG to interaction, or interaction to video unless the extra dimension teaches something the simpler medium cannot.</p>
+<h2 id="write-the-visual-brief">Write the Visual Brief</h2>
+<p>Before creating a substantial visual, record:</p>
+<ul>
+<li><strong>Learning job:</strong> what the learner must notice, compare, predict, manipulate, or watch change.</li>
+<li><strong>Message:</strong> the one-sentence takeaway.</li>
+<li><strong>Entities and relationships:</strong> exact objects, labels, values, directions, states, and invariants.</li>
+<li><strong>Misconception:</strong> the plausible wrong reading the visual must prevent or correct.</li>
+<li><strong>Evidence:</strong> authoritative source for every factual, numerical, scientific, medical, historical, or technical claim.</li>
+<li><strong>Delivery constraints:</strong> target screen, mobile and print behavior, offline use, editability, interaction, audio, and available tools.</li>
+<li><strong>Fallback:</strong> equivalent prose, table, poster, or static sequence.</li>
+<li><strong>Retrieval action:</strong> what the learner will predict, identify, repair, trace, change, or recreate.</li>
+</ul>
+<p>For formulas, notation, protocols, architecture labels, or recurring entities, maintain a <strong>symbol ledger</strong>. Reuse names, colors, shapes, line styles, and meanings across every scene and lesson.</p>
+<h2 id="choose-the-representation">Choose the Representation</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Learning need</th>
+<th>Default</th>
+<th>Alternatives</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No relationship is clarified by a visual</td>
+<td>No visual</td>
+<td>Compact example or table</td>
+</tr>
+<tr>
+<td>Appearance, mood, historical scene, or metaphor</td>
+<td>Image generation or sourced photography</td>
+<td>Illustrated collage</td>
+</tr>
+<tr>
+<td>Exact labelled object, mechanism, anatomy, or spatial instruction</td>
+<td>Accessible SVG</td>
+<td>HTML/CSS, Penrose</td>
+</tr>
+<tr>
+<td>Simple process, hierarchy, lifecycle, or decision tree</td>
+<td>Mermaid</td>
+<td>D2, Graphviz</td>
+</tr>
+<tr>
+<td>Informal or provisional mental model</td>
+<td>Excalidraw</td>
+<td>Sketch-mode D2, wireframe</td>
+</tr>
+<tr>
+<td>Editable professional handoff</td>
+<td>draw.io</td>
+<td>Figma, Excalidraw</td>
+</tr>
+<tr>
+<td>UI hierarchy or product flow</td>
+<td>Wireframe or runnable HTML</td>
+<td>SVG, Figma</td>
+</tr>
+<tr>
+<td>UML, sequence, state, or deployment</td>
+<td>PlantUML</td>
+<td>Mermaid, D2, draw.io</td>
+</tr>
+<tr>
+<td>Evolving software architecture</td>
+<td>Structurizr/C4</td>
+<td>D2, PlantUML, draw.io</td>
+</tr>
+<tr>
+<td>Comparison, distribution, trend, uncertainty, or relationship</td>
+<td>Vega-Lite or domain plot</td>
+<td>Observable Plot, ECharts</td>
+</tr>
+<tr>
+<td>Rich interactive chart or dashboard</td>
+<td>ECharts</td>
+<td>Observable Plot, Vega, D3</td>
+</tr>
+<tr>
+<td>Large graph, map, spatial dataset, or 3D relationship</td>
+<td>Canvas/WebGL</td>
+<td>deck.gl, Three.js, Sigma.js</td>
+</tr>
+<tr>
+<td>Nodes the learner must expand, drag, connect, or inspect</td>
+<td>React Flow</td>
+<td>Cytoscape.js, custom SVG</td>
+</tr>
+<tr>
+<td>Mathematical geometry or constrained relationship</td>
+<td>Penrose or SVG</td>
+<td>TikZ, Manim</td>
+</tr>
+<tr>
+<td>Mathematical or algorithmic transformation over time</td>
+<td>Manim 0.21.0</td>
+<td>HyperFrames</td>
+</tr>
+<tr>
+<td>Animated code, vector, or systems explainer</td>
+<td>HyperFrames</td>
+<td>Manim</td>
+</tr>
+<tr>
+<td>Templated, data-driven, or branded video</td>
+<td>HyperFrames</td>
+<td>Manim when precision math dominates</td>
+</tr>
+<tr>
+<td>Agent-authored HTML/CSS/JS video</td>
+<td>HyperFrames</td>
+<td>Static sequence when film adds no learning value</td>
+</tr>
+<tr>
+<td>Small interactive vector state machine</td>
+<td>Rive or dotLottie</td>
+<td>Animated SVG</td>
+</tr>
+<tr>
+<td>Many diagram languages behind one gateway</td>
+<td>Kroki</td>
+<td>Direct local renderer</td>
+</tr>
+</tbody></table></div>
+<p>These are routes, not mandatory dependencies. Query the registry after choosing a route:</p>
+<pre><code class="language-bash">python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --route quantity
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py mermaid
+</code></pre>
+<p>Inspect tools already available in the workspace before installing anything. Prefer browser-native HTML, CSS, JavaScript, Canvas, and SVG when they solve the problem without a heavy toolchain.</p>
+<h2 id="decide-required-fidelity">Decide Required Fidelity</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Fidelity</th>
+<th>Preferred family</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Impressionistic</td>
+<td>Image generation</td>
+</tr>
+<tr>
+<td>Approximate relationships</td>
+<td>Excalidraw or wireframe</td>
+</tr>
+<tr>
+<td>Exact labels, arrows, and geometry</td>
+<td>SVG or diagram-as-code</td>
+</tr>
+<tr>
+<td>Exact quantitative encoding</td>
+<td>Vega-Lite, Observable Plot, ECharts, domain plot</td>
+</tr>
+<tr>
+<td>Exact mathematical transformation</td>
+<td>Manim or Penrose</td>
+</tr>
+<tr>
+<td>Exact frame timing</td>
+<td>HyperFrames or Manim</td>
+</tr>
+</tbody></table></div>
+<p>Never use an image model as the source of truth for text, equations, measurements, ordered steps, object counts, charts, architecture, or precise scientific, medical, legal, safety, or historical claims. Generate illustration separately and composite authoritative labels in SVG or HTML.</p>
+<h2 id="preserve-semantic-and-editable-sources">Preserve Semantic and Editable Sources</h2>
+<p>Prefer <code>.svg</code>, <code>.drawio</code>, <code>.excalidraw</code>, <code>.mmd</code>, <code>.d2</code>, <code>.dot</code>, <code>.puml</code>, Structurizr DSL, Vega-Lite JSON, HTML/JS, React/TypeScript, Manim Python, or video composition source. Treat PNG, GIF, and MP4 as rendered derivatives.</p>
+<p>For complex work, separate:</p>
+<ol>
+<li><strong>Semantics:</strong> entities, values, relationships, hierarchy, and state transitions.</li>
+<li><strong>Layout:</strong> positions, grouping, routing, scale, and progressive reveals.</li>
+<li><strong>Style:</strong> typography, color, line treatment, animation, and decoration.</li>
+</ol>
+<p>Styling changes must not rewrite meaning. When practical, generate several views from one semantic model.</p>
+<h3 id="advanced-patterns">Advanced patterns</h3>
+<p>Use only when complexity earns them:</p>
+<ul>
+<li><strong>Scene-graph intermediate representation:</strong> typed nodes, edges, groups, values, and states before rendering, only when a real playback, scrubbing, or synchronized-output consumer reads it.</li>
+<li><strong>Constraint-based layout:</strong> alignment, containment, non-overlap, equal spacing, and geometric invariants.</li>
+<li><strong>Structured edits:</strong> add, remove, reconnect, regroup, or restyle semantic objects rather than blind text replacement.</li>
+<li><strong>Progressive rendering:</strong> show a clearly labelled coarse result and refine without changing its encoding.</li>
+<li><strong>First-class annotations:</strong> bind callouts to semantic entities or data values.</li>
+<li><strong>Golden previews:</strong> retain representative screenshots or keyframes to catch layout drift.</li>
+<li><strong>Targeted regeneration:</strong> repair the incorrect scene, object, label, or edge instead of regenerating everything.</li>
+</ul>
+<p>Treat emerging research systems as optional accelerators, never authorities. Keep the verification loop independent of the generator.</p>
+<h2 id="progressive-disclosure-and-signaling">Progressive Disclosure and Signaling</h2>
+<p>Introduce complexity in stages:</p>
+<ol>
+<li>Establish the baseline.</li>
+<li>Add one entity, rule, or transition.</li>
+<li>Highlight the relevant path or comparison.</li>
+<li>Show the complete system.</li>
+<li>Test an edge case or misconception.</li>
+</ol>
+<p>Keep labels beside what they explain. Prefer direct labels over distant legends. Use emphasis sparingly. Follow a major visual with a learner action rather than passive admiration.</p>
+<h2 id="accurate-svg-contract">Accurate SVG Contract</h2>
+<p>SVG is the default for precise, responsive lesson illustrations.</p>
+<ul>
+<li>Set a meaningful <code>viewBox</code>; use responsive width and automatic height.</li>
+<li>Keep important text as text rather than paths.</li>
+<li>Include <code>&lt;title&gt;</code> and <code>&lt;desc&gt;</code>, use <code>role="img"</code>, and connect them with <code>aria-labelledby</code>.</li>
+<li>Group semantic regions with stable IDs.</li>
+<li>Reuse markers, symbols, gradients, and filters through <code>&lt;defs&gt;</code>.</li>
+<li>Define consistent meanings for direction, optionality, inhibition, uncertainty, and grouping.</li>
+<li>Keep typography, stroke widths, corner radii, spacing, and color meanings aligned with course tokens.</li>
+<li>Avoid <code>foreignObject</code> when the visual must print or render outside a browser.</li>
+<li>Do not encode meaning through color alone.</li>
+<li>Provide a prose reading order for complex figures and a table for quantitative figures.</li>
+<li>Validate XML and inspect the rendered result for clipping, overlap, fonts, malformed paths, and unreadable labels.</li>
+</ul>
+<p>During semantic verification, model the SVG as a graph: compare required nodes, labels, edges, directions, and paths with the visual brief. A beautiful incorrect arrow is still incorrect.</p>
+<h2 id="diagram-rules">Diagram Rules</h2>
+<ul>
+<li>Use Mermaid for fast, modest diagrams with maintainable text source.</li>
+<li>Use D2 when layout engines, themes, sketch styling, modular imports, or animated SVG are valuable.</li>
+<li>Use Graphviz for trees, dependencies, dense graphs, and state spaces where automatic layout is central.</li>
+<li>Use PlantUML for UML-heavy or sequence-heavy material.</li>
+<li>Use Structurizr/C4 when several architecture views must share one model.</li>
+<li>Use Excalidraw for exploratory or deliberately provisional visuals; preserve scene JSON.</li>
+<li>Use draw.io for manual refinement, layers, pages, rich connectors, metadata, or handoff; preserve XML.</li>
+<li>Use wireframes when hierarchy and interaction matter more than finish.</li>
+<li>Use Kroki when a unified local or remote rendering gateway is more useful than separate runtimes.</li>
+</ul>
+<p>Split diagrams larger than one screen into an overview and focused detail views. Avoid crossing edges, unexplained icons, decorative containers, and tiny labels.</p>
+<h2 id="data-visualization-rules">Data Visualization Rules</h2>
+<p>Begin with the question, not the chart type.</p>
+<ul>
+<li>Identify the comparison, distribution, trend, relationship, composition, flow, or uncertainty.</li>
+<li>Prefer position and length for precise comparison before area, angle, volume, or pictograms.</li>
+<li>Start bar-chart quantitative axes at zero unless an explicit exceptional reason is explained.</li>
+<li>Do not force line charts to zero when it destroys the useful scale; disclose the scale.</li>
+<li>Directly label important values, groups, thresholds, and annotations.</li>
+<li>Show sample size, missingness, uncertainty, assumptions, units, and data provenance when relevant.</li>
+<li>Keep annotations bound to semantic data targets.</li>
+<li>Avoid 3D charts, unexplained dual axes, rainbow scales, chart junk, and obscuring animation.</li>
+<li>Retain source data or reproducible transformations.</li>
+<li>Provide a table or concise textual summary for essential values.</li>
+<li>Test mobile and print; reflow, facet, filter, or create a simpler alternate view instead of uniformly shrinking.</li>
+</ul>
+<p>Do not imply causality when evidence shows only association.</p>
+<h2 id="image-generation-and-sourced-media">Image Generation and Sourced Media</h2>
+<p>Use generated imagery for appearance, atmosphere, memorable metaphors, scenes, objects, and illustrative composition.</p>
+<ul>
+<li>Inspect for unsupported detail, spatial contradiction, misleading affordance, accidental labels, cultural bias, and conflict with cited sources.</li>
+<li>Identify synthetic imagery when it could be mistaken for documentary evidence.</li>
+<li>Preserve the prompt or edit instructions when reproducibility matters.</li>
+</ul>
+<p>For external media:</p>
+<ul>
+<li>Prefer authoritative, public-domain, Creative Commons, or properly licensed sources.</li>
+<li>Record source URL, creator, licence, required attribution, and retrieval date.</li>
+<li>Confirm that the planned redistribution and editing are permitted.</li>
+<li>Never infer a licence from search-result availability.</li>
+</ul>
+<h2 id="interactive-visual-rules">Interactive Visual Rules</h2>
+<p>Use interaction only when the learner gains by changing, testing, traversing, filtering, comparing, controlling time, or inspecting the model.</p>
+<ul>
+<li>Give it one precise learning task.</li>
+<li>Keep controls minimal and action-labelled.</li>
+<li>Provide immediate explanatory feedback.</li>
+<li>Support keyboard operation, logical focus order, and visible focus states.</li>
+<li>Avoid hover-only information; expose the same content through focus or click.</li>
+<li>Preserve useful learner state and provide a clear reset.</li>
+<li>Separate feedback from the answer so the learner can try first.</li>
+<li>Provide a static fallback and textual explanation.</li>
+<li>Keep the lesson understandable if JavaScript is disabled.</li>
+</ul>
+<h2 id="motion-and-video-rules">Motion and Video Rules</h2>
+<p>Use motion only for order, causality, transformation, accumulation, synchronization, navigation through space, or changing state.</p>
+<p>Before implementation, create a storyboard containing:</p>
+<ol>
+<li>Learning objective</li>
+<li>One idea per scene</li>
+<li>Initial and final state of each scene</li>
+<li>Narration or captions</li>
+<li>What changes and why</li>
+<li>Expected duration</li>
+<li>Retrieval prompt</li>
+</ol>
+<p>Choose:</p>
+<ul>
+<li><strong>Manim 0.21.0:</strong> equations, proofs, geometry, science, and precise algorithms.</li>
+<li><strong>HyperFrames:</strong> deterministic HTML/CSS/JS visual storytelling with seekable animation.</li>
+<li><strong>Rive/dotLottie:</strong> small interactive vector animations and state machines.</li>
+</ul>
+<p>Motion Canvas and Remotion remain historical registry entries, not default
+routes for new Teach Pro Max work. Consider Canvas Commons only if a future
+lesson demonstrates a requirement for TypeScript generators.</p>
+<p>Use an explicit timeline, frame, or seekable state when determinism matters. Do not rely on wall-clock playback.</p>
+<ul>
+<li>Keep narration and visual action complementary rather than duplicative.</li>
+<li>Add captions and a transcript.</li>
+<li>Include pause, replay, and scrubbing when supported.</li>
+<li>Provide a poster or static sequence for print, low bandwidth, failed playback, and reduced-motion users.</li>
+<li>Respect <code>prefers-reduced-motion</code> without removing information.</li>
+<li>Review important keyframes as still images.</li>
+<li>Avoid ambient movement, gratuitous camera motion, rapid zooms, and decorative transitions.</li>
+</ul>
+<h2 id="embed-in-the-lesson">Embed in the Lesson</h2>
+<ul>
+<li>Place media beside the explanation or task it supports.</li>
+<li>Use <code>&lt;figure&gt;</code> and <code>&lt;figcaption&gt;</code> for meaningful static media.</li>
+<li>Write captions that say what to notice.</li>
+<li>Use <code>alt</code> text for simple images; use a short alternative plus extended description or data table for complex ones.</li>
+<li>Cite factual content, data, and external imagery near the figure.</li>
+<li>Keep the lesson understandable when media fails.</li>
+<li>Do not reveal a retrieval answer before the learner attempts it.</li>
+<li>Prefer learner-controlled progressive reveals over autoplay.</li>
+</ul>
+<h2 id="provenance-contract">Provenance Contract</h2>
+<p>For each significant visual, retain nearby metadata containing:</p>
+<ul>
+<li>learning brief or storyboard</li>
+<li>authoring or generation tool</li>
+<li>source documents, data, and URLs</li>
+<li>editable source path</li>
+<li>render command and environment</li>
+<li>output dimensions</li>
+<li>attribution or licence</li>
+<li>last verification date</li>
+<li>known limitations</li>
+</ul>
+<p>Use lesson-prefixed paths:</p>
+<pre><code class="language-text">assets/visuals/0004-request-lifecycle.d2
+assets/visuals/0004-request-lifecycle.svg
+assets/visuals/0004-request-lifecycle.png
+assets/video/0007-gradient-descent/STORYBOARD.md
+assets/video/0007-gradient-descent/main.py
+assets/video/0007-gradient-descent/poster.svg
+assets/video/0007-gradient-descent/render.mp4
+</code></pre>
+<h2 id="render-inspect-verify-revise">Render, Inspect, Verify, Revise</h2>
+<p>Never ship a non-trivial visual merely because its source parses.</p>
+<ol>
+<li>Generate editable source.</li>
+<li>Render it in the same environment or browser context used by the lesson.</li>
+<li>Inspect the rendered image, screenshot, interaction states, or video keyframes.</li>
+<li>Verify facts and semantics against the visual brief and cited sources.</li>
+<li>Check labels, node and edge completeness, directions, numeric values, legends, units, and scales.</li>
+<li>Check clipping, overlap, crossings, contrast, spacing, font loading, mobile behavior, print, and static fallbacks.</li>
+<li>Test keyboard use, text alternatives, and reduced motion where relevant.</li>
+<li>Revise the smallest incorrect region and rerender.</li>
+</ol>
+<p>Use multimodal inspection when available, but do not rely on self-review alone for high-stakes content. Verify scientific, medical, financial, legal, and safety-critical visuals against authoritative sources and surface uncertainty.</p>
+<p>If the preferred renderer cannot be used reliably, step down to the nearest simpler medium that can be rendered and verified. State the verification limit.</p>
+<h2 id="required-deliverables">Required Deliverables</h2>
+<p>Retain:</p>
+<ol>
+<li>Editable semantic source</li>
+<li>Rendered derivative when needed</li>
+<li>Visual brief or storyboard</li>
+<li>Accessibility text</li>
+<li>Provenance metadata</li>
+<li>Captions, transcript, and poster for video</li>
+</ol>
+<h2 id="anti-patterns">Anti-patterns</h2>
+<p>Do not:</p>
+<ul>
+<li>add decorative media with no learning job</li>
+<li>use generated imagery for technical truth</li>
+<li>keep only a raster or video derivative when editable source is feasible</li>
+<li>install an unreviewed skill merely to claim tool support</li>
+<li>choose a renderer before defining the visual question</li>
+<li>create motion merely to feel polished</li>
+<li>separate labels from their targets</li>
+<li>present a dense “spaghetti” diagram to a beginner</li>
+<li>omit retrieval practice after a major visual</li>
+<li>regenerate an entire correct artifact to fix one local defect</li>
+<li>claim an unrendered artifact was visually inspected</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./LEGACY-VISUALIZATION-ROUTER.md">LEGACY-VISUALIZATION-ROUTER.md</a><br>
+    SHA-256: <code>8162c0d4aa523167ede4fc8eebea40ef3c74b21f1e51f844df36716203759eb0</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "tool": "revideo",
+  "versions": {
+    "@revideo/core": "0.11.0",
+    "@revideo/2d": "0.11.0",
+    "@revideo/renderer": "0.11.0",
+    "@revideo/ffmpeg": "0.11.0",
+    "@revideo/vite-plugin": "0.11.0",
+    "@revideo/ui": "0.11.0",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/bangers": "5.3.0",
+    "node": "^20.19 || >=22.12 (Vite 8; tested 22)",
+    "typescript": "5.9.3 (dev)"
+  },
+  "hints": {
+    "voice": "[ -d source ] || cp -r {SKILL}/assets/template source; (cd source && [ -d node_modules ] || PUPPETEER_SKIP_DOWNLOAD=1 npm ci --no-audit --no-fund); python3 {S}/voice.py --project . --emit source/src/timing.ts",
+    "visuals": "Edit source/src/data.ts and source/src/film.tsx (kit in source/src/kit; {SKILL}/references/revideo-guide.md). Check: (cd source && npx tsc --noEmit -p .). Stills: node {S}/render_revideo.mjs --project . --stills lines --workers 2 (and --stills chapters); fix every LATE cue it reports; Read every PNG in stills/, fix, re-render; check text size and contrast with python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-render, re-run); then python3 {S}/vstate.py attest visuals \"<what you looked at and fixed>\"",
+    "render": "node {S}/render_revideo.mjs --project . --bench 3 (prints fps and ETA), then node {S}/render_revideo.mjs --project . --workers 2 --max-minutes 100 > build/render.log 2>&1 in the background, polling the log; exit 3 = budget reached, run the same command again (done segments are kept). Writes build/silent.mp4."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "prax.visual-evidence/v1",
+  "status": "valid",
+  "receipt_sha256": "e8ac573580e1d63468ed517e461bbc322f83b2d0ea6dad08799d7ebd25b4a602",
+  "missing": [],
+  "evidence_level": "learner-authored-local-observation",
+  "claim_boundary": "This receipt records actions and observations; it does not infer mastery, retention, accessibility, or transfer."
+}

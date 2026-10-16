@@ -1,0 +1,14 @@
+{
+  "name": "prax-teach-v2-flint-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "dependencies": {
+    "flint-chart": "0.4.1",
+    "flint-chart-mcp": "0.4.1"
+  }
+}
+

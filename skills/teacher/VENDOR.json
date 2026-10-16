@@ -1,0 +1,192 @@
+{
+  "files": {
+    "lesson-notebook/assets/fonts/OFL.txt": {
+      "license": "SIL OFL 1.1, see OFL.txt",
+      "sha256": "83ca11a9737076869cd84ca719294698c618bc085bce4cbebe2261df9c2c1741",
+      "source_commit": "f3f825558db34c3fcbdb2723916d67bd72814da5",
+      "source_path": "site/public/assets/fonts/OFL.txt",
+      "upstream": "https://github.com/praxstack/ChessLab"
+    },
+    "lesson-notebook/assets/fonts/courier-prime-400.woff2": {
+      "license": "SIL OFL 1.1, see OFL.txt",
+      "sha256": "f09844e1f4fe9e67df2cc77474519e68756d559b4648278b9dd4f03c8ac9c31f",
+      "source_commit": "f3f825558db34c3fcbdb2723916d67bd72814da5",
+      "source_path": "site/public/assets/fonts/courier-prime-400.woff2",
+      "upstream": "https://github.com/praxstack/ChessLab"
+    },
+    "lesson-notebook/assets/fonts/kalam-400.woff2": {
+      "license": "SIL OFL 1.1, see OFL.txt",
+      "sha256": "954410601a823f37e219f7930b7446f86afa15621326a7078d56fb9c910135cb",
+      "source_commit": "f3f825558db34c3fcbdb2723916d67bd72814da5",
+      "source_path": "site/public/assets/fonts/kalam-400.woff2",
+      "upstream": "https://github.com/praxstack/ChessLab"
+    },
+    "lesson-notebook/assets/fonts/kalam-700.woff2": {
+      "license": "SIL OFL 1.1, see OFL.txt",
+      "sha256": "252063af6ade8b9a744cde4ddad0fc21ea53b8ba711eed121a0c2e8610ea9c93",
+      "source_commit": "f3f825558db34c3fcbdb2723916d67bd72814da5",
+      "source_path": "site/public/assets/fonts/kalam-700.woff2",
+      "upstream": "https://github.com/praxstack/ChessLab"
+    },
+    "lesson-notebook/assets/fonts/vollkorn-var.woff2": {
+      "license": "SIL OFL 1.1, see OFL.txt",
+      "sha256": "3d9ff812bd542e52bb7f0c204f3a21152e22aead4572ff09722c1b38f30d7567",
+      "source_commit": "f3f825558db34c3fcbdb2723916d67bd72814da5",
+      "source_path": "site/public/assets/fonts/vollkorn-var.woff2",
+      "upstream": "https://github.com/praxstack/ChessLab"
+    },
+    "lesson-notebook/assets/ink.js": {
+      "license": "Prax's own (AskTheMove)",
+      "sha256": "215171e88647ebf7098acce70a716fb27d71707b839b42e3d1571e7e570192d0",
+      "source_commit": "f3f825558db34c3fcbdb2723916d67bd72814da5",
+      "source_path": "site/public/assets/ink.js",
+      "upstream": "https://github.com/praxstack/ChessLab"
+    }
+  },
+  "native": [
+    "lesson-notebook",
+    "explorable",
+    "concept-animation",
+    "explain-diagram",
+    "visual-qa"
+  ],
+  "note": "Vendored skills are byte copies of their sources. Edit them upstream and re-run scripts/vendor.py sync; scripts/vendor.py verify fails if a copy drifts.",
+  "skills": {
+    "algo-sensei": {
+      "files": 13,
+      "license": "MIT, see its LICENSE",
+      "source_commit": null,
+      "source_path": "algo-sensei",
+      "tree_sha256": "3efed3a4e851e3aa7fb2c476d45d518d62df319ad00f660a1f519561cb83276d",
+      "upstream": "https://github.com/karanb192/algo-sensei"
+    },
+    "concept-cartographer": {
+      "files": 2,
+      "license": "MIT (repo)",
+      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_path": "new-skills/concept-cartographer",
+      "tree_sha256": "9324e09faff1b2847692e3f95b6ebfd3f44f2c10607ed779d42d65ec08b8158d",
+      "upstream": "https://github.com/praxstack/skills-and-personas"
+    },
+    "eli": {
+      "files": 1,
+      "license": "Prax's own",
+      "source_commit": null,
+      "source_path": "eli",
+      "tree_sha256": "d42692e42eefead106ab0829f323513a5a1eaa0083fa8ee0f1c1b70ded2fb457",
+      "upstream": "Prax's local skill library (16 Oct 2026 snapshot)"
+    },
+    "explainer-video": {
+      "files": 29,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/explainer-video",
+      "tree_sha256": "ef7bff1d774f216b816852a24d55723783894c72888ab29bb1903f4dd1f23199",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "gsap-video": {
+      "files": 48,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/gsap-video",
+      "tree_sha256": "8ec056a048eb5d8cbee741687ad1202f32e6a9bf0a60112037363d52c971e057",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "handdrawn-js-video": {
+      "files": 65,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/handdrawn-js-video",
+      "tree_sha256": "6236604eb649636c1233267a80833b02fd9f294b7dbe8701ab364aa130c2d586",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "hyperframes-video": {
+      "files": 58,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/hyperframes-video",
+      "tree_sha256": "5fa6e3d106e01b0e983cbc768b82d978388ab495adf46fcf76578dada428f3e6",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "lecture-alchemist": {
+      "files": 4,
+      "license": "MIT (repo)",
+      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_path": "new-skills/lecture-alchemist",
+      "tree_sha256": "e4a3a4d534f19aee3a25f49b17614449a8ab05665098518b9b7895559749e3b0",
+      "upstream": "https://github.com/praxstack/skills-and-personas"
+    },
+    "manim-video": {
+      "files": 52,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/manim-video",
+      "tree_sha256": "a58377aa8536f7aeffbc76cbb8544317102a26221d5d2bb61153bef85a2ce178",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "motion-canvas-video": {
+      "files": 68,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/motion-canvas-video",
+      "tree_sha256": "0c6fa7fbb0e1a57218afc9c1575046ac1ad4cd2186b6334ce9a8208a1498feba",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "motion-video": {
+      "files": 61,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/motion-video",
+      "tree_sha256": "92762146122b9a6d1791b3f3ec13d259fd3f5ec109abbd2f124823283c1e88ac",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "remotion-video": {
+      "files": 71,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/remotion-video",
+      "tree_sha256": "56d1ab10baac6ca2e04b57d8f6f2852c26f58ce79062db37d060a6b2c9dffda8",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "revideo-video": {
+      "files": 57,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/revideo-video",
+      "tree_sha256": "20b6f9e99c66cf212fff70bf480287ed89b49480cceef25e717ed8f933b54255",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "teach-pro-max": {
+      "files": 804,
+      "license": "MIT (repo)",
+      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_path": "skills/teach-pro-max",
+      "tree_sha256": "93702fd87ef663bdb3071f287d9fc27bb5098ef84e6dc481d982ab4f22606523",
+      "upstream": "https://github.com/praxstack/skills-and-personas"
+    },
+    "techtutor": {
+      "files": 7,
+      "license": "MIT (repo)",
+      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_path": "new-skills/techtutor",
+      "tree_sha256": "afe205b107fa6ee1429f56397721cfc9b1f4c41ed0be96b1825a8bfbaf25438f",
+      "upstream": "https://github.com/praxstack/skills-and-personas"
+    },
+    "theatrejs-video": {
+      "files": 64,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/theatrejs-video",
+      "tree_sha256": "14014ebef620fe65aee3bcd67e8f1b8579e98fcbad860df95bf6ebc7ead32331",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    },
+    "threejs-video": {
+      "files": 52,
+      "license": "same as the video skills repo",
+      "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
+      "source_path": "skills/threejs-video",
+      "tree_sha256": "24c6d66ab32275a37b6616bf3a799f7623aa86b9b4cc907b9ddf980065cb6b56",
+      "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
+    }
+  }
+}

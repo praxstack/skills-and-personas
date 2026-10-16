@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="b9beda5a1321604a16edd7d13b3b3fa316bd62a34279e04be68f7c3f29577097">
+  <meta name="generated-at" content="2026-08-19T09:21:24.752Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lesson: attempt before transfer answer</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lesson-attempt-before-transfer-answer">Lesson: attempt before transfer answer</h1>
+<h2 id="tutor-turn-1">Tutor turn 1</h2>
+<h3 id="focused-lesson-diagnosing-a-two-thread-lost-update">Focused lesson: diagnosing a two-thread lost update</h3>
+<p><strong>Outcome:</strong> Given an execution trace, you’ll identify whether an update was lost, locate the decisive event, and explain the cause. After explanation and guided practice, you’ll receive an unseen transfer task whose answer stays hidden until your attempt.</p>
+<p>Say <strong>Answer now</strong> at any point if you want the direct explanation.</p>
+<h4 id="learner-action-1-diagnose-the-trace">Learner action 1 — Diagnose the trace</h4>
+<p>Assume each individual read and write is atomic, but there is no synchronization around the complete operation.</p>
+<p>Initial shared value: <code>score = 40</code></p>
+<ul>
+<li>Thread T1 adds <code>5</code>.</li>
+<li>Thread T2 adds <code>7</code>.</li>
+</ul>
+<pre><code class="language-text">1. T1 reads score into local variable a
+2. T2 reads score into local variable b
+3. T1 computes a = a + 5
+4. T1 writes a into score
+5. T2 computes b = b + 7
+6. T2 writes b into score
+</code></pre>
+<p>Without running it, reply with:</p>
+<pre><code class="language-text">Final score:
+Score expected if both additions survive:
+First decisive event:
+Reason:
+</code></pre>
+<p>If you’re unsure, reply <strong>“I don’t know”</strong> and name the first line that becomes unclear.</p>
+<p>This lesson runs through host chat without custom controls, scripts, or stored learner state. Host-UI keyboard, focus, reduced-motion, and assistive-technology behavior remains unverified.</p>
+<h2 id="learner-turn-1">Learner turn 1</h2>
+<p>Final score: 52<br />Score expected if both additions survive: 52<br />First decisive event: line 4<br />Reason: T1 writes first, so both additions are included.</p>
+<h2 id="tutor-turn-2">Tutor turn 2</h2>
+<p>You correctly calculated <code>52</code> as the value if both additions survive.</p>
+<p><strong>Hint 1 — Principle cue:</strong> A thread’s local variable does not automatically change when another thread writes to the shared variable. Track what value <code>b</code> still contains after line 4.</p>
+<p><strong>Learner action 2 — Revise:</strong> Recompute lines 3–6, then resubmit the four fields.</p>
+<h2 id="learner-turn-2">Learner turn 2</h2>
+<p>Final score: 47<br />Score expected if both additions survive: 52<br />First decisive event: line 6<br />Reason: b stayed 40 after T1 wrote 45, so T2 computed 47 and line 6 overwrote T1’s update.</p>
+<h2 id="tutor-turn-3">Tutor turn 3</h2>
+<p>Correct. Your revised diagnosis is fully accurate.</p>
+<ul>
+<li><code>b</code> is a snapshot, not a live reference to <code>score</code>.</li>
+<li>Line 2 creates the vulnerability, but no update has been lost yet.</li>
+<li>Line 6 makes the loss real by writing a value that omits T1’s completed addition.</li>
+</ul>
+<p>Because you used one principle cue, this is scaffolded success; we’ll now test the method independently.</p>
+<h3 id="diagnostic-method">Diagnostic method</h3>
+<ol>
+<li>Track shared state and each thread’s local state separately.</li>
+<li>Compute the result if every intended operation survives.</li>
+<li>Execute the listed interleaving literally.</li>
+<li>Find the write based on an older read that replaces another thread’s effect.</li>
+</ol>
+<h3 id="worked-example">Worked example</h3>
+<p>Inventory begins at <code>10</code>.</p>
+<pre><code class="language-text">1. T1 reads 10 and computes 10 − 2 = 8
+2. T2 reads 10 and computes 10 − 3 = 7
+3. T2 writes 7
+4. T1 writes 8
+</code></pre>
+<p>Both purchases should leave <code>5</code>, but the trace leaves <code>8</code>. At line 4, T1 writes a value derived from its earlier read of <code>10</code>, replacing T2’s reduction.</p>
+<h3 id="learner-action-3-independent-practice">Learner action 3 — Independent practice</h3>
+<p>Shared value: <code>remaining = 30</code></p>
+<ul>
+<li>T1 reserves <code>8</code>.</li>
+<li>T2 releases <code>5</code>.</li>
+</ul>
+<pre><code class="language-text">1. T1 reads remaining into a
+2. T2 reads remaining into b
+3. T1 computes a = a − 8
+4. T1 writes a into remaining
+5. T2 computes b = b + 5
+6. T2 writes b into remaining
+</code></pre>
+<p>Reply with:</p>
+<pre><code class="language-text">Final remaining:
+Expected remaining:
+First decisive event:
+Reason:
+</code></pre>
+<p>The unseen transfer task follows this attempt.</p>
+<h2 id="learner-turn-3">Learner turn 3</h2>
+<p>Final remaining: 35<br />Expected remaining: 27<br />First decisive event: line 6<br />Reason: b still contains the stale read of 30, so T2 writes 35 and replaces T1’s reservation result of 22.</p>
+<h2 id="tutor-turn-4">Tutor turn 4</h2>
+<p>Correct. You independently tracked both local snapshots, derived the final and intended values, and identified the decisive overwrite at line 6. That is evidence of unassisted application on a structurally similar trace; transfer to a different representation remains untested.</p>
+<h3 id="learner-action-4-unseen-transfer">Learner action 4 — Unseen transfer</h3>
+<p>A service stores each profile as one JSON object:</p>
+<pre><code class="language-json">{
+  "theme": "light",
+  "email_opt_in": false
+}
+</code></pre>
+<p>Assume <code>load()</code> returns a separate local copy, <code>save()</code> replaces the entire stored object, and there is no locking or version check.</p>
+<pre><code class="language-text">1. T1 loads the profile into p1
+2. T2 loads the profile into p2
+3. T1 changes p1.theme to "dark"
+4. T2 changes p2.email_opt_in to true
+5. T1 saves p1
+6. T2 saves p2
+</code></pre>
+<p>Diagnose the trace without hints:</p>
+<pre><code class="language-text">Final stored profile:
+Profile expected if both changes survive:
+Lost update present—yes or no:
+First decisive event and reason:
+</code></pre>
+<h2 id="learner-turn-4">Learner turn 4</h2>
+<p>Final stored profile: <code>{"theme":"light","email_opt_in":true}</code><br />Profile expected if both changes survive: <code>{"theme":"dark","email_opt_in":true}</code><br />Lost update present—yes<br />First decisive event and reason: line 6; p2 was loaded before T1’s change, so saving the whole stale object replaces the stored dark theme with light while keeping T2’s email change.</p>
+<h2 id="tutor-turn-5">Tutor turn 5</h2>
+<p>Exactly right. This is successful unassisted transfer: you moved from numeric increments to whole-object persistence and correctly reasoned about the actual write granularity.</p>
+<p>The general pattern is:</p>
+<ol>
+<li>Two threads read the same earlier version.</li>
+<li>Each derives a new value independently.</li>
+<li>A later write replaces shared state without incorporating the intervening change.</li>
+</ol>
+<p>Different logical fields do not prevent a lost update when <code>save()</code> replaces their shared container.</p>
+<p>Typical protections include:</p>
+<ul>
+<li>Locking the entire <strong>load → modify → save</strong> sequence.</li>
+<li>Comparing a version or ETag when saving, then retrying after a conflict.</li>
+<li>Using truly atomic field-level updates when the storage system supports them.</li>
+</ul>
+<p>Locking only <code>save()</code> is insufficient because both stale local copies may already exist before either save begins.</p>
+<h3 id="learner-action-5-teach-back">Learner action 5 — Teach-back</h3>
+<p>In one or two sentences, explain why updates to separate fields were still able to conflict here, and name one protection with the correct boundary.</p>
+<h2 id="learner-turn-5">Learner turn 5</h2>
+<p>They conflicted because each thread saved an entire object copied from the same old version, so the second whole-object save replaced the first thread’s field change. Use optimistic concurrency by comparing a version/ETag at save and retrying the full load-modify-save operation after a conflict.</p>
+<h2 id="tutor-turn-6">Tutor turn 6</h2>
+<p>Lesson complete. Your teach-back is correct: whole-object replacement made the separate field edits conflict, and optimistic concurrency is appropriate provided the version comparison and write occur atomically.</p>
+<p>Evidence observed:</p>
+<ul>
+<li>Initial diagnosis corrected after one principle cue: scaffolded.</li>
+<li>Similar numeric trace diagnosed without hints.</li>
+<li>Unseen whole-object transfer diagnosed without hints.</li>
+<li>Cause and prevention boundary explained without hints.</li>
+</ul>
+<p>You can now diagnose the requested pattern independently within this session. What remains untested is delayed recall and systems with different semantics, such as automatic conflict rejection or atomic field updates.</p>
+<p>For retention, try a fresh trace without notes in 2–3 days and determine whether it exhibits a lost update, safely serializes, or rejects a conflicting write. No files or durable learner state were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>b9beda5a1321604a16edd7d13b3b3fa316bd62a34279e04be68f7c3f29577097</code><br>
+    Generated: 2026-08-19T09:21:24.752Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

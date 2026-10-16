@@ -1,0 +1,40 @@
+{
+  "bundled_renderer_supported": false,
+  "default_medium": "learner-controlled sequence with captions and transcript",
+  "delivery_reason": "The packaged, verified Prax Visual Lab can deliver this route directly.",
+  "delivery_route": "motion",
+  "delivery_surface": "prax-visual-lab",
+  "fallback": "Captions, transcript, poster, and ordered static states with reduced motion.",
+  "flint_eligible": false,
+  "flint_required": false,
+  "reason": "Explicit motion route override; the caller remains responsible for accuracy and accessibility.",
+  "requested_medium": "learner-controlled sequence with captions and transcript",
+  "retrieval_safety": {
+    "checks_performed": false,
+    "required": true,
+    "required_checks": [
+      "attempt_before_reveal",
+      "accessible_reveal",
+      "fallback_preserves_order"
+    ],
+    "surfaces_to_check": [
+      "visible_labels",
+      "alt_text",
+      "captions",
+      "default_state",
+      "poster_frame",
+      "source_code"
+    ],
+    "verification_status": "not_run"
+  },
+  "route": "motion",
+  "runtime_requirement": null,
+  "visual_runtime": {
+    "entrypoint": "runtime/prax-visual-lab/dist/index.html",
+    "id": "prax-visual-lab",
+    "manifest": "runtime/prax-visual-lab/dist/manifest.json",
+    "verification_receipt": "evidence/zero-api-visual-runtime/verification.json",
+    "version": "prax-visual-lab/0.1.0"
+  },
+  "visual_runtime_supported": true
+}

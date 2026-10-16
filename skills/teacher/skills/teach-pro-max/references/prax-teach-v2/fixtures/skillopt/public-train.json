@@ -1,0 +1,16 @@
+{
+  "eligibility": "public_development_only",
+  "items": [
+    {
+      "id": "train-explain-1",
+      "prompt": "Explain retrieval practice in plain language, then ask one check question.",
+      "task_type": "explanation"
+    },
+    {
+      "id": "train-transfer-1",
+      "prompt": "Teach how to distinguish two confusable cases, then give a new transfer case.",
+      "task_type": "transfer"
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,90 @@
+{
+ "meta": {
+  "title": "The video skills, by the numbers",
+  "subtitle": "A 16:9 data clip whose numbers come from data/*.csv (motion_fill.py fills the narration)",
+  "format": "general",
+  "chapters": [
+   "The kits",
+   "Speed",
+   "Checks"
+  ],
+  "voice": "af_heart",
+  "speed": 1.05,
+  "music": "calm",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080
+ },
+ "lines": [
+  {
+   "id": "d1",
+   "chapter": 0,
+   "scene": "open",
+   "cap": "One pipeline, {{speeds.fps:count}} drawing kits.",
+   "say": "One pipeline. {{speeds.fps:count}} drawing kits."
+  },
+  {
+   "id": "d2",
+   "chapter": 0,
+   "scene": "open",
+   "cap": "Same voice, music, captions and checks. Only the drawing differs.",
+   "say": "Each one gets the same voice, music, captions and checks. Only the drawing differs."
+  },
+  {
+   "id": "d3",
+   "chapter": 1,
+   "scene": "speed",
+   "cap": "Render speed: frames per second, per worker, 1080p on a CPU.",
+   "say": "Here is how fast each kit renders, per worker, at ten eighty p, without a graphics card."
+  },
+  {
+   "id": "d4",
+   "chapter": 1,
+   "scene": "speed",
+   "cap": "Top of the chart: Motion Canvas, about {{speeds.fps:max}} frames a second.",
+   "say": "Top of the chart is Motion Canvas, at about {{speeds.fps:max}} frames a second."
+  },
+  {
+   "id": "d5",
+   "chapter": 1,
+   "scene": "speed",
+   "cap": "Slowest: Three.js at {{speeds.fps:min}}, but a GPU makes it 20 to 50x faster.",
+   "say": "The slowest is Three J S, at {{speeds.fps:min}}. A graphics card makes it twenty to fifty times faster."
+  },
+  {
+   "id": "d6",
+   "chapter": 1,
+   "scene": "frames",
+   "cap": "A 6-minute film is {{facts.value[fact=frames_6min]|int}} frames.",
+   "say": "A six minute film is {{facts.value[fact=frames_6min]}} frames."
+  },
+  {
+   "id": "d7",
+   "chapter": 2,
+   "scene": "gates",
+   "cap": "{{facts.value[fact=gates]}} gates from brief to delivery. Nothing ships unchecked.",
+   "say": "{{facts.value[fact=gates]}} gates, from brief to delivery. Nothing ships unchecked."
+  },
+  {
+   "id": "d8",
+   "chapter": 2,
+   "scene": "themes",
+   "cap": "{{facts.value[fact=themes]}} colour themes, every text at {{facts.value[fact=contrast]|0.0}}:1 contrast or more.",
+   "say": "{{facts.value[fact=themes]}} colour themes, with every text at {{facts.value[fact=contrast]|0.0}} to one contrast or more."
+  },
+  {
+   "id": "d9",
+   "chapter": 2,
+   "scene": "data",
+   "cap": "Edit the CSV: the bars, the counters and these words all change.",
+   "say": "Edit the data file, and the bars, the counters, and these very words all change."
+  },
+  {
+   "id": "e1",
+   "chapter": 2,
+   "scene": "end",
+   "cap": "Pick a kit. Ship a film.",
+   "say": "Pick a kit. Ship a film."
+  }
+ ]
+}

@@ -1,0 +1,162 @@
+{
+  "cases": [
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "quick",
+        "persistence": false
+      },
+      "id": "timeboxed-explanation",
+      "request": "Explain what a database index is in two minutes"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "lesson",
+        "persistence": false
+      },
+      "id": "guided-practice",
+      "request": "Create a focused lesson with guided practice on B-tree indexes"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "course",
+        "persistence": "consent_required"
+      },
+      "id": "multi-session-course",
+      "request": "Build a six-week course and let me resume it across sessions"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "course",
+        "persistence": "consent_required"
+      },
+      "id": "personal-multi-session-course",
+      "request": "Build me a six-week course on database performance and remember my progress across sessions."
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "course",
+        "persistence": "consent_required"
+      },
+      "id": "resuming-inflection",
+      "request": "I am resuming: the state says one heavily hinted application answer"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "lesson",
+        "persistence": false
+      },
+      "id": "transfer-attempt-boundary",
+      "request": "Teach a two-thread lost update and do not reveal the transfer answer before an attempt"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "lesson",
+        "persistence": false
+      },
+      "id": "practical-executable-lesson",
+      "request": "Teach me gradient descent practically. Use a real two-parameter model or the smallest executable example, let me change something, and make me debug a failed step. Do not take over a project for me."
+    },
+    {
+      "answer_now": true,
+      "expected": {
+        "action": "answer_now",
+        "mode": "quick",
+        "persistence": false
+      },
+      "id": "answer-now-override",
+      "request": "Keep asking me Socratic questions"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      },
+      "id": "ordinary-task-not-course",
+      "request": "Add an index to this migration"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      },
+      "id": "engineering-course-scheduler",
+      "request": "Fix the course scheduler bug in this Python module"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      },
+      "id": "engineering-curriculum-parser",
+      "request": "Refactor the curriculum parser and update its tests"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      },
+      "id": "engineering-lesson-routing",
+      "request": "Implement lesson routing in the CLI"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      },
+      "id": "timeboxed-engineering-course-scheduler",
+      "request": "Quickly fix the course scheduler bug in this Python module"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      },
+      "id": "polite-engineering-curriculum-parser",
+      "request": "Could you please refactor the curriculum parser and update its tests"
+    }
+  ],
+  "schema_version": "1",
+  "visual_cases": [
+    {
+      "expected_route": "none",
+      "id": "prose-is-enough",
+      "job": "Define idempotence in one sentence with one example"
+    },
+    {
+      "exact_quantitative": true,
+      "expected_route": "static",
+      "id": "exact-comparison",
+      "job": "Compare three retention percentages exactly"
+    },
+    {
+      "expected_route": "interactive",
+      "id": "learner-manipulation",
+      "job": "Let the learner manipulate a hash-table load factor and test the resulting probe count"
+    },
+    {
+      "expected_route": "motion",
+      "id": "synchronization-over-time",
+      "job": "Watch two threads interleave over time and predict the next state",
+      "static_sufficient": false
+    },
+    {
+      "expected_route": "static",
+      "id": "sequence-static-sufficient",
+      "job": "Show a three-step state transition where labeled small multiples are sufficient",
+      "static_sufficient": true
+    }
+  ]
+}

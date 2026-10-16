@@ -1,0 +1,9 @@
+{
+  "schema_version":"prax.visual-study-operations/v1",
+  "status":"prepared-not-run",
+  "immediate":{"status":"ready","measure":"retrieve, explain, apply, discriminate, transfer"},
+  "delayed":{"status":"waiting_external","window_days":[7,14],"requires_elapsed_time":true},
+  "novel_transfer":{"status":"ready","requires_real_learner":true},
+  "accessibility_field":{"status":"waiting_external","requires_representative_assistive_technology_walkthrough":true},
+  "claim_boundary":"No synthetic or agent result promotes an external gate."
+}

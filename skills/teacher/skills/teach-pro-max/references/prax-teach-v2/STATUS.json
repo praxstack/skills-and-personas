@@ -1,0 +1,707 @@
+{
+  "capabilities": [
+    {
+      "claim_limit": "The frozen-baseline contract and review surface exist; final frozen-spec review is required before release.",
+      "evidence": [
+        "external frozen baseline manifest retained outside the later candidate Git history",
+        "exact-payload frozen-spec review contract"
+      ],
+      "id": "baseline-provenance",
+      "state": "specified"
+    },
+    {
+      "claim_limit": "Eight assets are byte-identical or renamed-byte-identical and four registry/helper assets are explicitly portability-adapted; this does not establish learner benefit.",
+      "evidence": [
+        "four byte-identical workspace templates",
+        "38-tool portable visualization registry",
+        "12 passing deterministic registry tests",
+        "byte-identical router SVG and PNG"
+      ],
+      "id": "legacy-assets",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "The frozen public behavior rubric passed; this is not held-out quality, provider ablation, field accessibility, or learner-outcome evidence.",
+      "evidence": [
+        "scripts/prax_teach.py route and visual-route",
+        "fixtures/routing-cases.json",
+        "fresh all-case attempt 21 passed 8 of 8 after failed and invalidated attempts were retained with their exact limitations",
+        "independent reviewer verified all 20 declared rubric, run, source, context, output, and execution bindings"
+      ],
+      "id": "mode-and-visual-routing",
+      "state": "evaluated"
+    },
+    {
+      "claim_limit": "The local engine is tested with synthetic workspaces; it has not been field-tested with representative learners.",
+      "evidence": [
+        "consent-before-first-byte and exact state-fidelity tests",
+        "deterministic replay, correction, and invalidation tests",
+        "exact item deletion with content-bound crash-recovery journal",
+        "generation-safe locking and descriptor-contained export tests"
+      ],
+      "id": "learner-state",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "The pinned scheduler and golden vectors were exercised; schedule quality for real learners remains unmeasured.",
+      "evidence": [
+        "fsrs==6.3.1 in uv.lock",
+        "performance-bound rating and explanation derivation",
+        "strict transition, disable-state, and append-after-deletion replay tests",
+        "official new-card golden vectors"
+      ],
+      "id": "review-scheduler",
+      "state": "dependency-exercised"
+    },
+    {
+      "claim_limit": "Named pages passed real-Chrome console, responsive-layout, and accessibility-tree checks; WCAG conformance, manual assistive-technology testing, and representative-user evidence remain unverified.",
+      "evidence": [
+        "pinned Marked and sanitize-html renderer",
+        "full-byte deterministic parity checks",
+        "artifact security and accessibility-structure validator",
+        "real-Chrome inspection receipt for five named pages"
+      ],
+      "id": "markdown-html-artifacts",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "Public and synthetic fixtures prove harness mechanics only; no matched provider ablation has been run.",
+      "evidence": [
+        "fresh paired workspaces",
+        "external hidden-bank boundary",
+        "hard-gate-first reports",
+        "deterministic bootstrap output"
+      ],
+      "id": "evaluation-harness",
+      "state": "evaluated"
+    },
+    {
+      "claim_limit": "Allocation and analysis machinery ran on synthetic inputs; it is not human-outcome evidence.",
+      "evidence": [
+        "study protocol validation",
+        "seeded user-level allocation",
+        "blinded assessment identifiers",
+        "synthetic attrition, fidelity, effect, and interval report"
+      ],
+      "id": "learner-study-machinery",
+      "state": "evaluated"
+    },
+    {
+      "claim_limit": "The real compiler path ran and warnings fail closed; rendered-chart correctness and learner value still require review.",
+      "evidence": [
+        "flint-chart==0.4.1",
+        "flint-chart-mcp==0.4.1",
+        "durable SVG, backend spec, semantic table, and manifest smoke artifacts"
+      ],
+      "id": "flint-adapter",
+      "state": "dependency-exercised"
+    },
+    {
+      "claim_limit": "The real adapter and measured isolation boundary ran; no optimization lift is claimed and no proposal is auto-adopted.",
+      "evidence": [
+        "SkillOpt 0.2.0 source commit e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+        "real EnvAdapter registration through both upstream entrypoints",
+        "content-bound per-run runner clone and adversarial macOS sandbox probes",
+        "staged-only hard-gated proposal path"
+      ],
+      "id": "skillopt-adapter",
+      "state": "dependency-exercised"
+    },
+    {
+      "claim_limit": "Exports are format-compatible deterministic packages; downstream host interoperability is not universally certified.",
+      "evidence": [
+        "Anki text import",
+        "QTI 2.2",
+        "LiaScript",
+        "thin H5P package"
+      ],
+      "id": "ecosystem-exports",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "The validator and schema-v2 ledger are implemented; immutable review and full-verification receipts still govern release.",
+      "evidence": [
+        "scripts/validate_workspace.py",
+        "typed criterion evidence with fail-closed receipt recomputation",
+        "adversarial release-ledger tests"
+      ],
+      "id": "package-validation",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "Deterministic Markdown/HTML generation and claim-boundary checks exist; current release parity remains subject to the final validator.",
+      "evidence": [
+        "canonical Markdown with deterministic HTML companions",
+        "source-hash and exact-byte parity validation"
+      ],
+      "id": "documentation-truth",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "Trusted full-verification orchestration exists; no green release claim is accepted without its current recomputed receipt.",
+      "evidence": [
+        "scripts/verify.py",
+        "schema-v3 root-manifest, dependency, bounded-gate, and postflight receipt contract"
+      ],
+      "id": "full-verification",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "The exact-payload review contract exists; code, frozen-spec, and architecture-council receipts count only when they recompute against the current payload.",
+      "evidence": [
+        "evidence/reviews/payload.json",
+        "three independently recomputed review receipt paths"
+      ],
+      "id": "independent-review",
+      "state": "specified"
+    },
+    {
+      "claim_limit": "The immutable-Git archive gate and external sibling-receipt protocol are implemented; the actual AC-25 release event remains pending.",
+      "evidence": [
+        "scripts/build_package.py",
+        "tests/test_build_package.py",
+        "references/OPERATIONS.md non-circular sibling receipt protocol"
+      ],
+      "id": "release-package",
+      "state": "implemented"
+    },
+    {
+      "claim_limit": "No real delayed learner study has supplied the evidence required for this state.",
+      "evidence": [
+        "EG-04 through EG-06 remain parked"
+      ],
+      "id": "north-star-outcome",
+      "state": "scientifically-unproven"
+    }
+  ],
+  "criteria": [
+    {
+      "capabilities": [
+        "baseline-provenance"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/reviews/frozen-spec.json"
+        }
+      ],
+      "id": "AC-00",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "legacy-assets"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/provenance/legacy-assets.json"
+        }
+      ],
+      "id": "AC-01",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "mode-and-visual-routing"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "fixtures/routing-cases.json",
+          "sha256": "50324e8229ea6041f1c352c764b0d9d317a4002145df05b98c2662e05efa0cf5"
+        },
+        {
+          "kind": "receipt",
+          "path": "evidence/forward/receipt.json"
+        }
+      ],
+      "id": "AC-02",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "schemas/learner.schema.json",
+          "sha256": "80ad7d81ebc67b33bf27a17ca5454b454ea3538bfdb61c6283cb77d94449f7c3"
+        }
+      ],
+      "id": "AC-03",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "schemas/event.schema.json",
+          "sha256": "c2daf78e3f5c0cb3d20691d0a910231be6a80179541950f2d5ac62b29df45d62"
+        }
+      ],
+      "id": "AC-04",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_state_contract_hardening.py",
+          "sha256": "66b2dcd8407cb19ea982501fec26a1dad2fc875009371a1faa866afb3ad62073"
+        }
+      ],
+      "id": "AC-05",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "schemas/concepts.schema.json",
+          "sha256": "9cd82589353faa70b25d9e491ff59f5e36e46f3ee768e34c4132872c21b3de20"
+        },
+        {
+          "kind": "path",
+          "path": "tests/test_state_contract_hardening.py",
+          "sha256": "66b2dcd8407cb19ea982501fec26a1dad2fc875009371a1faa866afb3ad62073"
+        }
+      ],
+      "id": "AC-06",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_state_contract_hardening.py",
+          "sha256": "66b2dcd8407cb19ea982501fec26a1dad2fc875009371a1faa866afb3ad62073"
+        }
+      ],
+      "id": "AC-07",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_state_security.py",
+      "sha256": "ca827271c0b584aba4438051d8ec5adc4b2166d37a34c4ce8f0763753612aa10"
+        }
+      ],
+      "id": "AC-08",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-state"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_export_provenance.py",
+          "sha256": "bae90e4d0863fd5732f11f9cb47e68e6e517b6213071a079ec98aba8564a3b5d"
+        }
+      ],
+      "id": "AC-09",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "review-scheduler"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_scheduler_cli.py",
+          "sha256": "54fb49373642a71aa9838c0ba3becbe876a68013777e7ab451a29a6f1106e8eb"
+        }
+      ],
+      "id": "AC-10",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "review-scheduler"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_scheduler_cli.py",
+          "sha256": "54fb49373642a71aa9838c0ba3becbe876a68013777e7ab451a29a6f1106e8eb"
+        }
+      ],
+      "id": "AC-11",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "markdown-html-artifacts"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/render_markdown.test.mjs",
+          "sha256": "6a253f40b54527aa45e6ad59afe57294098e2320f46bc4afa904f04c0b2b938d"
+        }
+      ],
+      "id": "AC-12",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "legacy-assets",
+        "mode-and-visual-routing",
+        "markdown-html-artifacts"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "fixtures/visual-verification/manifest.json"
+        },
+        {
+          "kind": "path",
+          "path": "tests/test_visual_verification.py",
+          "sha256": "0c859e550c42f9c0842be7c3b1728365d2dad4072888bf5082adcfe101454cc5"
+        }
+      ],
+      "id": "AC-13",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "evaluation-harness"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_evaluation_harness.py",
+          "sha256": "09eb7a3f4eafb2bfc5245665cfaeb61f9becacee673636e9141a2c1950307bc4"
+        }
+      ],
+      "id": "AC-14",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "evaluation-harness"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_evaluation_harness.py",
+          "sha256": "09eb7a3f4eafb2bfc5245665cfaeb61f9becacee673636e9141a2c1950307bc4"
+        }
+      ],
+      "id": "AC-15",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "learner-study-machinery"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_study_cli.py",
+          "sha256": "60cdcf299127623894bc862b834ee403d3fa5df11b2a794874ab41824b77d74a"
+        }
+      ],
+      "id": "AC-16",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "flint-adapter"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/integrations/flint-smoke/manifest.json"
+        }
+      ],
+      "id": "AC-17",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "skillopt-adapter"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/integrations/skillopt-smoke/adapter-receipt.json"
+        }
+      ],
+      "id": "AC-18",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "ecosystem-exports"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "tests/test_exports_cli.py",
+          "sha256": "2a500515b89c4a681a50244dcd0c5a93051e992531d168faf6d1127a540a3f37"
+        }
+      ],
+      "id": "AC-19",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "package-validation"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "scripts/validate_workspace.py",
+          "sha256": "e718c7f0929d231d226efb236534a01b90ab580eaaf01478288ff0cdb22e7017"
+        }
+      ],
+      "id": "AC-20",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "documentation-truth"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "STATUS.md",
+      "sha256": "71dc754ecc7e80e18ddf5b6b67cdf58b2385ec00c7980e327afc3b5f2871d423"
+        },
+        {
+          "kind": "path",
+          "path": "STATUS.html",
+      "sha256": "8ab4b5ce5f164143f077b87c9b757277979a1e9d847b7908b17c9f62fb883961"
+        }
+      ],
+      "id": "AC-21",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "full-verification"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/verification/full.json"
+        }
+      ],
+      "id": "AC-22",
+      "state": "pending"
+    },
+    {
+      "capabilities": [
+        "mode-and-visual-routing"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/forward/receipt.json"
+        }
+      ],
+      "id": "AC-23",
+      "state": "passed"
+    },
+    {
+      "capabilities": [
+        "independent-review"
+      ],
+      "evidence": [
+        {
+          "kind": "receipt",
+          "path": "evidence/reviews/code-standards.json"
+        },
+        {
+          "kind": "receipt",
+          "path": "evidence/reviews/frozen-spec.json"
+        },
+        {
+          "kind": "receipt",
+          "path": "evidence/reviews/architecture-council.json"
+        }
+      ],
+      "id": "AC-24",
+      "state": "pending"
+    },
+    {
+      "capabilities": [
+        "release-package"
+      ],
+      "evidence": [
+        {
+          "kind": "path",
+          "path": "scripts/build_package.py",
+          "sha256": "ec3497493f5454afff4983f882698661b9cfd4722ec751cdbb15d64387e0d587"
+        },
+        {
+          "kind": "path",
+          "path": "tests/test_build_package.py",
+          "sha256": "a99f7aad9536e29fd4194a81fef3e4ec695c7900a91dec58de23feb97b539ffa"
+        },
+        {
+          "kind": "path",
+          "path": "references/OPERATIONS.md",
+          "sha256": "53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22"
+        }
+      ],
+      "id": "AC-25",
+      "state": "pending"
+    }
+  ],
+  "external_gates": [
+    {
+      "id": "EG-01",
+      "status": "parked",
+      "unblock": "Run matched real-provider no-skill, frozen-teach, and candidate trials against external held-out graders."
+    },
+    {
+      "id": "EG-02",
+      "status": "parked",
+      "unblock": "Run a budgeted SkillOpt optimization whose repeated hidden lift exceeds measured noise and passes cross-model hard gates."
+    },
+    {
+      "id": "EG-03",
+      "status": "parked",
+      "unblock": "Complete manual browser and assistive-technology checks plus representative disabled and neurodivergent learner sessions."
+    },
+    {
+      "id": "EG-04",
+      "status": "parked",
+      "unblock": "Collect consented randomized active-control human posttest evidence."
+    },
+    {
+      "id": "EG-05",
+      "status": "parked",
+      "unblock": "Collect blind-scored 7-to-14-day retention and novel-transfer outcomes from real learners."
+    },
+    {
+      "id": "EG-06",
+      "status": "parked",
+      "unblock": "Replicate benefit across topics, models, learners, accessibility needs, and time."
+    }
+  ],
+  "north_star": {
+    "design_encoded": true,
+    "machinery_implemented": true,
+    "scientifically_supported": false
+  },
+  "phases": [
+    {
+      "capabilities": [
+        "baseline-provenance",
+        "evaluation-harness"
+      ],
+      "evidence": [
+        "Frozen source fingerprints and original candidate inventory",
+        "Executable evaluator and forbidden-behavior hard gates"
+      ],
+      "id": "phase-0",
+      "parked": [
+        "Matched real-provider trigger, latency, token, and behavior baselines (EG-01)"
+      ],
+      "state": "specified",
+      "title": "Freeze and measure"
+    },
+    {
+      "capabilities": [
+        "mode-and-visual-routing",
+        "markdown-html-artifacts"
+      ],
+      "evidence": [
+        "Three-mode and Answer-now routing",
+        "Attempt-before-explanation and strict post-error hint-turn policy",
+        "Deterministic renderer with automated accessibility-structure checks",
+        "Fresh all-case attempt 21 passed 8 of 8 with failures and ineligible attempts retained"
+      ],
+      "id": "phase-1",
+      "parked": [
+        "Representative browser and accessibility field evidence (EG-03)"
+      ],
+      "state": "implemented",
+      "title": "Minimum lovable tutor"
+    },
+    {
+      "capabilities": [
+        "learner-state",
+        "review-scheduler"
+      ],
+      "evidence": [
+        "Consented JSON and JSONL learner state",
+        "Deterministic concept and misconception projections",
+        "Exact correction, invalidation, item deletion, and crash recovery",
+        "Pinned real FSRS scheduling with strict replay"
+      ],
+      "id": "phase-2",
+      "parked": [
+        "Real-world scheduler calibration"
+      ],
+      "state": "implemented",
+      "title": "Durable learner loop"
+    },
+    {
+      "capabilities": [
+        "evaluation-harness",
+        "learner-study-machinery"
+      ],
+      "evidence": [
+        "Executable isolated evaluator",
+        "Executable blinded study preparation and analysis",
+        "Public and synthetic machinery receipts"
+      ],
+      "id": "phase-3",
+      "parked": [
+        "Matched agent ablations (EG-01)",
+        "Immediate and delayed human learner evidence (EG-04 and EG-05)",
+        "Model calibration against real outcomes",
+        "Interpretable knowledge tracing unless it proves useful"
+      ],
+      "state": "evaluated",
+      "title": "Evidence and adaptation"
+    },
+    {
+      "capabilities": [
+        "flint-adapter",
+        "skillopt-adapter",
+        "ecosystem-exports"
+      ],
+      "evidence": [
+        "Pinned real Flint compiler adapter",
+        "Pinned real SkillOpt adapter with measured macOS isolation",
+        "Anki, QTI, LiaScript, and H5P exports"
+      ],
+      "id": "phase-4",
+      "parked": [
+        "Table-versus-chart learner comparison",
+        "Measured SkillOpt gain (EG-02)",
+        "Conditional voice, animation, and classroom modules without a justified learning job"
+      ],
+      "state": "implemented",
+      "title": "Optional ecosystem adapters"
+    }
+  ],
+  "release_label": "pre-release",
+  "schema_version": 2
+}

@@ -1,0 +1,5 @@
+fact,value,source
+gates,8,"shared/scripts/vstate.py PHASES (brief, script, voice, visuals, render, mix, qa, deliver)"
+themes,30,shared/scripts/themes.json (theme.py list)
+contrast,4.5,shared/scripts/legibility.py default min_contrast
+frames_6min,10800,"6 min x 60 s x 30 fps (README, Pick a tool)"

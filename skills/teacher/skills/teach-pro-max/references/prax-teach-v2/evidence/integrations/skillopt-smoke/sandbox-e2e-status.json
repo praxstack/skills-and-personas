@@ -1,0 +1,8 @@
+{
+  "adapter_receipt_sha256": "78ba40694dabc8bfa791d7374f322bc3682ad8848777b99c1c558e1d5d8678ea",
+  "eligible_for_held_out_claims": true,
+  "isolation_mode": "builtin_macos_sandbox_exec",
+  "measurement_count": 2,
+  "schema_version": 1,
+  "status": "passed"
+}

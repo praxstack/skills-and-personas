@@ -1,0 +1,72 @@
+{
+  "style": { "look": "paper", "brand": "Block gallery", "mark": "BG", "tag": "motion-video" },
+  "data": {
+    "week": [ {"day": "Mon", "solved": 2}, {"day": "Tue", "solved": 3}, {"day": "Wed", "solved": 3}, {"day": "Thu", "solved": 4},
+              {"day": "Fri", "solved": 6}, {"day": "Sat", "solved": 2}, {"day": "Sun", "solved": 1} ]
+  },
+  "shots": [
+    {
+      "at": "a1",
+      "blocks": [
+        { "type": "compare", "winner": "right",
+          "left": { "title": "Brute force", "body": "Try every route", "chip": "O(n^(k+1)) time", "tone": "bad" },
+          "right": { "title": "Bellman-Ford", "body": "k + 1 rounds of relaxing", "chip": "O(k·E) time", "tone": "good" },
+          "cues": [ { "do": "right", "at": "a1:bellman" }, { "do": "winner", "at": "a2:wins" } ] }
+      ]
+    },
+    {
+      "at": "s1",
+      "blocks": [
+        { "type": "text", "kicker": "One round", "text": "Read, *relax*, repeat", "font": "sans" },
+        { "type": "steps", "items": ["Read | last round's row", "Relax | every flight", "Repeat | k + 1 times"],
+          "cues": [ { "do": "show", "at": "s1:read" }, { "do": "show", "at": "s1:relax" }, { "do": "show", "at": "s1:repeat" } ] }
+      ]
+    },
+    {
+      "at": "b1", "split": [1.4, 1],
+      "blocks": [
+        { "type": "line", "id": "week", "title": "Solved", "unit": "per day", "rows": { "from": "week", "x": "day", "y": "solved" },
+          "cues": [ { "do": "annotate", "at": "b1:friday", "x": "Fri", "text": "peak: 6" } ] },
+        { "type": "stat", "value": "=week.solved:sum", "label": "solved this week", "spark": { "from": "week", "x": "day", "y": "solved" } }
+      ]
+    },
+    {
+      "at": "b2", "split": [1.4, 1],
+      "blocks": [
+        { "type": "line", "id": "week" },
+        { "type": "ring", "value": 72, "label": "of the plan done", "tone": "good" }
+      ]
+    },
+    {
+      "at": "c1",
+      "blocks": [
+        { "type": "code", "title": "bellman_ford.cpp",
+          "code": [
+            "vector<int> dist(n, INF);",
+            "dist[src] = 0;",
+            "for (int r = 0; r <= k; r++) {",
+            "    vector<int> prev = dist;      // copy the row",
+            "    for (auto& f : flights)",
+            "        if (prev[f[0]] + f[2] < dist[f[1]])",
+            "            dist[f[1]] = prev[f[0]] + f[2];",
+            "}",
+            "return dist[dst] >= INF ? -1 : dist[dst];"
+          ],
+          "cues": [ { "do": "focus", "at": "c1:copy", "lines": [4] }, { "do": "focus", "at": "c1:relax", "lines": [5, 7] }, { "do": "focus", "at": "c2", "lines": [6] } ] }
+      ]
+    },
+    {
+      "at": "e1",
+      "blocks": [
+        { "type": "array", "name": "nums", "values": [1, 3, 5, 8, 13, 21],
+          "cues": [
+            { "do": "point", "at": "e1:two pointers", "name": "i", "index": 0 },
+            { "do": "point", "at": "e1:both ends", "name": "j", "index": 5, "tone": "warm" },
+            { "do": "point", "at": "e1:walk", "name": "i", "index": 1 },
+            { "do": "point", "at": "e1:inward", "name": "j", "index": 4, "tone": "warm" },
+            { "do": "range", "at": "e1:inward", "from": 1, "to": 4 }
+          ] }
+      ]
+    }
+  ]
+}

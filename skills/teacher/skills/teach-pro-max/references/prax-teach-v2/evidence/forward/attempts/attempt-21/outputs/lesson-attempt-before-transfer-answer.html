@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="7870522539c9acf4f9e8dd3b487e8b1d876895cb9dc50eec884109071bd47103">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lost-update lesson</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lost-update-lesson">Lost-update lesson</h1>
+<h2 id="user">User</h2>
+<p>Create a focused lesson that teaches me to diagnose a two-thread lost update. Include an unseen transfer task and do not reveal its answer before my attempt.</p>
+<h2 id="assistant">Assistant</h2>
+<p>We’ll build one skill: diagnose a lost update from the exact reads and writes. After this trace and a repair exercise, you’ll get an unseen money-transfer task; its answer stays hidden until you attempt it.</p>
+<p>An inventory starts at <code>stock = 10</code>:</p>
+<pre><code class="language-text">T1 (sell 3)                 T2 (restock 5)
+a = read(stock)  // 10
+                            b = read(stock)  // 10
+write(stock, a - 3) // 7
+                            write(stock, b + 5) // 15
+</code></pre>
+<p>Diagnose this run: what value is stored, what value should reflect both operations, and which update disappeared? Explain in 2–4 lines—or say “I don’t know.”</p>
+<h2 id="user-2">User</h2>
+<p>The stored value is 15 and it should be 12. I think the restock disappeared because T2 wrote last, but I’m not fully sure.</p>
+<h2 id="assistant-2">Assistant</h2>
+<p>Your values are correct: stored <code>15</code>, expected <code>12</code>.</p>
+<p>Hint: compare the final <code>15</code> with each operation’s standalone result—sale-only gives <code>7</code>, restock-only gives <code>15</code>.</p>
+<p>Which update disappeared? Revise just that part.</p>
+<h2 id="user-3">User</h2>
+<p>The sale disappeared. T2 calculated 15 from its stale read of 10, then its last write overwrote T1’s sale result of 7.</p>
+<h2 id="assistant-3">Assistant</h2>
+<p>Correct. T2’s write preserved its own <code>+5</code> but replaced the entire shared value, erasing T1’s <code>−3</code>.</p>
+<p>The diagnostic pattern is: both threads read the same old value, independently compute new values, then write whole replacements. The later write can overwrite the earlier update.</p>
+<p>Now compare this schedule:</p>
+<pre><code class="language-text">T1 reads 10
+T1 writes 7
+T2 reads 7
+T2 writes 12
+</code></pre>
+<p>Is this still a lost update? Point to the decisive evidence in the trace.</p>
+<h2 id="user-4">User</h2>
+<p>No. T2 reads 7 after T1’s write, so its final 12 incorporates both the sale and restock instead of overwriting a result computed from stale state.</p>
+<h2 id="assistant-4">Assistant</h2>
+<p>Correct. The decisive evidence is that T2 reads the value produced by T1, so its computation includes both changes.</p>
+<p>Unseen transfer task:</p>
+<pre><code class="language-text">Initial: A = $100, B = $40, C = $60
+
+T1: transfer $30 from A to B
+T2: transfer $20 from A to C
+
+T1 reads A → 100
+T2 reads A → 100
+T1 reads B → 40
+T2 reads C → 60
+T1 writes A → 70
+T1 writes B → 70
+T2 writes A → 80
+T2 writes C → 80
+</code></pre>
+<p>Diagnose the execution: give the observed final balances, the balances if both transfers took effect, the exact lost update, and one invariant that exposes the bug.</p>
+<h2 id="user-5">User</h2>
+<p>Observed balances are A=$80, B=$70, C=$80. If both transfers took effect they should be A=$50, B=$70, C=$80. T2’s write of A=$80 overwrote T1’s earlier A=$70, so T1’s $30 debit from A was lost even though its credit to B remained. The total-balance invariant exposes it: observed total is $230 instead of the conserved $200.</p>
+<h2 id="assistant-5">Assistant</h2>
+<p>Exactly right. You diagnosed the unseen transfer unassisted: final state, intended state, overwritten debit, and violated conservation invariant.</p>
+<p>Evidence observed:</p>
+<ul>
+<li>Inventory diagnosis: correct after one orienting hint.</li>
+<li>Safe interleaving discrimination: correct unassisted.</li>
+<li>Novel transfer diagnosis: correct unassisted.</li>
+</ul>
+<p>Your decision rule: trace each read’s source, then check whether a later whole-value write erases an earlier update; use invariants to catch impossible outcomes.</p>
+<p>Retention horizon: provisionally one week. Re-test in 48 hours using raw logs where you must reconstruct the reads and writes. Durable mastery remains unverified until delayed retrieval. No files or learner state were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>7870522539c9acf4f9e8dd3b487e8b1d876895cb9dc50eec884109071bd47103</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

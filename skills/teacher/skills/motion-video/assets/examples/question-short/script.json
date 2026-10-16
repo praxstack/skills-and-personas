@@ -1,0 +1,24 @@
+{
+ "meta": {
+  "title": "Cheapest flight, at most one stop",
+  "subtitle": "A 9:16 daily-question Short (LeetCode 787, example 1)",
+  "format": "general",
+  "chapters": ["Question", "Think", "Answer", "Why"],
+  "voice": "af_heart", "speed": 1.05, "music": "pulse",
+  "fps": 30, "width": 1080, "height": 1920
+ },
+ "lines": [
+  {"id": "h1", "chapter": 0, "scene": "title", "cap": "Cheapest flight from 0 to 3, at most one stop.", "say": "Cheapest flight from city zero to city three, with at most one stop."},
+  {"id": "g1", "chapter": 0, "scene": "map", "cap": "4 cities. Each arrow is a flight with its price.", "say": "Four cities. Each arrow is a flight, with its price."},
+  {"id": "g2", "chapter": 0, "scene": "map", "cap": "k = 1: at most one city in between.", "say": "k is one. So at most one city in between."},
+  {"id": "q1", "chapter": 1, "scene": "ask", "cap": "What is the cheapest price from 0 to 3?", "say": "What is the cheapest price from zero to three? Pick one.", "think": 3.0},
+  {"id": "r1", "chapter": 2, "scene": "ask", "cap": "0 → 1 → 2 → 3 costs 400…", "say": "Zero, one, two, three costs four hundred."},
+  {"id": "r2", "chapter": 2, "scene": "ask", "cap": "…but cities 1 and 2 are two stops. Not allowed.", "say": "But cities one and two are two stops. Not allowed."},
+  {"id": "r3", "chapter": 2, "scene": "ask", "cap": "0 → 1 → 3: one stop, 700.", "say": "Zero, one, three. One stop, seven hundred."},
+  {"id": "r4", "chapter": 2, "scene": "ask", "cap": "The answer is 700.", "say": "The answer is seven hundred."},
+  {"id": "w1", "chapter": 3, "scene": "rounds", "cap": "k stops = k + 1 flights.", "say": "k stops means k plus one flights."},
+  {"id": "w2", "chapter": 3, "scene": "rounds", "cap": "Relax every flight k + 1 times, reading last round's prices.", "say": "So relax every flight k plus one times, reading last round's prices."},
+  {"id": "w3", "chapter": 3, "scene": "rounds", "cap": "Round 1 reaches city 1 for 100. Round 2 reaches city 3 for 700.", "say": "Round one reaches city one for one hundred. Round two reaches city three for seven hundred."},
+  {"id": "e1", "chapter": 3, "scene": "end", "cap": "Bellman-Ford, k + 1 rounds: O(k·E) time. Tomorrow: a new one.", "say": "Bellman Ford, k plus one rounds. A new question tomorrow."}
+ ]
+}

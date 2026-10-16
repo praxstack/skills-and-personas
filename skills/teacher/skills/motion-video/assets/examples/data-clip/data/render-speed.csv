@@ -1,0 +1,11 @@
+kit,fps,measured
+Motion Canvas,10,~10
+GSAP,7,~7
+Hand-drawn JS,6.5,5 to 8 (midpoint)
+Motion (this kit),5.5,"~5.5 under load: two renders of 2 workers each on 4 CPUs (11.7 quiet, one worker)"
+Remotion,5,4 to 6 (midpoint)
+HyperFrames,4,~4
+Manim,3.4,~3.4 under load (11 to 14 quiet)
+Revideo,3,~3
+Theatre.js,3,2 to 4 (midpoint)
+Three.js,0.6,0.6 on CPU (20 to 50x faster on a GPU)

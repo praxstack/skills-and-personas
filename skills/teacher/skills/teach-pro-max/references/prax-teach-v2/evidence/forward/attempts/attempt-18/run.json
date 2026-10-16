@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "attempt": 18,
+  "rubric": "evals/forward-behavior.json",
+  "rubric_sha256": "05dfe63533966d99f0e987cf6258281f93840d66fac1679f56347c8351020bce",
+  "runner_harness": "Codex collaboration child tasks",
+  "generated_at": "2026-08-19T11:54:39Z",
+  "scored_by_runner": false,
+  "claim_boundary": "Public forward behavior only; not held-out, candidate-superiority, accessibility-field, or learner-outcome evidence.",
+  "model": {
+    "exact_identifier": null,
+    "reported_as_unavailable": true,
+    "limitation": "The collaboration harness did not expose an exact provider model identifier to the coordinator."
+  },
+  "fresh_context_contract": {
+    "fork_turns": "none",
+    "one_child_task_per_case": true,
+    "coordinator_did_not_supply_prior_case_outputs": true
+  },
+  "prior_attempts": [
+    {"attempt": 1, "path": "evidence/forward/attempts/attempt-1", "status": "failed"},
+    {"attempt": 2, "path": "evidence/forward/attempts/attempt-2-driver-draft", "status": "unscored-disqualified"},
+    {"attempt": 3, "path": "evidence/forward/attempts/attempt-3", "status": "historical-ineligible"},
+    {"attempt": 4, "path": "evidence/forward/attempts/attempt-4", "status": "failed"},
+    {"attempt": 5, "path": "evidence/forward/attempts/attempt-5-composite", "status": "release-ineligible-composite"},
+    {"attempt": 6, "path": "evidence/forward/attempts/attempt-6", "status": "failed-stopped"},
+    {"attempt": 7, "path": "evidence/forward/attempts/attempt-7", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 8, "path": "evidence/forward/attempts/attempt-8-driver-context", "status": "unscored-release-ineligible"},
+    {"attempt": 9, "path": "evidence/forward/attempts/attempt-9", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 10, "path": "evidence/forward/attempts/attempt-10", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 11, "path": "evidence/forward/attempts/attempt-11", "status": "scored-pass-then-rejected-by-independent-spec-review"},
+    {"attempt": 12, "path": "evidence/forward/attempts/attempt-12", "status": "rejected-by-independent-scorer"},
+    {"attempt": 13, "path": "evidence/forward/attempts/attempt-13", "status": "rejected-by-independent-scorer"},
+    {"attempt": 14, "path": "evidence/forward/attempts/attempt-14", "status": "scored-pass-then-rejected-by-independent-spec-review"},
+    {"attempt": 15, "path": "evidence/forward/attempts/attempt-15", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 16, "path": "evidence/forward/attempts/attempt-16", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 17, "path": "evidence/forward/attempts/attempt-17", "status": "passed-then-invalidated-by-source-change"}
+  ],
+  "source_files": {
+    "SKILL.md": "ef39e730c4cdacf96908716de56b4bc5c1d75a7a080d89eb5f3e286603754ac6",
+    "references/ARTIFACT-CONTRACT.md": "ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120",
+    "references/MODE-CONTRACT.md": "39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc",
+    "references/TEACHING-PROTOCOL.md": "6e7b61957b18673ebfd23cc0bcde034f288082aac5081eab6f984312e80ce98e",
+    "references/VISUALIZATION-ROUTER.md": "c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7",
+    "scripts/prax_teach.py": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+    "scripts/praxteach/routing.py": "15e7dfe7555f07430830a6d6d73459df750e6feb686434d0255ea253351aa581"
+  },
+  "execution_files": {
+    "evidence/forward/execution/practical_gradient_descent.py": "5883d9904eeff1940e582c6e46efd7e0f5e2ece11e23fbc1031a415dc9e05eaa",
+    "evidence/forward/execution/practical_gradient_descent.stdout": "245d4954b7b37a7440430406d50387e7aee958de74f2f56037e9e05fb6297ded"
+  },
+  "cases": [
+    {
+      "case_id": "quick-bounded-explanation",
+      "fresh_task": "/root/forward18_quick",
+      "format_normalization": "The coordinator added the document H1 and removed Markdown hard-break whitespace; response words are unchanged.",
+      "output": "evidence/forward/outputs/quick-bounded-explanation.md",
+      "output_sha256": "4e315772f41c206dce1587a324a491406f4e67c25024749c4931771b747dd0ca"
+    },
+    {
+      "case_id": "answer-now-override",
+      "fresh_task": "/root/forward18_answer_retry",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/answer-now-override.md",
+      "output_sha256": "c06af3fff69154604bcb44e135d71cf71ce9007afdfdb682df42a1660d47ba60"
+    },
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "fresh_task": "/root/forward18_lesson_retry",
+      "format_normalization": "The coordinator assembled exact utterances under document and speaker headings; no tutor or learner wording was changed.",
+      "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+      "output_sha256": "1970eeba0f3137b7cd276fe19d20a0cb34ffd55931a9f3294fc5a7cf295c9449",
+      "interaction": {
+        "tutor_turns": 5,
+        "learner_turns": 5,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "fresh_task": "/root/forward18_course",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/course-consent-boundary.md",
+      "output_sha256": "64feb132461156ea40bb886d1e099a0d089f607a5eeecf2be10b1c53581ec57a"
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "fresh_task": "/root/forward18_resume",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/resume-hinted-evidence.md",
+      "output_sha256": "3231a6c8b00ce1e7d213d82031aa7dd94e8e19682f793067d9c9975dd2b59933",
+      "context": "evidence/forward/context/resume-hinted.json",
+      "context_sha256": "fc284afe08daeaf3954780e2471efade865d3e49f6c1521409af992eac4beed9"
+    },
+    {
+      "case_id": "visual-none",
+      "fresh_task": "/root/forward18_visual_none",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-none.md",
+      "output_sha256": "ca656ad5b721f7f44b24227b32b37bc8e66c0e4f510b05aafbfb73f652e8c9c1"
+    },
+    {
+      "case_id": "visual-essential-static",
+      "fresh_task": "/root/forward18_visual_static",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-essential-static.md",
+      "output_sha256": "3b0a05d847c2922191eadeb60b1c76a8bca7098376a4170994d3b0bbb6787567"
+    },
+    {
+      "case_id": "practical-executable-learning",
+      "fresh_task": "/root/forward18_practical",
+      "format_normalization": "The coordinator assembled exact utterances under document and speaker headings and removed one Markdown hard-break whitespace sequence; no tutor or learner words were changed.",
+      "output": "evidence/forward/outputs/practical-executable-learning.md",
+      "output_sha256": "fb08ecc2c5a1ca771f7d0bc2d8660c7d744889b71f938ee4466543f7f9fdb4a0",
+      "execution_files": [
+        "evidence/forward/execution/practical_gradient_descent.py",
+        "evidence/forward/execution/practical_gradient_descent.stdout"
+      ],
+      "interaction": {
+        "tutor_turns": 7,
+        "learner_turns": 7,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    }
+  ]
+}

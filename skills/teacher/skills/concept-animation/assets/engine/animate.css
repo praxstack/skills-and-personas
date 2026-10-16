@@ -1,0 +1,23 @@
+/* Concept animation player, on top of lesson-notebook/assets/notebook.css. */
+#app { max-width: 64rem; margin: 0 auto; display: grid; gap: var(--s-4); padding-block: var(--s-6) 0; }
+.ca-head { display: grid; gap: var(--s-2); border-bottom: 3px double var(--ink); padding-bottom: var(--s-4); }
+.ca-head h1 { font-size: var(--text-h2); }
+.ca-sub { color: var(--ink-2); max-width: 60ch; }
+.ca-player { display: grid; gap: var(--s-3); }
+.ca-stage { margin: 0; padding: var(--s-2); }
+.ca-svg { display: block; width: 100%; height: auto; overflow: hidden; }
+.ca-caption { min-height: 2.8em; max-width: 52ch; }
+.ca-bar { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.ca-bar input[type="range"] { flex: 1 1 12rem; min-height: 32px; }
+.ca-chapters { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1); }
+.ca-chip { min-width: 36px; min-height: 36px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); cursor: pointer; font-family: var(--font-print); }
+.ca-chip.is-current { border-color: var(--blue); color: var(--blue); }
+.ca-transcript summary { cursor: pointer; font-weight: 600; }
+
+/* Export mode (?export): only the stage, sized to the frame, no chrome. */
+:root[data-export] body { padding: 0; background-image: none; }
+:root[data-export] body::before { display: none; }
+:root[data-export] #app { max-width: none; padding: 0; gap: 0; }
+:root[data-export] .ca-head, :root[data-export] .ca-bar, :root[data-export] .ca-chapters, :root[data-export] .ca-transcript { display: none; }
+:root[data-export] .ca-stage { border: 0; box-shadow: none; padding: 0; }
+:root[data-export] .ca-caption { position: absolute; inset: auto 0 0 0; margin: 0 auto; padding: 10px 24px 18px; max-width: none; text-align: center; font-size: 30px; background: linear-gradient(transparent, var(--paper) 35%); }

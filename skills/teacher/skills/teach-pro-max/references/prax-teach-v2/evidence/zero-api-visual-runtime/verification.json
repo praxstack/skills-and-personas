@@ -1,0 +1,58 @@
+{
+  "schema_version": "prax.zero-api-runtime-verification/v1",
+  "status": "passed",
+  "source_file_count": 7,
+  "shape_digest": "652286b49678a971d1ff8c82b94606ddcc1eae1e528afc15db887cc6b12e8fac",
+  "network_scan": "passed",
+  "bindings": {
+    "source": {
+      "algorithm": "sha256(canonical-json(files[path,bytes,sha256]))",
+      "file_count": 7,
+      "sha256": "652286b49678a971d1ff8c82b94606ddcc1eae1e528afc15db887cc6b12e8fac"
+    },
+    "dist": {
+      "algorithm": "sha256(canonical-json(files[path,bytes,sha256]))",
+      "file_count": 8,
+      "sha256": "54d30ee1abd02977d5ebc5035143baf1502e3aaf0c10af63ec672b50cbee2e69"
+    },
+    "manifest": {
+      "algorithm": "sha256",
+      "path": "runtime/prax-visual-lab/dist/manifest.json",
+      "bytes": 1233,
+      "sha256": "fbee13927a7a7416b1c45b0c99514ce8507a2a3a101a6f48a1a1612f5d5bd621"
+    },
+    "tests": {
+      "algorithm": "sha256(canonical-json(files[path,bytes,sha256]))",
+      "file_count": 2,
+      "sha256": "0844eb647425a9539ef8ea68e3073c80db70c36849698fe97a1468048c4b4007"
+    },
+    "contracts": {
+      "algorithm": "sha256(canonical-json(files[path,bytes,sha256]))",
+      "file_count": 4,
+      "sha256": "8f7359c9ca4694f22c53dea50bbeb05677d9470b4d280fae3714b23f0c01f965"
+    },
+    "build": {
+      "algorithm": "sha256",
+      "path": "runtime/prax-visual-lab/build.mjs",
+      "bytes": 1988,
+      "sha256": "e2cf499b8e146e5f984d6599694dbb46ea7913e97e5f3225fcc7f5304a3464f7"
+    },
+    "routing": {
+      "algorithm": "sha256",
+      "path": "scripts/praxteach/routing.py",
+      "bytes": 21971,
+      "sha256": "6a994bd187f281a7df4de7887ede53fdee2a2ed76ab369df85b38500d99ab11a"
+    },
+    "verifier": {
+      "algorithm": "sha256",
+      "path": "scripts/verify_visual_runtime.py",
+      "bytes": 3167,
+      "sha256": "71c7154fe369d9b1c6c182db1571df351dcefbe3548e532515d338241d742151"
+    }
+  },
+  "external_human_learning_gates_satisfied": false,
+  "limitations": [
+    "Automated checks do not establish field accessibility or learning outcomes."
+  ],
+  "errors": []
+}

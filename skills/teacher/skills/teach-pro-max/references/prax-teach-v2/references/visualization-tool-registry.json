@@ -1,0 +1,983 @@
+{
+  "schema_version": "1.0",
+  "checked_at": "2026-07-23",
+  "purpose": "Progressively disclosed official resources and agent integrations for prax-teach visualization routes.",
+  "trust_levels": {
+    "official-standard": "Specification maintained by a standards body.",
+    "first-party-tool-docs": "Official project documentation and source; no portable first-party agent integration is implied.",
+    "first-party-agent-integration": "Skill, MCP, plugin, or agent surface maintained by the tool owner.",
+    "local-vetted": "Workflow inspected on the source host; current availability must be probed and is not maintained by the target tool project.",
+    "community-unverified": "Third-party integration requiring source, permission, dependency, and compatibility review."
+  },
+  "selection_order": [
+    "existing working tool in the lesson workspace",
+    "verified first-party skill, MCP, plugin, or CLI",
+    "official documentation",
+    "official source and examples",
+    "reviewed and pinned community integration",
+    "small local adapter built from official documentation"
+  ],
+  "tools": [
+    {
+      "id": "svg",
+      "name": "SVG",
+      "aliases": ["scalable vector graphics", "vector diagram", "accessible svg"],
+      "routes": ["structure", "appearance", "spatial"],
+      "capabilities": ["exact labels", "geometry", "responsive vectors", "accessible diagrams"],
+      "summary": "Standards-based editable vector format and the default for precise labelled lesson graphics.",
+      "trust": "official-standard",
+      "official": {
+        "docs": [{"label": "SVG 2 specification", "url": "https://www.w3.org/TR/SVG2/"}],
+        "syntax": [{"label": "SVG living draft", "url": "https://svgwg.org/svg2-draft/"}],
+        "examples": [{"label": "MDN SVG tutorial", "url": "https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch"}],
+        "source": [{"label": "W3C SVG Working Group", "url": "https://github.com/w3c/svgwg"}]
+      },
+      "install": [],
+      "agent_integrations": [
+        {
+          "name": "svg-principal-engineer",
+          "type": "local skill",
+          "trust": "local-vetted",
+          "availability": "probe-local",
+          "relative_skill_path": "svg-principal-engineer/SKILL.md"
+        }
+      ],
+      "fallback": "Author semantic SVG directly from the SVG specification; a wrapper is unnecessary.",
+      "verification": [
+        "Parse XML and render in the target browser; inspect viewBox, fonts, labels, clipping, and paths.",
+        "Require title, description, accessible role, non-color cues, and a raster preview."
+      ]
+    },
+    {
+      "id": "mermaid",
+      "name": "Mermaid",
+      "aliases": ["mmd", "flowchart", "sequence diagram"],
+      "routes": ["structure", "sequence", "architecture"],
+      "capabilities": ["flowcharts", "sequence diagrams", "state diagrams", "compact diagram source"],
+      "summary": "Fast text-defined diagrams for modest processes and relationships.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Mermaid documentation", "url": "https://mermaid.js.org/intro/"}],
+        "syntax": [{"label": "Syntax reference", "url": "https://mermaid.js.org/intro/syntax-reference.html"}],
+        "examples": [{"label": "Mermaid Live Editor", "url": "https://mermaid.live/"}],
+        "source": [
+          {"label": "Mermaid repository", "url": "https://github.com/mermaid-js/mermaid"},
+          {"label": "Mermaid CLI", "url": "https://github.com/mermaid-js/mermaid-cli"}
+        ]
+      },
+      "install": [
+        {"environment": "npm library", "command": "npm install mermaid"},
+        {"environment": "CLI", "command": "npm install -g @mermaid-js/mermaid-cli", "note": "Render with: mmdc -i input.mmd -o output.svg"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "gstack diagram",
+          "type": "local skill",
+          "trust": "local-vetted",
+          "availability": "probe-local",
+          "relative_skill_path": "gstack/diagram/SKILL.md"
+        }
+      ],
+      "fallback": "Use the official Mermaid grammar and CLI directly; step down to SVG or draw.io when layout is ambiguous.",
+      "verification": [
+        "Render with the target Mermaid version and inspect labels, directions, edge crossings, and accessibility.",
+        "Split diagrams that exceed one screen."
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "D2",
+      "aliases": ["d2lang", "terrastruct d2"],
+      "routes": ["structure", "architecture"],
+      "capabilities": ["automatic layout", "themes", "sketch style", "animated svg"],
+      "summary": "Text-defined diagrams with selectable layout engines and strong styling.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "D2 tour", "url": "https://d2lang.com/tour/intro/"}],
+        "syntax": [{"label": "D2 shapes and syntax", "url": "https://d2lang.com/tour/shapes/"}],
+        "examples": [{"label": "D2 playground", "url": "https://play.d2lang.com/"}],
+        "source": [{"label": "Terrastruct D2", "url": "https://github.com/terrastruct/d2"}]
+      },
+      "install": [
+        {"environment": "official installer", "command": "curl -fsSL https://d2lang.com/install.sh | sh -s --", "note": "Review with --dry-run before executing."},
+        {"environment": "Go", "command": "go install oss.terrastruct.com/d2@latest"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Use the official syntax and CLI; use SVG or Mermaid when D2 is unavailable.",
+      "verification": ["Compile with D2, record the layout engine, and inspect labels, routing, and hierarchy."]
+    },
+    {
+      "id": "graphviz",
+      "name": "Graphviz / DOT",
+      "aliases": ["dot", "neato", "graph layout"],
+      "routes": ["structure", "dependency", "network", "hierarchy"],
+      "capabilities": ["automatic graph layout", "trees", "dependency graphs", "state spaces"],
+      "summary": "Canonical graph layout suite; use DOT directly without requiring an agent wrapper.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Graphviz documentation", "url": "https://graphviz.org/documentation/"}],
+        "syntax": [{"label": "DOT language", "url": "https://graphviz.org/doc/info/lang.html"}],
+        "examples": [{"label": "Graphviz gallery", "url": "https://graphviz.org/gallery/"}],
+        "source": [{"label": "Canonical Graphviz source", "url": "https://gitlab.com/graphviz/graphviz"}]
+      },
+      "install": [
+        {"environment": "macOS", "command": "brew install graphviz"},
+        {"environment": "Debian/Ubuntu", "command": "sudo apt install graphviz"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Write DOT from the official grammar and render with the appropriate layout engine.",
+      "verification": ["Run dot -V, compile to SVG, and inspect crossings, rank, clipping, labels, and chosen engine."]
+    },
+    {
+      "id": "drawio",
+      "name": "draw.io / diagrams.net",
+      "aliases": ["diagrams.net", "mxgraph", "drawio"],
+      "routes": ["structure", "architecture", "editable-handoff"],
+      "capabilities": ["native editable diagrams", "layers", "pages", "rich connectors", "manual refinement"],
+      "summary": "Professional editable diagrams with a verified first-party MCP and native XML format.",
+      "trust": "first-party-agent-integration",
+      "official": {
+        "docs": [{"label": "draw.io documentation", "url": "https://www.drawio.com/docs/"}],
+        "syntax": [{"label": "Technical reference", "url": "https://www.drawio.com/docs/reference/"}],
+        "examples": [{"label": "Web editor", "url": "https://app.diagrams.net/"}],
+        "source": [
+          {"label": "draw.io source", "url": "https://github.com/jgraph/drawio"},
+          {"label": "Official draw.io MCP", "url": "https://github.com/jgraph/drawio-mcp"}
+        ]
+      },
+      "install": [
+        {"environment": "local MCP", "command": "npx @drawio/mcp"},
+        {"environment": "Codex plugin", "command": "codex plugin marketplace add jgraph/drawio-mcp && codex plugin add drawio@drawio"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "draw.io MCP",
+          "type": "MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream-not-confirmed-installed",
+          "url": "https://github.com/jgraph/drawio-mcp"
+        },
+        {
+          "name": "Hosted draw.io MCP",
+          "type": "remote MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream",
+          "url": "https://mcp.draw.io/mcp"
+        }
+      ],
+      "fallback": "Generate native .drawio XML from the official XML reference and open it in diagrams.net.",
+      "verification": [
+        "Validate XML, reopen and edit the source, then inspect connectors, labels, layers, and export.",
+        "Prefer local rendering for private diagrams; record remote-service data egress."
+      ]
+    },
+    {
+      "id": "vega-lite",
+      "name": "Vega-Lite",
+      "aliases": ["vegalite", "declarative chart"],
+      "routes": ["quantity"],
+      "capabilities": ["declarative charts", "transformations", "layering", "reproducible specifications"],
+      "summary": "Declarative grammar for reproducible quantitative visualizations.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Vega-Lite documentation", "url": "https://vega.github.io/vega-lite/docs/"}],
+        "syntax": [{"label": "Specification reference", "url": "https://vega.github.io/vega-lite/docs/spec.html"}],
+        "examples": [{"label": "Example gallery", "url": "https://vega.github.io/vega-lite/examples/"}],
+        "source": [{"label": "Vega-Lite repository", "url": "https://github.com/vega/vega-lite"}]
+      },
+      "install": [
+        {"environment": "npm", "command": "npm install vega vega-lite vega-embed"},
+        {"environment": "CLI render", "command": "npx -p vega -p vega-lite vl2svg input.json > output.svg"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Author JSON against the official schema and use the official editor or CLI.",
+      "verification": ["Validate schema, render, and audit field types, scales, units, missingness, uncertainty, sample size, and provenance."]
+    },
+    {
+      "id": "observable-plot",
+      "name": "Observable Plot",
+      "aliases": ["plot", "@observablehq/plot"],
+      "routes": ["quantity", "interaction"],
+      "capabilities": ["layered marks", "exploratory charts", "SVG and HTML figures"],
+      "summary": "Concise JavaScript charting organized around composable marks.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Observable Plot", "url": "https://observablehq.com/plot/"}],
+        "syntax": [{"label": "Plot API", "url": "https://observablehq.com/plot/api"}],
+        "examples": [{"label": "Getting started", "url": "https://observablehq.com/plot/getting-started"}],
+        "source": [{"label": "Observable Plot source", "url": "https://github.com/observablehq/plot"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install @observablehq/plot"}],
+      "agent_integrations": [],
+      "fallback": "Use the official JavaScript API in plain HTML or a notebook.",
+      "verification": ["Render the actual DOM and inspect transforms, domains, axes, labels, source data, and static fallback."]
+    },
+    {
+      "id": "echarts",
+      "name": "Apache ECharts",
+      "aliases": ["echarts", "interactive dashboard"],
+      "routes": ["quantity", "interaction"],
+      "capabilities": ["interactive charts", "dashboards", "SVG or Canvas rendering"],
+      "summary": "Feature-rich interactive charting with declarative option objects.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "ECharts handbook", "url": "https://echarts.apache.org/handbook/en/get-started/"}],
+        "syntax": [{"label": "Option reference", "url": "https://echarts.apache.org/en/option.html"}],
+        "examples": [{"label": "ECharts examples", "url": "https://echarts.apache.org/examples/en/index.html"}],
+        "source": [{"label": "Apache ECharts source", "url": "https://github.com/apache/echarts"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install echarts"}],
+      "agent_integrations": [],
+      "fallback": "Author the official option object directly; use SVG rendering and a static capture.",
+      "verification": ["Render and resize in a browser; audit scales, data, ARIA, decals, keyboard behavior, and static fallback."]
+    },
+    {
+      "id": "matplotlib",
+      "name": "Matplotlib",
+      "aliases": ["pyplot", "python plot"],
+      "routes": ["quantity"],
+      "capabilities": ["scientific plots", "static charts", "SVG and PNG export"],
+      "summary": "Mature Python plotting for reproducible scientific and static figures.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Matplotlib documentation", "url": "https://matplotlib.org/stable/"}],
+        "syntax": [{"label": "API reference", "url": "https://matplotlib.org/stable/api/index.html"}],
+        "examples": [{"label": "Gallery", "url": "https://matplotlib.org/stable/gallery/index.html"}],
+        "source": [{"label": "Matplotlib source", "url": "https://github.com/matplotlib/matplotlib"}]
+      },
+      "install": [{"environment": "Python", "command": "python -m pip install -U matplotlib"}],
+      "agent_integrations": [],
+      "fallback": "Use a Python script or notebook and save SVG or PNG.",
+      "verification": ["Execute headlessly with pinned inputs and inspect axes, units, uncertainty, missingness, and exported pixels."]
+    },
+    {
+      "id": "plotly",
+      "name": "Plotly",
+      "aliases": ["plotly express", "plotly.js", "graph objects"],
+      "routes": ["quantity", "interaction"],
+      "capabilities": ["interactive scientific charts", "standalone HTML", "static export"],
+      "summary": "Interactive plotting for Python and JavaScript with standalone HTML delivery.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Plotly documentation", "url": "https://docs.plotly.com/"}],
+        "syntax": [
+          {"label": "Python API", "url": "https://plotly.com/python-api-reference/"},
+          {"label": "JavaScript reference", "url": "https://plotly.com/javascript/reference/"}
+        ],
+        "examples": [{"label": "JavaScript quickstart", "url": "https://plotly.com/javascript/getting-started/"}],
+        "source": [
+          {"label": "plotly.py", "url": "https://github.com/plotly/plotly.py"},
+          {"label": "plotly.js", "url": "https://github.com/plotly/plotly.js"}
+        ]
+      },
+      "install": [
+        {"environment": "Python", "command": "pip install plotly"},
+        {"environment": "Python static export", "command": "pip install --upgrade kaleido", "note": "Kaleido v1 requires Chrome."},
+        {"environment": "JavaScript", "command": "npm install plotly.js-dist"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Use Plotly Express or graph_objects and export standalone HTML; avoid frozen plotly-latest CDN aliases.",
+      "verification": ["Validate the figure schema, browser interaction, scales, provenance, and static fallback; note rasterized WebGL traces."]
+    },
+    {
+      "id": "altair",
+      "name": "Altair",
+      "aliases": ["vega altair", "python vega-lite"],
+      "routes": ["quantity"],
+      "capabilities": ["declarative Python charts", "Vega-Lite generation"],
+      "summary": "Python interface that produces inspectable Vega-Lite specifications.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Altair documentation", "url": "https://altair-viz.github.io/"}],
+        "syntax": [{"label": "Altair API", "url": "https://altair-viz.github.io/user_guide/api.html"}],
+        "examples": [{"label": "Altair gallery", "url": "https://altair-viz.github.io/gallery/"}],
+        "source": [{"label": "Vega-Altair source", "url": "https://github.com/vega/altair"}]
+      },
+      "install": [
+        {"environment": "Python full", "command": "pip install \"altair[all]\""},
+        {"environment": "Python minimal", "command": "pip install altair"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Generate Vega-Lite JSON or HTML directly from Python.",
+      "verification": ["Execute Python, validate the generated Vega-Lite spec, and inspect data, scales, missingness, and provenance."]
+    },
+    {
+      "id": "ggplot2",
+      "name": "ggplot2",
+      "aliases": ["r plot", "grammar of graphics"],
+      "routes": ["quantity"],
+      "capabilities": ["statistical charts", "layered grammar", "R figures"],
+      "summary": "R grammar-of-graphics plotting with strong statistical workflows.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "ggplot2 documentation", "url": "https://ggplot2.tidyverse.org/"}],
+        "syntax": [{"label": "Reference", "url": "https://ggplot2.tidyverse.org/reference/"}],
+        "examples": [{"label": "ggsave reference", "url": "https://ggplot2.tidyverse.org/reference/ggsave.html"}],
+        "source": [{"label": "ggplot2 source", "url": "https://github.com/tidyverse/ggplot2"}]
+      },
+      "install": [{"environment": "R", "command": "install.packages(\"ggplot2\")"}],
+      "agent_integrations": [],
+      "fallback": "Use an R script and ggsave() to SVG, PNG, or PDF.",
+      "verification": ["Run non-interactively and inspect factor order, scales, units, missingness, uncertainty, and export."]
+    },
+    {
+      "id": "excalidraw",
+      "name": "Excalidraw",
+      "aliases": ["hand-drawn diagram", "sketch diagram", "excalidraw json"],
+      "routes": ["structure", "ideation", "editable-handoff"],
+      "capabilities": ["provisional diagrams", "hand-drawn style", "editable scene JSON"],
+      "summary": "Appropriately informal diagrams for mental models and collaborative refinement.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Excalidraw developer docs", "url": "https://docs.excalidraw.com/"}],
+        "syntax": [{"label": "JSON schema", "url": "https://docs.excalidraw.com/docs/codebase/json-schema"}],
+        "examples": [{"label": "Excalidraw editor", "url": "https://excalidraw.com/"}],
+        "source": [{"label": "Excalidraw source", "url": "https://github.com/excalidraw/excalidraw"}]
+      },
+      "install": [{"environment": "React package", "command": "npm install react react-dom @excalidraw/excalidraw"}],
+      "agent_integrations": [
+        {
+          "name": "gstack diagram",
+          "type": "local skill",
+          "trust": "local-vetted",
+          "availability": "probe-local",
+          "relative_skill_path": "gstack/diagram/SKILL.md"
+        }
+      ],
+      "fallback": "Author .excalidraw JSON against the official schema and open it in Excalidraw.",
+      "verification": ["Parse, reopen, and re-edit; inspect arrow bindings, labels, overlap, SVG export, and text fallback."]
+    },
+    {
+      "id": "kroki",
+      "name": "Kroki",
+      "aliases": ["diagram rendering gateway", "multi-language renderer"],
+      "routes": ["renderer", "structure"],
+      "capabilities": ["unified diagram API", "self-hosted rendering", "multiple diagram grammars"],
+      "summary": "Rendering gateway for many diagram languages; it supplies no diagram grammar of its own.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Kroki documentation", "url": "https://docs.kroki.io/kroki/"}],
+        "syntax": [{"label": "API usage", "url": "https://docs.kroki.io/kroki/setup/usage/"}],
+        "examples": [{"label": "Installation", "url": "https://docs.kroki.io/kroki/setup/install/"}],
+        "source": [{"label": "Kroki source", "url": "https://github.com/yuzutech/kroki"}]
+      },
+      "install": [{"environment": "Docker", "command": "docker run -p 8000:8000 yuzutech/kroki"}],
+      "agent_integrations": [],
+      "fallback": "Use HTTP POST or the CLI against a self-hosted server and validate the underlying source language.",
+      "verification": ["Render locally for privacy and determinism; validate the source grammar and inspect the returned diagram."]
+    },
+    {
+      "id": "plantuml",
+      "name": "PlantUML",
+      "aliases": ["puml", "uml diagram"],
+      "routes": ["structure", "sequence", "architecture"],
+      "capabilities": ["UML", "sequence diagrams", "state diagrams", "deployment diagrams"],
+      "summary": "Text-defined UML and technical diagrams.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "PlantUML documentation", "url": "https://plantuml.com/"}],
+        "syntax": [{"label": "Language guide", "url": "https://plantuml.com/guide"}],
+        "examples": [{"label": "Starting guide", "url": "https://plantuml.com/starting"}],
+        "source": [{"label": "PlantUML source", "url": "https://github.com/plantuml/plantuml"}]
+      },
+      "install": [
+        {"environment": "Java JAR", "command": "java -jar plantuml.jar file.puml"},
+        {"environment": "Docker server", "command": "docker run -d -p 8080:8080 plantuml/plantuml-server:jetty"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Use .puml text with the official JAR or server; Kroki is a secondary renderer.",
+      "verification": ["Render with a pinned JAR and inspect warnings, labels, layout, and output portability."]
+    },
+    {
+      "id": "structurizr",
+      "name": "Structurizr",
+      "aliases": ["c4 model", "structurizr dsl"],
+      "routes": ["architecture", "structure"],
+      "capabilities": ["C4 models", "consistent architecture views", "DSL validation"],
+      "summary": "Semantic architecture model with multiple consistent views and a verified first-party MCP.",
+      "trust": "first-party-agent-integration",
+      "official": {
+        "docs": [{"label": "Structurizr documentation", "url": "https://docs.structurizr.com/"}],
+        "syntax": [{"label": "Structurizr DSL", "url": "https://docs.structurizr.com/dsl/language"}],
+        "examples": [{"label": "Structurizr playground", "url": "https://playground.structurizr.com/"}],
+        "source": [{"label": "Structurizr source", "url": "https://github.com/structurizr/structurizr"}]
+      },
+      "install": [
+        {"environment": "macOS CLI", "command": "brew install structurizr-cli"},
+        {"environment": "Docker CLI", "command": "docker run -it --rm -v $PWD:/usr/local/structurizr structurizr/cli <parameters>"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "Structurizr MCP",
+          "type": "remote MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream-not-confirmed-installed",
+          "url": "https://docs.structurizr.com/ai/mcp"
+        }
+      ],
+      "fallback": "Use Structurizr DSL plus the official CLI or playground and export to Mermaid or PlantUML.",
+      "verification": ["Validate and inspect DSL, view keys, model consistency, and each rendered export."]
+    },
+    {
+      "id": "penrose",
+      "name": "Penrose",
+      "aliases": ["constraint diagram", "mathematical diagram"],
+      "routes": ["spatial", "structure", "mathematics"],
+      "capabilities": ["constraint-based layout", "mathematical diagrams", "semantic style separation"],
+      "summary": "Constraint-based mathematical diagram system separating domain, substance, and style.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Penrose reference", "url": "https://penrose.cs.cmu.edu/docs/ref"}],
+        "syntax": [{"label": "Penrose tutorial", "url": "https://penrose.cs.cmu.edu/docs/tutorial/welcome"}],
+        "examples": [{"label": "Penrose examples", "url": "https://penrose.cs.cmu.edu/examples"}],
+        "source": [{"label": "Penrose source", "url": "https://github.com/penrose/penrose"}]
+      },
+      "install": [
+        {"environment": "CLI", "command": "npx @penrose/roger"},
+        {"environment": "library", "command": "npm install @penrose/core"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Use the official editor or Domain, Substance, and Style sources with Roger.",
+      "verification": ["Compile and optimize, pin the variation string, sample layouts, and inspect semantic constraints."]
+    },
+    {
+      "id": "html",
+      "name": "HTML",
+      "aliases": ["semantic html", "web lesson", "runnable wireframe"],
+      "routes": ["structure", "interaction", "wireframe"],
+      "capabilities": ["semantic documents", "interactive shells", "browser-native delivery"],
+      "summary": "Standards-based semantic surface for every prax-teach lesson.",
+      "trust": "official-standard",
+      "official": {
+        "docs": [{"label": "WHATWG HTML", "url": "https://html.spec.whatwg.org/"}],
+        "syntax": [{"label": "MDN HTML reference", "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference"}],
+        "examples": [{"label": "Nu HTML Checker", "url": "https://validator.w3.org/nu/"}],
+        "source": [{"label": "WHATWG HTML source", "url": "https://github.com/whatwg/html"}]
+      },
+      "install": [],
+      "agent_integrations": [
+        {
+          "name": "MDN MCP",
+          "type": "remote MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "experimental-not-installed",
+          "url": "https://developer.mozilla.org/en-US/mcp"
+        }
+      ],
+      "fallback": "Write standards-based HTML directly; an MCP is optional.",
+      "verification": ["Run an HTML validator and test semantics, keyboard order, accessible names, responsive layout, and print."]
+    },
+    {
+      "id": "css",
+      "name": "CSS",
+      "aliases": ["responsive style", "web layout"],
+      "routes": ["structure", "appearance", "interaction"],
+      "capabilities": ["layout", "responsive hierarchy", "print", "reduced motion"],
+      "summary": "Standards-based styling and responsive layout for lesson visuals.",
+      "trust": "official-standard",
+      "official": {
+        "docs": [{"label": "CSS Syntax", "url": "https://drafts.csswg.org/css-syntax-3/"}],
+        "syntax": [{"label": "MDN CSS reference", "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference"}],
+        "examples": [{"label": "MDN Playground", "url": "https://developer.mozilla.org/en-US/play"}],
+        "source": [{"label": "CSSWG drafts", "url": "https://github.com/w3c/csswg-drafts"}]
+      },
+      "install": [],
+      "agent_integrations": [
+        {
+          "name": "MDN MCP",
+          "type": "remote MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "experimental-not-installed",
+          "url": "https://developer.mozilla.org/en-US/mcp"
+        }
+      ],
+      "fallback": "Use native CSS and the official grammar directly.",
+      "verification": ["Validate CSS and test screenshots, zoom, contrast, reduced motion, print, and narrow widths."]
+    },
+    {
+      "id": "javascript",
+      "name": "JavaScript",
+      "aliases": ["ecmascript", "browser javascript", "js"],
+      "routes": ["interaction"],
+      "capabilities": ["state", "events", "data transformation", "orchestration"],
+      "summary": "Standards-based browser interaction without requiring a framework.",
+      "trust": "official-standard",
+      "official": {
+        "docs": [{"label": "ECMAScript specification", "url": "https://tc39.es/ecma262/"}],
+        "syntax": [{"label": "MDN JavaScript reference", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference"}],
+        "examples": [{"label": "MDN JavaScript guide", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"}],
+        "source": [{"label": "TC39 ECMA-262", "url": "https://github.com/tc39/ecma262"}]
+      },
+      "install": [],
+      "agent_integrations": [
+        {
+          "name": "MDN MCP",
+          "type": "remote MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "experimental-not-installed",
+          "url": "https://developer.mozilla.org/en-US/mcp"
+        }
+      ],
+      "fallback": "Write standard JavaScript and execute it in the lesson browser.",
+      "verification": ["Check console errors, deterministic state, event cleanup, keyboard paths, and target-browser support."]
+    },
+    {
+      "id": "canvas-2d",
+      "name": "Canvas 2D",
+      "aliases": ["html canvas", "canvas api", "canvasrenderingcontext2d"],
+      "routes": ["interaction", "quantity", "spatial"],
+      "capabilities": ["dense custom drawing", "particles", "high-frequency raster interaction"],
+      "summary": "Browser-native immediate-mode raster drawing; unrelated to local dcanvas or JSON Canvas skills.",
+      "trust": "official-standard",
+      "official": {
+        "docs": [{"label": "HTML canvas standard", "url": "https://html.spec.whatwg.org/multipage/canvas.html"}],
+        "syntax": [{"label": "Canvas 2D API", "url": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D"}],
+        "examples": [{"label": "Canvas tutorial", "url": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial"}],
+        "source": [{"label": "WHATWG HTML source", "url": "https://github.com/whatwg/html"}]
+      },
+      "install": [],
+      "agent_integrations": [],
+      "fallback": "Use CanvasRenderingContext2D directly; do not route to dcanvas or JSON Canvas.",
+      "verification": ["Test device-pixel ratio, resize, hit testing, deterministic frames, screenshots, and semantic text fallback."]
+    },
+    {
+      "id": "webgl",
+      "name": "WebGL",
+      "aliases": ["webgl2", "gpu browser rendering", "shader"],
+      "routes": ["interaction", "spatial"],
+      "capabilities": ["GPU 2D and 3D", "large animated scenes", "custom shaders"],
+      "summary": "Standards-based GPU rendering when Canvas or SVG cannot handle the required scale.",
+      "trust": "official-standard",
+      "official": {
+        "docs": [{"label": "Khronos WebGL registry", "url": "https://registry.khronos.org/webgl/"}],
+        "syntax": [{"label": "WebGL 2 specification", "url": "https://registry.khronos.org/webgl/specs/latest/2.0/"}],
+        "examples": [{"label": "MDN WebGL tutorial", "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial"}],
+        "source": [{"label": "Khronos WebGL source", "url": "https://github.com/KhronosGroup/WebGL"}]
+      },
+      "install": [],
+      "agent_integrations": [],
+      "fallback": "Use official WebGL and shader grammar directly, or Three.js when scene abstraction is useful.",
+      "verification": ["Check shader compile/link logs, gl errors, WebGL2 support, context loss, performance, screenshots, and static fallback."]
+    },
+    {
+      "id": "react-flow",
+      "name": "React Flow",
+      "aliases": ["xyflow", "node editor", "interactive graph editor"],
+      "routes": ["interaction", "structure"],
+      "capabilities": ["editable nodes and edges", "workflow editors", "graph interaction"],
+      "summary": "React toolkit for node-edge systems the learner must manipulate.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "React Flow learning guide", "url": "https://reactflow.dev/learn"}],
+        "syntax": [
+          {"label": "API reference", "url": "https://reactflow.dev/api-reference"},
+          {"label": "Official LLM feed", "url": "https://reactflow.dev/llms.txt"}
+        ],
+        "examples": [{"label": "React Flow examples", "url": "https://reactflow.dev/examples"}],
+        "source": [{"label": "xyflow source", "url": "https://github.com/xyflow/xyflow"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install @xyflow/react", "note": "Import the package CSS and give the parent explicit dimensions."}],
+      "agent_integrations": [],
+      "fallback": "Read the official llms.txt and API documentation, then write React code directly.",
+      "verification": ["Test stable IDs, serialization, callbacks, keyboard accessibility, container sizing, interaction, and screenshot."]
+    },
+    {
+      "id": "threejs",
+      "name": "Three.js",
+      "aliases": ["three", "3d web", "webgl abstraction"],
+      "routes": ["interaction", "spatial"],
+      "capabilities": ["interactive 3D", "spatial systems", "WebGL scene graph"],
+      "summary": "High-level 3D scene library over WebGL.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Three.js documentation", "url": "https://threejs.org/docs/"}],
+        "syntax": [{"label": "Three.js manual", "url": "https://threejs.org/manual/"}],
+        "examples": [{"label": "Three.js examples", "url": "https://threejs.org/examples/"}],
+        "source": [{"label": "Three.js source", "url": "https://github.com/mrdoob/three.js"}]
+      },
+      "install": [
+        {"environment": "npm", "command": "npm install --save three"},
+        {"environment": "Vite", "command": "npm install --save-dev vite"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "HyperFrames Three.js adapter",
+          "type": "local adapter",
+          "trust": "local-vetted",
+          "availability": "probe-local",
+          "relative_skill_path": "hyperframes-animation/adapters/three.md"
+        }
+      ],
+      "fallback": "Use the official module and API docs directly; WebGL is the lower-level fallback.",
+      "verification": ["Pin core and addon versions, await assets, inspect console and renderer.info, dispose resources, and test pixel ratio and poster fallback."]
+    },
+    {
+      "id": "d3",
+      "name": "D3",
+      "aliases": ["d3.js", "data driven documents"],
+      "routes": ["quantity", "interaction"],
+      "capabilities": ["custom data-driven SVG", "Canvas charts", "scales and transforms"],
+      "summary": "Low-level composable data visualization when declarative chart tools are insufficient.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "D3 documentation", "url": "https://d3js.org/"}],
+        "syntax": [{"label": "D3 API", "url": "https://d3js.org/api"}],
+        "examples": [{"label": "D3 gallery", "url": "https://observablehq.com/collection/@d3/gallery"}],
+        "source": [{"label": "D3 source", "url": "https://github.com/d3/d3"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install d3"}],
+      "agent_integrations": [],
+      "fallback": "Use official D3 modules directly; do not install a wrapper merely to gain a skill.",
+      "verification": ["Audit domains, scales, axes, missingness, uncertainty, sample size, provenance, DOM, screenshot, and table fallback."]
+    },
+    {
+      "id": "cytoscapejs",
+      "name": "Cytoscape.js",
+      "aliases": ["cytoscape", "network visualization"],
+      "routes": ["interaction", "network", "structure"],
+      "capabilities": ["graph visualization", "network analysis", "headless graph tests"],
+      "summary": "Browser graph visualization and analysis; distinct from Cytoscape Desktop.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Cytoscape.js docs and demos", "url": "https://js.cytoscape.org/"}],
+        "syntax": [{"label": "Cytoscape.js API", "url": "https://js.cytoscape.org/"}],
+        "examples": [{"label": "Cytoscape.js demos", "url": "https://js.cytoscape.org/#demos"}],
+        "source": [{"label": "Cytoscape.js source", "url": "https://github.com/cytoscape/cytoscape.js"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install cytoscape"}],
+      "agent_integrations": [
+        {
+          "name": "Cytoscape Desktop MCP",
+          "type": "adjacent desktop MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "experimental-not-installed",
+          "url": "https://github.com/cytoscape/cytoscape-desktop-mcp"
+        }
+      ],
+      "fallback": "Use the official JavaScript API; use headless mode for semantic graph assertions.",
+      "verification": ["Assert node and edge IDs/counts, layout and styles, interactions, screenshots, and an accessible list."]
+    },
+    {
+      "id": "sigmajs",
+      "name": "Sigma.js",
+      "aliases": ["sigma", "graphology"],
+      "routes": ["interaction", "network"],
+      "capabilities": ["high-performance WebGL networks", "large graph rendering"],
+      "summary": "WebGL graph rendering over Graphology for large networks.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Sigma.js documentation", "url": "https://www.sigmajs.org/docs/"}],
+        "syntax": [{"label": "Typed API", "url": "https://www.sigmajs.org/docs/category/typedoc-api/"}],
+        "examples": [{"label": "Sigma.js demo", "url": "https://www.sigmajs.org/demo/"}],
+        "source": [{"label": "Sigma.js source", "url": "https://github.com/jacomyal/sigma.js"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install sigma graphology"}],
+      "agent_integrations": [],
+      "fallback": "Use stable v3 documentation and Graphology directly; do not silently adopt the v4 alpha.",
+      "verification": ["Validate graph IDs, container dimensions, WebGL, picking, camera behavior, performance, screenshot, and accessible list."]
+    },
+    {
+      "id": "deckgl",
+      "name": "deck.gl",
+      "aliases": ["deckgl", "geospatial webgl"],
+      "routes": ["spatial", "interaction", "quantity"],
+      "capabilities": ["geospatial layers", "large datasets", "WebGL2", "picking"],
+      "summary": "Layered WebGL visualization for large geospatial and spatial datasets.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "deck.gl documentation", "url": "https://deck.gl/docs"}],
+        "syntax": [{"label": "Core Deck API", "url": "https://deck.gl/docs/api-reference/core/deck"}],
+        "examples": [{"label": "deck.gl examples", "url": "https://deck.gl/examples"}],
+        "source": [{"label": "deck.gl source", "url": "https://github.com/visgl/deck.gl"}]
+      },
+      "install": [
+        {"environment": "npm full", "command": "npm install deck.gl --save"},
+        {"environment": "npm selective", "command": "npm install @deck.gl/core @deck.gl/layers"}
+      ],
+      "agent_integrations": [],
+      "fallback": "Use official layer APIs directly; use Canvas or a static map when scale does not require WebGL.",
+      "verification": ["Audit coordinates, projection, aligned package versions, WebGL2, picking, lifecycle tests, and golden images."]
+    },
+    {
+      "id": "rive",
+      "name": "Rive",
+      "aliases": ["rive animation", "riv state machine"],
+      "routes": ["interaction", "change-over-time"],
+      "capabilities": ["interactive vector animation", "state machines", "runtime data binding"],
+      "summary": "Authored vector state machines and interactive animations.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Rive Web runtime", "url": "https://rive.app/docs/runtimes/web/web-js"}],
+        "syntax": [
+          {"label": "Runtime parameters", "url": "https://rive.app/docs/runtimes/web/rive-parameters"},
+          {"label": "Official LLM feed", "url": "https://rive.app/docs/llms.txt"}
+        ],
+        "examples": [{"label": "Runtime demos", "url": "https://rive.app/docs/runtimes/demos"}],
+        "source": [{"label": "Rive WASM runtime", "url": "https://github.com/rive-app/rive-wasm"}]
+      },
+      "install": [{"environment": "npm WebGL2", "command": "npm install @rive-app/webgl2"}],
+      "agent_integrations": [
+        {
+          "name": "Rive Agent",
+          "type": "in-editor agent",
+          "trust": "first-party-agent-integration",
+          "availability": "early-in-editor-only",
+          "url": "https://rive.app/blog/free-rive-ai-agent"
+        }
+      ],
+      "fallback": "Use the official runtime with an authored .riv file and exact artboard and state-machine names.",
+      "verification": ["Test asset load, names, inputs, data binding, resize, cleanup, CSP/WASM, reduced motion, and poster fallback."]
+    },
+    {
+      "id": "dotlottie",
+      "name": "dotLottie",
+      "aliases": ["lottie", "lottiefiles", ".lottie"],
+      "routes": ["interaction", "change-over-time"],
+      "capabilities": ["packaged vector animation", "themes", "multiple animations", "web playback"],
+      "summary": "Portable Lottie packaging and runtime with verified first-party MCP and skill options.",
+      "trust": "first-party-agent-integration",
+      "official": {
+        "docs": [{"label": "LottieFiles developer portal", "url": "https://developers.lottiefiles.com/"}],
+        "syntax": [{"label": "dotLottie v2 specification", "url": "https://dotlottie.io/spec/"}],
+        "examples": [{"label": "dotLottie viewer", "url": "https://lottiefiles.github.io/dotlottie-web/"}],
+        "source": [{"label": "dotLottie Web source", "url": "https://github.com/LottieFiles/dotlottie-web"}]
+      },
+      "install": [
+        {"environment": "npm web", "command": "npm install @lottiefiles/dotlottie-web"},
+        {"environment": "React", "command": "npm install @lottiefiles/dotlottie-react"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "Lottie Creator MCP",
+          "type": "MCP",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream-not-installed",
+          "url": "https://docs.lottiefiles.com/en/creator/13_ai-tools/lottie-creator-mcp"
+        },
+        {
+          "name": "LottieFiles motion-design-skill",
+          "type": "agent skill",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream-not-installed",
+          "url": "https://github.com/LottieFiles/motion-design-skill"
+        }
+      ],
+      "fallback": "Author or play .lottie using the official runtime and specification without MCP.",
+      "verification": ["Validate manifest IDs, themes, markers, renderer, seek/loop events, reduced motion, accessibility, and poster."]
+    },
+    {
+      "id": "manim",
+      "name": "Manim Community",
+      "aliases": ["manim video", "math animation", "3blue1brown style"],
+      "routes": ["change-over-time", "mathematics"],
+      "capabilities": ["equations", "proofs", "geometry", "algorithm animation"],
+      "summary": "Preferred Python film route for precise mathematical and technical transformations; pin 0.21.0 at first use.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Manim documentation", "url": "https://docs.manim.community/en/stable/"}],
+        "syntax": [{"label": "API reference", "url": "https://docs.manim.community/en/stable/reference.html"}],
+        "examples": [{"label": "Examples", "url": "https://docs.manim.community/en/stable/examples.html"}],
+        "source": [{"label": "Manim Community source", "url": "https://github.com/ManimCommunity/manim"}]
+      },
+      "install": [
+        {"environment": "uv project", "command": "uv init manimations && cd manimations && uv add manim==0.21.0"},
+        {"environment": "pip", "command": "pip install manim==0.21.0"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "manim-video",
+          "type": "local skill",
+          "trust": "local-vetted",
+          "availability": "probe-local",
+          "relative_skill_path": "manim-video/SKILL.md"
+        }
+      ],
+      "fallback": "Use the official Python API or Manim Docker image; choose static SVG when motion is unnecessary.",
+      "verification": ["Run manim --version and manim checkhealth; draft-render and inspect first, proof, and final frames plus equations."],
+      "licensing": "MIT code; example assets can have separate rights. Modern Manim uses PyAV internally, so external FFmpeg is not a core prerequisite."
+    },
+    {
+      "id": "motion-canvas",
+      "name": "Motion Canvas",
+      "aliases": ["motioncanvas", "typescript animation"],
+      "routes": ["change-over-time"],
+      "capabilities": ["vector explainers", "animated code", "narration-synchronized scenes"],
+      "summary": "Historical TypeScript/TSX animation entry retained for provenance; do not route new Teach Pro Max work here.",
+      "disposition": "do-not-route",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Motion Canvas quickstart", "url": "https://motioncanvas.io/docs/quickstart/"}],
+        "syntax": [{"label": "2D API", "url": "https://motioncanvas.io/api/2d/"}],
+        "examples": [{"label": "Rendering guide", "url": "https://motioncanvas.io/docs/rendering/"}],
+        "source": [{"label": "Motion Canvas source", "url": "https://github.com/motion-canvas/motion-canvas"}]
+      },
+      "install": [{"environment": "npm scaffold", "command": "npm init @motion-canvas@latest"}],
+      "agent_integrations": [],
+      "fallback": "Use the official TS API; retain a frame sequence if encoding is unavailable, or step down to SVG.",
+      "verification": ["Render image sequences, inspect first/proof/final frames, encode explicitly, and validate duration and FPS."]
+    },
+    {
+      "id": "remotion",
+      "name": "Remotion",
+      "aliases": ["react video", "remotion video"],
+      "routes": ["change-over-time"],
+      "capabilities": ["React video", "data-driven video", "templates", "branded compositions"],
+      "summary": "Legacy React-video adapter retained for provenance; use HyperFrames or Manim for new Teach Pro Max work.",
+      "disposition": "do-not-route",
+      "trust": "first-party-agent-integration",
+      "official": {
+        "docs": [{"label": "Remotion fundamentals", "url": "https://www.remotion.dev/docs/the-fundamentals"}],
+        "syntax": [{"label": "Remotion API", "url": "https://www.remotion.dev/api"}],
+        "examples": [{"label": "Coding agents", "url": "https://www.remotion.dev/docs/ai/coding-agents"}],
+        "source": [{"label": "Remotion source", "url": "https://github.com/remotion-dev/remotion"}]
+      },
+      "install": [
+        {"environment": "project", "command": "npx create-video@latest"},
+        {"environment": "official skills", "command": "npx skills add remotion-dev/skills"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "Remotion skills",
+          "type": "agent skill pack",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream-not-installed",
+          "url": "https://github.com/remotion-dev/skills"
+        },
+        {
+          "name": "Remotion Codex plugin",
+          "type": "Codex plugin",
+          "trust": "first-party-agent-integration",
+          "availability": "upstream-not-installed",
+          "url": "https://www.remotion.dev/docs/ai/codex-plugin"
+        }
+      ],
+      "fallback": "Use HyperFrames for general film or Manim for mathematical and algorithmic film.",
+      "verification": ["Inspect frame 0, proof frames, and final frame in Studio; render and validate streams with ffprobe."],
+      "licensing": "Source-available with usage-dependent licensing. Check current pricing for organizations. Do not recommend the deprecated Remotion MCP."
+    },
+    {
+      "id": "hyperframes",
+      "name": "HyperFrames",
+      "aliases": ["html video", "heygen hyperframes", "seekable html animation"],
+      "routes": ["change-over-time"],
+      "capabilities": ["HTML/CSS video", "seekable deterministic animation", "browser-native compositions"],
+      "summary": "First-party agent-oriented HTML video system with an optionally discoverable local skill suite.",
+      "trust": "first-party-agent-integration",
+      "official": {
+        "docs": [{"label": "HyperFrames documentation", "url": "https://hyperframes.heygen.com"}],
+        "syntax": [{"label": "Core API", "url": "https://hyperframes.heygen.com/packages/core"}],
+        "examples": [{"label": "Examples", "url": "https://hyperframes.heygen.com/examples"}],
+        "source": [{"label": "HyperFrames source", "url": "https://github.com/heygen-com/hyperframes"}]
+      },
+      "install": [
+        {"environment": "official skills", "command": "npx skills add heygen-com/hyperframes"},
+        {"environment": "scaffold", "command": "npx hyperframes init my-video --example blank"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "HyperFrames skill suite",
+          "type": "agent skill pack",
+          "trust": "first-party-agent-integration",
+          "availability": "probe-local",
+          "url": "https://github.com/heygen-com/hyperframes",
+          "relative_skill_path": "hyperframes/SKILL.md"
+        }
+      ],
+      "fallback": "Use npx and the official HTML composition contract; use deterministic Docker rendering if the host renderer fails.",
+      "verification": ["Run doctor, lint, mandatory check, keyframe/snapshot inspection, preview, render, and ffprobe."],
+      "licensing": "Apache-2.0. Refresh installed workflow skills before relying on them."
+    },
+    {
+      "id": "openai-image-generation",
+      "name": "OpenAI Image Generation",
+      "aliases": ["imagegen", "gpt image", "generated illustration"],
+      "routes": ["appearance"],
+      "capabilities": ["scenes", "objects", "atmosphere", "illustrative metaphor"],
+      "summary": "First-party generated imagery for appearance—not authoritative labels, charts, or topology.",
+      "trust": "first-party-agent-integration",
+      "official": {
+        "docs": [{"label": "Image generation guide", "url": "https://developers.openai.com/api/docs/guides/image-generation"}],
+        "syntax": [{"label": "Image tool guide", "url": "https://developers.openai.com/api/docs/guides/tools-image-generation"}],
+        "examples": [{"label": "Prompting guide", "url": "https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide"}],
+        "source": [{"label": "OpenAI Python", "url": "https://github.com/openai/openai-python"}]
+      },
+      "install": [
+        {"environment": "built-in tool", "command": "No install when image_gen is available"},
+        {"environment": "Python SDK", "command": "pip install openai"},
+        {"environment": "Node SDK", "command": "npm install openai"}
+      ],
+      "agent_integrations": [
+        {
+          "name": "image_gen",
+          "type": "built-in tool",
+          "trust": "first-party-agent-integration",
+          "availability": "available-in-current-Codex",
+          "url": "https://learn.chatgpt.com/docs/image-generation"
+        }
+      ],
+      "fallback": "Use the official API for batches; use SVG or diagrams for exact semantics.",
+      "verification": ["Retain prompt, model, rights, date, original, and hash; inspect at target size, OCR text, fact-check claims, and add alt text."],
+      "licensing": "Record reference-image rights and identify synthetic media when it could be mistaken for documentary evidence."
+    },
+    {
+      "id": "wikimedia-commons",
+      "name": "Wikimedia Commons",
+      "aliases": ["sourced photography", "public domain image", "creative commons media"],
+      "routes": ["appearance"],
+      "capabilities": ["historical media", "factual photography", "per-file rights metadata"],
+      "summary": "Sourced media with machine-readable per-file licensing and provenance.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Reuse guidance", "url": "https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia/en"}],
+        "syntax": [{"label": "Imageinfo API", "url": "https://www.mediawiki.org/wiki/API:Imageinfo/en"}],
+        "examples": [{"label": "Credit lines", "url": "https://commons.wikimedia.org/wiki/Commons:Credit_line/en"}],
+        "source": [{"label": "Commons API", "url": "https://commons.wikimedia.org/w/api.php"}]
+      },
+      "install": [],
+      "agent_integrations": [],
+      "fallback": "Use the file page and Attribution Generator; choose another asset when rights are ambiguous.",
+      "verification": ["Compare API metadata with file page and revision history; retain permanent URL, retrieval date, and SHA-1."],
+      "licensing": "Varies per asset. Record creator, exact licence/version/link, attribution, ShareAlike duties, modifications, and other rights."
+    },
+    {
+      "id": "unsplash",
+      "name": "Unsplash",
+      "aliases": ["sourced photography", "stock photo"],
+      "routes": ["appearance"],
+      "capabilities": ["contemporary photography", "photo API"],
+      "summary": "Contemporary photography with specific licence and API attribution duties.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "Unsplash API", "url": "https://unsplash.com/documentation"}],
+        "syntax": [{"label": "API guidelines", "url": "https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines"}],
+        "examples": [{"label": "Unsplash licence", "url": "https://unsplash.com/license"}],
+        "source": [{"label": "unsplash-js", "url": "https://github.com/unsplash/unsplash-js"}]
+      },
+      "install": [{"environment": "npm", "command": "npm install unsplash-js"}],
+      "agent_integrations": [],
+      "fallback": "Use Wikimedia Commons when explicit Creative Commons or public-domain licensing is preferable.",
+      "verification": ["Resolve full metadata, verify attribution links and download event, and inspect the final crop."],
+      "licensing": "Record photo ID, photographer, profile/source URLs, retrieval date, transforms, and people/logo/art/property rights. Do not use the discontinued Source service."
+    },
+    {
+      "id": "ffmpeg",
+      "name": "FFmpeg",
+      "aliases": ["ffprobe", "video encoder", "muxer"],
+      "routes": ["production-backend", "change-over-time"],
+      "capabilities": ["encoding", "muxing", "frame extraction", "media inspection"],
+      "summary": "Production backend rather than a visualization route; used to encode and verify media.",
+      "trust": "first-party-tool-docs",
+      "official": {
+        "docs": [{"label": "FFmpeg documentation", "url": "https://ffmpeg.org/documentation.html"}],
+        "syntax": [{"label": "FFmpeg CLI", "url": "https://ffmpeg.org/ffmpeg.html"}],
+        "examples": [{"label": "FFmpeg filters", "url": "https://ffmpeg.org/ffmpeg-filters.html"}],
+        "source": [{"label": "FFmpeg source mirror", "url": "https://github.com/FFmpeg/FFmpeg"}]
+      },
+      "install": [{"environment": "macOS", "command": "brew install ffmpeg"}],
+      "agent_integrations": [],
+      "fallback": "Use the framework-native renderer, a frame sequence, or a deterministic container.",
+      "verification": ["Capture ffmpeg -version configuration and use ffprobe to verify duration, FPS, dimensions, pixel format, codecs, audio, and sample frames."],
+      "licensing": "Enabled GPL or nonfree components change obligations; --enable-nonfree builds are not redistributable."
+    }
+  ]
+}

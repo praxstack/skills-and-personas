@@ -1,0 +1,12 @@
+case=rent-stable learning_rate=0.10
+before w=0.200 b=0.500 predictions=[0.70, 0.90, 1.10] loss=1.270
+gradients dw=-4.800 db=-2.200
+after w=0.680 b=0.720 predictions=[1.40, 2.08, 2.76] loss=0.028
+case=rent-overshoot learning_rate=1.00
+before w=0.200 b=0.500 predictions=[0.70, 0.90, 1.10] loss=1.270
+gradients dw=-4.800 db=-2.200
+after w=5.000 b=2.700 predictions=[7.70, 12.70, 17.70] loss=127.990
+case=delivery-transfer learning_rate=0.10
+before w=1.000 b=1.000 predictions=[2.00, 3.00] loss=12.500
+gradients dw=-11.000 db=-7.000
+after w=2.100 b=1.700 predictions=[3.80, 5.90] loss=1.325

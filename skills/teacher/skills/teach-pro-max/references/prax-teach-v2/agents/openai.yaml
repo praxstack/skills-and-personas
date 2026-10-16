@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prax Teach v2"
+  short_description: "Adaptive tutoring for quick answers and courses"
+  default_prompt: "Use $prax-teach-v2 to teach me this topic at the lightest useful depth."

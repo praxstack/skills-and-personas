@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+"""Render diagram source to SVG, then frame it as an explained figure.
+
+  python3 render.py flow.mmd -o flow.svg                    # just the SVG
+  python3 render.py flow.mmd --page flow.html \\
+      --claim "A cache answers repeat questions without asking the origin" \\
+      --why "The origin is slow and far away; the cache is near and fast." \\
+      --how "Check the cache first; only a miss goes to the origin, and its answer is stored." \\
+      --look-for "the 'no' branch is the only path that reaches the origin"
+
+Formats by extension: .mmd/.mermaid, .d2, .dot/.gv, .puml/.plantuml,
+.vl.json (Vega-Lite), .bpmn, .excalidraw, .svg (already drawn).
+Engines, in order: a local CLI if installed (mmdc, d2, dot, plantuml), then
+Kroki (https://kroki.io, or $KROKI_URL for a self-hosted one). --offline
+forbids the network. The notebook look is the default: Mermaid gets
+look=handDrawn, D2 gets sketch mode, and the page uses the lesson-notebook
+style. --plain turns the hand-drawn look off.
+"""
+
+from __future__ import annotations
+
+import argparse
+import html
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent.parent / "lesson-notebook" / "scripts"))
+import bundle  # noqa: E402
+
+KINDS = {
+    ".mmd": "mermaid", ".mermaid": "mermaid", ".d2": "d2", ".dot": "graphviz", ".gv": "graphviz",
+    ".puml": "plantuml", ".plantuml": "plantuml", ".bpmn": "bpmn", ".excalidraw": "excalidraw", ".svg": "svg",
+}
+
+
+def kind_of(path: Path) -> str:
+    if path.name.endswith(".vl.json"):
+        return "vegalite"
+    k = KINDS.get(path.suffix.lower())
+    if not k:
+        raise SystemExit(f"don't know how to render {path.name}; use one of {', '.join(sorted(KINDS))} or .vl.json")
+    return k
+
+
+def hand_mermaid(src: str) -> str:
+    if "%%{init" in src or "look:" in src:
+        return src
+    return '%%{init: {"look": "handDrawn", "theme": "neutral", "fontFamily": "Kalam, Segoe Print, cursive"}}%%\n' + src
+
+
+def local_render(kind: str, src: str, hand: bool) -> str | None:
+    with tempfile.TemporaryDirectory() as tmp:
+        inp = Path(tmp) / "in"
+        out = Path(tmp) / "out.svg"
+        inp.write_text(src)
+        cmd = None
+        if kind == "graphviz" and shutil.which("dot"):
+            cmd = ["dot", "-Tsvg", str(inp), "-o", str(out)]
+        elif kind == "d2" and shutil.which("d2"):
+            cmd = ["d2", *(["--sketch"] if hand else []), str(inp), str(out)]
+        elif kind == "mermaid" and shutil.which("mmdc"):
+            mmd = inp.with_suffix(".mmd")
+            inp.rename(mmd)
+            cmd = ["mmdc", "-i", str(mmd), "-o", str(out), "-b", "transparent"]
+        elif kind == "plantuml" and shutil.which("plantuml"):
+            res = subprocess.run(["plantuml", "-tsvg", "-pipe"], input=src, capture_output=True, text=True, check=True)
+            return res.stdout
+        if not cmd:
+            return None
+        subprocess.run(cmd, check=True, capture_output=True)
+        return out.read_text()
+
+
+def kroki_render(kind: str, src: str, hand: bool) -> str:
+    base = os.environ.get("KROKI_URL", "https://kroki.io").rstrip("/")
+    url = f"{base}/{kind}/svg" + ("?sketch=true" if kind == "d2" and hand else "")
+    req = urllib.request.Request(url, data=src.encode(), headers={"Content-Type": "text/plain", "User-Agent": "teacher-explain-diagram"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            return resp.read().decode()
+    except urllib.error.HTTPError as e:
+        raise SystemExit(f"kroki said {e.code}: {e.read().decode(errors='replace')[:400]}")
+    except urllib.error.URLError as e:
+        raise SystemExit(f"couldn't reach {base} ({e.reason}). Install a local CLI or set KROKI_URL.")
+
+
+def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str, str]:
+    kind = kind_of(path)
+    src = path.read_text()
+    if kind == "svg":
+        return src, "as drawn"
+    if kind == "mermaid" and hand:
+        src = hand_mermaid(src)
+    svg = local_render(kind, src, hand)
+    if svg:
+        return svg, "local"
+    if offline:
+        raise SystemExit(f"no local renderer for {kind} and --offline is set")
+    return kroki_render(kind, src, hand), "kroki"
+
+
+def clean_svg(svg: str, title: str) -> str:
+    svg = re.sub(r"<\?xml[^>]*>|<!DOCTYPE[^>]*>", "", svg).strip()
+    svg = re.sub(r"<script\b.*?</script>", "", svg, flags=re.S | re.I)
+    svg = re.sub(r"\son\w+=\"[^\"]*\"", "", svg)
+    # Give the figure a text alternative and let it scale with its column.
+    svg = re.sub(r"<svg\b", f'<svg role="img" aria-label="{html.escape(title, quote=True)}"', svg, count=1)
+    svg = re.sub(r'(<svg\b[^>]*?)\s(width|height)="[^"]*"', r"\1", svg, count=2)
+    return svg
+
+
+PAGE_CSS = """
+.xd { max-width: 60rem; margin: 0 auto; padding-block: var(--s-6) var(--s-7); display: grid; gap: var(--s-5); }
+.xd-claim { font-size: var(--text-h2); }
+.xd-figure { margin: 0; padding: var(--s-4); overflow-x: auto; }
+.xd-figure svg { display: block; width: 100%; height: auto; min-width: 32rem; max-width: 100%; }
+@media (max-width: 600px) { .xd-figure svg { min-width: 0; } }
+.xd.is-hand .xd-figure svg text, .xd.is-hand .xd-figure svg .nodeLabel, .xd.is-hand .xd-figure svg .edgeLabel { font-family: var(--font-hand) !important; }
+.xd-grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+.xd-grid section { display: grid; gap: var(--s-2); align-content: start; }
+.xd-look { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); align-items: baseline; }
+.xd-steps { margin: 0; padding-left: 1.4em; display: grid; gap: var(--s-2); }
+.xd-src { color: var(--ink-2); font-size: var(--text-small); }
+"""
+
+
+def page(svg: str, *, claim: str, why: str, how: str, look_for: str, steps: list[str], hand: bool, source: str, fragment: bool) -> str:
+    esc = html.escape
+    parts = [
+        f'<main class="xd{" is-hand" if hand else ""}">',
+        '<p class="nb-label">Explained figure</p>',
+        f'<h1 class="xd-claim">{esc(claim)}</h1>',
+        f'<figure class="xd-figure nb-sheet">{svg}</figure>',
+    ]
+    if look_for:
+        parts.append(f'<p class="xd-look"><span class="nb-label">Look for</span> <span class="nb-hand">{esc(look_for)}</span></p>')
+    cols = []
+    if why:
+        cols.append(f'<section><h2 class="nb-label">Why it works</h2><p>{esc(why)}</p></section>')
+    if how:
+        cols.append(f'<section><h2 class="nb-label">How it works</h2><p>{esc(how)}</p></section>')
+    if steps:
+        items = "".join(f"<li>{esc(s)}</li>" for s in steps)
+        cols.append(f'<section><h2 class="nb-label">Follow it step by step</h2><ol class="xd-steps">{items}</ol></section>')
+    if cols:
+        parts.append(f'<div class="xd-grid">{"".join(cols)}</div>')
+    parts.append(f'<p class="xd-src nb-print">Drawn from {esc(source)}.</p></main>')
+    with tempfile.NamedTemporaryFile("w", suffix=".css", delete=False) as f:
+        f.write(PAGE_CSS)
+        extra = Path(f.name)
+    try:
+        return bundle.page(title=claim[:80], description=why[:200], css=[bundle.NOTEBOOK_CSS, extra], modules=[], body="\n".join(parts), fragment=fragment)
+    finally:
+        extra.unlink()
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("source", type=Path)
+    ap.add_argument("-o", "--out", type=Path, help="write the SVG here")
+    ap.add_argument("--page", type=Path, help="write an explained-figure HTML page here")
+    ap.add_argument("--claim", help="the one sentence the figure proves (required with --page)")
+    ap.add_argument("--why", default="")
+    ap.add_argument("--how", default="")
+    ap.add_argument("--look-for", default="")
+    ap.add_argument("--step", action="append", default=[], help="a numbered walk-through step (repeatable)")
+    ap.add_argument("--plain", action="store_true", help="no hand-drawn look")
+    ap.add_argument("--offline", action="store_true")
+    ap.add_argument("--fragment", action="store_true")
+    a = ap.parse_args()
+    if not a.out and not a.page:
+        ap.error("give -o for the SVG, --page for the explained page, or both")
+    if a.page and not a.claim:
+        ap.error("--page needs --claim: every figure has to say something")
+    svg, engine = render(a.source, hand=not a.plain, offline=a.offline)
+    if a.out:
+        a.out.write_text(svg)
+        print(f"wrote {a.out} ({engine})")
+    if a.page:
+        body = page(clean_svg(svg, a.claim), claim=a.claim, why=a.why, how=a.how, look_for=a.look_for, steps=a.step,
+                    hand=not a.plain, source=f"{a.source.name} via {engine}", fragment=a.fragment)
+        a.page.write_text(body)
+        print(f"wrote {a.page} ({engine})")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

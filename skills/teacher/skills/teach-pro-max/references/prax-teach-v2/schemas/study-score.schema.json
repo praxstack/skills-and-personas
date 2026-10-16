@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prax.local/prax-teach-v2/study-score.schema.json",
+  "title": "Prax Teach blinded study score",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "score_schema_version",
+    "assessment_id",
+    "outcome",
+    "task_id",
+    "rubric_ref",
+    "score",
+    "measured_at",
+    "blinded_scorer_id"
+  ],
+  "properties": {
+    "score_schema_version": {"const": 1},
+    "assessment_id": {"type": "string", "minLength": 1},
+    "outcome": {
+      "enum": ["delayed_retention", "novel_transfer"]
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier of the hidden task that elicited this score."
+    },
+    "rubric_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable external blind-scoring rubric identifier."
+    },
+    "score": {"type": "number", "minimum": 0, "maximum": 1},
+    "measured_at": {"type": "string", "format": "date-time"},
+    "blinded_scorer_id": {"type": "string", "minLength": 1}
+  }
+}

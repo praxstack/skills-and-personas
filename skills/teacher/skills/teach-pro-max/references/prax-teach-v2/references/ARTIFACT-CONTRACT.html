@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="ARTIFACT-CONTRACT.md">
+  <meta name="source-sha256" content="ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Markdown and HTML artifact contract</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./ARTIFACT-CONTRACT.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="markdown-and-html-artifact-contract">Markdown and HTML artifact contract</h1>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#canonical-source">Canonical source</a></li>
+<li><a href="#required-html">Required HTML</a></li>
+<li><a href="#learning-interactions">Learning interactions</a></li>
+<li><a href="#accessibility">Accessibility</a></li>
+<li><a href="#visual-and-source-provenance">Visual and source provenance</a></li>
+<li><a href="#optional-flint-chart-artifacts">Optional Flint chart artifacts</a></li>
+<li><a href="#build-and-parity">Build and parity</a></li>
+<li><a href="#acceptance-checklist">Acceptance checklist</a></li>
+</ol>
+<h2 id="canonical-source">Canonical source</h2>
+<p>Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory.</p>
+<pre><code class="language-text">lessons/0001-index-prefixes.md
+lessons/0001-index-prefixes.html
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Edit Markdown, then regenerate HTML.</li>
+<li>Prefer <code>node &lt;skill-dir&gt;/scripts/render_markdown.mjs --trusted-root &lt;workspace&gt; &lt;source.md&gt;</code> for the bundled self-contained template; set <code>PRAX_MARKED_PATH</code> when <code>marked</code> is not on the normal Node resolution path.</li>
+<li>Never hand-edit generated teaching content in HTML.</li>
+<li>Put any template/CSS/renderer change in versioned source.</li>
+<li>Record the Markdown source path and SHA-256 in machine-readable HTML metadata and visible page provenance.</li>
+<li>Make regeneration deterministic. Use a fixed timestamp such as <code>SOURCE_DATE_EPOCH</code> when byte-for-byte reproducibility matters.</li>
+<li>Fail validation when HTML is missing or the recorded source hash is stale.</li>
+</ul>
+<h2 id="required-html">Required HTML</h2>
+<p>Each standalone page must include:</p>
+<ul>
+<li><code>&lt;!doctype html&gt;</code>, <code>lang</code>, UTF-8 charset, viewport, and a specific title;</li>
+<li>a skip link;</li>
+<li>semantic <code>header</code>, <code>nav</code> when needed, <code>main</code>, and <code>footer</code> landmarks;</li>
+<li>one <code>h1</code>, ordered heading levels, and stable unique anchors;</li>
+<li>readable line length and responsive typography;</li>
+<li>responsive tables or an alternate stacked representation;</li>
+<li>visible focus styles;</li>
+<li>source link, source SHA-256, and generation metadata;</li>
+<li>print styles;</li>
+<li><code>prefers-reduced-motion</code> handling;</li>
+<li>a no-script/static path for essential content;</li>
+<li>no mandatory external CDN, tracking, font, or analytics request.</li>
+</ul>
+<p>Optional enhancements require a separately versioned and tested runtime and must
+not gate access:</p>
+<ul>
+<li>generated table of contents;</li>
+<li>theme control respecting system preference;</li>
+<li>reading-progress indicator;</li>
+<li>copy buttons for code;</li>
+<li>collapsible supporting detail;</li>
+<li>local search across a course.</li>
+</ul>
+<p>Default authoring dialect is GFM plus reviewed static native semantic HTML such
+as <code>&lt;details&gt;</code>, <code>&lt;summary&gt;</code>, figures, and tables. The bundled renderer has no
+answer-grading or persistence runtime; its validator rejects form controls as an
+unsupported interaction claim even when they are labelled. Do not create a
+<code>::: custom-directive</code> syntax, a one-off parser, or a bespoke component framework
+for a single lesson. If a new semantic block becomes reusable, specify and test
+it as a versioned renderer feature before using it in canonical content.</p>
+<h2 id="learning-interactions">Learning interactions</h2>
+<p>The executable boundary is deliberate:</p>
+<ul>
+<li>bundled Markdown-to-HTML provides static content and reviewed native
+disclosure only;</li>
+<li>host chat provides live attempts, answer interpretation, progressive feedback,
+and grading;</li>
+<li>bundled HTML does not grade form answers, maintain stateful components, or
+write learner evidence or persistence;</li>
+<li>compatible richer interaction uses the packaged, separately versioned Prax
+Visual Lab; other rich media require an approved versioned capability,
+independent tests, a complete static fallback, and manual browser review.</li>
+</ul>
+<p>Prax Visual Lab is part of this package, not a second teaching skill. Use it for
+state stepping, parameter manipulation, representation comparison, progressive
+hints, local receipts, and learner-controlled sequences. Use the visualization
+registry and current harness capabilities for specialized diagrams, charts,
+3D, animation, or video.</p>
+<p>Prefer direct reuse of one authoritative executable model across the lesson and
+its visual surfaces. Only when direct reuse is impossible and the duplicated
+calculation is deliberately small may an executable visual prove parity against
+independently specified literal parity vectors. Exercise those vectors through both
+implementations and fail verification when either disagrees. A browser self-check
+may expose the result for inspection, but it is engineering evidence, not
+evidence that a learner understood the model.</p>
+<p>Do not add a scene or trace schema until a real consumer uses it for playback,
+scrubbing, or synchronized state across two outputs. A future video or adapter
+is not a consumer; remove an unused schema instead of preserving speculative
+infrastructure.</p>
+<p>When no approved interaction runtime is present, an "interactive lesson" means
+a live host-chat attempt paired with complete static instructions and data. It
+does not create artifact controls. In that branch, review the prompt and static
+fallback for completeness and answer leakage, but record host-UI keyboard,
+focus, control naming, reduced-motion behavior, and assistive-technology
+behavior as unverified. Do not score absent artifact controls as though they had
+passed browser accessibility checks.</p>
+<p>When that richer runtime is absent, the visual router retains the requested
+learning-job <code>route</code> but sets <code>bundled_renderer_supported</code> to false,
+<code>delivery_route</code> to <code>static</code>, and names <code>requested_medium</code>, <code>delivery_reason</code>, and
+<code>runtime_requirement</code> as
+<code>separately-versioned-tested-and-manually-reviewed</code>. Deliver through host chat or
+the declared static fallback; do not describe the bundled HTML as an interactive
+exercise merely because a learner can open a disclosure.</p>
+<p>The static-fallback and packaged-runtime claims are executable.
+<code>prax_teach.py visual-verify</code>
+must recompute the Markdown/HTML companion, structural shell, local links,
+route/fallback agreement, visible retrieval-attempt prompt, and normalized
+answer-leakage scan over source, HTML, alternative text, captions, hidden
+markup, metadata, and linked textual assets. The content-bound receipt records
+the verifier and renderer hashes. For a Prax Visual Lab route it also reruns the
+packaged runtime verifier. It never upgrades an arbitrary external runtime,
+opaque media, factual correctness, real-browser behavior, or human learning
+evidence. Declared textual answers are machine-scanned;
+geometry, color, emphasis, and other semantic visual leakage remain a required
+human review.</p>
+<p>Use semantic block types with stable IDs:</p>
+<ul>
+<li><code>diagnostic</code>;</li>
+<li><code>explanation</code>;</li>
+<li><code>worked-example</code>;</li>
+<li><code>guided-practice</code>;</li>
+<li><code>hint-ladder</code>;</li>
+<li><code>retrieval-check</code>;</li>
+<li><code>teach-back</code>;</li>
+<li><code>transfer-task</code>;</li>
+<li><code>reflection</code>;</li>
+<li><code>review</code>.</li>
+</ul>
+<p>For checks implemented by a separately approved interaction runtime:</p>
+<ol>
+<li>Show the prompt before the solution.</li>
+<li>Accept a meaningful attempt where practical.</li>
+<li>Reveal hints progressively.</li>
+<li>Explain why the response is correct or incorrect.</li>
+<li>Keep feedback separate from the answer so another attempt remains possible.</li>
+<li>Provide an equivalent static workflow.</li>
+<li>Do not infer or persist mastery from browser interaction alone.</li>
+</ol>
+<p>For live chat, use a turn boundary: end on the check and wait. For a
+self-contained static artifact, a reviewed native <code>&lt;details&gt;</code> disclosure may let
+the learner reveal an answer, but it does not accept, grade, or persist an
+attempt. Ensure the unrevealed answer is not exposed through accessibility text,
+metadata, default state, or a no-script shortcut. When that cannot be achieved
+accessibly, provide the answer key in a clearly separate section and describe
+the artifact as review material rather than measured retrieval.</p>
+<p>Native <code>&lt;details&gt;</code> is acceptable for supporting explanation, but do not put essential instructions behind undiscoverable disclosure. If <code>&lt;details&gt;</code> contains an answer, label it clearly and place it after the attempt prompt.</p>
+<h2 id="accessibility">Accessibility</h2>
+<p>Target <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a> AA and apply <a href="https://www.w3.org/TR/coga-usable/">W3C
+cognitive-accessibility guidance</a> for clear
+language, predictable navigation, focus support, and memory aids. Automated
+landmark, heading, label, security, print, and reduced-motion checks establish an
+engineering structure gate only; they do not establish WCAG conformance or
+field accessibility.</p>
+<p>Before delivering an artifact as <strong>browser-inspected</strong> or <strong>production-ready</strong>,
+inspect representative pages in a real browser with keyboard, zoom/reflow,
+reduced motion, print, scripts disabled, console, and accessibility-tree checks.
+Before calling it <strong>field-accessible</strong>, additionally complete appropriate
+assistive-technology checks and representative disabled and neurodivergent
+learner evaluation. A blocked browser receipt is acceptable for an engineering
+candidate only when it records zero observations, makes no browser or field
+claim, and keeps EG-03 parked.</p>
+<h3 id="structure-and-navigation">Structure and navigation</h3>
+<ul>
+<li>Use landmarks and descriptive headings.</li>
+<li>Keep navigation order consistent.</li>
+<li>Identify the current page in a course.</li>
+<li>Use descriptive link text.</li>
+<li>Provide breadcrumbs or a compact course map for multi-page artifacts.</li>
+</ul>
+<h3 id="keyboard-and-focus">Keyboard and focus</h3>
+<ul>
+<li>All controls operate without a pointer.</li>
+<li>Focus order follows reading order.</li>
+<li>Focus is never hidden or trapped.</li>
+<li>Dynamic updates announce through an appropriate live region when needed.</li>
+<li>Avoid single-key shortcuts unless remappable or active only on focus.</li>
+</ul>
+<h3 id="perception-and-reflow">Perception and reflow</h3>
+<ul>
+<li>Use sufficient contrast and never color alone.</li>
+<li>Allow text resize and 400% zoom without two-dimensional scrolling for ordinary content.</li>
+<li>Do not lock orientation.</li>
+<li>Give media alternatives appropriate to its complexity.</li>
+<li>Keep target sizes and spacing usable.</li>
+</ul>
+<h3 id="cognitive-access">Cognitive access</h3>
+<ul>
+<li>Prefer short sections and explicit transitions.</li>
+<li>State objectives and what to do next.</li>
+<li>Keep labels and instructions near controls.</li>
+<li>Offer examples, memory aids, and a predictable reveal sequence.</li>
+<li>Avoid time limits; when required, make them adjustable.</li>
+<li>Do not animate, autoplay, or change context unexpectedly.</li>
+</ul>
+<h3 id="motion-and-media">Motion and media</h3>
+<ul>
+<li>Respect reduced motion.</li>
+<li>Provide captions, transcript, and static sequence when motion carries meaning.</li>
+<li>Never remove information in reduced-motion mode.</li>
+</ul>
+<p>Automated scanners are only one check. The manual and representative checks
+above are required before making the corresponding browser, accessibility, or
+production claim.</p>
+<h2 id="visual-and-source-provenance">Visual and source provenance</h2>
+<p>For every significant visual or interactive artifact, preserve:</p>
+<pre><code class="language-text">learning objective
+semantic brief or storyboard
+source documents/data/URLs
+authoring or generation tool and version
+editable source path
+render command/environment
+output dimensions
+attribution or license
+last verification date
+known limitations
+</code></pre>
+<p>Place factual citations close to the supported claim or figure. Distinguish sourced fact, inference, and illustrative example.</p>
+<h2 id="optional-flint-chart-artifacts">Optional Flint chart artifacts</h2>
+<p>When a chart is compiled through Flint, preserve a reproducible set beside the canonical lesson:</p>
+<pre><code class="language-text">chart.source.flint.json
+chart.data.json
+chart.semantic-spec.json
+chart.svg
+chart.vega-lite.json
+chart.table.html
+manifest.json
+lesson.md
+lesson.html
+</code></pre>
+<p>The render manifest records the pinned Flint/backend versions, normalized CLI and exact programmatic APIs/options, data/spec/output SHA-256 values, warnings, a reproducible non-null generation time, and explicit known limitations. Prefer build-time SVG; keep interactive preview tooling out of the essential delivery path.</p>
+<p>Embed the chart in a semantic <code>&lt;figure&gt;</code> with a useful caption, short alternative, and nearby complete data table or extended description. Verify units, sample size, uncertainty, missingness, axes, domains, baselines, category retention, and color-independent meaning.</p>
+<p>Fail closed on unsupported templates, render failure, or unresolved warnings about filtering, truncation, semantics, or backend coverage. If Flint is unavailable, preserve the lesson with a semantic table or verified native SVG rather than introducing a mandatory network dependency.</p>
+<p>Read <a href="./FLINT-CHARTS.html">FLINT-CHARTS.md</a> for the authoring and accessibility contract.</p>
+<h2 id="build-and-parity">Build and parity</h2>
+<p>The bundled static renderer must:</p>
+<ul>
+<li>parse the project’s declared Markdown dialect consistently;</li>
+<li>slug headings deterministically and deduplicate anchors;</li>
+<li>reject unsupported tags, attributes, and unsafe URLs with a diagnostic before writing output; the sanitizer remains defense in depth for the explicitly allowed reviewed HTML subset;</li>
+<li>decode named and numeric HTML entities before URL policy, reject sanitizer-only URL-bearing rewrites, and inspect decoded local image paths only beneath the Markdown source directory;</li>
+<li>require an explicit trusted publication root, reject symlink leaves and ancestors, and revalidate the same directory generation immediately before and after atomic publication;</li>
+<li>preserve code exactly;</li>
+<li>sanitize or block dangerous URLs and event attributes;</li>
+<li>resolve relative links from the source document;</li>
+<li>embed or localize required assets for offline use;</li>
+<li>record the exact renderer and template contract versions in machine-readable metadata and visible provenance;</li>
+<li>produce a source hash from the exact Markdown bytes.</li>
+</ul>
+<p>Use the bundled renderer for the default dialect. A custom renderer/runtime is
+justified only when a required learner action cannot be expressed with static
+content, native disclosure, or host chat; version that boundary, record the
+decision, preserve a static fallback, test it independently, and complete manual
+browser review before delivery. Do not pass custom-JavaScript or form-grading
+artifacts through the bundled static validator.</p>
+<p>The validator must check:</p>
+<ul>
+<li>every <code>.md</code> has same-basename <code>.html</code>;</li>
+<li>every HTML companion names the source and matching SHA-256;</li>
+<li>no placeholder/TODO text remains in production artifacts;</li>
+<li>local links and anchors resolve;</li>
+<li>required metadata and landmarks exist;</li>
+<li>heading levels do not skip unexpectedly;</li>
+<li>duplicate IDs are absent;</li>
+<li>external dependencies are declared and intentional;</li>
+<li>Flint-derived assets, when present, have local data/spec/output files, matching recorded hashes, reviewed warnings, and a table/text alternative;</li>
+<li>learner-state JSON/JSONL remains separate from lesson content.</li>
+<li>default-renderer pages contain no form controls, custom answer grading,
+stateful components, or persistence hooks.</li>
+</ul>
+<p>When an HTML renderer cannot safely preserve a construct, fail with a clear diagnostic. Do not silently omit it.</p>
+<h2 id="acceptance-checklist">Acceptance checklist</h2>
+<h3 id="content">Content</h3>
+<ul>
+<li>One observable outcome.</li>
+<li>Correct, versioned, nearby sources.</li>
+<li>Attempt before answer when retrieval is intended.</li>
+<li>Explained worked example where useful.</li>
+<li>Progressive hints.</li>
+<li>Specific feedback and next attempt.</li>
+<li>Unseen transfer task.</li>
+<li>Honest evidence/uncertainty statement.</li>
+<li>Next retrieval tied to the retention horizon.</li>
+</ul>
+<h3 id="html">HTML</h3>
+<ul>
+<li>Markdown is canonical and hash matches.</li>
+<li>Semantic structure and stable anchors.</li>
+<li>Keyboard, focus, zoom/reflow, and reduced motion pass.</li>
+<li>Print and no-script paths remain useful.</li>
+<li>Visuals have editable sources, alternatives, and provenance.</li>
+<li>No answer leakage from HTML, CSS, scripts, media, or accessibility text.</li>
+<li>No mandatory external network dependency.</li>
+</ul>
+<h3 id="delivery">Delivery</h3>
+<ul>
+<li>Regenerate all companions.</li>
+<li>Run <code>node &lt;skill-dir&gt;/scripts/render_markdown.mjs --check --trusted-root &lt;workspace&gt; &lt;source.md&gt;</code> for each delivered lesson/reference.</li>
+<li>Run the workspace validator.</li>
+<li>Inspect representative pages in a real browser before claiming
+browser-inspected or production delivery.</li>
+<li>Complete appropriate assistive-technology and representative learner
+checks before claiming field accessibility; otherwise keep EG-03 parked.</li>
+<li>Report what was actually tested, the browser-receipt status, and every
+remaining claim limitation.</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./ARTIFACT-CONTRACT.md">ARTIFACT-CONTRACT.md</a><br>
+    SHA-256: <code>ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

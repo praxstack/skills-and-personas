@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="spec.md">
+  <meta name="source-sha256" content="6a957a6424d2811323de46ed018586be9c5fe331089fcb4bd1d3dc495a045b8f">
+  <meta name="generated-at" content="2026-08-17T09:15:41.509Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>spec</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./spec.md">Markdown source</a></div></header>
+  <main id="main-content"><h2 id="purpose">Purpose</h2>
+<p>Supply three reusable, cross-domain lessons that make representation, state change, and concurrency behavior visible without embedding a model or relying on decorative animation.</p>
+<h2 id="added-requirements">ADDED Requirements</h2>
+<h3 id="requirement-floating-point-lesson-shall-expose-representation-error">Requirement: Floating-point lesson SHALL expose representation error</h3>
+<p>The lesson SHALL let a learner predict, step through, compare decimal intent with binary representation, explain the observed result, and solve an unseen transfer item.</p>
+<h4 id="scenario-floating-point-prediction-and-transfer">Scenario: Floating-point prediction and transfer</h4>
+<ul>
+<li><strong>WHEN</strong> a learner predicts the result of <code>0.1 + 0.2</code>, steps through the representation, and answers a fresh decimal-boundary case</li>
+<li><strong>THEN</strong> the lesson records prediction, observed result, explanation, hint use, and transfer result separately</li>
+</ul>
+<h3 id="requirement-rubiks-lesson-shall-preserve-legal-moves">Requirement: Rubik's lesson SHALL preserve legal moves</h3>
+<p>The lesson SHALL model legal cube moves with an inspectable state representation, synchronize notation and spatial/static views, and reject illegal or malformed moves.</p>
+<h4 id="scenario-legal-move-sequence">Scenario: Legal move sequence</h4>
+<ul>
+<li><strong>WHEN</strong> a learner applies a valid move sequence and requests a comparison view</li>
+<li><strong>THEN</strong> all views represent the same state and the cube invariants remain valid</li>
+</ul>
+<h3 id="requirement-lost-update-lesson-shall-expose-interleaving-causality">Requirement: Lost-update lesson SHALL expose interleaving causality</h3>
+<p>The lesson SHALL let a learner interleave two operations, compare the timeline with the final state, identify the lost update, and transfer the reasoning to an unseen schedule.</p>
+<h4 id="scenario-concurrent-interleaving">Scenario: Concurrent interleaving</h4>
+<ul>
+<li><strong>WHEN</strong> two read-modify-write operations are interleaved without synchronization</li>
+<li><strong>THEN</strong> the lesson shows the causal steps that lose an update and preserves an unassisted or scaffolded result label</li>
+</ul>
+<h3 id="requirement-labs-shall-share-runtime-components">Requirement: Labs SHALL share runtime components</h3>
+<p>The three lessons SHALL use the same public state-stepper, parameter-lab, compare-views, ordered hint engine, and receipt panel contracts rather than lesson-specific forks of core behavior.</p>
+<h4 id="scenario-shared-component-contract">Scenario: Shared component contract</h4>
+<ul>
+<li><strong>WHEN</strong> the lesson manifest is inspected</li>
+<li><strong>THEN</strong> each lab references the shared component versions and no lab supplies a private replacement for their core transitions</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./spec.md">spec.md</a><br>
+    SHA-256: <code>6a957a6424d2811323de46ed018586be9c5fe331089fcb4bd1d3dc495a045b8f</code><br>
+    Generated: 2026-08-17T09:15:41.509Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

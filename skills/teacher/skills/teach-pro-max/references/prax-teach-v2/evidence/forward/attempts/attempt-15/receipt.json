@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "rubric_sha256": "05dfe63533966d99f0e987cf6258281f93840d66fac1679f56347c8351020bce",
+  "run_sha256": "dacb3e798d40613819b6e669c72c9eb27d405f3070cc2a0301755879e1319721",
+  "reviewer": {
+    "task": "/root/forward15_score",
+    "identity": "Codex independent hard-gate scorer for fresh aggregate attempt 15",
+    "independent_from_runner": true
+  },
+  "hash_verification": {
+    "status": "passed",
+    "all_bound_hashes_match": true,
+    "rubric_count": 1,
+    "run_count": 1,
+    "source_count": 7,
+    "context_count": 1,
+    "output_count": 8,
+    "execution_count": 2,
+    "checked_count": 20
+  },
+  "fresh_context_verification": {
+    "case_ids_match_rubric": true,
+    "fresh_task_count": 8,
+    "fresh_task_ids_unique": true,
+    "fork_turns": "none",
+    "one_child_task_per_case": true,
+    "coordinator_did_not_supply_prior_case_outputs": true,
+    "transcript_turn_counts_match": true,
+    "practical_order": "predict -> run -> inspect -> modify -> debug -> explain -> transfer",
+    "practical_order_verified": true
+  },
+  "execution_verification": {
+    "fixture_stdout_byte_exact": true,
+    "quoted_command_count": 2,
+    "quoted_commands_replayed": true,
+    "quoted_stdout_blocks_replayed": 3,
+    "quoted_stdout_blocks_byte_exact": true
+  },
+  "cases": [
+    {
+      "case_id": "quick-bounded-explanation",
+      "output": "evidence/forward/outputs/quick-bounded-explanation.md",
+      "status": "passed",
+      "required": [
+        {"item": "route is quick", "verdict": "pass", "present": true, "evidence": "The exact prompt routes to quick with persistence false."},
+        {"item": "answers directly with a correct left-prefix example", "verdict": "pass", "present": true, "evidence": "It explains (a, b) ordering, gives a correct WHERE a = 42 example, and correctly contrasts b-only filtering."},
+        {"item": "creates no files or learner state", "verdict": "pass", "present": true, "evidence": "The response is only an explanation and introduces no workspace, file, learner state, or persistence operation."},
+        {"item": "offers at most one optional check", "verdict": "pass", "present": true, "evidence": "No check is offered, satisfying the at-most-one limit."}
+      ],
+      "forbidden": [
+        {"item": "course setup", "verdict": "pass", "present": false, "evidence": "No course, syllabus, workspace, or schedule setup appears."},
+        {"item": "mandatory Socratic intake", "verdict": "pass", "present": false, "evidence": "The response answers directly and asks no intake question."},
+        {"item": "durable mastery claim", "verdict": "pass", "present": false, "evidence": "No learner-performance, retention, or mastery claim appears."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "answer-now-override",
+      "output": "evidence/forward/outputs/answer-now-override.md",
+      "status": "passed",
+      "required": [
+        {"item": "stops questioning immediately", "verdict": "pass", "present": true, "evidence": "The exact prompt routes to answer_now and the response begins with the direct definition."},
+        {"item": "gives the direct answer", "verdict": "pass", "present": true, "evidence": "It defines a lost update and gives a concrete balance example."},
+        {"item": "makes any check optional", "verdict": "pass", "present": true, "evidence": "No check is imposed."},
+        {"item": "creates no persistent state", "verdict": "pass", "present": true, "evidence": "No workspace, file, learner record, or persistence action appears."}
+      ],
+      "forbidden": [
+        {"item": "withholding the answer", "verdict": "pass", "present": false, "evidence": "The answer is given immediately."},
+        {"item": "forcing an attempt", "verdict": "pass", "present": false, "evidence": "No prediction, retrieval, or required attempt is requested."},
+        {"item": "creating a workspace", "verdict": "pass", "present": false, "evidence": "No workspace or filesystem location is created or proposed."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+      "status": "passed",
+      "required": [
+        {"item": "one observable outcome", "verdict": "pass", "present": true, "evidence": "Tutor turn 1 defines one target: identify the conflicting read/write and justify the lost-update diagnosis."},
+        {"item": "prediction or attempt before explanation", "verdict": "pass", "present": true, "evidence": "The initial trace ends with a learner diagnosis attempt; the rule and correction appear only afterward."},
+        {"item": "worked example", "verdict": "pass", "present": true, "evidence": "Tutor turn 3 works through the counter trace, final value, stale write, and diagnostic rule."},
+        {"item": "progressive hints", "verdict": "pass", "present": true, "evidence": "After the wrong first attempt, tutor turn 2 gives the next-needed single hint, requests revision, and gives no stronger support before the revised learner turn."},
+        {"item": "unseen transfer prompt whose answer is not exposed", "verdict": "pass", "present": true, "evidence": "Tutor turn 3 presents a new stock trace; the learner answers in turn 4 before tutor feedback reveals the diagnosis."},
+        {"item": "evidence and uncertainty boundary", "verdict": "pass", "present": true, "evidence": "The close distinguishes one-hint transfer evidence from durable mastery and names live-code repair as untested."},
+        {"item": "next retrieval tied to a horizon", "verdict": "pass", "present": true, "evidence": "It states a one-week provisional horizon and schedules a fresh trace in 3 days."}
+      ],
+      "forbidden": [
+        {"item": "answer leakage in prompt, metadata, accessibility text, or default-open detail", "verdict": "pass", "present": false, "evidence": "The transfer answer is absent before learner turn 4, and the plain Markdown has no answer-bearing metadata, accessibility text, or default-open detail."},
+        {"item": "mastery claim from completion", "verdict": "pass", "present": false, "evidence": "The close says the evidence is not yet durable mastery and names remaining uncertainty."},
+        {"item": "silent learner-state persistence", "verdict": "pass", "present": false, "evidence": "The close explicitly says no files or learner state were changed."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "output": "evidence/forward/outputs/course-consent-boundary.md",
+      "status": "passed",
+      "required": [
+        {"item": "route is course", "verdict": "pass", "present": true, "evidence": "The exact six-week prompt routes to course with consent_required persistence."},
+        {"item": "states goal, evidence, and review scope", "verdict": "pass", "present": true, "evidence": "It states the independent performance outcome, specifies diagnostic/measured-fix/validation evidence, and lays out six weeks with a 30-day retention horizon."},
+        {"item": "names the resolved storage location before writing", "verdict": "pass", "present": true, "evidence": "It names `/Users/prax/Documents/Codex/2026-08-03/hey/state/`, says it is not yet created, and only then asks about persistence."},
+        {"item": "asks explicit persistence consent", "verdict": "pass", "present": true, "evidence": "It explicitly asks, 'Shall I persist this course?' after describing the stored data and location."},
+        {"item": "offers an ephemeral path if consent is declined", "verdict": "pass", "present": true, "evidence": "It says the course remains ephemeral and creates no files until the learner answers."}
+      ],
+      "forbidden": [
+        {"item": "creating files before consent", "verdict": "pass", "present": false, "evidence": "The response says the location is not yet created and no files will be created until consent."},
+        {"item": "inferred personality or ability traits", "verdict": "pass", "present": false, "evidence": "No personality or ability trait is inferred."},
+        {"item": "claiming the initial syllabus is final before diagnosis", "verdict": "pass", "present": false, "evidence": "It says the examples will adapt to the database and starts with a prerequisite diagnostic after consent."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "output": "evidence/forward/outputs/resume-hinted-evidence.md",
+      "status": "passed",
+      "required": [
+        {"item": "treats the response as scaffolded evidence", "verdict": "pass", "present": true, "evidence": "It preserves correct=true with hint_level=3 strongest_hint and status scaffolded."},
+        {"item": "does not label the concept durable", "verdict": "pass", "present": true, "evidence": "It explicitly says the evidence is not yet durable because no later unassisted evidence exists."},
+        {"item": "uses a new unassisted retrieval or discrimination attempt", "verdict": "pass", "present": true, "evidence": "It asks a fresh no-hint left-prefix decision for an index on (a, b, c)."},
+        {"item": "keeps the prior evidence inspectable", "verdict": "pass", "present": true, "evidence": "It preserves the supplied response, correctness, hint level, and scaffolded status, and states that no filesystem workspace was read."}
+      ],
+      "forbidden": [
+        {"item": "mastery from one response", "verdict": "pass", "present": false, "evidence": "It requests new evidence and retains scaffolded status."},
+        {"item": "discarding the hint level", "verdict": "pass", "present": false, "evidence": "hint_level=3 and strongest_hint are preserved."},
+        {"item": "inventing missing learner history", "verdict": "pass", "present": false, "evidence": "It says no filesystem workspace was read and uses only the supplied snapshot."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "visual-none",
+      "output": "evidence/forward/outputs/visual-none.md",
+      "status": "passed",
+      "required": [
+        {"item": "uses prose or a tiny text example", "verdict": "pass", "present": true, "evidence": "It gives a concise prose definition and a tiny repeated light-off example."},
+        {"item": "keeps the route at none unless a visual has a concrete learning job", "verdict": "pass", "present": true, "evidence": "The exact visual job is served by prose and the tiny example, with no visual artifact."}
+      ],
+      "forbidden": [
+        {"item": "decorative image", "verdict": "pass", "present": false, "evidence": "No image appears."},
+        {"item": "chart", "verdict": "pass", "present": false, "evidence": "No chart appears."},
+        {"item": "interactive widget", "verdict": "pass", "present": false, "evidence": "No controls, script, form, or widget appears."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "visual-essential-static",
+      "output": "evidence/forward/outputs/visual-essential-static.md",
+      "status": "passed",
+      "required": [
+        {"item": "uses a labeled static state table or equivalent", "verdict": "pass", "present": true, "evidence": "It uses a labeled fixed-width text table with step, both threads, and shared-counter columns."},
+        {"item": "preserves exact read/compute/write states", "verdict": "pass", "present": true, "evidence": "The six rows preserve both reads of 0, both local computations of 1, and both writes with final shared counter 1."},
+        {"item": "has a text alternative", "verdict": "pass", "present": true, "evidence": "The surrounding prose states the overwrite, actual final 1, and expected final 2 in text."},
+        {"item": "works without scripts and in print", "verdict": "pass", "present": true, "evidence": "It is plain Markdown prose and a text code block with no script or runtime dependency."}
+      ],
+      "forbidden": [
+        {"item": "unnecessary animation", "verdict": "pass", "present": false, "evidence": "No animation or motion appears."},
+        {"item": "generated image as technical authority", "verdict": "pass", "present": false, "evidence": "The exact relationship is expressed as text, not a generated image."},
+        {"item": "color-only meaning", "verdict": "pass", "present": false, "evidence": "Meaning uses labels, order, and numeric values with no color encoding."}
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "practical-executable-learning",
+      "output": "evidence/forward/outputs/practical-executable-learning.md",
+      "status": "passed",
+      "required": [
+        {"item": "route is lesson", "verdict": "pass", "present": true, "evidence": "The exact practical prompt routes to lesson with persistence false."},
+        {"item": "uses the sequence predict, run, inspect, modify, debug, explain, transfer", "verdict": "pass", "present": true, "evidence": "The transcript order is verified as prediction, stable run and inspection, learning-rate modification, overshoot debugging, learner teach-back explanation, then new-data transfer; the explanation precedes the transfer prompt and attempt."},
+        {"item": "provides a runnable smallest model plus exact command and execution output bound to the run", "verdict": "pass", "present": true, "evidence": "The two quoted commands and all three quoted stdout blocks replay exactly against the bound fixture; the fixture replay also matches its stored stdout byte-for-byte."},
+        {"item": "uses an authoritative model or independently specified literal cross-runtime parity vectors", "verdict": "pass", "present": true, "evidence": "The single bound Python fixture is the executable authority for the two-parameter model and all reported values; no duplicate model implementation is used."},
+        {"item": "keeps test, output, and browser evidence separate from evidence of learner understanding", "verdict": "pass", "present": true, "evidence": "Observed stdout is labeled as run output, while learner evidence is separately the predictions, diagnosis, teach-back, and transfer; the close says delayed recall remains untested and makes no browser claim."},
+        {"item": "provides a complete keyboard-usable static path when a richer runtime is unavailable", "verdict": "pass", "present": true, "evidence": "The plain Markdown transcript provides every action, value, command, output, and instruction as text without custom controls or a richer runtime."}
+      ],
+      "forbidden": [
+        {"item": "creates a second teaching skill", "verdict": "pass", "present": false, "evidence": "The practical loop remains inside one bounded lesson and creates no skill."},
+        {"item": "claims mastery because code or tests pass", "verdict": "pass", "present": false, "evidence": "The close says delayed recall is untested and makes no mastery claim based on the run."},
+        {"item": "duplicates model logic without parity evidence", "verdict": "pass", "present": false, "evidence": "Only the single bound executable model is used; no unverified duplicate appears."},
+        {"item": "requires an optional dependency without a triggered learning need", "verdict": "pass", "present": false, "evidence": "The fixture uses Python standard-library functionality and no optional dependency."},
+        {"item": "takes over or completes the learner's project", "verdict": "pass", "present": false, "evidence": "It uses a small fixture, asks the learner to predict/change/debug/explain, and says no files or learner state changed."}
+      ],
+      "remediation": []
+    }
+  ],
+  "overall": {
+    "case_count": 8,
+    "pass_count": 8,
+    "fail_count": 0,
+    "minimum_passes": 8,
+    "status": "passed"
+  },
+  "hard_gate_passed": true,
+  "status": "passed",
+  "remediation": [],
+  "supports_candidate_superiority": false,
+  "supports_human_learning_claim": false,
+  "claim_boundary": "This score supports only public fresh-context forward behavior for attempt 15 on the exact bound bytes. It is not held-out benchmark, candidate-superiority, browser-inspection, field-accessibility, or human-learning/learner-outcome evidence."
+}

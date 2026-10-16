@@ -1,0 +1,22 @@
+{
+  "tool": "theatre",
+  "versions": {
+    "@theatre/core": "0.7.2",
+    "esbuild": "0.28.2",
+    "inter-ui": "4.1.1",
+    "jetbrains-mono": "1.0.6",
+    "@fontsource/bangers": "5.3.0",
+    "playwright-core": "1.56.1 (template devDependency)",
+    "chromium": "1194",
+    "node": ">=18 (tested on 22.22.0)",
+    "optional @theatre/studio (laptop, hand-tweaking)": "0.7.2",
+    "optional three (3D variant)": "0.186.1"
+  },
+  "template": "assets/template",
+  "timing": "source/timing.js",
+  "hints": {
+    "voice": "test -d source/src || { mkdir -p source && cp -r {SKILL}/assets/template/. source/; }; test -d source/node_modules || (cd source && npm ci --no-audit --no-fund); python3 {S}/voice.py --project . --emit source/timing.js",
+    "visuals": "Edit source/src/film/world.js (what is on screen) and source/src/film/shots.js (when: every keyframe keyed to line ids; guide: {SKILL}/references/theatre-guide.md). Then: node {S}/theatre_look.mjs   (npm run build + coverage report + one still per chapter and per line + contact sheets, all in stills/). Fix every line listed under 'NOTHING changes'. Open stills/sheet-*.png and every still with Read, fix, re-run. Check text size and contrast: python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-shoot, re-run), then: python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "(cd source && npm run build) && node {S}/capture.mjs --page source/index.html --bench 3   (fps + ETA), then in the background: mkdir -p build && node {S}/capture.mjs --page source/index.html --out build/silent.mp4 --workers 2 --max-minutes 100 > build/render.log 2>&1   (up to --workers 4 on an unshared machine). Poll: tail -n 3 build/render.log. Exit 3 = budget reached: run the same command again (finished segments are kept) until the log says 'wrote'. Then: python3 {S}/vstate.py advance"
+  }
+}

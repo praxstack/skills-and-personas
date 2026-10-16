@@ -1,0 +1,97 @@
+{
+  "banks": {
+    "ood": {
+      "item_count": 1,
+      "sha256": "4b023048a60657b6ef2a008cdc73a1be22e9a4688c53dea672aa209da14593f1"
+    },
+    "test": {
+      "item_count": 2,
+      "sha256": "08903e860b662928cce0a883b07a847c1fe02637914c3497cd591a43bae2a951"
+    },
+    "train": {
+      "item_count": 2,
+      "sha256": "74259b27c77fb0ec85b35ee480c920d0d3b8e3de72a635bc664213c7a642e995"
+    },
+    "valid_seen": {
+      "item_count": 1,
+      "sha256": "4af35c0e5781160c8e93dd04747abbc1ac857856659215bddfb241db128e0277"
+    },
+    "valid_unseen": {
+      "item_count": 1,
+      "sha256": "e4869978321be656ee3806acb6cc61d21b2ce54e293b369505932c4e6ba16cae"
+    }
+  },
+  "condition_sha256": "7eb8bddbab572a3d20e79879c202fe0701ce3c9a71e1b0ddfecf402121eb27f9",
+  "dependency": {
+    "commit": "e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+    "name": "SkillOpt",
+    "version": "0.2.0"
+  },
+  "eligible_as_held_out_staging_input": true,
+  "eligible_for_held_out_claims": true,
+  "eligible_for_staging": false,
+  "evidence_level": "dependency-exercised-isolated",
+  "isolation": {
+    "held_out_nonexposure": "measured_per_target_invocation",
+    "host_filesystem_control": "default_deny_measured",
+    "measurement_count": 2,
+    "mode": "builtin_macos_sandbox_exec",
+    "network_control": "default_deny_measured",
+    "policy_template_sha256": "7a0404b35d4ff137a0f9aff41b6e2cc8b7935d4e075498bf2d133bc97450d40a",
+    "probe_receipt_sha256": [
+      "3544cd18fb85b3aab62a47b0b07eec7027288f64cfee4524dfda9a58186bab09",
+      "52364a9f13c370f424c6a0e78a4e651a20473b7166b65dc6ea1e059a56ab999e"
+    ],
+    "probe_source_sha256": "6dcd7a1d2c2e9735746f20224e07a94f23e9e9dca4b28c0dfcee4b87a4ac6036",
+    "profile_sha256": [
+      "681d5fbdc3f5628bae482ac75650c5de1375898b31e38e46a69d4cf29d4922d0",
+      "e4d1527980b2882ed583dfeea2fee9a621a51182d3015de514b7813d3c62689a"
+    ],
+    "python_process_executable_sha256": {
+      "/Users/prax/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/bin/python3.12": "7b05d803bbc1bbfc81644af4faf2b88f0a37b8de96b9f42c1e08033e2cd0848a"
+    },
+    "sandbox_executable_sha256": "e3d7a792c58a5d3783d2f7274c82d70062393830d8cb1ded713ca554a470bd2f"
+  },
+  "optimization_gain_claimed": false,
+  "package": {
+    "base_file_count": 132,
+    "base_manifest_sha256": "48d83c3351acb9fb917f6f9b6123c2b1f8687b0045ce36f0faf07208517c4d43",
+    "integrity_verified_after_each_target": true,
+    "proposal_file_count": 132,
+    "proposal_manifest_sha256": "48d83c3351acb9fb917f6f9b6123c2b1f8687b0045ce36f0faf07208517c4d43",
+    "proposal_skill_sha256": "affa83e81b1d68d39ab131c25d8c1ad6542a3dd30a6662cdfe2e7352fd6ed771",
+    "read_only_checked_after_each_target": true,
+    "runtime_directories_excluded": [
+      ".git",
+      ".mypy_cache",
+      ".pytest_cache",
+      ".ruff_cache",
+      ".venv",
+      "__pycache__",
+      "node_modules"
+    ]
+  },
+  "result_count": 2,
+  "runner": {
+    "command_sha256": "a115d35b71d8a198f095ef4a8ec6c2e6176451d0d5262aabfcaff874203fe656",
+    "referenced_files": {
+      "/Users/prax/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/bin/python3.12": "7b05d803bbc1bbfc81644af4faf2b88f0a37b8de96b9f42c1e08033e2cd0848a",
+      "/Users/prax/Documents/Codex/2026-08-03/hey/outputs/prax-teach-v2/fixtures/skillopt/fixture_target.py": "341497e3f6510dcbbf5eca01968ccfe6298c7d8f1b6d43387729b741c81ce98a"
+    },
+    "timeout_seconds": 30
+  },
+  "schema_version": 2,
+  "score": {
+    "hard_pass_count": 1,
+    "hard_pass_rate": 0.5,
+    "soft_mean_after_hard_gates": 0.5
+  },
+  "splits_exercised": [
+    "test"
+  ],
+  "staging_blockers": [
+    "strict_score_receipt",
+    "repeated_trials",
+    "cross_model_confirmation"
+  ]
+}

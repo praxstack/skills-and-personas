@@ -1,0 +1,11 @@
+{
+  "candidate_read_blocked": true,
+  "eligible_for_held_out_claims": false,
+  "evaluation_scope": "containment_mechanism_fixture",
+  "hidden_bank_read_blocked": true,
+  "network_blocked": true,
+  "outside_write_blocked": true,
+  "source_target_read_blocked": true,
+  "supports_candidate_quality_claim": false,
+  "supports_human_learning_claim": false
+}

@@ -1,0 +1,20 @@
+{
+  "tool": "motion",
+  "versions": {
+    "gsap": "3.15.0",
+    "inter-ui": "4.1.1",
+    "@fontsource-variable/fraunces": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "playwright-core": "1.56.1",
+    "node": ">=18 (tested on 22)"
+  },
+  "template": "assets/template",
+  "timing": "source/timing.js",
+  "rich_captions": true,
+  "hints": {
+    "script": "Write script.json (references/script-format.md): chapters; per line id, chapter, cap, say; think after a question; 8 to 14 lines. Data clip: write script.template.json with {{set.col:agg}} where numbers go, then cp -r {SKILL}/assets/template source && (cd source && npm ci --no-audit --no-fund && npm run vendor), put the CSVs in source/data/ and name them under \"data\" in source/film.json, and run python3 {S}/motion_fill.py --project . (it writes script.json). Then: python3 {S}/vstate.py advance",
+    "voice": "If source/ is missing: cp -r {SKILL}/assets/template source && (cd source && npm ci --no-audit --no-fund && npm run vendor). Then: python3 {S}/voice.py --project . --emit source/timing.js",
+    "visuals": "Write source/film.json (shots of blocks keyed to line ids; guide: {SKILL}/references/motion-guide.md; starters: {SKILL}/assets/examples/question-short and data-clip). Lint until 'ok': node {S}/motion_check.mjs --page source/index.html . Stills (W H = the script's meta width and height): node {S}/capture.mjs --page source/index.html --width W --height H --prime 0.25 --stills chapters --timing timing.json --stills-dir stills && node {S}/capture.mjs --page source/index.html --width W --height H --prime 0.25 --stills lines --timing timing.json --stills-dir stills , plus the cue times motion_check prints. Open every still with Read, fix, re-shoot. Check text size and contrast: python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-shoot, re-run), then: python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "W H FPS = the frame vstate.py status shows. node {S}/capture.mjs --page source/index.html --width W --height H --fps FPS --prime 0.25 --bench 3   (fps + ETA), then in the background: mkdir -p build && node {S}/capture.mjs --page source/index.html --width W --height H --fps FPS --out build/silent.mp4 --prime 0.25 --workers 4 --max-minutes 100 > build/render.log 2>&1  (use --workers 2 --segment 10 on a shared machine). Poll: tail -n 3 build/render.log. Exit 3 = budget reached: run the same command again (finished segments are kept) until the log says 'wrote'. Then: python3 {S}/vstate.py advance"
+  }
+}

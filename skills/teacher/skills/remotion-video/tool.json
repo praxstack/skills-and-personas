@@ -1,0 +1,22 @@
+{
+  "tool": "remotion",
+  "versions": {
+    "remotion": "4.0.533",
+    "@remotion/cli": "4.0.533",
+    "@remotion/renderer": "4.0.533",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/instrument-serif": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/bangers": "5.3.0",
+    "node": "22.22.0",
+    "chromium_headless_shell": "1194",
+    "ffmpeg": "6.1.1"
+  },
+  "hints": {
+    "voice": "test -d source || cp -r {SKILL}/assets/template source;  test -d source/node_modules || (cd source && npm ci --no-audit --no-fund);  python3 {S}/voice.py --project . --emit source/src/timing.json",
+    "visuals": "Edit source/src/scenes/ only (data.ts, director.ts, one file per chapter; keep src/kit and src/lib; every frame from line ids: f('p3'), fPhrase(...), fThink(...); see {SKILL}/references/remotion-guide.md), then: node {S}/render_remotion.mjs --project . --stills lines   (plus --stills <t1,t2,...> in seconds for the busiest moments). Open every still with Read, fix, re-render stills. Check text size and contrast: python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-shoot, re-run), then: python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "node {S}/render_remotion.mjs --project . --bench 3 --concurrency N   (N = cores up to 4, 2 on a shared machine)  then:  mkdir -p build && nohup node {S}/render_remotion.mjs --project . --concurrency N --max-minutes 100 > build/render.log 2>&1 &   Poll build/render.log (tail -3) until it prints 'silent render: build/silent.mp4'. If it printed 'Stopping cleanly' (exit 3) or the job died, run the same command again (finished segments are skipped). Then python3 {S}/vstate.py advance"
+  }
+}

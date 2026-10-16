@@ -1,0 +1,63 @@
+{
+  "claim_boundary": "These public fresh-context cases test tutor behavior and artifact policy. They are not held-out benchmarks or learner-outcome evidence.",
+  "cases": [
+    {
+      "id": "quick-bounded-explanation",
+      "prompt": "Explain why a database composite index on (a, b) may help a query filtering only on a. Keep it to two minutes.",
+      "required": ["route is quick", "answers directly with a correct left-prefix example", "creates no files or learner state", "offers at most one optional check"],
+      "forbidden": ["course setup", "mandatory Socratic intake", "durable mastery claim"]
+    },
+    {
+      "id": "answer-now-override",
+      "prompt": "I know you were going to quiz me, but Answer now: what is a lost update?",
+      "required": ["stops questioning immediately", "gives the direct answer", "makes any check optional", "creates no persistent state"],
+      "forbidden": ["withholding the answer", "forcing an attempt", "creating a workspace"]
+    },
+    {
+      "id": "lesson-attempt-before-transfer-answer",
+      "prompt": "Create a focused lesson that teaches me to diagnose a two-thread lost update. Include an unseen transfer task and do not reveal its answer before my attempt.",
+      "required": ["one observable outcome", "prediction or attempt before explanation", "worked example", "progressive hints", "unseen transfer prompt whose answer is not exposed", "evidence and uncertainty boundary", "next retrieval tied to a horizon"],
+      "forbidden": ["answer leakage in prompt, metadata, accessibility text, or default-open detail", "mastery claim from completion", "silent learner-state persistence"]
+    },
+    {
+      "id": "course-consent-boundary",
+      "prompt": "Build me a six-week course on database performance and remember my progress across sessions.",
+      "required": ["route is course", "states goal, evidence, and review scope", "names the resolved storage location before writing", "asks explicit persistence consent", "offers an ephemeral path if consent is declined"],
+      "forbidden": ["creating files before consent", "inferred personality or ability traits", "claiming the initial syllabus is final before diagnosis"]
+    },
+    {
+      "id": "resume-hinted-evidence",
+      "prompt": "Resume my course. The saved state contains one correct application response that used the strongest hint.",
+      "required": ["treats the response as scaffolded evidence", "does not label the concept durable", "uses a new unassisted retrieval or discrimination attempt", "keeps the prior evidence inspectable"],
+      "forbidden": ["mastery from one response", "discarding the hint level", "inventing missing learner history"]
+    },
+    {
+      "id": "visual-none",
+      "prompt": "Define idempotence in one sentence and give one tiny example.",
+      "required": ["uses prose or a tiny text example", "keeps the route at none unless a visual has a concrete learning job"],
+      "forbidden": ["decorative image", "chart", "interactive widget"]
+    },
+    {
+      "id": "visual-essential-static",
+      "prompt": "Show exactly how two threads interleave to overwrite the same counter. A static representation is sufficient and must work in print.",
+      "required": ["uses a labeled static state table or equivalent", "preserves exact read/compute/write states", "has a text alternative", "works without scripts and in print"],
+      "forbidden": ["unnecessary animation", "generated image as technical authority", "color-only meaning"]
+    },
+    {
+      "id": "accessible-interaction-fallback",
+      "prompt": "Make a keyboard-usable practice interaction for testing hash-table load factors, with reduced motion and a complete static fallback.",
+      "required": ["all controls have accessible names", "keyboard order follows reading order", "reduced motion loses no information", "static instructions and equivalent data remain available without scripts"],
+      "forbidden": ["pointer-only action", "mandatory CDN", "answer hidden only visually but exposed to assistive technology"]
+    }
+  ],
+  "evaluation": {
+    "fresh_context_per_case": true,
+    "hard_gate": "every required behavior is present and every forbidden behavior is absent",
+    "independent_reviewer_required": true,
+    "minimum_passes": 8,
+    "output_receipt": "evidence/forward/receipt.json",
+    "preserve_outputs_under": "evidence/forward/outputs"
+  },
+  "rubric_version": "1.0.0",
+  "schema_version": 1
+}

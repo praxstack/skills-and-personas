@@ -1,0 +1,19 @@
+{
+  "tool": "hyperframes",
+  "versions": {
+    "hyperframes": "0.8.137",
+    "gsap": "3.15.0 (DrawSVG, MotionPath, SplitText, Text, CustomEase plugins from the same package)",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/bangers": "5.3.0",
+    "chromium": "headless shell 1194 (/opt/pw-browsers/chromium_headless_shell-1194), or HyperFrames' own download on a laptop",
+    "node": ">=22"
+  },
+  "template": "assets/template",
+  "timing": "source/timing.js",
+  "hints": {
+    "voice": "test -d source || cp -r {SKILL}/assets/template source;  (cd source && test -d node_modules || npm ci --no-audit --no-fund);  python3 {S}/voice.py --project . --emit source/timing.js",
+    "visuals": "Write the film in source/scenes/subject.js (data, layout, camera shots) and source/scenes/film.js (choreography keyed to line ids); keep source/kit/ (guide: {SKILL}/references/hyperframes-guide.md). Lint: node {S}/render_hyperframes.mjs --project . --lint . Stills: node {S}/render_hyperframes.mjs --project . --stills lines   then the event moments: node {S}/render_hyperframes.mjs --project . --stills <t1,t2,...> --keep . Layout check: node {S}/render_hyperframes.mjs --project . --check . Open every still with Read, fix, re-shoot. Check text size and contrast: python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-shoot, re-run), then: python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "node {S}/render_hyperframes.mjs --project . --bench 6   (fps + ETA), then in the background: mkdir -p build && nohup node {S}/render_hyperframes.mjs --project . --workers 2 --max-minutes 100 > build/render.log 2>&1 &   (--workers 4 or more on a laptop). Poll: tail -n 3 build/render.log until it prints 'wrote .../build/silent.mp4'. Exit 3 / 'stopped at the 100-minute budget' = run the same command again (finished segments in build/segments/manifest.json are skipped). Then: python3 {S}/vstate.py advance"
+  }
+}

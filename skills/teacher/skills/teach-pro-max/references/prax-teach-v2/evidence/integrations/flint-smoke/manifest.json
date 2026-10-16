@@ -1,0 +1,97 @@
+{
+  "artifacts": {
+    "chart.data.json": "ea2efa14a29c73719ecb611376eeae83a4f4ab6940463770eb20e1ffb60b53f3",
+    "chart.semantic-spec.json": "f463fb239948d1322f50d0d04f8f2fc791473569b98fa4799d6bfe15526473e3",
+    "chart.source.flint.json": "a750f68b725912a4927ca020834982a79980e280018ac0f1f9310231a4b53f96",
+    "chart.svg": "655f19683ca0a956c9e81ff2dd4d4d84036d2756dc5426b72601d1e9ac810702",
+    "chart.table.html": "b549f6bd0b35c95a124e5c642559dfa07c1d1b27681c7f6c985ed826e146af17",
+    "chart.vega-lite.json": "3344fab4300ff9100ae42d026be2e97c3abc89607c6a046b0b8dcaf626207360"
+  },
+  "backend": "vegalite",
+  "chart_correctness_claimed": false,
+  "compiler": {
+    "package": "flint-chart",
+    "version": "0.4.1"
+  },
+  "compiler_exercise_note": "This receipt proves that the pinned compiler and renderer executed; it does not establish chart correctness or learner-outcome evidence.",
+  "editable_inputs": {
+    "data": {
+      "file": "chart.data.json",
+      "sha256": "ea2efa14a29c73719ecb611376eeae83a4f4ab6940463770eb20e1ffb60b53f3"
+    },
+    "semantic_spec": {
+      "file": "chart.semantic-spec.json",
+      "sha256": "f463fb239948d1322f50d0d04f8f2fc791473569b98fa4799d6bfe15526473e3"
+    },
+    "source": {
+      "file": "chart.source.flint.json",
+      "sha256": "a750f68b725912a4927ca020834982a79980e280018ac0f1f9310231a4b53f96"
+    }
+  },
+  "evidence_level": "dependency-exercised",
+  "file_references": false,
+  "format": "svg",
+  "generated_at": "2026-08-04T12:00:00.000Z",
+  "input": {
+    "bytes": 1228,
+    "raw_sha256": "e018815687e857acfb8fb14205c672e0557f90bebfa47710336a6613338c1af8"
+  },
+  "invocation": {
+    "api": [
+      {
+        "export": "validateInput",
+        "module": "flint-chart-mcp/render",
+        "options": {
+          "disableFileReference": true,
+          "maxDataRows": 100000
+        }
+      },
+      {
+        "export": "assembleForBackend",
+        "module": "flint-chart-mcp/render",
+        "options": {
+          "disableFileReference": true
+        }
+      },
+      {
+        "export": "renderChart",
+        "module": "flint-chart-mcp/render",
+        "options": {
+          "background": "#ffffff",
+          "disableFileReference": true,
+          "format": "svg",
+          "scale": 1
+        }
+      }
+    ],
+    "cli": [
+      "node",
+      "integrations/flint/render_flint.mjs",
+      "--input",
+      "<input>",
+      "--output-dir",
+      "<output-dir>",
+      "--backend",
+      "vegalite",
+      "--trusted-root",
+      "<trusted-root>"
+    ]
+  },
+  "known_limitations": [
+    "Pinned Flint execution does not establish chart correctness, accessibility, or learner outcomes.",
+    "Network isolation was not externally traced; input policy rejection is not network-isolation evidence.",
+    "The generated SVG still requires a reviewed accessible lesson wrapper; the table is a data alternative, not an assistive-technology conformance claim."
+  ],
+  "network_isolation_verified": false,
+  "network_references_accepted": false,
+  "output_sha256": "655f19683ca0a956c9e81ff2dd4d4d84036d2756dc5426b72601d1e9ac810702",
+  "renderer": {
+    "package": "flint-chart-mcp",
+    "version": "0.4.1"
+  },
+  "schema_version": "1.1",
+  "source_date_epoch": "1785844800",
+  "status": "rendered",
+  "synthetic_fixture": true,
+  "warnings": []
+}

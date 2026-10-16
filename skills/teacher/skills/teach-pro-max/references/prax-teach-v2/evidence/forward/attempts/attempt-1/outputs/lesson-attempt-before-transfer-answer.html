@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="0408229f3795dfcfa802dcf6d374e40abb4246c6fd54c7738ded7cc61ca76c40">
+  <meta name="generated-at" content="2026-08-19T09:21:18.717Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lesson attempt before transfer answer</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lesson-attempt-before-transfer-answer">Lesson attempt before transfer answer</h1>
+<h2 id="goal">Goal</h2>
+<p>Given a two-thread schedule, you’ll be able to prove whether a lost update occurred, identify the overwritten update, and choose the correct synchronization boundary.</p>
+<p>A source line such as <code>x = x + 5</code> is usually three operations:</p>
+<ol>
+<li>Read <code>x</code> into a thread-local value.</li>
+<li>Compute the new value.</li>
+<li>Write it back.</li>
+</ol>
+<p>A lost update occurs when both threads compute from state that excludes the other thread’s change, and a later write replaces an earlier update.</p>
+<h3 id="worked-example">Worked example</h3>
+<p>Initially, <code>x = 10</code>.</p>
+<ul>
+<li>Thread A performs <code>x = x + 5</code>.</li>
+<li>Thread B performs <code>x = x - 2</code>.</li>
+</ul>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th align="right">Step</th>
+<th>Operation</th>
+<th align="right">A’s local value</th>
+<th align="right">B’s local value</th>
+<th align="right">Shared <code>x</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0</td>
+<td>Initial state</td>
+<td align="right">—</td>
+<td align="right">—</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td align="right">1</td>
+<td>A reads <code>x</code></td>
+<td align="right">10</td>
+<td align="right">—</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>B reads <code>x</code></td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>A computes <code>10 + 5</code></td>
+<td align="right">15</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>A writes</td>
+<td align="right">15</td>
+<td align="right">10</td>
+<td align="right">15</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>B computes <code>10 - 2</code></td>
+<td align="right">15</td>
+<td align="right">8</td>
+<td align="right">15</td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td>B writes</td>
+<td align="right">15</td>
+<td align="right">8</td>
+<td align="right">8</td>
+</tr>
+</tbody></table></div>
+<p>Both serial orders would finish at <code>13</code>. Instead, B writes a value derived from the stale <code>10</code>, so A’s <code>+5</code> disappears.</p>
+<p>Use this diagnostic:</p>
+<ul>
+<li>Expand each update into read, compute, and write.</li>
+<li>Trace shared and thread-local state in schedule order.</li>
+<li>Check whether each write incorporates the other completed update.</li>
+<li>Compare the result with valid serial executions.</li>
+<li>Identify the precise write that overwrote an effect.</li>
+<li>Protect the entire read–compute–write operation—not merely the final write—with a mutex, atomic read-modify-write, or versioned compare-and-swap retry.</li>
+</ul>
+<p>If you get stuck, reply <code>Hint 1</code>. You can also say <strong>Answer now</strong>.</p>
+<h2 id="unseen-transfer-task">Unseen transfer task</h2>
+<p>Initially:</p>
+<pre><code class="language-text">profile = { theme: "light", language: "en" }
+</code></pre>
+<p>Each thread reads a private copy and later replaces the entire shared record:</p>
+<pre><code class="language-text">1. A reads profile into a
+2. B reads profile into b
+3. A sets a.theme = "dark"
+4. B sets b.language = "fr"
+5. A writes profile = a
+6. B writes profile = b
+</code></pre>
+<p>Trace the shared record after each write, decide whether this is a lost update, identify the lost logical change, and propose the smallest safe synchronization or update strategy. What is your diagnosis?</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>0408229f3795dfcfa802dcf6d374e40abb4246c6fd54c7738ded7cc61ca76c40</code><br>
+    Generated: 2026-08-19T09:21:18.717Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

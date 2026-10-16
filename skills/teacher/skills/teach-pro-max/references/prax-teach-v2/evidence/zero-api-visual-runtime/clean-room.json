@@ -1,0 +1,8 @@
+{
+  "schema_version":"prax.clean-room-verification/v1",
+  "status":"verified-on-clean-candidate-head",
+  "method":"Run the full project verifier on the committed candidate bytes with fixed SOURCE_DATE_EPOCH and no untracked implementation files.",
+  "command":"PRAX_DISABLE_MACOS_SANDBOX_TESTS=1 python3 scripts/verify.py --level full --skillopt-source /Users/prax/Documents/Codex/2026-08-03/hey/work/dependencies/SkillOpt-v0.2.0 --json",
+  "result":"passed",
+  "limitation":"The host sandbox prevents nested sandbox-exec; the trusted macOS sandbox E2E is explicitly unverified and must be rerun outside this nested environment."
+}

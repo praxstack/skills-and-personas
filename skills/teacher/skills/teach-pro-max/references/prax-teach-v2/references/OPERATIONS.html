@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="OPERATIONS.md">
+  <meta name="source-sha256" content="53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Operations and evidence guide</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./OPERATIONS.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="operations-and-evidence-guide">Operations and evidence guide</h1>
+<p>This page is the executable companion to the teaching policy. It separates a
+capability being documented, implemented, exercised against a real dependency,
+evaluated, and scientifically supported.</p>
+<h2 id="runtime-profiles">Runtime profiles</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Install</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Teaching kernel</td>
+<td>Python standard library</td>
+<td>Mode and visual routing; consented learner evidence; correction, export, and physical deletion</td>
+</tr>
+<tr>
+<td>Durable review</td>
+<td><code>uv sync --frozen --python 3.12</code></td>
+<td>The teaching kernel plus the pinned real <code>fsrs==6.3.1</code> scheduler</td>
+</tr>
+<tr>
+<td>Artifact authoring</td>
+<td><code>npm ci</code> with Node 22</td>
+<td>Sanitized deterministic Markdown-to-HTML rendering</td>
+</tr>
+<tr>
+<td>Flint chart build</td>
+<td><code>npm --prefix integrations/flint ci</code></td>
+<td>Optional pinned Flint SVG/spec/table compilation after the visual router chooses a chart</td>
+</tr>
+<tr>
+<td>SkillOpt research</td>
+<td>Exact SkillOpt 0.2.0 source commit plus its isolated environment</td>
+<td>Offline proposal generation; never automatic adoption</td>
+</tr>
+</tbody></table></div>
+<p>Quick mode has no persistence or optional-integration dependency. Missing FSRS,
+Flint, or SkillOpt must fail clearly at that boundary; it must not degrade into
+an unlabeled substitute.</p>
+<h2 id="route-before-creating-state">Route before creating state</h2>
+<pre><code class="language-bash">python3 scripts/prax_teach.py route \
+  --request "Explain database indexes in two minutes"
+
+python3 scripts/prax_teach.py visual-route \
+  --job "Compare a distribution across twelve groups" \
+  --exact-quantitative
+</code></pre>
+<p>The first command selects <code>quick</code>, <code>lesson</code>, or <code>course</code>. The second selects
+<code>none</code>, <code>static</code>, <code>interactive</code>, or <code>motion</code>. A result that says Flint is
+eligible never says Flint is required.</p>
+<p>After rendering a durable retrieval or visual artifact, verify the delivered
+bytes rather than treating the route decision as evidence:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py visual-verify \
+  --route-output /absolute/path/to/route.json \
+  --source /absolute/path/to/lesson.md \
+  --html /absolute/path/to/lesson.html \
+  --forbidden-answer-file /absolute/path/to/forbidden-answer.json \
+  --receipt /absolute/path/to/visual-receipt.json
+</code></pre>
+<p>Use <code>--check</code> to recompute a frozen receipt. The command scans the exact source,
+generated HTML, accessibility text, hidden/default surfaces, and linked textual
+assets; checks structural/static-fallback integrity; and fails closed on
+opaque, animated, remote, executable, stale, or answer-leaking delivery. For a
+Prax Visual Lab route it reruns the packaged runtime verifier and also checks
+the complete static fallback. Arbitrary external interactive, animation, or
+video runtimes remain unverified until their own bounded inspection path runs.</p>
+<p>The automated leakage check is limited to declared textual answers. It records
+semantic visual leakage through geometry, color, emphasis, or layout as
+<code>manual_review_required</code> rather than pretending to evaluate meaning.</p>
+<h2 id="create-a-learner-workspace-only-after-consent">Create a learner workspace only after consent</h2>
+<p>Explain the stored scope, location, purpose, and inspect/correct/export/delete
+controls before invoking <code>init</code>.</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py init /absolute/path/to/learning-workspace \
+  --learner-id learner-local-1 \
+  --goal "Apply index-selection principles to unseen workloads" \
+  --horizon-days 30 \
+  --consent \
+  --timestamp 2026-08-04T10:00:00Z
+</code></pre>
+<p>Without <code>--consent</code>, the command exits before creating the workspace or its
+parents. The initialized directory and state files use private permissions. A
+consented initialization creates the stable <code>lessons/</code>, <code>reference/</code>,
+<code>assets/</code>, and <code>state/</code> structure; the first three remain empty until reviewed
+course material is added. Every resumed operation rechecks the workspace and
+state directory permissions, required state-file type and permissions, and
+every caller-controlled path ancestor without following symlinks. It fails
+closed instead of silently changing permissions. Required state and lock files
+must also have one filesystem link, so a hardlink cannot alias another
+learner's bytes. A parent-generation lock plus post-lock inode checks prevents
+a blocked operation from being redirected when a workspace pathname is reused.
+During the complete locked operation, held workspace and state-directory
+descriptors bind reads and atomic replacements to the validated generation;
+renaming an ancestor and replacing it with a symlink therefore fails closed
+instead of redirecting a learner-state write into another workspace.</p>
+<h2 id="record-and-rebuild-evidence">Record and rebuild evidence</h2>
+<p>Register the exact reviewed source version before any observation refers to it.
+Repeat <code>--supports</code> for each claim, concept, or item ID the source supports:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py source-add /absolute/path/to/learning-workspace \
+  --source-id postgres-index-docs \
+  --title "PostgreSQL multicolumn indexes" \
+  --url https://www.postgresql.org/docs/18/indexes-multicolumn.html \
+  --author-or-publisher "PostgreSQL Global Development Group" \
+  --source-type official-doc \
+  --retrieved-at 2026-08-04 \
+  --version-or-date PostgreSQL-18-2026-08-04 \
+  --license-or-use-note "Official documentation; cite and link." \
+  --supports composite-index-prefix \
+  --limitations "Database-specific behavior still requires its own documentation."
+</code></pre>
+<p>This writes the canonical, sorted <code>state/sources.json</code> registry. The curated
+<code>RESOURCES.md</code> is its human-readable companion, not a substitute for the
+machine record. A material source change gets a new <code>version_or_date</code>; existing
+records and observations retain their old binding.</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py observe /absolute/path/to/learning-workspace \
+  --response "The range column should follow the equality prefix." \
+  --session session-1 \
+  --concept composite-index-prefix \
+  --dimension application \
+  --score 0.9 \
+  --hint-level 0 \
+  --item application-1 \
+  --item-version v1 \
+  --content-version sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+  --source-id postgres-index-docs \
+  --source-version PostgreSQL-18-2026-08-04 \
+  --timestamp 2026-08-04T10:05:00Z
+
+python3 scripts/prax_teach.py rebuild /absolute/path/to/learning-workspace
+python3 scripts/prax_teach.py show /absolute/path/to/learning-workspace
+</code></pre>
+<p>Use <code>--response</code> for the exact inline learner answer or <code>--response-ref</code> for an
+exact consented artifact/transcript reference; the options are mutually
+exclusive and one is required. Observation records also preserve a six-field
+rubric, optional exact learner-authored note, and separately labeled optional
+agent inference. Every evidence append or rebuild first persists a
+content-bound state transaction covering <code>sessions.jsonl</code>, <code>concepts.json</code>, and
+<code>misconceptions.json</code>. A later locked operation completes an interrupted
+transaction only when each current file matches its recorded preimage or exact
+target; divergent bytes fail closed. Recovery runs before consent withdrawal,
+so an interruption cannot leave projections unreadable after persistence is
+disabled. Append also rejects an unknown source ID or version before changing
+the log or projections.</p>
+<p><code>sessions.jsonl</code> is append-only evidence. <code>concepts.json</code> and
+<code>misconceptions.json</code> are deterministic projections. A durable mastery state
+requires multiple dimensions, an unassisted higher-order response, and later
+session retrieval; one response cannot produce it.</p>
+<p>The current concept projection contains observed concepts only and emits
+<code>emerging</code>, <code>developing</code>, <code>provisional</code>, or <code>durable</code>. No record means no active
+evidence; it is not a stored <code>unobserved</code> state. Corrections and explicit
+version invalidations retain their compensating events but remove superseded
+observations from the current projection rather than emitting a <code>stale</code> state.
+The misconception projection emits only <code>suspected</code> for one active supporting
+observation and <code>supported</code> for two or more. It supports auditable learner
+rejection, but it does not yet infer repair, resolution, or recurrence states.</p>
+<p>Use <code>correct</code> for a compensating correction. Invalidate one exact content
+version, optionally combined with an item or source selector, without
+invalidating newer content that uses the same source:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py invalidate-version \
+  /absolute/path/to/learning-workspace \
+  --content-version sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+  --reason "This content version was withdrawn" \
+  --timestamp 2026-08-04T10:10:00Z
+
+python3 scripts/prax_teach.py invalidate-version \
+  /absolute/path/to/learning-workspace \
+  --source-id postgres-index-docs \
+  --source-version PostgreSQL-18-2026-08-04 \
+  --reason "This exact documentation snapshot was withdrawn" \
+  --timestamp 2026-08-04T10:10:00Z
+</code></pre>
+<p>The command appends a compensating invalidation event containing the exact
+matching observation IDs and rebuilds the current projections. It fails when
+the digest is malformed, no observation matches, or every match was
+already invalidated. A local <code>--item-version</code> such as <code>v1</code> is never treated as
+globally unique: it is accepted only together with <code>--item</code>. Correction,
+invalidation, and misconception-rejection timestamps must be no earlier than
+every observation they compensate; replay enforces the same causal invariant.
+Likewise, <code>--source-id</code> requires <code>--source-version</code>; a source ID alone is never
+a cross-version invalidation selector.
+An observation item ID remains bound to one concept, objective, content ID, and
+evidence dimension; each item-ID/version pair remains bound to one exact
+content digest. A changed content digest therefore requires a new item version.</p>
+<p>Export the inspectable learner workspace to an external path:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py export \
+  /absolute/path/to/learning-workspace \
+  /absolute/path/to/learner-export.zip \
+  --timestamp 2026-08-04T10:20:00Z
+</code></pre>
+<p>Export validates the complete source library and every event reference before
+writing the ZIP. It includes <code>RESOURCES.md</code>, <code>state/sources.json</code>, and a
+<code>manifest.json</code> provenance section binding the source-library digest, every
+active source-record digest, and the active event IDs supported by that record.
+An unresolved active source reference fails closed and leaves no export.</p>
+<p>Preview scoped physical deletion before confirming it:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py delete \
+  /absolute/path/to/learning-workspace \
+  --concept composite-index-prefix \
+  --dry-run
+
+python3 scripts/prax_teach.py delete \
+  /absolute/path/to/learning-workspace \
+  --concept composite-index-prefix \
+  --confirm
+
+python3 scripts/prax_teach.py delete \
+  /absolute/path/to/learning-workspace \
+  --item index-prefix-transfer-2 \
+  --dry-run
+</code></pre>
+<p>The preview reports selected event IDs, dependent correction, rejection, or
+invalidation events that must also be removed, partially affected invalidation
+events that must be rewritten, matching review records that must be scrubbed,
+and the remaining event/review counts. Confirmation first persists a private,
+content-bound deletion journal containing the complete retained target state,
+then replaces both logs and both projections. If interruption occurs between
+replacements, the next locked state operation idempotently completes the same
+transaction even after persistence consent was withdrawn; the journal is
+removed only after every target byte is verified. Confirmation returns the same
+plan when the input state has not changed. A preview is not a reservation: if
+another process changes the workspace before confirmation, compare the newly
+returned plan instead of assuming the earlier preview still applies. A concept
+selector can remove review-only state even when no observation exists. An exact
+item selector removes only that item's evidence and reviews. A control event
+without a concept is removed only when an earlier retained review no longer
+owns that item. Scheduler event version 2 binds every review to its exact
+observation event, session, concept, content/item/source versions, and
+tutor/model/prompt version. Event- and session-scoped deletion therefore match
+reviews by causal provenance instead of guessing. Removing a linked review also
+removes every later review/control suffix for that item, because those FSRS card
+transitions depend on the removed transition. The preview exposes the exact
+<code>review_match_basis</code> and all causally dependent rows before confirmation.</p>
+<h2 id="withdraw-persistence-or-delete-all-state">Withdraw persistence or delete all state</h2>
+<p>Withdraw consent for future persistent learning writes while retaining the
+existing data long enough to inspect, export, or delete it:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py disable-persistence \
+  /absolute/path/to/learning-workspace \
+  --reason "Learner withdrew consent" \
+  --timestamp 2026-08-04T10:15:00Z
+</code></pre>
+<p>This one learner-authorized control write sets
+<code>consent.persistent_state: false</code> and records <code>disabled_at</code> and
+<code>disable_reason</code>. It is not deletion. Subsequent observation, correction,
+misconception-rejection, invalidation, projection-rebuild, review, and scheduler
+mutation commands fail because active persistence consent is absent. <code>show</code>,
+<code>export</code>, scoped <code>delete</code>, and <code>delete --all-state</code> remain available. The
+current CLI has no in-place persistence re-enable operation. Export validates
+and derives projections in memory; it does not rebuild or replace any learner
+workspace file after withdrawal.</p>
+<p>Preview and then remove the one exact validated workspace:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py delete \
+  /absolute/path/to/learning-workspace \
+  --all-state \
+  --dry-run
+
+python3 scripts/prax_teach.py delete \
+  /absolute/path/to/learning-workspace \
+  --all-state \
+  --confirm
+</code></pre>
+<p>The preview names the resolved workspace and returns file/directory counts plus
+a SHA-256 fingerprint of the complete relative-entry, mode, size, and content
+inventory without echoing potentially sensitive filenames. Confirmation
+recomputes the plan, writes a private parent-side tombstone bound to the exact
+original path, deterministic quarantine path, workspace device/inode, and
+plan, then renames that workspace into the quarantine and uses the platform's
+symlink-safe recursive deletion. The tombstone is removed only after the
+quarantine is gone. A retry under the parent-generation lock therefore finishes
+the same confirmed deletion after interruption—even when recursive removal
+already deleted part of the tree—without restoring partial learner state to the
+live path. A symlink or non-regular entry anywhere in the original tree blocks
+confirmation. An unchanged workspace produces an identical preview and
+confirmation plan; as with scoped deletion, compare the returned plan if the
+tree could have changed between commands.</p>
+<h2 id="schedule-review-with-the-real-fsrs-adapter">Schedule review with the real FSRS adapter</h2>
+<p>Use the locked environment so the scheduler cannot silently fall back:</p>
+<pre><code class="language-bash">.venv/bin/python scripts/prax_teach.py review /absolute/path/to/learning-workspace \
+  --observation-event evt-3769e2077bb08a470f12c9a13e4f1d48
+
+.venv/bin/python scripts/prax_teach.py due /absolute/path/to/learning-workspace \
+  --at 2026-08-12T12:00:00Z
+</code></pre>
+<p>The command accepts no caller-authored score, hint, dimension, item, source, or
+time. Under the learner-state lock it resolves one active, unused observation,
+verifies its content/source/model provenance, derives the performance inputs,
+and atomically appends the version-2 scheduler transition through the same
+content-bound state journal. The review log records the observation snapshot,
+derived rating and reason, package/algorithm version, FSRS card transition,
+review log, and due time. The observation remains concept-mastery evidence;
+scheduling is a separate derived domain with an immutable causal link.</p>
+<p>The learner can <code>snooze</code>, <code>reschedule</code>, <code>disable-reviews</code>, <code>enable-reviews</code>, or
+export the queue. While review scheduling is disabled, a new <code>review</code> is
+rejected without changing the log; learner control actions remain available,
+and <code>enable-reviews</code> explicitly restores scheduling. Per-item review time is
+monotonic, one observation can schedule at most once, and an item remains bound
+to one concept, objective, content, dimension, source set, and model/prompt
+version throughout its review history. Card IDs are deterministically derived
+from the item ID, card fields and timestamps are range-checked, and replay
+invokes the pinned FSRS version again to reject a content-bound but forged
+transition.</p>
+<p>Scheduler event version 1 is rejected. It lacks the observation and provenance
+needed for a truthful automatic migration, so the candidate does not fabricate
+those links. Back up an affected learner workspace and regenerate review state
+only from still-valid observations.</p>
+<p>The executable rating derivation is ordered and explicit:</p>
+<ul>
+<li>score below <code>0.8</code> becomes <code>Again</code>;</li>
+<li>otherwise, hint level <code>3</code> or higher becomes <code>Hard</code>;</li>
+<li>otherwise, an unassisted application, discrimination, or transfer response
+scoring at least <code>0.9</code> becomes <code>Easy</code>;</li>
+<li>every remaining score of at least <code>0.8</code> becomes <code>Good</code>.</li>
+</ul>
+<p>Thus a score from <code>0.6</code> through <code>0.79</code> is not treated as successful review
+performance. These thresholds are the tested adapter policy, not a claim that
+they are optimal for real learners.</p>
+<p>The adapter derives a horizon-specific FSRS configuration from the consented
+goal: target retention is stricter for near-term horizons and relaxes only
+within a bounded policy for longer horizons; <code>maximum_interval</code> is capped at
+the learner's horizon and fuzzing is disabled. Every review receipt records the
+policy version, requested horizon, desired retention and cap. This is an
+engineering scheduling policy, not evidence that the chosen schedule is
+optimal for real learners.</p>
+<h2 id="render-and-validate-instructional-artifacts">Render and validate instructional artifacts</h2>
+<pre><code class="language-bash">SOURCE_DATE_EPOCH=1785844800 node scripts/render_markdown.mjs \
+  --trusted-root /absolute/path/to/workspace \
+  /absolute/path/to/workspace/lesson.md
+SOURCE_DATE_EPOCH=1785844800 node scripts/render_markdown.mjs \
+  --check \
+  --trusted-root /absolute/path/to/workspace \
+  /absolute/path/to/workspace/lesson.md
+python3 scripts/validate_workspace.py /absolute/path/to/workspace
+</code></pre>
+<p>Markdown is canonical. Rendering uses pinned Marked plus an allowlist sanitizer,
+then writes atomically. <code>--check</code> compares the entire expected byte stream, not
+only the embedded source hash.</p>
+<h2 id="compile-an-optional-flint-chart">Compile an optional Flint chart</h2>
+<pre><code class="language-bash">SOURCE_DATE_EPOCH=1785844800 node integrations/flint/render_flint.mjs \
+  --input fixtures/flint/retrieval-by-session.flint.json \
+  --output-dir /absolute/path/to/chart-output \
+  --backend vegalite \
+  --trusted-root /absolute/path/to
+</code></pre>
+<p>The adapter accepts reviewed inline rows only, disables file references,
+rejects unresolved compiler or renderer warnings, and emits the original Flint
+source, separately editable prepared data and semantic spec, SVG, backend spec,
+semantic table, hashes, versions, normalized invocation/API, explicit known
+limitations, and an explicit no-chart-correctness claim. <code>SOURCE_DATE_EPOCH</code> is
+required so <code>generated_at</code> is non-null and reproducible.
+The durable manifest reports network isolation as unverified unless an external
+trace actually measured it; it never infers isolation from the absence of a URL.</p>
+<h2 id="export-reviewed-learning-items">Export reviewed learning items</h2>
+<p>One reviewed item model can produce deterministic formats:</p>
+<pre><code class="language-bash">python3 scripts/export_learning.py export anki items.json exports/items.txt
+python3 scripts/export_learning.py export qti items.json exports/qti.zip
+python3 scripts/export_learning.py export liascript items.json exports/lesson.md
+python3 scripts/export_learning.py export h5p items.json exports/activity.h5p
+</code></pre>
+<p>Anki output is official text-import format, not a falsely labeled <code>.apkg</code>. QTI
+and H5P outputs are bounded ZIP packages. The H5P export is a thin content
+package and still requires a compatible H5P host runtime.</p>
+<h2 id="prepare-skillopt-without-touching-the-candidate">Prepare SkillOpt without touching the candidate</h2>
+<pre><code class="language-bash">python3 integrations/skillopt/prepare_source.py \
+  --source /absolute/path/to/SkillOpt-at-e4ea6a6 \
+  --destination /absolute/path/to/new-prepared-clone
+</code></pre>
+<p>The command verifies the exact source commit, copies only tracked Git blobs into
+a new clone without Git or cache state, adds the adapter, and registers it in
+both <code>scripts/train.py</code> and <code>scripts/eval_only.py</code>. Public train and
+<code>valid_seen</code> selection data form the optimizer-visible interface. External
+<code>valid_unseen</code>, test, and OOD banks stay outside the target package and are run
+only through the package-owned measured macOS sandbox executor (or a separately
+trusted equivalent).</p>
+<p>After a real run, <code>stage_proposal.py</code> validates an exact score structure and
+byte bindings, then writes a separate quarantined <code>SKILL.md</code>. The supplied score
+JSON remains self-attested: the quarantine receipt is explicitly ineligible for
+evidence or adoption until the proposal is independently rerun through the
+trusted isolated evaluator with repeated trials and cross-model gates. The
+helper never edits the base skill and never adopts a proposal.</p>
+<h2 id="run-agent-and-learner-study-machinery">Run agent and learner-study machinery</h2>
+<p><code>scripts/evaluate.py</code> plans randomized paired runs, executes each arm in a fresh
+read-only package clone and workspace, and applies hard gates before soft score.
+The trusted macOS executor uses a default-deny <code>sandbox-exec</code> profile and
+measured adversarial probes for hidden/candidate/source reads, outside writes,
+and network access. Claim-bearing runners must use the package-selected Xcode
+Python with exact <code>-I -S</code> isolation flags. The evaluator hashes the complete
+root-owned Python framework closure before and after all runs and binds that
+digest into every result, receipt, manifest, and report; an undeclared local
+import therefore hard-fails instead of silently expanding the runner. A real
+provider requires a separate trusted broker outside the target sandbox. Bundled
+fixtures and the durable sandbox smoke remain public containment-mechanism
+tests, never candidate-quality or held-out proof.</p>
+<p>The <code>run</code> command writes <code>results.jsonl</code>, per-run receipts, <code>report.json</code>, and
+<code>manifest.json</code> as one atomic archive. The manifest hashes the report and the
+canonical receipt set; the report binds the spec, hidden-bank digest, target
+package, matrix, runner, sandbox/probe evidence, results, and receipts. Only
+that same-run report can carry a held-out candidate-quality claim. The
+standalone <code>report</code> command is intentionally unable to authenticate or promote
+held-out JSONL.</p>
+<p><code>scripts/study.py</code> validates a frozen parallel study protocol and creates seeded
+user-level assignments and HMAC-blinded assessment IDs. <code>allocate</code> requires the
+external private <code>--blinding-key</code> and the external <code>--task-bank</code> whose bytes
+match <code>protocol.task_bank_hash</code>. The private allocation rows carry a set-level
+HMAC over every assignment plus the exact participant-roster and task-bank
+hashes. <code>analyze</code> requires that same key and task bank plus <code>--participants</code>;
+it rebuilds and authenticates the complete allocation before consuming scores.
+Changing an arm, baseline, instruction timestamp, learner, assessment ID,
+allocation count, roster, key, task bank, or protocol/task-bank binding fails
+closed. Keep all three authority inputs outside the teaching workspace. On
+POSIX, create the blinding key under a private non-symlink directory, make it
+current-user owned, and apply <code>chmod 600</code>; public key modes, writable ancestors,
+and symlinked ancestors are rejected before any output is written.</p>
+<p>The external task bank must conform to
+<code>schemas/study-task-bank.schema.json</code>, cover both primary outcomes, and use
+unique task IDs. Each JSONL score must conform to
+<code>schemas/study-score.schema.json</code>; its task, outcome, and rubric reference must
+agree with that bank. The analysis receipt records both raw and canonical score
+hashes plus the score-schema hash and non-secret task/rubric bindings. Score
+file order cannot change the analysis. Identical repeated assessment/outcome
+rows are deduplicated and counted; any conflicting repeated row blocks report
+creation. Output publication is descriptor-anchored, so replacing the report
+parent with a symlink during publication fails closed.</p>
+<p>The primary estimand is intention-to-treat: every assigned learner remains in
+the analysis and a missing outcome uses the predeclared zero-adjusted-change
+policy; complete-case results are sensitivity analysis only. Bootstrap
+resampling occurs at learner level. Synthetic inputs always retain
+<code>supports_human_learning_claim: false</code>.</p>
+<h2 id="bind-forward-behavior-and-independent-review">Bind forward behavior and independent review</h2>
+<p>The public forward rubric is frozen at <code>evals/forward-behavior.json</code>. Run each
+case in a separate fresh context, preserve the exact learner-facing output under
+<code>evidence/forward/outputs</code>, and bind every output plus the instructional sources
+in <code>evidence/forward/run.json</code>. A separate reviewer scores every required and
+forbidden item. All eight cases must pass the non-compensatory hard gate; failed
+attempts remain under <code>evidence/forward/attempts</code> and cannot be overwritten as if
+they never happened. These runs test tutor behavior only, not comparative or
+human learning outcomes.</p>
+<p>After features, status documents, generated HTML, and inspection evidence are
+final, freeze the exact review surface:</p>
+<pre><code class="language-bash">python3 scripts/review_payload.py . \
+  --output evidence/reviews/payload.json
+python3 scripts/review_payload.py . \
+  --output evidence/reviews/payload.json \
+  --check
+</code></pre>
+<p>The manifest excludes only the review receipts themselves, the full verification
+receipt, Git metadata, and runtime/cache directories. Code/standards, frozen-spec,
+and architecture-council receipts must all bind the same payload hash, close every
+actionable finding, and record an independent recheck. Any later durable edit
+invalidates the payload and all three reviews.</p>
+<p>Each receipt records the orchestration task identity used for the review. That
+is structural provenance, not cryptographic proof of who authored the review;
+the required attestation keeps cryptographic authorship explicitly unverified.</p>
+<h2 id="clean-full-verification">Clean full verification</h2>
+<p>From a clean candidate checkout on macOS with Node 22, <code>uv</code>, and <code>ruff</code>
+available, install only the pinned locks and use the exact SkillOpt source
+commit outside the package:</p>
+<pre><code class="language-bash">npm ci
+npm --prefix integrations/flint ci
+uv sync --frozen --python 3.12
+git -C /absolute/path/to/SkillOpt-v0.2.0 rev-parse HEAD
+.venv/bin/python scripts/verify.py --level full \
+  --skillopt-source /absolute/path/to/SkillOpt-v0.2.0 \
+  --receipt evidence/verification/full.json
+</code></pre>
+<p>The SkillOpt checkout must report
+<code>e4ea6a6771e797ef820cdd8bfea64c57e0481065</code>. On macOS, full verification
+forces the evaluator and SkillOpt adversarial <code>sandbox-exec</code> tests and rejects
+any skipped Python test; a nested sandbox that cannot apply the profiles must
+fail rather than produce a green release receipt. The schema-v3 receipt binds
+all durable release bytes (except itself), executable modes, the verifier,
+lockfiles, observed runtime versions, bounded gate summaries, log-retention
+policy, and a successful final validator postflight. The validator recomputes
+that binding, so a later edit makes the receipt stale.</p>
+<h2 id="candidate-local-commit-and-immutable-package">Candidate-local commit and immutable package</h2>
+<p>Do this only after the final Markdown/HTML set, forward receipt, frozen review
+payload, three independent review receipts, schema-v3 full-verification receipt,
+and final validator are current. A durable edit after payload generation
+invalidates the reviews; a durable edit after full verification invalidates the
+full receipt.</p>
+<p>Initialize Git only inside the candidate, inspect the exact staged surface, and
+create the reviewed commit:</p>
+<pre><code class="language-bash">git init .
+git config user.name "Prax Teach v2 release"
+git config user.email "prax-teach-v2@local.invalid"
+git config commit.gpgsign false
+git add --all
+git diff --cached --check
+git status --short
+git commit -m "Build prax-teach-v2 engineering candidate"
+git status --short
+</code></pre>
+<p>The final status must be empty. Do not initialize Git in the parent reports
+directory and do not include private banks, learner workspaces, caches,
+dependencies, or <code>.git</code> in the package.</p>
+<p>Build from immutable blobs in <code>HEAD</code>, not from mutable working-tree bytes. Keep
+the release receipt outside the committed tree so recording the commit and
+archive hash cannot make the reviewed payload stale:</p>
+<pre><code class="language-bash">SHORT_SHA="$(git rev-parse --short=12 HEAD)"
+SOURCE_DATE_EPOCH=1785844800 .venv/bin/python scripts/build_package.py \
+  --force "../prax-teach-v2-${SHORT_SHA}.zip" \
+  &gt; "../prax-teach-v2-${SHORT_SHA}.release.json"
+unzip -t "../prax-teach-v2-${SHORT_SHA}.zip"
+shasum -a 256 "../prax-teach-v2-${SHORT_SHA}.zip"
+</code></pre>
+<p>Build a second ZIP from the same <code>HEAD</code> to a different sibling filename and
+compare SHA-256 values. Inspect <code>PACKAGE-MANIFEST.json</code> inside the archive and
+confirm its commit, <code>prax-teach-v2-reviewed-full</code> release gate, payload and
+review bindings, full-verification binding, and absence of <code>.git</code>. The sibling
+release JSON is the non-circular durable record of the commit and archive
+SHA-256. No push, installation, or production replacement is implied.</p>
+<h2 id="evidence-boundary">Evidence boundary</h2>
+<p>Passing every bundled test supports an engineering claim: the mechanisms exist
+and their specified boundaries were exercised. It cannot establish that real
+learners retain or transfer better. That stronger claim requires consented human
+participants, blind unseen tasks, an appropriate delay, uncertainty reporting,
+accessibility field checks, and replication.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./OPERATIONS.md">OPERATIONS.md</a><br>
+    SHA-256: <code>53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

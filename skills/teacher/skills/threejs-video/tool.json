@@ -1,0 +1,18 @@
+{
+  "tool": "threejs",
+  "versions": {
+    "three": "0.186.1",
+    "esbuild": "0.28.2",
+    "inter-ui": "4.1.1",
+    "jetbrains-mono": "1.0.6",
+    "@fontsource/bangers": "5.3.0",
+    "node": ">=18 (tested on 22)"
+  },
+  "template": "assets/template",
+  "timing": "source/src/timing.js",
+  "hints": {
+    "voice": "If source/ is missing: cp -r {SKILL}/assets/template source && (cd source && npm ci --no-audit --no-fund). Then: python3 {S}/voice.py --project . --emit source/src/timing.js",
+    "visuals": "Write the film in source/src/film.js (kit: source/src/kit/, look: source/src/kit/style.js, guide: {SKILL}/references/threejs-guide.md). Stills (SwiftShader, about 3 s each): node {S}/film3d.mjs stills chapters --project . --q draft && node {S}/film3d.mjs stills lines --project . --q draft , plus a few with the final look: node {S}/film3d.mjs stills busy --project . --q final . Open every still with Read, fix, re-shoot. Check text size and contrast: python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-shoot, re-run), then: python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "node {S}/film3d.mjs bench --project . --q final   (fps + ETA), then in the background: mkdir -p build && node {S}/film3d.mjs render --project . --q final --workers 2 --max-minutes 100 > build/render.log 2>&1 . Poll: tail -n 3 build/render.log. Exit 3 = budget reached: run the same command again (finished segments are kept) until the log says 'wrote'. Speeds here (2 workers, final): ~0.8 frames/s at 1080p, ~1.8 at 720p on a quiet box, 2-3x slower under load. Too slow? --q fast (75% render scale, text stays sharp, ~1.6x faster) or GPU=1 on a laptop. Then: python3 {S}/vstate.py advance"
+  }
+}

@@ -1,0 +1,134 @@
+/* style/kit.css: layout of the layers and the look of every kit component. Every colour is a CSS variable written by
+   kit/tokens.js (the kit palette, or the registry theme mapped onto it): no colour literals here. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+body { font-family: var(--f-body); color: var(--ink); -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+#root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+.layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.abs { position: absolute; }
+.mono, .mono * { font-family: var(--f-mono); font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+svg text { font-family: var(--f-body); }
+svg text.mono { font-family: var(--f-mono); font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+/* ---------- background: base gradient, chapter lights, floor grid, bokeh, grain, vignette ---------- */
+#bg { overflow: hidden; background: radial-gradient(120% 90% at 50% 38%, var(--bg2) 0%, var(--bg) 70%); }
+.light { position: absolute; border-radius: 50%; opacity: 0; }
+.floorcv { position: absolute; }
+.horizon { position: absolute; left: 0; width: 1920px; top: 560px; height: 240px; opacity: 0.0; }
+.bokeh { position: absolute; border-radius: 50%; }
+#fx { z-index: 40; }
+.grain { position: absolute; inset: 0; opacity: var(--grain-op); mix-blend-mode: var(--grain-blend); background-size: 256px 256px; }
+/* vignette and caption scrim are pseudo-elements so `hyperframes check` does not count them as covering text */
+#fx.vig::after, #bg.vig::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 75% 70% at 50% 46%, var(--vig0) 55%, var(--vig1) 100%); }
+.sweep { position: absolute; top: -200px; left: 0; width: 700px; height: 1480px; opacity: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--sweep) 50%, transparent 100%); transform: rotate(14deg); }
+
+/* ---------- camera: #cam (tilt, perspective) > #drift (slow wander) > #world (pan/zoom, world coordinates) ---------- */
+#scene { z-index: 10; }
+#cam, #drift { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 50% 50%; }
+#world { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+#wsvg { position: absolute; left: 0; top: 0; overflow: visible; }
+#whtml { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+#hud { z-index: 20; }
+#hudsvg { position: absolute; left: 0; top: 0; overflow: visible; }
+#chrome { z-index: 30; }
+#cards { z-index: 50; }
+#caps { z-index: 60; }
+
+/* ---------- chrome: header, chapter pips, progress ---------- */
+.brand { position: absolute; left: 96px; top: 90px; display: flex; align-items: center; gap: 16px; font-size: var(--s-label); white-space: nowrap; }
+.brand .tag { font-family: var(--f-mono); font-weight: 700; color: var(--accentInk); letter-spacing: 0.06em; }
+.brand .sep { width: 2px; height: 28px; background: var(--line2); }
+.brand .name { color: var(--mute); font-weight: 500; }
+.chtag { position: relative; height: 48px; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.chtag .n { font-family: var(--f-comic); font-size: 38px; letter-spacing: 0.04em; padding-top: 4px; }
+.chtag .t { font-family: var(--f-display); font-weight: 800; font-style: italic; font-size: var(--s-label); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+.pips { position: absolute; right: 96px; top: 96px; display: flex; gap: 10px; align-items: center; }
+.pip { width: 46px; height: 8px; border-radius: 4px; background: var(--line2); position: relative; overflow: hidden; }
+.pip i { position: absolute; inset: 0; transform-origin: 0 50%; transform: scaleX(0); }
+
+/* ---------- cards: title card and chapter stings ---------- */
+.titlecard { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.titlecard .kick { position: absolute; left: 0; width: 1920px; top: 318px; text-align: center; font-family: var(--f-mono); font-size: 30px; font-weight: 700; letter-spacing: 0.16em; color: var(--accentInk); }
+.titlecard .t1, .titlecard .t2 { position: absolute; left: 0; width: 1920px; text-align: center; font-family: var(--f-display); font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; font-size: var(--s-title); white-space: nowrap; }
+.titlecard .t1 { top: 370px; } .titlecard .t2 { top: 494px; }
+.titlecard .sub { position: absolute; left: 0; width: 1920px; top: 660px; text-align: center; font-size: 34px; color: var(--mute); font-weight: 500; }
+.sting { position: absolute; left: 96px; top: 410px; height: 200px; display: flex; align-items: center; gap: 30px; padding: 0 64px 0 48px; white-space: nowrap; }
+.sting .slab { position: absolute; inset: 0; background: var(--slab); border: 4px solid var(--c); transform: skewX(-12deg); box-shadow: 14px 14px 0 var(--c), 0 30px 80px var(--sh60); }
+.sting .num { position: relative; font-family: var(--f-comic); font-size: 168px; line-height: 1; color: var(--ci, var(--c)); padding-top: 18px; }
+.sting .ttl { position: relative; display: flex; flex-direction: column; gap: 6px; }
+.sting .ttl b { font-family: var(--f-display); font-weight: 900; font-style: italic; font-size: 86px; letter-spacing: -0.01em; text-transform: uppercase; line-height: 0.95; }
+.sting .ttl span { font-family: var(--f-mono); font-size: var(--s-label); letter-spacing: 0.24em; color: var(--mute); text-transform: uppercase; }
+
+/* ---------- captions ---------- */
+#caps.scrim::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 250px; background: linear-gradient(to bottom, var(--scrim0) 0%, var(--scrim1) 70%, var(--scrim2) 100%); }
+.cap { position: absolute; left: 210px; width: 1500px; bottom: var(--cap-bottom, 84px); text-align: center; font-size: var(--s-caption); line-height: 1.25; font-weight: 600; color: var(--ink); text-wrap: balance; opacity: 0; text-shadow: 0 2px 14px var(--capglow); }
+.cap em { font-style: normal; color: var(--goldInk); }
+.cap .o { font-family: var(--f-mono); font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; font-weight: 700; color: var(--goldInk); }
+
+/* ---------- panels and chips ---------- */
+.panel { background: linear-gradient(180deg, var(--panel-top), var(--panel-bot)); border: 2px solid var(--line); border-radius: 22px;
+  box-shadow: 0 24px 60px var(--sh55), 0 0 0 1px var(--rim03) inset, 0 2px 0 var(--rim05) inset; }
+.chip { position: absolute; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; border-radius: 999px; padding: 8px 20px; font-size: var(--s-chip); font-weight: 600;
+  background: var(--panel2); border: 2px solid var(--line2); box-shadow: 0 10px 30px var(--sh45); }
+.lbl { font-family: var(--f-mono); font-variant-ligatures: none; font-size: var(--s-label); letter-spacing: 0.08em; color: var(--label, var(--mute)); white-space: nowrap; }
+.hlbox { position: absolute; border-radius: 10px; opacity: 0; }
+
+/* decoder (raw input text) */
+.decoder { position: absolute; }
+.decoder .row { position: absolute; white-space: pre; color: var(--ink); }
+.decoder .id { color: var(--mute); } .decoder .pn { color: var(--mute); } .decoder .nu { color: var(--ink); }
+
+/* question card */
+.qcard { position: absolute; display: flex; align-items: center; gap: 26px; padding: 24px 36px 24px 26px; }
+.qcard .badge { width: 76px; height: 76px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--f-comic); font-size: 46px; color: var(--onBadge); flex: none; position: relative; }
+.qcard .q { font-family: var(--f-display); font-size: 46px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+.qcard .ring { width: 96px; height: 96px; flex: none; position: relative; }
+.qcard .ring svg { position: absolute; inset: 0; overflow: visible; }
+.qcard .ring .num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-size: 36px; font-weight: 700; }
+
+/* code panel */
+.code { position: absolute; overflow: hidden; }
+.code .bar { position: absolute; left: 0; right: 0; top: 0; height: 56px; border-bottom: 2px solid var(--line); }
+.code .dot { position: absolute; top: 21px; width: 14px; height: 14px; border-radius: 50%; }
+.code .fname { position: absolute; left: 112px; top: 9px; font-size: var(--s-label); color: var(--mute); }
+.code .ln { position: absolute; left: 0; white-space: pre; color: var(--ink); }
+/* line numbers stay at full strength (5.9:1) while code lines step back; a wrapped continuation has an empty number */
+.code .ln .no { display: inline-block; text-align: right; color: var(--lineNo); }
+.code .cursor { position: absolute; left: 10px; border-radius: 10px; opacity: 0; }
+.tk-kw { color: var(--tk-kw); } .tk-ty { color: var(--tk-ty); } .tk-nu { color: var(--tk-nu); } .tk-cm { color: var(--tk-cm); font-style: italic; } /* comments 7.8:1, 5.4:1 stepped back */
+.tk-fn { color: var(--tk-fn); } .tk-st { color: var(--tk-st); } .tk-op { color: var(--tk-op); }
+
+/* table / array rows */
+.tbl { position: absolute; }
+.tbl .cell { position: absolute; border-radius: 14px; background: var(--cell); border: 2px solid var(--line2); overflow: hidden; }
+.tbl .cell .v { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-variant-ligatures: none; font-weight: 700; }
+.tbl .rl { position: absolute; text-align: right; white-space: nowrap; letter-spacing: 0; }
+.tbl .ch { position: absolute; text-align: center; }
+
+/* complexity ladder */
+.ladder { position: absolute; }
+.rung { position: absolute; left: 0; border-radius: 18px; }
+.rung .nm { position: absolute; left: 28px; top: 12px; font-size: 34px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+.rung .cx { position: absolute; left: 28px; top: 60px; font-family: var(--f-mono); font-variant-ligatures: none; font-size: var(--s-label); color: var(--rungCx); white-space: nowrap; }
+.rung .cx b { font-weight: 700; }
+.rung .bar { position: absolute; right: 28px; top: 32px; height: 14px; border-radius: 7px; background: var(--line); overflow: hidden; }
+.rung .bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 7px; transform-origin: 0 50%; }
+.rung .idx { position: absolute; left: -66px; top: 30px; font-family: var(--f-comic); font-size: 44px; color: var(--mute); }
+.stamp { position: absolute; font-family: var(--f-comic); font-size: 40px; letter-spacing: 0.06em; padding: 6px 18px 2px; border: 4px solid; border-radius: 10px; white-space: nowrap; opacity: 0; }
+
+/* meters (cost counter, stop pips) */
+.meter { position: absolute; padding: 16px 26px; display: flex; flex-direction: column; gap: 4px; }
+.meter .v { font-family: var(--f-mono); font-variant-ligatures: none; font-size: 56px; font-weight: 700; line-height: 1.05; }
+.meter .pipsrow { display: flex; gap: 10px; margin-top: 8px; }
+.meter .sp { width: 34px; height: 34px; border-radius: 10px; border: 3px solid var(--line2); position: relative; }
+.meter .sp i { position: absolute; inset: 3px; border-radius: 5px; opacity: 0; }
+
+/* comic burst */
+.burst { position: absolute; width: 0; height: 0; }
+.burst svg { position: absolute; overflow: visible; }
+.burst .word { position: absolute; left: 0; top: 0; font-family: var(--f-comic); white-space: nowrap; letter-spacing: 0.02em;
+  color: var(--burst-word); -webkit-text-stroke: 10px var(--burst-line); paint-order: stroke fill; text-shadow: 6px 6px 0 var(--burst-line); }
+
+/* big headline text used by recaps */
+.headline { position: absolute; font-family: var(--f-display); font-weight: 800; letter-spacing: -0.03em; white-space: nowrap; line-height: 1.05; }

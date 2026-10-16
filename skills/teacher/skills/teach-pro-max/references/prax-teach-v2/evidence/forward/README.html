@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="README.md">
+  <meta name="source-sha256" content="4ef7e1ef53dca3188e14ec9ec5a8d5ef341467f4afefbe24cbe13c66919c4e8d">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Forward behavior evidence</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./README.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="forward-behavior-evidence">Forward behavior evidence</h1>
+<p>This directory preserves the public fresh-context behavior checks required by
+AC-23. These checks show whether representative outputs follow the frozen
+behavior and artifact-policy rubric. They do <strong>not</strong> establish held-out quality,
+candidate superiority, field accessibility, or human learning outcomes.</p>
+<h2 id="attempt-history">Attempt history</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th align="right">Result</th>
+<th>Disposition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="right">5/8 passed</td>
+<td>Retained under <code>attempts/attempt-1/</code>; the lesson, course-consent, and resume cases failed.</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="right">Unscored</td>
+<td>Retained under <code>attempts/attempt-2-driver-draft/</code>; disqualified because the driver named desired closing behavior.</td>
+</tr>
+<tr>
+<td>3</td>
+<td align="right">Reported 8/8, now ineligible</td>
+<td>The complete output corpus was not archived; <code>attempts/attempt-3/MISSING-EVIDENCE.md</code> forbids using it as current release evidence.</td>
+</tr>
+<tr>
+<td>4</td>
+<td align="right">6/8 passed</td>
+<td>Retained under <code>attempts/attempt-4/</code>; progressive post-error hinting and resume-state fidelity failed.</td>
+</tr>
+<tr>
+<td>5</td>
+<td align="right">Composite 8/8, release-ineligible</td>
+<td>Retained under <code>attempts/attempt-5-composite/</code>; only the two attempt-4 failures were rerun, so it did not satisfy the all-case fix-and-rerun gate.</td>
+</tr>
+<tr>
+<td>6</td>
+<td align="right">Stopped after 5 cases</td>
+<td>Retained under <code>attempts/attempt-6/</code>; the accessibility response omitted the explicit host-UI limitation and no-custom-control boundary.</td>
+</tr>
+<tr>
+<td>7</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-7/</code>; it passed, then source changes made its exact bindings stale.</td>
+</tr>
+<tr>
+<td>8</td>
+<td align="right">Unscored</td>
+<td>Retained under <code>attempts/attempt-8-driver-context/</code>; stopped after seven cases because the runner prompt confused the read-only package with the learner workspace.</td>
+</tr>
+<tr>
+<td>9</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-9/</code>; it passed, then final visual, isolation, scheduler, and routing remediation changed its bound source bytes.</td>
+</tr>
+<tr>
+<td>10</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-10/</code>; practical-learning and visual-runtime changes made its source bindings stale.</td>
+</tr>
+<tr>
+<td>11</td>
+<td align="right">Reported 8/8, rejected</td>
+<td>Retained under <code>attempts/attempt-11/</code>; frozen-spec review found no bound execution and an incomplete project-takeover prohibition.</td>
+</tr>
+<tr>
+<td>12</td>
+<td align="right">7/8, rejected</td>
+<td>Retained under <code>attempts/attempt-12/</code>; the lesson omitted an explicit retrieval horizon, and review exposed two routing defects.</td>
+</tr>
+<tr>
+<td>13</td>
+<td align="right">7/8, rejected</td>
+<td>Retained under <code>attempts/attempt-13/</code>; routing was corrected, but the lesson still called its horizon unspecified.</td>
+</tr>
+<tr>
+<td>14</td>
+<td align="right">Reported 8/8, rejected</td>
+<td>Retained under <code>attempts/attempt-14/</code>; frozen-spec review found transfer before explicit learner explanation, so the passing receipt overstated the bound sequence.</td>
+</tr>
+<tr>
+<td>15</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-15/</code>; it passed, then final runtime security remediation changed the bound routing source.</td>
+</tr>
+<tr>
+<td>16</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-16/</code>; it passed, then the runtime contracts tree was added to the bound routing source.</td>
+</tr>
+<tr>
+<td>17</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-17/</code>; it passed, then direct-model, canonical-route, and consent-source changes altered bound bytes.</td>
+</tr>
+<tr>
+<td>18</td>
+<td align="right">7/8, rejected</td>
+<td>Retained under <code>attempts/attempt-18/</code>; the course response omitted the required explicit ephemeral alternative, so no passing receipt was written.</td>
+</tr>
+<tr>
+<td>19</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-19/</code>; it passed, then final routing security and lesson-capability binding changed the bound source.</td>
+</tr>
+<tr>
+<td>20</td>
+<td align="right">8/8, later invalidated</td>
+<td>Retained under <code>attempts/attempt-20/</code>; formatter-only normalization changed the bound routing source.</td>
+</tr>
+<tr>
+<td>21</td>
+<td align="right">8/8 passed</td>
+<td>Current release-eligible run; all eight cases were regenerated from the final source and independently scored.</td>
+</tr>
+</tbody></table></div>
+<p>The frozen rubric is <code>../../evals/forward-behavior.json</code>. An eligible run binds
+the rubric, its own byte-final run manifest, seven teaching sources, the supplied
+synthetic resume context, eight distinct fresh task identities, every output
+byte, and two replayable execution files. The independent reviewer recomputed
+all 20 declared bindings, replayed the execution fixture, and recorded item-level
+judgments for every required and forbidden behavior.</p>
+<h2 id="multi-turn-lesson-integrity">Multi-turn lesson integrity</h2>
+<p>The lesson case used one fresh <code>fork_turns:none</code> tutor. It received the candidate
+skill, the learner request, and only natural learner replies; it did not receive
+the rubric, prior outputs, or desired closing instructions. The exact transcript
+contains five tutor and five learner turns: one initial error, one next-needed
+hint followed by a turn boundary, a scaffolded repair, and an unseen unassisted
+transfer. The transfer answer first appears in the learner attempt. The closing
+evidence statement separates scaffolded from unassisted performance, leaves
+delayed recall untested, and names a provisional one-week horizon with a
+48-hour re-test.</p>
+<h2 id="practical-executable-learning-case">Practical executable-learning case</h2>
+<p>The practical case completes predict, run, inspect, modify, debug, explain, and
+transfer against one replayable two-parameter Python model. Its six tutor and
+six learner turns contain three exact command/output replays, separate runtime
+evidence from learner performance, preserve a
+complete script-free transcript, and require no optional dependency or second
+teaching skill.</p>
+<h2 id="claim-boundary">Claim boundary</h2>
+<p>Attempt 21 is current release-eligible engineering evidence for its exact bound
+bytes. It cannot satisfy EG-01 provider ablation, EG-02 measured SkillOpt
+gain, EG-03 representative accessibility field evidence, EG-04 immediate human
+benefit, EG-05 delayed retention and transfer, or EG-06 generalization.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./README.md">README.md</a><br>
+    SHA-256: <code>4ef7e1ef53dca3188e14ec9ec5a8d5ef341467f4afefbe24cbe13c66919c4e8d</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

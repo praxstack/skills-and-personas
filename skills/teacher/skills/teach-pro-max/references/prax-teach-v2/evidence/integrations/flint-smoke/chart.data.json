@@ -1,0 +1,18 @@
+{
+  "data": {
+    "values": [
+      {
+        "independent_retrieval": 72,
+        "session": "Immediate"
+      },
+      {
+        "independent_retrieval": 61,
+        "session": "Seven days"
+      },
+      {
+        "independent_retrieval": 55,
+        "session": "Fourteen days"
+      }
+    ]
+  }
+}

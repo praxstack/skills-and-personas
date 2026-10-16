@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="VISUALIZATION-TOOL-REGISTRY.md">
+  <meta name="source-sha256" content="e6fe26230685f87d5914491a1a450b0b16d53a90e0a1ed653a84ee199c42f98a">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Visualization Tool and Agent Resource Registry</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./VISUALIZATION-TOOL-REGISTRY.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="visualization-tool-and-agent-resource-registry">Visualization Tool and Agent Resource Registry</h1>
+<p>This is the human guide to <code>visualization-tool-registry.json</code>. Use the lookup helper to load only the relevant entries rather than placing the full registry into every teaching turn.</p>
+<h2 id="quick-lookup">Quick Lookup</h2>
+<p>Resolve <code>&lt;prax-teach-skill-dir&gt;</code> from the directory containing <code>SKILL.md</code>:</p>
+<pre><code class="language-bash">python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py mermaid
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py "math animation"
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --route structure
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --route interaction
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --list
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --check
+</code></pre>
+<p>Use <code>--json</code> when another script needs structured output and <code>--limit</code> to control disclosure.</p>
+<h2 id="selection-policy">Selection Policy</h2>
+<p>Choose in this order:</p>
+<ol>
+<li>Existing working tool in the lesson workspace</li>
+<li>Verified first-party skill, MCP, plugin, or CLI</li>
+<li>Official documentation</li>
+<li>Official source and examples</li>
+<li>Inspected, pinned community integration</li>
+<li>Small local adapter built from official documentation</li>
+</ol>
+<p>Tool capability and agent capability are independent. Graphviz can be the right renderer even when no Graphviz skill exists; write DOT from the official grammar instead of installing a dubious wrapper.</p>
+<p>Before installing a community integration, inspect:</p>
+<ul>
+<li>owner and source repository</li>
+<li>scripts and generated commands</li>
+<li>network egress</li>
+<li>dependency tree and install hooks</li>
+<li>secret and credential handling</li>
+<li>filesystem scope and destructive behavior</li>
+<li>target tool and project-version compatibility</li>
+<li>licence and redistribution terms</li>
+</ul>
+<p>Pin a reviewed version or commit, test it in isolation, and compare its output with the direct official renderer.</p>
+<h2 id="trust-classifications">Trust Classifications</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Trust</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>official-standard</code></td>
+<td>Specification maintained by a standards body</td>
+</tr>
+<tr>
+<td><code>first-party-tool-docs</code></td>
+<td>Official project documentation/source; no agent integration implied</td>
+</tr>
+<tr>
+<td><code>first-party-agent-integration</code></td>
+<td>Skill, MCP, plugin, or agent surface maintained by the tool owner</td>
+</tr>
+<tr>
+<td><code>local-vetted</code></td>
+<td>Workflow inspected on the source host; current-host availability is probed at query time</td>
+</tr>
+<tr>
+<td><code>community-unverified</code></td>
+<td>Requires source, permission, dependency, and compatibility review</td>
+</tr>
+</tbody></table></div>
+<p>“No first-party integration found” means none was found in official documentation and repositories checked on the registry date. It does not mean the tool is unsupported.</p>
+<h2 id="route-index">Route Index</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Learning route</th>
+<th>Good starting points</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Exact structure or labels</td>
+<td>SVG, Mermaid, D2</td>
+</tr>
+<tr>
+<td>Dense hierarchy or dependency</td>
+<td>Graphviz</td>
+</tr>
+<tr>
+<td>Editable handoff</td>
+<td>draw.io, Excalidraw</td>
+</tr>
+<tr>
+<td>UML and software sequence</td>
+<td>PlantUML</td>
+</tr>
+<tr>
+<td>Consistent architecture views</td>
+<td>Structurizr/C4</td>
+</tr>
+<tr>
+<td>Mathematical constrained layout</td>
+<td>Penrose</td>
+</tr>
+<tr>
+<td>Declarative quantity</td>
+<td>Vega-Lite, Altair</td>
+</tr>
+<tr>
+<td>Lightweight composed marks</td>
+<td>Observable Plot</td>
+</tr>
+<tr>
+<td>Interactive charts</td>
+<td>Apache ECharts, Plotly</td>
+</tr>
+<tr>
+<td>Scientific static figures</td>
+<td>Matplotlib, ggplot2</td>
+</tr>
+<tr>
+<td>Fully custom data graphics</td>
+<td>D3</td>
+</tr>
+<tr>
+<td>Interactive node editor</td>
+<td>React Flow</td>
+</tr>
+<tr>
+<td>Browser graph analysis</td>
+<td>Cytoscape.js</td>
+</tr>
+<tr>
+<td>Large network</td>
+<td>Sigma.js</td>
+</tr>
+<tr>
+<td>Large geospatial layers</td>
+<td>deck.gl</td>
+</tr>
+<tr>
+<td>Browser-native lesson interaction</td>
+<td>HTML, CSS, JavaScript, SVG</td>
+</tr>
+<tr>
+<td>Dense raster interaction</td>
+<td>Canvas 2D</td>
+</tr>
+<tr>
+<td>GPU or 3D spatial system</td>
+<td>WebGL, Three.js</td>
+</tr>
+<tr>
+<td>Mathematical transformation</td>
+<td>Manim 0.21.0</td>
+</tr>
+<tr>
+<td>General explanatory film</td>
+<td>HyperFrames</td>
+</tr>
+<tr>
+<td>TypeScript generator film</td>
+<td>Canvas Commons only after a demonstrated need</td>
+</tr>
+<tr>
+<td>Seekable HTML video</td>
+<td>HyperFrames</td>
+</tr>
+<tr>
+<td>Interactive vector state machine</td>
+<td>Rive, dotLottie</td>
+</tr>
+<tr>
+<td>Illustrative appearance</td>
+<td>OpenAI image generation</td>
+</tr>
+<tr>
+<td>Sourced photography</td>
+<td>Wikimedia Commons, Unsplash</td>
+</tr>
+<tr>
+<td>Multi-language rendering gateway</td>
+<td>Kroki</td>
+</tr>
+<tr>
+<td>Media encoding/inspection</td>
+<td>FFmpeg</td>
+</tr>
+</tbody></table></div>
+<h2 id="verified-first-party-agent-integrations">Verified First-Party Agent Integrations</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Integration</th>
+<th>Registry status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>draw.io</td>
+<td>Official local/hosted MCP and Codex plugin</td>
+<td>Upstream, not confirmed installed</td>
+</tr>
+<tr>
+<td>Structurizr</td>
+<td>Official remote/self-hosted MCP</td>
+<td>Upstream, not confirmed installed</td>
+</tr>
+<tr>
+<td>HTML/CSS/JavaScript references</td>
+<td>Experimental MDN MCP</td>
+<td>Not installed</td>
+</tr>
+<tr>
+<td>Cytoscape Desktop</td>
+<td>Experimental official Desktop MCP</td>
+<td>Adjacent to Cytoscape.js; not installed</td>
+</tr>
+<tr>
+<td>Rive</td>
+<td>Rive Agent</td>
+<td>In-editor only; portable MCP not found</td>
+</tr>
+<tr>
+<td>dotLottie</td>
+<td>Lottie Creator MCP and official motion-design skill</td>
+<td>Upstream, not installed</td>
+</tr>
+<tr>
+<td>Remotion</td>
+<td>Official skills and Codex plugin</td>
+<td>Upstream, not installed; MCP is deprecated</td>
+</tr>
+<tr>
+<td>HyperFrames</td>
+<td>Official agent skill suite</td>
+<td>Probe current host at query time</td>
+</tr>
+<tr>
+<td>OpenAI image generation</td>
+<td>Built-in image-generation tool</td>
+<td>Available when exposed by the runtime</td>
+</tr>
+</tbody></table></div>
+<p>Remote MCPs can transmit lesson content or diagrams. Record the data-egress boundary and prefer local rendering for sensitive material.</p>
+<h2 id="local-capability-map">Local Capability Map</h2>
+<p>These relative hints were present under the source host's agent skill root when
+the registry was built. They are provenance, not a promise of current
+installation. The query helper probes roots from <code>PRAX_AGENT_SKILLS_ROOTS</code> or
+the current user's standard agent-skill directories and reports
+<code>available-local</code> or <code>unavailable-local</code> at runtime.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Relative skill path</th>
+<th>Classification</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SVG engineering</td>
+<td><code>svg-principal-engineer/SKILL.md</code></td>
+<td><code>local-vetted</code></td>
+</tr>
+<tr>
+<td>Mermaid → editable Excalidraw + exports</td>
+<td><code>gstack/diagram/SKILL.md</code></td>
+<td><code>local-vetted</code></td>
+</tr>
+<tr>
+<td>Manim production</td>
+<td><code>manim-video/SKILL.md</code></td>
+<td><code>local-vetted</code></td>
+</tr>
+<tr>
+<td>HyperFrames routing and rendering</td>
+<td><code>hyperframes/SKILL.md</code></td>
+<td><code>first-party-agent-integration</code></td>
+</tr>
+<tr>
+<td>HyperFrames Three.js adapter</td>
+<td><code>hyperframes-animation/adapters/three.md</code></td>
+<td><code>local-vetted</code></td>
+</tr>
+</tbody></table></div>
+<p>Do not misroute:</p>
+<ul>
+<li><code>dcanvas</code> is DecisionCanvas, not HTML Canvas.</li>
+<li><code>json-canvas</code> is Obsidian JSON Canvas, not Canvas 2D.</li>
+<li>A contributor <code>AGENTS.md</code> is not an agent integration.</li>
+<li>An official project’s desktop MCP may be adjacent to, but not interchangeable with, its browser library.</li>
+<li>A skill visible on disk may not be callable in the current agent runtime.</li>
+</ul>
+<h2 id="shared-verification-contract">Shared Verification Contract</h2>
+<p>For every selected tool:</p>
+<ol>
+<li>Preserve editable semantic source.</li>
+<li>Record exact tool version and render command.</li>
+<li>Record source/data provenance and licence.</li>
+<li>Render in the lesson’s actual target environment.</li>
+<li>Inspect visually and factually.</li>
+<li>Repair the smallest incorrect region and rerender.</li>
+<li>Add accessible naming, captions or extended description, and a static fallback.</li>
+<li>Record the verification date and known limitations.</li>
+</ol>
+<p>For charts, also audit scale/domain, units, missingness, uncertainty, sample size, and source. For interaction, test keyboard paths and reset behavior. For video, inspect keyframes and use <code>ffprobe</code>. For remote services, document privacy and egress.</p>
+<h2 id="registry-maintenance">Registry Maintenance</h2>
+<p>The JSON’s <code>checked_at</code> date is a snapshot, not a promise of permanent currency. Before installing, authenticating, or relying on a time-sensitive integration:</p>
+<ul>
+<li>revisit its official documentation</li>
+<li>check deprecation and licence notices</li>
+<li>verify the package owner and current command</li>
+<li>compare the installed version with the lesson project</li>
+<li>update the registry only from primary sources</li>
+</ul>
+<p>Notable snapshot caveats:</p>
+<ul>
+<li>Remotion’s MCP is deprecated; use its official skill/plugin.</li>
+<li>Motion Canvas and Remotion remain inspectable historical entries but are
+excluded from default Teach Pro Max routing; use HyperFrames or Manim.</li>
+<li>Sigma.js v4 is alpha; stable work should use v3 documentation unless deliberately testing v4.</li>
+<li>Pin Manim Community 0.21.0 at first use. Modern Manim uses PyAV internally;
+FFmpeg is not a core Manim prerequisite.</li>
+<li>Unsplash Source is discontinued.</li>
+<li>Image-model capabilities and limitations change; verify the current official model page.</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./VISUALIZATION-TOOL-REGISTRY.md">VISUALIZATION-TOOL-REGISTRY.md</a><br>
+    SHA-256: <code>e6fe26230685f87d5914491a1a450b0b16d53a90e0a1ed653a84ee199c42f98a</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

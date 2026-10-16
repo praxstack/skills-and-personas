@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "method": "bounded champion-challenger contract check",
+  "baseline": {
+    "git_commit": "930c11292883527a3419bb97310b8ea61e74f057",
+    "tests_run": 12,
+    "failures": 10,
+    "errors": 1,
+    "status": "failed"
+  },
+  "candidate": {
+    "working_tree_based_on": "930c11292883527a3419bb97310b8ea61e74f057",
+    "tests_run": 12,
+    "failures": 0,
+    "errors": 0,
+    "status": "passed"
+  },
+  "evaluator": {
+    "path": "tests/test_skill_contract.py",
+    "sha256": "dbcebe6eaf7163d376ccd0dd2c83cbb156a9f197a179f946957e204ba985c8af"
+  },
+  "skillopt_adapter": {
+    "source": "/Users/prax/Documents/Codex/2026-08-03/hey/work/dependencies/SkillOpt-v0.2.0",
+    "git_commit": "e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+    "focused_tests": 15,
+    "focused_tests_status": "passed",
+    "nested_sandbox_test_status": "skipped"
+  },
+  "claim_boundary": "This establishes only that the candidate satisfies twelve fixed practical-learning contract tests; the baseline produced ten failures and one missing-fixture error under that same evaluator. It is not a SkillOpt optimization run, held-out behavioral superiority, or evidence of human learning outcomes."
+}

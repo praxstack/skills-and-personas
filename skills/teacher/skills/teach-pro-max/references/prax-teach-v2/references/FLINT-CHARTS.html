@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="FLINT-CHARTS.md">
+  <meta name="source-sha256" content="a23d3dfdd84c2f84b5f8ca802ab43bc05d1c7277b39d9b0886e0692cb69530ce">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Optional Flint charts</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./FLINT-CHARTS.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="optional-flint-charts">Optional Flint charts</h1>
+<p><em>Verified upstream snapshot: 2026-08-04. This integration is off by default and is not installed by this package.</em></p>
+<h2 id="purpose">Purpose</h2>
+<p>Use <a href="https://github.com/microsoft/flint-chart">Microsoft Flint</a> as an optional compiler for exact quantitative charts after the visualization router has already decided that a chart materially helps learning.</p>
+<p>Flint is a semantics-driven intermediate language: the author supplies data, field meanings, chart type, and encodings; the compiler produces a backend-native specification. Version 0.4.1 is declared by the current npm package manifests, requires Node 18+, and is MIT licensed. <a href="https://github.com/microsoft/flint-chart/blob/main/packages/flint-js/package.json">Core package</a> and <a href="https://github.com/microsoft/flint-chart/blob/main/packages/flint-mcp/package.json">MCP package</a></p>
+<p>Flint does <strong>not</strong> replace the Prax Teach visual router, data preparation, accessibility contract, source verification, or browser acceptance tests.</p>
+<h2 id="route">Route</h2>
+<pre><code class="language-text">none | static | interactive | motion
+                 |
+          static chart-worthy job?
+                 |
+       +---------+----------+
+       |                    |
+      no                   yes
+       |                    |
+native representation   table sufficient?
+                            |
+                    +-------+-------+
+                    |               |
+                   yes             no
+                    |               |
+              semantic table   Flint available,
+                               pinned, and permitted?
+                                    |
+                              +-----+-----+
+                              |           |
+                             yes         no
+                              |           |
+                        Flint -&gt; SVG   native SVG/table
+</code></pre>
+<p>Use Flint initially only for <code>static</code> quantity, distribution, time-series, and exact-comparison jobs. Do not route process diagrams, architecture, hierarchy, geometry, equations, illustrations, simulations, or motion through it merely because it is available.</p>
+<h2 id="verified-upstream-surface">Verified upstream surface</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Output</th>
+<th>Appropriate use here</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>assembleVegaLite</code></td>
+<td>Vega-Lite specification</td>
+<td>Default portable compiler target</td>
+</tr>
+<tr>
+<td><code>assembleECharts</code></td>
+<td>ECharts options</td>
+<td>Specialized static render when verified</td>
+</tr>
+<tr>
+<td><code>assembleChartjs</code></td>
+<td>Chart.js configuration</td>
+<td>Existing Chart.js hosts</td>
+</tr>
+<tr>
+<td><code>assemblePlotly</code></td>
+<td>Plotly data/layout</td>
+<td>Optional application integration</td>
+</tr>
+<tr>
+<td><code>assembleExcel</code></td>
+<td>Office.js chart artifact</td>
+<td>Explicit Excel export only</td>
+</tr>
+<tr>
+<td>MCP <code>validate_chart</code></td>
+<td>Validation result</td>
+<td>Authoring-time spec check</td>
+</tr>
+<tr>
+<td>MCP <code>compile_chart</code></td>
+<td>Backend-native JSON plus warnings</td>
+<td>Inspection and controlled customization</td>
+</tr>
+<tr>
+<td>MCP <code>render_chart</code></td>
+<td>PNG/SVG for supported backends</td>
+<td>Build-time static artifact</td>
+</tr>
+<tr>
+<td>MCP <code>create_chart_view</code></td>
+<td>Host-specific live editor</td>
+<td>Authoring preview, not the durable lesson</td>
+</tr>
+</tbody></table></div>
+<p>See the upstream <a href="https://github.com/microsoft/flint-chart/blob/main/README.html">README</a>, <a href="https://github.com/microsoft/flint-chart/blob/main/docs/api-reference.html">API reference</a>, and <a href="https://github.com/microsoft/flint-chart/blob/main/packages/flint-mcp/README.html">MCP guide</a>.</p>
+<p>The released Python package is not available; the Python port is a source preview. Use the JavaScript/TypeScript library or MCP server for a released path.</p>
+<p>Check availability without changing the environment:</p>
+<pre><code class="language-bash">python3 scripts/check_optional_integrations.py --json
+</code></pre>
+<h2 id="authoring-contract">Authoring contract</h2>
+<ol>
+<li>Inspect the actual values, units, missingness, category counts, totals, and outliers.</li>
+<li>Transform joins, pivots, derived fields, filtering, time buckets, and complex aggregation before Flint.</li>
+<li>Decide whether a semantic table already communicates the comparison more clearly.</li>
+<li>Author a <code>ChartAssemblyInput</code> with exact field names and the most specific valid semantic types.</li>
+<li>Validate the Flint spec.</li>
+<li>Compile and inspect all warnings.</li>
+<li>Render a static SVG where possible.</li>
+<li>Compare the rendered marks, axes, domains, labels, and retained categories with the source data.</li>
+<li>Add the accessible figure wrapper, text summary, and data table.</li>
+<li>Preserve the editable spec, prepared data, render manifest, and version pin.</li>
+</ol>
+<p>Flint is a chart compiler, not a data-wrangling system. Never invent an unsupported transform or silently change the data to make a template fit.</p>
+<h2 id="minimal-semantic-spec">Minimal semantic spec</h2>
+<pre><code class="language-json">{
+  "data": { "values": "host-binds-reviewed-rows" },
+  "semantic_types": {
+    "review_day": "Day",
+    "recall_rate": "Percentage",
+    "condition": "Category"
+  },
+  "chart_spec": {
+    "chartType": "Line Chart",
+    "encodings": {
+      "x": { "field": "review_day" },
+      "y": { "field": "recall_rate" },
+      "color": { "field": "condition" }
+    },
+    "baseSize": { "width": 640, "height": 360 }
+  }
+}
+</code></pre>
+<p>The string in <code>data.values</code> above is documentation shorthand, not executable Flint input. A host must bind reviewed row objects or a permitted local data file. Do not reserialize a large dataset through an agent response.</p>
+<h2 id="durable-artifact-set">Durable artifact set</h2>
+<pre><code class="language-text">chart.source.flint.json      # original reviewed ChartAssemblyInput
+chart.data.json              # separately editable prepared exact rows
+chart.semantic-spec.json     # separately editable semantics and encodings
+chart.svg                    # preferred static delivery
+chart.vega-lite.json         # inspected backend-native specification
+chart.table.html             # complete semantic data/table alternative
+manifest.json                # versions, hashes, backend, warnings and limits
+lesson.md                    # canonical lesson and data-table alternative
+lesson.html                  # generated companion
+</code></pre>
+<p>The render manifest records separate hashes for source, prepared data, semantic
+spec and output so an edit cannot hide inside a combined input hash. It records
+the normalized CLI with path placeholders, the exact pinned render-module APIs
+and options, a <code>SOURCE_DATE_EPOCH</code>-derived non-null generation time, and an
+explicit non-empty limitations list. It also
+states <code>network_isolation_verified: false</code> unless external tracing actually
+measured the process; rejecting remote references is not itself proof of
+network isolation. A representative shape is:</p>
+<pre><code class="language-json">{
+  "flint_version": "pinned-version",
+  "backend": "vegalite",
+  "format": "svg",
+  "data_sha256": "sha256-of-prepared-data",
+  "spec_sha256": "sha256-of-flint-spec",
+  "output_sha256": "sha256-of-rendered-output",
+  "warnings": [],
+  "generated_at": "SOURCE_DATE_EPOCH-derived ISO-8601 timestamp",
+  "invocation": {"api": [], "cli": []},
+  "known_limitations": ["explicit reviewed limitation"]
+}
+</code></pre>
+<p>Use real hashes and versions in delivered artifacts. Never copy the illustrative values above as provenance.</p>
+<h2 id="dependency-and-build-policy">Dependency and build policy</h2>
+<ul>
+<li>Pin and lock the tested package version; do not use floating <code>npx -y</code> in deterministic builds.</li>
+<li>Install only after user authorization and in the project environment, not globally.</li>
+<li>Prefer programmatic build-time rendering with a local dependency.</li>
+<li>Keep essential lesson HTML free of mandatory runtime CDN requests.</li>
+<li>If Flint is absent, unsupported, or fails validation, fall back to a semantic table or verified native SVG.</li>
+<li>Treat any backend warning about filtering, truncation, invalid types, or unsupported templates as a build failure until reviewed.</li>
+<li>Publish only beneath an explicit trusted root. Existing or dangling symlink output leaves and any symlinked ancestor are rejected, and the directory lineage is revalidated at publication.</li>
+</ul>
+<p>The upstream MCP can read inline rows or local JSON/CSV/TSV files. Remote URL fetching is disabled, but local-file references are allowed by default. Start the MCP with local-file references disabled unless a narrowly scoped file is needed; otherwise bind reviewed rows inline. <a href="https://github.com/microsoft/flint-chart/blob/main/agent-skills/flint-chart-author/SKILL.html">Flint authoring skill</a></p>
+<h2 id="accessibility-wrapper">Accessibility wrapper</h2>
+<p>The reviewed upstream README, API, MCP documentation, and bundled authoring skill do not document WCAG conformance, automatic alternative text, screen-reader navigation, or data-table equivalents. Treat raw Flint output as a visual artifact that still needs an accessible host.</p>
+<p>Every delivered chart must include:</p>
+<ul>
+<li><code>&lt;figure&gt;</code> and a useful <code>&lt;figcaption&gt;</code>;</li>
+<li>concise alt text for the chart's purpose, without dumping every value;</li>
+<li>a nearby extended description or complete semantic data table;</li>
+<li>units, sample size, missingness, uncertainty, assumptions, and source provenance when material;</li>
+<li>patterns, direct labels, or redundant encodings so color is not the only cue;</li>
+<li>readable contrast, text size, focus behavior, zoom/reflow, print, and reduced-motion checks;</li>
+<li>a static/no-script path with the same essential meaning.</li>
+</ul>
+<p>Do not claim that a Flint-generated chart is accessible merely because it is SVG.</p>
+<h2 id="retrieval-and-assessment-safety">Retrieval and assessment safety</h2>
+<p>A chart can reveal an assessed answer through labels, annotations, scale domains, highlighted marks, captions, alternatives, or the default interactive state. When prediction or retrieval is the learning task:</p>
+<ol>
+<li>show neutral source data or an incomplete representation first;</li>
+<li>end the live turn for the learner's prediction;</li>
+<li>reveal the explanatory chart only after the attempt;</li>
+<li>keep pre-attempt alt text and tables neutral;</li>
+<li>offer an equivalent accessible response task when neutral alternatives would invalidate the assessment.</li>
+</ol>
+<h2 id="acceptance-gate">Acceptance gate</h2>
+<p>Reject the chart when:</p>
+<ul>
+<li>a table is clearer;</li>
+<li>data provenance or transformation cannot be verified;</li>
+<li>semantic types, units, axes, baselines, domains, or category retention are wrong;</li>
+<li>warnings are ignored;</li>
+<li>accessibility alternatives are missing;</li>
+<li>essential meaning requires a remote runtime dependency;</li>
+<li>the chart leaks a retrieval answer;</li>
+<li>the source spec, prepared data, render manifest, and output cannot be reproduced.</li>
+</ul>
+<p>Flint improves chart authoring reliability; it does not by itself prove that the chart improves learning. Test representation appropriateness and transfer separately.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./FLINT-CHARTS.md">FLINT-CHARTS.md</a><br>
+    SHA-256: <code>a23d3dfdd84c2f84b5f8ca802ab43bc05d1c7277b39d9b0886e0692cb69530ce</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

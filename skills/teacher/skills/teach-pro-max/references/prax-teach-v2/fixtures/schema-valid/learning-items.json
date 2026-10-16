@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "collection_id": "index-retrieval",
+  "title": "Index selection retrieval",
+  "language": "en",
+  "license": "CC BY 4.0",
+  "source": "https://www.postgresql.org/docs/current/indexes.html",
+  "items": [
+    {
+      "id": "idx-001",
+      "prompt": "Which index property supports a left-anchored range scan?",
+      "answer": "Ordered keys",
+      "explanation": "The ordering lets the engine seek and then scan a contiguous range.",
+      "choices": ["Ordered keys", "Random eviction"],
+      "tags": ["indexes", "application"]
+    }
+  ]
+}

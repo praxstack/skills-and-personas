@@ -1,0 +1,18 @@
+{
+  "schema_version": "prax.zero-api-baseline/v1",
+  "captured_at": "2026-08-17T00:00:00+05:30",
+  "candidate_root": "/Users/prax/Documents/Codex/2026-08-03/hey/outputs/prax-teach-v2",
+  "branch": "main",
+  "head": "8c26440a0402c88c366d68d680aef2b3fe20fc7c",
+  "working_tree_before_runtime": "dirty: .agents/ and openspec/ created by validated OpenSpec change",
+  "toolchain": {"python":"3.13.15","node":"v24.19.0","npm":"12.0.2","uv":"0.12.5"},
+  "static_route": "scripts/render_markdown.mjs with --trusted-root; existing static renderer and visual router preserved",
+  "hashes": {
+    "package.json":"c448145db0d113a21eea7d1661f0ae6a6e283a03875ad599753d727ab8cd3f2d",
+    "pyproject.toml":"36393d2a980a2a91a63dd1b087636a774bf6e3e80cd3b08eb78375d7b365cbdf",
+    "SKILL.md":"900170167de9a019c4ed1f97fdef530412b862c016868ea7be726e79253d8506",
+    "scripts/render_markdown.mjs":"7c4984014ce89e141ff60c678afef8e91f86c9cae078cca05a86da152a88ca59"
+  },
+  "evidence_level": "engineering-baseline",
+  "external_learning_evidence": false
+}

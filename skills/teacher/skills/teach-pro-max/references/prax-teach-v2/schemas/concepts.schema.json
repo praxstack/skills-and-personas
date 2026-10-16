@@ -1,0 +1,214 @@
+{
+  "$id": "https://prax.local/prax-teach-v2/schemas/concepts.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "algorithm": {
+      "$ref": "#/$defs/algorithm"
+    },
+    "concepts": {
+      "description": "Current derived records for concepts with at least one active observation; absence represents no active evidence.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "concept_id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "contradictions": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "dimension": {
+                  "$ref": "#/$defs/dimension"
+                },
+                "evidence_id": {
+                  "$ref": "#/$defs/event_id"
+                },
+                "hint_level": {
+                  "maximum": 4,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "score": {
+                  "maximum": 1,
+                  "minimum": 0,
+                  "type": "number"
+                }
+              },
+              "required": [
+                "dimension",
+                "evidence_id",
+                "hint_level",
+                "score"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "dimensions": {
+            "additionalProperties": false,
+            "properties": {
+              "application": {
+                "$ref": "#/$defs/dimension_state"
+              },
+              "discrimination": {
+                "$ref": "#/$defs/dimension_state"
+              },
+              "explanation": {
+                "$ref": "#/$defs/dimension_state"
+              },
+              "recall": {
+                "$ref": "#/$defs/dimension_state"
+              },
+              "recognition": {
+                "$ref": "#/$defs/dimension_state"
+              },
+              "transfer": {
+                "$ref": "#/$defs/dimension_state"
+              }
+            },
+            "required": [
+              "application",
+              "discrimination",
+              "explanation",
+              "recall",
+              "recognition",
+              "transfer"
+            ],
+            "type": "object"
+          },
+          "evidence_ids": {
+            "$ref": "#/$defs/event_ids"
+          },
+          "higher_order_evidence_ids": {
+            "$ref": "#/$defs/event_ids"
+          },
+          "last_updated": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "description": "Executable observed-concept status vocabulary; unobserved and stale are not materialized states.",
+            "enum": [
+              "emerging",
+              "developing",
+              "provisional",
+              "durable"
+            ]
+          },
+          "status_reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "unassisted_dimensions": {
+            "items": {
+              "$ref": "#/$defs/dimension"
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "confidence",
+          "concept_id",
+          "contradictions",
+          "dimensions",
+          "evidence_ids",
+          "higher_order_evidence_ids",
+          "last_updated",
+          "status",
+          "status_reason",
+          "unassisted_dimensions"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1"
+    }
+  },
+  "required": [
+    "algorithm",
+    "concepts",
+    "schema_version"
+  ],
+  "title": "Prax Teach deterministic concept projection",
+  "type": "object",
+  "$defs": {
+    "algorithm": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "dimension": {
+      "enum": [
+        "recognition",
+        "recall",
+        "explanation",
+        "application",
+        "discrimination",
+        "transfer"
+      ]
+    },
+    "dimension_state": {
+      "additionalProperties": false,
+      "properties": {
+        "estimate": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_ids": {
+          "$ref": "#/$defs/event_ids"
+        }
+      },
+      "required": [
+        "estimate",
+        "evidence_ids"
+      ],
+      "type": "object"
+    },
+    "event_id": {
+      "pattern": "^evt-[0-9a-f]{32}$",
+      "type": "string"
+    },
+    "event_ids": {
+      "items": {
+        "$ref": "#/$defs/event_id"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "identifier": {
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "type": "string"
+    }
+  }
+}

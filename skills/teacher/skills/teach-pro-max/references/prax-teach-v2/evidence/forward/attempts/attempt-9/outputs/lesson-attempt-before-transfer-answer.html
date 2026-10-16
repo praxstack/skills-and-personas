@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="cb550b2deed35bfb0ae83f6ade521966582429ec2b265e513827116738c8d816">
+  <meta name="generated-at" content="2026-08-19T09:21:25.928Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lesson: attempt before transfer answer</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lesson-attempt-before-transfer-answer">Lesson: attempt before transfer answer</h1>
+<h2 id="tutor-turn-1">Tutor turn 1</h2>
+<p>Our target: given a two-thread execution trace, diagnose whether a lost update occurred and identify the exact write responsible. Later, you’ll attempt an unseen transfer case before I reveal its answer.</p>
+<p>A shared variable <code>score</code> starts at <code>100</code>:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th align="right">Step</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">1</td>
+<td>T1 reads <code>score</code> → <code>100</code></td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>T2 reads <code>score</code> → <code>100</code></td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>T1 computes local value <code>90</code></td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>T2 computes local value <code>120</code></td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>T1 writes <code>90</code> to <code>score</code></td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td>T2 writes <code>120</code> to <code>score</code></td>
+</tr>
+</tbody></table></div>
+<p>Final shared value: <code>120</code>.</p>
+<p><strong>Your attempt:</strong> Does this trace contain a lost update? If yes, name the intended change that failed to survive and the exact event that caused it. If no, explain why. “I don’t know yet” is also valid.</p>
+<h2 id="learner-turn-1">Learner turn 1</h2>
+<p>Yes. T1 intended to subtract 10, but that change did not survive. Step 6 caused the loss: T2 wrote 120 using the stale value 100 and overwrote T1’s write of 90.</p>
+<h2 id="tutor-turn-2">Tutor turn 2</h2>
+<p>Correct—this was an unassisted diagnosis. You identified both the lost logical change and the decisive overwrite. One useful precision: the danger begins when T2 reads the stale <code>100</code>; the loss becomes observable when T2 writes <code>120</code>.</p>
+<p>Decision rule: a lost update occurs when two threads perform read–modify–write operations from the same old state, and a later write replaces rather than incorporates the earlier update.</p>
+<p>Worked example: inventory starts at <code>12</code>. A sale computes <code>12 − 2 = 10</code>; a restock independently computes <code>12 + 5 = 17</code>. If the writes are <code>10</code>, then <code>17</code>, the observed result is <code>17</code> instead of the composed result <code>15</code>, so the sale was lost.</p>
+<p>Now discriminate this trace:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th align="right">Step</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">1</td>
+<td>T1 reads <code>100</code></td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td>T1 computes <code>90</code></td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td>T1 writes <code>90</code></td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td>T2 reads <code>90</code></td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td>T2 computes <code>110</code></td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td>T2 writes <code>110</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>Your attempt:</strong> Is there a lost update here? Answer yes or no, then justify it using the value T2 read and the result of composing both intended changes.</p>
+<h2 id="learner-turn-2">Learner turn 2</h2>
+<p>No. T2 read 90, which already included T1’s subtraction of 10. T2 then added 20 and wrote 110; composing both intended changes from 100 also gives 110, so neither update was lost.</p>
+<h2 id="tutor-turn-3">Tutor turn 3</h2>
+<p>Correct. Overlap alone does not imply a lost update: T2 read a state that already contained T1’s change, and the final value preserves both operations. That’s a second unassisted success, now on discrimination.</p>
+<h3 id="unseen-transfer-task">Unseen transfer task</h3>
+<p>A service saves settings by replacing the entire document.</p>
+<p>Initial shared document:</p>
+<pre><code class="language-json">{"theme":"light","alerts":true}
+</code></pre>
+<p>Execution:</p>
+<ol>
+<li>T1 reads the document.</li>
+<li>T2 reads the document.</li>
+<li>T1 changes <code>theme</code> to <code>"dark"</code> in its local copy.</li>
+<li>T2 changes <code>alerts</code> to <code>false</code> in its local copy.</li>
+<li>T1 replaces the shared document with <code>{"theme":"dark","alerts":true}</code>.</li>
+<li>T2 replaces it with <code>{"theme":"light","alerts":false}</code>.</li>
+</ol>
+<p><strong>Your attempt:</strong> Diagnose whether this is a lost update, even though the threads intended to change different fields. Identify any lost change, the decisive event, and the stale information involved.</p>
+<h2 id="learner-turn-3">Learner turn 3</h2>
+<p>Yes. T1’s theme change to dark was lost. Step 6 is decisive: T2 replaces the entire document with a local copy based on the stale initial theme light, so its whole-document write restores light while changing alerts to false.</p>
+<h2 id="tutor-turn-4">Tutor turn 4</h2>
+<p>Exactly. This is the key transfer: logically separate field edits can conflict when the physical write replaces the whole record. You correctly separated the stale-read cause from the decisive overwriting write.</p>
+<p>So far, you’ve shown unassisted recognition, discrimination, and transfer within this session. Durable recall remains untested.</p>
+<p><strong>Final teach-back:</strong> In no more than three steps, state a general procedure for diagnosing a lost update in any two-thread execution trace. Include what you inspect about each read, the combined intended result, and the decisive write.</p>
+<h2 id="learner-turn-4">Learner turn 4</h2>
+<ol>
+<li>Trace what state each thread read and whether either read was stale relative to another intended change.</li>
+<li>Compute the result that would preserve both intended changes and compare it with the final shared state.</li>
+<li>If a change is missing, identify the later write that replaced rather than incorporated it; that write is the decisive lost-update event.</li>
+</ol>
+<h2 id="tutor-turn-5">Tutor turn 5</h2>
+<p>Lesson complete. Your teach-back is accurate and operational: trace each read, compute the outcome that preserves every intended change, then locate the write that removed a change instead of incorporating it.</p>
+<p>Evidence observed, all without hints:</p>
+<ul>
+<li>Correct diagnosis of a lost update and its decisive write.</li>
+<li>Correct rejection of a similar trace that preserved both updates.</li>
+<li>Correct transfer to whole-document replacement across different fields.</li>
+<li>Correct learner-authored diagnostic procedure.</li>
+</ul>
+<p>This supports immediate recognition, discrimination, explanation, and transfer—not durable mastery, since delayed retrieval has not been tested. For retention over the next week, diagnose a fresh trace without notes in 2–3 days, then repeat after one week.</p>
+<p>No files or durable learner state were created.</p>
+<h2 id="learner-turn-5">Learner turn 5</h2>
+<p>I’m not fully confident yet. Please give me one more short two-thread trace to diagnose before we close.</p>
+<h2 id="tutor-turn-6">Tutor turn 6</h2>
+<p>Confidence is best calibrated with another attempt.</p>
+<p><code>compare-and-set(expected, new)</code> writes only when the shared value still equals <code>expected</code>; otherwise it fails without changing anything.</p>
+<p>A shared balance starts at <code>50</code>:</p>
+<ol>
+<li>T1 reads <code>50</code> and computes <code>40</code>.</li>
+<li>T2 reads <code>50</code> and computes <code>70</code>.</li>
+<li>T1 runs <code>compare-and-set(50, 40)</code>; it succeeds.</li>
+<li>T2 runs <code>compare-and-set(50, 70)</code>; it fails.</li>
+<li>T2 rereads <code>40</code> and recomputes <code>60</code>.</li>
+<li>T2 runs <code>compare-and-set(40, 60)</code>; it succeeds.</li>
+</ol>
+<p>Final balance: <code>60</code>.</p>
+<p><strong>Your attempt:</strong> Is either intended update lost? Diagnose the trace and identify the event that determines your answer.</p>
+<h2 id="learner-turn-6">Learner turn 6</h2>
+<p>Yes. T1’s subtraction was lost at step 6, because the final balance is 60 instead of T1’s 40.</p>
+<h2 id="tutor-turn-7">Tutor turn 7</h2>
+<p><strong>Hint 1:</strong> Compare the final <code>60</code> with the result of applying both intended changes—<code>−10</code> and <code>+20</code>—once to the starting <code>50</code>, rather than comparing it only with T1’s intermediate <code>40</code>.</p>
+<p><strong>Revised attempt:</strong> Recalculate that combined result, then decide again whether either update was lost.</p>
+<h2 id="learner-turn-7">Learner turn 7</h2>
+<p>Applying both changes gives 50 - 10 + 20 = 60, which matches the final balance. No update was lost. Step 4 prevents the stale write by rejecting T2’s compare-and-set, and steps 5–6 recompute and apply T2’s change to T1’s updated value.</p>
+<h2 id="tutor-turn-8">Tutor turn 8</h2>
+<p>Correct revision. The final <code>60</code> preserves both changes, and the failed compare-and-set prevents T2’s stale computation from overwriting T1.</p>
+<p>Your initial gap was treating T1’s intermediate <code>40</code> as the required final value. The reliable comparison is against the result of composing all intended changes. Because this answer followed Hint 1, it counts as scaffolded success.</p>
+<p>Lesson evidence:</p>
+<ul>
+<li>Unassisted diagnosis of a basic lost update.</li>
+<li>Unassisted rejection of a non-loss interleaving.</li>
+<li>Unassisted transfer to whole-document replacement.</li>
+<li>Scaffolded diagnosis of conflict detection and retry.</li>
+</ul>
+<p>The remaining uncertainty is diagnosing synchronization mechanisms such as compare-and-set without prompting. For one-week retention, try a fresh CAS/retry trace without notes in 1–2 days, then again after one week. No files or learner state were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>cb550b2deed35bfb0ae83f6ade521966582429ec2b265e513827116738c8d816</code><br>
+    Generated: 2026-08-19T09:21:25.928Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

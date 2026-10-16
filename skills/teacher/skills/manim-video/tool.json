@@ -1,0 +1,21 @@
+{
+  "tool": "manim",
+  "versions": {
+    "manim": "0.21.0 (Manim Community Edition, Cairo renderer)",
+    "ManimPango": "0.7.0",
+    "pycairo": "1.29.2",
+    "Pygments": "2.21.0",
+    "numpy": "2.5.3",
+    "python": "3.13 (the requirements.txt pins need 3.12 or newer)",
+    "system": "libpango1.0-dev libcairo2-dev pkg-config, ffmpeg 6+",
+    "fonts": "Inter / Inter Display (system), DejaVu Sans Mono (shipped in source/fonts/)",
+    "latex": "not needed (MathTex is optional, used only when latex is on PATH)"
+  },
+  "template": "assets/template",
+  "timing": "source/timing.json",
+  "hints": {
+    "voice": "test -d source || cp -r {SKILL}/assets/template source;  test -x .venv/bin/python || (python3 -m venv .venv && .venv/bin/python -m pip install -q -r source/requirements.txt)   (system libraries first: sudo apt-get update && sudo apt-get install -y libpango1.0-dev libcairo2-dev pkg-config). Then: python3 {S}/voice.py --project . --emit source/timing.json",
+    "visuals": "Write the film in source/scenes.py (one FilmScene per chapter, every moment keyed to line ids; kit in source/kit/; guide {SKILL}/references/manim-guide.md). Draft + a still for every line: python3 {S}/render_manim.py --project . --draft --workers 2 --stills lines --from-draft   (fix every FILM-OVERRUN line it prints). Full-size stills: python3 {S}/render_manim.py --project . --stills chapters --workers 2   (or --stills t1,t2,...). Open every still and stills/sheet.png with Read, fix, re-shoot. Check text size and contrast: python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-shoot, re-run), then: python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "python3 {S}/render_manim.py --project . --bench --workers 2   (fps per worker + ETA; the benched segment is kept), then in the background: mkdir -p build && python3 {S}/render_manim.py --project . --workers 2 --max-minutes 100 > build/render.log 2>&1   (2 workers is the safe default on 4 CPUs; more only when uptime shows load below 1). Poll: tail -n 4 build/render.log until it prints 'wrote .../build/silent.mp4'. Exit 3 = budget reached: run the same command again (finished segments are kept). Then: python3 {S}/vstate.py advance"
+  }
+}

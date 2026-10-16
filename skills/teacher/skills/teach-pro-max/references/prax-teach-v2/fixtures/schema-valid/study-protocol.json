@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "study_id": "index-learning-pilot",
+  "design": "parallel_randomized",
+  "seed": 1729,
+  "arms": ["active-control", "teach", "prax-teach-v2"],
+  "primary_outcomes": ["delayed_retention", "novel_transfer"],
+  "delay_window_days": {"minimum": 7, "maximum": 14},
+  "confidence_level": 0.95,
+  "bootstrap_samples": 400,
+  "synthetic": true,
+  "missing_outcome_policy": "baseline_carried_forward_zero_adjusted_change",
+  "competency_claim": "Select and justify an index for an unseen workload",
+  "evidence": "Blind-scored performance on unseen parallel and transfer items",
+  "task_bank_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

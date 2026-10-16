@@ -1,0 +1,29 @@
+{
+  "asset_count": 12,
+  "assets": [
+    {"relation": "byte-identical", "source": "GLOSSARY-FORMAT.md", "source_sha256": "d177def491519d97873291f2e860d8f1d60ead78feecb82eee022177958069c6", "target": "GLOSSARY-FORMAT.md", "target_sha256": "d177def491519d97873291f2e860d8f1d60ead78feecb82eee022177958069c6"},
+    {"relation": "byte-identical", "source": "LEARNING-RECORD-FORMAT.md", "source_sha256": "855f81017625256584bbf62bd5edb9b0c86605c4cc1139c56acc36b802595d17", "target": "LEARNING-RECORD-FORMAT.md", "target_sha256": "855f81017625256584bbf62bd5edb9b0c86605c4cc1139c56acc36b802595d17"},
+    {"relation": "byte-identical", "source": "MISSION-FORMAT.md", "source_sha256": "8da6d3ac84eb2eb19f17c260b6acf01c560d3ac7a4501c415eea0e985602f4d7", "target": "MISSION-FORMAT.md", "target_sha256": "8da6d3ac84eb2eb19f17c260b6acf01c560d3ac7a4501c415eea0e985602f4d7"},
+    {"relation": "byte-identical", "source": "RESOURCES-FORMAT.md", "source_sha256": "2bc634a64b0d0daa10904f9222e7aa0d361420dfacabbf092fbe3a72222edc08", "target": "RESOURCES-FORMAT.md", "target_sha256": "2bc634a64b0d0daa10904f9222e7aa0d361420dfacabbf092fbe3a72222edc08"},
+    {"relation": "byte-identical", "source": "references/VISUALIZATION-RESEARCH.md", "source_sha256": "2931faf70bfd631f880444d5cda3a1513f5190ffdfb87ebb41ae580020ac0ed3", "target": "references/VISUALIZATION-RESEARCH.md", "target_sha256": "2931faf70bfd631f880444d5cda3a1513f5190ffdfb87ebb41ae580020ac0ed3"},
+    {"adaptation": "Updated the inherited production handbook to select Manim 0.21.0 and HyperFrames, defer trigger-based dependencies, remove Motion Canvas and Remotion from default routing, and require a real state consumer before adding a scene graph.", "relation": "portability-adapted", "source": "references/VISUALIZATION-ROUTER.md", "source_sha256": "ef22cd7966b4060dff22787710670963a3d91641b6dcc5ae89469e33a8ed88e2", "target": "references/LEGACY-VISUALIZATION-ROUTER.md", "target_sha256": "8162c0d4aa523167ede4fc8eebea40ef3c74b21f1e51f844df36716203759eb0"},
+    {"adaptation": "Replaced source-host absolute path promises with portable relative skill hints, documented runtime probing, and recorded the Manim plus HyperFrames video policy.", "relation": "portability-adapted", "source": "references/VISUALIZATION-TOOL-REGISTRY.md", "source_sha256": "db4b0e25853fbd358ee1a8e5a4ffb21dcc53758296acd9a109f61c9ad943ee3e", "target": "references/VISUALIZATION-TOOL-REGISTRY.md", "target_sha256": "e6fe26230685f87d5914491a1a450b0b16d53a90e0a1ed653a84ee199c42f98a"},
+    {"adaptation": "Converted source-host absolute paths to portable probe metadata, retained all 38 catalog entries, pinned Manim 0.21.0 guidance, and marked Motion Canvas and Remotion do-not-route.", "relation": "portability-adapted", "source": "references/visualization-tool-registry.json", "source_sha256": "15e364e86933cdfe83fc7353efa10df3d251cd3b2606f4860e17ecf6e420f65d", "target": "references/visualization-tool-registry.json", "target_sha256": "6c5e01a4191e81db53c318085864fa970b2f67b750a1be78fe9fc8d433b00d9b"},
+    {"adaptation": "Added runtime resolution for portable skill hints, rejected stale installed paths, and excluded do-not-route tools unless queried by exact name.", "relation": "portability-adapted", "source": "scripts/find_visualization_tool.py", "source_sha256": "20f5463e64b5244f389f4d25fdf854c7f8571cdd1d5a96eb50ac5c9ba9b8b2ad", "target": "scripts/find_visualization_tool.py", "target_sha256": "6ea0ad0f11f5bc43903cafcd18a94f466567aa5cb8de672307688f63a499db7d"},
+    {"adaptation": "Replaced the source-host existence assertion with portable runtime probes, added default-route regressions for the retired video engines, and verified the documented canonical film routes; the registry suite now has twelve tests.", "relation": "portability-adapted", "source": "scripts/test_visualization_registry.py", "source_sha256": "a3119a65194a5c60e6d137b417613cec1d32613a3066bf65f04dfa9fcb3ac3e3", "target": "scripts/test_visualization_registry.py", "target_sha256": "43d28b12a824e1e0ba3ab1da4bbcdb932b9572ff6623456031185689a83e13c7"},
+    {"adaptation": "Updated the visible video route to Manim 0.21.0 and HyperFrames while preserving the original source digest.", "relation": "portability-adapted", "source": "assets/visualization-router.svg", "source_sha256": "03a817b95ee2236cfd32d8ea54e8578abe8d3f080317adf2719ff125a59e7370", "target": "assets/visualization-router.svg", "target_sha256": "d00e719eac853ee52580c41d1af57cda8f6c6a4bd683795ee0534d1e1dd06175"},
+    {"adaptation": "Regenerated the PNG preview from the updated SVG video route.", "relation": "portability-adapted", "source": "assets/visualization-router.png", "source_sha256": "1711b1f4a685c0fb648c9b7e01125b60fa397ce89a78df68e87e6b9b47c9c1bd", "target": "assets/visualization-router.png", "target_sha256": "d0bac957cc158c5077049b20d9a5254a3071d8f62b859222860bf09022e11b2b"}
+  ],
+  "registry": {
+    "expected_tool_count": 38,
+    "query_check_command": ["python3", "scripts/find_visualization_tool.py", "--check"],
+    "query_check_expected": "registry valid: 38 tools",
+    "test_command": ["python3", "scripts/test_visualization_registry.py"],
+    "test_count": 12
+  },
+  "schema_version": 1,
+  "source_commit": "3aeb81cdb7421569a02bd5b111d3b1771f268916",
+  "source_root": "/Users/prax/Developer/agent-stack/skills/prax-teach",
+  "source_worktree_clean_for_path": true,
+  "verification_date": "2026-08-04"
+}

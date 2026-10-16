@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "attempt": 4,
+  "status": "failed",
+  "run_sha256": "a2a600b9d46c25d1911260174b74a486017a0d105f76ddadd83cd94339be26da",
+  "rubric_sha256": "36da453222249cf530b7f0a2d802572ee8dc0cb49d16745192d9dbbb3c0d3e73",
+  "reviewer_task": "/root/forward4_independent_reviewer",
+  "hash_verification": {
+    "status": "passed",
+    "matched": 16,
+    "mismatched": 0
+  },
+  "aggregate": {
+    "case_count": 8,
+    "pass_count": 6,
+    "fail_count": 2,
+    "minimum_passes": 8
+  },
+  "cases": [
+    {"case_id": "quick-bounded-explanation", "status": "passed", "output_sha256": "f1da7df33ec04cb4426c39b366321463d78a6352ff0a34b5d15454a75333e52a"},
+    {"case_id": "answer-now-override", "status": "passed", "output_sha256": "574ecc68bf0683d97b5e02e1066eaf0a496415c4630b36e71cfef4b928d27750"},
+    {"case_id": "lesson-attempt-before-transfer-answer", "status": "failed", "output_sha256": "36a68a81e5ba2b3b367bd11ca9f3cff273ba42423255b80dece46fedbae07a5a", "failure": "The tutor revealed the correction, decision rule, and full worked example in one turn instead of stopping after a lighter first hint."},
+    {"case_id": "course-consent-boundary", "status": "passed", "output_sha256": "9e21418e9cfdd592819cb15581b0d8e56f88e208adca471ab381ec9f6af68f75"},
+    {"case_id": "resume-hinted-evidence", "status": "failed", "output_sha256": "2942eb3c0897079e5ad5e318fbe7021ed92527ecae9dc8470b94c68465b0aef3", "failure": "The response changed hint_level 3 to 4 and invented a filesystem path and numeric score absent from the supplied context."},
+    {"case_id": "visual-none", "status": "passed", "output_sha256": "a87f9f56357764225aa7fd408c92538e249895a80a429f825f0457c522dfd2d3"},
+    {"case_id": "visual-essential-static", "status": "passed", "output_sha256": "5b84875c53a9d5d4efdd322293ee310d94b2275b66859916971f83d79d3224b7"},
+    {"case_id": "accessible-interaction-fallback", "status": "passed", "output_sha256": "05adba5242f63e137741b606a84c41e970f249a6548a17e6de0fb7821cdf12d4"}
+  ],
+  "claim_boundary": "Failed public behavior evidence only; no held-out, superiority, accessibility-field, or learner-outcome claim."
+}

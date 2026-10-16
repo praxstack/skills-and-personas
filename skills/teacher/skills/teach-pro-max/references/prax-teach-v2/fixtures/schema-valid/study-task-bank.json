@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "study_id": "synthetic-index-learning-pilot",
+  "tasks": [
+    {
+      "id": "retention-1",
+      "outcome": "delayed_retention",
+      "prompt": "Hidden synthetic delayed-retention item.",
+      "rubric_ref": "rubric-retention-v1"
+    },
+    {
+      "id": "transfer-1",
+      "outcome": "novel_transfer",
+      "prompt": "Hidden synthetic novel-transfer item.",
+      "rubric_ref": "rubric-transfer-v1"
+    }
+  ]
+}

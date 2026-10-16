@@ -1,0 +1,16 @@
+{
+  "algorithm": {"name": "learner-reasoning-misconception-projection", "version": "1.0.0"},
+  "misconceptions": [
+    {
+      "claim": "Every query needs one index",
+      "concept_id": "index-selection",
+      "evidence_ids": ["evt-317798d6e743e3c53cd893cd1d497880"],
+      "last_tested": "2026-08-04T11:00:00.000000Z",
+      "learner_confirmed": false,
+      "misconception_id": "mis-bd7c00ca7a19164345eb9674",
+      "provenance": ["tutor_inference"],
+      "state": "suspected"
+    }
+  ],
+  "schema_version": "1"
+}

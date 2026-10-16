@@ -1,0 +1,1 @@
+{"schema_version":"prax.formal-proof-state/v1","lesson_id":"lean-proof-state","status":"static-equivalent","toolchain":{"name":"Lean","version":"not-run"},"states":[{"label":"Goal","goal":"⊢ a + 0 = a"},{"label":"Rewrite","goal":"⊢ a = a"},{"label":"Closed","goal":"no goals"}],"source_sha256":"ef393115871a962e8e9caf97c2a3b6632c51787e3dbfc912c8387560bdf45fcf"}

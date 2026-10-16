@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="VISUALIZATION-RESEARCH.md">
+  <meta name="source-sha256" content="2931faf70bfd631f880444d5cda3a1513f5190ffdfb87ebb41ae580020ac0ed3">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Visualization Research Notes</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./VISUALIZATION-RESEARCH.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="visualization-research-notes">Visualization Research Notes</h1>
+<p>Use this reference when changing the router or justifying a non-obvious visual-production rule. It is not a substitute for verifying lesson facts against domain-specific primary sources.</p>
+<h2 id="core-recommendation">Core Recommendation</h2>
+<p>Treat visualization as a routing problem driven by the learning objective. Choose the simplest medium that accurately carries the concept, preserve an editable semantic source, render it in the target environment, inspect the result, and provide an accessible fallback.</p>
+<h2 id="evidence-incorporated-into-the-skill">Evidence Incorporated into the Skill</h2>
+<h3 id="semantic-and-editable-output">Semantic and editable output</h3>
+<p>Recent diagram-generation work evaluates diagrams as graphs of nodes, edges, and paths rather than pictures alone. Editable SVG and mxGraph/draw.io output supports semantic verification, targeted repair, and later refinement.</p>
+<ul>
+<li><a href="https://aclanthology.org/2025.emnlp-main.640/">DiagramEval: Evaluating LLM-Generated Diagrams via Graphs</a> — EMNLP 2025.</li>
+<li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/40286">DiagramGPT-Llama3: Editable, High-Fidelity Diagram Generation</a> — AAAI 2026.</li>
+<li><a href="https://autofigure.org/">AutoFigure: Editable Scientific Illustrations from Text</a> — project and paper artifacts.</li>
+</ul>
+<h3 id="separate-meaning-layout-and-style">Separate meaning, layout, and style</h3>
+<p>Semantic models should define entities and relationships; layout systems should place them; visual themes should style them. This supports multiple consistent views and safer structured editing.</p>
+<ul>
+<li><a href="https://d2lang.com/">D2</a></li>
+<li><a href="https://structurizr.com/">Structurizr</a></li>
+<li><a href="https://penrose.cs.cmu.edu/">Penrose</a></li>
+<li><a href="https://docs.kroki.io/kroki/">Kroki</a></li>
+</ul>
+<h3 id="render-inspect-and-revise">Render, inspect, and revise</h3>
+<p>Generated SVG, diagram code, and animation source must be rendered before acceptance. Educational-diagram research reports that generated artifacts can remain factually inconsistent and that model self-detection is unreliable. Rendered keyframe inspection and local repair are therefore required.</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2601.20476">Can We Improve Educational Diagram Generation with In-Context Examples? Not if a Hallucination Spoils the Bunch</a> — 2026 preprint.</li>
+<li><a href="https://arxiv.org/abs/2606.30296">ManimAgent: Self-Evolving Multimodal Agents for Visual Education</a> — 2026 preprint; useful evidence for rendered-keyframe feedback, not yet a mature authority.</li>
+</ul>
+<h3 id="prefer-browser-native-delivery-for-html-lessons">Prefer browser-native delivery for HTML lessons</h3>
+<p>Because lessons are self-contained HTML, accessible SVG, HTML/CSS/JavaScript, Canvas, and browser-native media minimize integration friction. External tools should normally generate assets consumed by that surface.</p>
+<ul>
+<li><a href="https://mermaid.js.org/config/accessibility">Mermaid accessibility configuration</a></li>
+<li><a href="https://vega.github.io/vega-lite/">Vega-Lite</a></li>
+<li><a href="https://observablehq.com/plot/">Observable Plot</a></li>
+<li><a href="https://github.com/excalidraw/excalidraw">Excalidraw</a></li>
+<li><a href="https://www.drawio.com/doc/">draw.io documentation</a></li>
+</ul>
+<h3 id="motion-must-encode-temporal-meaning">Motion must encode temporal meaning</h3>
+<p>Use animation for causality, transformation, synchronization, navigation, or changing state. Preserve captions, a transcript, poster or static sequence, and reduced-motion behavior.</p>
+<ul>
+<li><a href="https://docs.manim.community/">Manim Community documentation</a></li>
+<li><a href="https://motioncanvas.io/docs/">Motion Canvas documentation</a></li>
+<li><a href="https://www.remotion.dev/docs/">Remotion documentation</a></li>
+<li><a href="https://github.com/heygen-com/hyperframes">HyperFrames repository</a></li>
+<li><a href="https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html">W3C: Animation from Interactions</a></li>
+</ul>
+<h3 id="progressive-disclosure-and-spatial-contiguity">Progressive disclosure and spatial contiguity</h3>
+<p>Segmented concept maps with nearby labels can improve learning, but excessive simultaneous signaling can also hurt. Progressive disclosure must be purposeful rather than maximal.</p>
+<ul>
+<li><a href="https://doi.org/10.1016/j.caeo.2021.100040">How organization highlighting through signaling, spatial contiguity and segmenting can influence learning with concept maps</a> — Computers and Education Open, 2021.</li>
+</ul>
+<h3 id="accessibility-belongs-in-the-source">Accessibility belongs in the source</h3>
+<p>SVG should preserve meaningful text, accessible names and descriptions, and redundant encodings beyond color. Interaction needs keyboard access and visible focus. Motion needs user control and reduced-motion handling.</p>
+<ul>
+<li><a href="https://www.w3.org/TR/SVG-access/">W3C Accessibility Features of SVG</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion">MDN: prefers-reduced-motion</a></li>
+<li><a href="https://www.w3.org/WAI/WCAG21/Techniques/css/C39">W3C WCAG technique C39</a></li>
+</ul>
+<h3 id="agent-integrations-require-independent-trust-checks">Agent integrations require independent trust checks</h3>
+<p>Agent skills can help when they are focused and compatible, but version-mismatched or overly broad guidance can add overhead or reduce performance. Marketplace presence is not proof of quality or authority.</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2603.15401">SWE-Skills-Bench: Do Agent Skills Actually Help in Real-World Software Engineering?</a> — 2026 preprint.</li>
+<li><a href="https://arxiv.org/abs/2602.12670">SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks</a> — 2026 preprint.</li>
+<li><a href="https://arxiv.org/abs/2607.01456">From Anatomy to Smells: An Empirical Study of SKILL.md in Agent Skills</a> — 2026 preprint.</li>
+</ul>
+<h2 id="interpretation-limits">Interpretation Limits</h2>
+<ul>
+<li>Tool documentation establishes capability, not pedagogical effectiveness.</li>
+<li>A cited agent skill or MCP establishes availability, not safety or compatibility.</li>
+<li>Preprints are useful directional evidence but should be labelled and not treated as settled consensus.</li>
+<li>A rendered example proves one artifact, not general end-to-end reliability.</li>
+<li>Domain-specific visuals still require domain-specific authoritative sources and, for high-stakes topics, human review.</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./VISUALIZATION-RESEARCH.md">VISUALIZATION-RESEARCH.md</a><br>
+    SHA-256: <code>2931faf70bfd631f880444d5cda3a1513f5190ffdfb87ebb41ae580020ac0ed3</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "cases": [
+    {
+      "expected_route": "none",
+      "forbidden_answer_file": "fixtures/visual-verification/rubric.json",
+      "html": "fixtures/visual-verification/none.html",
+      "id": "visual-none",
+      "receipt": "fixtures/visual-verification/none-receipt.json",
+      "route_output": "fixtures/visual-verification/none-route.json",
+      "source": "fixtures/visual-verification/none.md"
+    },
+    {
+      "expected_route": "static",
+      "forbidden_answer_file": "fixtures/visual-verification/rubric.json",
+      "html": "fixtures/visual-verification/static.html",
+      "id": "visual-static",
+      "receipt": "fixtures/visual-verification/static-receipt.json",
+      "route_output": "fixtures/visual-verification/static-route.json",
+      "source": "fixtures/visual-verification/static.md"
+    },
+    {
+      "expected_route": "interactive",
+      "forbidden_answer_file": "fixtures/visual-verification/rubric.json",
+      "html": "fixtures/visual-verification/interactive.html",
+      "id": "visual-interactive-static-fallback",
+      "receipt": "fixtures/visual-verification/interactive-receipt.json",
+      "route_output": "fixtures/visual-verification/interactive-route.json",
+      "source": "fixtures/visual-verification/interactive.md"
+    },
+    {
+      "expected_route": "motion",
+      "forbidden_answer_file": "fixtures/visual-verification/rubric.json",
+      "html": "fixtures/visual-verification/motion.html",
+      "id": "visual-motion-static-fallback",
+      "receipt": "fixtures/visual-verification/motion-receipt.json",
+      "route_output": "fixtures/visual-verification/motion-route.json",
+      "source": "fixtures/visual-verification/motion.md"
+    }
+  ],
+  "schema_version": 1
+}
