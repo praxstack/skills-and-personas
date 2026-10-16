@@ -44,7 +44,13 @@ ambiguous or persistence is possible.
 
 Read [references/TEACHING-PROTOCOL.md](./references/TEACHING-PROTOCOL.md) for
 adaptation, optional practice, feedback and evidence rules. Retrieve only the
-production references needed for the current explanation.
+production references needed for the current explanation. A bounded delivery is
+not the end of teaching: follow learner-led exploration and keep adapting the
+connection, example and medium until the learner is satisfied or chooses to stop.
+Continue across sessions or authorized orchestrated agent sessions using only
+actually recovered, consented context. Discover the best suitable available
+visual, animation, interaction or video capabilities of the current harness;
+this policy does not depend on Codex, Claude, Pi or any one agent host.
 
 ## Persistence and continuity
 
@@ -197,7 +203,7 @@ End at the mode’s natural boundary:
 
 - `quick`: concise answer, example, and optional check or deeper route;
 - `lesson`: outcome recap, evidence observed, uncertainty, and an optional next step;
-- `course`: update consented state, show what changed, schedule review, and name the next branch.
+- `course`: update consented state, show what changed, and name the next branch. Schedule review only when the learner chooses it and actual performance supports a rating.
 
 Do not create extra files merely to demonstrate activity.
 

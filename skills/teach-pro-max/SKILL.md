@@ -44,7 +44,11 @@ optional practice. Explicit quick/direct/concise answers and **Answer now** use
 separate consent for durable state. Ordinary tasks remain ordinary tasks.
 Honor selected style, layered delivery, diagnosis-first, exploration-first,
 requested medium and accessibility needs. Style is configurable, not a learner
-classification. Lesson files and learner tracking have separate saving rules;
+classification. After each bounded delivery, follow learner-led exploration and
+keep adapting explanations and media until the learner is satisfied or chooses
+to stop. Continue across sessions and authorized orchestrated agent sessions
+using actually recovered consented context; discover suitable tools in the
+current host, whether Codex, Claude, Pi or another capable harness. Lesson files and learner tracking have separate saving rules;
 explicit save-nothing forbids durable lesson files too.
 
 ## Make visualization first-class
@@ -70,10 +74,11 @@ for an available rich route.
 
 For video, plan a connected visual story and select a suitable available tool;
 interaction is not a prerequisite. Reuse the storyboard across suitable outputs
-with captions and transcript. Pin Manim 0.21.0 at first
-use. Do not route new work through Motion Canvas or Remotion. Keep Canvas
-Commons, Olli, JSXGraph, Pyodide, MCP Apps, and 3D dependencies deferred until
-the embedded router's explicit trigger occurs. For LLM visuals, put one of
+with captions and transcript. Discover the best suitable authorized capability
+available in the current harness, and verify its supported version when used.
+Tool-specific recipes and registry entries are references, not universal vendor
+mandates or bans. Add dependencies only when the actual learning job needs them.
+For LLM visuals, put one of
 `illustration`, `measured`, `correlational`, `intervention`, or `hypothesis` in
 the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model thought.”
 
@@ -216,7 +221,8 @@ Create new exact-byte receipts before making a current release claim.
 
 - `quick`: answer, example, and an optional check or deeper route.
 - `lesson`: outcome recap, evidence observed, uncertainty, and an optional next step.
-- `course`: update only consented state, show what changed, schedule review from
-  performance, and name the next branch.
+- `course`: update only consented state, show what changed, and name the next
+  branch. Schedule review only when the learner chooses it and actual performance
+  supports a rating.
 
 Do not create files merely to demonstrate activity.

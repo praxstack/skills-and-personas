@@ -69,20 +69,19 @@ of that missing medium. Limit the same artifact/tool path to two repair attempts
   course or lesson.
 - Build the complete bounded visual explanation first, in the media that serve it. One storyboard may then project to
   standalone HTML, HyperFrames or Manim, captions, transcript, and chapters.
-- Use HyperFrames for general browser-native explanatory film and Manim for
-  mathematical or algorithmic transformation. Pin `manim==0.21.0` at first use.
-  Do not select Motion Canvas or Remotion for new Teach Pro Max work. Retain
-  their registry records as historical capability evidence only. Consider
-  Canvas Commons later only if a real lesson requires TypeScript generators.
+- Select the best suitable authorized available capability for the actual job.
+  HyperFrames and Manim are existing examples, not exclusive choices. Verify the
+  selected tool's supported version and preserve its exact version in provenance.
+  Historical recipes do not impose universal version pins or vendor bans.
 - Put a minimal scene/execution-trace JSON under `assets/data/` only when the
   first lab has a real playback, scrubbing, or synchronized-output consumer.
   Do not scaffold a generic scene contract before then.
-- Add Olli when a shipped chart needs a screen-reader twin. Add JSXGraph when a
-  lesson requires direct manipulation such as “drag the point and watch the
-  gradient.” Add Pyodide only when browser-resident Python is essential; local
-  labs otherwise use `uv` and `pytest`. Add MCP Apps only when the target
-  OpenCode host supports apps. Add Three.js WebGPU only for required 3D, through
-  the HyperFrames Three adapter; do not introduce a second 3D engine.
+- Add dependencies only for an actual learning or accessibility requirement.
+  Registry examples include Olli for a chart screen-reader twin, JSXGraph for
+  geometry manipulation, Pyodide for essential browser Python, MCP Apps when
+  the host supports them, and a suitable 3D tool for a genuinely spatial concept.
+  Equivalent or better available host-native capabilities are allowed; avoid
+  redundant engines and unsupported runtime claims.
 - For LLM visuals, include exactly one truth label in both lesson `NOTES` and
   `CONTEXT`: `illustration`, `measured`, `correlational`, `intervention`, or
   `hypothesis`. Never say “the model thought.” Link Transformer Explainer,

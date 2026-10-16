@@ -223,15 +223,16 @@ Before implementation, create a storyboard containing:
 6. Expected duration
 7. Optional intuition check or learner-chosen retrieval prompt
 
-Choose:
+Example routes (verify the selected tool's supported version when used):
 
-- **Manim 0.21.0:** equations, proofs, geometry, science, and precise algorithms.
+- **Manim:** equations, proofs, geometry, science, and precise algorithms.
 - **HyperFrames:** deterministic HTML/CSS/JS visual storytelling with seekable animation.
 - **Rive/dotLottie:** small interactive vector animations and state machines.
 
-Motion Canvas and Remotion remain historical registry entries, not default
-routes for new Teach Pro Max work. Consider Canvas Commons only if a future
-lesson demonstrates a requirement for TypeScript generators.
+Historical registry entries and versioned recipes are discovery references, not
+universal vendor mandates, bans or pins. Select the best suitable authorized
+capability available in the current harness, including host-native alternatives.
+Add a dependency only when the actual learning job needs it.
 
 Use an explicit timeline, frame, or seekable state when determinism matters. Do not rely on wall-clock playback.
 

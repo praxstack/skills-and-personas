@@ -21,11 +21,21 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
                     self.assertEqual(result[key], value)
 
     def test_ordinary_non_teaching_requests_stay_ordinary(self):
-        for request in ("Summarize this meeting", "What version of PostgreSQL is installed?"):
+        for request in (
+            "Summarize this meeting", "What version of PostgreSQL is installed?",
+            "Summarize this course syllabus", "Proofread this lesson",
+            "Can you translate this paragraph?", "Quickly summarize this meeting",
+        ):
             with self.subTest(request=request):
                 result = route_request(request)
                 self.assertEqual(result["action"], "ordinary_task")
                 self.assertIsNone(result["mode"])
+                self.assertFalse(result["persistence"])
+
+    def test_explicit_teaching_intent_wins_over_ordinary_verbs(self):
+        for request in ("Teach me how to proofread", "Help me learn how to translate a paragraph", "Proofread this lesson and teach me how to improve it"):
+            with self.subTest(request=request):
+                self.assertEqual(route_request(request)["mode"], "lesson")
 
     def test_explanation_is_not_retrieval(self):
         result = route_visual("Compare equal-sized fraction parts", retrieval=False)
