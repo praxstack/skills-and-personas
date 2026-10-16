@@ -1,4 +1,4 @@
-"""Deterministic least-cost teaching-mode routing."""
+"""Deterministic teaching-mode routing with explicit request overrides."""
 
 from __future__ import annotations
 
@@ -34,6 +34,9 @@ ANSWER_PATTERNS = (
 DEMOTION_PATTERNS = (
     r"\bkeep\s+it\s+(?:brief|concise|short)\b",
     r"\bquick(?:ly)?\b",
+    r"\b(?:brief|concise|direct)\s+(?:answer|explanation)\b",
+    r"\b(?:briefly|concisely|directly)\b",
+    r"\bin\s+(?:one|a|1)\s+sentence\b",
     r"\bin\s+(?:one|two|three|five|\d+)\s+minutes?\b",
 )
 COURSE_PATTERNS = (
@@ -58,6 +61,8 @@ LESSON_PATTERNS = (
     r"\bwalk\s+me\s+through\b",
 )
 ORDINARY_TASK_PATTERNS = (
+    r"^(?:(?:please|quickly)\s+)*(?:summarize|translate|proofread)\b",
+    r"^what\s+version\b.*\binstalled\b",
     r"^(?:(?:please|quickly)\s+)*(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
     r"^(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:quickly\s+)?(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
     r"\b(?:do|complete|perform)\s+(?:this|the)\s+(?:task|change|work)\b",
@@ -379,7 +384,7 @@ def route_request(
     demote: bool = False,
     explicit_mode: str | None = None,
 ) -> dict[str, Any]:
-    """Choose the lightest sufficient route with explicit overrides first."""
+    """Choose complete teaching by default with explicit overrides first."""
 
     normalized = " ".join(request.split())
     if not normalized:
@@ -432,7 +437,7 @@ def route_request(
             "action": "teach",
             "mode": "course",
             "persistence": "consent_required",
-            "reason": "Explicit multi-session, course, or resume intent requires durable continuity.",
+            "reason": "Explicit multi-session, course, or resume intent; durable state still requires consent.",
         }
     if _matches(LESSON_PATTERNS, normalized):
         return {
@@ -450,9 +455,9 @@ def route_request(
         }
     return {
         "action": "teach",
-        "mode": "quick",
+        "mode": "lesson",
         "persistence": False,
-        "reason": "One direct response can plausibly satisfy the request; no course is forced.",
+        "reason": "Unqualified teaching receives a complete bounded lesson; practice and persistence remain optional.",
     }
 
 

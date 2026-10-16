@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="VISUALIZATION-ROUTER.md">
-  <meta name="source-sha256" content="c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="e2bd7b98eedc9bdd812dc0332a10c7f6ca020ce21349e1a063a3ded0d69cbff0">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Visualization router</title>
@@ -83,12 +83,10 @@ runtime is absent or invalid, rich routes fail closed to static delivery. A
 specialized registry-selected renderer remains an authoring route whose output
 must be inspected in the actual lesson environment.</p>
 <h2 id="production-capability-routing">Production capability routing</h2>
-<p>Read <a href="./LEGACY-VISUALIZATION-ROUTER.html">LEGACY-VISUALIZATION-ROUTER.md</a>
-completely as the inherited Prax-Teach production handbook. Despite the lineage
-filename, its fidelity matrix, 38-tool routing, editable-source rules, scene
-graph guidance, progressive disclosure, diagram/chart/image/3D/motion/video
-contracts, accessibility, provenance, and render-inspect-revise loop are
-normative.</p>
+<p>Retrieve relevant sections of <a href="./LEGACY-VISUALIZATION-ROUTER.html">LEGACY-VISUALIZATION-ROUTER.md</a>
+on demand as production guidance. Its technical fidelity, accessibility and
+verification rules apply to the selected medium; the registry is a reference,
+not an unconditional vendor mandate or requirement to build interaction first.</p>
 <p>Inspect capabilities exposed by the current harness, then query the portable
 registry:</p>
 <pre><code class="language-bash">python3 scripts/find_visualization_tool.py --route interaction
@@ -101,12 +99,14 @@ Prefer the packaged Prax Visual Lab for its supported interaction primitives,
 browser-native HTML/SVG/Canvas for exact local work, and the smallest suitable
 available specialist for advanced output. Never require a second teaching skill
 to restore visualization. If no approved capability can execute the selected
-route, say so and deliver the complete static fallback.</p>
+route, disclose the limitation and deliver the complete static equivalent. If the
+requested medium is essential, pause instead; a fallback never counts as delivery
+of that missing medium. Limit the same artifact/tool path to two repair attempts.</p>
 <h3 id="binding-selection-policy">Binding selection policy</h3>
 <ul>
 <li>Keep the 38-tool registry in Prax-Teach and query it; do not copy it into a
 course or lesson.</li>
-<li>Build the interactive lesson first. One storyboard may then project to
+<li>Build the complete bounded visual explanation first, in the media that serve it. One storyboard may then project to
 standalone HTML, HyperFrames or Manim, captions, transcript, and chapters.</li>
 <li>Use HyperFrames for general browser-native explanatory film and Manim for
 mathematical or algorithmic transformation. Pin <code>manim==0.21.0</code> at first use.
@@ -210,6 +210,19 @@ use an authorized versioned tool/runtime plus manual browser review.</p>
 <p>Flint is not a data-wrangling layer. Perform joins, pivots, derived fields, filtering, complex aggregation, and time bucketing upstream, then sanity-check the prepared values before authoring the semantic spec.</p>
 <p>Do not install Flint silently, use floating <code>npx -y</code> in a deterministic build, assume its SVG is accessible, or fail the lesson when the optional backend is unavailable. Fall back to a semantic table or verified native SVG.</p>
 <p>Read <a href="./FLINT-CHARTS.html">FLINT-CHARTS.md</a> before producing a Flint spec or artifact.</p>
+<h2 id="connected-explanatory-scenes">Connected explanatory scenes</h2>
+<p>Each scene answers a relevant question and explains its relation to adjacent
+scenes. Supply context, accurate labels, what changes and why it follows; use
+consistent identities, units and notation. A scene can be static and a complete
+story can mix media. No fixed scene count or decorative quota applies.</p>
+<p>Use diagrams for structure, plots for quantities, motion for meaningful change
+or timing, and interaction for interpretable changes in modeled conditions.
+Every control must expose a meaningful model effect and its explanation; inspect
+representative values against the explanation. Provide pause/replay/step where
+applicable, keyboard access, reduced motion, and a complete static equivalent.
+Build the whole bounded explanation before delivery unless layered delivery was
+requested. Add a purposeful contrast and formal bridge when they aid understanding;
+state analogy limits and distinguish interpretation from physical mechanism.</p>
 <h2 id="visual-brief">Visual brief</h2>
 <p>Before a substantial asset, write:</p>
 <pre><code class="language-text">Learning objective:
@@ -281,6 +294,9 @@ router's static <code>delivery_route</code>.</p>
 <li>choice length, color, or emphasis;</li>
 <li>a distant legend that highlights the correct path.</li>
 </ul>
+<p>Explanation-first delivery uses <code>retrieval=false</code>: explanatory labels and worked
+answers are not retrieval leakage. When the learner chooses a quiz/assessment,
+route with retrieval enabled and retain all protections below.</p>
 <p>When retrieval is the task:</p>
 <ol>
 <li>show the prompt and neutral representation first;</li>
@@ -330,7 +346,7 @@ human review of a particular lesson.</p>
 <li>for Flint, verify the pinned version, input spec, prepared-data and output hashes, warnings, backend coverage, and table/text equivalent;</li>
 <li>check the fallback with scripts and media disabled;</li>
 <li>inspect representative animation frames as stills;</li>
-<li>verify that no answer is exposed before the attempt;</li>
+<li>for chosen assessment, verify that no answer is exposed before the attempt;</li>
 <li>retain editable source and provenance.</li>
 </ul>
 <p>Automated output and structural checks do not authorize a browser-inspected,
@@ -342,8 +358,8 @@ until then EG-03 remains parked.</p>
 </main>
   <footer>
     Canonical source: <a href="./VISUALIZATION-ROUTER.md">VISUALIZATION-ROUTER.md</a><br>
-    SHA-256: <code>c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>e2bd7b98eedc9bdd812dc0332a10c7f6ca020ce21349e1a063a3ded0d69cbff0</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

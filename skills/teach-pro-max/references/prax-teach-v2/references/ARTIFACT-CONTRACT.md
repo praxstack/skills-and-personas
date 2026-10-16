@@ -13,7 +13,7 @@
 
 ## Canonical source
 
-Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory.
+Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory. Save learner-facing artifacts in `<learning-directory>/lessons/` independently of consented learner-state tracking and explain the distinction. Explicit save-nothing forbids durable lesson files too; use host delivery or an actually removable temporary preview and disclose host storage limits.
 
 ```text
 lessons/0001-index-prefixes.md
@@ -64,6 +64,18 @@ unsupported interaction claim even when they are labelled. Do not create a
 `::: custom-directive` syntax, a one-off parser, or a bespoke component framework
 for a single lesson. If a new semantic block becomes reusable, specify and test
 it as a versioned renderer feature before using it in canonical content.
+
+## Explanation delivery
+
+Build the complete bounded lesson before delivery unless layered delivery was
+requested. Each scene answers a relevant question and connects to adjacent
+scenes, with context, labels and a reason for each change. No fixed scene quota
+or new scene language is needed. Exact relationships use deterministic models.
+Controls must change an interpretable condition and expose its effect. Provide
+keyboard access, reduced motion, pause/replay/step when applicable and a complete
+static equivalent. If an essential requested medium is unavailable, pause;
+otherwise disclose the missing medium and deliver an accurate static explanation.
+A fallback is never proof that the missing medium was delivered.
 
 ## Learning interactions
 
@@ -312,11 +324,11 @@ When an HTML renderer cannot safely preserve a construct, fail with a clear diag
 - Correct, versioned, nearby sources.
 - Attempt before answer when retrieval is intended.
 - Explained worked example where useful.
-- Progressive hints.
-- Specific feedback and next attempt.
-- Unseen transfer task.
+- Complete connected explanation with purposeful scenes, consistent notation and an appropriate formal bridge.
+- At most one optional intuition check.
+- Progressive hints, feedback and transfer when the learner chooses practice.
 - Honest evidence/uncertainty statement.
-- Next retrieval tied to the retention horizon.
+- Review, when chosen, tied to the retention horizon; skipped practice creates no score or rating.
 
 ### HTML
 
@@ -325,7 +337,7 @@ When an HTML renderer cannot safely preserve a construct, fail with a clear diag
 - Keyboard, focus, zoom/reflow, and reduced motion pass.
 - Print and no-script paths remain useful.
 - Visuals have editable sources, alternatives, and provenance.
-- No answer leakage from HTML, CSS, scripts, media, or accessibility text.
+- For chosen assessment, no answer leakage from HTML, CSS, scripts, media, or accessibility text. Explanation-first visual routing uses `retrieval=false`.
 - No mandatory external network dependency.
 
 ### Delivery

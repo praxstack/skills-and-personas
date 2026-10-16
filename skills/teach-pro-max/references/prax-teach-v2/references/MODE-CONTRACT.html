@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="MODE-CONTRACT.md">
-  <meta name="source-sha256" content="39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="a5eb902ff996bebc7efa46a5a8510ef8215d27d05be1546e88ade1c7391637e6">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Mode contract</title>
@@ -55,9 +55,9 @@
 <ol>
 <li>Honor an explicit <code>quick</code>, <code>lesson</code>, <code>course</code>, <code>keep it concise</code>, <code>go deeper</code>, or <strong>Answer now</strong> request.</li>
 <li>Identify the requested outcome: understand, perform, retain, transfer, or build a course.</li>
-<li>Choose <code>quick</code> when one response plus an optional check can plausibly satisfy it.</li>
-<li>Choose <code>lesson</code> when success needs a guided sequence, transfer task, or reusable artifact.</li>
-<li>Choose <code>course</code> only for explicit multi-session intent, cumulative prerequisites, or accepted durable tracking.</li>
+<li>Choose <code>quick</code> for explicit brevity or a direct-answer request.</li>
+<li>Choose <code>lesson</code> for unqualified teaching: complete bounded visual explanation, optional practice.</li>
+<li>Choose <code>course</code> only for explicit sequence or resumption intent; persistence still needs consent.</li>
 <li>Ask one clarifying question only when a different answer would materially change the route.</li>
 </ol>
 <h2 id="routing-table">Routing table</h2>
@@ -70,9 +70,14 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>“What does X mean?”</td>
+<td>“Teach me X” / “Explain X”</td>
+<td><code>lesson</code></td>
+<td>Complete bounded explanation; no mandatory assessment</td>
+</tr>
+<tr>
+<td>“Explain X in one sentence”</td>
 <td><code>quick</code></td>
-<td>Answer directly; diagnose only if ambiguity matters</td>
+<td>Honor explicit brevity</td>
 </tr>
 <tr>
 <td>“Explain X in five minutes”</td>
@@ -134,10 +139,11 @@
 <h3 id="contract-2">Contract</h3>
 <ul>
 <li>Define one observable outcome.</li>
-<li>Use the complete teaching loop at least through guided attempt and transfer.</li>
+<li>Build the complete bounded visual explanation before delivery. Practice, diagnosis and transfer checks are optional unless requested.</li>
+<li>Offer at most one optional intuition check; a skipped check is not evidence.</li>
 <li>Ask once before persisting a session summary or learner evidence.</li>
 <li>If creating a durable lesson, make Markdown canonical and generate its HTML companion.</li>
-<li>Close with evidence observed, remaining uncertainty, and one next retrieval.</li>
+<li>Close with evidence observed, uncertainty and an optional next step. Schedule review only when chosen.</li>
 </ul>
 <h3 id="avoid">Avoid</h3>
 <ul>
@@ -148,15 +154,14 @@
 <h2 id="course-mode">Course mode</h2>
 <h3 id="contract-3">Contract</h3>
 <ul>
-<li>Obtain explicit persistence consent.</li>
+<li>Offer explicit persistence consent; declining or silence does not block ephemeral course teaching.</li>
 <li>Establish the mission, target independent performance, desired retention horizon, source constraints, and access needs.</li>
-<li>Diagnose prerequisites before fixing a long syllabus.</li>
+<li>Introduce prerequisites where needed; diagnose first only when requested or material ambiguity requires it.</li>
 <li>Store raw observations separately from inferred concept state.</li>
 <li>Maintain a review queue and use later-session evidence before durable-mastery claims.</li>
 <li>Let learner questions, annotations, errors, and goals change the next lesson.</li>
 <li>Show every material learner-state update at session close.</li>
-<li>Resume with exactly one next learner action selected from current goals, due
-review, and the strongest unresolved evidence gap.</li>
+<li>After validating active consent, state the actually recovered topic/position and offer exactly one next learner action as a suggestion. Allow continuation, topic change or starting fresh without mandatory assessment.</li>
 </ul>
 <h2 id="host-adapters">Host adapters</h2>
 <p>Adapters contain no teaching policy. They may map host capabilities, file
@@ -165,7 +170,12 @@ contracts, but must not redefine routing, evidence, hinting, mastery, or visual
 selection. Describe required capabilities rather than hardcoding one agent
 harness when an equivalent native capability can satisfy the contract.</p>
 <h2 id="persistence-consent">Persistence consent</h2>
-<p>Before the first durable write, say in one sentence:</p>
+<p>Before the first durable learner-state write, explain the resolved <code>.prax-teach</code>
+location and scope. New-directory consent must explicitly name preferences and
+continuity if requested; existing base consent needs a separate extension grant
+for those categories. Never persist a refusal to suppress future prompts.
+Lesson artifacts in sibling <code>lessons/</code> are separate; explain default saving and
+honor explicit save-nothing. For base practice tracking, say:</p>
 <blockquote>
 <p>I can store your goal, practice evidence, misconceptions, and review schedule in <code>&lt;resolved path&gt;</code> so later sessions can adapt; you can inspect, correct, export, or delete it. Shall I persist this course?</p>
 </blockquote>
@@ -173,6 +183,7 @@ harness when an equivalent native capability can satisfy the contract.</p>
 <ul>
 <li>continue in ephemeral lesson mode;</li>
 <li>do not create learner-state files;</li>
+<li>save lesson artifacts independently in <code>lessons/</code> by default and explain this; an explicit save-nothing request forbids durable lesson files too;</li>
 <li>offer a copyable summary if useful.</li>
 </ul>
 <p>Consent to lesson files does not automatically grant consent to behavioral analytics or inferred learner state.</p>
@@ -202,14 +213,14 @@ harness when an equivalent native capability can satisfy the contract.</p>
 </tr>
 <tr>
 <td><code>lesson</code></td>
-<td align="right">1–3 focused questions</td>
-<td align="right">One competency and one transfer</td>
+<td align="right">0–1 material clarification</td>
+<td align="right">Complete bounded explanation; optional check</td>
 <td align="right">1 at a time</td>
 </tr>
 <tr>
 <td><code>course</code></td>
-<td align="right">Mission plus diagnostic</td>
-<td align="right">One bounded step per lesson</td>
+<td align="right">Mission; optional diagnosis</td>
+<td align="right">One bounded complete lesson</td>
 <td align="right">1 at a time; compact batches only for setup</td>
 </tr>
 </tbody></table></div>
@@ -232,7 +243,7 @@ harness when an equivalent native capability can satisfy the contract.</p>
 </tr>
 <tr>
 <td>Visual fails</td>
-<td>Continue with the static/text fallback; do not block the lesson</td>
+<td>After at most two repair attempts on that path, use an honest static equivalent; pause if the requested medium is essential</td>
 </tr>
 <tr>
 <td>Durable state is missing</td>
@@ -267,8 +278,8 @@ harness when an equivalent native capability can satisfy the contract.</p>
 </main>
   <footer>
     Canonical source: <a href="./MODE-CONTRACT.md">MODE-CONTRACT.md</a><br>
-    SHA-256: <code>39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>a5eb902ff996bebc7efa46a5a8510ef8215d27d05be1546e88ade1c7391637e6</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

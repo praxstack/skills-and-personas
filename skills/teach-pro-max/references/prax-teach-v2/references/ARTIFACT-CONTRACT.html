@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="ARTIFACT-CONTRACT.md">
-  <meta name="source-sha256" content="ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="e64403d930720f8fff5de44af764c9b0f376707136a5c1de1546f9f06953be12">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Markdown and HTML artifact contract</title>
@@ -61,7 +61,7 @@
 <li><a href="#acceptance-checklist">Acceptance checklist</a></li>
 </ol>
 <h2 id="canonical-source">Canonical source</h2>
-<p>Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory.</p>
+<p>Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory. Save learner-facing artifacts in <code>&lt;learning-directory&gt;/lessons/</code> independently of consented learner-state tracking and explain the distinction. Explicit save-nothing forbids durable lesson files too; use host delivery or an actually removable temporary preview and disclose host storage limits.</p>
 <pre><code class="language-text">lessons/0001-index-prefixes.md
 lessons/0001-index-prefixes.html
 </code></pre>
@@ -108,6 +108,16 @@ unsupported interaction claim even when they are labelled. Do not create a
 <code>::: custom-directive</code> syntax, a one-off parser, or a bespoke component framework
 for a single lesson. If a new semantic block becomes reusable, specify and test
 it as a versioned renderer feature before using it in canonical content.</p>
+<h2 id="explanation-delivery">Explanation delivery</h2>
+<p>Build the complete bounded lesson before delivery unless layered delivery was
+requested. Each scene answers a relevant question and connects to adjacent
+scenes, with context, labels and a reason for each change. No fixed scene quota
+or new scene language is needed. Exact relationships use deterministic models.
+Controls must change an interpretable condition and expose its effect. Provide
+keyboard access, reduced motion, pause/replay/step when applicable and a complete
+static equivalent. If an essential requested medium is unavailable, pause;
+otherwise disclose the missing medium and deliver an accurate static explanation.
+A fallback is never proof that the missing medium was delivered.</p>
 <h2 id="learning-interactions">Learning interactions</h2>
 <p>The executable boundary is deliberate:</p>
 <ul>
@@ -325,11 +335,11 @@ stateful components, or persistence hooks.</li>
 <li>Correct, versioned, nearby sources.</li>
 <li>Attempt before answer when retrieval is intended.</li>
 <li>Explained worked example where useful.</li>
-<li>Progressive hints.</li>
-<li>Specific feedback and next attempt.</li>
-<li>Unseen transfer task.</li>
+<li>Complete connected explanation with purposeful scenes, consistent notation and an appropriate formal bridge.</li>
+<li>At most one optional intuition check.</li>
+<li>Progressive hints, feedback and transfer when the learner chooses practice.</li>
 <li>Honest evidence/uncertainty statement.</li>
-<li>Next retrieval tied to the retention horizon.</li>
+<li>Review, when chosen, tied to the retention horizon; skipped practice creates no score or rating.</li>
 </ul>
 <h3 id="html">HTML</h3>
 <ul>
@@ -338,7 +348,7 @@ stateful components, or persistence hooks.</li>
 <li>Keyboard, focus, zoom/reflow, and reduced motion pass.</li>
 <li>Print and no-script paths remain useful.</li>
 <li>Visuals have editable sources, alternatives, and provenance.</li>
-<li>No answer leakage from HTML, CSS, scripts, media, or accessibility text.</li>
+<li>For chosen assessment, no answer leakage from HTML, CSS, scripts, media, or accessibility text. Explanation-first visual routing uses <code>retrieval=false</code>.</li>
 <li>No mandatory external network dependency.</li>
 </ul>
 <h3 id="delivery">Delivery</h3>
@@ -356,8 +366,8 @@ remaining claim limitation.</li>
 </main>
   <footer>
     Canonical source: <a href="./ARTIFACT-CONTRACT.md">ARTIFACT-CONTRACT.md</a><br>
-    SHA-256: <code>ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>e64403d930720f8fff5de44af764c9b0f376707136a5c1de1546f9f06953be12</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

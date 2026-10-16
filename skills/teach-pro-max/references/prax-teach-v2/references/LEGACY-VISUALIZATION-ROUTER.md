@@ -17,7 +17,7 @@ Learning objective
 → render in the lesson environment
 → visual, semantic, accessibility, and provenance QA
 → revise locally
-→ lesson placement, static fallback, and retrieval task
+→ complete lesson placement, static equivalent, and optional intuition check
 ```
 
 Do not escalate from prose to SVG, SVG to interaction, or interaction to video unless the extra dimension teaches something the simpler medium cannot.
@@ -33,7 +33,8 @@ Before creating a substantial visual, record:
 - **Evidence:** authoritative source for every factual, numerical, scientific, medical, historical, or technical claim.
 - **Delivery constraints:** target screen, mobile and print behavior, offline use, editability, interaction, audio, and available tools.
 - **Fallback:** equivalent prose, table, poster, or static sequence.
-- **Retrieval action:** what the learner will predict, identify, repair, trace, change, or recreate.
+- **Explanatory question:** what relationship this scene clarifies and how it connects to adjacent scenes.
+- **Optional retrieval action:** only for learner-chosen assessment, what the learner will predict, identify, repair, trace, change, or recreate.
 
 For formulas, notation, protocols, architecture labels, or recurring entities, maintain a **symbol ledger**. Reuse names, colors, shapes, line styles, and meanings across every scene and lesson.
 
@@ -120,7 +121,13 @@ Introduce complexity in stages:
 4. Show the complete system.
 5. Test an edge case or misconception.
 
-Keep labels beside what they explain. Prefer direct labels over distant legends. Use emphasis sparingly. Follow a major visual with a learner action rather than passive admiration.
+Keep labels beside what they explain. Prefer direct labels over distant legends.
+Use emphasis sparingly. Build the complete bounded explanation before delivery;
+these stages organize the story, not mandatory learner turn barriers. There is
+no fixed scene quota. Offer at most one optional intuition check. Honor layered
+delivery and other explicitly selected styles. A useful contrast and bridge to
+formal terms, code, equations or argument should deepen the model, not pad it.
+State analogy limits and retain uncertainty in historical/literary interpretation.
 
 ## Accurate SVG Contract
 
@@ -197,7 +204,8 @@ Use interaction only when the learner gains by changing, testing, traversing, fi
 - Support keyboard operation, logical focus order, and visible focus states.
 - Avoid hover-only information; expose the same content through focus or click.
 - Preserve useful learner state and provide a clear reset.
-- Separate feedback from the answer so the learner can try first.
+- During chosen assessment, separate feedback from the answer so the learner can try first.
+- Otherwise expose the meaningful control effect and explain its relationship to the model.
 - Provide a static fallback and textual explanation.
 - Keep the lesson understandable if JavaScript is disabled.
 
@@ -213,7 +221,7 @@ Before implementation, create a storyboard containing:
 4. Narration or captions
 5. What changes and why
 6. Expected duration
-7. Retrieval prompt
+7. Optional intuition check or learner-chosen retrieval prompt
 
 Choose:
 
@@ -243,7 +251,7 @@ Use an explicit timeline, frame, or seekable state when determinism matters. Do 
 - Use `alt` text for simple images; use a short alternative plus extended description or data table for complex ones.
 - Cite factual content, data, and external imagery near the figure.
 - Keep the lesson understandable when media fails.
-- Do not reveal a retrieval answer before the learner attempts it.
+- For chosen assessment, do not reveal a retrieval answer before the learner attempts it; explanation-first visuals use `retrieval=false`.
 - Prefer learner-controlled progressive reveals over autoplay.
 
 ## Provenance Contract
@@ -287,7 +295,13 @@ Never ship a non-trivial visual merely because its source parses.
 
 Use multimodal inspection when available, but do not rely on self-review alone for high-stakes content. Verify scientific, medical, financial, legal, and safety-critical visuals against authoritative sources and surface uncertainty.
 
-If the preferred renderer cannot be used reliably, step down to the nearest simpler medium that can be rendered and verified. State the verification limit.
+Allow at most two repair attempts for the same artifact/tool path. If the preferred
+renderer remains unavailable, use an accurate complete static equivalent and
+disclose the missing medium and verification limit. If that medium is essential
+to the request, pause instead. Never fabricate output or call a fallback delivery
+of the requested rich medium. On confusion, repair the missing connection; ask
+one focused question if plausible gaps differ, then locate an unresolved gap
+rather than repeatedly paraphrasing.
 
 ## Required Deliverables
 
@@ -312,6 +326,6 @@ Do not:
 - create motion merely to feel polished
 - separate labels from their targets
 - present a dense “spaghetti” diagram to a beginner
-- omit retrieval practice after a major visual
+- require retrieval practice as a barrier to the complete explanation
 - regenerate an entire correct artifact to fix one local defect
 - claim an unrendered artifact was visually inspected

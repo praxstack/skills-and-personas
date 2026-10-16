@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="LEGACY-VISUALIZATION-ROUTER.md">
-  <meta name="source-sha256" content="8162c0d4aa523167ede4fc8eebea40ef3c74b21f1e51f844df36716203759eb0">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="52f58f81cea60f5f99302341fde8514c750ca54cc401a16a06d401baaa6320a3">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Visualization Router</title>
@@ -62,7 +62,7 @@
 → render in the lesson environment
 → visual, semantic, accessibility, and provenance QA
 → revise locally
-→ lesson placement, static fallback, and retrieval task
+→ complete lesson placement, static equivalent, and optional intuition check
 </code></pre>
 <p>Do not escalate from prose to SVG, SVG to interaction, or interaction to video unless the extra dimension teaches something the simpler medium cannot.</p>
 <h2 id="write-the-visual-brief">Write the Visual Brief</h2>
@@ -75,7 +75,8 @@
 <li><strong>Evidence:</strong> authoritative source for every factual, numerical, scientific, medical, historical, or technical claim.</li>
 <li><strong>Delivery constraints:</strong> target screen, mobile and print behavior, offline use, editability, interaction, audio, and available tools.</li>
 <li><strong>Fallback:</strong> equivalent prose, table, poster, or static sequence.</li>
-<li><strong>Retrieval action:</strong> what the learner will predict, identify, repair, trace, change, or recreate.</li>
+<li><strong>Explanatory question:</strong> what relationship this scene clarifies and how it connects to adjacent scenes.</li>
+<li><strong>Optional retrieval action:</strong> only for learner-chosen assessment, what the learner will predict, identify, repair, trace, change, or recreate.</li>
 </ul>
 <p>For formulas, notation, protocols, architecture labels, or recurring entities, maintain a <strong>symbol ledger</strong>. Reuse names, colors, shapes, line styles, and meanings across every scene and lesson.</p>
 <h2 id="choose-the-representation">Choose the Representation</h2>
@@ -257,7 +258,13 @@ python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py mermaid
 <li>Show the complete system.</li>
 <li>Test an edge case or misconception.</li>
 </ol>
-<p>Keep labels beside what they explain. Prefer direct labels over distant legends. Use emphasis sparingly. Follow a major visual with a learner action rather than passive admiration.</p>
+<p>Keep labels beside what they explain. Prefer direct labels over distant legends.
+Use emphasis sparingly. Build the complete bounded explanation before delivery;
+these stages organize the story, not mandatory learner turn barriers. There is
+no fixed scene quota. Offer at most one optional intuition check. Honor layered
+delivery and other explicitly selected styles. A useful contrast and bridge to
+formal terms, code, equations or argument should deepen the model, not pad it.
+State analogy limits and retain uncertainty in historical/literary interpretation.</p>
 <h2 id="accurate-svg-contract">Accurate SVG Contract</h2>
 <p>SVG is the default for precise, responsive lesson illustrations.</p>
 <ul>
@@ -326,7 +333,8 @@ python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py mermaid
 <li>Support keyboard operation, logical focus order, and visible focus states.</li>
 <li>Avoid hover-only information; expose the same content through focus or click.</li>
 <li>Preserve useful learner state and provide a clear reset.</li>
-<li>Separate feedback from the answer so the learner can try first.</li>
+<li>During chosen assessment, separate feedback from the answer so the learner can try first.</li>
+<li>Otherwise expose the meaningful control effect and explain its relationship to the model.</li>
 <li>Provide a static fallback and textual explanation.</li>
 <li>Keep the lesson understandable if JavaScript is disabled.</li>
 </ul>
@@ -340,7 +348,7 @@ python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py mermaid
 <li>Narration or captions</li>
 <li>What changes and why</li>
 <li>Expected duration</li>
-<li>Retrieval prompt</li>
+<li>Optional intuition check or learner-chosen retrieval prompt</li>
 </ol>
 <p>Choose:</p>
 <ul>
@@ -369,7 +377,7 @@ lesson demonstrates a requirement for TypeScript generators.</p>
 <li>Use <code>alt</code> text for simple images; use a short alternative plus extended description or data table for complex ones.</li>
 <li>Cite factual content, data, and external imagery near the figure.</li>
 <li>Keep the lesson understandable when media fails.</li>
-<li>Do not reveal a retrieval answer before the learner attempts it.</li>
+<li>For chosen assessment, do not reveal a retrieval answer before the learner attempts it; explanation-first visuals use <code>retrieval=false</code>.</li>
 <li>Prefer learner-controlled progressive reveals over autoplay.</li>
 </ul>
 <h2 id="provenance-contract">Provenance Contract</h2>
@@ -407,7 +415,13 @@ assets/video/0007-gradient-descent/render.mp4
 <li>Revise the smallest incorrect region and rerender.</li>
 </ol>
 <p>Use multimodal inspection when available, but do not rely on self-review alone for high-stakes content. Verify scientific, medical, financial, legal, and safety-critical visuals against authoritative sources and surface uncertainty.</p>
-<p>If the preferred renderer cannot be used reliably, step down to the nearest simpler medium that can be rendered and verified. State the verification limit.</p>
+<p>Allow at most two repair attempts for the same artifact/tool path. If the preferred
+renderer remains unavailable, use an accurate complete static equivalent and
+disclose the missing medium and verification limit. If that medium is essential
+to the request, pause instead. Never fabricate output or call a fallback delivery
+of the requested rich medium. On confusion, repair the missing connection; ask
+one focused question if plausible gaps differ, then locate an unresolved gap
+rather than repeatedly paraphrasing.</p>
 <h2 id="required-deliverables">Required Deliverables</h2>
 <p>Retain:</p>
 <ol>
@@ -429,15 +443,15 @@ assets/video/0007-gradient-descent/render.mp4
 <li>create motion merely to feel polished</li>
 <li>separate labels from their targets</li>
 <li>present a dense “spaghetti” diagram to a beginner</li>
-<li>omit retrieval practice after a major visual</li>
+<li>require retrieval practice as a barrier to the complete explanation</li>
 <li>regenerate an entire correct artifact to fix one local defect</li>
 <li>claim an unrendered artifact was visually inspected</li>
 </ul>
 </main>
   <footer>
     Canonical source: <a href="./LEGACY-VISUALIZATION-ROUTER.md">LEGACY-VISUALIZATION-ROUTER.md</a><br>
-    SHA-256: <code>8162c0d4aa523167ede4fc8eebea40ef3c74b21f1e51f844df36716203759eb0</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>52f58f81cea60f5f99302341fde8514c750ca54cc401a16a06d401baaa6320a3</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

@@ -40,8 +40,10 @@ class SkillContractTests(unittest.TestCase):
             (ROOT / "evals" / "forward-behavior.json").read_text(encoding="utf-8")
         )["cases"]
 
-    def test_live_lesson_gate_requires_turn_boundary_and_complete_close(self) -> None:
+    def test_visual_intuition_v1_optional_assessment_and_honest_close(self) -> None:
         required = (
+            "Deliver the whole explanation without prediction, quiz or teach-back barriers",
+            "When the learner chooses a quiz or assessment",
             "end the current turn at that attempt",
             "Do not call a named hint ladder progressive unless",
             "After an incorrect attempt, give exactly one next-needed hint",
@@ -64,11 +66,11 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn(ephemeral, self.skill)
         self.assertLess(self.skill.index(ephemeral), self.skill.index(consent))
 
-    def test_resume_gate_preserves_scaffold_metadata_and_retests(self) -> None:
+    def test_resume_preserves_scaffold_metadata_without_mandatory_retest(self) -> None:
         required = (
             "original response and exact hint level",
             "unchanged and inspectable",
-            "fresh unassisted retrieval or discrimination prompt",
+            "without mandatory assessment",
             "If the workspace path or topic is missing",
             "Never infer a filesystem path, score, timestamp, or prior attempt",
         )
@@ -76,8 +78,9 @@ class SkillContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.skill)
 
-    def test_post_error_hint_turn_precedes_substantive_feedback(self) -> None:
+    def test_chosen_assessment_post_error_hint_precedes_substantive_feedback(self) -> None:
         required = (
+            "during chosen assessment",
             "Immediate post-error return gate",
             "exactly one next-needed hint",
             "end the tutor turn",

@@ -26,3 +26,23 @@ actions to reconstruct the current lesson state, and synchronizes the stepper,
 hint engine, and receipt panel. The JSON schema defines transport shape; runtime
 validation additionally enforces that static-fallback state IDs reference real
 lesson states.
+
+## Explanation-first use
+
+Use these existing components only when their implemented domain and controls
+serve the concept. Build and deliver the complete bounded explanation first;
+practice and receipt transfer are optional. Explanation visuals use
+`retrieval=false`; chosen quizzes retain answer-leakage protection in every
+surface, including source and static alternatives. Controls must expose a
+meaningful model effect with consistent identities, notation and units. Inspect
+representative states against the explanation, and provide keyboard access,
+reduced motion, pause/replay/step when applicable and a complete static equivalent.
+There is no fixed scene quota or requirement to use this runtime before another
+suitable available capability. Do not create a new rendering framework.
+
+An unbound or unavailable rich route is not fabricated output. Try suitable
+authorized alternatives, with at most two repair attempts on the same failed
+artifact/tool path. Disclose the missing medium and use an accurate static
+explanation unless the requested medium is essential, in which case pause.
+Covered material and control receipts do not demonstrate competence; skipped
+practice creates no scored observation or review rating.

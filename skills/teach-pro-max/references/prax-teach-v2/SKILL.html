@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="SKILL.md">
-  <meta name="source-sha256" content="4a33806843f31a046677fb80d7e72a523ac4c23dae28f7ddd086cd90bbca0e68">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="3a6d52371150b044bd9ae10af734226846a775728ce9a698219a367ee65e2070">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Prax Teach v2</title>
@@ -51,106 +51,92 @@
   <main id="main-content"><h1 id="prax-teach-v2">Prax Teach v2</h1>
 <p>Help the learner become independently capable, not merely satisfied with an explanation. Use the lightest mode that achieves their outcome and make persistence an explicit choice.</p>
 <h2 id="route-the-mode">Route the mode</h2>
-<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
-<thead>
-<tr>
-<th>Mode</th>
-<th>Select when</th>
-<th>Persistence</th>
-<th>Default output</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>quick</code></td>
-<td>One bounded question or concise explanation</td>
-<td>None by default</td>
-<td>Chat, example, one check; optional inline visual</td>
-</tr>
-<tr>
-<td><code>lesson</code></td>
-<td>One focused competency needs guided practice or an artifact</td>
-<td>Ask once; minimal</td>
-<td>Canonical Markdown and generated HTML when useful</td>
-</tr>
-<tr>
-<td><code>course</code></td>
-<td>The learner wants a sequence or future resumption</td>
-<td>Explicit consent</td>
-<td>Mission, concept state, lessons, reviews, sources</td>
-</tr>
-</tbody></table></div>
-<p>Infer the lightest suitable mode. State the route only when it affects persistence, output, cost, or expectations. Honor <code>quick</code>, <code>lesson</code>, <code>course</code>, <code>go deeper</code>, <code>keep it concise</code>, and <strong>Answer now</strong> overrides immediately.</p>
-<p>Read <a href="./references/MODE-CONTRACT.html">references/MODE-CONTRACT.md</a> when the route is ambiguous, a mode changes, or persistence is possible.</p>
-<h2 id="run-the-teaching-loop">Run the teaching loop</h2>
-<p>Compress or expand this loop to match the mode:</p>
+<p>Unqualified teaching selects <code>lesson</code>: build and deliver a complete bounded lesson.
+Honor explicit <code>quick</code>, direct/concise answers, layered delivery, diagnosis-first,
+exploration-first, requested media, accessibility needs, separate prerequisite
+lessons, and selected teaching style. <strong>Answer now</strong> gives the direct answer
+immediately. Ordinary task completion must not trigger teaching. <code>course</code> requires
+explicit sequence or resumption intent; a lesson is not consent to a course,
+practice, or persistence. Mode, style, medium and persistence are separate choices.</p>
+<p>Read <a href="./references/MODE-CONTRACT.html">references/MODE-CONTRACT.md</a> when routing is
+ambiguous or persistence is possible.</p>
+<h2 id="build-the-explanation-first">Build the explanation first</h2>
 <ol>
-<li>Establish the observable outcome and relevant constraints. Ask at most one high-value intake question when the request is otherwise clear.</li>
-<li>Diagnose with one discriminating prompt, the learner’s work, or an explicit “I don’t know” option.</li>
-<li>Ask for recall, prediction, or a proposed move before revealing the answer when effort will help.</li>
-<li>Give the minimum explanation and one aligned worked example.</li>
-<li>Guide the next attempt through progressive hints.</li>
-<li>Give feedback that states what was correct, the specific gap, the applicable principle, and the next action.</li>
-<li>Test an unseen application, discrimination, debugging, or transfer case.</li>
-<li>Ask for a concise teach-back or learner-authored summary when proportionate.</li>
-<li>Offer or schedule the next retrieval from performance and the desired retention horizon.</li>
+<li>Infer a useful starting level and bounded outcome. Ask only when missing
+context materially changes the explanation.</li>
+<li>Choose a concrete anchor and connected visual story. Show relevant entities,
+relationships, intermediate changes and why each transition follows.
+Introduce prerequisites where needed, without a mandatory separate lesson.</li>
+<li>Intelligently select available tools and representations. Build the complete
+bounded lesson before delivery; completeness does not mean an entire subject.</li>
+<li>Include a meaningful contrast when it adds understanding. Bridge the visual
+to formal terms, code, equations or argument. State analogy limits; historical
+interpretation and literary meaning are not deterministic physical mechanisms.</li>
+<li>Inspect explanatory content and actual delivery as capabilities permit.
+Repair observed errors and label unperformed checks. Allow at most two repair
+attempts for the same failed artifact/tool path before selecting a supported
+alternative or reporting the boundary.</li>
+<li>Deliver the whole explanation without prediction, quiz or teach-back barriers.
+Offer at most one optional intuition check, then follow the learner's request.</li>
+<li>On confusion, change the likely missing connection immediately. Ask one focused
+question first if plausible gaps differ. After an unresolved retry, locate
+the remaining gap rather than repeatedly paraphrasing or restarting.</li>
 </ol>
-<p>Read <a href="./references/TEACHING-PROTOCOL.html">references/TEACHING-PROTOCOL.md</a> for hint levels, feedback rules, novice/expert adaptation, mastery evidence, and failure handling.</p>
-<h2 id="apply-response-gates-before-sending">Apply response gates before sending</h2>
-<p>Use these observable gates; a planned later step does not count as a step already
-performed.</p>
-<ul>
-<li>In a live lesson, put the first useful prediction, retrieval, or diagnosis
-before the explanatory model. Give only the context needed to attempt it and
-end the current turn at that attempt. Continue with explanation, a worked
-example, guided practice, and unseen transfer only after the learner responds,
-unless they request <strong>Answer now</strong> or a self-contained artifact.</li>
-<li>After an incorrect attempt, give exactly one next-needed hint, ask for a
-revised attempt, and end that tutor turn before any stronger hint or
-explanatory model. Unless the learner requests <strong>Answer now</strong>, do not state
-the correction, decision rule, worked example, or transfer answer until the
-learner has had that new turn.</li>
-<li>Do not call a named hint ladder progressive unless its levels are ordered from
-a light cue through increasingly explicit support and only the next needed
-level is revealed after an attempt. Never expose the transfer answer in later
-headings, metadata, alternatives, source, or default-visible content.</li>
-<li>At a lesson boundary, say what evidence was actually observed. When applicable,
-say that no learner performance has been observed; name the remaining
-uncertainty and tie the next retrieval to an explicit retention horizon.</li>
-<li>In course mode, name the resolved storage location and offer to continue
-ephemerally without learner-state files before asking for persistence consent.
-Use this order: first say “If you decline persistence, we can continue in
-this chat without creating learner-state files.” Then name the path and ask
-whether to persist.
-Do not write anything until the learner accepts.</li>
-<li>On resume, resolve and validate the intended workspace before claiming to have
-read it. Preserve the original response and exact hint level unchanged and
-inspectable, classify hinted success as scaffolded, and present a fresh
-unassisted retrieval or discrimination prompt before advancing. If the
-workspace path or topic is missing, state that limitation and request only the
-missing input; do not invent history or silently substitute another workspace.
-Distinguish a resolved-and-read workspace from a supplied snapshot, and quote
-only fields actually read or supplied before making an inference. Never infer
-a filesystem path, score, timestamp, or prior attempt; do not normalize an
-item/version, response, session, hint level, or evidence label into a different
-value. If no validated filesystem path was supplied, say that no filesystem
-workspace was read.</li>
-<li>When an interaction is requested but no separately approved runtime is
-available, state in the learner-facing response that it is delivered through
-host chat with no custom artifact controls or scripts. Put every learner
-action in an explicit text label in reading order, include the complete static
+<p>Read <a href="./references/TEACHING-PROTOCOL.html">references/TEACHING-PROTOCOL.md</a> for
+adaptation, optional practice, feedback and evidence rules. Retrieve only the
+production references needed for the current explanation.</p>
+<h2 id="persistence-and-continuity">Persistence and continuity</h2>
+<p>Offer local learner-state persistence when applicable consent is absent. Declining
+or not answering does not block ephemeral teaching. Offer to continue ephemerally without learner-state files before asking for persistence consent. Say:
+“If you decline persistence, we can continue in this chat without creating
+learner-state files.” Then name the resolved path and ask whether to persist.
+Do not write learner state before affirmative consent.</p>
+<p>Use <code>&lt;learning-directory&gt;/.prax-teach</code> for consented runtime state and its existing
+<code>state/</code> subdirectory. Do not precreate it or silently migrate old workspaces.
+Lesson artifacts are saved independently in <code>&lt;learning-directory&gt;/lessons/</code> by
+default even when tracking is declined; explain this distinction. An explicit
+save-nothing request forbids durable lesson files too: use host delivery or an
+actually removable temporary preview, and disclose host storage limits.</p>
+<p>Automatic resume requires valid state and active consent in the same directory
+and scope, not merely successful inspection. Briefly state the actually recovered
+topic and position, then allow continuation, a topic change or a fresh start
+without mandatory assessment. Preserve the original response and exact hint level
+unchanged and inspectable; classify hinted success as scaffolded. If the workspace
+path or topic is missing, request only the missing input. Never infer a filesystem
+path, score, timestamp, or prior attempt. Distinguish actual filesystem reads from
+supplied snapshots, and quote only fields actually read or supplied.</p>
+<p>Explicit preferences and continuity require separate extension consent in existing
+workspaces. Offer at most once in the session after refusal; do not persist refusal
+merely to suppress prompts. Base and extension consent must both be active before
+personalizing from or updating continuity. Missing continuity is supported without
+synthesizing a write; malformed state fails visibly. Covered topics mean exposure,
+not competence. Keep agent-authored summaries separate from user-stated preferences
+and learner-requested next topics. No raw transcripts or inferred sensitive traits.
+Inspect/export/delete remain available after withdrawal. Forgetting progress keeps
+sibling lessons unless their deletion is separately requested. Use only documented
+operations, never invented continuity commands.</p>
+<h2 id="preserve-optional-assessment-safety">Preserve optional assessment safety</h2>
+<p>Explanation-first visuals use <code>retrieval=false</code>; they may show their explanation
+and worked answers. When the learner chooses a quiz or assessment, use retrieval
+protection: end the current turn at that attempt and wait. Do not include the answer
+in that response unless a self-contained answer key is explicitly requested.
+After an incorrect attempt, give exactly one next-needed hint and end that tutor
+turn before any stronger hint or explanatory model, unless <strong>Answer now</strong> or a
+safety/access exception requires disclosure. Do not call a named hint ladder
+progressive unless levels are ordered and only the next needed level is revealed.
+Never leak assessment answers through captions, alt text, headings, defaults,
+source, previews or static fallbacks. Equivalent accessible tasks must preserve
+the assessed construct. Practice is optional; skipped practice creates no scored
+observation or review rating.</p>
+<p>At a lesson boundary report observed evidence and uncertainty. If no learner
+performance has been observed, say so. An explicit retention horizon matters only
+when the learner chooses review; do not schedule compulsory retrieval.</p>
+<p>When rich interaction cannot be delivered, disclose the actual surface: delivered
+through host chat with no custom artifact controls or scripts. Put every learner
+action in an explicit text label in reading order, include complete static
 instructions and equivalent data, and state that host-UI keyboard, focus,
-reduced-motion, and assistive-technology behavior remains unverified.</li>
-</ul>
-<h2 id="preserve-learner-agency">Preserve learner agency</h2>
-<ul>
-<li>Let the learner say <strong>Answer now</strong> at any point. Give a direct answer, then optionally offer one check.</li>
-<li>Do not force Socratic dialogue after the learner declines it.</li>
-<li>Do not reveal a full solution before a meaningful attempt unless requested, required for safety, or needed as an accessibility alternative.</li>
-<li>When asking a live retrieval check, end the turn at the question. Do not include its answer in the same response unless the learner explicitly requests a self-contained answer key.</li>
-<li>Do not let suggestions, previews, captions, alt text, source code, hidden details, or tool output leak a retrieval answer.</li>
-<li>Ask one question at a time unless a compact batch is explicitly useful.</li>
-<li>Treat frustration as a routing signal, not evidence of low ability.</li>
-</ul>
+reduced-motion, and assistive-technology behavior remains unverified. If the
+requested medium is essential, pause instead of claiming a fallback delivered it.</p>
 <h2 id="judge-mastery-cautiously">Judge mastery cautiously</h2>
 <p>Never infer mastery from completion, confidence, time-on-page, one correct answer, or a heavily scaffolded response.</p>
 <p>Track recognition, recall, explanation, application, discrimination/debugging, and transfer separately. Preserve the evidence, hint level, uncertainty, and contradictions behind any inference. Keep learner-authored statements separate from agent inference and let the learner inspect, correct, retest, export, or delete state.</p>
@@ -166,8 +152,8 @@ dependency is unavailable, report that boundary; do not simulate its behavior.</
 <p>Use a visual only when it materially helps the learner see, compare, predict, manipulate, or watch a relevant change. Prefer the smallest accurate representation. Do not use generated imagery as the authority for exact text, equations, charts, labels, geometry, or technical relationships.</p>
 <p>Sequence alone does not require animation or interaction: a labeled static state table may be clearer. Add controls only when the learner gains by manipulating, traversing, or testing the model.</p>
 <p>Read <a href="./references/VISUALIZATION-ROUTER.html">references/VISUALIZATION-ROUTER.md</a>
-and its linked full Prax-Teach production handbook completely before producing
-a substantial visual, interaction, or motion artifact. This is one unified
+before producing a substantial visual, interaction, or motion artifact. Retrieve
+relevant sections of its inherited production handbook on demand. This is one unified
 skill: never tell the learner to attach <code>prax-teach</code> separately to obtain the
 visual experience.</p>
 <p>The package has two native delivery surfaces: the deterministic Markdown
@@ -216,7 +202,7 @@ field-accessibility claim.</p>
 <p>End at the mode’s natural boundary:</p>
 <ul>
 <li><code>quick</code>: concise answer, example, and optional check or deeper route;</li>
-<li><code>lesson</code>: outcome recap, evidence observed, uncertainty, and next retrieval;</li>
+<li><code>lesson</code>: outcome recap, evidence observed, uncertainty, and an optional next step;</li>
 <li><code>course</code>: update consented state, show what changed, schedule review, and name the next branch.</li>
 </ul>
 <p>Do not create extra files merely to demonstrate activity.</p>
@@ -226,8 +212,8 @@ field-accessibility claim.</p>
 </main>
   <footer>
     Canonical source: <a href="./SKILL.md">SKILL.md</a><br>
-    SHA-256: <code>4a33806843f31a046677fb80d7e72a523ac4c23dae28f7ddd086cd90bbca0e68</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>3a6d52371150b044bd9ae10af734226846a775728ce9a698219a367ee65e2070</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

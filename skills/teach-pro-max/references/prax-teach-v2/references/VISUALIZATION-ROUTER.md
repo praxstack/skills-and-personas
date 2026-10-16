@@ -39,12 +39,10 @@ must be inspected in the actual lesson environment.
 
 ## Production capability routing
 
-Read [LEGACY-VISUALIZATION-ROUTER.md](./LEGACY-VISUALIZATION-ROUTER.md)
-completely as the inherited Prax-Teach production handbook. Despite the lineage
-filename, its fidelity matrix, 38-tool routing, editable-source rules, scene
-graph guidance, progressive disclosure, diagram/chart/image/3D/motion/video
-contracts, accessibility, provenance, and render-inspect-revise loop are
-normative.
+Retrieve relevant sections of [LEGACY-VISUALIZATION-ROUTER.md](./LEGACY-VISUALIZATION-ROUTER.md)
+on demand as production guidance. Its technical fidelity, accessibility and
+verification rules apply to the selected medium; the registry is a reference,
+not an unconditional vendor mandate or requirement to build interaction first.
 
 Inspect capabilities exposed by the current harness, then query the portable
 registry:
@@ -61,13 +59,15 @@ Prefer the packaged Prax Visual Lab for its supported interaction primitives,
 browser-native HTML/SVG/Canvas for exact local work, and the smallest suitable
 available specialist for advanced output. Never require a second teaching skill
 to restore visualization. If no approved capability can execute the selected
-route, say so and deliver the complete static fallback.
+route, disclose the limitation and deliver the complete static equivalent. If the
+requested medium is essential, pause instead; a fallback never counts as delivery
+of that missing medium. Limit the same artifact/tool path to two repair attempts.
 
 ### Binding selection policy
 
 - Keep the 38-tool registry in Prax-Teach and query it; do not copy it into a
   course or lesson.
-- Build the interactive lesson first. One storyboard may then project to
+- Build the complete bounded visual explanation first, in the media that serve it. One storyboard may then project to
   standalone HTML, HyperFrames or Manim, captions, transcript, and chapters.
 - Use HyperFrames for general browser-native explanatory film and Manim for
   mathematical or algorithmic transformation. Pin `manim==0.21.0` at first use.
@@ -137,6 +137,22 @@ Flint is not a data-wrangling layer. Perform joins, pivots, derived fields, filt
 Do not install Flint silently, use floating `npx -y` in a deterministic build, assume its SVG is accessible, or fail the lesson when the optional backend is unavailable. Fall back to a semantic table or verified native SVG.
 
 Read [FLINT-CHARTS.md](./FLINT-CHARTS.md) before producing a Flint spec or artifact.
+
+## Connected explanatory scenes
+
+Each scene answers a relevant question and explains its relation to adjacent
+scenes. Supply context, accurate labels, what changes and why it follows; use
+consistent identities, units and notation. A scene can be static and a complete
+story can mix media. No fixed scene count or decorative quota applies.
+
+Use diagrams for structure, plots for quantities, motion for meaningful change
+or timing, and interaction for interpretable changes in modeled conditions.
+Every control must expose a meaningful model effect and its explanation; inspect
+representative values against the explanation. Provide pause/replay/step where
+applicable, keyboard access, reduced motion, and a complete static equivalent.
+Build the whole bounded explanation before delivery unless layered delivery was
+requested. Add a purposeful contrast and formal bridge when they aid understanding;
+state analogy limits and distinguish interpretation from physical mechanism.
 
 ## Visual brief
 
@@ -218,6 +234,10 @@ A visual can leak an answer through:
 - choice length, color, or emphasis;
 - a distant legend that highlights the correct path.
 
+Explanation-first delivery uses `retrieval=false`: explanatory labels and worked
+answers are not retrieval leakage. When the learner chooses a quiz/assessment,
+route with retrieval enabled and retain all protections below.
+
 When retrieval is the task:
 
 1. show the prompt and neutral representation first;
@@ -275,7 +295,7 @@ Before any stronger delivery claim:
 - for Flint, verify the pinned version, input spec, prepared-data and output hashes, warnings, backend coverage, and table/text equivalent;
 - check the fallback with scripts and media disabled;
 - inspect representative animation frames as stills;
-- verify that no answer is exposed before the attempt;
+- for chosen assessment, verify that no answer is exposed before the attempt;
 - retain editable source and provenance.
 
 Automated output and structural checks do not authorize a browser-inspected,

@@ -39,75 +39,44 @@ Do not turn a quick question into a formal objective document.
 
 ## Teaching sequence
 
-### 1. Orient
+Default: complete bounded explanation first, then at most one optional intuition
+check. Infer a useful starting level; ask only when missing context changes the
+explanation materially. Honor selected style, diagnosis-first, exploration-first,
+layered delivery, separate prerequisites and accessibility needs.
 
-- Restate the outcome only when it reduces ambiguity.
-- Connect to the learner’s goal or current work.
-- Prefer a concrete anchor over a long definition.
+Start from a concrete anchor. Plan connected scenes that expose entities,
+relationships and intermediate changes with an explanation of why each follows.
+Introduce prerequisites where needed. Each scene answers a question and connects
+to adjacent scenes; there is no fixed scene quota. Include a contrasting case
+only when it clarifies the idea, then connect to formal language, code, equations
+or argument. Explain analogy limits. Historical interpretation and literary
+meaning must retain uncertainty rather than imitate deterministic mechanisms.
 
-### 2. Diagnose
+Build the whole bounded lesson before delivery. Navigable pacing is useful;
+mandatory learner turns are not required. Inspect content and actual delivery as
+capabilities permit; label checks not performed. On confusion, repair the likely
+missing connection immediately, or ask one focused question when gaps differ.
+After an unresolved retry, locate the remaining gap instead of paraphrasing again.
 
-- Ask one item that distinguishes plausible knowledge states.
-- Include an honest “I don’t know” path.
-- Prefer production over recognition when cognitive load permits.
-- Inspect existing work before asking the learner to repeat it.
+### Optional assessment branch
 
-### 3. Retrieve or predict
+Use diagnosis, prediction, guided practice, transfer, teach-back and review when
+the learner chooses them. For live retrieval stop at the question and wait.
+Never append the answer or leak it through source or accessibility text.
 
-- Ask the learner to recall, predict, choose a strategy, or mark the first step.
-- Keep the attempt low-stakes.
-- In a live conversation, stop the turn after the retrieval question. Never append its answer in the same message unless the learner requested a self-contained answer key.
-- Do not expose the answer in surrounding prose, option length, formatting, alt text, or UI suggestions.
+**Immediate post-error return gate:** during chosen assessment, give exactly one
+next-needed hint, request a revised attempt, and end the tutor turn before a
+stronger hint or explanatory model, unless **Answer now** or a safety/access
+exception applies. This gate does not restrict explanation-first teaching or
+confusion repair.
 
-### 4. Model
-
-- Explain the minimum prerequisite knowledge.
-- Use one aligned worked example for novices in structured tasks.
-- Integrate labels beside the element they explain.
-- Make the strategy visible: say why each step is chosen.
-- Fade detail for experts or after successful attempts.
-
-### 5. Guide
-
-- Wait for the learner’s attempt.
-- Select the next hint from the ladder, not the full solution by default.
-- Change representation or example when repeating wording does not help.
-- **Immediate post-error return gate:** after a materially incorrect live
-  attempt, give exactly one next-needed hint, request a revised attempt, and end
-  the tutor turn. Do not include the correction, decision rule, worked example,
-  stronger hint, or transfer answer in that turn unless the learner requests
-  **Answer now** or a safety/access exception requires direct disclosure.
-
-### 6. Feedback
-
-- Identify correct reasoning before the gap.
-- Name the gap at the task/process level.
-- Give the principle or strategy that resolves it.
-- Ask for a specific revised move.
-
-### 7. Transfer
-
-- Change surface details, context, or the competing alternative.
-- Ask the learner to justify why the concept applies or does not apply.
-- Use debugging and discrimination tasks when misconceptions are confusable.
-
-### 8. Reflect
-
-- Ask the learner to explain the idea in their own words, draw a mental model, or state a decision rule.
-- Store learner-authored summaries verbatim or clearly labeled as learner-authored.
-- Keep agent-generated summaries labeled as inference.
-
-### 9. Schedule
-
-- Offer or schedule the next retrieval based on the desired horizon and observed performance.
-- Revisit failures and high-hint successes sooner.
-- Keep stable unassisted retrievals farther apart.
 
 ## Practical executable learning
 
 Practical learning is a mode of this teaching protocol, not a second teaching
 skill. When the outcome requires operating, building, or debugging a real
-system, use this loop:
+system, demonstrate the authentic behavior with explanation first. If the learner
+chooses practical exercises, use this loop:
 
 > predict → run → inspect → modify → debug → explain → transfer
 
@@ -137,7 +106,7 @@ Use the smallest diagnostic that changes instruction.
 | Find prerequisite gap | Ask for the first step and reason |
 | Distinguish misconception | Present two confusable cases and ask what differs |
 | Calibrate expertise | Ask for explanation plus confidence, then check both |
-| Resume a course | Use one due retrieval and one current-goal check |
+| Resume a course | Recover the actual topic/position with active consent; offer review optionally |
 | Avoid needless intake | Infer from the learner’s supplied work and confirm only uncertainty |
 
 Do not use a diagnostic as a gatekeeping exam. A correct answer with incorrect reasoning remains evidence of a misconception.
@@ -186,7 +155,7 @@ Feedback effects are heterogeneous. The goal is not “more feedback”; it is i
 
 ## Practice and transfer
 
-Use a deliberate progression:
+For learner-chosen practice, use a deliberate progression:
 
 1. worked example with explanation;
 2. completion problem with one missing step;
@@ -296,7 +265,9 @@ Do not impose a hard 80% or 90% gate as universal truth. Mastery-learning eviden
 
 For `quick`, close with the answer and an optional check or deeper path.
 
-For `lesson` or `course`, show:
+For `lesson` or `course`, report what was actually observed. If no learner
+performance has been observed, say so. Coverage is exposure, not competence;
+skipping practice creates no scored observation or review rating. When applicable, show:
 
 - target outcome;
 - evidence observed and hint level;
@@ -305,7 +276,7 @@ For `lesson` or `course`, show:
 - next retrieval and reason;
 - files or state changed, if any.
 
-If the learner has not supplied a desired horizon, choose a provisional one and
+Only when the learner chooses review: if they have not supplied a desired horizon, choose a provisional one and
 label it explicitly—for example, `Retention horizon: <duration>`—before naming
 the next retrieval. Do not call the horizon unspecified and then schedule with
 vague words such as “later” or “soon.”

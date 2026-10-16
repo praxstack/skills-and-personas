@@ -550,6 +550,13 @@ class TestRouting(CliTestCase):
             for key, expected in case["expected"].items():
                 self.assertEqual(result[key], expected, case["id"])
 
+    def test_visual_intuition_v1_default_lesson_and_sentence_override(self) -> None:
+        lesson = json.loads(self.run_cli("route", "--request", "Teach me fractions").stdout)
+        self.assertEqual(lesson["mode"], "lesson")
+        self.assertFalse(lesson["persistence"])
+        quick = json.loads(self.run_cli("route", "--request", "Explain fractions in one sentence").stdout)
+        self.assertEqual(quick["mode"], "quick")
+
     def test_route_uses_lightest_mode_and_honors_overrides(self) -> None:
         quick = json.loads(
             self.run_cli(

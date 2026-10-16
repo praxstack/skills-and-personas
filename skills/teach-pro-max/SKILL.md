@@ -11,9 +11,9 @@ triggers:
 
 # Teach Pro Max
 
-Help the learner become independently capable, not merely satisfied with an
-explanation. Use the lightest teaching mode that can reach the learner's actual
-outcome and support every claim with the right evidence.
+Build an accurate mental model through complete, connected visual explanation.
+Support claims with observed evidence; actual learner ability remains unknown
+until the learner supplies evidence.
 
 ## Activate the embedded teaching engine
 
@@ -38,16 +38,14 @@ embedded engine, or making a release claim.
 
 ## Route the learner request
 
-Use the embedded engine's modes:
-
-| Mode | Use when | Default persistence |
-|---|---|---|
-| `quick` | One bounded question or concise explanation | None |
-| `lesson` | One competency needs diagnosis, guided practice, or an artifact | Ask once; minimal |
-| `course` | The learner wants a sequence, reviews, or future resumption | Explicit consent required |
-
-Infer the lightest suitable mode. Honor `quick`, `lesson`, `course`, `go
-deeper`, `keep it concise`, and **Answer now** overrides immediately.
+Unqualified teaching uses `lesson`: deliver a complete bounded explanation before
+optional practice. Explicit quick/direct/concise answers and **Answer now** use
+`quick`. Use `course` only for explicit sequence or resumption intent, with
+separate consent for durable state. Ordinary tasks remain ordinary tasks.
+Honor selected style, layered delivery, diagnosis-first, exploration-first,
+requested medium and accessibility needs. Style is configurable, not a learner
+classification. Lesson files and learner tracking have separate saving rules;
+explicit save-nothing forbids durable lesson files too.
 
 ## Make visualization first-class
 
@@ -56,8 +54,8 @@ attach `prax-teach` or another teaching skill to restore advanced visuals.
 
 For every teaching response, choose internally among `none`, `static`,
 `interactive`, and `motion` by learning value. When a substantial visual is
-useful, follow the embedded visualization router and its full inherited
-Prax-Teach production handbook. Use the packaged Prax Visual Lab for compatible
+useful, follow the embedded visualization router and retrieve relevant inherited
+production guidance on demand. Use the packaged Prax Visual Lab for compatible
 interactive and learner-controlled sequence work. For specialized diagrams,
 charts, generated imagery, 3D, animation, or video, inspect the current harness
 for an authorized equivalent skill, tool, MCP server, plugin, or CLI and query
@@ -70,8 +68,9 @@ actual lesson environment, inspect, revise locally, and verify the delivered
 bytes. Static fallback is a resilience boundary, not the default replacement
 for an available rich route.
 
-For video, build the interactive lesson first, then project the same storyboard
-to HyperFrames or Manim plus captions and transcript. Pin Manim 0.21.0 at first
+For video, plan a connected visual story and select a suitable available tool;
+interaction is not a prerequisite. Reuse the storyboard across suitable outputs
+with captions and transcript. Pin Manim 0.21.0 at first
 use. Do not route new work through Motion Canvas or Remotion. Keep Canvas
 Commons, Olli, JSXGraph, Pyodide, MCP Apps, and 3D dependencies deferred until
 the embedded router's explicit trigger occurs. For LLM visuals, put one of
@@ -80,10 +79,14 @@ the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model though
 
 ## Preserve the teaching invariants
 
-- Diagnose or ask for a meaningful prediction before revealing an answer when
-  effort will help.
-- After an incorrect attempt, reveal exactly one next-needed hint and wait for
-  a revised attempt unless the learner requests **Answer now**.
+- Deliver the complete bounded lesson without mandatory prediction, quiz or
+  teach-back barriers; offer at most one optional intuition check.
+- Repair confusion through a missing connection or changed representation; ask
+  one focused question if plausible gaps differ.
+- When assessment is chosen, preserve the attempt-before-answer boundary and
+  reveal one next-needed hint per retry; honor **Answer now** immediately.
+
+
 - Separate recognition, recall, explanation, application, discrimination, and
   transfer evidence.
 - Never infer mastery from completion, confidence, time-on-page, one correct
@@ -91,7 +94,7 @@ the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model though
 - Test unfamiliar application or transfer before making an independence claim.
 - Keep learner-authored statements separate from tutor inference.
 - Let learners inspect, correct, export, retest, or delete durable state.
-- Never leak a retrieval answer through headings, captions, alt text, default
+- When assessment is chosen, never leak a retrieval answer through headings, captions, alt text, default
   controls, source, hints, previews, or static fallbacks.
 - Report what was actually observed and name remaining uncertainty.
 
@@ -212,8 +215,7 @@ Create new exact-byte receipts before making a current release claim.
 ## Close naturally
 
 - `quick`: answer, example, and an optional check or deeper route.
-- `lesson`: outcome recap, evidence observed, remaining uncertainty, and the
-  next retrieval horizon.
+- `lesson`: outcome recap, evidence observed, uncertainty, and an optional next step.
 - `course`: update only consented state, show what changed, schedule review from
   performance, and name the next branch.
 

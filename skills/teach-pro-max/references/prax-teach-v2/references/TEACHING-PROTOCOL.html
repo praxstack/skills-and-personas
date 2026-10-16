@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="TEACHING-PROTOCOL.md">
-  <meta name="source-sha256" content="6e7b61957b18673ebfd23cc0bcde034f288082aac5081eab6f984312e80ce98e">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="d555233b925cf5263c59bd0ca6d6c0820ce868cfc0fb7d25ac5d907078b4d541">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Teaching protocol</title>
@@ -84,74 +84,36 @@
 </ul>
 <p>Do not turn a quick question into a formal objective document.</p>
 <h2 id="teaching-sequence">Teaching sequence</h2>
-<h3 id="1-orient">1. Orient</h3>
-<ul>
-<li>Restate the outcome only when it reduces ambiguity.</li>
-<li>Connect to the learner’s goal or current work.</li>
-<li>Prefer a concrete anchor over a long definition.</li>
-</ul>
-<h3 id="2-diagnose">2. Diagnose</h3>
-<ul>
-<li>Ask one item that distinguishes plausible knowledge states.</li>
-<li>Include an honest “I don’t know” path.</li>
-<li>Prefer production over recognition when cognitive load permits.</li>
-<li>Inspect existing work before asking the learner to repeat it.</li>
-</ul>
-<h3 id="3-retrieve-or-predict">3. Retrieve or predict</h3>
-<ul>
-<li>Ask the learner to recall, predict, choose a strategy, or mark the first step.</li>
-<li>Keep the attempt low-stakes.</li>
-<li>In a live conversation, stop the turn after the retrieval question. Never append its answer in the same message unless the learner requested a self-contained answer key.</li>
-<li>Do not expose the answer in surrounding prose, option length, formatting, alt text, or UI suggestions.</li>
-</ul>
-<h3 id="4-model">4. Model</h3>
-<ul>
-<li>Explain the minimum prerequisite knowledge.</li>
-<li>Use one aligned worked example for novices in structured tasks.</li>
-<li>Integrate labels beside the element they explain.</li>
-<li>Make the strategy visible: say why each step is chosen.</li>
-<li>Fade detail for experts or after successful attempts.</li>
-</ul>
-<h3 id="5-guide">5. Guide</h3>
-<ul>
-<li>Wait for the learner’s attempt.</li>
-<li>Select the next hint from the ladder, not the full solution by default.</li>
-<li>Change representation or example when repeating wording does not help.</li>
-<li><strong>Immediate post-error return gate:</strong> after a materially incorrect live
-attempt, give exactly one next-needed hint, request a revised attempt, and end
-the tutor turn. Do not include the correction, decision rule, worked example,
-stronger hint, or transfer answer in that turn unless the learner requests
-<strong>Answer now</strong> or a safety/access exception requires direct disclosure.</li>
-</ul>
-<h3 id="6-feedback">6. Feedback</h3>
-<ul>
-<li>Identify correct reasoning before the gap.</li>
-<li>Name the gap at the task/process level.</li>
-<li>Give the principle or strategy that resolves it.</li>
-<li>Ask for a specific revised move.</li>
-</ul>
-<h3 id="7-transfer">7. Transfer</h3>
-<ul>
-<li>Change surface details, context, or the competing alternative.</li>
-<li>Ask the learner to justify why the concept applies or does not apply.</li>
-<li>Use debugging and discrimination tasks when misconceptions are confusable.</li>
-</ul>
-<h3 id="8-reflect">8. Reflect</h3>
-<ul>
-<li>Ask the learner to explain the idea in their own words, draw a mental model, or state a decision rule.</li>
-<li>Store learner-authored summaries verbatim or clearly labeled as learner-authored.</li>
-<li>Keep agent-generated summaries labeled as inference.</li>
-</ul>
-<h3 id="9-schedule">9. Schedule</h3>
-<ul>
-<li>Offer or schedule the next retrieval based on the desired horizon and observed performance.</li>
-<li>Revisit failures and high-hint successes sooner.</li>
-<li>Keep stable unassisted retrievals farther apart.</li>
-</ul>
+<p>Default: complete bounded explanation first, then at most one optional intuition
+check. Infer a useful starting level; ask only when missing context changes the
+explanation materially. Honor selected style, diagnosis-first, exploration-first,
+layered delivery, separate prerequisites and accessibility needs.</p>
+<p>Start from a concrete anchor. Plan connected scenes that expose entities,
+relationships and intermediate changes with an explanation of why each follows.
+Introduce prerequisites where needed. Each scene answers a question and connects
+to adjacent scenes; there is no fixed scene quota. Include a contrasting case
+only when it clarifies the idea, then connect to formal language, code, equations
+or argument. Explain analogy limits. Historical interpretation and literary
+meaning must retain uncertainty rather than imitate deterministic mechanisms.</p>
+<p>Build the whole bounded lesson before delivery. Navigable pacing is useful;
+mandatory learner turns are not required. Inspect content and actual delivery as
+capabilities permit; label checks not performed. On confusion, repair the likely
+missing connection immediately, or ask one focused question when gaps differ.
+After an unresolved retry, locate the remaining gap instead of paraphrasing again.</p>
+<h3 id="optional-assessment-branch">Optional assessment branch</h3>
+<p>Use diagnosis, prediction, guided practice, transfer, teach-back and review when
+the learner chooses them. For live retrieval stop at the question and wait.
+Never append the answer or leak it through source or accessibility text.</p>
+<p><strong>Immediate post-error return gate:</strong> during chosen assessment, give exactly one
+next-needed hint, request a revised attempt, and end the tutor turn before a
+stronger hint or explanatory model, unless <strong>Answer now</strong> or a safety/access
+exception applies. This gate does not restrict explanation-first teaching or
+confusion repair.</p>
 <h2 id="practical-executable-learning">Practical executable learning</h2>
 <p>Practical learning is a mode of this teaching protocol, not a second teaching
 skill. When the outcome requires operating, building, or debugging a real
-system, use this loop:</p>
+system, demonstrate the authentic behavior with explanation first. If the learner
+chooses practical exercises, use this loop:</p>
 <blockquote>
 <p>predict → run → inspect → modify → debug → explain → transfer</p>
 </blockquote>
@@ -195,7 +157,7 @@ existing lesson or course state.</p>
 </tr>
 <tr>
 <td>Resume a course</td>
-<td>Use one due retrieval and one current-goal check</td>
+<td>Recover the actual topic/position with active consent; offer review optionally</td>
 </tr>
 <tr>
 <td>Avoid needless intake</td>
@@ -241,7 +203,7 @@ gate above, not a compressed correction-and-model turn.</p>
 </ul>
 <p>Feedback effects are heterogeneous. The goal is not “more feedback”; it is information that closes a specific gap and enables another attempt. <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.03087/full">Wisniewski et al., 2020</a></p>
 <h2 id="practice-and-transfer">Practice and transfer</h2>
-<p>Use a deliberate progression:</p>
+<p>For learner-chosen practice, use a deliberate progression:</p>
 <ol>
 <li>worked example with explanation;</li>
 <li>completion problem with one missing step;</li>
@@ -343,7 +305,9 @@ gate above, not a compressed correction-and-model turn.</p>
 </ul>
 <h2 id="session-close">Session close</h2>
 <p>For <code>quick</code>, close with the answer and an optional check or deeper path.</p>
-<p>For <code>lesson</code> or <code>course</code>, show:</p>
+<p>For <code>lesson</code> or <code>course</code>, report what was actually observed. If no learner
+performance has been observed, say so. Coverage is exposure, not competence;
+skipping practice creates no scored observation or review rating. When applicable, show:</p>
 <ul>
 <li>target outcome;</li>
 <li>evidence observed and hint level;</li>
@@ -352,7 +316,7 @@ gate above, not a compressed correction-and-model turn.</p>
 <li>next retrieval and reason;</li>
 <li>files or state changed, if any.</li>
 </ul>
-<p>If the learner has not supplied a desired horizon, choose a provisional one and
+<p>Only when the learner chooses review: if they have not supplied a desired horizon, choose a provisional one and
 label it explicitly—for example, <code>Retention horizon: &lt;duration&gt;</code>—before naming
 the next retrieval. Do not call the horizon unspecified and then schedule with
 vague words such as “later” or “soon.”</p>
@@ -360,8 +324,8 @@ vague words such as “later” or “soon.”</p>
 </main>
   <footer>
     Canonical source: <a href="./TEACHING-PROTOCOL.md">TEACHING-PROTOCOL.md</a><br>
-    SHA-256: <code>6e7b61957b18673ebfd23cc0bcde034f288082aac5081eab6f984312e80ce98e</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>d555233b925cf5263c59bd0ca6d6c0820ce868cfc0fb7d25ac5d907078b4d541</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

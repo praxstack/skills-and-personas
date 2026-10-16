@@ -8,16 +8,17 @@ Route each request to the least costly teaching experience that can achieve the 
 
 1. Honor an explicit `quick`, `lesson`, `course`, `keep it concise`, `go deeper`, or **Answer now** request.
 2. Identify the requested outcome: understand, perform, retain, transfer, or build a course.
-3. Choose `quick` when one response plus an optional check can plausibly satisfy it.
-4. Choose `lesson` when success needs a guided sequence, transfer task, or reusable artifact.
-5. Choose `course` only for explicit multi-session intent, cumulative prerequisites, or accepted durable tracking.
+3. Choose `quick` for explicit brevity or a direct-answer request.
+4. Choose `lesson` for unqualified teaching: complete bounded visual explanation, optional practice.
+5. Choose `course` only for explicit sequence or resumption intent; persistence still needs consent.
 6. Ask one clarifying question only when a different answer would materially change the route.
 
 ## Routing table
 
 | Signal | Route | Notes |
 |---|---|---|
-| “What does X mean?” | `quick` | Answer directly; diagnose only if ambiguity matters |
+| “Teach me X” / “Explain X” | `lesson` | Complete bounded explanation; no mandatory assessment |
+| “Explain X in one sentence” | `quick` | Honor explicit brevity |
 | “Explain X in five minutes” | `quick` | Respect the timebox; one visual only if it materially helps |
 | “Quiz me on X” | `quick` or `lesson` | Quick for a short check; lesson for diagnosis plus remediation |
 | “Teach me to do X today” | `lesson` | One observable competency and transfer task |
@@ -48,10 +49,11 @@ Route each request to the least costly teaching experience that can achieve the 
 ### Contract
 
 - Define one observable outcome.
-- Use the complete teaching loop at least through guided attempt and transfer.
+- Build the complete bounded visual explanation before delivery. Practice, diagnosis and transfer checks are optional unless requested.
+- Offer at most one optional intuition check; a skipped check is not evidence.
 - Ask once before persisting a session summary or learner evidence.
 - If creating a durable lesson, make Markdown canonical and generate its HTML companion.
-- Close with evidence observed, remaining uncertainty, and one next retrieval.
+- Close with evidence observed, uncertainty and an optional next step. Schedule review only when chosen.
 
 ### Avoid
 
@@ -63,15 +65,14 @@ Route each request to the least costly teaching experience that can achieve the 
 
 ### Contract
 
-- Obtain explicit persistence consent.
+- Offer explicit persistence consent; declining or silence does not block ephemeral course teaching.
 - Establish the mission, target independent performance, desired retention horizon, source constraints, and access needs.
-- Diagnose prerequisites before fixing a long syllabus.
+- Introduce prerequisites where needed; diagnose first only when requested or material ambiguity requires it.
 - Store raw observations separately from inferred concept state.
 - Maintain a review queue and use later-session evidence before durable-mastery claims.
 - Let learner questions, annotations, errors, and goals change the next lesson.
 - Show every material learner-state update at session close.
-- Resume with exactly one next learner action selected from current goals, due
-  review, and the strongest unresolved evidence gap.
+- After validating active consent, state the actually recovered topic/position and offer exactly one next learner action as a suggestion. Allow continuation, topic change or starting fresh without mandatory assessment.
 
 ## Host adapters
 
@@ -83,7 +84,12 @@ harness when an equivalent native capability can satisfy the contract.
 
 ## Persistence consent
 
-Before the first durable write, say in one sentence:
+Before the first durable learner-state write, explain the resolved `.prax-teach`
+location and scope. New-directory consent must explicitly name preferences and
+continuity if requested; existing base consent needs a separate extension grant
+for those categories. Never persist a refusal to suppress future prompts.
+Lesson artifacts in sibling `lessons/` are separate; explain default saving and
+honor explicit save-nothing. For base practice tracking, say:
 
 > I can store your goal, practice evidence, misconceptions, and review schedule in `<resolved path>` so later sessions can adapt; you can inspect, correct, export, or delete it. Shall I persist this course?
 
@@ -91,6 +97,7 @@ If the learner declines:
 
 - continue in ephemeral lesson mode;
 - do not create learner-state files;
+- save lesson artifacts independently in `lessons/` by default and explain this; an explicit save-nothing request forbids durable lesson files too;
 - offer a copyable summary if useful.
 
 Consent to lesson files does not automatically grant consent to behavioral analytics or inferred learner state.
@@ -111,8 +118,8 @@ Demote without resistance when the learner requests speed, an answer, or less ce
 | Mode | Intake budget | Default content budget | Questions per turn |
 |---|---:|---:|---:|
 | `quick` | 0–1 question | One concept, one example, optional check | Usually 1 |
-| `lesson` | 1–3 focused questions | One competency and one transfer | 1 at a time |
-| `course` | Mission plus diagnostic | One bounded step per lesson | 1 at a time; compact batches only for setup |
+| `lesson` | 0–1 material clarification | Complete bounded explanation; optional check | 1 at a time |
+| `course` | Mission; optional diagnosis | One bounded complete lesson | 1 at a time; compact batches only for setup |
 
 These are defaults, not hard limits. Match the learner’s urgency and expertise.
 
@@ -122,7 +129,7 @@ These are defaults, not hard limits. Match the learner’s urgency and expertise
 |---|---|
 | Learner is frustrated | Shorten, change representation, or offer **Answer now**; do not infer low ability |
 | Source is missing or disputed | State uncertainty and research before teaching the disputed claim |
-| Visual fails | Continue with the static/text fallback; do not block the lesson |
+| Visual fails | After at most two repair attempts on that path, use an honest static equivalent; pause if the requested medium is essential |
 | Durable state is missing | Explain the gap, reconstruct only from learner-confirmed evidence, and avoid invented history |
 | Durable state conflicts with current performance | Record contradictory evidence, lower certainty, and offer a retest |
 | Learner asks for a high-stakes answer | Give appropriately scoped information, use authoritative sources, and avoid pretending tutoring replaces a professional |

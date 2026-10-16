@@ -1,0 +1,52 @@
+{
+  "schema_version": "visual-intuition/v1",
+  "cases": [
+    {
+      "id": "default-lesson",
+      "request": "Teach me fractions",
+      "expected": {
+        "mode": "lesson",
+        "persistence": false
+      }
+    },
+    {
+      "id": "sentence-quick",
+      "request": "Explain fractions in one sentence",
+      "expected": {
+        "mode": "quick"
+      }
+    },
+    {
+      "id": "ordinary-code",
+      "request": "Fix this Python function",
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null
+      }
+    },
+    {
+      "id": "answer-now",
+      "request": "Teach me fractions",
+      "expected": {
+        "mode": "quick"
+      },
+      "answer_now": true
+    },
+    {
+      "id": "explicit-course",
+      "request": "Teach me fractions",
+      "expected": {
+        "mode": "course",
+        "persistence": "consent_required"
+      },
+      "explicit_mode": "course"
+    },
+    {
+      "id": "requested-quiz",
+      "request": "Quiz me on fractions",
+      "expected": {
+        "mode": "lesson"
+      }
+    }
+  ]
+}
