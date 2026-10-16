@@ -67,8 +67,8 @@
 
 **Files:**
 - Create `docs/teach-pro-max/review-2026-10-16/CANDIDATE-RESULTS.md`.
-- Modify `skills/teach-pro-max/ENGINE-MANIFEST.json` only after applicable source checks pass; inspect actual existing manifest path before touching and report discrepancy.
-- Modify current candidate status documentation only if needed to state old receipts are historical; never rewrite historical receipts.
+- Modify `skills/teach-pro-max/references/ENGINE-MANIFEST.json` only after applicable source checks pass.
+- Modify `skills/teach-pro-max/references/prax-teach-v2/STATUS.md`, `STATUS.html`, `STATUS.json` only if needed to state old receipts are historical; never rewrite historical receipts.
 - Receipts, generated public example lessons, screenshots, sealed grading and rollback links remain external to skill source.
 
 **Interfaces:** Consume reviewed Task 1/2 commits. Produce immutable candidate source hash, deterministic test logs, actual delivery inspection, independent paired scores and rollback manifest. Candidate source is frozen before model comparisons. No post-evaluation source edits presented as evaluated bytes.
