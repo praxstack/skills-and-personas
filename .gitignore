@@ -50,3 +50,7 @@ AI_REVIEW.mdui-ux-pro-max-skill/
 
 # legacy 142MB archive exceeds GitHub hard limit; kept local-only
 prompts/agents/AI Therapist Agent Prompt.zip
+
+# Isolated development and per-plan scratch
+.worktrees/
+.superpowers/
