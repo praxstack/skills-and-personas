@@ -133,6 +133,7 @@ EXPECTED_VISUAL_VERIFIER_VERSION = "prax-teach-visual-verifier/1.1.0"
 EXPECTED_TEMPLATE_VERSION = "prax-teach-lesson/2.0.0"
 JSON_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 EXPECTED_SCHEMA_FILES = {
+    "continuity.schema.json",
     "concepts.schema.json",
     "event.schema.json",
     "learner.schema.json",

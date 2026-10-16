@@ -63,7 +63,7 @@ Explain the stored scope, location, purpose, and inspect/correct/export/delete
 controls before invoking `init`.
 
 ```bash
-python3 scripts/prax_teach.py init /absolute/path/to/learning-workspace \
+python3 scripts/prax_teach.py init /absolute/path/to/learning-directory/.prax-teach \
   --learner-id learner-local-1 \
   --goal "Apply index-selection principles to unseen workloads" \
   --horizon-days 30 \
@@ -86,6 +86,122 @@ During the complete locked operation, held workspace and state-directory
 descriptors bind reads and atomic replacements to the validated generation;
 renaming an ancestor and replacing it with a symlink therefore fails closed
 instead of redirecting a learner-state write into another workspace.
+
+## Optional directory continuity
+
+New learning directories use `<learning-dir>/.prax-teach` as the private runtime
+workspace. Do not precreate `.prax-teach`; only the consented `init` creates it.
+Keep learner-facing lessons independently at `<learning-dir>/lessons`, even
+when tracking is declined. The initializer's empty internal artifact folders
+need not be removed. An explicit save-nothing request forbids durable lesson
+files too; deliver in the host or use a removable temporary preview and explain
+host retention limits. Do not silently move or migrate existing workspaces.
+
+Base consent authorizes only its existing named categories. Separately explain
+user-stated preferences and continuation notes, their resolved location and
+controls, and obtain affirmative permission before the extension grant. Silence
+and continued teaching are not consent. After refusal, offer at most once in the
+current session; never persist a refusal merely to suppress future prompts.
+Ephemeral teaching remains available with the same teaching quality.
+
+Run from the embedded engine directory. The first command above initializes
+`/absolute/path/to/learning-directory/.prax-teach`; the following commands use
+that exact workspace. `--expected-revision 0` represents an absent record:
+
+```bash
+python3 scripts/prax_teach.py continuity-show /absolute/path/to/learning-directory/.prax-teach
+python3 scripts/prax_teach.py continuity-resume /absolute/path/to/learning-directory/.prax-teach
+python3 scripts/prax_teach.py continuity-grant /absolute/path/to/learning-directory/.prax-teach \
+  --consent --expected-revision 0
+```
+
+Inspection returns null for an absent legacy record without creating it.
+`continuity-resume` requires active base consent and, for an existing record,
+active extension consent. It returns the actual validated record, with no
+synthesized history, forced assessment or inferred competence. A successful
+`show` is never proof of permission to personalize teaching.
+
+Create a caller-selected UTF-8 JSON file, such as `continuity-update.json`, with
+one or more of these content fields (metadata is not accepted):
+
+```json
+{
+  "preferences": {
+    "medium": {"value": "static diagrams", "provenance": "user-stated"},
+    "detail": {"value": "explain each connection", "provenance": "user-stated"}
+  },
+  "covered_topics": ["equivalent fractions"],
+  "last_lesson": {"id": "fractions-1", "position": "end of equivalent-fractions explanation"},
+  "agent_summary": {"text": "Exposed to equivalent fractions; ability not assessed.", "provenance": "agent-authored"},
+  "next_topic": {"value": "adding fractions", "provenance": "learner-requested"}
+}
+```
+
+```bash
+python3 scripts/prax_teach.py continuity-update /absolute/path/to/learning-directory/.prax-teach \
+  --data continuity-update.json --expected-revision 1
+python3 scripts/prax_teach.py continuity-withdraw /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 2
+python3 scripts/prax_teach.py continuity-show /absolute/path/to/learning-directory/.prax-teach
+```
+
+The exact independent schema is `schemas/continuity.schema.json`:
+
+| Field | Shape and bound |
+|---|---|
+| `schema_version` | Integer 1, independently versioned |
+| `revision` | Integer 1..9007199254740991; booleans and floats rejected |
+| `consent` | Exactly `{ "status": "granted" }` or `{ "status": "withdrawn" }` |
+| `preferences` | Object with optional keys `teaching_style`, `delivery`, `medium`, `detail`, `language`, `accessibility`; each exactly `{ "value": "...", "provenance": "user-stated" }`, value 1..512 characters |
+| `covered_topics` | At most 100 strings, each 1..256 characters; exposure only |
+| `last_lesson` | Null or exactly `id` (1..256 characters) and `position` (1..512 characters) |
+| `agent_summary` | Null or exactly `text` (1..2048 characters) and `provenance: agent-authored` |
+| `next_topic` | Null or exactly `value` (1..512 characters) and `provenance: learner-requested` |
+
+Every object rejects unknown keys. Update input is capped at 262144 bytes;
+malformed JSON/UTF-8 fails. Each supplied content field replaces that entire
+field (no nested merge); omitted fields survive, and null clears the three
+nullable fields. Every successful grant, update, withdrawal or preference reset
+increments revision under the workspace lock; stale revisions fail without
+writing. Revision exhaustion fails instead of wrapping. Granting again requires
+`--consent` and active base consent; it retains content and never re-enables
+withdrawn base persistence. The schema enforces structure/provenance labels;
+the caller must supply only actual user-stated/requested values, no transcripts,
+keys, sensitive traits, diagnoses or inferred learning styles.
+
+Extension-only withdrawal stops personalization and content updates but retains
+inspection, export, withdrawal and reset controls. Base withdrawal blocks grant,
+update and resume too. Inspection/export/reset remain available afterward.
+Neither withdrawal rewrites historical evidence. Examples below continue from
+revision 3, the withdrawn record above:
+
+```bash
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 3 --preferences-only --dry-run
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 3 --preferences-only --confirm
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 4 --all --dry-run
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 4 --all --confirm
+```
+
+Preference-only reset clears all preferences, preserving the extension consent
+status, continuation fields and evidence. Full continuity reset deletes only the
+record and its grant using descriptor-anchored unlink. It returns null; later
+content writes require a fresh explicit grant at revision 0. Reset on an absent
+record is a no-op returning null; dry-run always reports the scope, current
+revision and whether a record exists, without changing it. Dry-run and confirm
+are mutually exclusive. Revision comparisons also apply to previews. After a
+full reset the revision restarts at 1 with a new grant; clients must discard
+cached revisions across reset (the revision is not a global generation ID).
+
+Full workspace `delete --all` also removes continuity, while sibling
+`<learning-dir>/lessons` survives. Removing lessons is a separate explicit
+request. Export is a learner-state export and does not promise a complete course
+archive. Unsafe or corrupt continuity fails closed, including inspection,
+export and deletion; preserve it for diagnosis rather than silently discarding
+it. No absent legacy record is added to exports.
 
 ## Record and rebuild evidence
 

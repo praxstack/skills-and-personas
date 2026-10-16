@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="SOURCES-AND-PRIVACY.md">
-  <meta name="source-sha256" content="8cf8c9d19b0f5952c79bdd58efda4ac4d42f0d22977e2663d5e27919e88d6314">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="adfe8962aca76513385dc1f1d1ad2d57f155f34667d1cedb504b90093b33e152">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Sources and privacy</title>
@@ -176,6 +176,29 @@ that file cannot satisfy the machine provenance contract.</p>
 <li>disable future persistence and reviews.</li>
 </ul>
 <p>Do not use silence or continued tutoring as consent.</p>
+<h2 id="directory-continuity-scope">Directory continuity scope</h2>
+<p>User-stated teaching/format/access preferences and continuation notes use the
+optional independent <code>state/continuity.json</code> inside <code>&lt;learning-dir&gt;/.prax-teach</code>.
+They require a separate explicit extension grant; old broad persistence consent
+does not authorize these categories. Active base and extension consent are both
+required to personalize from saved continuity or update it. Never store a
+refusal merely to suppress future prompts. Refusal or withdrawal still permits
+ephemeral teaching; inspection, export and deletion remain available.</p>
+<p>Keep bounded agent-authored summaries labeled and separate from user-stated
+preferences. Store the next topic only when the learner requested it. Covered
+topics mean exposure, never demonstrated ability. No raw transcripts, secrets,
+health/trait diagnoses or inferred learning styles belong in continuity.
+The runtime enforces field/provenance shapes and bounds; a label alone cannot
+verify that a caller's value was actually requested, so the teaching agent must
+preserve that evidence boundary.</p>
+<p>Lesson files at <code>&lt;learning-dir&gt;/lessons</code> are independent of learner tracking;
+explain this before saving them. Save-nothing means no durable lesson files or
+state writes; disclose host storage limits. Forgetting progress preserves
+sibling lesson files; their removal needs a separate request. Exports include
+valid optional continuity as learner data, not an implied course archive. Do not
+send saved learner records to remote visual tools: share only the minimum
+concept/model data needed for the authorized visual. No new remote service,
+telemetry, credentials or account is introduced by continuity.</p>
 <h2 id="security-and-imported-skills">Security and imported skills</h2>
 <p>Treat community skills and content packages as untrusted until inspected. Check:</p>
 <ul>
@@ -246,8 +269,8 @@ that file cannot satisfy the machine provenance contract.</p>
 </main>
   <footer>
     Canonical source: <a href="./SOURCES-AND-PRIVACY.md">SOURCES-AND-PRIVACY.md</a><br>
-    SHA-256: <code>8cf8c9d19b0f5952c79bdd58efda4ac4d42f0d22977e2663d5e27919e88d6314</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>adfe8962aca76513385dc1f1d1ad2d57f155f34667d1cedb504b90093b33e152</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

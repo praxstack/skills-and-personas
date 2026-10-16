@@ -1468,6 +1468,9 @@ def _validate_workspace_state(
     events = load_events(workspace)
     validate_event_source_resolution(events, source_library)
     validate_review_evidence_bindings(review_records, events)
+    from .continuity import load_continuity
+
+    load_continuity(workspace)
     return learner
 
 
@@ -2837,11 +2840,15 @@ def show_state(path: str) -> dict[str, Any]:
         misconceptions = read_json(workspace, "state/misconceptions.json")
         events = load_events(workspace)
         expected_concepts, expected_misconceptions = project_events(events)
+        from .continuity import load_continuity
+
+        continuity = load_continuity(workspace)
         if concepts != expected_concepts or misconceptions != expected_misconceptions:
             raise ValidationError(
                 "stored learner projections are stale or do not match the evidence log; run rebuild while persistence consent is active"
             )
     return {
+        "continuity": continuity,
         "concepts": concepts,
         "consent": learner["consent"],
         "evidence_event_count": len(events),

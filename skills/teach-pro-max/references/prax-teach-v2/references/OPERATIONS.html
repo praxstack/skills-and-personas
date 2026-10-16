@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="OPERATIONS.md">
-  <meta name="source-sha256" content="53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="e316257f7e56821d841b7a8ba1783884bb5255e1cdb8d3e2f8279d135fd89ffa">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Operations and evidence guide</title>
@@ -123,7 +123,7 @@ semantic visual leakage through geometry, color, emphasis, or layout as
 <h2 id="create-a-learner-workspace-only-after-consent">Create a learner workspace only after consent</h2>
 <p>Explain the stored scope, location, purpose, and inspect/correct/export/delete
 controls before invoking <code>init</code>.</p>
-<pre><code class="language-bash">python3 scripts/prax_teach.py init /absolute/path/to/learning-workspace \
+<pre><code class="language-bash">python3 scripts/prax_teach.py init /absolute/path/to/learning-directory/.prax-teach \
   --learner-id learner-local-1 \
   --goal "Apply index-selection principles to unseen workloads" \
   --horizon-days 30 \
@@ -145,6 +145,132 @@ During the complete locked operation, held workspace and state-directory
 descriptors bind reads and atomic replacements to the validated generation;
 renaming an ancestor and replacing it with a symlink therefore fails closed
 instead of redirecting a learner-state write into another workspace.</p>
+<h2 id="optional-directory-continuity">Optional directory continuity</h2>
+<p>New learning directories use <code>&lt;learning-dir&gt;/.prax-teach</code> as the private runtime
+workspace. Do not precreate <code>.prax-teach</code>; only the consented <code>init</code> creates it.
+Keep learner-facing lessons independently at <code>&lt;learning-dir&gt;/lessons</code>, even
+when tracking is declined. The initializer's empty internal artifact folders
+need not be removed. An explicit save-nothing request forbids durable lesson
+files too; deliver in the host or use a removable temporary preview and explain
+host retention limits. Do not silently move or migrate existing workspaces.</p>
+<p>Base consent authorizes only its existing named categories. Separately explain
+user-stated preferences and continuation notes, their resolved location and
+controls, and obtain affirmative permission before the extension grant. Silence
+and continued teaching are not consent. After refusal, offer at most once in the
+current session; never persist a refusal merely to suppress future prompts.
+Ephemeral teaching remains available with the same teaching quality.</p>
+<p>Run from the embedded engine directory. The first command above initializes
+<code>/absolute/path/to/learning-directory/.prax-teach</code>; the following commands use
+that exact workspace. <code>--expected-revision 0</code> represents an absent record:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py continuity-show /absolute/path/to/learning-directory/.prax-teach
+python3 scripts/prax_teach.py continuity-resume /absolute/path/to/learning-directory/.prax-teach
+python3 scripts/prax_teach.py continuity-grant /absolute/path/to/learning-directory/.prax-teach \
+  --consent --expected-revision 0
+</code></pre>
+<p>Inspection returns null for an absent legacy record without creating it.
+<code>continuity-resume</code> requires active base consent and, for an existing record,
+active extension consent. It returns the actual validated record, with no
+synthesized history, forced assessment or inferred competence. A successful
+<code>show</code> is never proof of permission to personalize teaching.</p>
+<p>Create a caller-selected UTF-8 JSON file, such as <code>continuity-update.json</code>, with
+one or more of these content fields (metadata is not accepted):</p>
+<pre><code class="language-json">{
+  "preferences": {
+    "medium": {"value": "static diagrams", "provenance": "user-stated"},
+    "detail": {"value": "explain each connection", "provenance": "user-stated"}
+  },
+  "covered_topics": ["equivalent fractions"],
+  "last_lesson": {"id": "fractions-1", "position": "end of equivalent-fractions explanation"},
+  "agent_summary": {"text": "Exposed to equivalent fractions; ability not assessed.", "provenance": "agent-authored"},
+  "next_topic": {"value": "adding fractions", "provenance": "learner-requested"}
+}
+</code></pre>
+<pre><code class="language-bash">python3 scripts/prax_teach.py continuity-update /absolute/path/to/learning-directory/.prax-teach \
+  --data continuity-update.json --expected-revision 1
+python3 scripts/prax_teach.py continuity-withdraw /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 2
+python3 scripts/prax_teach.py continuity-show /absolute/path/to/learning-directory/.prax-teach
+</code></pre>
+<p>The exact independent schema is <code>schemas/continuity.schema.json</code>:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Shape and bound</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>schema_version</code></td>
+<td>Integer 1, independently versioned</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>Integer 1..9007199254740991; booleans and floats rejected</td>
+</tr>
+<tr>
+<td><code>consent</code></td>
+<td>Exactly <code>{ "status": "granted" }</code> or <code>{ "status": "withdrawn" }</code></td>
+</tr>
+<tr>
+<td><code>preferences</code></td>
+<td>Object with optional keys <code>teaching_style</code>, <code>delivery</code>, <code>medium</code>, <code>detail</code>, <code>language</code>, <code>accessibility</code>; each exactly <code>{ "value": "...", "provenance": "user-stated" }</code>, value 1..512 characters</td>
+</tr>
+<tr>
+<td><code>covered_topics</code></td>
+<td>At most 100 strings, each 1..256 characters; exposure only</td>
+</tr>
+<tr>
+<td><code>last_lesson</code></td>
+<td>Null or exactly <code>id</code> (1..256 characters) and <code>position</code> (1..512 characters)</td>
+</tr>
+<tr>
+<td><code>agent_summary</code></td>
+<td>Null or exactly <code>text</code> (1..2048 characters) and <code>provenance: agent-authored</code></td>
+</tr>
+<tr>
+<td><code>next_topic</code></td>
+<td>Null or exactly <code>value</code> (1..512 characters) and <code>provenance: learner-requested</code></td>
+</tr>
+</tbody></table></div>
+<p>Every object rejects unknown keys. Update input is capped at 262144 bytes;
+malformed JSON/UTF-8 fails. Each supplied content field replaces that entire
+field (no nested merge); omitted fields survive, and null clears the three
+nullable fields. Every successful grant, update, withdrawal or preference reset
+increments revision under the workspace lock; stale revisions fail without
+writing. Revision exhaustion fails instead of wrapping. Granting again requires
+<code>--consent</code> and active base consent; it retains content and never re-enables
+withdrawn base persistence. The schema enforces structure/provenance labels;
+the caller must supply only actual user-stated/requested values, no transcripts,
+keys, sensitive traits, diagnoses or inferred learning styles.</p>
+<p>Extension-only withdrawal stops personalization and content updates but retains
+inspection, export, withdrawal and reset controls. Base withdrawal blocks grant,
+update and resume too. Inspection/export/reset remain available afterward.
+Neither withdrawal rewrites historical evidence. Examples below continue from
+revision 3, the withdrawn record above:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 3 --preferences-only --dry-run
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 3 --preferences-only --confirm
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 4 --all --dry-run
+python3 scripts/prax_teach.py continuity-reset /absolute/path/to/learning-directory/.prax-teach \
+  --expected-revision 4 --all --confirm
+</code></pre>
+<p>Preference-only reset clears all preferences, preserving the extension consent
+status, continuation fields and evidence. Full continuity reset deletes only the
+record and its grant using descriptor-anchored unlink. It returns null; later
+content writes require a fresh explicit grant at revision 0. Reset on an absent
+record is a no-op returning null; dry-run always reports the scope, current
+revision and whether a record exists, without changing it. Dry-run and confirm
+are mutually exclusive. Revision comparisons also apply to previews. After a
+full reset the revision restarts at 1 with a new grant; clients must discard
+cached revisions across reset (the revision is not a global generation ID).</p>
+<p>Full workspace <code>delete --all</code> also removes continuity, while sibling
+<code>&lt;learning-dir&gt;/lessons</code> survives. Removing lessons is a separate explicit
+request. Export is a learner-state export and does not promise a complete course
+archive. Unsafe or corrupt continuity fails closed, including inspection,
+export and deletion; preserve it for diagnosis rather than silently discarding
+it. No absent legacy record is added to exports.</p>
 <h2 id="record-and-rebuild-evidence">Record and rebuild evidence</h2>
 <p>Register the exact reviewed source version before any observation refers to it.
 Repeat <code>--supports</code> for each claim, concept, or item ID the source supports:</p>
@@ -568,8 +694,8 @@ accessibility field checks, and replication.</p>
 </main>
   <footer>
     Canonical source: <a href="./OPERATIONS.md">OPERATIONS.md</a><br>
-    SHA-256: <code>53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>e316257f7e56821d841b7a8ba1783884bb5255e1cdb8d3e2f8279d135fd89ffa</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

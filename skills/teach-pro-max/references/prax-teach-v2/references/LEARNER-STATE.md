@@ -32,7 +32,8 @@ state/
 ├── misconceptions.json
 ├── reviews.jsonl
 ├── sessions.jsonl
-└── sources.json
+├── sources.json
+└── continuity.json           optional independent schema v1
 ```
 
 ### `learner.json`
@@ -396,14 +397,41 @@ content-bound transaction replaces any state file.
 
 ## Resume and migration
 
-On resume:
+On resume, resolve the exact intended directory and validate its state. For
+personalization use `continuity-resume`, which requires active base persistence
+consent and, when a record exists, an explicit active continuity extension
+grant. `show` and `continuity-show` are inspection controls and do not authorize
+personalization. An absent legacy record returns null without writing it; offer
+the optional scope before storing anything. Never silently migrate or relocate
+an old workspace.
 
-1. Resolve the intended workspace; do not guess among similar paths.
-2. Validate schema versions and JSON/JSONL parseability.
-3. Read consent scope before other state.
-4. Summarize the goal, due reviews, recent evidence, uncertainty, and conflicts.
-5. Start with a due retrieval or current-goal check, not a long recap.
-6. Update only after new observable evidence.
+Briefly describe the recovered topic and learner-visible position, then let the
+learner continue, change topics or start fresh. A quiz is optional. No practice
+means no scored observation or review rating. Covered topics are exposure only,
+never mastery or evidence. Updates to preferences do not rewrite history.
+
+### Optional `continuity.json`
+
+The record has independent integer `schema_version: 1` and revision starting at
+1. Its explicit extension `consent.status` is `granted` or `withdrawn`.
+`preferences` permits only `teaching_style`, `delivery`, `medium`, `detail`,
+`language`, and `accessibility`; each value has `provenance: user-stated`.
+`covered_topics` lists exposed topics; `last_lesson` names an identifier and
+learner-visible position. A nullable `agent_summary` has explicit
+`provenance: agent-authored`; nullable `next_topic` requires
+`provenance: learner-requested`. Neither slot holds verbatim transcripts or
+inferred traits. See [Operations](OPERATIONS.md#optional-directory-continuity)
+for exact shapes, bounds and lifecycle commands.
+
+The independent record is validated under the existing workspace lock through
+anchored no-follow reads, private permissions and single-link checks. Unknown
+fields, wrong types, invalid provenance and oversized content fail visibly;
+malformed or unsafe optional state is never treated as absent. Inspect/export
+include valid continuity even after either consent is withdrawn. Only active
+base and extension grants permit content updates. Full continuity reset removes
+its grant; preference-only reset clears preferences and retains the consent
+status and evidence. Full workspace deletion also removes continuity and
+preserves sibling `lessons/` outside `.prax-teach`.
 
 On schema migration:
 

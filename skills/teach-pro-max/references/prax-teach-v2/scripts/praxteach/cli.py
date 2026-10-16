@@ -111,6 +111,33 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _add_timestamp(init)
 
+    for name in ("show", "resume", "grant", "update", "withdraw", "reset"):
+        continuity = subparsers.add_parser(
+            "continuity-" + name, help="directory continuity: " + name
+        )
+        continuity.add_argument("workspace")
+        if name in {"grant", "update", "withdraw", "reset"}:
+            continuity.add_argument("--expected-revision", type=int, required=True)
+        if name == "grant":
+            continuity.add_argument(
+                "--consent",
+                action="store_true",
+                help="explicitly grant preferences and continuity scope",
+            )
+        if name == "update":
+            continuity.add_argument(
+                "--data",
+                required=True,
+                help="UTF-8 JSON file with supported content fields",
+            )
+        if name == "reset":
+            scope = continuity.add_mutually_exclusive_group(required=True)
+            scope.add_argument("--preferences-only", action="store_true")
+            scope.add_argument("--all", action="store_true")
+            action = continuity.add_mutually_exclusive_group(required=True)
+            action.add_argument("--dry-run", action="store_true")
+            action.add_argument("--confirm", action="store_true")
+
     source_add = subparsers.add_parser(
         "source-add", help="add one reviewed, versioned source record"
     )
@@ -311,6 +338,42 @@ def dispatch(args: argparse.Namespace) -> Any:
             "status": "initialized",
             "workspace": str(workspace),
         }
+    if args.command.startswith("continuity-"):
+        from .continuity import (
+            grant_continuity,
+            inspect_continuity,
+            read_update_file,
+            reset_continuity,
+            update_continuity,
+            withdraw_continuity,
+        )
+
+        operation = args.command.removeprefix("continuity-")
+        if operation in {"show", "resume"}:
+            return inspect_continuity(args.workspace, resume=operation == "resume")
+        if operation == "grant":
+            return grant_continuity(
+                args.workspace,
+                consent=args.consent,
+                expected_revision=args.expected_revision,
+            )
+        if operation == "update":
+            return update_continuity(
+                args.workspace,
+                read_update_file(args.data),
+                expected_revision=args.expected_revision,
+            )
+        if operation == "withdraw":
+            return withdraw_continuity(
+                args.workspace, expected_revision=args.expected_revision
+            )
+        return reset_continuity(
+            args.workspace,
+            expected_revision=args.expected_revision,
+            preferences_only=args.preferences_only,
+            dry_run=args.dry_run,
+            confirm=args.confirm,
+        )
     if args.command == "observe":
         event = make_observation(
             session_id=args.session,

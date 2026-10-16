@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prax-teach.local/schemas/continuity.schema.json",
+  "title": "Optional directory continuity v1",
+  "$comment": "Independent of evidence and learner schemas. covered_topics records exposure only. consent is an explicit extension grant, never inferred from base consent. Content updates replace supplied fields (not nested merge), preserve omitted fields and increment revision under lock. Expected revision 0 means absent record; records start at 1. Preference-only reset clears all six preference keys, retaining consent and other fields; full reset deletes record and grant. Nullable values clear optional fields. No transcript, inferred traits, diagnoses, or mastery assertions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "revision",
+    "consent",
+    "preferences",
+    "covered_topics",
+    "last_lesson",
+    "agent_summary",
+    "next_topic"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "granted",
+            "withdrawn"
+          ]
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "teaching_style": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "user-stated"
+            }
+          }
+        },
+        "delivery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "user-stated"
+            }
+          }
+        },
+        "medium": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "user-stated"
+            }
+          }
+        },
+        "detail": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "user-stated"
+            }
+          }
+        },
+        "language": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "user-stated"
+            }
+          }
+        },
+        "accessibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "user-stated"
+            }
+          }
+        }
+      }
+    },
+    "covered_topics": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "last_lesson": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "position"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "position": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            }
+          }
+        }
+      ]
+    },
+    "agent_summary": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text",
+            "provenance"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "provenance": {
+              "const": "agent-authored"
+            }
+          }
+        }
+      ]
+    },
+    "next_topic": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "provenance"
+          ],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "provenance": {
+              "const": "learner-requested"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

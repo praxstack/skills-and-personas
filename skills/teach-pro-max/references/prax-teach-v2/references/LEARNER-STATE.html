@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="LEARNER-STATE.md">
-  <meta name="source-sha256" content="d08424e85040547aa2be2aaf8d49dd3402908fdc89971215c36b207e9edc33cb">
-  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="source-sha256" content="6c3879d883b36ce4008ddee42b01afda85bd4640aeeff21d77f032c9d1a17479">
+  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/2.0.0">
   <title>Learner-state contract</title>
@@ -79,7 +79,8 @@
 ├── misconceptions.json
 ├── reviews.jsonl
 ├── sessions.jsonl
-└── sources.json
+├── sources.json
+└── continuity.json           optional independent schema v1
 </code></pre>
 <h3 id="learnerjson"><code>learner.json</code></h3>
 <p>Store only learner-approved settings:</p>
@@ -392,15 +393,39 @@ basis, every scheduler row in the dependent same-item suffix, and the remaining
 event/review counts. Confirmation revalidates that exact plan before the
 content-bound transaction replaces any state file.</p>
 <h2 id="resume-and-migration">Resume and migration</h2>
-<p>On resume:</p>
+<p>On resume, resolve the exact intended directory and validate its state. For
+personalization use <code>continuity-resume</code>, which requires active base persistence
+consent and, when a record exists, an explicit active continuity extension
+grant. <code>show</code> and <code>continuity-show</code> are inspection controls and do not authorize
+personalization. An absent legacy record returns null without writing it; offer
+the optional scope before storing anything. Never silently migrate or relocate
+an old workspace.</p>
+<p>Briefly describe the recovered topic and learner-visible position, then let the
+learner continue, change topics or start fresh. A quiz is optional. No practice
+means no scored observation or review rating. Covered topics are exposure only,
+never mastery or evidence. Updates to preferences do not rewrite history.</p>
+<h3 id="optional-continuityjson">Optional <code>continuity.json</code></h3>
+<p>The record has independent integer <code>schema_version: 1</code> and revision starting at</p>
 <ol>
-<li>Resolve the intended workspace; do not guess among similar paths.</li>
-<li>Validate schema versions and JSON/JSONL parseability.</li>
-<li>Read consent scope before other state.</li>
-<li>Summarize the goal, due reviews, recent evidence, uncertainty, and conflicts.</li>
-<li>Start with a due retrieval or current-goal check, not a long recap.</li>
-<li>Update only after new observable evidence.</li>
+<li>Its explicit extension <code>consent.status</code> is <code>granted</code> or <code>withdrawn</code>.
+<code>preferences</code> permits only <code>teaching_style</code>, <code>delivery</code>, <code>medium</code>, <code>detail</code>,
+<code>language</code>, and <code>accessibility</code>; each value has <code>provenance: user-stated</code>.
+<code>covered_topics</code> lists exposed topics; <code>last_lesson</code> names an identifier and
+learner-visible position. A nullable <code>agent_summary</code> has explicit
+<code>provenance: agent-authored</code>; nullable <code>next_topic</code> requires
+<code>provenance: learner-requested</code>. Neither slot holds verbatim transcripts or
+inferred traits. See <a href="OPERATIONS.html#optional-directory-continuity">Operations</a>
+for exact shapes, bounds and lifecycle commands.</li>
 </ol>
+<p>The independent record is validated under the existing workspace lock through
+anchored no-follow reads, private permissions and single-link checks. Unknown
+fields, wrong types, invalid provenance and oversized content fail visibly;
+malformed or unsafe optional state is never treated as absent. Inspect/export
+include valid continuity even after either consent is withdrawn. Only active
+base and extension grants permit content updates. Full continuity reset removes
+its grant; preference-only reset clears preferences and retains the consent
+status and evidence. Full workspace deletion also removes continuity and
+preserves sibling <code>lessons/</code> outside <code>.prax-teach</code>.</p>
 <p>On schema migration:</p>
 <ul>
 <li>back up the exact state files;</li>
@@ -440,8 +465,8 @@ assign a <code>stale</code> status.</li>
 </main>
   <footer>
     Canonical source: <a href="./LEARNER-STATE.md">LEARNER-STATE.md</a><br>
-    SHA-256: <code>d08424e85040547aa2be2aaf8d49dd3402908fdc89971215c36b207e9edc33cb</code><br>
-    Generated: 2026-08-04T12:00:00.000Z<br>
+    SHA-256: <code>6c3879d883b36ce4008ddee42b01afda85bd4640aeeff21d77f032c9d1a17479</code><br>
+    Generated: 2026-10-16T17:34:54.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/2.0.0
   </footer>

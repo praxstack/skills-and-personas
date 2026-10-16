@@ -130,6 +130,13 @@ def export_workspace(path: str, output: str, *, exported_at: str) -> dict[str, A
                 "state/sources.json": read_bytes(workspace, "state/sources.json"),
             }
 
+            from .continuity import load_continuity
+
+            if load_continuity(workspace) is not None:
+                files["state/continuity.json"] = read_bytes(
+                    workspace, "state/continuity.json"
+                )
+
             source_records = source_record_index(source_library)
             active_bindings: dict[tuple[str, str], set[str]] = {}
             active_reference_count = 0

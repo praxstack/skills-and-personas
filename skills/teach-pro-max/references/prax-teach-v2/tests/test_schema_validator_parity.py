@@ -62,6 +62,66 @@ class SchemaValidatorParityTest(unittest.TestCase):
         validate_learner_document(inactive, require_active=False)
         self.assertEqual(self.schema_errors(inactive, self.learner_schema), [])
 
+    def test_independent_continuity_schema_runtime_parity(self) -> None:
+        from praxteach.continuity import validate_continuity_document
+
+        schema = json.loads((ROOT / "schemas/continuity.schema.json").read_text())
+        valid = {
+            "schema_version": 1,
+            "revision": 1,
+            "consent": {"status": "granted"},
+            "preferences": {"medium": {"value": "static", "provenance": "user-stated"}},
+            "covered_topics": ["fractions"],
+            "last_lesson": {"id": "one", "position": "end"},
+            "agent_summary": {
+                "text": "Exposed to fractions",
+                "provenance": "agent-authored",
+            },
+            "next_topic": {"value": "equivalence", "provenance": "learner-requested"},
+        }
+        cases = [
+            valid,
+            {**valid, "consent": {"status": "withdrawn"}},
+            {**valid, "agent_summary": None, "next_topic": None, "last_lesson": None},
+        ]
+        for value in cases:
+            validate_continuity_document(value)
+            self.assertEqual(self.schema_errors(value, schema), [])
+        mutations = [
+            ("schema_version", True),
+            ("schema_version", 1.0),
+            ("schema_version", 2),
+            ("revision", False),
+            ("revision", 1.0),
+            ("revision", 0),
+            ("revision", 9007199254740992),
+            ("consent", {"status": "other"}),
+            ("preferences", {"unknown": {"value": "x", "provenance": "user-stated"}}),
+            (
+                "preferences",
+                {"medium": {"value": "x" * 513, "provenance": "user-stated"}},
+            ),
+            ("preferences", {"medium": {"value": "x", "provenance": "inferred"}}),
+            ("covered_topics", ["x"] * 101),
+            ("covered_topics", ["x" * 257]),
+            ("covered_topics", [True]),
+            ("last_lesson", {"id": "x", "position": "x", "extra": 1}),
+            ("last_lesson", {"id": "x" * 257, "position": "x"}),
+            ("last_lesson", {"id": "x", "position": "x" * 513}),
+            ("agent_summary", {"text": "x" * 2049, "provenance": "agent-authored"}),
+            ("agent_summary", {"text": "x", "provenance": "user-stated"}),
+            ("next_topic", {"value": "x" * 513, "provenance": "learner-requested"}),
+            ("next_topic", {"value": "x", "provenance": "agent-authored"}),
+            ("extra", "unknown"),
+        ]
+        for key, replacement in mutations:
+            candidate = copy.deepcopy(valid)
+            candidate[key] = replacement
+            with self.subTest(key=key, value=str(replacement)[:50]):
+                with self.assertRaises(ValidationError):
+                    validate_continuity_document(candidate)
+                self.assertTrue(self.schema_errors(candidate, schema))
+
 
 if __name__ == "__main__":
     unittest.main()

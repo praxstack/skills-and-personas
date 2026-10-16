@@ -146,6 +146,33 @@ Show how to:
 
 Do not use silence or continued tutoring as consent.
 
+## Directory continuity scope
+
+User-stated teaching/format/access preferences and continuation notes use the
+optional independent `state/continuity.json` inside `<learning-dir>/.prax-teach`.
+They require a separate explicit extension grant; old broad persistence consent
+does not authorize these categories. Active base and extension consent are both
+required to personalize from saved continuity or update it. Never store a
+refusal merely to suppress future prompts. Refusal or withdrawal still permits
+ephemeral teaching; inspection, export and deletion remain available.
+
+Keep bounded agent-authored summaries labeled and separate from user-stated
+preferences. Store the next topic only when the learner requested it. Covered
+topics mean exposure, never demonstrated ability. No raw transcripts, secrets,
+health/trait diagnoses or inferred learning styles belong in continuity.
+The runtime enforces field/provenance shapes and bounds; a label alone cannot
+verify that a caller's value was actually requested, so the teaching agent must
+preserve that evidence boundary.
+
+Lesson files at `<learning-dir>/lessons` are independent of learner tracking;
+explain this before saving them. Save-nothing means no durable lesson files or
+state writes; disclose host storage limits. Forgetting progress preserves
+sibling lesson files; their removal needs a separate request. Exports include
+valid optional continuity as learner data, not an implied course archive. Do not
+send saved learner records to remote visual tools: share only the minimum
+concept/model data needed for the authorized visual. No new remote service,
+telemetry, credentials or account is introduced by continuity.
+
 ## Security and imported skills
 
 Treat community skills and content packages as untrusted until inspected. Check:
