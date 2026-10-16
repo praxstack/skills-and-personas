@@ -33,10 +33,19 @@
 - Regenerate `.html` companions for changed Markdown within P, and only those companions.
 - Create `docs/teach-pro-max/review-2026-10-16/POLICY-TEST-CHANGES.md` to identify superseded assertions and preserved protections.
 
-**Interfaces:** Keep route_request(request, answer_now=False, demote=False, explicit_mode=None) public behavior/shape compatible; unqualified teaching selects lesson. Explicit quick/direct/concise/ordinary task remains quick, course remains explicit sequence intent, never implied consent. Continuity operations arrive in Task 2; describe policy without inventing commands before then.
+**Interfaces:** Keep route_request(request, answer_now=False, demote=False, explicit_mode=None) public behavior/shape compatible; unqualified teaching selects lesson. Explicit quick/direct/concise remains quick; ordinary tasks keep action=ordinary_task and mode=null; course remains explicit sequence intent, never implied consent. Continuity operations arrive in Task 2; describe policy without inventing commands before then.
 
 - [ ] Read DESIGN-v1 in full and implement its teaching/visual requirements. Use complete bounded visual explanation first, optional one intuition check, targeted confusion repair, on-demand references, meaningful controls, truthful unavailable/essential medium handling, static equivalent, no fixed scene quota. Preserve quiz-only answer-leakage rules.
-- [ ] Add public versioned policy/routing tests before change; run to observe expected failure. Include 'Teach me fractions' lesson, 'Explain this in one sentence' quick, ordinary coding task quick, explicit course course, answer_now quick, requested quiz protections, visual explanation retrieval=false.
+- [ ] Add public versioned policy/routing tests before change; run to observe expected failure. Include 'Teach me fractions' lesson, 'Explain this in one sentence' quick, ordinary coding task action=ordinary_task and mode=null, explicit course course, answer_now quick, requested quiz protections, visual explanation retrieval=false.
+Concrete routing assertions for the new test module:
+```python
+assert route_request("Teach me fractions")["mode"] == "lesson"
+assert route_request("Explain fractions in one sentence")["mode"] == "quick"
+assert route_request("Fix this Python function")["action"] == "ordinary_task"
+assert route_request("Teach me fractions", answer_now=True)["mode"] == "quick"
+assert route_request("Teach me fractions", explicit_mode="course")["mode"] == "course"
+```
+
 - [ ] Change only conflicting old assertions and name each in POLICY-TEST-CHANGES.md; do not call old receipts current. Preserve historical fixture files unchanged.
 - [ ] Regenerate only named Markdown companions with `npm exec --yes --package=node@22 -- node scripts/render_markdown.mjs --trusted-root . <relative-md>` from P.
 - [ ] Run `.venv/bin/python -m unittest tests.test_visual_intuition_policy_v1 tests.test_core_cli tests.test_skill_contract tests.test_visual_routing tests.test_visual_verification -v`, and render checks for changed companions. Save logs outside P.
