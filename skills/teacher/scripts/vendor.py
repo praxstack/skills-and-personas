@@ -95,6 +95,14 @@ def git_head(root: Path) -> str | None:
         return None
 
 
+def git_files(root: Path, rel: str) -> list[str] | None:
+    """Files git tracks under root/rel, or None when root isn't a git checkout."""
+    if git_head(root) is None:
+        return None
+    out = subprocess.check_output(["git", "-C", str(root), "ls-files", "-z", "--", rel], text=True)
+    return sorted(f for f in out.split("\0") if f and (root / f).is_file() and not (root / f).is_symlink())
+
+
 def sync(sources: dict[str, Path], only: list[str] | None) -> int:
     manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"skills": {}}
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
@@ -110,7 +118,17 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
         dest = SKILLS / name
         if dest.exists():
             shutil.rmtree(dest)
-        shutil.copytree(src, dest, ignore=shutil.ignore_patterns(*SKIP_DIRS, *SKIP_FILES), symlinks=False)
+        tracked = git_files(sources[key], rel)
+        if tracked is None:
+            shutil.copytree(src, dest, ignore=shutil.ignore_patterns(*SKIP_DIRS, *SKIP_FILES), symlinks=False)
+        else:
+            # A git source: copy only what upstream commits, so a fresh clone hashes the same.
+            for f in tracked:
+                if _skipped(sources[key] / f, src):
+                    continue
+                target = dest / Path(f).relative_to(rel)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(sources[key] / f, target)  # keep upstream file modes
         digest, count = tree_hash(dest)
         manifest["skills"][name] = {
             "upstream": upstream,

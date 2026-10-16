@@ -63,7 +63,7 @@
     "concept-cartographer": {
       "files": 2,
       "license": "MIT (repo)",
-      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "new-skills/concept-cartographer",
       "tree_sha256": "9324e09faff1b2847692e3f95b6ebfd3f44f2c10607ed779d42d65ec08b8158d",
       "upstream": "https://github.com/praxstack/skills-and-personas"
@@ -111,7 +111,7 @@
     "lecture-alchemist": {
       "files": 4,
       "license": "MIT (repo)",
-      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "new-skills/lecture-alchemist",
       "tree_sha256": "e4a3a4d534f19aee3a25f49b17614449a8ab05665098518b9b7895559749e3b0",
       "upstream": "https://github.com/praxstack/skills-and-personas"
@@ -159,7 +159,7 @@
     "teach-pro-max": {
       "files": 804,
       "license": "MIT (repo)",
-      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "skills/teach-pro-max",
       "tree_sha256": "93702fd87ef663bdb3071f287d9fc27bb5098ef84e6dc481d982ab4f22606523",
       "upstream": "https://github.com/praxstack/skills-and-personas"
@@ -167,7 +167,7 @@
     "techtutor": {
       "files": 7,
       "license": "MIT (repo)",
-      "source_commit": "286a98fc67486fa91bb19f34a9c0be347f5db029",
+      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "new-skills/techtutor",
       "tree_sha256": "afe205b107fa6ee1429f56397721cfc9b1f4c41ed0be96b1825a8bfbaf25438f",
       "upstream": "https://github.com/praxstack/skills-and-personas"

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
+<title>Prax Visual Lab</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to lesson</a>
+<header><p><strong>Offline lesson</strong> · no model, account, network, or automatic upload</p><h1>Python floating point: predict, compare, transfer</h1></header>
+<main id="main-content">
+<article><h2>Static sequence</h2><ol><li><strong>Predict:</strong> Does <code>0.1 + 0.2</code> equal <code>0.3</code> exactly?</li><li><strong>Inspect:</strong> A common IEEE-754 binary floating-point evaluation produces <code>0.30000000000000004</code>.</li><li><strong>Explain:</strong> Decimal <code>0.1</code> and <code>0.2</code> cannot be represented exactly as finite binary fractions, so the computer adds nearby rounded values and rounds the sum.</li><li><strong>Transfer:</strong> Predict the evaluated result of <code>0.7 + 0.1</code> before checking it.</li><li><strong>Reflect:</strong> Explain the discrepancy in your own words.</li><li>Export the local receipt only if you choose to share it with a tutor.</li></ol></article>
+<prax-state-stepper id="stepper"></prax-state-stepper>
+<prax-parameter-lab label="Rounding boundary" min="0" max="1" value="0.3"></prax-parameter-lab>
+<prax-compare-views id="compare"></prax-compare-views>
+<prax-hint-engine id="hints"></prax-hint-engine>
+<prax-receipt-panel id="receipt"></prax-receipt-panel>
+</main>
+<noscript><p>JavaScript is disabled. The complete static sequence above remains available; interactive state and receipts require the local script.</p></noscript>
+<script type="module" src="./index.mjs"></script>
+<script type="module" src="./lesson-floating-point.mjs"></script>
+<footer><p>Offline artifact. No automatic upload. Delete or share the receipt deliberately.</p></footer>
+</body>
+</html>

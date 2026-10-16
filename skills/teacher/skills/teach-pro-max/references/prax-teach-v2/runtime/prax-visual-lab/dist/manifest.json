@@ -1,0 +1,42 @@
+{
+  "schema_version": "prax.visual-manifest/v1",
+  "runtime_version": "prax-visual-lab/0.1.0",
+  "source_sha256": "7302e91f91fb41944b63484a6aab226731bc26a26954ea393098d2051508b3d0",
+  "files": [
+    {
+      "path": "components.css",
+      "sha256": "c19b5325f0586a8027d8b83103ca3b62b48fb33f1b382dd4d7eb57663b39c527",
+      "bytes": 536
+    },
+    {
+      "path": "components.mjs",
+      "sha256": "bab43514c5007d24f23bf686707a3a91e776c72f8935ccd01b22dc6ba61d756d",
+      "bytes": 8451
+    },
+    {
+      "path": "core.mjs",
+      "sha256": "d5845a8030c200dcb6b168abeb10edaae5df42aacbedb7bb7c0b99fe6976ed60",
+      "bytes": 14417
+    },
+    {
+      "path": "index.html",
+      "sha256": "65ac34a732bf9123c855c6603c29328c0334050914ae1c32cd207e94a9e5a690",
+      "bytes": 2157
+    },
+    {
+      "path": "index.mjs",
+      "sha256": "79cb44c21108304dd88f93fc7de68fb3faee0f6897461a5e9a16223c71b192c9",
+      "bytes": 139
+    },
+    {
+      "path": "lesson-floating-point.mjs",
+      "sha256": "262318f9dcebf8cdd0e2d6f3408b1b22f7fff6a8c35ca9f43768484b5dadce04",
+      "bytes": 3081
+    },
+    {
+      "path": "styles.css",
+      "sha256": "644c372b3d2f4d125b9230fe68c95e81a54e5b6fcdc5303c0ccec0fccfb03d82",
+      "bytes": 602
+    }
+  ]
+}
