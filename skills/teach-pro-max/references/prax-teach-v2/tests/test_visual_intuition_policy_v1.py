@@ -37,6 +37,26 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
             with self.subTest(request=request):
                 self.assertEqual(route_request(request)["mode"], "lesson")
 
+    def test_direct_teaching_artifact_creation(self):
+        for request, mode in (
+            ("Build an interactive lesson", "lesson"),
+            ("Build a course for beginners", "course"),
+            ("Create a lesson on fractions", "lesson"),
+            ("Build a course for Python beginners", "course"),
+        ):
+            with self.subTest(request=request):
+                result = route_request(request)
+                self.assertEqual(result["action"], "teach")
+                self.assertEqual(result["mode"], mode)
+                self.assertEqual(result["persistence"], "consent_required" if mode == "course" else False)
+
+    def test_teaching_keywords_in_engineering_objects_are_ordinary(self):
+        for request in ("Build a course scheduler in Python", "Create lesson routing in the CLI"):
+            with self.subTest(request=request):
+                result = route_request(request)
+                self.assertEqual(result["action"], "ordinary_task")
+                self.assertIsNone(result["mode"])
+
     def test_explanation_is_not_retrieval(self):
         result = route_visual("Compare equal-sized fraction parts", retrieval=False)
         self.assertFalse(result["retrieval_safety"]["required"])

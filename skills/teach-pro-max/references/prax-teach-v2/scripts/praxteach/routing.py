@@ -60,10 +60,13 @@ LESSON_PATTERNS = (
     r"\btransfer\b.*\b(?:attempt|answer|case|exercise|practice|task)\b",
     r"\bwalk\s+me\s+through\b",
 )
-ORDINARY_TASK_PATTERNS = (
+CONTENT_TASK_PATTERNS = (
     r"^(?:(?:please|quickly)\s+)*(?:summarize|translate|proofread)\b",
     r"^(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:quickly\s+)?(?:summarize|translate|proofread)\b",
     r"^what\s+version\b.*\binstalled\b",
+)
+ORDINARY_TASK_PATTERNS = (
+    *CONTENT_TASK_PATTERNS,
     r"^(?:(?:please|quickly)\s+)*(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
     r"^(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:quickly\s+)?(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
     r"\b(?:do|complete|perform)\s+(?:this|the)\s+(?:task|change|work)\b",
@@ -73,8 +76,8 @@ ENGINEERING_CONTEXT_PATTERNS = (
     r"\b(?:python|typescript|javascript|swift|rust|go|java|json|yaml|sql)\b",
 )
 EXPLICIT_TEACHING_INTENT_PATTERNS = (
-    r"\b(?:create|build|make)\b.*\b(?:lesson|tutorial)\b.*\b(?:on|about|guided\s+practice)\b",
-    r"\b(?:create|build|make)\b.*\bcourse(?:\s+(?:on|about|and)\b|$)",
+    r"\b(?:create|build|make)\b.*\b(?:lesson|tutorial)(?:\s+(?:on|about|for|with|and)\b|$)",
+    r"\b(?:create|build|make)\b.*\bcourse(?:\s+(?:on|about|for|with|and)\b|$)",
     r"\b(?:create|build|make)\s+me\b.*\b(?:lesson|tutorial)\b",
     r"\bteach\s+me\b",
     r"\bhelp\s+me\s+(?:learn|understand|practice)\b",
@@ -420,6 +423,10 @@ def route_request(
         }
     if (
         _matches(ORDINARY_TASK_PATTERNS, normalized)
+        and (
+            _matches(CONTENT_TASK_PATTERNS, normalized)
+            or _matches(ENGINEERING_CONTEXT_PATTERNS, normalized)
+        )
         and not _matches(EXPLICIT_TEACHING_INTENT_PATTERNS, normalized)
     ):
         return {
@@ -448,6 +455,16 @@ def route_request(
             "mode": "lesson",
             "persistence": False,
             "reason": "Guided practice or transfer needs a bounded lesson sequence.",
+        }
+    if (
+        _matches(ORDINARY_TASK_PATTERNS, normalized)
+        and not _matches(EXPLICIT_TEACHING_INTENT_PATTERNS, normalized)
+    ):
+        return {
+            "action": "ordinary_task",
+            "mode": None,
+            "persistence": False,
+            "reason": "The request asks for task completion rather than teaching.",
         }
     return {
         "action": "teach",
