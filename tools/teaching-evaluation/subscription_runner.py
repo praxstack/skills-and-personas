@@ -34,15 +34,28 @@ def bundle(source):
         raise ValueError('teaching bundle exceeds frozen 200KB context limit')
     return text, hashes
 
+def inspect_events(events):
+    """Fail closed on invalid JSONL without losing raw failure receipts."""
+    safe = True
+    for number, line in enumerate(events.splitlines(), 1):
+        try:
+            event = json.loads(line)
+        except (ValueError, UnicodeError, RecursionError):
+            return False, f'invalid event JSON at line {number}'
+        if not isinstance(event, dict) or not isinstance(event.get('type'), str):
+            return False, f'invalid event object/type at line {number}'
+        if any(word in event['type'].lower() for word in ('tool', 'command', 'mcp')):
+            safe = False
+        if 'item' in event:
+            item = event['item']
+            if not isinstance(item, dict) or not isinstance(item.get('type'), str):
+                return False, f'invalid event item/type at line {number}'
+            if item['type'] not in ('agent_message', 'reasoning', 'error'):
+                safe = False
+    return safe, None
+
 def no_tools(events):
-    for line in events.splitlines():
-        event = json.loads(line)
-        if any(word in event.get('type', '').lower() for word in ('tool', 'command', 'mcp')):
-            return False
-        item = event.get('item', {})
-        if item and item.get('type') not in ('agent_message', 'reasoning', 'error'):
-            return False
-    return True
+    return inspect_events(events)[0]
 
 
 def digest(data):
@@ -164,10 +177,11 @@ def run(baseline, candidate, scenario, output, model, seconds=600, repetitions=3
                     (dest / f'turn-{index}.stderr.txt').write_bytes(err)
                     response = (work / 'response.txt').read_text() if (work / 'response.txt').exists() else ''
                     (dest / f'turn-{index}.response.txt').write_text(response)
+                    no_tool_events, events_parse_error = inspect_events(out)
                     write_json(dest / f'turn-{index}.json', {'exit_code': code, 'timed_out': timeout,
-                               'stdout_sha256': digest(out), 'stderr_sha256': digest(err), 'response_sha256': digest(response.encode()), 'no_tool_events': no_tools(out)})
+                               'stdout_sha256': digest(out), 'stderr_sha256': digest(err), 'response_sha256': digest(response.encode()), 'no_tool_events': no_tool_events, 'events_parse_error': events_parse_error})
                     history += [{'role': 'user', 'content': turn}, {'role': 'assistant', 'content': response}]
-                    if code or timeout or not response or not no_tools(out):
+                    if code or timeout or not response or not no_tool_events:
                         failed = True
                         break
                 write_json(dest / 'conversation.json', history)

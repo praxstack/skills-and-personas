@@ -76,3 +76,15 @@ Final runner SHA-256: `dcd2b93eef31ccacdc3500179dc0567c592072c47847539594665964a
 No original skill/offline evaluator bytes or global configuration were changed. Named paths only are staged. Receipts and temporary credentials are outside the teaching package; no credential bytes were intentionally logged. Both arms use identical transport/path sets/deadlines, separate role histories and output trees, and no cross-arm generated state. Scoring keys are neither accepted by scenario validation nor passed to teaching prompts. The runner does not silently accept missing grades, inspections, complete repetition matrix or nonnumeric checks. Public diagnostics remain public and no outcome implies human learning.
 
 Remaining limits: independent review and bank/config freeze are still required; actual runtime/renderer checks and secondary-host smoke are separate work; CLI helper schemas are not all removable but the measured combined boundary constrains their effects; trusted auth-home reads remain necessary; abrupt host termination can leave private temporary auth requiring cleanup; link-count changes have unknown cause and are diagnostic at final verification. No promotion/held-out quality claim is authorized by this task alone.
+
+## Review fix round 1
+
+Fixed the Important failure-finalization finding. Event decoding now validates JSONL event/item shapes without raising for malformed/truncated/invalid-Unicode or excessively nested JSON. Each turn records `events_parse_error` and fails closed with `no_tool_events:false`; raw stdout/stderr, turn status, conversation, artifact hashes, final failed result and manifest are finalized normally. Valid event streams retain their existing tool checks. No inference retry was added.
+
+Regression uses deterministic timed-out/nonzero execution with truncated JSON, non-object event, malformed item and non-string event type. For both actual runner arms it verifies raw stream retention, explicit decoding diagnostic, timeout/exit failure, conversation/artifact/result files and matching manifest hashes. The existing paired/timeout/gate tests remain passing.
+
+Command: `python3 -m unittest discover -s tools/teaching-evaluation -p 'test_*.py' -v`. Result: 13 tests passed. Exact output: `/Users/prax/Developer/prax-teach-evaluation-20261016/subscription-v2/unittest-fix-round-1.log`.
+
+Current runner SHA-256: `0e54d07a67c1dbe324d30fdb6f3733b46fae2cd3b32ff8b8380a12cb1047e3a0`. Earlier same-build live smoke/probe claims remain scoped to the original reported runner hash `dcd2b93eef31ccacdc3500179dc0567c592072c47847539594665964a8d41ed1`. This patch changes event validation/failure receipt handling only; CLI invocation, sandbox, supplied teaching data and inference transport are unchanged. Per controller instruction no additional authenticated smoke was run. No same-byte live claim is made for this revised hash; independent freeze must bind the revised version explicitly.
+
+Self-review: only runner, focused regression and this appended report changed; transport failure remains non-accepting and no keys/source/global settings were modified.

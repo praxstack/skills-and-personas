@@ -87,6 +87,39 @@ class RunnerTests(unittest.TestCase):
                 self.assertEqual(json.loads((output / ('1-' + arm) / 'turn-1.json').read_text())['exit_code'], 7)
             self.assertTrue((output / 'manifest.json').exists())
 
+    def test_malformed_timeout_events_finalize_all_failure_receipts(self):
+        for raw in (b'{"type":', b'[]', b'{"type":"item.completed","item":[]}', b'{"type":42}'):
+            with self.subTest(raw=raw), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                source = root / 'source'
+                source.mkdir()
+                (source / 'SKILL.md').write_text('public skill')
+                auth = root / 'public-auth-placeholder'
+                auth.write_text('not a credential')
+                output = root / 'receipts'
+                with patch.object(r.shutil, 'which', return_value='/bin/echo'), \
+                     patch.object(r, 'execute', return_value=(-9, raw, b'timed-out partial stream', True)):
+                    self.assertFalse(r.run(source, source, {'id': 'malformed', 'turns': ['public user']},
+                                           output, 'public-model', repetitions=1, auth=auth))
+                self.assertFalse(json.loads((output / 'result.json').read_text())['transport_passed'])
+                manifest = json.loads((output / 'manifest.json').read_text())
+                for arm in ('baseline', 'candidate'):
+                    dest = output / ('1-' + arm)
+                    self.assertEqual((dest / 'turn-1.stdout.jsonl').read_bytes(), raw)
+                    status = json.loads((dest / 'turn-1.json').read_text())
+                    self.assertEqual(status['exit_code'], -9)
+                    self.assertTrue(status['timed_out'])
+                    self.assertFalse(status['no_tool_events'])
+                    self.assertIsInstance(status['events_parse_error'], str)
+                    self.assertEqual(status['stdout_sha256'], r.digest(raw))
+                    self.assertEqual(len(json.loads((dest / 'conversation.json').read_text())), 2)
+                    self.assertTrue((dest / 'artifacts.json').is_file())
+                    for name in ('turn-1.json', 'conversation.json', 'artifacts.json'):
+                        path = dest / name
+                        self.assertEqual(manifest[str(path.relative_to(output))], r.digest(path.read_bytes()))
+                self.assertIn('result.json', manifest)
+                self.assertFalse(r.no_tools(raw))
+
     def test_failure_propagation(self):
         with patch.object(r.subprocess, 'Popen') as popen:
             popen.return_value.communicate.return_value = (b'failure', b'error')
