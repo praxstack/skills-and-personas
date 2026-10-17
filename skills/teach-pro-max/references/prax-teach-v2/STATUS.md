@@ -1,13 +1,26 @@
 # Prax Teach v2 release status
 
-## Short answer
+## Current candidate
 
-`prax-teach-v2` declares itself **pre-release** inside the reviewed tree. An
-engineering-candidate claim is established only when the predeclared immutable
-review and full-verification receipts recompute against those exact bytes and a
-clean-HEAD packaging event produces its sibling release receipt. This is not a
-scientifically supported claim that the system teaches better, it is not field-
-accessibility evidence, and it is not the canonical installed replacement.
+This source is the **2026-10-17 completion candidate**, with the schema-v2
+release label **pre-release**. Acceptance and installation are pending. Source
+implementation, focused tests and retained historical receipts do not establish
+current acceptance, installed state or improved human learning.
+
+The source status remains a candidate after its final source freeze. Final
+review, teaching comparison, rendered inspection, verification, release decision
+and installation results belong outside the source inventory they attest to.
+The planned record for this run is `completion-v3/ACCEPTANCE.json` in the
+external evaluation workspace. It is not yet established by this page and may
+be absent; the filename alone conveys no authority. General consumers need no
+particular machine path. Runtime eligibility uses the trusted, explicitly
+selected exact-source evidence descriptor and its validated bindings, never
+this prose or a guessed receipt location.
+
+The tables below describe inherited machinery and historical evidence against
+their original inventories. They do not certify the new candidate. New candidate
+verification must bind the final current source independently; old receipts and
+failed attempts remain unchanged and inspectable.
 
 The machine-readable source for this page is [STATUS.json](./STATUS.json).
 
@@ -25,7 +38,7 @@ The machine-readable source for this page is [STATUS.json](./STATUS.json).
 No public fixture, synthetic study, agent output review, scheduler smoke, Flint
 render, or SkillOpt import may be promoted into a human-learning claim.
 
-## Blueprint phase closure
+## Inherited blueprint phase history
 
 | Phase | Phase-wide evidence floor | What exists now | What remains external or conditional |
 |---|---|---|---|
@@ -41,12 +54,12 @@ below but cannot promote the aggregate phase. “Evaluated” in Phase 3 means t
 machinery produced reproducible public or synthetic receipts; it does not mean
 a learner-outcome study was run.
 
-## Capability evidence levels
+## Historical capability evidence levels
 
 | Capability | Evidence level | Claim limit |
 |---|---|---|
 | Legacy templates and 38-tool visual registry | Implemented | 5 assets remain byte-identical; 7 registry/router/helper assets are explicitly portability-adapted; 12 registry tests pass; no learner-benefit claim |
-| Mode, teaching, and visual behavior | Evaluated | Attempt 21 passed 8/8 with 20 exact bindings, replayable execution, and independent item-level review; not held-out quality, provider ablation, field accessibility, or learner outcomes |
+| Mode, teaching, and visual behavior | Evaluated historically | Attempt 21 passed 8/8 against its 20 original bindings; historical replay and review do not establish current candidate quality, provider ablation, field accessibility, or learner outcomes |
 | Learner state, correction, deletion, and export | Implemented | Synthetic workspace, crash-recovery, and containment tests; not representative field use |
 | FSRS review scheduling | Dependency-exercised | Real `fsrs==6.3.1`, performance-bound ratings, replay validation, and golden vectors; not outcome calibration |
 | Markdown-to-HTML artifacts | Implemented | Automated parity, security, and accessibility-structure checks; not browser, WCAG-conformance, or field-accessibility certification |
@@ -63,9 +76,10 @@ a learner-outcome study was run.
 
 ## Criterion ledger contract
 
-`STATUS.json` schema version 2 contains exactly one ordered entry for each
-`AC-00` through `AC-25`. A criterion state is accepted only when every typed
-evidence binding recomputes:
+`STATUS.json` retains schema version 2 and exactly one ordered entry for each
+`AC-00` through `AC-25`. All current-candidate criterion states remain pending;
+inherited evidence references are retained without claiming current passage.
+A criterion state is accepted only when every typed evidence binding recomputes:
 
 - `path` binds a package-contained regular file to its current SHA-256;
 - `receipt` names an allowlisted receipt whose own payload, manifests, and
@@ -79,11 +93,14 @@ final `AC-22` and `AC-24` receipt paths are predeclared so those receipts can be
 generated after the reviewed payload is frozen without editing this ledger and
 invalidating the review cycle. `AC-25` remains pending in the committed tree:
 the non-circular sibling release JSON is the durable record that closes the
-clean-HEAD commit/archive event.
+clean-HEAD commit/archive event. These retained bindings are evidence references,
+not permission to promote this candidate. External current verification and the
+release decision must remain bound to the final source without editing source
+status after the acceptance freeze.
 
 ## Forward behavior history
 
-The public AC-23 gate passed on attempt 21: all eight cases were regenerated in
+The historical public AC-23 gate passed on attempt 21: all eight cases were regenerated in
 distinct fresh tasks, hash-bound, and independently scored. Earlier failures and
 superseded passes are not erased:
 
@@ -109,9 +126,9 @@ superseded passes are not erased:
 | 18 | 7/8 | Rejected because the course response omitted an explicit ephemeral alternative; exact failed corpus retained |
 | 19 | 8/8, later invalidated | Passed, then final routing security and lesson-capability binding changed the bound source; exact evidence retained |
 | 20 | 8/8, later invalidated | Passed, then formatter-only normalization changed the bound routing source; exact evidence retained |
-| 21 | 8/8 | Current release-eligible fresh-context run for the exact 20 bound artifacts |
+| 21 | 8/8 | Historical fresh-context run for its exact 20 original artifacts; not current candidate evidence |
 
-The current lesson transcript contains an initial learner error, exactly one
+The historical lesson transcript contains an initial learner error, exactly one
 next-needed hint followed by a turn boundary, scaffolded repair, an unseen
 unassisted transfer, and a provisional one-week horizon with a 48-hour re-test. The practical case completes
 predict, run, inspect, modify, debug, explain, and transfer in six tutor and
@@ -122,8 +139,10 @@ See [forward evidence](./evidence/forward/README.md).
 
 ## Accessibility inspection boundary
 
-Five named package pages, including Prax Visual Lab, passed real-Chrome console, responsive-layout, and
-accessibility-tree checks at desktop and narrow viewports. Manual
+Five historical named package pages, including Prax Visual Lab, passed
+real-Chrome console, responsive-layout, and accessibility-tree checks at desktop
+and narrow viewports against their original bytes. Current candidate rendered
+inspection requires new exact-source evidence. Manual
 assistive-technology, WCAG-conformance, and representative-user evidence remain
 unverified; EG-03 stays parked.
 
@@ -140,9 +159,10 @@ unverified; EG-03 stays parked.
 
 ## What “ready” means
 
-Ready means the package passes the frozen engineering contract, immutable
-payload reviews, trusted full verification, and scoped packaging gate. It may
-then be explicitly installed as a candidate to run the next evidence stages. It
+Ready requires the final candidate to pass the unchanged engineering contract,
+exact-payload reviews, held-out teaching comparisons, rendered inspection,
+trusted full verification, and scoped packaging gate. Acceptance and reversible
+installation must be recorded externally. It
 does **not** mean “best tutor,” “proven to teach better,” “field accessible,” or
 “automatic replacement for `prax-teach`.” Those labels remain blocked until the
 corresponding evidence gates pass.

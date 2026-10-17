@@ -1,174 +1,174 @@
 {
   "capabilities": [
     {
-      "claim_limit": "The frozen-baseline contract and review surface exist; final frozen-spec review is required before release.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The frozen-baseline contract and review surface exist; final frozen-spec review is required before release.",
       "evidence": [
-        "external frozen baseline manifest retained outside the later candidate Git history",
-        "exact-payload frozen-spec review contract"
+        "Historical machinery/evidence: external frozen baseline manifest retained outside the later candidate Git history",
+        "Historical machinery/evidence: exact-payload frozen-spec review contract"
       ],
       "id": "baseline-provenance",
       "state": "specified"
     },
     {
-      "claim_limit": "Eight assets are byte-identical or renamed-byte-identical and four registry/helper assets are explicitly portability-adapted; this does not establish learner benefit.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. Eight assets are byte-identical or renamed-byte-identical and four registry/helper assets are explicitly portability-adapted; this does not establish learner benefit.",
       "evidence": [
-        "four byte-identical workspace templates",
-        "38-tool portable visualization registry",
-        "12 passing deterministic registry tests",
-        "byte-identical router SVG and PNG"
+        "Historical machinery/evidence: four byte-identical workspace templates",
+        "Historical machinery/evidence: 38-tool portable visualization registry",
+        "Historical machinery/evidence: 12 passing deterministic registry tests",
+        "Historical machinery/evidence: byte-identical router SVG and PNG"
       ],
       "id": "legacy-assets",
       "state": "implemented"
     },
     {
-      "claim_limit": "The frozen public behavior rubric passed; this is not held-out quality, provider ablation, field accessibility, or learner-outcome evidence.",
+      "claim_limit": "Attempt 21 is historical evidence against its original 20 bindings. It does not establish current completion-candidate acceptance, held-out quality, provider ablation, field accessibility or learner outcomes.",
       "evidence": [
-        "scripts/prax_teach.py route and visual-route",
-        "fixtures/routing-cases.json",
-        "fresh all-case attempt 21 passed 8 of 8 after failed and invalidated attempts were retained with their exact limitations",
-        "independent reviewer verified all 20 declared rubric, run, source, context, output, and execution bindings"
+        "Historical machinery/evidence: scripts/prax_teach.py route and visual-route",
+        "Historical machinery/evidence: fixtures/routing-cases.json",
+        "Historical machinery/evidence: fresh all-case attempt 21 passed 8 of 8 after failed and invalidated attempts were retained with their exact limitations",
+        "Historical machinery/evidence: independent reviewer verified all 20 declared rubric, run, source, context, output, and execution bindings"
       ],
       "id": "mode-and-visual-routing",
       "state": "evaluated"
     },
     {
-      "claim_limit": "The local engine is tested with synthetic workspaces; it has not been field-tested with representative learners.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The local engine is tested with synthetic workspaces; it has not been field-tested with representative learners.",
       "evidence": [
-        "consent-before-first-byte and exact state-fidelity tests",
-        "deterministic replay, correction, and invalidation tests",
-        "exact item deletion with content-bound crash-recovery journal",
-        "generation-safe locking and descriptor-contained export tests"
+        "Historical machinery/evidence: consent-before-first-byte and exact state-fidelity tests",
+        "Historical machinery/evidence: deterministic replay, correction, and invalidation tests",
+        "Historical machinery/evidence: exact item deletion with content-bound crash-recovery journal",
+        "Historical machinery/evidence: generation-safe locking and descriptor-contained export tests"
       ],
       "id": "learner-state",
       "state": "implemented"
     },
     {
-      "claim_limit": "The pinned scheduler and golden vectors were exercised; schedule quality for real learners remains unmeasured.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The pinned scheduler and golden vectors were exercised; schedule quality for real learners remains unmeasured.",
       "evidence": [
-        "fsrs==6.3.1 in uv.lock",
-        "performance-bound rating and explanation derivation",
-        "strict transition, disable-state, and append-after-deletion replay tests",
-        "official new-card golden vectors"
+        "Historical machinery/evidence: fsrs==6.3.1 in uv.lock",
+        "Historical machinery/evidence: performance-bound rating and explanation derivation",
+        "Historical machinery/evidence: strict transition, disable-state, and append-after-deletion replay tests",
+        "Historical machinery/evidence: official new-card golden vectors"
       ],
       "id": "review-scheduler",
       "state": "dependency-exercised"
     },
     {
-      "claim_limit": "Named pages passed real-Chrome console, responsive-layout, and accessibility-tree checks; WCAG conformance, manual assistive-technology testing, and representative-user evidence remain unverified.",
+      "claim_limit": "The retained five-page Chrome inspection applies to original historical bytes. Current candidate rendered inspection requires new exact-source evidence; WCAG conformance, manual assistive-technology testing and representative-user evidence remain unverified.",
       "evidence": [
-        "pinned Marked and sanitize-html renderer",
-        "full-byte deterministic parity checks",
-        "artifact security and accessibility-structure validator",
-        "real-Chrome inspection receipt for five named pages"
+        "Historical machinery/evidence: pinned Marked and sanitize-html renderer",
+        "Historical machinery/evidence: full-byte deterministic parity checks",
+        "Historical machinery/evidence: artifact security and accessibility-structure validator",
+        "Historical machinery/evidence: real-Chrome inspection receipt for five named pages"
       ],
       "id": "markdown-html-artifacts",
       "state": "implemented"
     },
     {
-      "claim_limit": "Public and synthetic fixtures prove harness mechanics only; no matched provider ablation has been run.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. Public and synthetic fixtures prove harness mechanics only; no matched provider ablation has been run.",
       "evidence": [
-        "fresh paired workspaces",
-        "external hidden-bank boundary",
-        "hard-gate-first reports",
-        "deterministic bootstrap output"
+        "Historical machinery/evidence: fresh paired workspaces",
+        "Historical machinery/evidence: external hidden-bank boundary",
+        "Historical machinery/evidence: hard-gate-first reports",
+        "Historical machinery/evidence: deterministic bootstrap output"
       ],
       "id": "evaluation-harness",
       "state": "evaluated"
     },
     {
-      "claim_limit": "Allocation and analysis machinery ran on synthetic inputs; it is not human-outcome evidence.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. Allocation and analysis machinery ran on synthetic inputs; it is not human-outcome evidence.",
       "evidence": [
-        "study protocol validation",
-        "seeded user-level allocation",
-        "blinded assessment identifiers",
-        "synthetic attrition, fidelity, effect, and interval report"
+        "Historical machinery/evidence: study protocol validation",
+        "Historical machinery/evidence: seeded user-level allocation",
+        "Historical machinery/evidence: blinded assessment identifiers",
+        "Historical machinery/evidence: synthetic attrition, fidelity, effect, and interval report"
       ],
       "id": "learner-study-machinery",
       "state": "evaluated"
     },
     {
-      "claim_limit": "The real compiler path ran and warnings fail closed; rendered-chart correctness and learner value still require review.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The real compiler path ran and warnings fail closed; rendered-chart correctness and learner value still require review.",
       "evidence": [
-        "flint-chart==0.4.1",
-        "flint-chart-mcp==0.4.1",
-        "durable SVG, backend spec, semantic table, and manifest smoke artifacts"
+        "Historical machinery/evidence: flint-chart==0.4.1",
+        "Historical machinery/evidence: flint-chart-mcp==0.4.1",
+        "Historical machinery/evidence: durable SVG, backend spec, semantic table, and manifest smoke artifacts"
       ],
       "id": "flint-adapter",
       "state": "dependency-exercised"
     },
     {
-      "claim_limit": "The real adapter and measured isolation boundary ran; no optimization lift is claimed and no proposal is auto-adopted.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The real adapter and measured isolation boundary ran; no optimization lift is claimed and no proposal is auto-adopted.",
       "evidence": [
-        "SkillOpt 0.2.0 source commit e4ea6a6771e797ef820cdd8bfea64c57e0481065",
-        "real EnvAdapter registration through both upstream entrypoints",
-        "content-bound per-run runner clone and adversarial macOS sandbox probes",
-        "staged-only hard-gated proposal path"
+        "Historical machinery/evidence: SkillOpt 0.2.0 source commit e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+        "Historical machinery/evidence: real EnvAdapter registration through both upstream entrypoints",
+        "Historical machinery/evidence: content-bound per-run runner clone and adversarial macOS sandbox probes",
+        "Historical machinery/evidence: staged-only hard-gated proposal path"
       ],
       "id": "skillopt-adapter",
       "state": "dependency-exercised"
     },
     {
-      "claim_limit": "Exports are format-compatible deterministic packages; downstream host interoperability is not universally certified.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. Exports are format-compatible deterministic packages; downstream host interoperability is not universally certified.",
       "evidence": [
-        "Anki text import",
-        "QTI 2.2",
-        "LiaScript",
-        "thin H5P package"
+        "Historical machinery/evidence: Anki text import",
+        "Historical machinery/evidence: QTI 2.2",
+        "Historical machinery/evidence: LiaScript",
+        "Historical machinery/evidence: thin H5P package"
       ],
       "id": "ecosystem-exports",
       "state": "implemented"
     },
     {
-      "claim_limit": "The validator and schema-v2 ledger are implemented; immutable review and full-verification receipts still govern release.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The validator and schema-v2 ledger are implemented; immutable review and full-verification receipts still govern release.",
       "evidence": [
-        "scripts/validate_workspace.py",
-        "typed criterion evidence with fail-closed receipt recomputation",
-        "adversarial release-ledger tests"
+        "Historical machinery/evidence: scripts/validate_workspace.py",
+        "Historical machinery/evidence: typed criterion evidence with fail-closed receipt recomputation",
+        "Historical machinery/evidence: adversarial release-ledger tests"
       ],
       "id": "package-validation",
       "state": "implemented"
     },
     {
-      "claim_limit": "Deterministic Markdown/HTML generation and claim-boundary checks exist; current release parity remains subject to the final validator.",
+      "claim_limit": "2026-10-17 completion candidate; acceptance and installation pending. Final decision is planned outside the source inventory at completion-v3/ACCEPTANCE.json in the external evaluation workspace; it may be absent and its name is not evidence. Portable runtime authority is the trusted selected exact-source evidence descriptor and validated bindings, not a machine-specific path. Source status remains pre-release after final freeze.",
       "evidence": [
-        "canonical Markdown with deterministic HTML companions",
-        "source-hash and exact-byte parity validation"
+        "Historical machinery/evidence: canonical Markdown with deterministic HTML companions",
+        "Historical machinery/evidence: source-hash and exact-byte parity validation"
       ],
       "id": "documentation-truth",
       "state": "implemented"
     },
     {
-      "claim_limit": "Trusted full-verification orchestration exists; no green release claim is accepted without its current recomputed receipt.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. Trusted full-verification orchestration exists; no green release claim is accepted without its current recomputed receipt.",
       "evidence": [
-        "scripts/verify.py",
-        "schema-v3 root-manifest, dependency, bounded-gate, and postflight receipt contract"
+        "Historical machinery/evidence: scripts/verify.py",
+        "Historical machinery/evidence: schema-v3 root-manifest, dependency, bounded-gate, and postflight receipt contract"
       ],
       "id": "full-verification",
       "state": "implemented"
     },
     {
-      "claim_limit": "The exact-payload review contract exists; code, frozen-spec, and architecture-council receipts count only when they recompute against the current payload.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The exact-payload review contract exists; code, frozen-spec, and architecture-council receipts count only when they recompute against the current payload.",
       "evidence": [
-        "evidence/reviews/payload.json",
-        "three independently recomputed review receipt paths"
+        "Historical machinery/evidence: evidence/reviews/payload.json",
+        "Historical machinery/evidence: three independently recomputed review receipt paths"
       ],
       "id": "independent-review",
       "state": "specified"
     },
     {
-      "claim_limit": "The immutable-Git archive gate and external sibling-receipt protocol are implemented; the actual AC-25 release event remains pending.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. The immutable-Git archive gate and external sibling-receipt protocol are implemented; the actual AC-25 release event remains pending.",
       "evidence": [
-        "scripts/build_package.py",
-        "tests/test_build_package.py",
-        "references/OPERATIONS.md non-circular sibling receipt protocol"
+        "Historical machinery/evidence: scripts/build_package.py",
+        "Historical machinery/evidence: tests/test_build_package.py",
+        "Historical machinery/evidence: references/OPERATIONS.md non-circular sibling receipt protocol"
       ],
       "id": "release-package",
       "state": "implemented"
     },
     {
-      "claim_limit": "No real delayed learner study has supplied the evidence required for this state.",
+      "claim_limit": "Inherited capability level; current completion-candidate acceptance and installation remain pending. No real delayed learner study has supplied the evidence required for this state.",
       "evidence": [
-        "EG-04 through EG-06 remain parked"
+        "Historical machinery/evidence: EG-04 through EG-06 remain parked"
       ],
       "id": "north-star-outcome",
       "state": "scientifically-unproven"
@@ -186,7 +186,7 @@
         }
       ],
       "id": "AC-00",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -199,7 +199,7 @@
         }
       ],
       "id": "AC-01",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -217,7 +217,7 @@
         }
       ],
       "id": "AC-02",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -231,7 +231,7 @@
         }
       ],
       "id": "AC-03",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -245,7 +245,7 @@
         }
       ],
       "id": "AC-04",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -259,7 +259,7 @@
         }
       ],
       "id": "AC-05",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -278,7 +278,7 @@
         }
       ],
       "id": "AC-06",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -292,7 +292,7 @@
         }
       ],
       "id": "AC-07",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -302,11 +302,11 @@
         {
           "kind": "path",
           "path": "tests/test_state_security.py",
-      "sha256": "ca827271c0b584aba4438051d8ec5adc4b2166d37a34c4ce8f0763753612aa10"
+          "sha256": "ca827271c0b584aba4438051d8ec5adc4b2166d37a34c4ce8f0763753612aa10"
         }
       ],
       "id": "AC-08",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -320,7 +320,7 @@
         }
       ],
       "id": "AC-09",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -334,7 +334,7 @@
         }
       ],
       "id": "AC-10",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -348,7 +348,7 @@
         }
       ],
       "id": "AC-11",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -358,11 +358,11 @@
         {
           "kind": "path",
           "path": "tests/render_markdown.test.mjs",
-          "sha256": "6a253f40b54527aa45e6ad59afe57294098e2320f46bc4afa904f04c0b2b938d"
+          "sha256": "3ed21966a2d911415c710efc7bd4c271d9e3fe0f5c7498be15972d6b20b32a12"
         }
       ],
       "id": "AC-12",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -382,7 +382,7 @@
         }
       ],
       "id": "AC-13",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -396,7 +396,7 @@
         }
       ],
       "id": "AC-14",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -410,7 +410,7 @@
         }
       ],
       "id": "AC-15",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -424,7 +424,7 @@
         }
       ],
       "id": "AC-16",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -437,7 +437,7 @@
         }
       ],
       "id": "AC-17",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -450,7 +450,7 @@
         }
       ],
       "id": "AC-18",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -464,7 +464,7 @@
         }
       ],
       "id": "AC-19",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -474,11 +474,11 @@
         {
           "kind": "path",
           "path": "scripts/validate_workspace.py",
-          "sha256": "e718c7f0929d231d226efb236534a01b90ab580eaaf01478288ff0cdb22e7017"
+          "sha256": "aafa0865008dfb77876d8cf0f9ca57d05aa2bbfa01f1de5beb7c63365a8d01c9"
         }
       ],
       "id": "AC-20",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -488,16 +488,16 @@
         {
           "kind": "path",
           "path": "STATUS.md",
-      "sha256": "71dc754ecc7e80e18ddf5b6b67cdf58b2385ec00c7980e327afc3b5f2871d423"
+          "sha256": "78b661b48533ca9abb5e973ee0be7cc2800421f6e4a8ed4a31418b20bd389173"
         },
         {
           "kind": "path",
           "path": "STATUS.html",
-      "sha256": "8ab4b5ce5f164143f077b87c9b757277979a1e9d847b7908b17c9f62fb883961"
+          "sha256": "ed2a163714a840f1f67c9c6227d32ef3da0dfe88fbf0f1ecf596cce7885968d0"
         }
       ],
       "id": "AC-21",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -523,7 +523,7 @@
         }
       ],
       "id": "AC-23",
-      "state": "passed"
+      "state": "pending"
     },
     {
       "capabilities": [
@@ -554,17 +554,17 @@
         {
           "kind": "path",
           "path": "scripts/build_package.py",
-          "sha256": "ec3497493f5454afff4983f882698661b9cfd4722ec751cdbb15d64387e0d587"
+          "sha256": "cf47a20d6420f2b5f411be38f4137cbbc706833e1d53874919a7d8b352c8254a"
         },
         {
           "kind": "path",
           "path": "tests/test_build_package.py",
-          "sha256": "a99f7aad9536e29fd4194a81fef3e4ec695c7900a91dec58de23feb97b539ffa"
+          "sha256": "f8dfde9ab5df79b092b9e61559431295a8cd56b6f68e41b60d3d100f830326e4"
         },
         {
           "kind": "path",
           "path": "references/OPERATIONS.md",
-          "sha256": "53519b1caa430392f32778e5b0d598a845abe889cbcf8ab8e671ce23ac475c22"
+          "sha256": "15da3dacf64c80612f3bc81695caf80c3ceb7ad141e24b503e7b4f3629ba4e75"
         }
       ],
       "id": "AC-25",
@@ -615,8 +615,8 @@
         "evaluation-harness"
       ],
       "evidence": [
-        "Frozen source fingerprints and original candidate inventory",
-        "Executable evaluator and forbidden-behavior hard gates"
+        "Inherited history: Frozen source fingerprints and original candidate inventory",
+        "Inherited history: Executable evaluator and forbidden-behavior hard gates"
       ],
       "id": "phase-0",
       "parked": [
@@ -631,10 +631,10 @@
         "markdown-html-artifacts"
       ],
       "evidence": [
-        "Three-mode and Answer-now routing",
-        "Attempt-before-explanation and strict post-error hint-turn policy",
-        "Deterministic renderer with automated accessibility-structure checks",
-        "Fresh all-case attempt 21 passed 8 of 8 with failures and ineligible attempts retained"
+        "Inherited history: Three-mode and Answer-now routing",
+        "Inherited history: Attempt-before-explanation and strict post-error hint-turn policy",
+        "Inherited history: Deterministic renderer with automated accessibility-structure checks",
+        "Inherited history: Fresh all-case attempt 21 passed 8 of 8 with failures and ineligible attempts retained"
       ],
       "id": "phase-1",
       "parked": [
@@ -649,10 +649,10 @@
         "review-scheduler"
       ],
       "evidence": [
-        "Consented JSON and JSONL learner state",
-        "Deterministic concept and misconception projections",
-        "Exact correction, invalidation, item deletion, and crash recovery",
-        "Pinned real FSRS scheduling with strict replay"
+        "Inherited history: Consented JSON and JSONL learner state",
+        "Inherited history: Deterministic concept and misconception projections",
+        "Inherited history: Exact correction, invalidation, item deletion, and crash recovery",
+        "Inherited history: Pinned real FSRS scheduling with strict replay"
       ],
       "id": "phase-2",
       "parked": [
@@ -667,9 +667,9 @@
         "learner-study-machinery"
       ],
       "evidence": [
-        "Executable isolated evaluator",
-        "Executable blinded study preparation and analysis",
-        "Public and synthetic machinery receipts"
+        "Inherited history: Executable isolated evaluator",
+        "Inherited history: Executable blinded study preparation and analysis",
+        "Inherited history: Public and synthetic machinery receipts"
       ],
       "id": "phase-3",
       "parked": [
@@ -688,9 +688,9 @@
         "ecosystem-exports"
       ],
       "evidence": [
-        "Pinned real Flint compiler adapter",
-        "Pinned real SkillOpt adapter with measured macOS isolation",
-        "Anki, QTI, LiaScript, and H5P exports"
+        "Inherited history: Pinned real Flint compiler adapter",
+        "Inherited history: Pinned real SkillOpt adapter with measured macOS isolation",
+        "Inherited history: Anki, QTI, LiaScript, and H5P exports"
       ],
       "id": "phase-4",
       "parked": [

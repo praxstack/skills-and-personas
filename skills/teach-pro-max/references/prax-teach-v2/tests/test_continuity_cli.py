@@ -160,6 +160,35 @@ class ContinuityCliTest(unittest.TestCase):
         self.assertEqual(lesson.read_text(), "saved lesson")
         self.assertFalse(self.workspace.exists())
 
+    def test_full_reset_regrant_starts_new_revision_lifetime(self):
+        first = self.grant()
+        cached_revision = first["revision"]
+        pending_content = {"covered_topics": ["pre-reset queued content"]}
+        evidence = (self.workspace / "state/sessions.jsonl").read_bytes()
+
+        self.call(
+            "continuity-reset", "--expected-revision", str(cached_revision),
+            "--all", "--confirm",
+        )
+        self.assertFalse((self.workspace / "state/continuity.json").exists())
+        self.assertIsNone(self.call("continuity-show"))
+        self.assertIsNone(self.call("continuity-resume"))
+        self.update(pending_content, revision=cached_revision, expected=6)
+        self.assertFalse((self.workspace / "state/continuity.json").exists())
+
+        # Only a new affirmative grant permits content writes again. Numeric
+        # revisions repeat; the host must cancel old queued/in-flight updates.
+        regranted = self.grant()
+        self.assertEqual(regranted["revision"], cached_revision)
+        self.assertEqual(regranted["covered_topics"], [])
+        self.assertEqual(self.call("continuity-resume"), regranted)
+        replayed = self.update(pending_content, revision=cached_revision)
+        self.assertEqual(replayed["revision"], cached_revision + 1)
+        self.assertEqual(replayed["covered_topics"], pending_content["covered_topics"])
+        self.assertEqual(
+            (self.workspace / "state/sessions.jsonl").read_bytes(), evidence
+        )
+
     def test_concurrent_updates_reject_stale_writer(self):
         self.grant()
         source = self.directory / "update.json"

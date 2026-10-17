@@ -162,8 +162,9 @@ Every object rejects unknown keys. Update input is capped at 262144 bytes;
 malformed JSON/UTF-8 fails. Each supplied content field replaces that entire
 field (no nested merge); omitted fields survive, and null clears the three
 nullable fields. Every successful grant, update, withdrawal or preference reset
-increments revision under the workspace lock; stale revisions fail without
-writing. Revision exhaustion fails instead of wrapping. Granting again requires
+increments revision under the workspace lock; concurrent or stale writers with
+an outdated expected revision fail without writing within that record lifetime.
+Revision exhaustion fails instead of wrapping. Granting again requires
 `--consent` and active base consent; it retains content and never re-enables
 withdrawn base persistence. The schema enforces structure/provenance labels;
 the caller must supply only actual user-stated/requested values, no transcripts,
@@ -193,8 +194,18 @@ content writes require a fresh explicit grant at revision 0. Reset on an absent
 record is a no-op returning null; dry-run always reports the scope, current
 revision and whether a record exists, without changing it. Dry-run and confirm
 are mutually exclusive. Revision comparisons also apply to previews. After a
-full reset the revision restarts at 1 with a new grant; clients must discard
-cached revisions across reset (the revision is not a global generation ID).
+full reset, a new affirmative grant starts a new record at revision 1. Numeric
+revisions may therefore repeat across record lifetimes; `expected_revision` is
+not a global generation ID and cannot identify pre-reset content after regrant.
+
+The coordinating host must cancel queued and in-flight continuity updates on
+full reset and discard all cached revisions. Before resuming content updates
+after an explicit regrant, it must reread the new record and use that revision.
+Do not replay pre-reset updates into the new record. For example, an old update
+expecting revision 1 is blocked while the record is absent, but can match a new
+grant's revision 1 if the host fails to cancel it. The lock and revision check
+protect concurrent writers within one record lifetime; reset coordination is a
+host responsibility. Full reset leaves no generation tombstone.
 
 Full workspace `delete --all` also removes continuity, while sibling
 `<learning-dir>/lessons` survives. Removing lessons is a separate explicit

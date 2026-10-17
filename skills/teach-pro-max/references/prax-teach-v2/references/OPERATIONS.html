@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="OPERATIONS.md">
-  <meta name="source-sha256" content="e316257f7e56821d841b7a8ba1783884bb5255e1cdb8d3e2f8279d135fd89ffa">
+  <meta name="source-sha256" content="15da3dacf64c80612f3bc81695caf80c3ceb7ad141e24b503e7b4f3629ba4e75">
   <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/3.0.0">
@@ -248,8 +248,9 @@ python3 scripts/prax_teach.py continuity-show /absolute/path/to/learning-directo
 malformed JSON/UTF-8 fails. Each supplied content field replaces that entire
 field (no nested merge); omitted fields survive, and null clears the three
 nullable fields. Every successful grant, update, withdrawal or preference reset
-increments revision under the workspace lock; stale revisions fail without
-writing. Revision exhaustion fails instead of wrapping. Granting again requires
+increments revision under the workspace lock; concurrent or stale writers with
+an outdated expected revision fail without writing within that record lifetime.
+Revision exhaustion fails instead of wrapping. Granting again requires
 <code>--consent</code> and active base consent; it retains content and never re-enables
 withdrawn base persistence. The schema enforces structure/provenance labels;
 the caller must supply only actual user-stated/requested values, no transcripts,
@@ -275,8 +276,17 @@ content writes require a fresh explicit grant at revision 0. Reset on an absent
 record is a no-op returning null; dry-run always reports the scope, current
 revision and whether a record exists, without changing it. Dry-run and confirm
 are mutually exclusive. Revision comparisons also apply to previews. After a
-full reset the revision restarts at 1 with a new grant; clients must discard
-cached revisions across reset (the revision is not a global generation ID).</p>
+full reset, a new affirmative grant starts a new record at revision 1. Numeric
+revisions may therefore repeat across record lifetimes; <code>expected_revision</code> is
+not a global generation ID and cannot identify pre-reset content after regrant.</p>
+<p>The coordinating host must cancel queued and in-flight continuity updates on
+full reset and discard all cached revisions. Before resuming content updates
+after an explicit regrant, it must reread the new record and use that revision.
+Do not replay pre-reset updates into the new record. For example, an old update
+expecting revision 1 is blocked while the record is absent, but can match a new
+grant's revision 1 if the host fails to cancel it. The lock and revision check
+protect concurrent writers within one record lifetime; reset coordination is a
+host responsibility. Full reset leaves no generation tombstone.</p>
 <p>Full workspace <code>delete --all</code> also removes continuity, while sibling
 <code>&lt;learning-dir&gt;/lessons</code> survives. Removing lessons is a separate explicit
 request. Export is a learner-state export and does not promise a complete course
@@ -706,7 +716,7 @@ accessibility field checks, and replication.</p>
 </main>
   <footer>
     Canonical source: <a href="./OPERATIONS.md">OPERATIONS.md</a><br>
-    SHA-256: <code>e316257f7e56821d841b7a8ba1783884bb5255e1cdb8d3e2f8279d135fd89ffa</code><br>
+    SHA-256: <code>15da3dacf64c80612f3bc81695caf80c3ceb7ad141e24b503e7b4f3629ba4e75</code><br>
     Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/3.0.0<br>
