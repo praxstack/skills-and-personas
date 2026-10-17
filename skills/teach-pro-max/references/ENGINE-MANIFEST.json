@@ -3,8 +3,8 @@
   "source": {
     "repository_path": "skills/teach-pro-max/references/prax-teach-v2",
     "base_git_head": "930c112",
-    "git_head": "f1da1effb63f1c376431f9bb7278e7d78fe21eb8",
-    "git_tree": "9877c880a8b383d18722b0404c7398fd615daa64",
+    "git_head": "d29dd2cf3daa8b1d52457410e4e92203ae0edf73",
+    "git_tree": "26f89a0d33d8d5cc560be44d327e99bd48af03be",
     "tracked_file_count": 771,
     "review_status": "2026-10-17 completion candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v4/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
   },
@@ -76,7 +76,7 @@
     },
     {
       "path": "STATUS.json",
-      "sha256": "6591e3c2b1db4da1efd32bf8659d673db1e300a73f2b41d337dad3529e1879db",
+      "sha256": "0f6f5232b3b62492f2e1f9788c58d9200e079e9a172dcf9af11ba5fe168250d4",
       "bytes": 24740
     },
     {
@@ -3621,8 +3621,8 @@
     },
     {
       "path": "scripts/praxteach/routing.py",
-      "sha256": "c45380ea398ee44f802c818e343a58d44629b4b230e246f0e44a1c3d5248f79e",
-      "bytes": 25327
+      "sha256": "dd447242ddf96f2bef789341fe700cbc2c10c53dafae2eb6e92caa052c32209f",
+      "bytes": 25345
     },
     {
       "path": "scripts/praxteach/scheduler.py",
@@ -3716,8 +3716,8 @@
     },
     {
       "path": "tests/test_core_cli.py",
-      "sha256": "3ec151eac17987fc409615590825980ae773f89139a97cae5bf34c6f64fb16b9",
-      "bytes": 24240
+      "sha256": "9011dc2d1d6450bed3952eecf6f9e6352c1a2bec03fe8d50859b527fce684a50",
+      "bytes": 24602
     },
     {
       "path": "tests/test_current_evidence.py",
@@ -3831,8 +3831,8 @@
     },
     {
       "path": "tests/test_visual_intuition_policy_v1.py",
-      "sha256": "f99c65bd6352ff378c4b67e49a05c1e201d2b756114eac758eca1dae268cd4c9",
-      "bytes": 10401
+      "sha256": "4f57b9c10ac56752ced6833c435b6f43da8a415fd7c769d3b2a3c98cb15ae354",
+      "bytes": 11019
     },
     {
       "path": "tests/test_visual_lab_pilot.py",
