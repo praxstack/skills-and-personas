@@ -3,8 +3,8 @@
   "source": {
     "repository_path": "skills/teach-pro-max/references/prax-teach-v2",
     "base_git_head": "930c112",
-    "git_head": "7e54ccc1ef49bf5469171e37288bb48c02826ce7",
-    "git_tree": "4b8ba79f2e0d310d5d60fbf2bb20ad63d128e462",
+    "git_head": "869bfd19cb881d9357d09036e7d5f7038a428708",
+    "git_tree": "b181d918e484ed1024d0245387ab7d04bbcfc850",
     "tracked_file_count": 772,
     "review_status": "2026-10-17 completion-v5 candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v5/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
   },
@@ -71,17 +71,17 @@
     },
     {
       "path": "STATUS.html",
-      "sha256": "58616c17d348a0df374b51b6df4e40f62bbfb92ab1617479b2ac72994b9a4668",
+      "sha256": "1e70dfa00adcb2c7a8eea9c1ca26ea84cabed9870c64f2b6af11ce1bc943d073",
       "bytes": 22263
     },
     {
       "path": "STATUS.json",
-      "sha256": "3b350a8a33d6f7f4b625ab5c879ff37b340285bc6c411d02d669e22a4d65ffc2",
+      "sha256": "802e3600024ee68dab1dddf537f6b3b9e73eb3de3b52ebab239460af9fb133b1",
       "bytes": 24740
     },
     {
       "path": "STATUS.md",
-      "sha256": "e11653190f93d1048f98c58b903a9b3488a1ca9834390e11d51697f98a7d9363",
+      "sha256": "0c69cd568c8ca69f941dd58463c97a0995bedcbc5c6fa6117d56d9b6c2ab611f",
       "bytes": 13156
     },
     {
@@ -3621,8 +3621,8 @@
     },
     {
       "path": "scripts/praxteach/routing.py",
-      "sha256": "bf0957dd1dba238ca0bc200561af3670b38ba2500eb5996583eddc98676270a8",
-      "bytes": 25335
+      "sha256": "701693b54c19fe42ee555ad7ae5b714f4ca3b69364ea9168681b591c5ed54e18",
+      "bytes": 25510
     },
     {
       "path": "scripts/praxteach/scheduler.py",
