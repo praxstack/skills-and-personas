@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Teacher skill — design research</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="research.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Teacher skill — design research</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#teaching-experience-research-synthesis"
+id="toc-teaching-experience-research-synthesis">Teaching experience:
+research synthesis</a>
+<ul>
+<li><a href="#recommended-experience"
+id="toc-recommended-experience">Recommended experience</a></li>
+<li><a href="#what-the-sources-contribute"
+id="toc-what-the-sources-contribute">What the sources
+contribute</a></li>
+<li><a href="#evidence-and-gaps" id="toc-evidence-and-gaps">Evidence and
+gaps</a></li>
+<li><a href="#integration-boundary"
+id="toc-integration-boundary">Integration boundary</a></li>
+</ul></li>
+<li><a href="#default-teaching-aesthetics-askthemove-chesslab"
+id="toc-default-teaching-aesthetics-askthemove-chesslab">Default
+teaching aesthetics: AskTheMove / ChessLab</a>
+<ul>
+<li><a href="#evidence" id="toc-evidence">Evidence</a></li>
+<li><a href="#proposed-general-teacher-adaptation"
+id="toc-proposed-general-teacher-adaptation">Proposed general teacher
+adaptation</a></li>
+<li><a href="#feasibility" id="toc-feasibility">Feasibility</a></li>
+<li><a href="#acceptance-examples-for-a-future-implementation"
+id="toc-acceptance-examples-for-a-future-implementation">Acceptance
+examples for a future implementation</a></li>
+</ul></li>
+<li><a
+href="#learning-platform-inspiration-for-a-general-teaching-skill"
+id="toc-learning-platform-inspiration-for-a-general-teaching-skill">Learning-platform
+inspiration for a general teaching skill</a>
+<ul>
+<li><a href="#recommendation"
+id="toc-recommendation">Recommendation</a></li>
+<li><a href="#coverage-and-evidence-limits"
+id="toc-coverage-and-evidence-limits">Coverage and evidence
+limits</a></li>
+<li><a href="#platform-findings" id="toc-platform-findings">Platform
+findings</a></li>
+<li><a href="#concrete-patterns-to-carry-into-the-skill"
+id="toc-concrete-patterns-to-carry-into-the-skill">Concrete patterns to
+carry into the skill</a></li>
+<li><a href="#suggested-evaluation-examples-not-new-mandatory-gates"
+id="toc-suggested-evaluation-examples-not-new-mandatory-gates">Suggested
+evaluation examples, not new mandatory gates</a></li>
+<li><a
+href="#fit-to-the-requested-explain-first-hand-drawn-teaching-style"
+id="toc-fit-to-the-requested-explain-first-hand-drawn-teaching-style">Fit
+to the requested explain-first, hand-drawn teaching style</a></li>
+<li><a href="#remaining-gaps" id="toc-remaining-gaps">Remaining
+gaps</a></li>
+</ul></li>
+<li><a href="#curriculum-notes-and-teaching-tool-inspiration"
+id="toc-curriculum-notes-and-teaching-tool-inspiration">Curriculum,
+notes, and teaching-tool inspiration</a>
+<ul>
+<li><a href="#direct-source-findings"
+id="toc-direct-source-findings">Direct-source findings</a></li>
+<li><a href="#more-precise-reusable-patterns"
+id="toc-more-precise-reusable-patterns">More precise reusable
+patterns</a></li>
+<li><a href="#proposed-teaching-loop-synthesis-not-a-source-fact"
+id="toc-proposed-teaching-loop-synthesis-not-a-source-fact">Proposed
+teaching loop — synthesis, not a source fact</a></li>
+<li><a href="#coverage-and-research-limits"
+id="toc-coverage-and-research-limits">Coverage and research
+limits</a></li>
+</ul></li>
+<li><a href="#instruction-support-and-remaining-gaps"
+id="toc-instruction-support-and-remaining-gaps">Instruction support and
+remaining gaps</a></li>
+</ul>
+</nav>
+<h1 id="teaching-experience-research-synthesis">Teaching experience:
+research synthesis</h1>
+<p>User-directed research, 2026-10-16. This is a design reference and
+product-direction record. It does not change frozen evaluation criteria,
+certify efficacy, or claim installation.</p>
+<h2 id="recommended-experience">Recommended experience</h2>
+<p>Build a teacher with three connected surfaces: <strong>the teaching
+stage</strong>, <strong>the course map</strong>, and <strong>the
+learner’s notes</strong>. These are logical surfaces, not a requirement
+to build an app. A conversation, Markdown files, HTML artifact, canvas,
+or capable host can express them differently.</p>
+<p>The stage explains a coherent bounded idea in full: the problem,
+relevant objects, mechanism, result and why it follows. A drawing is
+often enough; an animation explains change; an interactive model exposes
+a causal variable; a video can coordinate narration and visual
+progression. Discover available tools and choose for this role,
+correctness and delivery support. No tool is universally best and no
+host is presumed to render everything.</p>
+<p>Default to Prax’s AskTheMove teaching language: crisp readable
+content with short handwritten coach notes, purposeful arrows and
+highlights, warm paper and semantic ink colors. Animated pen strokes
+should follow reasoning. Give immediate access to the complete figure
+and keep it available; a replay is an optional view of how the
+explanation unfolds, not a gate that withholds the whole story. Preserve
+keyboard operation, readable math/code and reduced-motion
+alternatives.</p>
+<p>The map shows the current question, useful prerequisites, optional
+branches and next topics. It should be editable as curiosity changes.
+The notes separately preserve definitions, worked reasoning, source
+links, assumptions, limits, learner questions and reusable visuals.
+Consent controls saved learner progress; exposure and satisfaction are
+not mastery evidence.</p>
+<p>Teach first when the goal is already clear. Diagnose a specific gap
+when necessary, then change the explanation, scale, example or medium.
+Offer practice and predictions when they help. Continue until the
+learner is satisfied or stops; do not replace that choice with a quiz
+score. A coordinating teacher may delegate a bounded diagram, source
+check or worked example when supported, but must reconcile the outputs
+into one explanation.</p>
+<h2 id="what-the-sources-contribute">What the sources contribute</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Reference</th>
+<th>Borrow</th>
+<th>Preserve our own requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a
+href="https://brilliant.org/help/schools-and-educators/how-brilliant-fits-into-a-math-lesson/">Brilliant</a></td>
+<td>Concrete manipulable models and a bridge to formal notation</td>
+<td>Direct explanations remain available; no mandatory answer
+withholding</td>
+</tr>
+<tr>
+<td><a
+href="https://www.educative.io/faq/general-faq">Educative</a></td>
+<td>Navigable written lessons and contextual notes</td>
+<td>Course map and notes are portable, independent of a particular
+website</td>
+</tr>
+<tr>
+<td><a
+href="https://github.com/mattpocock/skills/tree/main/skills/productivity/teach">Matt
+Pocock teach</a></td>
+<td>Mission, annotated resources and evidence-bearing learning
+records</td>
+<td>No compulsory setup or automatic inference of mastery</td>
+</tr>
+<tr>
+<td><a href="https://fanout.sh/math-decoder">Fanout</a></td>
+<td>Coordinate notation, shapes/types, examples and role in the larger
+argument</td>
+<td>Label simulated and live behavior honestly</td>
+</tr>
+<tr>
+<td><a href="https://nibble-app.com/">Nibble</a> / <a
+href="https://www.imprintapp.com/">Imprint</a></td>
+<td>Format choice and focused visual explanations</td>
+<td>Short entry points do not limit depth</td>
+</tr>
+<tr>
+<td><a href="https://wondering.app/">Wondering</a></td>
+<td>Goals, background and adjustable path</td>
+<td>Personalization does not mean fixed learning-style labels</td>
+</tr>
+<tr>
+<td><a href="https://www.algocamp.io/">AlgoCamp</a> / <a
+href="https://algomaster.io/">AlgoMaster</a></td>
+<td>Staged paths, authentic applications, patterns and contextual
+notes</td>
+<td>Interview or coding success is not the universal finish line</td>
+</tr>
+<tr>
+<td><a
+href="https://www.deeplearning.ai/courses/machine-learning-specialization/">DeepLearning.AI</a></td>
+<td>Connections among intuition, implementation and formal
+explanation</td>
+<td>Move between representations as needed; no rigid one-way ladder</td>
+</tr>
+<tr>
+<td><a href="https://askthemove.online/">AskTheMove</a> / <a
+href="/Users/prax/Developer/ChessLab/site/DESIGN.md">ChessLab
+design</a></td>
+<td>Coach annotations, reason-aligned drawing, counterfactual
+branches</td>
+<td>Generalize beyond chess while keeping visual meaning precise</td>
+</tr>
+</tbody>
+</table>
+<h2 id="evidence-and-gaps">Evidence and gaps</h2>
+<p>This synthesis uses primary product pages/documentation and source
+files. Findings are design inspiration, not proof of learning outcomes.
+Public lesson UI interactions and paid content were not tested.
+AskTheMove design was inspected in local source at commit
+7bef53b8e2a2bd23240da1f71bb2607f08cdd3ab; direct browser navigation
+failed, although Exa retrieved public page text. The requested YouTube
+video could not be fetched and has not been attributed any content. The
+roadmap.sh inference-engineering diagram nodes were unavailable to
+extraction; no specific sequence is inferred. The malformed
+Imprint/roadmap link was interpreted as two URLs.</p>
+<p>See <a href="learning-platforms.md">platform findings</a>, <a
+href="curriculum-tools.md">curriculum and tools</a>, <a
+href="ASKTHEMOVE-AESTHETICS.md">aesthetic evidence</a>, and <a
+href="PRODUCT-DIRECTION.md">user-confirmed direction</a> for sources and
+boundaries.</p>
+<h2 id="integration-boundary">Integration boundary</h2>
+<p>The existing implementation remains under its original frozen
+contract. These research findings should inform a separately versioned
+design addition for default aesthetics, portable tool discovery, and
+separated course/notes presentation. Do not silently edit an evaluator
+to bless newly added behavior. Existing authorized continuity work can
+proceed independently. No research-only document is evidence that the
+installed skill already has these features.</p>
+<h1 id="default-teaching-aesthetics-askthemove-chesslab">Default
+teaching aesthetics: AskTheMove / ChessLab</h1>
+<h2 id="evidence">Evidence</h2>
+<p>Inspected local ChessLab commit
+<code>7bef53b8e2a2bd23240da1f71bb2607f08cdd3ab</code>, clean working
+tree. Source: <a
+href="/Users/prax/Developer/ChessLab/site/DESIGN.md">site/DESIGN.md</a>,
+corroborated by <code>site/public/assets/app.css</code> and
+<code>askthemove/launch/video/askthemove/v2-project/source/brand.css</code>.
+No ChessLab files changed.</p>
+<p>Exa fetched public <a
+href="https://askthemove.online/">AskTheMove</a> text, including the
+annotated move walkthrough, counterfactual branch and separate
+evidence/explanation. Direct browser navigation failed with
+ERR_CONNECTION_REFUSED; this research does not claim a fresh live visual
+or interaction check.</p>
+<p>The source defines a patient coach annotating printed material:
+Vollkorn for prose, Courier Prime for calculations/technical evidence,
+Kalam for short coach notes. Warm paper #fbfaf4, ink #171d29,
+explanatory blue #1f48ae and correction red #c92324. Meaning is also
+expressed in words. Diagrams stay crisp; coach arrows, circles and marks
+are drawn. Each mark must correspond to a stated claim. Motion is
+drawing/writing, not decorative looping; reduced motion shows the
+finished state. Back/Next/Replay and a counterfactual branch support
+learner control. These are source-design facts, not independently
+measured accessibility or learning outcomes.</p>
+<h2 id="proposed-general-teacher-adaptation">Proposed general teacher
+adaptation</h2>
+<p>User has requested this aesthetic by default. Treat the following as
+an implementation brief, not proof it has shipped.</p>
+<ul>
+<li>Default surface: warm whiteboard/notebook with strong contrast,
+uncluttered explanation and purposeful annotations. Keep optional
+ruling/margins faint; remove them when they compete with the
+subject.</li>
+<li>Three visual voices: readable prose, precise mathematics/code/data,
+brief handwritten coach annotations. Handwriting never replaces long
+text, equations or code.</li>
+<li>Draw causes before effects. Time an arrow, highlight or change in
+the model with the sentence explaining it. The learner can inspect the
+complete diagram immediately; animation never gates access to the whole
+story.</li>
+<li>Preserve the same objects and labels across static drawing,
+animation, manipulable model and narrated video. Changes in presentation
+should not require relearning a visual vocabulary.</li>
+<li>Controls manipulate real explanatory variables. Show the changed
+input, intermediate mechanism and consequence together, with a reset and
+meaningful comparison. A slider whose only effect is a cosmetic change
+does not qualify.</li>
+<li>Video uses the same causal storyboard, with captions, transcript and
+still/key-state equivalent when supported. Live drawing is a
+presentation style, not a claim that a human is teaching live.</li>
+<li>Course overview and durable notes remain separate from the teaching
+stage. Notes include assumptions, definitions, worked reasoning,
+unanswered questions and useful references rather than only a compressed
+summary.</li>
+<li>Fit the host: inline drawing when supported; self-contained HTML/SVG
+or video where supported; readable static sequence or text where richer
+rendering is unavailable. Report the actual fallback. Never promise
+every host can render every medium.</li>
+<li>Fonts can fall back to suitable locally available families. Exact
+assets require portable bundling and license checks. Avoid
+machine-specific absolute font paths.</li>
+<li>Learner accessibility and requested style override the default. Do
+not import the site’s light-only constraint as a universal teaching
+restriction.</li>
+</ul>
+<h2 id="feasibility">Feasibility</h2>
+<p>The existing repository already demonstrates an implementation
+vocabulary (SVG paths, seeded pen strokes, text reveals, semantic styles
+and reusable brand styles for video). It provides a concrete starting
+point for this skill’s generated artifacts. A harness-independent policy
+can select and explain the style; runtime capabilities determine which
+artifact can actually be produced and displayed. Best-tool discovery
+should remain dynamic, rather than hard-coding a vendor as universally
+best.</p>
+<h2 id="acceptance-examples-for-a-future-implementation">Acceptance
+examples for a future implementation</h2>
+<p>A static diagram tells the complete bounded causal story. Its
+animation reveals the same mechanism without hiding prerequisites. Its
+interactive version lets a learner change a cause and see all dependent
+quantities update. Its video narrates the same states with usable
+pacing. Each has a readable non-animated explanation; tests check
+correctness and usability, not learner satisfaction by proxy.</p>
+<h1
+id="learning-platform-inspiration-for-a-general-teaching-skill">Learning-platform
+inspiration for a general teaching skill</h1>
+<p>Reviewed 2026-10-16. Scope: Brilliant, Educative, Imprint, Nibble,
+Wondering. No accounts, purchases, publishing, or implementation. These
+are design references, not evidence that a proposed teaching skill
+improves learning.</p>
+<h2 id="recommendation">Recommendation</h2>
+<p>Combine <strong>Brilliant’s model → prediction → explanation →
+formalization</strong>, <strong>Educative’s readable course spine with
+nearby practice and notes</strong>, <strong>Imprint’s compact
+explanatory visuals</strong>, <strong>Nibble’s learner-selected
+formats</strong>, and <strong>Wondering’s explicit goal/depth/background
+controls</strong>. Retain the causal teaching sequence independently of
+any browser, canvas, code runner, or proprietary tutor. Recommendations
+below are design inferences, not measured learning effects.</p>
+<h2 id="coverage-and-evidence-limits">Coverage and evidence limits</h2>
+<p>Official sources were searched with Exa and web search, then direct
+pages were read. Four research questions: how lessons produce intuition;
+how visual actions encode concepts; how learners control depth/pacing;
+how courses and notes preserve continuity. Public page text and
+documentation were inspected; <strong>no interactive lesson was
+completed and no rendered UI behavior was verified</strong>. An
+in-app-browser inspection attempt failed because that browser was
+unavailable. Product screenshots described in page metadata are not
+counted as live UI observations. Marketing testimonials, ratings, user
+counts, and claims of faster learning do not establish efficacy. No
+independent outcome studies were assessed in this bounded platform
+review.</p>
+<h2 id="platform-findings">Platform findings</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Platform</th>
+<th>What the official evidence supports</th>
+<th>Adaptation and limits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Brilliant</strong></td>
+<td>Its educator guide describes short interactive lessons, skills
+checks, grouped levels and reviews. A concrete algebra sequence asks
+learners to predict changes to a balanced scale, explain preserved
+equality, then translate that action into equation notation. It also
+proposes comparing alternate transformation strategies. This is
+instructional documentation, not our own lesson execution. <a
+href="https://brilliant.org/help/schools-and-educators/how-brilliant-fits-into-a-math-lesson/">Educator
+guide</a></td>
+<td>Adopt an observable invariant and an explicit bridge from experience
+to symbols. Invite a prediction before revealing an outcome, but allow
+the learner to request explanation immediately. Avoid making every topic
+into a game or requiring repeated gates.</td>
+</tr>
+<tr>
+<td><strong>Educative</strong></td>
+<td>The author guide separates text, executable code, exercises, media,
+and utilities. Its learner FAQ documents selecting passage text to
+highlight or attach a note. These are documented features; persistence
+was not tested. <a
+href="https://www.educative.io/courses/author-guide/qAkxV39X3OD">Widgets</a>,
+<a href="https://www.educative.io/faq/general-faq">Learner FAQ</a></td>
+<td>Use a navigable written explanation with a relevant experiment or
+question beside the point it teaches. Keep learner notes anchored to
+concepts. Generalize beyond coding: compare evidence, classify examples,
+sequence mechanisms, critique arguments. Avoid implementing a large
+widget inventory before knowing the teaching need.</td>
+</tr>
+<tr>
+<td><strong>Imprint</strong></td>
+<td>Its site markets concept-focused visuals plus saving and reviewing
+ideas; its longer introduction describes short visual pieces, book
+guides, original material and courses. Neither page establishes how well
+retention works. <a href="https://www.imprintapp.com/">Homepage</a>, <a
+href="https://www.imprintapp.com/i/start-learning-popular-books-and-topics">Product
+introduction</a></td>
+<td>Adopt one explanatory relationship per visual, with a short caption
+and a reusable idea card. Preserve assumptions and exceptions in
+expandable depth. Avoid treating an attractive illustration or
+compressed book summary as evidence of deep understanding.</td>
+</tr>
+<tr>
+<td><strong>Nibble</strong></td>
+<td>Its site describes selectable topics and five formats: lessons with
+questions, historical-personality chat, video, games and audio. It
+advertises sessions of roughly 3–10 minutes and switching formats to
+suit available time. This is product marketing, not observed learning
+behavior. <a href="https://nibble-app.com/">Official site</a></td>
+<td>Offer a quick entry and the learner’s preferred presentation format,
+while keeping the same concept and explanation available. A short
+session should reach a coherent stopping point, not impose a depth
+ceiling. Avoid trivia-feed design, novelty switching that interrupts the
+explanation, or presenting simulated historical dialogue as sourced
+testimony.</td>
+</tr>
+<tr>
+<td><strong>Wondering</strong></td>
+<td>Official public material describes tailored short courses, visuals,
+practice and goal/background personalization. Search-rendered homepage
+content exposes basics/deep/practical goals and time/focus choices. A
+directly fetched public course shows four sections and 25 lessons
+progressing from core models to application. The developer’s App Store
+description also advertises knowledge cards. <a
+href="https://wondering.app/">Homepage</a>, <a
+href="https://wondering.app/learn/mental-models-toolkit-b15d7e56c3ddf817a21d7a16">Public
+course</a>, <a
+href="https://apps.apple.com/us/app/wondering-learn-anything/id6754904253">Developer
+listing</a></td>
+<td>Ask for the learner’s purpose and relevant prior knowledge, show an
+editable path, and allow changes in depth. Distinguish an attractive
+generated outline from verified prerequisites, correct content, and
+genuine mastery. Do not infer a fixed “learning style” from a format
+preference.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="concrete-patterns-to-carry-into-the-skill">Concrete patterns to
+carry into the skill</h2>
+<p>These proposals transfer the design ideas; their causal explanations
+are hypotheses to test, not claims proven by these sites.</p>
+<ol type="1">
+<li><strong>Start with a question that needs the concept.</strong>
+Present a concrete situation, contrast or anomaly. Let the learner
+notice or predict something. Then explain the mechanism and introduce
+terminology. Brilliant’s scale example provides an unusually explicit
+instance of this progression. The hypothesized benefit is that notation
+names a relationship the learner has already encountered. <a
+href="https://brilliant.org/help/schools-and-educators/how-brilliant-fits-into-a-math-lesson/">Brilliant
+guide</a></li>
+<li><strong>Make interaction change meaning.</strong> A slider should
+alter a relevant quantity; a drag should change a relation; a button
+should expose a counterexample. If nothing conceptual changes, a labeled
+static diagram may be better. Brilliant’s design account emphasizes
+difficulty progression, variation and edge cases, with human review of
+generated problems. Its historical 2025 position on chatbots must not be
+confused with its current homepage, which now markets Koji tutoring. <a
+href="https://blog.brilliant.org/hand-crafted-machine-made/">Design
+account</a>, <a href="https://brilliant.org/">Current homepage</a></li>
+<li><strong>Keep learner control explicit.</strong> Offer “explain
+directly,” “give a hint,” “another example,” “show the formal version,”
+“let me try,” and “go deeper.” Treat these as options, not a mandatory
+menu after every paragraph. Wondering and Nibble supply inspiration for
+goal and format choice; the particular controls proposed here are our
+design recommendation. <a href="https://wondering.app/">Wondering</a>,
+<a href="https://nibble-app.com/">Nibble</a></li>
+<li><strong>Use checks to diagnose reasoning.</strong> Ask why an answer
+works, what changes under a changed assumption, or where an analogy
+breaks. Give feedback on the reasoning and permit skipping. A correct
+multiple-choice answer alone should not trigger a mastery claim.
+Educative documents several exercise families; Brilliant describes
+explaining strategies and review checks. <a
+href="https://www.educative.io/courses/author-guide/qAkxV39X3OD">Educative
+widgets</a>, <a
+href="https://brilliant.org/help/schools-and-educators/how-brilliant-fits-into-a-math-lesson/">Brilliant
+guide</a></li>
+<li><strong>Preserve both a course map and useful notes.</strong>
+Recommended note unit: concept → intuitive model → precise statement →
+worked example → limitation/counterexample → learner question → source.
+Link it to prerequisites and a suggested next step. Educative supports
+contextual annotation, Imprint markets saved ideas, and Wondering
+exposes course structure/cards; the combined portable note schema is our
+proposal. <a href="https://www.educative.io/faq/general-faq">Educative
+FAQ</a>, <a href="https://www.imprintapp.com/">Imprint</a>, <a
+href="https://apps.apple.com/us/app/wondering-learn-anything/id6754904253">Wondering
+listing</a></li>
+<li><strong>Keep the teaching contract portable.</strong> The essential
+deliverable is the explanation, causal relationship, example, learner
+choice, and durable notes. A capable harness may render a simulation; a
+text-only harness can use a small table, diagram, worked trace, or
+prediction with a revealed result. This is an architectural inference
+for the requested harness-independent skill, not a claim about the
+platforms.</li>
+</ol>
+<h2 id="suggested-evaluation-examples-not-new-mandatory-gates">Suggested
+evaluation examples, not new mandatory gates</h2>
+<ul>
+<li>Algebra: predict what happens when only one scale side changes;
+explain equality; derive the permitted operation; transfer to a symbolic
+equation.</li>
+<li>History: compare two explanations for one event, inspect
+timeline/evidence, separate causal inference from chronology, and
+identify a counterexample.</li>
+<li>Programming: predict a short program’s output, trace changing state,
+explain the invariant, then change one condition.</li>
+<li>Philosophy: use a concrete case, state an argument, test a
+counterexample, and mark the analogy’s limits.</li>
+</ul>
+<p>Observe whether a learner can explain the mechanism and transfer it
+to a changed case. Also check whether they can request direct
+explanation, skip practice, change depth, and retrieve coherent notes.
+Do not use clicks, completion, streaks, time spent, or aesthetic polish
+as substitutes for understanding.</p>
+<h2
+id="fit-to-the-requested-explain-first-hand-drawn-teaching-style">Fit to
+the requested explain-first, hand-drawn teaching style</h2>
+<p>Brilliant’s current homepage says its tutor does not simply supply
+answers. That product stance should <strong>not</strong> become a
+compulsory Socratic rule here: give a clear explanation when requested
+and make predictions/practice optional. Borrow the causal model and
+targeted help, not answer withholding. <a
+href="https://brilliant.org/">Current Brilliant homepage</a></p>
+<p>For the user’s requested live whiteboard default, draw only the part
+of the model currently being explained, use persistent visual anchors,
+and reveal relationships in the order the prose explains them. Keep
+readable labels, replay/step controls where supported, and a complete
+static fallback. Hand-drawn appearance is a user-directed presentation
+choice; this review did not establish it as a feature or learning
+advantage of all five products.</p>
+<h2 id="remaining-gaps">Remaining gaps</h2>
+<p>Actual onboarding friction, hint quality, wrong-answer recovery,
+keyboard accessibility, visual clarity, note export, and cross-session
+persistence remain untested across all five. Imprint and Nibble offer
+weaker publicly inspected evidence about deep conceptual sequencing than
+Brilliant’s educator guide. Wondering’s public outline demonstrates
+organization only; no generated lesson correctness was audited. A later
+authorized trial could inspect one matched concept end to end on each
+service, but this research does not require paid access to inform the
+skill’s design.</p>
+<h1 id="curriculum-notes-and-teaching-tool-inspiration">Curriculum,
+notes, and teaching-tool inspiration</h1>
+<p>Research date: 2026-10-16. Scope: seven user-provided sources;
+recommendations below are design inferences, not measured learning
+outcomes. No implementation or purchase performed.</p>
+<h2 id="direct-source-findings">Direct-source findings</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Source</th>
+<th>Verified source content</th>
+<th>Reusable inference</th>
+<th>Limits / conflicts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a
+href="https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/teach/SKILL.md">Matt
+Pocock teach</a></td>
+<td>Stateful teaching workspace; mission, resources, learning records,
+HTML lessons, compact references, reusable assets and preference notes.
+Ties teaching to learner goals and current ability; supports immediate
+feedback and follow-up questions; discusses retrieval, spacing and
+interleaving.</td>
+<td>Separate durable understanding from lesson production. Build a
+portable workspace contract and reusable interactive components.</td>
+<td>HTML is an output option, not a universal lesson requirement. Short
+lessons must not become a shallow-content mandate. Exact equal-length
+quiz answers are unnecessarily rigid. Community participation remains
+optional. These are the author’s prescriptions, not independently
+validated causal findings.</td>
+</tr>
+<tr>
+<td><a href="https://fanout.sh/math-decoder">Fanout Math
+Decoder</a></td>
+<td>Connects notation references, video and worked formulas; explains
+pronunciation, types/shapes, scope, plain-language meaning, tiny
+examples and a formula’s role in a paper.</td>
+<td>Teach a symbol through multiple coordinated representations: verbal
+reading → types/units → concrete substitution → visual meaning → role in
+the larger argument.</td>
+<td>Do not presume one representation fits every concept. Actual gated
+videos/interactions were not exercised.</td>
+</tr>
+<tr>
+<td><a href="https://fanout.sh/labs">Fanout Labs</a></td>
+<td>Describes labs for agent configuration, cost/context model
+selection, and PDF extraction readiness.</td>
+<td>A learning tool should answer a specific conceptual question, with
+controls that expose consequential variables.</td>
+<td>Descriptions establish intended features only.</td>
+</tr>
+<tr>
+<td><a href="https://www.algocamp.io/">AlgoCamp</a></td>
+<td>Public curriculum progresses through Python/LLM foundations,
+structured applications, retrieval, agents, production, deep-learning
+internals and capstone projects. Examples include transcript-grounded
+retrieval and customer-support workflows.</td>
+<td>Use a visible staged path plus authentic projects; revisit early
+mechanisms at deeper levels after learners have something concrete to
+explain.</td>
+<td>This is a marketing syllabus, not lesson observation or outcome
+evidence. Its application-first ordering is a choice, not a universal
+dependency order. Avoid imposing a six-month technical curriculum on
+unrelated subjects.</td>
+</tr>
+<tr>
+<td><a href="https://algomaster.io/">AlgoMaster</a></td>
+<td>Advertises pattern-based explanations and animation; chapter audio,
+contextual tutor help, highlights, inline notes, searchable/downloadable
+notebooks, revisiting starred material, quizzes and practice.</td>
+<td>Link notes to the exact passage, code or visual that caused
+confusion. Teach the common structure across examples, then contrast
+cases where the pattern breaks. Keep review artifacts searchable and
+portable.</td>
+<td>Feature descriptions were read; premium lessons and animations were
+not tested. Interview completion and code-test success cannot define
+general understanding.</td>
+</tr>
+<tr>
+<td><a href="https://roadmap.sh/inference-engineering">roadmap.sh
+inference engineering</a></td>
+<td>Page identifies a step-by-step inference-engineering roadmap and
+requests feedback on this new roadmap.</td>
+<td>A visible concept map can orient a learner and show alternatives
+without dictating a fixed route.</td>
+<td>Extracted page omitted diagram nodes/edges. Attempted public GitHub
+path returned 404. No specific ordering, prerequisites or coverage
+claims are supported.</td>
+</tr>
+<tr>
+<td><a href="https://www.deeplearning.ai/courses">DeepLearning.AI
+catalog</a></td>
+<td>Exa extraction of official catalog distinguishes foundational
+specializations from focused short courses and displays level/topic
+categories.</td>
+<td>Offer a foundation path and optional focused branches, matched to
+the learner’s purpose.</td>
+<td>Direct browser fetch returned 403; official-domain indexed
+extraction is lower fidelity than inspected lessons.</td>
+</tr>
+<tr>
+<td><a href="https://www.youtube.com/watch?v=EP3DvnIkybo">Requested
+video</a></td>
+<td>No usable metadata, transcript or video obtained.</td>
+<td>None attributed.</td>
+<td>Watch page failed, oEmbed failed/throttled, exact-ID search found
+nothing relevant. Video was not watched. Exa returned unrelated videos,
+which were discarded.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="more-precise-reusable-patterns">More precise reusable
+patterns</h2>
+<p><strong>Mission and scope.</strong> Pocock’s <a
+href="https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/teach/MISSION-FORMAT.md">mission
+format</a> records why the learner cares, observable success,
+constraints and exclusions. Adopt these lightweight fields, while
+accepting curiosity and deep intuition as valid goals. Do not force a
+practical deliverable or a preliminary interview when the user’s aim is
+already clear. One mission per workspace is an organizational
+suggestion, not a reason to block interdisciplinary learning.</p>
+<p><strong>Evidence-bearing notes.</strong> The <a
+href="https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/teach/LEARNING-RECORD-FORMAT.md">learning-record
+format</a> distinguishes demonstrated understanding, reported prior
+knowledge and corrected misconceptions from mere coverage. It permits
+evidence and supersession without demanding long session logs. Adopt
+concise records that preserve this distinction; record unresolved
+uncertainty rather than marking a concept mastered after exposure or one
+correct answer.</p>
+<p><strong>Curated source notes.</strong> The <a
+href="https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/teach/RESOURCES-FORMAT.md">resource
+format</a> asks what each source covers and when to use it, surfaces
+gaps, and records preferences about communities. Adopt annotated
+provenance and gaps. Keep sources as references supporting teaching,
+rather than turning the lesson into a reading list.</p>
+<p><strong>Intuition before formal expansion.</strong> Official <a
+href="https://www.deeplearning.ai/courses/machine-learning-specialization/">Machine
+Learning Specialization</a> text retrieved through Exa describes
+visuals, implementation and optional mathematical explanation, with
+ungraded notebooks and interactive graphs. Inference: layer explanation
+so a learner can move between intuition, concrete execution and formal
+derivation; offer mathematical depth when it resolves uncertainty. Do
+not universally postpone math or assume viewing a visual establishes
+intuition.</p>
+<p><strong>Prerequisite-aware progression.</strong> Official <a
+href="https://www.deeplearning.ai/courses/machine-learning-in-production">Machine
+Learning in Production</a> extraction identifies prior AI/deep-learning
+and Python experience and combines lectures, notes, labs and
+assessments. Inference: identify the minimum missing prerequisite and
+supply a local bridge; avoid assigning an entire preceding course when a
+small explanation suffices. The specialization page was subsequently
+fetched through Exa and confirmed the visual-to-code-to-optional-math
+sequence; the production course remains an official-page search extract.
+Neither is a full course audit.</p>
+<p><strong>Honest tool orchestration.</strong> Fanout’s <a
+href="https://fanout.sh/labs/agent-control-room">Agent Control Room</a>
+explicitly describes device-local modeled scenarios, bounded retries and
+estimated cost. Its <a
+href="https://fanout.sh/labs/model-router-and-pareto-explorer">Model
+Router</a> separately describes a live catalog fetch triggered by a user
+action. Inference: label simulations, live observations and estimates
+distinctly. A teacher should choose a renderer/calculator/notebook only
+when its output clarifies the concept, preserve capability-independent
+lesson state, and disclose when a requested interaction cannot run.</p>
+<h2 id="proposed-teaching-loop-synthesis-not-a-source-fact">Proposed
+teaching loop — synthesis, not a source fact</h2>
+<ol type="1">
+<li>Locate the learner’s purpose, current explanation and specific point
+of confusion, using existing context first.</li>
+<li>Build one causal account with a concrete example. Choose
+representations for their explanatory role: process trace for changing
+state; graph for dependencies; plot for quantitative relationships;
+geometry for space; contrast table for cases; manipulation for cause and
+effect. Avoid decorative variety.</li>
+<li>Invite prediction, manipulation, explanation, comparison or a real
+task as useful diagnostic evidence. Quizzes are optional
+instruments.</li>
+<li>If confusion remains, change the representation, example scale,
+analogy or prerequisite bridge. Explain analogy boundaries. Do not
+repeat the same wording louder.</li>
+<li>Preserve a compact reference, source links and the learner’s
+unresolved questions. Continue until the learner is satisfied, or
+explicitly pauses; never force completion because a score or
+predetermined step count was reached. Satisfaction is not proof of
+permanent retention, so notes should distinguish the two.</li>
+</ol>
+<h2 id="coverage-and-research-limits">Coverage and research limits</h2>
+<p>Read the complete supplied deep-research skill, complete public teach
+skill plus all three linked format files, AlgoCamp and AlgoMaster public
+page text, Fanout homepage and six linked page descriptions, and roadmap
+landing text. Used Exa for official DeepLearning.AI retrieval after
+direct fetch failed, including a subsequent full-text fetch of the
+specialization page. Exa also returned only landing text for the roadmap
+and HTTP 403 for the video. No paywalled course enrollment,
+learner-outcome study, live feature execution, visual screenshot audit,
+or video viewing occurred. Public descriptions support feature
+inspiration; they do not establish teaching effectiveness. The roadmap
+diagram and requested video remain material coverage gaps.</p>
+<h1 id="instruction-support-and-remaining-gaps">Instruction support and
+remaining gaps</h1>
+<p>Read-only source comparison, 2026-10-16. This report changes no
+product instructions. “Supported” below means explicit instruction text
+exists in the five scoped implementation documents; it does not
+establish executed behavior, installed delivery, learning efficacy, or
+runtime test results. Research documents are requirements/inspiration,
+not implementation evidence. No hidden evaluations were inspected.</p>
+<p>Source keys (line numbers refer to the inspected working-tree
+files):</p>
+<ul>
+<li><strong>S</strong>: <a
+href="RESEARCH-SYNTHESIS.md">RESEARCH-SYNTHESIS.md</a></li>
+<li><strong>A</strong>: <a
+href="ASKTHEMOVE-AESTHETICS.md">ASKTHEMOVE-AESTHETICS.md</a></li>
+<li><strong>W</strong>: <a
+href="../../../skills/teach-pro-max/SKILL.md">public SKILL.md</a></li>
+<li><strong>E</strong>: <a
+href="../../../skills/teach-pro-max/references/prax-teach-v2/SKILL.md">embedded
+SKILL.md</a></li>
+<li><strong>V</strong>: <a
+href="../../../skills/teach-pro-max/references/prax-teach-v2/references/VISUALIZATION-ROUTER.md">VISUALIZATION-ROUTER.md</a></li>
+<li><strong>C</strong>: <a
+href="../../../skills/teach-pro-max/references/prax-teach-v2/references/ARTIFACT-CONTRACT.md">ARTIFACT-CONTRACT.md</a></li>
+<li><strong>T</strong>: <a
+href="../../../skills/teach-pro-max/references/prax-teach-v2/references/TEACHING-PROTOCOL.md">TEACHING-PROTOCOL.md</a></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Requested direction</th>
+<th>Explicit instruction support</th>
+<th>Remaining gap in scoped instructions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dynamic tool discovery (<strong>S:9</strong>,
+<strong>A:22,28</strong>)</td>
+<td><strong>W:64–80</strong>, <strong>E:148–156</strong>,
+<strong>V:47–84</strong> require current-host capability inspection,
+registry query, authorized equivalents, job-specific selection and
+version provenance; vendor recipes are examples.
+<strong>W:106–134</strong> adds permission/quota boundaries.</td>
+<td>No material policy gap for dynamic selection. Actual discovery
+quality and execution are untested here. Registry, adapters and runtime
+code are outside this comparison.</td>
+</tr>
+<tr>
+<td>Meaningful media, including video (<strong>S:9</strong>,
+<strong>A:18–20,22</strong>)</td>
+<td><strong>W:59–80</strong> explicitly includes specialized imagery,
+3D, animation and video, without an interaction prerequisite.
+<strong>V:70–84,142–154</strong> permits mixed media, shared storyboard,
+consistent identities and meaningful model effects.
+<strong>C:224–230</strong> requires captions, transcript and static
+sequence; <strong>V:58–64</strong> discloses fallback and pauses when an
+essential medium is unavailable.</td>
+<td>The exact same named objects and visual vocabulary across every
+static/interactive/video derivative are not expressly required as a
+cross-output parity rule. <strong>C:100–111</strong> supports
+authoritative-model reuse and defers schemas until a real consumer
+exists; this is not an implemented video pipeline.</td>
+</tr>
+<tr>
+<td>Learner-led depth and stopping (<strong>S:15</strong>,
+<strong>S:25</strong>)</td>
+<td><strong>W:41–52</strong>, <strong>E:25–53</strong> explicitly
+continue adaptive exploration until learner satisfaction or stopping,
+separate bounded delivery from the end of teaching, and honor layered
+delivery and requested styles. <strong>T:42–59</strong> provides
+explanation-first gap repair; <strong>T:63–71</strong> makes assessment
+optional.</td>
+<td>No material instruction gap for learner-led depth.
+<strong>E:8</strong> retains independent capability as a teaching aim;
+<strong>E:48–49</strong> makes satisfaction/stopping a continuation
+choice, not proof of mastery. Actual adaptation is untested.</td>
+</tr>
+<tr>
+<td>Coordinating teacher and orchestration (<strong>S:15</strong>)</td>
+<td><strong>W:111–125</strong> requires bounded workers, ownership,
+evidence, permissions and stop conditions while keeping integration,
+pedagogy and final claims with the primary agent.
+<strong>E:50–53</strong> permits authorized orchestrated continuation
+using recovered consented context.</td>
+<td>No material policy gap for bounded orchestration. The scoped text
+does not establish a working orchestration runtime or demonstrate
+coherent integrated lessons.</td>
+</tr>
+<tr>
+<td>Separate teaching stage, course map and learner notes
+(<strong>S:7,13</strong>, <strong>A:21</strong>)</td>
+<td><strong>C:195–199</strong> requires page identity and breadcrumbs or
+a compact course map for multi-page artifacts. <strong>E:63–66</strong>
+separates saved lesson artifacts from learner tracking;
+<strong>T:29–36</strong> records prerequisites, assumptions of evidence
+and scope; <strong>E:80–89</strong> distinguishes agent summaries and
+learner preferences.</td>
+<td>Partial support only. No explicit three-surface contract,
+independently editable curiosity-driven course map, or separate durable
+notes artifact with definitions, worked reasoning, sources,
+assumptions/limits, learner questions and reusable visuals. Lesson/state
+separation is not the requested course/notes separation.</td>
+</tr>
+<tr>
+<td>Handdrawn AskTheMove default (<strong>S:11</strong>,
+<strong>A:13–24</strong>)</td>
+<td>General readability, exact semantics, keyboard access, reduced
+motion and complete fallback exist in <strong>W:69–73</strong>,
+<strong>V:142–154</strong>, <strong>C:33–47,224–230</strong>. Meaningful
+controls and reset exist in <strong>V:147–151</strong> and its
+Interactive accessibility section.</td>
+<td>Missing default style instruction: warm paper, semantic ink, short
+handwritten coach annotations, readable prose/technical/coach voices,
+drawn causal marks, reason-aligned pen timing, portable font/license
+handling, and explicit accessibility/style override. Complete bounded
+delivery is required, but immediate access to the finished figure during
+replay is not explicit. No AskTheMove visual implementation is
+established by this comparison.</td>
+</tr>
+</tbody>
+</table>
+<p>The principal uncovered additions are the AskTheMove default and an
+explicit separate course-map/notes presentation contract. Cross-output
+visual-vocabulary parity and immediate finished-figure access would make
+the existing media policy more precise. These are source-text gaps only;
+implementing them remains separate from this research report. The
+synthesis explicitly preserves that boundary
+(<strong>S:37–39</strong>).</p>
+</body>
+</html>
