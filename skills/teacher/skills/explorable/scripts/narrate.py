@@ -16,12 +16,12 @@
 3. Times each scene to its voice, then renders every frame in Chromium: the
    figure eases to the scene's settings and the coach's marks draw in one
    after another.
-4. Adds the pen's sound under the marks as they draw: real CC0 recordings of
-   chalk on a board or pencil on paper (lesson-notebook/assets/sounds), cut
-   into overlapping grains so no two strokes repeat, with a friction synth as
-   the fallback. Sets it 17 dB under the voice, lays a faint room tone under
-   everything so pauses never drop to digital silence, normalises to -16 LUFS,
-   and writes the MP4 with WebVTT captions beside it.
+4. Mixes the voice over a faint room tone (so pauses never drop to digital
+   silence), normalises to -16 LUFS, and writes the MP4 with WebVTT captions
+   beside it. No pen sound unless you pass --pen: it is placed by an estimate
+   of when strokes draw, not by the strokes themselves, and a listener found it
+   distracting and out of sync. --remux keeps an existing video's picture and
+   remakes only its sound (minutes instead of a full render).
 5. Runs visual-qa's check_video.py on the result, and check_speech.py (does
    the voice say what the captions say?) when faster-whisper is installed.
 
@@ -338,6 +338,8 @@ def main() -> int:
     ap.add_argument("--fps", type=int, default=24)
     ap.add_argument("--crf", type=int, default=28, help="x264 quality: lower is bigger and sharper")
     ap.add_argument("--keep", action="store_true", help="keep the frames folder")
+    ap.add_argument("--pen", action="store_true", help="add the pen's sound under the marks (off by default: it follows an estimate of the strokes, not the strokes)")
+    ap.add_argument("--remux", action="store_true", help="keep the picture of the existing --out video and only remake its sound")
     a = ap.parse_args()
     for tool in ("node", "ffmpeg"):
         if not shutil.which(tool):
@@ -362,10 +364,17 @@ def main() -> int:
     work = Path(tempfile.mkdtemp(prefix="narrate-"))
     (work / "timing.json").write_text(json.dumps(timing))
 
-    print("rendering frames…")
     frames = work / "frames"
-    run(["node", str(HERE / "film_export.mjs"), str(a.lesson), "--timing", str(work / "timing.json"), "--out", str(frames), "--fps", str(a.fps), "--board", a.board])
-    marks = json.loads((frames / "marks.json").read_text())["marks"]
+    if a.remux:
+        if not a.out.exists():
+            raise SystemExit(f"--remux needs the existing video at {a.out}")
+        if a.pen:
+            raise SystemExit("--remux can't add the pen: it needs the marks from a fresh render")
+        marks = [0] * len(scenes)
+    else:
+        print("rendering frames…")
+        run(["node", str(HERE / "film_export.mjs"), str(a.lesson), "--timing", str(work / "timing.json"), "--out", str(frames), "--fps", str(a.fps), "--board", a.board])
+        marks = json.loads((frames / "marks.json").read_text())["marks"]
 
     # Voice track plus the pen: each scene's marks draw one after another over its first 45%.
     total = int(timing["total"] * SR) + SR
@@ -374,11 +383,12 @@ def main() -> int:
     rng = np.random.default_rng(7)
     kind = "chalk" if a.board == "chalk" else "paper"
     bank = load_pen(kind)
-    print(f"pen: {'recordings' if bank else 'friction synth'} ({kind})")
+    if a.pen:
+        print(f"pen: {'recordings' if bank else 'friction synth'} ({kind})")
     for sc, clip, m in zip(timing["scenes"], clips, marks):
         s = int(sc["voiceAt"] * SR)
         voice[s: s + len(clip)] += clip[: total - s]
-        if m:
+        if m and a.pen:
             window = 0.45 * sc["dur"]
             for j in range(m):
                 st = int((sc["start"] + window * j / m) * SR)
@@ -398,9 +408,14 @@ def main() -> int:
     # passes, so a failed render never clobbers a good video.
     out = a.out.with_name(a.out.stem + ".partial" + a.out.suffix)
     print("encoding…")
-    run(["ffmpeg", "-loglevel", "error", "-y", "-framerate", str(a.fps), "-i", str(frames / "%06d.png"), "-i", str(work / "audio.wav"),
-         "-af", "loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,alimiter=limit=0.75:attack=1:release=60:level=false", "-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p", "-crf", str(a.crf),
-         "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
+    master = "loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,alimiter=limit=0.75:attack=1:release=60:level=false"
+    if a.remux:
+        run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(a.out), "-i", str(work / "audio.wav"), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
+             "-af", master, "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
+    else:
+        run(["ffmpeg", "-loglevel", "error", "-y", "-framerate", str(a.fps), "-i", str(frames / "%06d.png"), "-i", str(work / "audio.wav"),
+             "-af", master, "-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p", "-crf", str(a.crf),
+             "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
     settle_peak(out)
     out.with_suffix(".vtt").write_text(vtt(timing, [sc["say"] for sc in scenes]))
     if not a.keep:

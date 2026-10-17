@@ -36,6 +36,14 @@ their cue. The first segment tree videos scored 99%. Nobody on this project
 has listened to the voices yet: the ranking comes from published
 human-preference tests, and the check proves intelligibility, not charm.
 
+## Pen sounds: off by default
+
+The first listener found the pen sound annoying and out of sync, so it is
+off everywhere by default: videos are voice only (`narrate.py --pen` brings
+it back), and in lessons the Sound button turns it on. The video pen track is
+placed by an estimate of when strokes draw, which is why it drifts; sync it
+to the real stroke times before turning it back on by default.
+
 ## Pen sounds: real recordings, cut into grains
 
 | Board | Recording | Licence |
@@ -71,7 +79,7 @@ sparse clicks over broadband hiss with a 20 ms pulse.
 ## The video mix
 
 - voice normalised to its peak
-- pen set 17 dB under the voice on paper, 15 dB on chalk, measured on the parts that make sound
+- no pen by default; with `--pen`, it sits 17 dB under the voice on paper, 15 dB on chalk
 - a faint room tone 42 dB under the voice, so pauses sound like a quiet room instead of a dropout
 - `loudnorm` to -16 LUFS, then a limiter at -2.5 dBFS so true peak stays under -1 dBTP after AAC
 - `check_video.py` checks loudness, peak, frames and captions; `check_speech.py` checks the words

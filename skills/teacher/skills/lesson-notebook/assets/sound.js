@@ -17,9 +17,9 @@ const SOUND_KEY = "notebook:sound";
 let audio = null; // { ctx, noise, out, samples: { chalk: [...], paper: [...] } }
 let soundOn = (() => {
   try {
-    return localStorage.getItem(SOUND_KEY) !== "off";
+    return localStorage.getItem(SOUND_KEY) === "on"; // off unless the learner turns it on
   } catch {
-    return true;
+    return false;
   }
 })();
 const listeners = new Set();

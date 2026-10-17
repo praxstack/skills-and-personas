@@ -80,7 +80,7 @@ The registry (`assets/registry.json`) maps jobs to 45 tools and host surfaces, a
 
 ## Make it look like a lesson
 
-Every visual uses the `lesson-notebook` style by default: quad-ruled paper (a chalkboard automatically in dark mode), a red margin rule, the book's serif for explanations, a typewriter voice for computed numbers, and the coach's handwriting for notes, circles and arrows, drawn live by a pen that sounds like real chalk or pencil (CC0 recordings). Narration is a natural neural voice, never a robotic one. The house rules are in `skills/lesson-notebook/SKILL.md`; the voice and sound choices, with sources, are in [references/VOICE-AND-SOUND.md](references/VOICE-AND-SOUND.md). Change the look only when the learner asks or the project has its own design system.
+Every visual uses the `lesson-notebook` style by default: quad-ruled paper (a chalkboard automatically in dark mode), a red margin rule, the book's serif for explanations, a typewriter voice for computed numbers, and the coach's handwriting for notes, circles and arrows, drawn live by a pen (its chalk or pencil sound is off unless the learner turns it on). Narration is a natural neural voice, never a robotic one. The house rules are in `skills/lesson-notebook/SKILL.md`; the voice and sound choices, with sources, are in [references/VOICE-AND-SOUND.md](references/VOICE-AND-SOUND.md). Change the look only when the learner asks or the project has its own design system.
 
 Patterns borrowed from the best learning products (manipulate-first problems, separate outline, lesson and notes panes, bite-size steps, roadmaps): [references/DESIGN-INSPIRATION.md](references/DESIGN-INSPIRATION.md).
 

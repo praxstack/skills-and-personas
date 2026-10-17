@@ -29,6 +29,7 @@ def main() -> int:
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--board", choices=["paper", "chalk"], default="paper")
+    ap.add_argument("--remux", action="store_true", help="keep each existing video's picture and only remake its sound")
     a = ap.parse_args()
     meta = json.loads((a.course / "course.json").read_text())
     shared = [x for s in meta.get("shared", []) for x in ("--include", str(a.course / s))]
@@ -51,7 +52,7 @@ def main() -> int:
                 print(f"FAIL {lesson['id']}: build\n{r.stderr}")
                 bad += 1
                 continue
-            r = subprocess.run([sys.executable, str(EXP / "narrate.py"), str(page), "-o", str(mp4), "--board", a.board], capture_output=True, text=True)
+            r = subprocess.run([sys.executable, str(EXP / "narrate.py"), str(page), "-o", str(mp4), "--board", a.board, *(["--remux"] if a.remux else [])], capture_output=True, text=True)
             tail = (r.stdout + r.stderr).strip().splitlines()
             print(f"{'ok  ' if r.returncode == 0 else 'FAIL'} {lesson['id']}: {' | '.join(l.strip() for l in tail if 'duration' in l or 'lufs' in l or 'speech' in l or 'FAIL' in l or l.strip() in ('clean',))}")
             bad += r.returncode != 0
