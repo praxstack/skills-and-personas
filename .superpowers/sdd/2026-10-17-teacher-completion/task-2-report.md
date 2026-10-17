@@ -47,3 +47,8 @@ A fresh isolated installed Chrome `155.0.8059.84` used the existing Playwright e
 The executable check asserts at least 4.5:1 for body, links, coach notes and correction under the combined condition. Retained external evidence is `check-dark-print.py`, `dark-print-before.json` and `dark-print-after.json` in the presentation evidence directory. The old example and receipt are preserved in `initial-example-before-print-fix/`. This is a bounded real computed-style check, not a general accessibility certification.
 
 Regenerated and byte-checked all 36 frozen current companions and the 3 external example pages at the unchanged fixed epoch. Recreated and checked the external example's exact-byte visual receipt. Reran full Node22 output suite (**21 passed**) and unchanged Python visual-verification suite (**7 passed**). Logs use the `-print-fix` suffix. The candidate start, absolute deadline, acceptance method and installation state remain unchanged.
+
+
+## Wrapper release-status clarification
+
+Added a local clarification beside the wrapper's `PUBLIC-DISTRIBUTION.md` link. Its inherited “Current visual-unification status” section describes a historical snapshot; this candidate's readiness comes from selected exact-source external evidence and the external acceptance decision. The protected referenced document and engine/manifest remain unchanged. Verified the named-path diff and `git diff --check`; this prose clarification requires no runtime rerun.

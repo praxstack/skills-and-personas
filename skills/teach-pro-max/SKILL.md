@@ -34,7 +34,11 @@ change the public name.
 Read
 [`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md)
 before migrating persisted state, evaluating this distribution, modifying the
-embedded engine, or making a release claim.
+embedded engine, or making a release claim. Its “Current visual-unification
+status” section is an inherited historical snapshot of earlier release and
+installed-copy results, not acceptance of this candidate. Determine current
+readiness from the selected exact-source external evidence and the external
+acceptance decision.
 
 ## Route the learner request
 
