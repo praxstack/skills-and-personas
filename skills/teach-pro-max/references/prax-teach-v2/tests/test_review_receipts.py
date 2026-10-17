@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -79,6 +80,27 @@ class ReviewReceiptTests(unittest.TestCase):
                 arguments.extend(
                     ("--" + field.replace("_", "-"), str(workspace / case[field]))
                 )
+            # Only the disposable copied HTML is regenerated. The protected
+            # historical fixtures remain unchanged in the source package.
+            rendered = subprocess.run(
+                [
+                    "node",
+                    str(workspace / "scripts/render_markdown.mjs"),
+                    "--trusted-root",
+                    str(workspace),
+                    str(workspace / case["source"]),
+                    str(workspace / case["html"]),
+                ],
+                cwd=workspace,
+                text=True,
+                capture_output=True,
+                check=False,
+                env={
+                    **os.environ,
+                    "SOURCE_DATE_EPOCH": os.environ.get("SOURCE_DATE_EPOCH", "1785844800"),
+                },
+            )
+            self.assertEqual(rendered.returncode, 0, rendered.stderr)
             generated = subprocess.run(
                 [
                     sys.executable,
