@@ -205,6 +205,11 @@ class Scripts(unittest.TestCase):
             self.assertNotIn("late point", run(s, "status", cwd=Path(tmp)).stdout, "asked in 3 covers the slot due in 2")
             run(s, "resume", cwd=Path(tmp))  # session 4: the next slot is due
             self.assertIn("late point", run(s, "status", cwd=Path(tmp)).stdout)
+            for _ in range(4):
+                run(s, "resume", cwd=Path(tmp))  # session 8: every slot (2, 4, 7) has passed
+            run(s, "recall", "result", "t", "0", "--right", cwd=Path(tmp))  # asked, with help again
+            run(s, "resume", cwd=Path(tmp))
+            self.assertIn("late point", run(s, "status", cwd=Path(tmp)).stdout, "not demonstrated yet, so it must come back")
 
     def test_forget_only_deletes_the_journal(self):
         s = str(ROOT / "scripts/series.py")
@@ -233,6 +238,9 @@ class Scripts(unittest.TestCase):
             self.assertFalse(vendor.git_dirty(root, "s"))
             (root / "s/SKILL.md").write_text("edited\n")
             self.assertTrue(vendor.git_dirty(root, "s"))
+            (root / ".gitignore").write_text("x.txt\n")
+            (root / "x.txt").write_text("not in HEAD\n")
+            self.assertTrue(vendor.git_dirty(root, "x.txt"), "an ignored file isn't HEAD's")
 
 
 class Builds(unittest.TestCase):
@@ -344,6 +352,17 @@ class Builds(unittest.TestCase):
         self.assertNotRegex(out, r"e/[a-f]|127\.0\.0\.1|c\.svg")
         for kept in ('<use href="#n"/>', '<rect fill="url(#g)"/>', 'data:image/png;base64,AA', 'href="https://ok.example/"', 'values="red;blue"'):
             self.assertIn(kept, out)
+
+    def test_diagram_sanitizer_escapes_markup_in_values(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        # Inside <foreignObject> an HTML <title> ends at the first </title>, quotes or not.
+        out = render.sanitize_svg('<svg><foreignObject><title><p title="</title><img src=x onerror=alert(1)>"></p></title>'
+                                  '<noscript><b>x</b></noscript><xmp>y</xmp><plaintext></foreignObject></svg>')
+        self.assertNotIn("<img", out)
+        self.assertEqual(out.count("</title>"), 1, "the only </title> is the real end tag")
+        self.assertNotRegex(out, r"(?i)<(noscript|xmp|plaintext)")
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg not installed")

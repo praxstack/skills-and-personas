@@ -115,7 +115,9 @@ def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str
 
 # Elements that can run code, load a page or take input. They never belong in a figure.
 BLOCKED_TAGS = {"script", "iframe", "frame", "frameset", "object", "embed", "applet", "meta", "link", "base",
-                "form", "input", "button", "textarea", "select", "handler", "listener"}
+                "form", "input", "button", "textarea", "select", "handler", "listener",
+                # HTML raw-text elements: inside <foreignObject> they swallow markup up to their end tag.
+                "noscript", "xmp", "noembed", "noframes", "plaintext"}
 # Attributes that load a resource as soon as the page opens: only in-figure #references
 # and embedded raster images may stay. A link (<a href>) only navigates when clicked.
 RESOURCE_ATTRS = {"href", "xlink:href", "src", "srcset", "action", "formaction", "data", "poster", "background"}
@@ -186,8 +188,10 @@ def _clean_tag(m: re.Match) -> str:
             continue
         if re.search(_EXTERNAL_URL, html.unescape(raw), flags=re.I):
             continue  # fill="url(https://...)", filter=, mask=, cursor= and friends
-        # Re-quote every value, so the browser reads exactly the attributes kept here.
-        kept.append(f" {an}" if av is None else f' {an}="{raw.replace(chr(34), "&quot;")}"')
+        # Re-quote every value, so the browser reads exactly the attributes kept here. Escape
+        # < and > too: inside an HTML <title> or <noscript> the browser ignores quotes.
+        safe = raw.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+        kept.append(f" {an}" if av is None else f' {an}="{safe}"')
     end = "/" if rest.rstrip().endswith("/") else ""
     return f"<{name}{''.join(kept)}{end}>"
 
@@ -205,7 +209,8 @@ def sanitize_svg(svg: str) -> str:
     svg = re.sub(r"<!\[CDATA\[(.*?)(\]\]>|$)", lambda m: html.escape(m.group(1), quote=False), svg, flags=re.S)
     svg = re.sub(r"(<style\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>)(.*?)(?=</style\s*>|$)",
                  lambda m: m.group(1) + html.escape(clean_css(html.unescape(m.group(2))) or "", quote=False), svg, flags=re.S | re.I)
-    for tag in ("script", "iframe", "object", "applet", "form", "textarea", "select", "button"):
+    for tag in ("script", "iframe", "object", "applet", "form", "textarea", "select", "button",
+                "noscript", "xmp", "noembed", "noframes"):
         svg = re.sub(rf"<{tag}\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*?/>", "", svg, flags=re.I)
         svg = re.sub(rf"<{tag}\b.*?</{tag}\s*>", "", svg, flags=re.S | re.I)
     return TAG_RE.sub(_clean_tag, svg)

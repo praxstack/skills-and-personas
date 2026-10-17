@@ -41,8 +41,9 @@ ALL="claude codex agents pi opencode gemini hermes cursor cline kilocode copilot
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --targets) [ $# -ge 2 ] || { echo "--targets needs a value" >&2; exit 2; }; TARGETS="${2//,/ }"; shift 2 ;;
-    --dir) [ $# -ge 2 ] || { echo "--dir needs a value" >&2; exit 2; }; DIR="$2"; shift 2 ;;
+    --targets|--dir)
+      case "${2-}" in ""|-*) echo "$1 needs a value" >&2; exit 2 ;; esac
+      if [ "$1" = --dir ]; then DIR="$2"; else TARGETS="${2//,/ }"; fi; shift 2 ;;
     --copy) MODE="copy"; shift ;;
     --with-subskills) SUBSKILLS=1; shift ;;
     --dry-run) DRY=1; shift ;;

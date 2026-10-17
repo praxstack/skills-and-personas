@@ -196,7 +196,8 @@ def main() -> int:
         if not j.file.is_file():
             raise SystemExit(f"no journal in {a.dir}; nothing deleted")
         # Delete only the files this script writes, never the folder's other contents.
-        for f in (j.file, j.file.with_suffix(".tmp"), j.root / "JOURNAL.md"):
+        # journal.json goes last, so a forget that stops partway can be run again.
+        for f in (j.file.with_suffix(".tmp"), j.root / "JOURNAL.md", j.file):
             f.unlink(missing_ok=True)
         try:
             j.root.rmdir()
@@ -250,6 +251,9 @@ def main() -> int:
             elif not a.right:
                 # A miss brings it back next session, then restarts the spacing.
                 p["due"] = sorted(set(p["asked_in"]) | {j.session + s for s in SPACING})
+            if not p["demonstrated"] and all(asked(p, d) for d in p["due"]):
+                # Asked late and not yet shown unaided: keep it coming back.
+                p["due"].append(j.session + SPACING[0])
             j.save()
             print("demonstrated" if p["demonstrated"] else "recorded")
     elif a.cmd in ("satisfied", "reopen", "park"):

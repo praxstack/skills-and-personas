@@ -104,14 +104,17 @@ def git_files(root: Path, rel: str) -> list[str] | None:
 
 
 def git_dirty(root: Path, rel: str) -> bool:
-    """True when a git source has uncommitted or untracked changes under rel.
+    """True when rel in a git source differs from HEAD: uncommitted, untracked or ignored.
 
     The manifest attributes the copy to HEAD, so the bytes copied must be HEAD's.
     """
     if git_head(root) is None:
         return False
-    out = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain", "--", rel], text=True)
-    return bool(out.strip())
+    out = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain", "--untracked-files=all", "--", rel], text=True)
+    if out.strip():
+        return True
+    # An ignored file shows up in neither status nor HEAD, so require it to be tracked.
+    return not subprocess.check_output(["git", "-C", str(root), "ls-files", "--", rel], text=True).strip()
 
 
 def sync(sources: dict[str, Path], only: list[str] | None) -> int:
@@ -122,7 +125,7 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
     picked += [(d, k, r) for d, (k, r, *_) in FILES.items() if k in sources]
     for label, key, rel in picked:
         if git_dirty(sources[key], rel):
-            print(f"FAIL {label}: {sources[key] / rel} has uncommitted changes; commit or stash them first", file=sys.stderr)
+            print(f"FAIL {label}: {sources[key] / rel} differs from HEAD (uncommitted, untracked or ignored); commit it first", file=sys.stderr)
             return 1
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
         if only and name not in only:
