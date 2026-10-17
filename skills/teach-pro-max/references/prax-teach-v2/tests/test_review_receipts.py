@@ -42,6 +42,8 @@ class ReviewReceiptTests(unittest.TestCase):
         shutil.copy2(ROOT / "scripts" / "prax_teach.py", scripts)
         shutil.copy2(ROOT / "scripts" / "render_markdown.mjs", scripts)
         shutil.copy2(ROOT / "scripts" / "verify_visual_runtime.py", scripts)
+        shutil.copy2(ROOT / "scripts" / "current_evidence.py", scripts)
+        shutil.copy2(ROOT / "scripts" / "review_payload.py", scripts)
         shutil.copytree(
             ROOT / "scripts" / "praxteach",
             scripts / "praxteach",
@@ -60,6 +62,36 @@ class ReviewReceiptTests(unittest.TestCase):
         # review payload, but the copied renderer still needs its pinned local
         # install when the full validator recomputes the fixture receipts.
         shutil.copytree(ROOT / "node_modules", workspace / "node_modules")
+        # These are mutable test copies, not the protected historical receipts.
+        # Bind them to the copied current implementation before reviewing it.
+        manifest = json.loads(
+            (workspace / "fixtures/visual-verification/manifest.json").read_text()
+        )
+        for case in manifest["cases"]:
+            arguments = []
+            for field in (
+                "route_output",
+                "source",
+                "html",
+                "forbidden_answer_file",
+                "receipt",
+            ):
+                arguments.extend(
+                    ("--" + field.replace("_", "-"), str(workspace / case[field]))
+                )
+            generated = subprocess.run(
+                [
+                    sys.executable,
+                    str(workspace / "scripts/prax_teach.py"),
+                    "visual-verify",
+                    *arguments,
+                ],
+                cwd=workspace,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(generated.returncode, 0, generated.stderr)
 
     def create_reviewed_workspace(self, workspace: Path) -> None:
         (workspace / "source.txt").write_text("reviewed bytes\n", encoding="utf-8")
@@ -134,6 +166,7 @@ class ReviewReceiptTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stdout)
             report = json.loads(completed.stdout)
             self.assertEqual(report["counts"]["independent_review_receipts"], 3)
+            self.assertEqual(report["counts"]["visual_verification_receipts"], 4)
 
     def test_payload_mutation_after_review_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

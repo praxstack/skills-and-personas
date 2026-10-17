@@ -17,6 +17,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from current_evidence import (
+    EvidenceError,
+    add_selection_arguments,
+    apply_selection_arguments,
+    resolve_current,
+)
 from review_payload import distributable_mode
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -192,15 +198,28 @@ def tail(value: str, lines: int = 12) -> list[str]:
 def run_gate(
     name: str, command: list[str], environment: dict[str, str]
 ) -> dict[str, Any]:
+    gate_environment = dict(environment)
+    if name == "python-tests":
+        # Tests construct independent temporary packages and their own evidence.
+        # Selection for the candidate is exercised separately by package-validator.
+        for key in (
+            "PRAX_CURRENT_EVIDENCE",
+            "PRAX_CURRENT_EVIDENCE_SHA256",
+            "PRAX_ACTIVE_VERIFICATION_RUN_ID",
+        ):
+            gate_environment.pop(key, None)
     completed = subprocess.run(
         command,
         cwd=ROOT,
-        env=environment,
+        env=gate_environment,
         text=True,
         capture_output=True,
         check=False,
     )
     combined = completed.stdout + completed.stderr
+    log_directory = environment.get("PRAX_VERIFICATION_LOG_DIRECTORY")
+    if log_directory:
+        write_atomic(Path(log_directory) / f"{name}.log", combined)
     policy_failures: list[str] = []
     if (
         name == "python-tests"
@@ -257,7 +276,13 @@ def main() -> int:
     parser.add_argument("--skillopt-source", type=Path)
     parser.add_argument("--receipt", type=Path)
     parser.add_argument("--json", action="store_true", dest="as_json")
+    add_selection_arguments(parser)
     args = parser.parse_args()
+    try:
+        apply_selection_arguments(args)
+        current = resolve_current(ROOT, allow_pending=True)
+    except EvidenceError as exc:
+        parser.error(str(exc))
 
     environment = dict(os.environ)
     environment["SOURCE_DATE_EPOCH"] = environment.get(
@@ -289,12 +314,20 @@ def main() -> int:
         ):
             parser.error("SkillOpt source does not match the exact pinned commit")
 
-    receipt_path = args.receipt.expanduser().resolve() if args.receipt else None
+    receipt_path = args.receipt.expanduser().absolute() if args.receipt else None
     if args.level == "full":
-        if receipt_path is None:
-            receipt_path = FULL_RECEIPT
-        if receipt_path != FULL_RECEIPT:
-            parser.error(f"full verification receipt must be {FULL_RECEIPT}")
+        if current is None or current.document["state"] != "pending":
+            parser.error(
+                "full verification requires an explicit pending current-evidence descriptor"
+            )
+        selected_receipt = current.receipt_path("full")
+        if receipt_path is not None and receipt_path != selected_receipt:
+            parser.error(
+                "full receipt must equal the explicitly selected external full receipt"
+            )
+        receipt_path = selected_receipt
+    if receipt_path is not None and receipt_path.is_relative_to(ROOT):
+        parser.error("verification receipts must be outside attested source")
 
     source_manifest = release_file_manifest()
     generated_at = datetime.fromtimestamp(
@@ -309,10 +342,19 @@ def main() -> int:
         "external_human_learning_gates_satisfied": False,
         "generated_at": generated_at,
         "level": args.level,
-        "log_retention": LOG_RETENTION,
+        "log_retention": (
+            {
+                "full_logs_persisted": True,
+                "retained": ["sha256", "tail", "external-log"],
+                "tail_line_limit": 12,
+                "directory": str(current.path.parent / "logs" / run_id),
+            }
+            if current
+            else LOG_RETENTION
+        ),
         "root_manifest": source_manifest,
         "run_id": run_id,
-        "schema_version": 3,
+        "schema_version": 4 if current else 3,
         "scientific_learning_claim_supported": False,
         "source_date_epoch": environment["SOURCE_DATE_EPOCH"],
         "skillopt_source": skillopt_source_receipt,
@@ -323,6 +365,10 @@ def main() -> int:
         "verification_script_sha256": sha256_file(Path(__file__).resolve()),
     }
     environment["PRAX_ACTIVE_VERIFICATION_RUN_ID"] = run_id
+    if current:
+        environment["PRAX_VERIFICATION_LOG_DIRECTORY"] = str(
+            current.path.parent / "logs" / run_id
+        )
     if receipt_path:
         write_atomic(
             receipt_path,
@@ -439,6 +485,11 @@ def main() -> int:
             check=False,
         )
         combined = postflight.stdout + postflight.stderr
+        if current:
+            write_atomic(
+                Path(environment["PRAX_VERIFICATION_LOG_DIRECTORY"]) / "postflight.log",
+                combined,
+            )
         receipt["postflight_validation"] = {
             "command": postflight_command,
             "exit_code": postflight.returncode,

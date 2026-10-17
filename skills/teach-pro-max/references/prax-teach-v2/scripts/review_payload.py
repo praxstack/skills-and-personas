@@ -60,9 +60,13 @@ class PayloadError(RuntimeError):
     """A payload cannot be represented safely."""
 
 
-def read_stable_regular(path: Path, expected: os.stat_result | None = None) -> bytes:
+def read_stable_regular(
+    path: Path, expected: os.stat_result | None = None, *, maximum: int | None = None
+) -> bytes:
     """Read one stable regular-file generation without following symlinks."""
     before = expected or path.lstat()
+    if maximum is not None and before.st_size > maximum:
+        raise PayloadError(f"review payload exceeds read bound: {path}")
     if stat.S_ISLNK(before.st_mode):
         raise PayloadError(f"review payload is a symlink: {path}")
     if not stat.S_ISREG(before.st_mode):
@@ -84,8 +88,15 @@ def read_stable_regular(path: Path, expected: os.stat_result | None = None) -> b
         ):
             raise PayloadError(f"review payload file changed while opening: {path}")
         contents = bytearray()
-        while chunk := os.read(descriptor, 1024 * 1024):
+        while chunk := os.read(
+            descriptor,
+            min(1024 * 1024, maximum + 1 - len(contents))
+            if maximum is not None
+            else 1024 * 1024,
+        ):
             contents.extend(chunk)
+            if maximum is not None and len(contents) > maximum:
+                raise PayloadError(f"review payload exceeds read bound: {path}")
         finished = os.fstat(descriptor)
         after = path.lstat()
         stable_fields = ("st_size", "st_mtime_ns", "st_ctime_ns")
@@ -214,13 +225,24 @@ def main() -> int:
         action="store_true",
         help="fail unless the existing payload matches current bytes",
     )
+    parser.add_argument(
+        "--external-output", type=Path, help="external versioned payload path"
+    )
     args = parser.parse_args()
     root = args.root.expanduser().resolve()
     if not root.is_dir():
         print(f"review root is not a directory: {root}", file=sys.stderr)
         return 2
     try:
-        output = resolve_output(root, args.output)
+        if args.external_output is not None:
+            # Deferred import avoids the shared reader's payload-manifest cycle.
+            from current_evidence import _safe_absolute
+
+            output = _safe_absolute(args.external_output)
+            if output.is_relative_to(root):
+                raise PayloadError("external payload must be outside attested source")
+        else:
+            output = resolve_output(root, args.output)
         expected = payload_manifest(root)
         if args.check:
             try:

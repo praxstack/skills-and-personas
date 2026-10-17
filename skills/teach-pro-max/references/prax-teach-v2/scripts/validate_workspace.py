@@ -19,6 +19,12 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import unquote, urlparse
 
+from current_evidence import (
+    EvidenceError,
+    add_selection_arguments,
+    apply_selection_arguments,
+    resolve_current,
+)
 from review_payload import PayloadError, distributable_mode, payload_manifest
 
 DANGEROUS_TAGS = {"base", "embed", "iframe", "object", "script"}
@@ -604,7 +610,12 @@ def is_separately_validated_runtime(path: Path, root: Path) -> bool:
 
 
 def validate_companion_metadata(
-    markdown: Path, html: Path, parser: PageParser, root: Path
+    markdown: Path,
+    html: Path,
+    parser: PageParser,
+    root: Path,
+    *,
+    renderer_root: Path | None = None,
 ) -> list[str]:
     errors: list[str] = []
     html_rel = html.relative_to(root)
@@ -629,9 +640,33 @@ def validate_companion_metadata(
             f"expected {markdown.name!r}"
         )
 
+    renderer_path = (renderer_root or root) / "scripts/render_markdown.mjs"
+    if not renderer_path.is_file():
+        renderer_path = Path(__file__).with_name("render_markdown.mjs")
+    try:
+        renderer_source = renderer_path.read_text(encoding="utf-8")
+        versions = []
+        for constant, family in (
+            ("RENDERER_VERSION", "prax-teach-markdown"),
+            ("TEMPLATE_VERSION", "prax-teach-lesson"),
+        ):
+            matches = re.findall(
+                r"^const "
+                + constant
+                + r" = ['\"]("
+                + family
+                + r"/[0-9]+\.[0-9]+\.[0-9]+)['\"];",
+                renderer_source,
+                re.MULTILINE,
+            )
+            if len(matches) != 1:
+                raise ValueError("renderer has no unique bounded version constant")
+            versions.append(matches[0])
+    except (OSError, UnicodeError, ValueError) as exc:
+        return [*errors, f"{html_rel}: cannot bind renderer metadata: {exc}"]
     for label, actual, expected in (
-        ("renderer-version", parser.renderer_versions, EXPECTED_RENDERER_VERSION),
-        ("template-version", parser.template_versions, EXPECTED_TEMPLATE_VERSION),
+        ("renderer-version", parser.renderer_versions, versions[0]),
+        ("template-version", parser.template_versions, versions[1]),
     ):
         if len(actual) != 1:
             errors.append(
@@ -1807,6 +1842,15 @@ def validate_integration_manifests(root: Path) -> tuple[int, list[str]]:
 def validate_legacy_asset_provenance(root: Path) -> tuple[int, list[str]]:
     """Bind every restored legacy asset to its recorded source and target bytes."""
 
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        if current:
+            root = current.historical_root()
+    except EvidenceError as exc:
+        return 0, [f"historical evidence: {exc}"]
+
     if not (root / "SKILL.md").is_file():
         return 0, []
     relative = "evidence/provenance/legacy-assets.json"
@@ -2296,7 +2340,19 @@ def validate_forward_behavior_receipt(root: Path) -> tuple[int, list[str]]:
 def validate_independent_review_receipts(root: Path) -> tuple[int, list[str]]:
     """Require three independent reviews of the exact same final payload."""
 
-    payload_path = root / REVIEW_PAYLOAD_RELATIVE
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        payload_path = (
+            current.receipt_path("payload")
+            if current
+            else root / REVIEW_PAYLOAD_RELATIVE
+        )
+        if current:
+            selected_payload = current.receipt("payload")
+    except EvidenceError as exc:
+        return 0, [f"current evidence: {exc}"]
     required = (root / "SKILL.md").is_file() or payload_path.exists()
     if not required:
         return 0, []
@@ -2310,7 +2366,7 @@ def validate_independent_review_receipts(root: Path) -> tuple[int, list[str]]:
         for entry in sorted(reviews_dir.iterdir(), key=lambda item: item.name):
             if entry.name not in allowed_review_names:
                 errors.append(f"evidence/reviews/{entry.name}: unknown review entry")
-    payload = _load_strict_bounded_json(payload_path)
+    payload = selected_payload if current else _load_strict_bounded_json(payload_path)
     if not isinstance(payload, dict):
         return 0, ["independent review payload is missing or invalid"]
     try:
@@ -2320,15 +2376,27 @@ def validate_independent_review_receipts(root: Path) -> tuple[int, list[str]]:
         expected_payload = None
     if payload != expected_payload:
         errors.append("independent review payload is stale")
-    payload_file_digest = sha256(payload_path)
+    payload_file_digest = (
+        current.document["receipts"]["payload"]["sha256"]
+        if current
+        else sha256(payload_path)
+    )
     payload_manifest_digest = payload.get("sha256")
 
     count = 0
     reviewer_tasks: set[str] = set()
     for review_type in REVIEW_TYPES:
         relative = f"evidence/reviews/{review_type}.json"
-        path = root / relative
-        receipt = _load_strict_bounded_json(path, maximum=256 * 1024)
+        path = current.receipt_path(review_type) if current else root / relative
+        try:
+            receipt = (
+                current.receipt(review_type)
+                if current
+                else _load_strict_bounded_json(path, maximum=256 * 1024)
+            )
+        except EvidenceError as exc:
+            errors.append(f"{relative}: {exc}")
+            continue
         label = f"{relative}:"
         if not isinstance(receipt, dict):
             errors.append(f"{label} required review receipt is missing or invalid")
@@ -2441,8 +2509,20 @@ def validate_verification_receipt(root: Path) -> tuple[int, list[str]]:
 
     if not (root / "SKILL.md").is_file():
         return 0, []
-    path = root / VERIFICATION_RECEIPT_RELATIVE
-    document = _load_strict_bounded_json(path)
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        path = (
+            current.receipt_path("full")
+            if current
+            else root / VERIFICATION_RECEIPT_RELATIVE
+        )
+        document = (
+            current.receipt("full") if current else _load_strict_bounded_json(path)
+        )
+    except EvidenceError as exc:
+        return 0, [f"current evidence: {exc}"]
     if not isinstance(document, dict):
         return 0, [f"{VERIFICATION_RECEIPT_RELATIVE}: required receipt is missing"]
     errors: list[str] = []
@@ -2453,12 +2533,26 @@ def validate_verification_receipt(root: Path) -> tuple[int, list[str]]:
         errors.append(
             f"{VERIFICATION_RECEIPT_RELATIVE}: receipt does not match the exact schema"
         )
-    if document.get("schema_version") != 3:
-        errors.append(f"{VERIFICATION_RECEIPT_RELATIVE}: schema_version must be 3")
-    if document.get("log_retention") != VERIFICATION_LOG_RETENTION:
+    expected_schema_version = 4 if current else 3
+    if document.get("schema_version") != expected_schema_version:
         errors.append(
-            f"{VERIFICATION_RECEIPT_RELATIVE}: log retention must state that full "
-            "logs are not persisted and only their SHA-256 digest and tail are retained"
+            f"{VERIFICATION_RECEIPT_RELATIVE}: schema_version must be {expected_schema_version}"
+        )
+    expected_log_retention = (
+        {
+            "full_logs_persisted": True,
+            "retained": ["sha256", "tail", "external-log"],
+            "tail_line_limit": 12,
+            "directory": str(
+                current.path.parent / "logs" / str(document.get("run_id", ""))
+            ),
+        }
+        if current
+        else VERIFICATION_LOG_RETENTION
+    )
+    if document.get("log_retention") != expected_log_retention:
+        errors.append(
+            f"{VERIFICATION_RECEIPT_RELATIVE}: versioned full-log retention contract is invalid"
         )
     try:
         generated_at = datetime.fromisoformat(
@@ -2604,6 +2698,43 @@ def validate_verification_receipt(root: Path) -> tuple[int, list[str]]:
         errors.append(
             f"{VERIFICATION_RECEIPT_RELATIVE}: status must be passed outside an active run"
         )
+    if current and (
+        not isinstance(document.get("run_id"), str)
+        or re.fullmatch(r"[0-9a-f]{32}", document["run_id"]) is None
+    ):
+        errors.append(
+            f"{VERIFICATION_RECEIPT_RELATIVE}: current run identity must be a bounded hexadecimal digest"
+        )
+    if (
+        current
+        and status == "passed"
+        and isinstance(document.get("run_id"), str)
+        and re.fullmatch(r"[0-9a-f]{32}", document["run_id"])
+    ):
+        from current_evidence import _read, digest
+
+        log_directory = current.path.parent / "logs" / str(document.get("run_id", ""))
+        results = (
+            list(document["gates"]) if isinstance(document.get("gates"), list) else []
+        )
+        postflight_result = document.get("postflight_validation")
+        if isinstance(postflight_result, dict):
+            results.append({"name": "postflight", **postflight_result})
+        for gate in results:
+            if not isinstance(gate, dict) or gate.get("name") not in {
+                *expected_gates,
+                "postflight",
+            }:
+                continue
+            try:
+                if digest(_read(log_directory / f"{gate['name']}.log")) != gate.get(
+                    "output_sha256"
+                ):
+                    raise EvidenceError("full log digest mismatch")
+            except EvidenceError as exc:
+                errors.append(
+                    f"{VERIFICATION_RECEIPT_RELATIVE}: retained {gate['name']} log invalid: {exc}"
+                )
     dependencies = document.get("dependencies")
     expected_locks = {
         "integrations/flint/package-lock.json",
@@ -2708,6 +2839,15 @@ def validate_package_contract(root: Path) -> tuple[int, list[str]]:
 
 def validate_visual_verification_fixture(root: Path) -> tuple[int, list[str]]:
     """Recompute every frozen visual-route receipt instead of trusting pass flags."""
+
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        if current:
+            root = current.historical_root()
+    except EvidenceError as exc:
+        return 0, [f"historical evidence: {exc}"]
 
     manifest_path = root / VISUAL_VERIFICATION_FIXTURE
     if not manifest_path.is_file():
@@ -3450,11 +3590,23 @@ def validate_browser_inspection_receipt(
     inspection. Representative accessibility evidence remains an external gate.
     """
 
-    receipt_path = root / BROWSER_INSPECTION_RECEIPT_RELATIVE
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        receipt_path = (
+            current.receipt_path("browser")
+            if current
+            else root / BROWSER_INSPECTION_RECEIPT_RELATIVE
+        )
+        if current:
+            selected_browser = current.receipt("browser")
+    except EvidenceError as exc:
+        return 0, [f"current browser evidence: {exc}"]
     label = BROWSER_INSPECTION_RECEIPT_RELATIVE
     if receipt_path.is_symlink() or not receipt_path.is_file():
         return 0, [f"{label}: required browser-inspection receipt is missing or unsafe"]
-    receipt = _load_json_if_present(receipt_path)
+    receipt = selected_browser if current else _load_json_if_present(receipt_path)
     if not isinstance(receipt, dict):
         return 0, [f"{label}: expected a valid object"]
     errors: list[str] = []
@@ -3652,6 +3804,20 @@ def validation_report(root: Path, *, artifact_only: bool) -> dict[str, Any]:
             "status": "failed",
         }
 
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        historical_root = current.historical_root() if current else None
+    except EvidenceError as exc:
+        return {
+            "counts": counts,
+            "errors": [f"current evidence: {exc}"],
+            "mode": mode,
+            "root": str(root),
+            "security": security,
+            "status": "failed",
+        }
     markdown_files = iter_workspace_files(root, {".md"})
     html_files = iter_workspace_files(root, {".html"})
     counts["markdown_files"] = len(markdown_files)
@@ -3715,7 +3881,15 @@ def validation_report(root: Path, *, artifact_only: bool) -> dict[str, Any]:
             page_parser = parsers.get(html.resolve())
             if page_parser is not None:
                 pair_errors.extend(
-                    validate_companion_metadata(path, html, page_parser, root)
+                    validate_companion_metadata(
+                        path,
+                        html,
+                        page_parser,
+                        root,
+                        renderer_root=historical_root
+                        if current and current.historical_path(rel.as_posix())
+                        else root,
+                    )
                 )
 
         if is_negative_fixture(path, root):
@@ -3827,7 +4001,12 @@ def main() -> int:
         help="emit one structured JSON receipt on stdout",
     )
     parser.add_argument("workspace", type=Path)
+    add_selection_arguments(parser)
     args = parser.parse_args()
+    try:
+        apply_selection_arguments(args)
+    except EvidenceError as exc:
+        parser.error(str(exc))
     root = args.workspace.expanduser().resolve()
     try:
         report = validation_report(root, artifact_only=args.artifact_only)

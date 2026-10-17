@@ -78,7 +78,9 @@ class SkillContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, self.skill)
 
-    def test_chosen_assessment_post_error_hint_precedes_substantive_feedback(self) -> None:
+    def test_chosen_assessment_post_error_hint_precedes_substantive_feedback(
+        self,
+    ) -> None:
         required = (
             "during chosen assessment",
             "Immediate post-error return gate",

@@ -6,10 +6,10 @@ import hashlib
 import json
 import os
 import re
+import signal
 import stat
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -250,6 +250,7 @@ def runtime_bindings(root: Path) -> dict[str, dict[str, str | int]]:
         "manifest": _file_binding(runtime / "dist" / "manifest.json", root),
         "tests": _tree_binding(runtime / "tests"),
         "contracts": _tree_binding(runtime / "contracts"),
+        "examples": _tree_binding(root / "examples" / "visual-lab"),
         "build": _file_binding(runtime / "build.mjs", root),
         "routing": _file_binding(root / "scripts" / "praxteach" / "routing.py", root),
         "verifier": _file_binding(root / "scripts" / "verify_visual_runtime.py", root),
@@ -299,50 +300,109 @@ def _replay_runtime_verification(root: Path) -> dict[str, Any] | None:
         _assert_no_symlink_components(root, verifier)
     except OSError:
         return None
-    with tempfile.TemporaryDirectory() as temporary:
-        output = Path(temporary) / "verification.json"
-        try:
-            completed = subprocess.run(
-                [sys.executable, str(verifier), "--output", str(output)],
-                cwd=root,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
-            result = json.loads(_regular_file_bytes(output).decode("utf-8"))
-        except (
-            OSError,
-            UnicodeDecodeError,
-            json.JSONDecodeError,
-            subprocess.SubprocessError,
-        ):
-            return None
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-B", str(verifier), "--check"],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=35,
+            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+        )
+        result = json.loads(completed.stdout)
+    except (
+        OSError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        subprocess.SubprocessError,
+    ):
+        return None
     if not isinstance(result, dict) or completed.returncode not in {0, 1}:
         return None
     return result
 
 
 def _visual_runtime(lesson_id: str | None = None) -> dict[str, str] | None:
+    """Bound the whole selection operation, including source/receipt hashing."""
+    if lesson_id not in VISUAL_RUNTIME_LESSON_BINDINGS:
+        return None
+    process = None
+    try:
+        from current_evidence import EvidenceError, trusted_route_verifier
+
+        verifier = trusted_route_verifier(ROOT)
+        if verifier is None:
+            return None
+        _assert_no_symlink_components(ROOT, verifier)
+        process = subprocess.Popen(
+            [sys.executable, "-B", str(verifier), "--route-check", lesson_id],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+            start_new_session=True,
+        )
+        stdout, _ = process.communicate(timeout=35)
+        if process.returncode != 0 or len(stdout) > 64 * 1024:
+            return None
+        result = json.loads(stdout)
+        if not isinstance(result, dict) or set(result) != {
+            "id",
+            "version",
+            "lesson_id",
+            "entrypoint",
+            "manifest",
+            "verification_receipt",
+        }:
+            return None
+        return result
+    except (
+        OSError,
+        UnicodeError,
+        ValueError,
+        subprocess.SubprocessError,
+        EvidenceError,
+    ):
+        if process is not None and process.poll() is None:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.communicate()
+        return None
+
+
+def _visual_runtime_check(lesson_id: str | None = None) -> dict[str, str] | None:
     """Return a bound runtime only after replaying current verification bytes."""
 
     if lesson_id not in VISUAL_RUNTIME_LESSON_BINDINGS:
         return None
 
     try:
+        from current_evidence import EvidenceError, resolve_current
+
+        selection = resolve_current(ROOT)
+        if selection is None:
+            return None
+        receipt_path = (
+            selection.receipt_path("runtime")
+            if selection
+            else ROOT / VISUAL_RUNTIME_RECEIPT
+        )
         _assert_no_symlink_components(
             ROOT,
             ROOT / VISUAL_RUNTIME_ENTRYPOINT,
             ROOT / VISUAL_RUNTIME_MANIFEST,
-            ROOT / VISUAL_RUNTIME_RECEIPT,
         )
         _regular_file_bytes(ROOT / VISUAL_RUNTIME_ENTRYPOINT)
         manifest = json.loads(
             _regular_file_bytes(ROOT / VISUAL_RUNTIME_MANIFEST).decode("utf-8")
         )
-        receipt = json.loads(
-            _regular_file_bytes(ROOT / VISUAL_RUNTIME_RECEIPT).decode("utf-8")
+        receipt = (
+            selection.receipt("runtime")
+            if selection
+            else json.loads(_regular_file_bytes(receipt_path).decode("utf-8"))
         )
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, EvidenceError):
         return None
     if not runtime_artifacts_valid(ROOT):
         return None
@@ -380,7 +440,9 @@ def _visual_runtime(lesson_id: str | None = None) -> dict[str, str] | None:
         "lesson_id": lesson_id,
         "entrypoint": VISUAL_RUNTIME_ENTRYPOINT.as_posix(),
         "manifest": VISUAL_RUNTIME_MANIFEST.as_posix(),
-        "verification_receipt": VISUAL_RUNTIME_RECEIPT.as_posix(),
+        "verification_receipt": str(receipt_path)
+        if selection
+        else VISUAL_RUNTIME_RECEIPT.as_posix(),
     }
 
 
@@ -456,9 +518,8 @@ def route_request(
             "persistence": False,
             "reason": "Guided practice or transfer needs a bounded lesson sequence.",
         }
-    if (
-        _matches(ORDINARY_TASK_PATTERNS, normalized)
-        and not _matches(EXPLICIT_TEACHING_INTENT_PATTERNS, normalized)
+    if _matches(ORDINARY_TASK_PATTERNS, normalized) and not _matches(
+        EXPLICIT_TEACHING_INTENT_PATTERNS, normalized
     ):
         return {
             "action": "ordinary_task",

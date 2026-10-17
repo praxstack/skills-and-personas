@@ -12,19 +12,28 @@ from praxteach.routing import route_request, route_visual
 
 class VisualIntuitionPolicyV1Tests(unittest.TestCase):
     def test_versioned_public_routing(self):
-        fixture = json.loads((ROOT / "fixtures/routing-cases-visual-intuition-v1.json").read_text())
+        fixture = json.loads(
+            (ROOT / "fixtures/routing-cases-visual-intuition-v1.json").read_text()
+        )
         for case in fixture["cases"]:
             with self.subTest(case=case["id"]):
-                options = {key: case[key] for key in ("answer_now", "explicit_mode") if key in case}
+                options = {
+                    key: case[key]
+                    for key in ("answer_now", "explicit_mode")
+                    if key in case
+                }
                 result = route_request(case["request"], **options)
                 for key, value in case["expected"].items():
                     self.assertEqual(result[key], value)
 
     def test_ordinary_non_teaching_requests_stay_ordinary(self):
         for request in (
-            "Summarize this meeting", "What version of PostgreSQL is installed?",
-            "Summarize this course syllabus", "Proofread this lesson",
-            "Can you translate this paragraph?", "Quickly summarize this meeting",
+            "Summarize this meeting",
+            "What version of PostgreSQL is installed?",
+            "Summarize this course syllabus",
+            "Proofread this lesson",
+            "Can you translate this paragraph?",
+            "Quickly summarize this meeting",
         ):
             with self.subTest(request=request):
                 result = route_request(request)
@@ -33,7 +42,11 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
                 self.assertFalse(result["persistence"])
 
     def test_explicit_teaching_intent_wins_over_ordinary_verbs(self):
-        for request in ("Teach me how to proofread", "Help me learn how to translate a paragraph", "Proofread this lesson and teach me how to improve it"):
+        for request in (
+            "Teach me how to proofread",
+            "Help me learn how to translate a paragraph",
+            "Proofread this lesson and teach me how to improve it",
+        ):
             with self.subTest(request=request):
                 self.assertEqual(route_request(request)["mode"], "lesson")
 
@@ -48,10 +61,16 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
                 result = route_request(request)
                 self.assertEqual(result["action"], "teach")
                 self.assertEqual(result["mode"], mode)
-                self.assertEqual(result["persistence"], "consent_required" if mode == "course" else False)
+                self.assertEqual(
+                    result["persistence"],
+                    "consent_required" if mode == "course" else False,
+                )
 
     def test_teaching_keywords_in_engineering_objects_are_ordinary(self):
-        for request in ("Build a course scheduler in Python", "Create lesson routing in the CLI"):
+        for request in (
+            "Build a course scheduler in Python",
+            "Create lesson routing in the CLI",
+        ):
             with self.subTest(request=request):
                 result = route_request(request)
                 self.assertEqual(result["action"], "ordinary_task")
@@ -68,7 +87,15 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
 
     def test_policy_v1_complete_delivery_and_optional_check(self):
         skill = " ".join((ROOT / "SKILL.md").read_text().split())
-        for phrase in ("complete bounded lesson", "at most one optional intuition check", "retrieval=false", "save-nothing", "active consent", "essential", "two repair attempts"):
+        for phrase in (
+            "complete bounded lesson",
+            "at most one optional intuition check",
+            "retrieval=false",
+            "save-nothing",
+            "active consent",
+            "essential",
+            "two repair attempts",
+        ):
             self.assertIn(phrase, skill)
 
 

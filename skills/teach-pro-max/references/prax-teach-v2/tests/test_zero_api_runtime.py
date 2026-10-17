@@ -43,6 +43,7 @@ class ZeroApiRuntimeTests(unittest.TestCase):
                 "manifest",
                 "tests",
                 "contracts",
+                "examples",
                 "build",
                 "routing",
                 "verifier",

@@ -6,13 +6,16 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 import zipfile
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stdout
+from io import StringIO
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILDER = ROOT / "scripts" / "build_package.py"
@@ -20,8 +23,14 @@ PAYLOAD_BUILDER = ROOT / "scripts" / "review_payload.py"
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import build_package as package_builder
+import current_evidence
 import verify as verification_driver
-from validate_workspace import _release_file_manifest
+from review_payload import atomic_write_json, payload_manifest
+from validate_workspace import (
+    _release_file_manifest,
+    validate_independent_review_receipts,
+    validate_verification_receipt,
+)
 
 REVIEW_ATTESTATION = {
     "cryptographic_authorship_verified": False,
@@ -287,6 +296,147 @@ class BuildPackageTest(unittest.TestCase):
             msg=f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}",
         )
         return completed
+
+    def test_external_pending_generation_final_validation_and_immutable_package(
+        self,
+    ) -> None:
+        """Synthetic gate results test plumbing; they are not production acceptance."""
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary).resolve()
+            repository = base / "candidate"
+            self.reviewed_candidate(repository)
+            for relative in current_evidence.TOOLS:
+                destination = repository / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, destination)
+            self.git(repository, "add", ".")
+            self.git(repository, "commit", "--quiet", "-m", "method fixture source")
+            proof = base / "proof"
+            proof.mkdir()
+            original = base / "original"
+            inventory = proof / "original-inventory.json"
+            current_evidence.export_original(ROOT, original, inventory)
+            payload = payload_manifest(repository)
+            atomic_write_json(proof / "payload.json", payload)
+            payload_digest = current_evidence.digest(
+                (proof / "payload.json").read_bytes()
+            )
+            for review_type in package_builder.REVIEW_TYPES:
+                document = json.loads(
+                    (repository / f"evidence/reviews/{review_type}.json").read_text()
+                )
+                document.update(
+                    payload_file_sha256=payload_digest,
+                    payload_manifest_sha256=payload["sha256"],
+                )
+                atomic_write_json(proof / f"{review_type}.json", document)
+            for name in ("runtime", "browser"):
+                atomic_write_json(proof / f"{name}.json", {"test_fixture": True})
+            pending = current_evidence.write_selection(
+                repository, proof, original, inventory, pending=True
+            )
+            environment = {
+                "PRAX_CURRENT_EVIDENCE": pending["path"],
+                "PRAX_CURRENT_EVIDENCE_SHA256": pending["sha256"],
+                "PRAX_DISABLE_MACOS_SANDBOX_TESTS": "0",
+            }
+            fixture = json.loads(
+                (repository / "evidence/verification/full.json").read_text()
+            )
+
+            def synthetic_gate(name, command, env):
+                with mock.patch.dict(os.environ, env):
+                    count, errors = validate_verification_receipt(repository)
+                    self.assertEqual((count, errors), (1, []))
+                verification_driver.write_atomic(
+                    Path(env["PRAX_VERIFICATION_LOG_DIRECTORY"]) / f"{name}.log",
+                    "synthetic gate\n",
+                )
+                return {
+                    "command": command,
+                    "exit_code": 0,
+                    "name": name,
+                    "output_sha256": hashlib.sha256(b"synthetic gate\n").hexdigest(),
+                    "output_tail": [],
+                    "policy_failures": [],
+                    "status": "passed",
+                }
+
+            with (
+                mock.patch.dict(os.environ, environment),
+                mock.patch.object(verification_driver, "ROOT", repository),
+                mock.patch.object(
+                    verification_driver,
+                    "git_source_receipt",
+                    return_value=fixture["skillopt_source"],
+                ),
+                mock.patch.object(
+                    verification_driver,
+                    "dependency_receipt",
+                    return_value=fixture["dependencies"],
+                ),
+                mock.patch.object(
+                    verification_driver, "run_gate", side_effect=synthetic_gate
+                ),
+                mock.patch.object(
+                    verification_driver.subprocess,
+                    "run",
+                    return_value=subprocess.CompletedProcess(
+                        [], 0, "fixture postflight", ""
+                    ),
+                ),
+                mock.patch.object(
+                    sys,
+                    "argv",
+                    [
+                        "verify.py",
+                        "--level",
+                        "full",
+                        "--skillopt-source",
+                        str(original),
+                        "--json",
+                    ],
+                ),
+                redirect_stdout(StringIO()),
+            ):
+                self.assertEqual(verification_driver.main(), 0)
+            final = current_evidence.write_selection(
+                repository, proof, original, inventory
+            )
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "PRAX_CURRENT_EVIDENCE": final["path"],
+                    "PRAX_CURRENT_EVIDENCE_SHA256": final["sha256"],
+                },
+            ):
+                self.assertEqual(
+                    validate_independent_review_receipts(repository), (3, [])
+                )
+                self.assertEqual(validate_verification_receipt(repository), (1, []))
+                completed = self.build(repository, base / "candidate.zip")
+                result = json.loads(completed.stdout)
+                self.assertEqual(result["release_gate"], "passed")
+                with zipfile.ZipFile(base / "candidate.zip") as archive:
+                    manifest = json.loads(
+                        archive.read("prax-teach-v2/PACKAGE-MANIFEST.json")
+                    )
+                    gate = manifest["release_gate"]
+                    self.assertEqual(gate["current_selection"], final)
+                    self.assertEqual(
+                        gate["full_verification"]["sha256"],
+                        current_evidence.digest((proof / "full.json").read_bytes()),
+                    )
+                    self.assertNotIn("prax-teach-v2/selection.json", archive.namelist())
+                full = json.loads((proof / "full.json").read_text())
+                log = Path(full["log_retention"]["directory"]) / "python-tests.log"
+                log.write_text("replacement", encoding="utf-8")
+                count, errors = validate_verification_receipt(repository)
+                self.assertEqual(count, 1)
+                self.assertTrue(any("log invalid" in error for error in errors), errors)
+            self.assertEqual(
+                package_builder.run_git(repository, "status", "--porcelain").strip(), ""
+            )
 
     def test_archive_is_deterministic_and_bound_to_git_blobs(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

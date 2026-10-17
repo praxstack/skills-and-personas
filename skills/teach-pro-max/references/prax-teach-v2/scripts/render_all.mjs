@@ -50,12 +50,21 @@ async function markdownFiles(directory) {
   return found;
 }
 
+// One operation-local context validates the pinned historical inventory once.
+const contextRun = spawnSync(process.env.PRAX_PYTHON || "python3", [path.join(path.dirname(renderer), "current_evidence.py"), root, "--render-contexts"], { cwd: root, encoding: "utf8", env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" }, timeout: 35000 });
+if (contextRun.status !== 0) { process.stderr.write(contextRun.stderr || "evidence context failed\n"); process.exit(1); }
+const context = JSON.parse(contextRun.stdout);
 const files = await markdownFiles(root);
 const failures = [];
 for (const markdown of files) {
-  const args = [renderer];
-  if (checkOnly) args.push("--check");
-  args.push("--trusted-root", root, markdown);
+  const relative = path.relative(root, markdown).split(path.sep).join("/");
+  const historical = context.prefixes.some((prefix) => relative.startsWith(prefix));
+  if (historical && !context.historical_root) { failures.push({ markdown, stderr: "protected historical companion requires a pinned original context", status: 1 }); continue; }
+  // Historical bytes are never rewritten; check using their original renderer.
+  const effectiveRoot = historical ? context.historical_root : root;
+  const args = [historical ? path.join(effectiveRoot, "scripts/render_markdown.mjs") : renderer];
+  if (checkOnly || historical) args.push("--check");
+  args.push("--trusted-root", effectiveRoot, path.join(effectiveRoot, relative));
   const completed = spawnSync(process.execPath, args, {
     cwd: root,
     encoding: "utf8",

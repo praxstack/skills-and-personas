@@ -9,6 +9,7 @@ import os
 import re
 import stat
 import subprocess
+import sys
 import unicodedata
 import zlib
 from html.parser import HTMLParser
@@ -197,6 +198,17 @@ def _route_contract(document: dict[str, Any]) -> tuple[str, str, bool, bool]:
     if route not in {"none", "static", "interactive", "motion"}:
         raise ValidationError("route output has an invalid requested route")
     runtime = document.get("visual_runtime")
+    from current_evidence import EvidenceError, resolve_current
+
+    try:
+        current = resolve_current(ROOT)
+        expected_runtime_receipt = (
+            str(current.receipt_path("runtime"))
+            if current
+            else "evidence/zero-api-visual-runtime/verification.json"
+        )
+    except EvidenceError as exc:
+        raise ValidationError(f"current visual evidence invalid: {exc}") from exc
     runtime_direct = route in {"interactive", "motion"} and (
         document.get("visual_runtime_supported") is True
         and isinstance(runtime, dict)
@@ -204,8 +216,7 @@ def _route_contract(document: dict[str, Any]) -> tuple[str, str, bool, bool]:
         and isinstance(runtime.get("version"), str)
         and runtime.get("entrypoint") == "runtime/prax-visual-lab/dist/index.html"
         and runtime.get("manifest") == "runtime/prax-visual-lab/dist/manifest.json"
-        and runtime.get("verification_receipt")
-        == "evidence/zero-api-visual-runtime/verification.json"
+        and runtime.get("verification_receipt") == expected_runtime_receipt
         and document.get("runtime_requirement") is None
     )
     expected_delivery = (
@@ -274,18 +285,24 @@ def _route_contract(document: dict[str, Any]) -> tuple[str, str, bool, bool]:
 
 
 def _verify_packaged_visual_runtime() -> None:
-    completed = subprocess.run(
-        [str(ROOT / "scripts/verify_visual_runtime.py")],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
     try:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                str(ROOT / "scripts/verify_visual_runtime.py"),
+                "--check",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=35,
+        )
         result = json.loads(completed.stdout)
-    except json.JSONDecodeError as exc:
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
         raise ValidationError(
-            "packaged visual runtime verifier emitted invalid JSON"
+            f"bounded packaged visual verification failed: {exc}"
         ) from exc
     if completed.returncode != 0 or result.get("status") != "passed":
         detail = completed.stderr.strip() or completed.stdout.strip()

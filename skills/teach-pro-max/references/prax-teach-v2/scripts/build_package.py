@@ -17,6 +17,12 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from current_evidence import (
+    EvidenceError,
+    add_selection_arguments,
+    apply_selection_arguments,
+    resolve_current,
+)
 from praxteach.errors import SafetyError, ValidationError
 from praxteach.io import prepare_private_parent
 from verify import PRUNED_DIRECTORIES
@@ -238,7 +244,10 @@ def candidate_release_gate(
         validate_verification_receipt,
     )
 
-    del root
+    try:
+        current = resolve_current(root)
+    except EvidenceError as exc:
+        raise PackageError(f"current evidence: {exc}") from exc
     errors: list[str] = []
     with tempfile.TemporaryDirectory(prefix="prax-release-validate-") as temporary:
         validation_root = Path(temporary).resolve(strict=True)
@@ -253,12 +262,26 @@ def candidate_release_gate(
         errors.extend(frontmatter_errors)
         if fields.get("name") != "prax-teach-v2":
             errors.append("SKILL.md: name must be 'prax-teach-v2'")
-        review_count, review_errors = validate_independent_review_receipts(
-            validation_root
-        )
-        verification_count, verification_errors = validate_verification_receipt(
-            validation_root
-        )
+        previous_selection = {
+            key: os.environ.get(key)
+            for key in ("PRAX_CURRENT_EVIDENCE", "PRAX_CURRENT_EVIDENCE_SHA256")
+        }
+        if current:
+            os.environ["PRAX_CURRENT_EVIDENCE"] = str(current.path)
+            os.environ["PRAX_CURRENT_EVIDENCE_SHA256"] = current.selection_sha256
+        try:
+            review_count, review_errors = validate_independent_review_receipts(
+                validation_root
+            )
+            verification_count, verification_errors = validate_verification_receipt(
+                validation_root
+            )
+        finally:
+            for key, value in previous_selection.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
         errors.extend(review_errors)
         errors.extend(verification_errors)
         if review_count != len(REVIEW_TYPES):
@@ -272,7 +295,11 @@ def candidate_release_gate(
             )
 
     try:
-        full_receipt = json.loads(frozen_by_name[FULL_VERIFICATION].data)
+        full_receipt = (
+            current.receipt("full")
+            if current
+            else json.loads(frozen_by_name[FULL_VERIFICATION].data)
+        )
     except (KeyError, UnicodeError, json.JSONDecodeError) as exc:
         errors.append(f"{FULL_VERIFICATION}: missing or invalid: {exc}")
         full_receipt = None
@@ -293,7 +320,11 @@ def candidate_release_gate(
             )
 
     try:
-        review_payload = json.loads(frozen_by_name[REVIEW_PAYLOAD].data)
+        review_payload = (
+            current.receipt("payload")
+            if current
+            else json.loads(frozen_by_name[REVIEW_PAYLOAD].data)
+        )
         reviewed_names = {
             item["path"]
             for item in review_payload["files"]
@@ -325,8 +356,23 @@ def candidate_release_gate(
     evidence: dict[str, dict[str, str]] = {}
     for relative in required_paths:
         try:
-            evidence[relative] = _release_evidence(frozen_by_name, relative)
-        except PackageError as exc:
+            if current:
+                role = (
+                    "payload"
+                    if relative == REVIEW_PAYLOAD
+                    else "full"
+                    if relative == FULL_VERIFICATION
+                    else PurePosixPath(relative).stem
+                )
+                selected = current.receipt_path(role)
+                current.receipt(role)
+                evidence[relative] = {
+                    "path": str(selected),
+                    "sha256": current.document["receipts"][role]["sha256"],
+                }
+            else:
+                evidence[relative] = _release_evidence(frozen_by_name, relative)
+        except (PackageError, EvidenceError) as exc:
             errors.append(str(exc).removeprefix("prax-teach-v2 release gate failed: "))
 
     if errors:
@@ -336,7 +382,19 @@ def candidate_release_gate(
     return {
         "schema_version": 1,
         "policy": "prax-teach-v2-reviewed-full",
-        "receipt_validation_source": "immutable_git_blobs",
+        "receipt_validation_source": "immutable_git_blobs_with_pinned_external_evidence"
+        if current
+        else "immutable_git_blobs",
+        **(
+            {
+                "current_selection": {
+                    "path": str(current.path),
+                    "sha256": current.selection_sha256,
+                }
+            }
+            if current
+            else {}
+        ),
         "immutable_review_payload": evidence[REVIEW_PAYLOAD],
         "full_verification": evidence[FULL_VERIFICATION],
         "independent_reviews": {
@@ -606,7 +664,12 @@ def main() -> int:
     parser.add_argument("output", type=Path)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--project-root", type=Path, default=DEFAULT_ROOT)
+    add_selection_arguments(parser)
     args = parser.parse_args()
+    try:
+        apply_selection_arguments(args)
+    except EvidenceError as exc:
+        parser.error(str(exc))
     payload = build_package(
         args.project_root,
         args.output,

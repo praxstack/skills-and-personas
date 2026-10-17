@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -18,7 +19,9 @@ CLI = ROOT / "scripts" / "prax_teach.py"
 FIXTURES = ROOT / "fixtures" / "routing-cases.json"
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from current_evidence import ROLES, TOOLS, write_selection
 from praxteach import routing as routing_module
+from review_payload import atomic_write_json
 
 
 class VisualRoutingTest(unittest.TestCase):
@@ -54,7 +57,7 @@ class VisualRoutingTest(unittest.TestCase):
         self,
     ) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            candidate = Path(temporary)
+            candidate = Path(temporary).resolve()
             shutil.copytree(ROOT / "runtime", candidate / "runtime")
             shutil.copytree(ROOT / "examples", candidate / "examples")
             (candidate / "scripts").mkdir()
@@ -62,9 +65,14 @@ class VisualRoutingTest(unittest.TestCase):
                 ROOT / "scripts" / "verify_visual_runtime.py",
                 candidate / "scripts" / "verify_visual_runtime.py",
             )
+            for relative in TOOLS:
+                destination = candidate / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, destination)
             shutil.copytree(
                 ROOT / "scripts" / "praxteach",
                 candidate / "scripts" / "praxteach",
+                dirs_exist_ok=True,
             )
             build = subprocess.run(
                 ["node", "build.mjs"],
@@ -89,7 +97,26 @@ class VisualRoutingTest(unittest.TestCase):
                 )
             )
             valid_receipt = json.loads(receipt.read_text())
-            with mock.patch.object(routing_module, "ROOT", candidate):
+            proof = candidate.parent / (candidate.name + "-proof")
+            proof.mkdir()
+            self.addCleanup(shutil.rmtree, proof)
+            for filename in ROLES.values():
+                atomic_write_json(proof / filename, {})
+            (proof / "runtime.json").write_bytes(receipt.read_bytes())
+            atomic_write_json(proof / "original-inventory.json", {})
+            pin = write_selection(
+                candidate, proof, candidate, proof / "original-inventory.json"
+            )
+            with (
+                mock.patch.dict(
+                    os.environ,
+                    {
+                        "PRAX_CURRENT_EVIDENCE": pin["path"],
+                        "PRAX_CURRENT_EVIDENCE_SHA256": pin["sha256"],
+                    },
+                ),
+                mock.patch.object(routing_module, "ROOT", candidate),
+            ):
                 for requested in ("interactive", "motion"):
                     result = routing_module.route_visual(
                         "Explore Python floating-point rounding: let the learner manipulate state and watch it change",

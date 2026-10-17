@@ -17,9 +17,19 @@ VALIDATOR = ROOT / "scripts" / "validate_workspace.py"
 RENDERER = ROOT / "scripts" / "render_markdown.mjs"
 sys.path.insert(0, str(ROOT / "scripts"))
 import validate_workspace as validator
+from current_evidence import export_original
 
 
 class ValidatorCliTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.historical_directory = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(cls.historical_directory.cleanup)
+        base = Path(cls.historical_directory.name).resolve()
+        cls.original = base / "original"
+        export_original(ROOT, cls.original, base / "inventory.json")
+        shutil.copytree(ROOT / "node_modules", cls.original / "node_modules")
+
     def render(self, markdown: Path) -> Path:
         html = markdown.with_suffix(".html")
         trusted_root = markdown.parent.resolve()
@@ -101,7 +111,7 @@ class ValidatorCliTest(unittest.TestCase):
         )
 
     def test_portability_adapted_legacy_assets_are_explicitly_bound(self) -> None:
-        count, errors = validator.validate_legacy_asset_provenance(ROOT)
+        count, errors = validator.validate_legacy_asset_provenance(self.original)
         self.assertEqual(count, 1)
         self.assertEqual(errors, [])
         manifest = json.loads(
@@ -227,9 +237,16 @@ class ValidatorCliTest(unittest.TestCase):
                 "\n".join(report["errors"]),
             )
 
-    def test_full_validation_accepts_the_release_status_ledger(self) -> None:
+    def test_original_release_receipts_validate_against_original_inventory(
+        self,
+    ) -> None:
         completed = subprocess.run(
-            [sys.executable, str(VALIDATOR), "--json", str(ROOT)],
+            [
+                sys.executable,
+                str(self.original / "scripts/validate_workspace.py"),
+                "--json",
+                str(self.original),
+            ],
             cwd=ROOT,
             text=True,
             capture_output=True,
