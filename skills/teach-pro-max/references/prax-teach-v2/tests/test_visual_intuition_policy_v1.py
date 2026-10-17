@@ -111,7 +111,10 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
                 request + " in two minutes",
             )
             if not request.lower().startswith(("can ", "could ", "would ", "will ")):
-                variants += ("Could you please quickly " + request, "Briefly " + request)
+                variants += (
+                    "Could you please quickly " + request,
+                    "Briefly " + request,
+                )
             for variant in variants:
                 with self.subTest(request=variant):
                     self.assert_route(variant, None, action="ordinary_task")
@@ -164,27 +167,44 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
                 self.assert_route(request, mode, explicit_mode=mode)
         self.assert_route(request, "quick", demote=True, explicit_mode="course")
         self.assert_route(
-            request, "quick", action="answer_now", answer_now=True,
-            demote=True, explicit_mode="course",
+            request,
+            "quick",
+            action="answer_now",
+            answer_now=True,
+            demote=True,
+            explicit_mode="course",
         )
 
     def test_existing_answer_now_wording_keeps_first_precedence(self):
         for override in (
-            "answer now", "just give me the result", "just tell me the result",
-            "just show me the result", "no questions", "no more Socratic",
-            "skip questions", "skip the lesson", "skip the ceremony",
+            "answer now",
+            "just give me the result",
+            "just tell me the result",
+            "just show me the result",
+            "no questions",
+            "no more Socratic",
+            "skip questions",
+            "skip the lesson",
+            "skip the ceremony",
         ):
             with self.subTest(override=override):
                 self.assert_route(
                     "Delete this course; " + override,
-                    "quick", action="answer_now", demote=True, explicit_mode="course",
+                    "quick",
+                    action="answer_now",
+                    demote=True,
+                    explicit_mode="course",
                 )
 
     def test_empty_requests_still_fail_before_overrides(self):
         for request in ("", " \t\n "):
-            with self.subTest(request=request):
-                with self.assertRaisesRegex(ValueError, "request must not be empty"):
-                    route_request(request, answer_now=True, demote=True, explicit_mode="course")
+            with (
+                self.subTest(request=request),
+                self.assertRaisesRegex(ValueError, "request must not be empty"),
+            ):
+                route_request(
+                    request, answer_now=True, demote=True, explicit_mode="course"
+                )
 
     def test_negated_teaching_does_not_override_ordinary_work(self):
         for request in (
@@ -197,7 +217,9 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
             with self.subTest(request=request):
                 self.assert_route(request, None, action="ordinary_task")
         self.assert_route("Teach me how to edit a lesson", "lesson")
-        self.assert_route("Proofread this lesson and teach me how to improve it", "lesson")
+        self.assert_route(
+            "Proofread this lesson and teach me how to improve it", "lesson"
+        )
 
     def test_course_signals_describe_the_requested_learning_action(self):
         for request, action, mode in (

@@ -567,7 +567,12 @@ class TestRouting(CliTestCase):
         for request, action, mode, persistence in (
             ("Please quickly edit this lesson", "ordinary_task", None, False),
             ("Build me a course scheduler in Python", "ordinary_task", None, False),
-            ("Create a Python function that builds a course for beginners", "ordinary_task", None, False),
+            (
+                "Create a Python function that builds a course for beginners",
+                "ordinary_task",
+                None,
+                False,
+            ),
             ("Create a lesson on Python debugging", "teach", "lesson", False),
             ("Explain the word course", "teach", "lesson", False),
             ("Resume my networking course", "teach", "course", "consent_required"),
@@ -578,8 +583,18 @@ class TestRouting(CliTestCase):
             ("Build a course in Python", "teach", "course", "consent_required"),
             ("Continue my course scheduler process", "ordinary_task", None, False),
             ("Teach me why two weeks have fourteen days", "teach", "lesson", False),
-            ("Create a course covering Python basics", "teach", "course", "consent_required"),
-            ("Build a course to teach Python beginners", "teach", "course", "consent_required"),
+            (
+                "Create a course covering Python basics",
+                "teach",
+                "course",
+                "consent_required",
+            ),
+            (
+                "Build a course to teach Python beginners",
+                "teach",
+                "course",
+                "consent_required",
+            ),
             ("Make an interactive lesson using sliders", "teach", "lesson", False),
             ("Create a course scheduler using Python", "ordinary_task", None, False),
         ):

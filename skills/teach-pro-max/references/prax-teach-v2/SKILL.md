@@ -45,6 +45,12 @@ ambiguous or persistence is possible.
    question first if plausible gaps differ. After an unresolved retry, locate
    the remaining gap rather than repeatedly paraphrasing or restarting.
 
+Before delivery, check that the definition, examples and visual tell the same
+story under the same conditions. When relevant, distinguish a necessary condition,
+a sufficient condition and a contributing cause; slowing a process or reducing its
+likelihood does not by itself make it impossible. Use these distinctions only where
+they fit the subject, and preserve uncertainty in interpretive claims.
+
 Read [references/TEACHING-PROTOCOL.md](./references/TEACHING-PROTOCOL.md) for
 adaptation, optional practice, feedback and evidence rules. Retrieve only the
 production references needed for the current explanation. A bounded delivery is

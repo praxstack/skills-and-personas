@@ -50,6 +50,15 @@ only when it clarifies the idea, then connect to formal language, code, equation
 or argument. Explain analogy limits. Historical interpretation and literary
 meaning must retain uncertainty rather than imitate deterministic mechanisms.
 
+Check agreement between the definition, worked example, useful contrast and
+visual before delivery. Keep their scope, assumptions and conditions aligned;
+inspect labels, arrows, captions and the final claim for contradictions. Where
+causal or conditional reasoning matters, separate what is necessary, what is
+sufficient and what merely contributes. A change in speed, difficulty or likelihood
+is not evidence of impossibility. Use a boundary case when it reveals a mistaken
+claim, without turning every subject into a formal-logic exercise or removing
+uncertainty from interpretation.
+
 Build the whole bounded lesson before delivery. Give immediate access to the
 complete figure and finished state; optional replay or learner-requested layers
 can expose how it unfolds. Navigable pacing is useful; mandatory learner turns

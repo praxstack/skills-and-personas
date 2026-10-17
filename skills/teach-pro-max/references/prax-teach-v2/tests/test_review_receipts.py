@@ -98,7 +98,9 @@ class ReviewReceiptTests(unittest.TestCase):
                 check=False,
                 env={
                     **os.environ,
-                    "SOURCE_DATE_EPOCH": os.environ.get("SOURCE_DATE_EPOCH", "1785844800"),
+                    "SOURCE_DATE_EPOCH": os.environ.get(
+                        "SOURCE_DATE_EPOCH", "1785844800"
+                    ),
                 },
             )
             self.assertEqual(rendered.returncode, 0, rendered.stderr)

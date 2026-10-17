@@ -474,7 +474,7 @@
         {
           "kind": "path",
           "path": "scripts/validate_workspace.py",
-          "sha256": "aafa0865008dfb77876d8cf0f9ca57d05aa2bbfa01f1de5beb7c63365a8d01c9"
+          "sha256": "b8fd7b4988ff4ab6b1ddd6c8e5bb2d26607aeae1f4aebfa33c2fe0f0e309e6df"
         }
       ],
       "id": "AC-20",

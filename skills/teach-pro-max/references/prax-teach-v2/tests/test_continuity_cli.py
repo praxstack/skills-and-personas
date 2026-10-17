@@ -167,8 +167,11 @@ class ContinuityCliTest(unittest.TestCase):
         evidence = (self.workspace / "state/sessions.jsonl").read_bytes()
 
         self.call(
-            "continuity-reset", "--expected-revision", str(cached_revision),
-            "--all", "--confirm",
+            "continuity-reset",
+            "--expected-revision",
+            str(cached_revision),
+            "--all",
+            "--confirm",
         )
         self.assertFalse((self.workspace / "state/continuity.json").exists())
         self.assertIsNone(self.call("continuity-show"))

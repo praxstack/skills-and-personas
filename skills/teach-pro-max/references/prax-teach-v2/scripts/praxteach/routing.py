@@ -513,9 +513,8 @@ def route_request(
         }
     artifact = _teaching_artifact(normalized)
     explicit_teaching = _explicit_teaching_requested(normalized)
-    course_intent = (
-        artifact in {"course", "curriculum", "syllabus"}
-        or _matches(COURSE_PATTERNS, normalized)
+    course_intent = artifact in {"course", "curriculum", "syllabus"} or _matches(
+        COURSE_PATTERNS, normalized
     )
     if (
         any(
