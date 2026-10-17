@@ -55,10 +55,10 @@ done
 
 run() { if [ "$DRY" = 1 ]; then echo "would: $*"; else "$@"; fi; }
 
-ours() { # ours <source dir> <dest>: a link to this source (by physical path, or dangling), or a copy this script made
+ours() { # ours <source dir> <dest>: a link that resolves to this source, or a copy this script made
   if [ -L "$2" ]; then
-    [ -e "$2" ] || return 0  # a dangling link left by a moved or deleted clone
-    [ "$(cd "$2" 2>/dev/null && pwd -P)" = "$(cd "$1" && pwd -P)" ]
+    # A dangling link can't be traced back to us, so it counts as foreign (--force replaces it).
+    [ -e "$2" ] && [ "$(cd "$2" && pwd -P)" = "$(cd "$1" && pwd -P)" ]
   else
     [ -f "$2/.installed-by-teacher" ]
   fi
