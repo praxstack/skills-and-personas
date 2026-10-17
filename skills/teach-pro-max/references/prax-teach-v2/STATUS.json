@@ -129,7 +129,7 @@
       "state": "implemented"
     },
     {
-      "claim_limit": "2026-10-17 completion candidate; acceptance and installation pending. Final decision is planned outside the source inventory at completion-v3/ACCEPTANCE.json in the external evaluation workspace; it may be absent and its name is not evidence. Portable runtime authority is the trusted selected exact-source evidence descriptor and validated bindings, not a machine-specific path. Source status remains pre-release after final freeze.",
+      "claim_limit": "2026-10-17 completion candidate; acceptance and installation pending. Final decision is planned outside the source inventory at completion-v4/ACCEPTANCE.json in the external evaluation workspace; it may be absent and its name is not evidence. Portable runtime authority is the trusted selected exact-source evidence descriptor and validated bindings, not a machine-specific path. Source status remains pre-release after final freeze.",
       "evidence": [
         "Historical machinery/evidence: canonical Markdown with deterministic HTML companions",
         "Historical machinery/evidence: source-hash and exact-byte parity validation"
@@ -358,7 +358,7 @@
         {
           "kind": "path",
           "path": "tests/render_markdown.test.mjs",
-          "sha256": "3ed21966a2d911415c710efc7bd4c271d9e3fe0f5c7498be15972d6b20b32a12"
+          "sha256": "c023b62ca5b8418c25040072f6c93e78af638582880ab6ebef1cccea068b065e"
         }
       ],
       "id": "AC-12",
