@@ -33,6 +33,7 @@ def sha256(path: Path) -> str:
 class ReviewReceiptTests(unittest.TestCase):
     def install_visual_verification_fixture(self, workspace: Path) -> None:
         """Install the validator's portable visual-fixture/runtime closure."""
+        workspace = workspace.resolve(strict=True)
 
         shutil.copytree(
             ROOT / "fixtures" / "visual-verification",
