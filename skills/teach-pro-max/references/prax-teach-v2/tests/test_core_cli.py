@@ -578,6 +578,10 @@ class TestRouting(CliTestCase):
             ("Build a course in Python", "teach", "course", "consent_required"),
             ("Continue my course scheduler process", "ordinary_task", None, False),
             ("Teach me why two weeks have fourteen days", "teach", "lesson", False),
+            ("Create a course covering Python basics", "teach", "course", "consent_required"),
+            ("Build a course to teach Python beginners", "teach", "course", "consent_required"),
+            ("Make an interactive lesson using sliders", "teach", "lesson", False),
+            ("Create a course scheduler using Python", "ordinary_task", None, False),
         ):
             with self.subTest(request=request):
                 result = json.loads(self.run_cli("route", "--request", request).stdout)

@@ -50,7 +50,7 @@ ARTIFACT_CREATION_PATTERN = (
     # find a teaching noun inside an engineering object's purpose.
     + r"(?:(?!(?:a|an|the|that|which|who|to|for|on|about|with|in|and|or)\b)[\w-]+\s+){0,3}"
     + r"(?P<artifact>course|curriculum|syllabus|lesson|tutorial)"
-    + r"(?=\s+(?:on|about|for|with|in|and)\b|[.?!,:;]|$)"
+    + r"(?=\s+(?:on|about|for|with|in|and|covering|using|to)\b|[.?!,:;]|$)"
 )
 COURSE_PATTERNS = (
     REQUEST_PREFIX + r"continue\s+where\s+we\s+(?:left|stopped)\b",

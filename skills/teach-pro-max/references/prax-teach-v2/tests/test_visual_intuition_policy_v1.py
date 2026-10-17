@@ -208,6 +208,17 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
             with self.subTest(request=request):
                 self.assert_route(request, mode, action=action)
 
+    def test_direct_teaching_heads_accept_common_complements(self):
+        for request, action, mode in (
+            ("Create a course covering Python basics", "teach", "course"),
+            ("Build a course to teach Python beginners", "teach", "course"),
+            ("Make an interactive lesson using sliders", "teach", "lesson"),
+            ("Create a course scheduler using Python", "ordinary_task", None),
+        ):
+            for prefix in ("", "Could you please "):
+                with self.subTest(request=prefix + request):
+                    self.assert_route(prefix + request, mode, action=action)
+
     def test_explanation_is_not_retrieval(self):
         result = route_visual("Compare equal-sized fraction parts", retrieval=False)
         self.assertFalse(result["retrieval_safety"]["required"])
