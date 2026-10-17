@@ -223,6 +223,14 @@ class Scripts(unittest.TestCase):
             self.assertFalse((Path(tmp) / "journal.json").exists())
             self.assertFalse((Path(tmp) / "JOURNAL.md").exists())
             self.assertTrue(keep.exists(), "forget must not touch other files")
+            own = Path(tmp) / "mine"
+            own.mkdir()
+            run(s, "--dir", str(own), "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            run(s, "--dir", str(own), "forget", "--yes", cwd=Path(tmp))
+            self.assertTrue(own.is_dir(), "a --dir folder belongs to the caller")
+            run(s, "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            run(s, "forget", "--yes", cwd=Path(tmp))
+            self.assertFalse((Path(tmp) / ".teacher").exists(), "the default folder goes once empty")
 
     def test_vendor_refuses_dirty_git_source(self):
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -346,7 +354,7 @@ class Builds(unittest.TestCase):
         import render  # type: ignore
 
         out = render.sanitize_svg('<svg><image href="https://e/a.png"/><feImage xlink:href="http://127.0.0.1/b"/><use href="c.svg#n"/>'
-                                  '<rect filter="url(http://e/d)"/><foreignObject><img src="http://e/f"/></foreignObject>'
+                                  '<rect filter="url(http://e/d)"/><rect filter="u\\72l(http://e/d2)"/><rect mask="&#117;rl(http://e/d3)"/><foreignObject><img src="http://e/f"/></foreignObject>'
                                   '<use href="#n"/><rect fill="url(#g)"/><image href="data:image/png;base64,AA"/>'
                                   '<a href="https://ok.example/" ping="https://e/g">a link</a><animate attributeName="fill" values="red;blue"/>'
                                   '<foreignObject><img srcset="data:image/png;base64,AA 1x, https://e/h 2x"/></foreignObject></svg>')

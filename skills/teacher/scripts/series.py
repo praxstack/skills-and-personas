@@ -199,10 +199,11 @@ def main() -> int:
         # journal.json goes last, so a forget that stops partway can be run again.
         for f in (j.file.with_suffix(".tmp"), j.root / "JOURNAL.md", j.file):
             f.unlink(missing_ok=True)
-        try:
-            j.root.rmdir()
-        except OSError:
-            pass  # the folder holds other files; leave them alone
+        if j.root.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
+            try:
+                j.root.rmdir()
+            except OSError:
+                pass  # the folder holds other files; leave them alone
         print(f"deleted the journal in {a.dir}")
         return 0
     j.need()

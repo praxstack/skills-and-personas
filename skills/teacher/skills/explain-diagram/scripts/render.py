@@ -133,6 +133,16 @@ ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
 _EXTERNAL_URL = r"url\(\s*(?![\"']?\s*#)[^)]*\)"
 
 
+_CSS_FETCH = r"@import|image-set\(|expression\(|" + _EXTERNAL_URL
+
+
+def _css_decoded(text: str) -> str:
+    """Text as a browser reads it once HTML entities and CSS escapes are decoded: u\\72l( becomes url(."""
+    seen = html.unescape(text)
+    seen = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(min(int(m.group(1), 16), 0x10FFFF)), seen)
+    return re.sub(r"\\(.)", r"\1", seen, flags=re.S)
+
+
 def clean_css(css: str) -> str | None:
     """CSS with every outside fetch removed, or None when it hides one we can't strip.
 
@@ -142,10 +152,7 @@ def clean_css(css: str) -> str | None:
     """
     css = re.sub(r"@import\b[^;]*;?", "", css, flags=re.I)
     css = re.sub(_EXTERNAL_URL, "none", css, flags=re.I)
-    seen = html.unescape(css)
-    seen = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(min(int(m.group(1), 16), 0x10FFFF)), seen)
-    seen = re.sub(r"\\(.)", r"\1", seen, flags=re.S)
-    if re.search(r"@import|image-set\(|expression\(|" + _EXTERNAL_URL, seen, flags=re.I):
+    if re.search(_CSS_FETCH, _css_decoded(css), flags=re.I):
         return None
     return css
 
@@ -189,8 +196,8 @@ def _clean_tag(m: re.Match) -> str:
                 continue
             kept.append(f' style="{html.escape(css, quote=True)}"')
             continue
-        if re.search(_EXTERNAL_URL, html.unescape(raw), flags=re.I):
-            continue  # fill="url(https://...)", filter=, mask=, cursor= and friends
+        if re.search(_CSS_FETCH, _css_decoded(raw), flags=re.I):
+            continue  # fill="url(https://...)", filter="u\72l(...)", mask=, cursor= and friends
         # Re-quote every value, so the browser reads exactly the attributes kept here. Escape
         # < and > too: inside an HTML <title> or <noscript> the browser ignores quotes.
         safe = raw.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
