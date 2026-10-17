@@ -41,7 +41,7 @@ DEMOTION_PATTERNS = (
 )
 REQUEST_PREFIX = (
     r"^(?:(?:can|could|would|will)\s+you\s+)?"
-    r"(?:(?:please|quickly|briefly|kindly)\s+)*"
+    r"(?:(?:please|quickly|briefly|kindly|just)\s+)*"
 )
 ARTIFACT_CREATION_PATTERN = (
     REQUEST_PREFIX
@@ -50,19 +50,20 @@ ARTIFACT_CREATION_PATTERN = (
     # find a teaching noun inside an engineering object's purpose.
     + r"(?:(?!(?:a|an|the|that|which|who|to|for|on|about|with|in|and|or)\b)[\w-]+\s+){0,3}"
     + r"(?P<artifact>course|curriculum|syllabus|lesson|tutorial)"
-    + r"(?=\s+(?:on|about|for|with|and)\b|[.?!,:;]|$)"
+    + r"(?=\s+(?:on|about|for|with|in|and)\b|[.?!,:;]|$)"
 )
 COURSE_PATTERNS = (
     REQUEST_PREFIX + r"continue\s+where\s+we\s+(?:left|stopped)\b",
     REQUEST_PREFIX
     + r"(?:resume|continue|start|begin|take)\s+(?:(?:my|our|a|an|the|this|that)\s+)?"
-    + r"(?:[\w-]+\s+){0,3}(?:course|curriculum|lesson|tutorial|learning|studies)\b",
+    + r"(?:[\w-]+\s+){0,3}(?:course|curriculum|lesson|tutorial|learning|studies)"
+    + r"(?=\s+(?:on|about|for|with|in|and)\b|[.?!,:;]|$)",
     r"^i\s+am\s+resuming(?:[:.!?]|$|\s+(?:my|our|the)\b)",
 )
 SEQUENCE_PATTERNS = (
     r"\b(?:multi|cross)[ -]?session\b",
     r"\bacross\s+sessions\b",
-    r"\b(?:two|three|four|five|six|seven|eight|nine|ten|\d+)[ -]weeks?\b",
+    r"\b(?:over|for)\s+(?:the\s+next\s+)?(?:two|three|four|five|six|seven|eight|nine|ten|\d+)[ -]weeks?\b",
     r"\bover\s+(?:the\s+next\s+)?(?:week|weeks|month|months)\b",
 )
 LESSON_PATTERNS = (
@@ -82,7 +83,7 @@ CONTENT_TASK_PATTERNS = (
 ORDINARY_TASK_PATTERNS = (
     *CONTENT_TASK_PATTERNS,
     REQUEST_PREFIX
-    + r"(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|make|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
+    + r"(?:add|apply|build|change|continue|create|delete|deploy|edit|fix|implement|install|make|migrate|patch|refactor|remove|rename|resume|run|ship|update|write)\b",
     r"\b(?:do|complete|perform)\s+(?:this|the)\s+(?:task|change|work)\b",
 )
 EXPLICIT_TEACHING_INTENT_PATTERNS = (
@@ -118,6 +119,20 @@ def _teaching_artifact(request: str) -> str | None:
 
     match = re.search(ARTIFACT_CREATION_PATTERN, request, flags=re.IGNORECASE)
     return match.group("artifact").lower() if match else None
+
+
+def _explicit_teaching_requested(request: str) -> bool:
+    """Require an affirmative learning phrase, preserving positive mixed work."""
+
+    for pattern in EXPLICIT_TEACHING_INTENT_PATTERNS:
+        for match in re.finditer(pattern, request, flags=re.IGNORECASE):
+            if not re.search(
+                r"\b(?:not|never|don't|don’t)\s+$",
+                request[: match.start()],
+                flags=re.IGNORECASE,
+            ):
+                return True
+    return False
 
 
 def _runtime_lesson_binding(job: str) -> str | None:
@@ -497,11 +512,19 @@ def route_request(
             "reason": f"Explicit {explicit_mode} mode request.",
         }
     artifact = _teaching_artifact(normalized)
-    explicit_teaching = _matches(EXPLICIT_TEACHING_INTENT_PATTERNS, normalized)
+    explicit_teaching = _explicit_teaching_requested(normalized)
+    course_intent = (
+        artifact in {"course", "curriculum", "syllabus"}
+        or _matches(COURSE_PATTERNS, normalized)
+    )
     if (
-        _matches(ORDINARY_TASK_PATTERNS, normalized)
+        any(
+            _matches(ORDINARY_TASK_PATTERNS, clause.strip())
+            for clause in normalized.split(";")
+        )
         and artifact is None
         and not explicit_teaching
+        and not course_intent
     ):
         return {
             "action": "ordinary_task",
@@ -516,13 +539,9 @@ def route_request(
             "persistence": False,
             "reason": "A short time or cognitive-load budget fits one direct explanation.",
         }
-    if (
-        artifact in {"course", "curriculum", "syllabus"}
-        or _matches(COURSE_PATTERNS, normalized)
-        or (
-            (explicit_teaching or artifact is not None)
-            and _matches(SEQUENCE_PATTERNS, normalized)
-        )
+    if course_intent or (
+        (explicit_teaching or artifact is not None)
+        and _matches(SEQUENCE_PATTERNS, normalized)
     ):
         return {
             "action": "teach",

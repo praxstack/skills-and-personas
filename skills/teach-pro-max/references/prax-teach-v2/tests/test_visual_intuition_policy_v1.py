@@ -186,6 +186,28 @@ class VisualIntuitionPolicyV1Tests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "request must not be empty"):
                     route_request(request, answer_now=True, demote=True, explicit_mode="course")
 
+    def test_negated_teaching_does_not_override_ordinary_work(self):
+        for request in (
+            "Edit this lesson; do not teach me",
+            "Do not teach me; edit this lesson",
+            "Just edit this lesson, no explanation.",
+            "Please just edit this lesson; don't teach me",
+            "Edit this lesson and never teach me",
+        ):
+            with self.subTest(request=request):
+                self.assert_route(request, None, action="ordinary_task")
+        self.assert_route("Teach me how to edit a lesson", "lesson")
+        self.assert_route("Proofread this lesson and teach me how to improve it", "lesson")
+
+    def test_course_signals_describe_the_requested_learning_action(self):
+        for request, action, mode in (
+            ("Build a course in Python", "teach", "course"),
+            ("Continue my course scheduler process", "ordinary_task", None),
+            ("Teach me why two weeks have fourteen days", "teach", "lesson"),
+        ):
+            with self.subTest(request=request):
+                self.assert_route(request, mode, action=action)
+
     def test_explanation_is_not_retrieval(self):
         result = route_visual("Compare equal-sized fraction parts", retrieval=False)
         self.assertFalse(result["retrieval_safety"]["required"])

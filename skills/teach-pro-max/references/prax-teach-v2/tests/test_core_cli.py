@@ -572,6 +572,12 @@ class TestRouting(CliTestCase):
             ("Explain the word course", "teach", "lesson", False),
             ("Resume my networking course", "teach", "course", "consent_required"),
             ("Delete this course; answer now", "answer_now", "quick", False),
+            ("Edit this lesson; do not teach me", "ordinary_task", None, False),
+            ("Do not teach me; edit this lesson", "ordinary_task", None, False),
+            ("Just edit this lesson, no explanation.", "ordinary_task", None, False),
+            ("Build a course in Python", "teach", "course", "consent_required"),
+            ("Continue my course scheduler process", "ordinary_task", None, False),
+            ("Teach me why two weeks have fourteen days", "teach", "lesson", False),
         ):
             with self.subTest(request=request):
                 result = json.loads(self.run_cli("route", "--request", request).stdout)
