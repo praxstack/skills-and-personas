@@ -19,6 +19,7 @@ from typing import Any
 
 from current_evidence import (
     EvidenceError,
+    _safe_absolute,
     add_selection_arguments,
     apply_selection_arguments,
     resolve_current,
@@ -314,13 +315,19 @@ def main() -> int:
         ):
             parser.error("SkillOpt source does not match the exact pinned commit")
 
-    receipt_path = args.receipt.expanduser().absolute() if args.receipt else None
+    try:
+        receipt_path = _safe_absolute(args.receipt) if args.receipt else None
+    except EvidenceError as exc:
+        parser.error(str(exc))
     if args.level == "full":
         if current is None or current.document["state"] != "pending":
             parser.error(
                 "full verification requires an explicit pending current-evidence descriptor"
             )
-        selected_receipt = current.receipt_path("full")
+        try:
+            selected_receipt = _safe_absolute(current.receipt_path("full"))
+        except EvidenceError as exc:
+            parser.error(str(exc))
         if receipt_path is not None and receipt_path != selected_receipt:
             parser.error(
                 "full receipt must equal the explicitly selected external full receipt"

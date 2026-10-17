@@ -305,6 +305,9 @@ class BuildPackageTest(unittest.TestCase):
             base = Path(temporary).resolve()
             repository = base / "candidate"
             self.reviewed_candidate(repository)
+            fixture = json.loads(
+                (repository / "evidence/verification/full.json").read_text()
+            )
             for relative in current_evidence.TOOLS:
                 destination = repository / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
@@ -316,6 +319,24 @@ class BuildPackageTest(unittest.TestCase):
             original = base / "original"
             inventory = proof / "original-inventory.json"
             current_evidence.export_original(ROOT, original, inventory)
+            # Preserve the actual original proof, including its excluded old full
+            # receipt. Synthetic current proof remains external and separate.
+            for prefix in current_evidence.HISTORICAL_PREFIXES:
+                source = original / prefix
+                destination = repository / prefix
+                if destination.exists():
+                    shutil.rmtree(destination)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                if source.is_dir():
+                    shutil.copytree(source, destination)
+            self.git(repository, "add", ".")
+            self.git(
+                repository,
+                "commit",
+                "--quiet",
+                "-m",
+                "preserve original historical proof",
+            )
             payload = payload_manifest(repository)
             atomic_write_json(proof / "payload.json", payload)
             payload_digest = current_evidence.digest(
@@ -340,9 +361,6 @@ class BuildPackageTest(unittest.TestCase):
                 "PRAX_CURRENT_EVIDENCE_SHA256": pending["sha256"],
                 "PRAX_DISABLE_MACOS_SANDBOX_TESTS": "0",
             }
-            fixture = json.loads(
-                (repository / "evidence/verification/full.json").read_text()
-            )
 
             def synthetic_gate(name, command, env):
                 with mock.patch.dict(os.environ, env):
@@ -428,6 +446,67 @@ class BuildPackageTest(unittest.TestCase):
                         current_evidence.digest((proof / "full.json").read_bytes()),
                     )
                     self.assertNotIn("prax-teach-v2/selection.json", archive.namelist())
+                historical_full = repository / "evidence/verification/full.json"
+                original_full = historical_full.read_bytes()
+                original_mode = historical_full.stat().st_mode
+                source_manifest = payload_manifest(repository)
+                full_manifest = _release_file_manifest(repository)
+                for mutation in ("bytes", "mode"):
+                    with self.subTest(postproof_historical_mutation=mutation):
+                        if mutation == "bytes":
+                            historical_full.write_text(
+                                '{"replaced_historical_receipt":true}\n',
+                                encoding="utf-8",
+                            )
+                        else:
+                            historical_full.chmod(0o755)
+                        self.git(repository, "add", "evidence/verification/full.json")
+                        self.git(
+                            repository,
+                            "commit",
+                            "--quiet",
+                            "-m",
+                            f"post-proof historical {mutation} replacement",
+                        )
+                        # Demonstrate why the independent history check is needed:
+                        # both current manifests intentionally omit this old file.
+                        self.assertEqual(payload_manifest(repository), source_manifest)
+                        self.assertEqual(
+                            _release_file_manifest(repository), full_manifest
+                        )
+                        rejected = self.build(
+                            repository, base / f"rejected-{mutation}.zip", expected=2
+                        )
+                        self.assertIn(
+                            f"protected historical {mutation if mutation == 'bytes' else 'mode'} changed",
+                            rejected.stderr,
+                        )
+                        self.assertFalse((base / f"rejected-{mutation}.zip").exists())
+                        historical_full.write_bytes(original_full)
+                        historical_full.chmod(original_mode)
+                        self.git(repository, "add", "evidence/verification/full.json")
+                        frozen_replaced_history = package_builder.frozen_release_files(
+                            repository,
+                            package_builder.run_git(
+                                repository, "rev-parse", "HEAD"
+                            ).strip(),
+                        )
+                        self.git(
+                            repository,
+                            "commit",
+                            "--quiet",
+                            "-m",
+                            "restore original historical proof",
+                        )
+                        # The worktree is original again; the supplied immutable
+                        # archive generation still contains the changed receipt.
+                        with self.assertRaisesRegex(
+                            package_builder.PackageError,
+                            "immutable historical evidence",
+                        ):
+                            package_builder.candidate_release_gate(
+                                repository, frozen_replaced_history
+                            )
                 full = json.loads((proof / "full.json").read_text())
                 log = Path(full["log_retention"]["directory"]) / "python-tests.log"
                 log.write_text("replacement", encoding="utf-8")
@@ -437,6 +516,46 @@ class BuildPackageTest(unittest.TestCase):
             self.assertEqual(
                 package_builder.run_git(repository, "status", "--porcelain").strip(), ""
             )
+
+    def test_core_receipt_cannot_alias_source_via_symlink_or_dotdot(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary).resolve()
+            source = base / "source"
+            source.mkdir()
+            seed = source / "source.txt"
+            seed.write_text("unchanged", encoding="utf-8")
+            outside = base / "outside"
+            outside.mkdir()
+            (outside / "nested").mkdir()
+            (outside / "alias").symlink_to(source, target_is_directory=True)
+            for receipt in (
+                outside / "alias" / "symlink.json",
+                outside / "nested" / ".." / ".." / "source" / "dotdot.json",
+            ):
+                with (
+                    self.subTest(receipt=str(receipt)),
+                    mock.patch.dict(os.environ, {}, clear=True),
+                    mock.patch.object(verification_driver, "ROOT", source),
+                    mock.patch.object(
+                        verification_driver, "dependency_receipt", return_value={}
+                    ),
+                    mock.patch.object(verification_driver, "run_gate") as run_gate,
+                    mock.patch.object(
+                        sys,
+                        "argv",
+                        ["verify.py", "--level", "core", "--receipt", str(receipt)],
+                    ),
+                    redirect_stdout(StringIO()),
+                    mock.patch("sys.stderr", new_callable=StringIO),
+                    self.assertRaises(SystemExit) as stopped,
+                ):
+                    verification_driver.main()
+                self.assertEqual(stopped.exception.code, 2)
+                run_gate.assert_not_called()
+                self.assertEqual(
+                    {path.name for path in source.iterdir()}, {"source.txt"}
+                )
+                self.assertEqual(seed.read_text(), "unchanged")
 
     def test_archive_is_deterministic_and_bound_to_git_blobs(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

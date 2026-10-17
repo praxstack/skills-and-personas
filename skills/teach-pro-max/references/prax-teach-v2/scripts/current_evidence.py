@@ -76,6 +76,14 @@ def _read(path: Path, *, maximum: int = 16 * 1024 * 1024) -> bytes:
         raise EvidenceError(f"missing or unsafe evidence: {path}: {exc}") from exc
 
 
+def _mode(path: Path) -> str:
+    try:
+        metadata = _safe_absolute(path).lstat()
+    except OSError as exc:
+        raise EvidenceError(f"missing historical file mode: {path}: {exc}") from exc
+    return "0755" if metadata.st_mode & 0o111 else "0644"
+
+
 def _decode_json(data: bytes, path: Path) -> Any:
     def pairs(items: list[tuple[str, Any]]) -> dict[str, Any]:
         result: dict[str, Any] = {}
@@ -211,9 +219,7 @@ class CurrentEvidence:
             ):
                 raise EvidenceError("invalid historical inventory entry")
             seen.add(relative)
-            if ("0755" if (root / relative).stat().st_mode & 0o111 else "0644") != item[
-                "mode"
-            ]:
+            if _mode(root / relative) != item["mode"]:
                 raise EvidenceError(f"historical snapshot mode drift: {relative}")
             original_bytes = _read(root / relative)
             blob = hashlib.sha1(
@@ -221,11 +227,15 @@ class CurrentEvidence:
             ).hexdigest()
             if blob != item["git_object"] or digest(original_bytes) != item["sha256"]:
                 raise EvidenceError(f"historical snapshot drift: {relative}")
-            if (
-                relative.startswith(HISTORICAL_PREFIXES)
-                and digest(_read(self.root / relative)) != item["sha256"]
-            ):
-                raise EvidenceError(f"protected historical bytes changed: {relative}")
+            if relative.startswith(HISTORICAL_PREFIXES):
+                if digest(_read(self.root / relative)) != item["sha256"]:
+                    raise EvidenceError(
+                        f"protected historical bytes changed: {relative}"
+                    )
+                if _mode(self.root / relative) != item["mode"]:
+                    raise EvidenceError(
+                        f"protected historical mode changed: {relative}"
+                    )
         if git_inventory_tree(inventory["files"]) != BASELINE_TREE:
             raise EvidenceError(
                 "historical inventory differs from independently fixed original Git tree"

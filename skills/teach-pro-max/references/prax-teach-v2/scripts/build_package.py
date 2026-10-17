@@ -270,6 +270,16 @@ def candidate_release_gate(
             os.environ["PRAX_CURRENT_EVIDENCE"] = str(current.path)
             os.environ["PRAX_CURRENT_EVIDENCE_SHA256"] = current.selection_sha256
         try:
+            if current:
+                # Current manifests deliberately exclude the old self-referential
+                # full receipt. Authenticate all preserved historical bytes and
+                # modes against the fixed original inventory over archived blobs.
+                try:
+                    immutable_current = resolve_current(validation_root)
+                    assert immutable_current is not None
+                    immutable_current.historical_root()
+                except (EvidenceError, OSError) as exc:
+                    errors.append(f"immutable historical evidence: {exc}")
             review_count, review_errors = validate_independent_review_receipts(
                 validation_root
             )
