@@ -1,0 +1,1248 @@
+{
+  "schema_version": "1.0",
+  "checked_at": "2026-10-16",
+  "purpose": "Pick the tool that makes an idea click. Rank by the job the idea needs, then by what this host can actually run (scripts/find_tool.py probes it). Official docs, install pins and verification for most third-party tools live in skills/teach-pro-max/references/prax-teach-v2/references/visualization-tool-registry.json under the same ref id.",
+  "jobs": {
+    "structure": "parts and how they connect",
+    "process": "steps, flows, algorithm traces",
+    "change": "something that varies over time or as you drag it",
+    "cause": "what-if: change an input, see the effect",
+    "quantity": "numbers, comparisons, distributions, data",
+    "space": "geometry, 3D, physical layout, maps",
+    "math": "equations, proofs, transformations",
+    "code": "running and tracing real code",
+    "story": "a narrated walk-through, intro or recap",
+    "map": "a concept map or roadmap of a whole subject",
+    "timeline": "history and sequences of events",
+    "sound": "audio, music, speech, pronunciation",
+    "real": "photos and footage of real things"
+  },
+  "media": [
+    "still",
+    "interactive",
+    "animation",
+    "video",
+    "3d",
+    "image",
+    "audio",
+    "qa",
+    "host"
+  ],
+  "tools": [
+    {
+      "id": "explorable",
+      "name": "Explorable lesson (bundled)",
+      "media": [
+        "interactive",
+        "animation"
+      ],
+      "jobs": [
+        "cause",
+        "change",
+        "process",
+        "math",
+        "quantity",
+        "space"
+      ],
+      "how": {
+        "skill": "skills/explorable/SKILL.md",
+        "command": "python3 skills/explorable/scripts/build.py lesson.js -o lesson.html"
+      },
+      "probe": {
+        "bins": [
+          "python3"
+        ]
+      },
+      "offline": true,
+      "notebook": "native",
+      "output": [
+        "html"
+      ],
+      "best_for": "the default for 'teach me X': one model drives the figure, sliders, questions, film and notes",
+      "avoid_when": "the learner only asked a one-line question"
+    },
+    {
+      "id": "concept-animation",
+      "name": "Concept animation (bundled)",
+      "media": [
+        "animation",
+        "video"
+      ],
+      "jobs": [
+        "change",
+        "process",
+        "math",
+        "story"
+      ],
+      "how": {
+        "skill": "skills/concept-animation/SKILL.md",
+        "command": "python3 skills/concept-animation/scripts/build.py x.anim.js -o x.html && node skills/concept-animation/scripts/export.mjs x.html --out x.mp4 --gif x.gif"
+      },
+      "probe": {
+        "bins": [
+          "python3",
+          "node",
+          "ffmpeg"
+        ],
+        "node": [
+          "playwright"
+        ]
+      },
+      "offline": true,
+      "notebook": "native",
+      "output": [
+        "html",
+        "mp4",
+        "gif",
+        "vtt"
+      ],
+      "best_for": "short scrubbable clips of one transformation; exact frame export to MP4/GIF",
+      "avoid_when": "the learner should be driving the change themselves (use explorable)"
+    },
+    {
+      "id": "course",
+      "name": "Course map (bundled)",
+      "media": [
+        "interactive",
+        "host"
+      ],
+      "jobs": [
+        "map",
+        "structure"
+      ],
+      "how": {
+        "skill": "skills/course/SKILL.md",
+        "command": "python3 skills/course/scripts/build_course.py courses/<id> -o site/<id>"
+      },
+      "probe": {
+        "bins": [
+          "python3",
+          "node"
+        ]
+      },
+      "offline": true,
+      "notebook": "native",
+      "output": [
+        "html"
+      ],
+      "best_for": "a subject over many sittings: map by prerequisite, status, every lesson in every medium, quiz, notes"
+    },
+    {
+      "id": "narrate",
+      "name": "Narrated lesson video (bundled)",
+      "media": [
+        "video",
+        "audio"
+      ],
+      "jobs": [
+        "story",
+        "change",
+        "process",
+        "math"
+      ],
+      "how": {
+        "skill": "skills/explorable/SKILL.md",
+        "command": "python3 skills/explorable/scripts/narrate.py lesson.html -o lesson.mp4"
+      },
+      "probe": {
+        "bins": [
+          "node",
+          "ffmpeg"
+        ],
+        "py": [
+          "kokoro_onnx"
+        ],
+        "node": [
+          "playwright"
+        ]
+      },
+      "offline": true,
+      "notebook": "native",
+      "output": [
+        "mp4",
+        "vtt"
+      ],
+      "best_for": "any explorable as a narrated video with a natural Kokoro voice, pen sounds and captions"
+    },
+    {
+      "id": "explain-diagram",
+      "name": "Explained diagram (bundled)",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "structure",
+        "process",
+        "map",
+        "timeline"
+      ],
+      "how": {
+        "skill": "skills/explain-diagram/SKILL.md",
+        "command": "python3 skills/explain-diagram/scripts/render.py flow.mmd --page flow.html --claim '...'"
+      },
+      "probe": {
+        "bins": [
+          "python3"
+        ]
+      },
+      "offline": false,
+      "notebook": "Mermaid look=handDrawn, D2 sketch, Kalam labels",
+      "output": [
+        "svg",
+        "html"
+      ],
+      "best_for": "a static picture of how parts connect, with the claim, why, how and a look-for cue",
+      "avoid_when": "the point is how something changes (animate it)"
+    },
+    {
+      "id": "lesson-notebook",
+      "name": "Lesson notebook style (bundled)",
+      "media": [
+        "still",
+        "interactive",
+        "animation"
+      ],
+      "jobs": [
+        "structure",
+        "process",
+        "change",
+        "cause"
+      ],
+      "how": {
+        "skill": "skills/lesson-notebook/SKILL.md"
+      },
+      "probe": {},
+      "offline": true,
+      "notebook": "native",
+      "output": [
+        "css",
+        "js"
+      ],
+      "best_for": "the default look: quad paper, three voices, the pen"
+    },
+    {
+      "id": "visual-qa",
+      "name": "Visual QA (bundled)",
+      "media": [
+        "qa"
+      ],
+      "jobs": [],
+      "how": {
+        "skill": "skills/visual-qa/SKILL.md",
+        "command": "node skills/visual-qa/scripts/check_page.mjs page.html; python3 skills/visual-qa/scripts/check_video.py clip.mp4 --sheet sheet.png"
+      },
+      "probe": {
+        "bins": [
+          "node",
+          "ffmpeg",
+          "ffprobe"
+        ],
+        "node": [
+          "playwright"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "report",
+        "png"
+      ],
+      "best_for": "every page and clip, before the learner sees it"
+    },
+    {
+      "id": "explainer-video",
+      "name": "Narrated explainer video pipeline (bundled)",
+      "media": [
+        "video",
+        "audio"
+      ],
+      "jobs": [
+        "story",
+        "process",
+        "change",
+        "math"
+      ],
+      "how": {
+        "skill": "skills/explainer-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "python3",
+          "ffmpeg",
+          "node"
+        ]
+      },
+      "offline": true,
+      "notebook": "handdrawn-js-video engine, or concept-animation clips as visuals",
+      "output": [
+        "mp4",
+        "vtt"
+      ],
+      "best_for": "a full narrated video with voice, music, captions and QA, via 8 phases",
+      "avoid_when": "a 20-second silent clip would do (concept-animation)"
+    },
+    {
+      "id": "handdrawn-js-video",
+      "name": "Hand-drawn JS video engine (bundled)",
+      "media": [
+        "video",
+        "animation"
+      ],
+      "jobs": [
+        "story",
+        "process",
+        "structure"
+      ],
+      "how": {
+        "skill": "skills/handdrawn-js-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node",
+          "ffmpeg"
+        ]
+      },
+      "offline": true,
+      "notebook": "native whiteboard look",
+      "output": [
+        "mp4"
+      ],
+      "best_for": "whiteboard-style narrated videos"
+    },
+    {
+      "id": "manim",
+      "ref": "manim",
+      "name": "Manim",
+      "media": [
+        "animation",
+        "video"
+      ],
+      "jobs": [
+        "math",
+        "change",
+        "process"
+      ],
+      "how": {
+        "skill": "skills/manim-video/SKILL.md",
+        "install": "pip install manim==0.21.0"
+      },
+      "probe": {
+        "py": [
+          "manim"
+        ]
+      },
+      "offline": true,
+      "notebook": "paper background #fbfaf4, Kalam/Vollkorn via Text(font=...), ink colours from tokens",
+      "output": [
+        "mp4",
+        "png"
+      ],
+      "best_for": "equations transforming, proofs, geometry"
+    },
+    {
+      "id": "motion-canvas",
+      "ref": "motion-canvas",
+      "name": "Motion Canvas",
+      "media": [
+        "animation",
+        "video"
+      ],
+      "jobs": [
+        "process",
+        "code",
+        "change"
+      ],
+      "how": {
+        "skill": "skills/motion-canvas-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "mp4"
+      ],
+      "best_for": "code walkthroughs and precisely timed diagrams"
+    },
+    {
+      "id": "remotion",
+      "ref": "remotion",
+      "name": "Remotion",
+      "media": [
+        "video"
+      ],
+      "jobs": [
+        "story",
+        "quantity",
+        "process"
+      ],
+      "how": {
+        "skill": "skills/remotion-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "mp4"
+      ],
+      "best_for": "React-built videos, data-driven series",
+      "licensing": "check Remotion's company license before commercial use"
+    },
+    {
+      "id": "revideo",
+      "name": "Revideo",
+      "media": [
+        "video"
+      ],
+      "jobs": [
+        "story",
+        "process"
+      ],
+      "how": {
+        "skill": "skills/revideo-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "mp4"
+      ]
+    },
+    {
+      "id": "hyperframes",
+      "ref": "hyperframes",
+      "name": "HyperFrames (HTML video)",
+      "media": [
+        "video"
+      ],
+      "jobs": [
+        "story",
+        "process"
+      ],
+      "how": {
+        "skill": "skills/hyperframes-video/SKILL.md",
+        "mcp": "HyperFrames by HeyGen (hosted projects, cloud render)"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ],
+        "mcp": [
+          "hyperframes"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "mp4"
+      ],
+      "best_for": "HTML/GSAP compositions; the MCP gives a shareable hosted project"
+    },
+    {
+      "id": "gsap",
+      "name": "GSAP",
+      "media": [
+        "animation",
+        "video"
+      ],
+      "jobs": [
+        "change",
+        "story"
+      ],
+      "how": {
+        "skill": "skills/gsap-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "html",
+        "mp4"
+      ]
+    },
+    {
+      "id": "motion",
+      "name": "Motion (Framer Motion)",
+      "media": [
+        "animation",
+        "video"
+      ],
+      "jobs": [
+        "change",
+        "story"
+      ],
+      "how": {
+        "skill": "skills/motion-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "html",
+        "mp4"
+      ]
+    },
+    {
+      "id": "threejs",
+      "ref": "threejs",
+      "name": "Three.js",
+      "media": [
+        "3d",
+        "interactive",
+        "video"
+      ],
+      "jobs": [
+        "space",
+        "change"
+      ],
+      "how": {
+        "skill": "skills/threejs-video/SKILL.md",
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "html",
+        "mp4"
+      ],
+      "best_for": "anything that only makes sense in 3D: orbits, molecules, surfaces"
+    },
+    {
+      "id": "theatrejs",
+      "name": "Theatre.js",
+      "media": [
+        "3d",
+        "animation",
+        "video"
+      ],
+      "jobs": [
+        "space",
+        "story"
+      ],
+      "how": {
+        "skill": "skills/theatrejs-video/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "mp4"
+      ]
+    },
+    {
+      "id": "svg",
+      "ref": "svg",
+      "name": "Hand-written SVG",
+      "media": [
+        "still",
+        "interactive"
+      ],
+      "jobs": [
+        "structure",
+        "space",
+        "process"
+      ],
+      "how": {
+        "note": "write it directly; use lesson-notebook classes and ink.js marks"
+      },
+      "probe": {},
+      "offline": true,
+      "notebook": "native",
+      "output": [
+        "svg"
+      ],
+      "best_for": "exact labelled figures"
+    },
+    {
+      "id": "mermaid",
+      "ref": "mermaid",
+      "name": "Mermaid",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "process",
+        "structure",
+        "timeline"
+      ],
+      "how": {
+        "skill": "skills/explain-diagram/SKILL.md",
+        "host": "Claude artifacts render ```mermaid natively"
+      },
+      "probe": {
+        "bins": [
+          "mmdc"
+        ],
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "notebook": "look: handDrawn",
+      "output": [
+        "svg"
+      ]
+    },
+    {
+      "id": "d2",
+      "ref": "d2",
+      "name": "D2",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "structure",
+        "process"
+      ],
+      "how": {
+        "skill": "skills/explain-diagram/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "d2"
+        ],
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "notebook": "--sketch",
+      "output": [
+        "svg"
+      ]
+    },
+    {
+      "id": "graphviz",
+      "ref": "graphviz",
+      "name": "Graphviz",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "structure",
+        "map"
+      ],
+      "how": {
+        "skill": "skills/explain-diagram/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "dot"
+        ],
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "svg"
+      ],
+      "best_for": "large graphs with automatic layout"
+    },
+    {
+      "id": "plantuml",
+      "ref": "plantuml",
+      "name": "PlantUML",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "structure",
+        "process"
+      ],
+      "how": {
+        "skill": "skills/explain-diagram/SKILL.md"
+      },
+      "probe": {
+        "bins": [
+          "plantuml"
+        ],
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "svg"
+      ],
+      "best_for": "UML: sequence, class, state diagrams"
+    },
+    {
+      "id": "kroki",
+      "ref": "kroki",
+      "name": "Kroki",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "structure",
+        "process",
+        "quantity"
+      ],
+      "how": {
+        "note": "used by explain-diagram when no local CLI exists; KROKI_URL for a self-hosted one"
+      },
+      "probe": {
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "svg"
+      ]
+    },
+    {
+      "id": "excalidraw",
+      "ref": "excalidraw",
+      "name": "Excalidraw",
+      "media": [
+        "still",
+        "interactive"
+      ],
+      "jobs": [
+        "structure",
+        "process",
+        "map"
+      ],
+      "how": {
+        "mcp": "Excalidraw MCP (create_view) when the host has it",
+        "note": "or .excalidraw files through explain-diagram via Kroki"
+      },
+      "probe": {
+        "mcp": [
+          "excalidraw"
+        ],
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "notebook": "native sketch look",
+      "output": [
+        "svg",
+        "excalidraw"
+      ],
+      "best_for": "a live whiteboard sketch the learner can edit"
+    },
+    {
+      "id": "roughjs",
+      "name": "Rough.js",
+      "media": [
+        "still",
+        "interactive"
+      ],
+      "jobs": [
+        "structure",
+        "quantity"
+      ],
+      "how": {
+        "cdn": "https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"
+      },
+      "probe": {},
+      "offline": false,
+      "notebook": "sketchy fills and shapes; prefer ink.js strokes for marks",
+      "output": [
+        "svg",
+        "canvas"
+      ]
+    },
+    {
+      "id": "vega-lite",
+      "ref": "vega-lite",
+      "name": "Vega-Lite",
+      "media": [
+        "still",
+        "interactive"
+      ],
+      "jobs": [
+        "quantity"
+      ],
+      "how": {
+        "note": "spec as .vl.json through explain-diagram, or vega-embed in a page"
+      },
+      "probe": {
+        "net": [
+          "https://kroki.io/health"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "svg",
+        "html"
+      ],
+      "best_for": "honest charts from data with little code"
+    },
+    {
+      "id": "observable-plot",
+      "ref": "observable-plot",
+      "name": "Observable Plot",
+      "media": [
+        "still",
+        "interactive"
+      ],
+      "jobs": [
+        "quantity"
+      ],
+      "how": {
+        "cdn": "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/dist/plot.umd.min.js"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "svg"
+      ]
+    },
+    {
+      "id": "d3",
+      "ref": "d3",
+      "name": "D3",
+      "media": [
+        "interactive",
+        "animation"
+      ],
+      "jobs": [
+        "quantity",
+        "structure",
+        "change"
+      ],
+      "how": {
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "svg",
+        "html"
+      ],
+      "best_for": "custom data-driven interactive figures"
+    },
+    {
+      "id": "matplotlib",
+      "ref": "matplotlib",
+      "name": "matplotlib",
+      "media": [
+        "still"
+      ],
+      "jobs": [
+        "quantity",
+        "math"
+      ],
+      "how": {
+        "install": "pip install matplotlib"
+      },
+      "probe": {
+        "py": [
+          "matplotlib"
+        ]
+      },
+      "offline": true,
+      "notebook": "plt.xkcd() for a sketch look, or rcParams fonts Kalam/Vollkorn",
+      "output": [
+        "png",
+        "svg"
+      ]
+    },
+    {
+      "id": "plotly",
+      "ref": "plotly",
+      "name": "Plotly",
+      "media": [
+        "interactive"
+      ],
+      "jobs": [
+        "quantity",
+        "space"
+      ],
+      "how": {
+        "install": "pip install plotly"
+      },
+      "probe": {
+        "py": [
+          "plotly"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "html"
+      ]
+    },
+    {
+      "id": "jsxgraph",
+      "name": "JSXGraph",
+      "media": [
+        "interactive"
+      ],
+      "jobs": [
+        "math",
+        "space"
+      ],
+      "how": {
+        "cdn": "https://cdn.jsdelivr.net/npm/jsxgraph@1.10.1/distrib/jsxgraphcore.js"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "html"
+      ],
+      "best_for": "draggable geometry and function graphs"
+    },
+    {
+      "id": "p5",
+      "name": "p5.js",
+      "media": [
+        "interactive",
+        "animation"
+      ],
+      "jobs": [
+        "change",
+        "space",
+        "cause"
+      ],
+      "how": {
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "html"
+      ],
+      "best_for": "simulations: particles, physics, generative systems"
+    },
+    {
+      "id": "pyodide",
+      "name": "Pyodide (Python in the browser)",
+      "media": [
+        "interactive"
+      ],
+      "jobs": [
+        "code"
+      ],
+      "how": {
+        "cdn": "https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js",
+        "note": "the artifact CSP blocks its package fetches; use it on normal hosts"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "html"
+      ],
+      "best_for": "letting the learner run and edit Python in the page"
+    },
+    {
+      "id": "cytoscape",
+      "ref": "cytoscapejs",
+      "name": "Cytoscape.js",
+      "media": [
+        "interactive"
+      ],
+      "jobs": [
+        "structure",
+        "map"
+      ],
+      "how": {
+        "cdn": "https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "html"
+      ],
+      "best_for": "explorable concept maps and networks"
+    },
+    {
+      "id": "react-flow",
+      "ref": "react-flow",
+      "name": "React Flow",
+      "media": [
+        "interactive"
+      ],
+      "jobs": [
+        "structure",
+        "process",
+        "map"
+      ],
+      "how": {
+        "note": "for app builds; needs a bundler"
+      },
+      "probe": {
+        "bins": [
+          "node"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "html"
+      ]
+    },
+    {
+      "id": "kokoro",
+      "name": "Kokoro-82M voice",
+      "media": [
+        "audio"
+      ],
+      "jobs": [
+        "story",
+        "sound"
+      ],
+      "how": {
+        "skill": "skills/explainer-video/SKILL.md",
+        "note": "shared voice step; offline neural TTS"
+      },
+      "probe": {
+        "py": [
+          "kokoro"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "wav"
+      ]
+    },
+    {
+      "id": "edge-tts",
+      "name": "edge-tts voice",
+      "media": [
+        "audio"
+      ],
+      "jobs": [
+        "story",
+        "sound"
+      ],
+      "how": {
+        "install": "pip install edge-tts"
+      },
+      "probe": {
+        "bins": [
+          "edge-tts"
+        ],
+        "py": [
+          "edge_tts"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "mp3"
+      ]
+    },
+    {
+      "id": "piper",
+      "name": "Piper voice",
+      "media": [
+        "audio"
+      ],
+      "jobs": [
+        "story",
+        "sound"
+      ],
+      "how": {
+        "install": "pip install piper-tts"
+      },
+      "probe": {
+        "bins": [
+          "piper"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "wav"
+      ]
+    },
+    {
+      "id": "browser-voice",
+      "name": "Browser speechSynthesis",
+      "media": [
+        "audio"
+      ],
+      "jobs": [
+        "story"
+      ],
+      "how": {
+        "note": "built into explorable films; zero install, voice quality varies"
+      },
+      "probe": {},
+      "offline": true,
+      "output": [
+        "live"
+      ]
+    },
+    {
+      "id": "scribecast",
+      "name": "scribecast / vidkit",
+      "media": [
+        "video"
+      ],
+      "jobs": [
+        "story"
+      ],
+      "how": {
+        "command": "scribecast render file:notes.md --engine manim|remotion|hyperframes",
+        "source": "https://github.com/praxstack/vidkit"
+      },
+      "probe": {
+        "bins": [
+          "scribecast"
+        ],
+        "py": [
+          "vidkit"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "mp4"
+      ],
+      "best_for": "turning existing notes into a narrated video in one command"
+    },
+    {
+      "id": "ffmpeg",
+      "ref": "ffmpeg",
+      "name": "FFmpeg",
+      "media": [
+        "video",
+        "audio",
+        "qa"
+      ],
+      "jobs": [],
+      "how": {
+        "note": "encode, mix, contact sheets, loudness"
+      },
+      "probe": {
+        "bins": [
+          "ffmpeg",
+          "ffprobe"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "mp4",
+        "gif",
+        "png"
+      ]
+    },
+    {
+      "id": "playwright",
+      "name": "Playwright + Chromium",
+      "media": [
+        "qa"
+      ],
+      "jobs": [],
+      "how": {
+        "install": "npm i playwright"
+      },
+      "probe": {
+        "node": [
+          "playwright"
+        ]
+      },
+      "offline": true,
+      "output": [
+        "png",
+        "report"
+      ]
+    },
+    {
+      "id": "image-generation",
+      "ref": "openai-image-generation",
+      "name": "Image generation",
+      "media": [
+        "image"
+      ],
+      "jobs": [
+        "real",
+        "story"
+      ],
+      "how": {
+        "note": "only when the host offers it; label generated images as illustrations, never as evidence"
+      },
+      "probe": {
+        "mcp": [
+          "image"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "png"
+      ]
+    },
+    {
+      "id": "wikimedia-commons",
+      "ref": "wikimedia-commons",
+      "name": "Wikimedia Commons",
+      "media": [
+        "image"
+      ],
+      "jobs": [
+        "real",
+        "timeline"
+      ],
+      "how": {
+        "note": "real photos and historical images; record the licence and author"
+      },
+      "probe": {
+        "net": [
+          "https://commons.wikimedia.org"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "claude-artifact",
+      "name": "Claude artifact (host surface)",
+      "media": [
+        "host"
+      ],
+      "jobs": [],
+      "how": {
+        "note": "publish a built page; single file, CDN allowlist, no downloads, no window.print"
+      },
+      "probe": {
+        "mcp": [
+          "artifact"
+        ]
+      },
+      "offline": false,
+      "output": [
+        "url"
+      ]
+    },
+    {
+      "id": "canvas",
+      "name": "ChatGPT / Codex canvas (host surface)",
+      "media": [
+        "host"
+      ],
+      "jobs": [],
+      "how": {
+        "note": "paste the built single-file HTML; it runs as-is"
+      },
+      "probe": {},
+      "offline": false,
+      "output": [
+        "live"
+      ]
+    }
+  ]
+}

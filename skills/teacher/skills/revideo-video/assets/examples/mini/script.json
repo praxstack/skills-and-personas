@@ -1,0 +1,26 @@
+{
+ "meta": {
+  "title": "Cheapest Flights Within K Stops",
+  "subtitle": "LeetCode 787 in one minute (pipeline smoke test)",
+  "format": "dsa-5part",
+  "chapters": ["Intro", "The problem", "Brute force", "Intuition", "Every approach", "C++ and dry run"],
+  "voice": "af_heart", "speed": 0.95, "music": "calm",
+  "fps": 30, "width": 1920, "height": 1080
+ },
+ "lines": [
+  {"id": "i1", "chapter": 0, "scene": "title", "cap": "Cheapest Flights Within K Stops.", "say": "Cheapest Flights Within K Stops."},
+  {"id": "p1", "chapter": 1, "scene": "inputs", "cap": "4 cities. Each flight is [from, to, price].", "say": "Four cities. Each flight is from, to, price."},
+  {"id": "p2", "chapter": 1, "scene": "inputs", "cap": "Start at src = 0, end at dst = 3.", "say": "Start at city zero, end at city three."},
+  {"id": "p3", "chapter": 1, "scene": "ex1", "cap": "k = 1: at most one stop on the way.", "say": "k is one. At most one stop on the way."},
+  {"id": "p4", "chapter": 1, "scene": "ex1", "cap": "0 → 1 → 3 costs 700 with one stop. The answer is 700.", "say": "Zero, one, three costs seven hundred with one stop. The answer is seven hundred."},
+  {"id": "b1", "chapter": 2, "scene": "tree", "cap": "Brute force tries every route: O(n^(k+1)) time.", "say": "Brute force tries every route. Exponential time."},
+  {"id": "q1", "chapter": 3, "scene": "q1", "cap": "Question: what is simpler to count than stops?", "say": "Question. What is simpler to count than stops?", "think": 2.0},
+  {"id": "a1", "chapter": 3, "scene": "q1", "cap": "Flights: at most k + 1 of them.", "say": "Flights. At most k plus one of them."},
+  {"id": "q2", "chapter": 3, "scene": "q2", "cap": "Question: why read the old row while writing a new one?", "say": "Question. Why read the old row while writing a new one?", "think": 2.0},
+  {"id": "a2", "chapter": 3, "scene": "q2", "cap": "So one round adds exactly one flight.", "say": "So one round adds exactly one flight."},
+  {"id": "x1", "chapter": 4, "scene": "ladder", "cap": "DFS + memo: O(k·E) time.", "say": "Depth first search with memo. Order k times E."},
+  {"id": "x2", "chapter": 4, "scene": "ladder", "cap": "Bellman-Ford, k + 1 rounds: O(k·E) time, O(n) space.", "say": "Bellman Ford with k plus one rounds. Order k times E time, order n space."},
+  {"id": "c1", "chapter": 5, "scene": "dry", "cap": "Dry run: [0, ∞, ∞, ∞] → [0, 100, ∞, ∞] → [0, 100, 200, 700].", "say": "Dry run. Round zero reaches city one for one hundred. Round one reaches city three for seven hundred."},
+  {"id": "o1", "chapter": 5, "scene": "outro", "cap": "k stops → k + 1 rounds. Copy before you update.", "say": "k stops means k plus one rounds. Copy before you update."}
+ ]
+}

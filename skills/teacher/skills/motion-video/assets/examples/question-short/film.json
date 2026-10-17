@@ -1,0 +1,66 @@
+{
+  "style": { "look": "ink", "brand": "Kai Mori", "mark": "KM", "tag": "LC 787 · daily" },
+  "shots": [
+    {
+      "at": "h1",
+      "blocks": [
+        { "type": "title", "kicker": "Daily question", "title": "Cheapest flight, at most *one stop*", "sub": "Pause and try it before the answer." }
+      ]
+    },
+    {
+      "at": "g1", "split": [1.15, 1],
+      "blocks": [
+        { "type": "graph", "id": "map", "src": 0, "dst": 3,
+          "nodes": [ { "id": 0, "x": 0, "y": 0.5 }, { "id": 1, "x": 0.5, "y": 0 }, { "id": 2, "x": 0.5, "y": 1 }, { "id": 3, "x": 1, "y": 0.5 } ],
+          "edges": [ [0, 1, 100], [1, 2, 100], [2, 0, 100], [1, 3, 600], [2, 3, 200] ] },
+        { "type": "text", "kicker": "The map", "text": "Fly from *0* to *3*", "chips": ["4 cities", "5 flights", "price on each arrow"], "font": "sans" }
+      ]
+    },
+    {
+      "at": "g2", "split": [1.15, 1],
+      "blocks": [
+        { "type": "graph", "id": "map" },
+        { "type": "text", "kicker": "The rule", "text": "k = 1, so at most *one city* in between", "font": "sans" }
+      ]
+    },
+    {
+      "at": "q1", "split": [1.15, 1],
+      "blocks": [
+        { "type": "graph", "id": "map",
+          "cues": [
+            { "do": "route", "at": "r1", "path": [0, 1, 2, 3], "tone": "bad", "note": "✗", "hop": 0.4 },
+            { "do": "focus", "at": "r2:two stops", "nodes": [1, 2], "tone": "bad", "hold": 1.6 },
+            { "do": "route", "at": "r3", "path": [0, 1, 3], "tone": "good", "note": "✓", "hop": 0.5 }
+          ] },
+        { "type": "question", "id": "ask",
+          "prompt": "Cheapest price from *0* to *3*?",
+          "options": ["400", "700", "600", "No route"], "answer": 1, "trap": 0, "notes": ["2 stops", "1 stop"],
+          "cues": [
+            { "do": "pick", "at": "r1", "n": 0, "note": "cheapest?" },
+            { "do": "reveal", "at": "r4" }
+          ] }
+      ]
+    },
+    {
+      "at": "w1", "split": [1, 1],
+      "blocks": [
+        { "type": "text", "kicker": "Why", "text": "k stops = *k + 1* flights", "chips": ["k + 1 rounds", "read last round's prices"], "font": "sans",
+          "cues": [ { "do": "chips", "at": "w2" } ] },
+        { "type": "array", "name": "price", "values": [0, "∞", "∞", "∞"],
+          "cues": [
+            { "do": "set", "at": "w3:city one", "index": 1, "value": 100 },
+            { "do": "range", "at": "w3:city one", "from": 1, "to": 1, "tone": "accent" },
+            { "do": "set", "at": "w3:round two", "index": 2, "value": 200 },
+            { "do": "set", "at": "w3:seven hundred", "index": 3, "value": 700 },
+            { "do": "range", "at": "w3:seven hundred", "from": 3, "to": 3, "tone": "good" }
+          ] }
+      ]
+    },
+    {
+      "at": "e1",
+      "blocks": [
+        { "type": "end", "title": "Bellman-Ford, *k + 1* rounds. O(k·E) time.", "handle": "Kai Mori", "cta": "A new question tomorrow" }
+      ]
+    }
+  ]
+}

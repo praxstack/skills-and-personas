@@ -1,0 +1,10 @@
+Fonts copied from @fontsource packages (npm), latin subset, WOFF:
+  patrick-hand-latin-400-normal.woff        @fontsource/patrick-hand@5.3.0   SIL Open Font License 1.1
+  caveat-brush-latin-400-normal.woff        @fontsource/caveat-brush@5.3.0   SIL Open Font License 1.1
+  jetbrains-mono-latin-400/700-normal.woff  @fontsource/jetbrains-mono@5.3.0 SIL Open Font License 1.1
+  caveat-latin-700-normal.woff              @fontsource/caveat@5.3.0         SIL Open Font License 1.1 (whiteboard style)
+  fredoka-latin-600/700-normal.woff         @fontsource/fredoka@5.3.0        SIL Open Font License 1.1 (papercraft-riso style)
+Each font's copyright line and the full SIL Open Font License 1.1 text, as shipped in its @fontsource
+package, are in OFL-<font>.txt next to it; keep them with the fonts when you copy or share them.
+WOFF (not WOFF2) because opentype.js reads WOFF directly; the browser loads the same files with FontFace.
+Glyphs missing from these fonts (→ ← ∞ ≤ ≥ ≠ ✓ ✗ ★) are drawn by kit/type.js as hand strokes.

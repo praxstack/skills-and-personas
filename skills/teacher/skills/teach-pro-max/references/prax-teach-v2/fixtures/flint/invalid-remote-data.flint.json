@@ -1,0 +1,26 @@
+{
+  "data": {
+    "url": "https://example.invalid/private-data.json"
+  },
+  "semantic_types": {
+    "x": "Category",
+    "y": "Value"
+  },
+  "chart_spec": {
+    "chartType": "Bar Chart",
+    "encodings": {
+      "x": {
+        "field": "x"
+      },
+      "y": {
+        "field": "y"
+      }
+    }
+  },
+  "prax_teach": {
+    "reviewed": true,
+    "title": "Forbidden remote data",
+    "summary": "This fixture must be rejected.",
+    "table_caption": "Forbidden remote data"
+  }
+}

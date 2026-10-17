@@ -1,0 +1,28 @@
+{
+  "attestation": {
+    "cryptographic_authorship_verified": false,
+    "orchestration_task_identity_recorded": true,
+    "threat_model": "orchestration task identity is structurally recorded; cryptographic authorship is not verified"
+  },
+  "findings": [],
+  "fixes": [
+    "Closed the full-deletion parent-generation swap finding with descriptor-relative os.rename, an os.rename capability gate, and a deterministic regression reproducer.",
+    "Aligned the immutable package comparison with the verifier's canonical pruned-directory scope while retaining reviewed historical attempts in the archive and preserving exact fail-closed inventory checks."
+  ],
+  "payload": "evidence/reviews/payload.json",
+  "payload_file_sha256": "4ff26fde759a8b3dd7b4c5cff3ae9fab1c1c24b106410dc190dc3ba81a8b22af",
+  "payload_manifest_sha256": "7cf9995e3ff84bca35acf55d2e24fbc756628299d90d7de61a920da071255df6",
+  "recheck": {
+    "reviewer_confirmed": true,
+    "status": "passed"
+  },
+  "review_type": "code-standards",
+  "reviewer": {
+    "identity": "independent final code-quality reviewer",
+    "independent_from_implementation": true,
+    "task": "/root/final_code_review_21"
+  },
+  "schema_version": 2,
+  "status": "passed",
+  "unresolved_actionable": []
+}

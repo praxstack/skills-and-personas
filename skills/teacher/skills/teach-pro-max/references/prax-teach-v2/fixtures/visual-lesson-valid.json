@@ -1,0 +1,5 @@
+{
+  "schema_version":"prax.visual-lesson/v1","lesson_id":"fixture-lesson","lesson_version":"1.0.0","objective":"Compare two deterministic states and explain the transition.",
+  "states":[{"id":"start","label":"Start","content":"Predict before stepping."},{"id":"result","label":"Result","content":"Compare the exact result."}],
+  "actions":[{"id":"next","label":"Next","kind":"step"}],"hints":["Name the input.","Compare the representations."],"static_fallback":[{"state_id":"start","content":"Predict before stepping."},{"state_id":"result","content":"Compare the exact result."}],"grader":{"kind":"exact","accepted":["ok"]}
+}

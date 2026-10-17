@@ -1,0 +1,14 @@
+{
+  "schema_version": "prax.zero-api-runtime-archive/v1",
+  "status": "packaged",
+  "source": "immutable_git_blobs",
+  "package_commit": "f6b9ea3d4745c987a46e35173d2c67e20af67be5",
+  "archive": "outputs/prax-teach-v2-candidate.zip",
+  "archive_sha256": "2cce23bfb845cb35489b4cf9f8c7577a9dbfabc06c589de84f77089cee85ce0b",
+  "source_date_epoch": "1785844800",
+  "entries": 410,
+  "git_metadata_included": false,
+  "release_gate": "passed",
+  "control_plane_policy": "excluded (.agent, .agents, openspec are validated separately)",
+  "receipt_note": "This receipt is metadata recorded after the immutable archive was built; the archive is bound to package_commit and does not include this receipt."
+}

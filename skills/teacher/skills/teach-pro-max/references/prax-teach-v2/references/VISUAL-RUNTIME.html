@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="VISUAL-RUNTIME.md">
+  <meta name="source-sha256" content="c80a619ddcc9972d3bb2a6ae2a028adb427affd239c5d7246f7d508e94230c45">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Prax Visual Lab</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./VISUAL-RUNTIME.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="prax-visual-lab">Prax Visual Lab</h1>
+<p>The runtime is a separately versioned, zero-dependency ES-module/Web-Component package. Shared components are <code>prax-state-stepper</code>, <code>prax-parameter-lab</code>, <code>prax-compare-views</code>, <code>prax-hint-engine</code>, and <code>prax-receipt-panel</code>. Lesson specs are declarative JSON; pure domain modules provide exact transitions and structural graders. Every interactive lesson ships a semantic static sequence and print/no-script route.</p>
+<p>The three first labs are Python floating point, legal Rubik's moves, and lost-update interleavings. Motion is optional and reduced motion removes transitions. Deliberate learner actions produce local receipts; parameter changes update the comparison and receipt through the shared session rather than an isolated control. No receipt is uploaded automatically. Imported receipts are untrusted input: action identifiers must belong to the lesson and observations and learner-authored evidence must remain objects. The floating-point Python and browser models are checked against one independently specified literal vector file.</p>
+<p>The visual router treats this packaged runtime as the default direct delivery
+surface only when an <code>interactive</code> or learner-controlled <code>motion</code> job binds to
+an implemented lesson capability. An unbound job falls back to static. For
+specialized charting, diagrams, generated imagery, 3D, animation, or video, the
+agent selects an authorized equivalent capability from the current harness and
+the bundled visualization registry. Static fallback is a resilience and
+accessibility requirement, not the default replacement for a working rich
+route.</p>
+<p>The router promotes the packaged runtime only when its exact source, build,
+manifest, tests, JSON contracts, routing policy, and verifier bindings match;
+every bound input and ancestor must be a real path rather than a symlink. It
+replays the verifier against current bytes and requires the stored receipt to
+match that result, so mutable status fields cannot promote a forged runtime.
+The network scan must pass, and the receipt must explicitly decline any
+human-learning or field-accessibility claim.</p>
+<p>Receipt import validates the exact public receipt shape, replays its declared
+actions to reconstruct the current lesson state, and synchronizes the stepper,
+hint engine, and receipt panel. The JSON schema defines transport shape; runtime
+validation additionally enforces that static-fallback state IDs reference real
+lesson states.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./VISUAL-RUNTIME.md">VISUAL-RUNTIME.md</a><br>
+    SHA-256: <code>c80a619ddcc9972d3bb2a6ae2a028adb427affd239c5d7246f7d508e94230c45</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

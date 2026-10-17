@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="practical-executable-learning.md">
+  <meta name="source-sha256" content="fb08ecc2c5a1ca771f7d0bc2d8660c7d744889b71f938ee4466543f7f9fdb4a0">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Practical gradient-descent lesson</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./practical-executable-learning.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="practical-gradient-descent-lesson">Practical gradient-descent lesson</h1>
+<h2 id="learner-turn-1">Learner turn 1</h2>
+<p>Teach me one gradient-descent update on tiny rent-price data. Make me predict before execution, show the exact command and complete output, let me change one input, help me debug a bad result, then give me a transfer task on delivery-time data.</p>
+<h2 id="tutor-turn-1">Tutor turn 1</h2>
+<p>We’ll use a small linear model:</p>
+<p>[
+\hat y = wx+b
+]</p>
+<p>Data: <code>x = [1, 2, 3]</code>, targets <code>y = [1.5, 2.0, 2.5]</code>
+Current parameters: <code>w = 0.2</code>, <code>b = 0.5</code>, learning rate <code>0.1</code>.</p>
+<p>Before running it, predict:</p>
+<p><strong>After one gradient-descent step, will <code>w</code> increase or decrease, will <code>b</code> increase or decrease, and will the loss go up or down?</strong> Include rough new values if you can.</p>
+<h2 id="learner-turn-2">Learner turn 2</h2>
+<p>All three predictions are below their targets, so I expect negative gradients; subtracting them should increase both w and b, and the loss should fall. Roughly I expect w near 0.68 and b near 0.72. Please run the stable case and show the exact command and complete output so I can inspect it.</p>
+<h2 id="tutor-turn-2">Tutor turn 2</h2>
+<p>Your prediction was correct, including the rough values.</p>
+<p>Command:</p>
+<pre><code class="language-bash">python3 /Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py rent-stable
+</code></pre>
+<p>Complete output:</p>
+<pre><code class="language-text">case=rent-stable learning_rate=0.10
+before w=0.200 b=0.500 predictions=[0.70, 0.90, 1.10] loss=1.270
+gradients dw=-4.800 db=-2.200
+after w=0.680 b=0.720 predictions=[1.40, 2.08, 2.76] loss=0.028
+</code></pre>
+<p>Inspect the result: <strong>which example is still farthest from its target after the step?</strong></p>
+<h2 id="learner-turn-3">Learner turn 3</h2>
+<p>The third example is farthest from its target: 2.76 versus 2.5, an absolute error of 0.26. The first two absolute errors are only 0.10 and 0.08.</p>
+<h2 id="tutor-turn-3">Tutor turn 3</h2>
+<p>Correct. Changing <code>w</code> affects larger <code>x</code> values more, while changing <code>b</code> shifts every prediction equally.</p>
+<p>Now make one deliberate change: raise the learning rate from <code>0.1</code> to <code>1.0</code> while keeping everything else the same.</p>
+<p><strong>Before running <code>rent-overshoot</code>, predict whether the loss will decrease or increase, and why.</strong></p>
+<h2 id="learner-turn-4">Learner turn 4</h2>
+<p>I predict the loss will increase sharply because the gradient direction is useful but a ten-times-larger step will overshoot the low-loss region. Please run rent-overshoot and show the exact command and complete output.</p>
+<h2 id="tutor-turn-4">Tutor turn 4</h2>
+<p>Your prediction was correct.</p>
+<p>Command:</p>
+<pre><code class="language-bash">python3 /Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py rent-overshoot
+</code></pre>
+<p>Complete output:</p>
+<pre><code class="language-text">case=rent-overshoot learning_rate=1.00
+before w=0.200 b=0.500 predictions=[0.70, 0.90, 1.10] loss=1.270
+gradients dw=-4.800 db=-2.200
+after w=5.000 b=2.700 predictions=[7.70, 12.70, 17.70] loss=127.990
+</code></pre>
+<p>Compare this with the stable run: <strong>what single changed input explains the huge jump in loss?</strong></p>
+<h2 id="learner-turn-5">Learner turn 5</h2>
+<p>Only the learning rate changed, from 0.10 to 1.00; the gradients stayed dw=-4.800 and db=-2.200. The direction was useful, but the larger step overshot. I would reduce only the learning rate first, then rerun before changing the model or data.</p>
+<h2 id="tutor-turn-5">Tutor turn 5</h2>
+<p>Exactly: the gradients were fine; the learning rate amplified the update too much. Reducing the rate is the right first debugging move.</p>
+<p>Transfer the rule to new data:</p>
+<ul>
+<li><code>x = [1, 2]</code></li>
+<li>targets <code>y = [5, 7]</code></li>
+<li>current <code>w = 1.0</code>, <code>b = 1.0</code></li>
+<li>learning rate <code>0.1</code></li>
+</ul>
+<p><strong>Before running <code>delivery-transfer</code>, predict whether <code>w</code>, <code>b</code>, and the loss will increase or decrease.</strong></p>
+<h2 id="learner-turn-6">Learner turn 6</h2>
+<p>The current predictions are [2, 3], so the errors are [-3, -4]. With n=2, dw=(-3<em>1)+(-4</em>2)=-11 and db=-3+-4=-7. Subtracting those gradients at 0.1 gives w=2.1 and b=1.7. Both parameters increase and I predict the loss decreases because the new predictions move toward [5, 7]. Please run delivery-transfer and show the exact command and complete output.</p>
+<h2 id="tutor-turn-6">Tutor turn 6</h2>
+<p>Your transfer prediction was correct.</p>
+<p>Command:</p>
+<pre><code class="language-bash">python3 /Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py delivery-transfer
+</code></pre>
+<p>Complete output:</p>
+<pre><code class="language-text">case=delivery-transfer learning_rate=0.10
+before w=1.000 b=1.000 predictions=[2.00, 3.00] loss=12.500
+gradients dw=-11.000 db=-7.000
+after w=2.100 b=1.700 predictions=[3.80, 5.90] loss=1.325
+</code></pre>
+<p>Final teach-back: <strong>in one or two sentences, explain how gradient descent uses the gradients and learning rate to update <code>w</code> and <code>b</code>, and why a learning rate that is too large can make loss increase.</strong></p>
+<h2 id="learner-turn-7">Learner turn 7</h2>
+<p>The gradients provide the local downhill direction for w and b, and the learning rate controls how far we move along that direction: new parameter = old parameter - learning_rate * gradient. If the rate is too large, the step can cross the low-loss region and land uphill, so the observed loss increases even when the gradient sign was useful.</p>
+<h2 id="tutor-turn-7">Tutor turn 7</h2>
+<p>You completed the practical loop:</p>
+<ul>
+<li>Predicted parameter direction and loss change.</li>
+<li>Ran and inspected three cases.</li>
+<li>Diagnosed overshooting as a learning-rate problem.</li>
+<li>Transferred the rule to new data.</li>
+<li>Explained the update rule accurately.</li>
+</ul>
+<p>Evidence observed: unassisted prediction, debugging, transfer, and teach-back. The program outputs verified the calculations; no files or learner state were changed. Mastery beyond this lesson remains untested.</p>
+<p>Provisional next retrieval: in 2 days, predict one gradient-descent step on unseen data before calculating it.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./practical-executable-learning.md">practical-executable-learning.md</a><br>
+    SHA-256: <code>fb08ecc2c5a1ca771f7d0bc2d8660c7d744889b71f938ee4466543f7f9fdb4a0</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

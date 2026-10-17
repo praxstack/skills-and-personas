@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Explainer (GSAP)</title>
+<link rel="stylesheet" href="styles.css">
+<!-- the colour theme (a stub = the original palette; theme.py emit ... --format global --out source/theme.js) -->
+<script src="theme.js"></script>
+<script src="tokens.js"></script>
+</head>
+<body>
+<div id="stage"></div>
+<!-- GSAP 3.15 and its plugins, vendored from npm by `npm run vendor` (no CDN at render time) -->
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/DrawSVGPlugin.min.js"></script>
+<script src="vendor/MotionPathPlugin.min.js"></script>
+<script src="vendor/MorphSVGPlugin.min.js"></script>
+<script src="vendor/TextPlugin.min.js"></script>
+<script src="vendor/CustomEase.min.js"></script>
+<!-- the film's clock, written by voice.py --emit source/timing.js -->
+<script src="timing.js"></script>
+<!-- the kit (reusable; do not fork per film) -->
+<script src="kit/core.js"></script>
+<script src="kit/stage.js"></script>
+<script src="kit/graph.js"></script>
+<script src="kit/panels.js"></script>
+<script src="kit/cards.js"></script>
+<script src="kit/array.js"></script>
+<!-- this film's scenes (replace per film) -->
+<script src="scenes.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

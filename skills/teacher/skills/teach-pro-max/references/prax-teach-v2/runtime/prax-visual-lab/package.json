@@ -1,0 +1,9 @@
+{
+  "name":"@prax/visual-lab",
+  "version":"0.1.0",
+  "private":true,
+  "type":"module",
+  "description":"Deterministic offline visual-learning runtime; no runtime dependencies",
+  "scripts":{"test":"node --test tests/*.test.mjs","build":"node build.mjs"},
+  "engines":{"node":">=22 <25"}
+}

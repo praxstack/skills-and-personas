@@ -1,0 +1,23 @@
+{
+  "name": "theatre-explainer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Narrated explainer film: Theatre.js keyframes generated from the voice timing, a 2.5D DOM/SVG stage, captured frame by frame",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "state": "node tools/build.mjs --state",
+    "build:3d": "node tools/build.mjs --3d",
+    "studio": "node tools/build.mjs --studio && cd .. && python3 -m http.server 8080 --bind 127.0.0.1"
+  },
+  "dependencies": {
+    "@fontsource/bangers": "5.3.0",
+    "@theatre/core": "0.7.2",
+    "esbuild": "0.28.2",
+    "inter-ui": "4.1.1",
+    "jetbrains-mono": "1.0.6"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

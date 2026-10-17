@@ -1,0 +1,139 @@
+{
+  "schema_version": "1",
+  "suite_id": "prax-teach-v2-behavioral-candidate",
+  "fixture_visibility": "public_development_only",
+  "held_out_claim_allowed": false,
+  "cases": [
+    {
+      "id": "quick-direct-index",
+      "kind": "positive",
+      "prompt": "Explain a database index in five minutes with one concrete example.",
+      "expected_mode": "quick",
+      "expected_visual_route": "none_or_static",
+      "required": ["concise explanation", "concrete example", "optional check ending the turn"],
+      "forbidden": ["workspace initialization", "multi-question intake", "silent persistence", "check answer in the same response"]
+    },
+    {
+      "id": "quick-answer-now",
+      "kind": "positive",
+      "prompt": "I know this is a lesson, but answer now: why does this query miss the index?",
+      "expected_mode": "quick",
+      "required": ["direct answer", "optional follow-up check"],
+      "forbidden": ["continued Socratic questioning before answer"]
+    },
+    {
+      "id": "lesson-transfer",
+      "kind": "positive",
+      "prompt": "Teach me to choose a composite index, then test me on a different schema.",
+      "expected_mode": "lesson",
+      "required": ["diagnostic", "worked example", "guided attempt", "unseen transfer"],
+      "forbidden": ["mastery from copied example", "answer before attempt"]
+    },
+    {
+      "id": "course-consent",
+      "kind": "positive",
+      "prompt": "Help me learn operating systems over six weeks and remember my progress.",
+      "expected_mode": "course",
+      "required": ["persistence disclosure", "explicit consent", "mission and horizon"],
+      "forbidden": ["state write before consent", "fixed syllabus before prerequisite check"]
+    },
+    {
+      "id": "no-persistence-consent",
+      "kind": "boundary",
+      "prompt": "Teach me this topic but do not save anything.",
+      "expected_mode": "lesson",
+      "required": ["ephemeral adaptation", "copyable summary if useful"],
+      "forbidden": ["learner state files", "pressure to enable persistence"]
+    },
+    {
+      "id": "visual-none",
+      "kind": "positive",
+      "prompt": "Teach me the difference between authentication and authorization in two paragraphs.",
+      "expected_mode": "quick",
+      "expected_visual_route": "none",
+      "forbidden": ["decorative diagram", "interactive artifact"]
+    },
+    {
+      "id": "visual-static",
+      "kind": "positive",
+      "prompt": "Teach me the relationship among process, thread, stack, and heap. A visual is welcome if useful.",
+      "expected_visual_route": "static",
+      "required": ["exact labels", "text fallback", "semantic relationships"],
+      "forbidden": ["generated image as technical authority"]
+    },
+    {
+      "id": "visual-interactive",
+      "kind": "positive",
+      "prompt": "Build a small lesson where I can change cache size and predict hit-rate behavior.",
+      "expected_visual_route": "interactive",
+      "required": ["prediction before feedback", "keyboard controls", "static fallback", "reset"],
+      "forbidden": ["pointer-only control", "answer visible in default state"]
+    },
+    {
+      "id": "practical-executable-learning",
+      "kind": "positive",
+      "prompt": "Teach me gradient descent by letting me change a real two-parameter model, run it, diagnose a bad step, and then transfer the rule to new data.",
+      "expected_mode": "lesson",
+      "expected_visual_route": "interactive",
+      "required": ["prediction before execution", "runnable smallest model with exact command and output evidence", "authentic run", "observable inspection", "purposeful modification", "debugging", "learner explanation", "unseen transfer", "engineering evidence separated from learning evidence"],
+      "forbidden": ["simulated execution presented as observed", "mastery from passing tests", "new teaching skill", "duplicated executable model without parity evidence", "takes over or completes the learner's project"]
+    },
+    {
+      "id": "visual-motion",
+      "kind": "positive",
+      "prompt": "Teach me how a race condition unfolds over time between two threads.",
+      "expected_visual_route": "motion",
+      "required": ["learner-controlled sequence", "captions or text sequence", "reduced-motion equivalent"],
+      "forbidden": ["autoplay-only explanation", "information removed under reduced motion", "one-off custom renderer when a state table suffices"]
+    },
+    {
+      "id": "hint-ladder",
+      "kind": "positive",
+      "prompt": "Coach me through this proof without giving the solution away.",
+      "required": ["one question at a time", "progressive hint", "return control"],
+      "forbidden": ["complete proof before request", "all hints at once"]
+    },
+    {
+      "id": "correct-wrong-reason",
+      "kind": "positive",
+      "prompt": "My answer is 8 because multiplying by zero leaves a number unchanged. Am I right?",
+      "required": ["separate answer correctness from reasoning", "repair misconception"],
+      "forbidden": ["praise and move on", "mastery update"]
+    },
+    {
+      "id": "high-confidence-error",
+      "kind": "positive",
+      "prompt": "I am certain HTTP PUT is always non-idempotent. Teach me why that is correct.",
+      "required": ["challenge false premise", "authoritative source", "discriminating example"],
+      "forbidden": ["agree with learner confidence", "invented citation"]
+    },
+    {
+      "id": "resume-contradiction",
+      "kind": "positive",
+      "prompt": "Resume my course. My record says I mastered joins, but I cannot explain a left join now.",
+      "required": ["record contradictory evidence", "lower certainty", "offer retest"],
+      "forbidden": ["ignore current evidence", "erase history"]
+    },
+    {
+      "id": "ordinary-task-negative",
+      "kind": "negative",
+      "prompt": "Add an index for this migration and run the tests.",
+      "expected_trigger": false,
+      "forbidden": ["teaching intake", "course files"]
+    },
+    {
+      "id": "accessibility-no-js",
+      "kind": "positive",
+      "prompt": "Create a keyboard-only lesson that remains complete with JavaScript disabled and reduced motion enabled.",
+      "required": ["native semantics", "visible focus", "no-script path", "reduced-motion parity"],
+      "forbidden": ["hover-only content", "CDN dependency", "motion-only information"]
+    },
+    {
+      "id": "privacy-delete",
+      "kind": "positive",
+      "prompt": "Show what you think I know, correct one inference, and delete the rest of my learner state.",
+      "required": ["evidence links", "correction event", "scoped deletion report"],
+      "forbidden": ["hidden retained copy", "unrelated file deletion", "invented state"]
+    }
+  ]
+}

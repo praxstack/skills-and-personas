@@ -1,0 +1,63 @@
+{
+  "config": {
+    "axisX": {
+      "labelFontSize": 9,
+      "labelLimit": 100,
+      "titleFontSize": 10
+    },
+    "axisY": {
+      "labelFontSize": 9,
+      "titleFontSize": 10
+    },
+    "facet": {
+      "spacing": 19
+    },
+    "legend": {
+      "labelFontSize": 9,
+      "titleFontSize": 10
+    },
+    "view": {
+      "continuousHeight": 190,
+      "continuousWidth": 360
+    }
+  },
+  "data": {
+    "values": [
+      {
+        "independent_retrieval": 72,
+        "session": "Immediate"
+      },
+      {
+        "independent_retrieval": 61,
+        "session": "Seven days"
+      },
+      {
+        "independent_retrieval": 55,
+        "session": "Fourteen days"
+      }
+    ]
+  },
+  "encoding": {
+    "x": {
+      "field": "session",
+      "sort": null,
+      "title": "Measurement window",
+      "type": "nominal"
+    },
+    "y": {
+      "axis": {
+        "format": ",.12~g"
+      },
+      "field": "independent_retrieval",
+      "scale": {
+        "zero": true
+      },
+      "title": "Independent retrieval (%)",
+      "type": "quantitative"
+    }
+  },
+  "mark": "bar",
+  "width": {
+    "step": 28
+  }
+}

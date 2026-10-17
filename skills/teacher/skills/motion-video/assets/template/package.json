@@ -1,0 +1,18 @@
+{
+  "name": "motion-clip",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A Motion-style clip: film.json (every word, number and timing) drives a block library on one paused GSAP timeline keyed to timing.js; rendered by capture.mjs.",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "inter-ui": "4.1.1",
+    "@fontsource-variable/fraunces": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

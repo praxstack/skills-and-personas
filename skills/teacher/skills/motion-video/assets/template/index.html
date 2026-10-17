@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Motion clip</title>
+<link rel="stylesheet" href="styles.css">
+<!-- the colour theme (a stub = the original look named in film.json; theme.py emit ... --format global --out source/theme.js) -->
+<script src="theme.js"></script>
+</head>
+<body>
+<div id="stage"></div>
+<!-- GSAP 3.15 and its plugins, vendored from npm by `npm run vendor` (no CDN at render time) -->
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/DrawSVGPlugin.min.js"></script>
+<script src="vendor/MotionPathPlugin.min.js"></script>
+<script src="vendor/CustomEase.min.js"></script>
+<!-- the clip's clock, written by voice.py --emit source/timing.js -->
+<script src="timing.js"></script>
+<!-- the engine and the block library (reusable; edit film.json, not these) -->
+<script src="engine/look.js"></script>
+<script src="engine/core.js"></script>
+<script src="engine/data.js"></script>
+<script src="engine/stage.js"></script>
+<script src="engine/blocks-text.js"></script>
+<script src="engine/blocks-data.js"></script>
+<script src="engine/blocks-dsa.js"></script>
+<script src="engine/blocks-screen.js"></script>
+<script src="main.js"></script>
+<script src="engine/screen-sync.js"></script>
+</body>
+</html>

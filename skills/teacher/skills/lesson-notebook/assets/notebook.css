@@ -1,0 +1,262 @@
+/* Lesson notebook: the teacher's default look.
+ * Printed book voice (Vollkorn), machine printout voice (Courier Prime) and the
+ * coach's hand (Kalam) on quad-ruled paper with a red margin rule. Adapted from
+ * the AskTheMove design system (praxstack/ChessLab, site/DESIGN.md).
+ * Colour and type come only from these tokens. The default is light paper; the
+ * chalkboard follows dark mode automatically (data-board="paper" or "chalk" on <html> pins one).
+ */
+
+@font-face { font-family: "Vollkorn"; src: url("fonts/vollkorn-var.woff2") format("woff2"); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: "Kalam"; src: url("fonts/kalam-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Kalam"; src: url("fonts/kalam-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Courier Prime"; src: url("fonts/courier-prime-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+:root {
+  color-scheme: light;
+  /* paper and ruling */
+  --paper: oklch(98.4% 0.008 95);
+  --paper-2: oklch(96.5% 0.014 88);
+  --card: oklch(99.3% 0.004 95);
+  --grid: oklch(86% 0.045 235 / 0.4);
+  --margin: oklch(70% 0.12 15);
+  /* printed matter */
+  --ink: oklch(23% 0.025 265);
+  --ink-2: oklch(40% 0.02 265);
+  --rule: oklch(80% 0.012 260);
+  --rule-soft: oklch(88% 0.01 260);
+  /* the coach's hand */
+  --graphite: oklch(46% 0.006 270);
+  --graphite-2: oklch(62% 0.006 270);
+  --red: oklch(54% 0.2 27);
+  --red-soft: oklch(94% 0.04 27);
+  --blue: oklch(44% 0.17 264);
+  --blue-soft: oklch(94% 0.03 264);
+  --green: oklch(48% 0.12 150);
+  --green-soft: oklch(94% 0.04 150);
+  --highlight: oklch(91% 0.15 102);
+  --on-blue: oklch(99% 0.004 95);
+  --shadow: oklch(23% 0.025 265 / 0.18);
+  --focus: oklch(48% 0.2 264);
+  --hl-blend: multiply;
+  --stroke-grain: none;
+
+  --font-book: "Vollkorn", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-hand: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  --font-print: "Courier Prime", "Courier New", ui-monospace, monospace;
+
+  --text-hero: clamp(2.2rem, 1.2rem + 3.6vw, 4rem);
+  --text-h2: clamp(1.5rem, 1.1rem + 1.4vw, 2.2rem);
+  --text-h3: 1.3rem;
+  --text-body: 1.125rem;
+  --text-small: 0.9375rem;
+  --text-hand: 1.3rem;
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --radius: 4px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-stroke: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Chalkboard: the same voices on a dark slate. It follows the viewer's theme
+ * automatically (dark system or host theme means chalk) unless the page sets
+ * data-board="paper" or data-board="chalk" on <html> to pin one. */
+:root[data-board="chalk"] {
+  --paper: oklch(27% 0.025 165);
+  --paper-2: oklch(31% 0.025 165);
+  --card: oklch(30% 0.022 165);
+  --grid: oklch(60% 0.02 165 / 0.14);
+  --margin: oklch(70% 0.12 15 / 0.55);
+  --ink: oklch(95% 0.01 95);
+  --ink-2: oklch(84% 0.012 95);
+  --rule: oklch(50% 0.02 165);
+  --rule-soft: oklch(40% 0.02 165);
+  --graphite: oklch(80% 0.01 95);
+  --graphite-2: oklch(64% 0.01 95);
+  --red: oklch(76% 0.13 25);
+  --red-soft: oklch(36% 0.05 25);
+  --blue: oklch(82% 0.09 240);
+  --blue-soft: oklch(35% 0.04 240);
+  --green: oklch(84% 0.12 150);
+  --green-soft: oklch(34% 0.04 150);
+  --highlight: oklch(86% 0.14 100 / 0.38);
+  --on-blue: oklch(22% 0.02 165);
+  --shadow: oklch(0% 0 0 / 0.35);
+  --focus: oklch(85% 0.12 240);
+  --hl-blend: screen;
+  --stroke-grain: url(#nb-chalk);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-board="paper"]):not([data-theme="light"]) {
+  --paper: oklch(27% 0.025 165);
+  --paper-2: oklch(31% 0.025 165);
+  --card: oklch(30% 0.022 165);
+  --grid: oklch(60% 0.02 165 / 0.14);
+  --margin: oklch(70% 0.12 15 / 0.55);
+  --ink: oklch(95% 0.01 95);
+  --ink-2: oklch(84% 0.012 95);
+  --rule: oklch(50% 0.02 165);
+  --rule-soft: oklch(40% 0.02 165);
+  --graphite: oklch(80% 0.01 95);
+  --graphite-2: oklch(64% 0.01 95);
+  --red: oklch(76% 0.13 25);
+  --red-soft: oklch(36% 0.05 25);
+  --blue: oklch(82% 0.09 240);
+  --blue-soft: oklch(35% 0.04 240);
+  --green: oklch(84% 0.12 150);
+  --green-soft: oklch(34% 0.04 150);
+  --highlight: oklch(86% 0.14 100 / 0.38);
+  --on-blue: oklch(22% 0.02 165);
+  --shadow: oklch(0% 0 0 / 0.35);
+  --focus: oklch(85% 0.12 240);
+  --hl-blend: screen;
+  --stroke-grain: url(#nb-chalk);
+  color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-board="paper"]) {
+  --paper: oklch(27% 0.025 165);
+  --paper-2: oklch(31% 0.025 165);
+  --card: oklch(30% 0.022 165);
+  --grid: oklch(60% 0.02 165 / 0.14);
+  --margin: oklch(70% 0.12 15 / 0.55);
+  --ink: oklch(95% 0.01 95);
+  --ink-2: oklch(84% 0.012 95);
+  --rule: oklch(50% 0.02 165);
+  --rule-soft: oklch(40% 0.02 165);
+  --graphite: oklch(80% 0.01 95);
+  --graphite-2: oklch(64% 0.01 95);
+  --red: oklch(76% 0.13 25);
+  --red-soft: oklch(36% 0.05 25);
+  --blue: oklch(82% 0.09 240);
+  --blue-soft: oklch(35% 0.04 240);
+  --green: oklch(84% 0.12 150);
+  --green-soft: oklch(34% 0.04 150);
+  --highlight: oklch(86% 0.14 100 / 0.38);
+  --on-blue: oklch(22% 0.02 165);
+  --shadow: oklch(0% 0 0 / 0.35);
+  --focus: oklch(85% 0.12 240);
+  --hl-blend: screen;
+  --stroke-grain: url(#nb-chalk);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: clip; }
+body {
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: clip;
+  color: var(--ink);
+  font: 400 var(--text-body)/1.6 var(--font-book);
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-position: -1px -1px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 var(--s-7);
+  -webkit-font-smoothing: antialiased;
+}
+/* The red double margin rule down the left, like an exercise book. */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 max(10px, calc(50% - 640px));
+  width: 5px;
+  border-left: 1.5px solid var(--margin);
+  border-right: 1.5px solid var(--margin);
+  pointer-events: none;
+}
+@media (max-width: 700px) { body::before { left: 8px; } body { padding-left: max(24px, env(safe-area-inset-left, 0px)); } }
+
+h1, h2, h3 { font-family: var(--font-book); text-wrap: balance; margin: 0; color: var(--ink); }
+h1 { font-size: var(--text-hero); font-weight: 800; line-height: 1; letter-spacing: -0.01em; }
+h2 { font-size: var(--text-h2); font-weight: 750; line-height: 1.08; }
+h3 { font-size: var(--text-h3); font-weight: 650; line-height: 1.2; }
+p { margin: 0; }
+a { color: var(--blue); text-underline-offset: 3px; }
+::selection { background: var(--highlight); color: var(--ink); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+button, input, select, textarea { font: inherit; color: inherit; accent-color: var(--blue); caret-color: var(--blue); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- the three voices ---- */
+.nb-book { font-family: var(--font-book); }
+.nb-hand { font-family: var(--font-hand); font-size: var(--text-hand); line-height: 1.3; color: var(--blue); }
+.nb-hand.is-red { color: var(--red); }
+.nb-hand.is-graphite { color: var(--graphite); }
+.nb-print {
+  font: 400 var(--text-small)/1.45 var(--font-print);
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--graphite);
+}
+.nb-label { font: 400 0.8125rem/1.3 var(--font-print); text-transform: uppercase; letter-spacing: 0.06em; color: var(--graphite); }
+.nb-hl { background: linear-gradient(transparent 52%, var(--highlight) 52% 92%, transparent 92%); padding: 0 0.1em; }
+
+/* ---- components ---- */
+.nb-sheet { background: var(--card); border: 1.5px solid var(--ink); border-radius: var(--radius); box-shadow: 0 1px 0 var(--shadow); }
+.nb-printout {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-top: 2px dashed var(--rule);
+  padding: var(--s-3) var(--s-4);
+  box-shadow: 0 2px 6px var(--shadow);
+}
+.nb-note { font-family: var(--font-hand); font-size: var(--text-hand); line-height: 1.3; color: var(--blue); max-width: 34ch; }
+.nb-note.is-red { color: var(--red); }
+.nb-btn {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--ink);
+  font: 600 1rem/1.2 var(--font-book);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+.nb-btn:active { transform: scale(0.97); }
+.nb-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.nb-btn-primary { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
+.nb-btn-quiet { border-color: transparent; background: transparent; color: var(--blue); font-family: var(--font-hand); font-size: 1.15rem; text-decoration: underline; text-underline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .nb-btn:hover { background: var(--paper-2); }
+  .nb-btn-primary:hover { background: var(--ink); border-color: var(--ink); }
+}
+.nb-field { min-height: 48px; padding: 8px 12px; border: 1.5px solid var(--ink); border-radius: var(--radius); background: var(--card); }
+
+/* ---- hand-drawn strokes (SVG) ----
+ * Paths from ink.js carry class "stroke" and pathLength="1"; pen.js draws them.
+ * Tone classes say who holds the pen: blue explains, red marks a mistake, graphite works things out.
+ */
+.ink-svg { overflow: visible; }
+.ink-svg .stroke, svg .stroke { filter: var(--stroke-grain); fill: none; stroke: var(--red); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; }
+.tone-blue .stroke, .stroke.tone-blue { stroke: var(--blue); }
+.tone-red .stroke, .stroke.tone-red { stroke: var(--red); }
+.tone-graphite .stroke, .stroke.tone-graphite { stroke: var(--graphite); stroke-width: 1.8; }
+.tone-green .stroke, .stroke.tone-green { stroke: var(--green); }
+.tone-highlight .stroke, .stroke.tone-highlight { stroke: var(--highlight); stroke-width: 14; stroke-linecap: butt; mix-blend-mode: var(--hl-blend); }
+
+/* SVG text and shapes in the three voices, for figures. */
+svg .t-book { font-family: var(--font-book); fill: var(--ink); font-size: 17px; font-variant-numeric: lining-nums tabular-nums; }
+svg .t-hand { font-family: var(--font-hand); fill: var(--blue); font-size: 18px; filter: var(--stroke-grain); }
+svg .t-hand.is-red { fill: var(--red); }
+svg .t-hand.is-graphite { fill: var(--graphite); }
+svg .t-print { font-family: var(--font-print); fill: var(--graphite); font-size: 14px; }
+svg .s-ink { stroke: var(--ink); fill: none; stroke-width: 1.5; } svg .s-rule { stroke: var(--rule); fill: none; }
+svg .s-blue { stroke: var(--blue); fill: none; stroke-width: 2; } svg .s-red { stroke: var(--red); fill: none; stroke-width: 2; }
+svg .s-graphite { stroke: var(--graphite); fill: none; stroke-width: 1.5; }
+/* Fills come after strokes: "f-paper s-ink" is a filled box with an ink outline,
+ * while "s-ink" alone stays unfilled. */
+svg .f-paper { fill: var(--card); } svg .f-paper-2 { fill: var(--paper-2); }
+svg .f-ink { fill: var(--ink); } svg .f-blue { fill: var(--blue); } svg .f-red { fill: var(--red); } svg .f-green { fill: var(--green); }
+svg .f-blue-soft { fill: var(--blue-soft); } svg .f-red-soft { fill: var(--red-soft); } svg .f-green-soft { fill: var(--green-soft); } svg .f-hl { fill: var(--highlight); }
+
+/* Written words: pen.js wraps words in .w and reveals them left to right. */
+.w { display: inline; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

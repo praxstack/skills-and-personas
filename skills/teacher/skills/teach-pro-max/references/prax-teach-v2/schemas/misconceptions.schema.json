@@ -1,0 +1,103 @@
+{
+  "$id": "https://prax.local/prax-teach-v2/schemas/misconceptions.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "algorithm": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "misconceptions": {
+      "description": "Current derived misconception claims supported by active, unrejected observations.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "claim": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "concept_id": {
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "pattern": "^evt-[0-9a-f]{32}$",
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "last_tested": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "learner_confirmed": {
+            "type": "boolean"
+          },
+          "misconception_id": {
+            "pattern": "^mis-[0-9a-f]{24}$",
+            "type": "string"
+          },
+          "provenance": {
+            "items": {
+              "enum": [
+                "learner_reported",
+                "tutor_inference"
+              ]
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "state": {
+            "description": "Executable projection vocabulary. Repair, resolution, and recurrence transitions are not inferred by version 1.",
+            "enum": [
+              "suspected",
+              "supported"
+            ]
+          }
+        },
+        "required": [
+          "claim",
+          "concept_id",
+          "evidence_ids",
+          "last_tested",
+          "learner_confirmed",
+          "misconception_id",
+          "provenance",
+          "state"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1"
+    }
+  },
+  "required": [
+    "algorithm",
+    "misconceptions",
+    "schema_version"
+  ],
+  "title": "Prax Teach misconception projection",
+  "type": "object"
+}

@@ -1,0 +1,59 @@
+{
+ "meta": {
+  "title": "Cheapest Flights Within K Stops",
+  "subtitle": "LeetCode 787",
+  "format": "dsa-5part",
+  "chapters": ["Intro", "The problem", "Brute force", "Intuition", "Every approach", "C++ and dry run"],
+  "voice": "af_heart",
+  "speed": 0.95,
+  "music": "calm",
+  "fps": 30, "width": 1920, "height": 1080
+ },
+ "lines": [
+  {"id": "i1", "chapter": 0, "scene": "title", "cap": "Cheapest Flights Within K Stops. LeetCode 787.", "say": "Cheapest Flights Within K Stops. LeetCode seven eighty seven."},
+  {"id": "i2", "chapter": 0, "scene": "title", "cap": "First the problem itself, then brute force, then the questions that lead to the real solution.", "say": "First the problem itself, then brute force, then the questions that lead to the real solution."},
+
+  {"id": "p1", "chapter": 1, "scene": "inputs", "cap": "n is the number of cities, numbered 0 to n − 1. Here n = 4.", "say": "n is the number of cities, numbered zero to n minus one. Here, n is four."},
+  {"id": "p2", "chapter": 1, "scene": "inputs", "cap": "flights is a list of one-way flights. Each entry is [from, to, price].", "say": "flights is a list of one-way flights. Each entry is from, to, price."},
+  {"id": "p3", "chapter": 1, "scene": "inputs", "cap": "So [0, 1, 100] means: fly from city 0 to city 1 for 100.", "say": "So zero, one, one hundred means: fly from city zero to city one, for one hundred."},
+  {"id": "p4", "chapter": 1, "scene": "inputs", "cap": "The other four entries complete the map. They are one-way: 2 flies to 0, but 0 never flies to 2.", "say": "The other four entries complete the map. They are one way. Two flies to zero, but zero never flies to two."},
+  {"id": "p5", "chapter": 1, "scene": "inputs", "cap": "src is where you start, dst is where you must end. Here 0 → 3.", "say": "src is where you start. dst is where you must end. Here, zero to three."},
+  {"id": "p6", "chapter": 1, "scene": "stops", "cap": "k limits stops. A stop is a city you land in on the way, not src or dst. Here k = 1.", "say": "k limits the stops. A stop is a city you land in on the way, not the start or the end. Here, k is one."},
+  {"id": "p7", "chapter": 1, "scene": "stops", "cap": "Output: the cheapest total price with at most k stops, or −1 if no route fits.", "say": "The output is the cheapest total price using at most k stops, or minus one if no route fits."},
+  {"id": "p8", "chapter": 1, "scene": "ex1", "cap": "Route 0 → 1 → 3: 100 + 600 = 700. One stop, at city 1. Allowed.", "say": "Route zero, one, three. One hundred plus six hundred is seven hundred. One stop, at city one. Allowed."},
+  {"id": "p9", "chapter": 1, "scene": "ex1", "cap": "Route 0 → 1 → 2 → 3 costs only 400, but it stops at 1 and at 2. Two stops is too many.", "say": "Route zero, one, two, three costs only four hundred. But it stops at one, and at two. Two stops is too many."},
+  {"id": "p10", "chapter": 1, "scene": "ex1", "cap": "So the answer is 700. The cheapest route is not always a legal one.", "say": "So the answer is seven hundred. The cheapest route is not always a legal one."},
+  {"id": "p11", "chapter": 1, "scene": "kvary", "cap": "Change k and the answer changes: k = 2 makes the 400 route legal; k = 0 needs a direct flight, and there is none: −1.", "say": "Change k, and the answer changes. k equals two makes the four hundred route legal. k equals zero needs a direct flight, and there is none, so minus one."},
+  {"id": "p12", "chapter": 1, "scene": "ex2", "cap": "Example 2 is a triangle: 0 → 1 → 2 costs 200 with one stop, so k = 1 gives 200.", "say": "Example two is a triangle. Zero, one, two costs two hundred with one stop, so k equals one gives two hundred."},
+  {"id": "p13", "chapter": 1, "scene": "ex2", "cap": "Example 3 is the same map with k = 0: only the direct flight counts, 500.", "say": "Example three is the same map with k equals zero. Only the direct flight counts. Five hundred."},
+
+  {"id": "b1", "chapter": 2, "scene": "tree", "cap": "Brute force: from src, try every flight, then every flight from there. Each path is one branch.", "say": "Brute force. From the start, try every flight, then every flight from there. Each path is one branch."},
+  {"id": "b2", "chapter": 2, "scene": "tree", "cap": "k stops means at most k + 1 flights, so cut every branch at depth k + 1 and keep the cheapest that reaches dst.", "say": "k stops means at most k plus one flights. So cut every branch at depth k plus one, and keep the cheapest one that reaches the destination."},
+  {"id": "b3", "chapter": 2, "scene": "blowup", "cap": "Each level can fan out n ways: O(n^(k+1)) time, O(k) space for the recursion.", "say": "Each level can fan out n ways. That is n to the power k plus one in time, and order k space for the recursion."},
+  {"id": "b4", "chapter": 2, "scene": "blowup", "cap": "And it re-explores the same (city, flights used) states again and again.", "say": "And it explores the same city, with the same number of flights used, again and again."},
+
+  {"id": "q1", "chapter": 3, "scene": "q1", "cap": "Question 1: the limit counts stops. Is there something simpler to count?", "say": "Question one. The limit counts stops. Is there something simpler to count?", "think": 2.5},
+  {"id": "a1", "chapter": 3, "scene": "q1", "cap": "Count flights. s stops = s + 1 flights, so at most k stops = at most k + 1 flights.", "say": "Count flights instead. A route with s stops takes s plus one flights. So at most k stops means at most k plus one flights."},
+  {"id": "q2", "chapter": 3, "scene": "q2", "cap": "Question 2: you know the cheapest cost to every city using ≤ 1 flight. How do you get the cheapest using ≤ 2?", "say": "Question two. You know the cheapest cost to every city using at most one flight. How do you get the cheapest using at most two?", "think": 3.0},
+  {"id": "a2", "chapter": 3, "scene": "q2", "cap": "Take every flight u → v once more: new[v] = min(new[v], old[u] + price). Row i + 1 comes from row i.", "say": "Take every flight from u to v, one more time. The new cost of v is the smaller of what it has, and the old cost of u plus the price. Row i plus one comes from row i."},
+  {"id": "q3", "chapter": 3, "scene": "q3", "cap": "Question 3: what goes wrong if you update the same row while you scan the flights?", "say": "Question three. What goes wrong if you update the same row while you scan the flights?", "think": 2.5},
+  {"id": "a3", "chapter": 3, "scene": "q3", "cap": "One pass chains flights: 0 → 1 → 2 → 3 lands in a single round and gives 400. Read the old row, write a new one.", "say": "One pass chains flights. Zero, one, two, three all land in a single round, and you get four hundred. Read the old row, and write a new one."},
+  {"id": "q4", "chapter": 3, "scene": "q4", "cap": "Question 4: why not just run plain Dijkstra?", "say": "Question four. Why not just run plain Dijkstra?", "think": 2.5},
+  {"id": "a4", "chapter": 3, "scene": "q4", "cap": "Dijkstra keeps only the cheapest cost per city: it settles city 3 at 400 using 3 flights, ignoring the limit.", "say": "Dijkstra keeps only the cheapest cost per city. It settles city three at four hundred, using three flights, and ignores the limit."},
+
+  {"id": "x1", "chapter": 4, "scene": "ladder", "cap": "Brute-force DFS: every route up to k + 1 flights. O(n^(k+1)) time, O(k) space.", "say": "Brute force depth first search tries every route. Exponential time, order k space."},
+  {"id": "x2", "chapter": 4, "scene": "ladder", "cap": "DFS + memo on (city, flights used): each state once. O(k·E) time, O(n·k) space.", "say": "Add memo on city and flights used, and each state is solved once. Order k times E time, n times k space."},
+  {"id": "x3", "chapter": 4, "scene": "ladder", "cap": "BFS by levels: one level per flight, keep only cheaper arrivals. O(k·E) time, O(n + E) space.", "say": "Breadth first search by levels. One level per flight, keeping only cheaper arrivals. Order k times E time."},
+  {"id": "x4", "chapter": 4, "scene": "ladder", "cap": "Dijkstra with stops in the state: O(E·k·log(E·k)) time, O(n·k) space.", "say": "Dijkstra, with the stops kept in the state. Correct, but heavier: E times k, times a log factor."},
+  {"id": "x5", "chapter": 4, "scene": "ladder", "cap": "Bellman-Ford with k + 1 rounds, one row at a time: O(k·E) time, O(n) space. The interview pick.", "say": "Bellman Ford with k plus one rounds, one row at a time. Order k times E time, and only order n space. This is the interview pick."},
+
+  {"id": "c1", "chapter": 5, "scene": "code", "cap": "dist starts at infinity everywhere, with 0 at src.", "say": "dist starts at infinity everywhere, with zero at the source."},
+  {"id": "c2", "chapter": 5, "scene": "code", "cap": "k + 1 rounds. Each round copies dist into next: read old, write new.", "say": "Run k plus one rounds. Each round copies dist into next. Read old, write new."},
+  {"id": "c3", "chapter": 5, "scene": "code", "cap": "For each flight u → v with price w: if u was reachable and dist[u] + w beats next[v], update next[v].", "say": "For each flight from u to v with price w. If u was reachable, and its cost plus w beats next of v, update next of v."},
+  {"id": "d0", "chapter": 5, "scene": "dry", "cap": "Dry run, Example 1. Start: [0, ∞, ∞, ∞].", "say": "Dry run on example one. We start at zero, infinity, infinity, infinity."},
+  {"id": "d1", "chapter": 5, "scene": "dry", "cap": "Round 0: only 0 → 1 fires. next = [0, 100, ∞, ∞].", "say": "Round zero. Only the flight from zero to one fires. Next becomes zero, one hundred, infinity, infinity."},
+  {"id": "d2", "chapter": 5, "scene": "dry", "cap": "Round 1: 1 → 2 gives 200 and 1 → 3 gives 700. 2 → 3 is skipped: the old dist[2] is still ∞.", "say": "Round one. One to two gives two hundred, and one to three gives seven hundred. Two to three is skipped, because the old cost of two is still infinity."},
+  {"id": "d3", "chapter": 5, "scene": "dry", "cap": "dist[3] = 700. That's the answer.", "say": "dist of three is seven hundred. That's the answer."},
+  {"id": "o1", "chapter": 5, "scene": "outro", "cap": "k stops → k + 1 rounds. Copy before you update. O(k·E) time, O(n) space.", "say": "k stops means k plus one rounds. Copy before you update. Order k times E time, and order n space."}
+ ]
+}

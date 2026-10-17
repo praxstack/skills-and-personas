@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "attempt": 19,
+  "rubric": "evals/forward-behavior.json",
+  "rubric_sha256": "05dfe63533966d99f0e987cf6258281f93840d66fac1679f56347c8351020bce",
+  "runner_harness": "Codex collaboration child tasks",
+  "generated_at": "2026-08-19T12:25:30Z",
+  "scored_by_runner": false,
+  "claim_boundary": "Public forward behavior only; not held-out, candidate-superiority, accessibility-field, or learner-outcome evidence.",
+  "model": {
+    "exact_identifier": null,
+    "reported_as_unavailable": true,
+    "limitation": "The collaboration harness did not expose an exact provider model identifier to the coordinator."
+  },
+  "fresh_context_contract": {
+    "fork_turns": "none",
+    "one_child_task_per_case": true,
+    "coordinator_did_not_supply_prior_case_outputs": true
+  },
+  "prior_attempts": [
+    {"attempt": 1, "path": "evidence/forward/attempts/attempt-1", "status": "failed"},
+    {"attempt": 2, "path": "evidence/forward/attempts/attempt-2-driver-draft", "status": "unscored-disqualified"},
+    {"attempt": 3, "path": "evidence/forward/attempts/attempt-3", "status": "historical-ineligible"},
+    {"attempt": 4, "path": "evidence/forward/attempts/attempt-4", "status": "failed"},
+    {"attempt": 5, "path": "evidence/forward/attempts/attempt-5-composite", "status": "release-ineligible-composite"},
+    {"attempt": 6, "path": "evidence/forward/attempts/attempt-6", "status": "failed-stopped"},
+    {"attempt": 7, "path": "evidence/forward/attempts/attempt-7", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 8, "path": "evidence/forward/attempts/attempt-8-driver-context", "status": "unscored-release-ineligible"},
+    {"attempt": 9, "path": "evidence/forward/attempts/attempt-9", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 10, "path": "evidence/forward/attempts/attempt-10", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 11, "path": "evidence/forward/attempts/attempt-11", "status": "scored-pass-then-rejected-by-independent-spec-review"},
+    {"attempt": 12, "path": "evidence/forward/attempts/attempt-12", "status": "rejected-by-independent-scorer"},
+    {"attempt": 13, "path": "evidence/forward/attempts/attempt-13", "status": "rejected-by-independent-scorer"},
+    {"attempt": 14, "path": "evidence/forward/attempts/attempt-14", "status": "scored-pass-then-rejected-by-independent-spec-review"},
+    {"attempt": 15, "path": "evidence/forward/attempts/attempt-15", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 16, "path": "evidence/forward/attempts/attempt-16", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 17, "path": "evidence/forward/attempts/attempt-17", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 18, "path": "evidence/forward/attempts/attempt-18", "status": "rejected-by-independent-scorer"}
+  ],
+  "source_files": {
+    "SKILL.md": "4a33806843f31a046677fb80d7e72a523ac4c23dae28f7ddd086cd90bbca0e68",
+    "references/ARTIFACT-CONTRACT.md": "ac36d9a07ef07d878a4ae6729faec584d9dc1079334736f57c3b2ca739eec120",
+    "references/MODE-CONTRACT.md": "39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc",
+    "references/TEACHING-PROTOCOL.md": "6e7b61957b18673ebfd23cc0bcde034f288082aac5081eab6f984312e80ce98e",
+    "references/VISUALIZATION-ROUTER.md": "c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7",
+    "scripts/prax_teach.py": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+    "scripts/praxteach/routing.py": "15e7dfe7555f07430830a6d6d73459df750e6feb686434d0255ea253351aa581"
+  },
+  "execution_files": {
+    "evidence/forward/execution/practical_gradient_descent.py": "5883d9904eeff1940e582c6e46efd7e0f5e2ece11e23fbc1031a415dc9e05eaa",
+    "evidence/forward/execution/practical_gradient_descent.stdout": "245d4954b7b37a7440430406d50387e7aee958de74f2f56037e9e05fb6297ded"
+  },
+  "cases": [
+    {
+      "case_id": "quick-bounded-explanation",
+      "fresh_task": "/root/forward19b_quick",
+      "format_normalization": "The coordinator added the document H1 and removed Markdown hard-break whitespace; response words are unchanged.",
+      "output": "evidence/forward/outputs/quick-bounded-explanation.md",
+      "output_sha256": "34c0abceb98ded2b537ff0db64386a5977b5d17e56cfe290125c00a1b71e4241"
+    },
+    {
+      "case_id": "answer-now-override",
+      "fresh_task": "/root/forward19b_answer",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/answer-now-override.md",
+      "output_sha256": "5050ccb4d7b98e7eaf3374ceb844cc268f2fb6ff6a75cd7aefcf88c5da2da39a"
+    },
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "fresh_task": "/root/forward19b_lesson",
+      "format_normalization": "The coordinator assembled exact utterances under document and speaker headings; no tutor or learner wording was changed.",
+      "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+      "output_sha256": "ced6c9c9f23590d91f98d5594960240af0768806e07239f1648a7244d44ada23",
+      "interaction": {
+        "tutor_turns": 5,
+        "learner_turns": 5,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "fresh_task": "/root/forward19b_course",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/course-consent-boundary.md",
+      "output_sha256": "1bbdf379f26a4c0836e467df53679a3a878224abb2ef790e7235ac84adf45bcc"
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "fresh_task": "/root/forward19b_resume",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/resume-hinted-evidence.md",
+      "output_sha256": "1f6f505f0eb091728b0e55ddd679b6e92ae9f9c55f5f56009ae5f6dec0088aa7",
+      "context": "evidence/forward/context/resume-hinted.json",
+      "context_sha256": "fc284afe08daeaf3954780e2471efade865d3e49f6c1521409af992eac4beed9"
+    },
+    {
+      "case_id": "visual-none",
+      "fresh_task": "/root/forward19b_visual_none",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-none.md",
+      "output_sha256": "ad377c023f8f8a49e99d5f5d53fdd0816d7a8dfcfc1d58a502fa659ebfc3761f"
+    },
+    {
+      "case_id": "visual-essential-static",
+      "fresh_task": "/root/forward19b_visual_static",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-essential-static.md",
+      "output_sha256": "0f67919cb439e037cf38c099678763311b2abfe2eb099fcf149aa4335a1fc9ca"
+    },
+    {
+      "case_id": "practical-executable-learning",
+      "fresh_task": "/root/forward19b_practical_exact_retry",
+      "format_normalization": "The coordinator assembled exact utterances under document and speaker headings; no tutor or learner wording was changed.",
+      "output": "evidence/forward/outputs/practical-executable-learning.md",
+      "output_sha256": "0d1c70eae11151037770255350e7c4f0c06ec8c56cc00a066f0c6caae1700e4c",
+      "execution_files": [
+        "evidence/forward/execution/practical_gradient_descent.py",
+        "evidence/forward/execution/practical_gradient_descent.stdout"
+      ],
+      "interaction": {
+        "tutor_turns": 6,
+        "learner_turns": 6,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+2026-08-18T16:16:00Z | root | bootstrap | PHASE_ENTER | Loaded objective and named workflow skills; no implementation edits yet.
+2026-08-18T16:16:01Z | root | bootstrap | DECISION | Use existing teaching protocol, evaluation fixtures, visual router, renderer, and distribution verifier as public seams; no new teaching skill.
+2026-08-18T16:16:02Z | root | bootstrap | ANOMALY | Initial feature-branch creation failed because sandbox could not write Git refs; approved git switch succeeded without changing worktree bytes.
+2026-08-18T16:16:03Z | root | spec | PHASE_ENTER | Published cross-repository objective as separate Teach Pro Max and Python-lab specs.
+2026-08-18T16:18:00Z | root | spec | GATE | GitHub tracker had no duplicate; created the missing ready-for-agent label.
+2026-08-18T16:18:20Z | root | spec | PARK | GitHub issue publication rejected by external-action safety review because the full local spec payload would leave the machine; local spec remains authoritative pending explicit payload-publication approval.
+2026-08-18T16:19:00Z | root | plan | COUNCIL | Started a two-seat fresh-context architecture council before implementation.
+2026-08-18T16:20:00Z | root | plan | COUNCIL_PANEL | Aristotle and Feynman independently selected extension of existing seams, removal of unused trace state, literal parity vectors, and fresh exact-byte promotion gates.
+2026-08-18T16:20:01Z | root | plan | DECISION | Council unanimous; start TDD at the protocol/evaluation and lab HTML/model seams.
+2026-08-18T16:23:40Z | root | TPM-01,TPM-02,TPM-04,TPM-05 | TEST | New contract tests failed on every missing practical-learning seam.
+2026-08-18T16:24:29Z | root | TPM-01,TPM-02,TPM-04,TPM-05 | PASS | Added the practical loop, evidence/parity/trace boundaries, adapter and resume rules, and public/forward evaluation coverage; 9 focused tests pass.
+2026-08-18T16:31:47Z | root | TPM-06 | PASS | Regenerated and byte-checked all 103 Markdown/HTML companion pairs.
+2026-08-18T16:35:26Z | root | TPM-06 | TEST | Python suite ran 216 tests: 213 passed, 2 platform gates skipped, and one expected full-validator failure reported stale forward/review/full receipts after durable edits. Node renderer/Flint tests passed 19/19 after installing locked dependencies.
+2026-08-18T16:41:06Z | root | TPM-03 | PASS | Focused routing tests passed 4/4 and visualization registry tests passed 11/11; default motion excludes retired Motion Canvas/Remotion routes.

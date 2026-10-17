@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="VISUALIZATION-ROUTER.md">
+  <meta name="source-sha256" content="c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Visualization router</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./VISUALIZATION-ROUTER.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="visualization-router">Visualization router</h1>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#decision-rule">Decision rule</a></li>
+<li><a href="#production-capability-routing">Production capability routing</a></li>
+<li><a href="#representation-routes">Representation routes</a></li>
+<li><a href="#optional-flint-chart-backend">Optional Flint chart backend</a></li>
+<li><a href="#visual-brief">Visual brief</a></li>
+<li><a href="#accuracy-and-source-rules">Accuracy and source rules</a></li>
+<li><a href="#accessibility">Accessibility</a></li>
+<li><a href="#retrieval-safety">Retrieval safety</a></li>
+<li><a href="#verification">Verification</a></li>
+</ol>
+<h2 id="decision-rule">Decision rule</h2>
+<p>Ask:</p>
+<blockquote>
+<p>What must the learner see, compare, predict, manipulate, or watch change that prose plus an example does not communicate as efficiently?</p>
+</blockquote>
+<p>Choose internally:</p>
+<ul>
+<li><code>none</code> when prose, code, or a table is already sufficient;</li>
+<li><code>static</code> for structure, comparison, hierarchy, space, exact labels, or a worked state;</li>
+<li><code>interactive</code> when the learner benefits from changing, testing, filtering, traversing, or predicting;</li>
+<li><code>motion</code> when order, causality, transformation, accumulation, synchronization, or changing state is the concept.</li>
+</ul>
+<p>Start with the smallest accurate medium. Media availability is not a reason to use it.</p>
+<p>Sequence or causality makes motion <em>eligible</em>, not mandatory. First test whether a labeled state table, small multiples, or learner-predicted next step communicates the relationship with less overhead.</p>
+<p><code>route</code> records the representation best suited to the learning job. The
+executable router separately reports the actual delivery surface. The Markdown
+renderer supports <code>none</code> and <code>static</code>; the packaged, verified Prax Visual Lab
+supports interactive controls and learner-controlled state sequences. If that
+runtime is absent or invalid, rich routes fail closed to static delivery. A
+specialized registry-selected renderer remains an authoring route whose output
+must be inspected in the actual lesson environment.</p>
+<h2 id="production-capability-routing">Production capability routing</h2>
+<p>Read <a href="./LEGACY-VISUALIZATION-ROUTER.html">LEGACY-VISUALIZATION-ROUTER.md</a>
+completely as the inherited Prax-Teach production handbook. Despite the lineage
+filename, its fidelity matrix, 38-tool routing, editable-source rules, scene
+graph guidance, progressive disclosure, diagram/chart/image/3D/motion/video
+contracts, accessibility, provenance, and render-inspect-revise loop are
+normative.</p>
+<p>Inspect capabilities exposed by the current harness, then query the portable
+registry:</p>
+<pre><code class="language-bash">python3 scripts/find_visualization_tool.py --route interaction
+python3 scripts/find_visualization_tool.py --route change-over-time
+python3 scripts/find_visualization_tool.py --route mathematics
+</code></pre>
+<p>Use the closest authorized equivalent capability; do not require a particular
+agent brand or hardcode <code>codex exec</code>, <code>claude -p</code>, or another provider command.
+Prefer the packaged Prax Visual Lab for its supported interaction primitives,
+browser-native HTML/SVG/Canvas for exact local work, and the smallest suitable
+available specialist for advanced output. Never require a second teaching skill
+to restore visualization. If no approved capability can execute the selected
+route, say so and deliver the complete static fallback.</p>
+<h3 id="binding-selection-policy">Binding selection policy</h3>
+<ul>
+<li>Keep the 38-tool registry in Prax-Teach and query it; do not copy it into a
+course or lesson.</li>
+<li>Build the interactive lesson first. One storyboard may then project to
+standalone HTML, HyperFrames or Manim, captions, transcript, and chapters.</li>
+<li>Use HyperFrames for general browser-native explanatory film and Manim for
+mathematical or algorithmic transformation. Pin <code>manim==0.21.0</code> at first use.
+Do not select Motion Canvas or Remotion for new Teach Pro Max work. Retain
+their registry records as historical capability evidence only. Consider
+Canvas Commons later only if a real lesson requires TypeScript generators.</li>
+<li>Put a minimal scene/execution-trace JSON under <code>assets/data/</code> only when the
+first lab has a real playback, scrubbing, or synchronized-output consumer.
+Do not scaffold a generic scene contract before then.</li>
+<li>Add Olli when a shipped chart needs a screen-reader twin. Add JSXGraph when a
+lesson requires direct manipulation such as “drag the point and watch the
+gradient.” Add Pyodide only when browser-resident Python is essential; local
+labs otherwise use <code>uv</code> and <code>pytest</code>. Add MCP Apps only when the target
+OpenCode host supports apps. Add Three.js WebGPU only for required 3D, through
+the HyperFrames Three adapter; do not introduce a second 3D engine.</li>
+<li>For LLM visuals, include exactly one truth label in both lesson <code>NOTES</code> and
+<code>CONTEXT</code>: <code>illustration</code>, <code>measured</code>, <code>correlational</code>, <code>intervention</code>, or
+<code>hypothesis</code>. Never say “the model thought.” Link Transformer Explainer,
+BertViz, and Bycroft in the bounded lab. Cite and link VisuAlgo, OpenDSA, and
+AV.org; do not vendor them.</li>
+</ul>
+<p>For a mechanism lab, follow the proven Classic Patents composition: let the
+learner switch among intuition, primary source, schematic, interactive model,
+and split comparison without losing context; bind controls, telemetry,
+equations, labels, and explanation to one authored model; preserve source
+provenance; and test finite outputs, real 2D/3D rendering, console errors,
+overflow, keyboard access, reduced motion, and static alternatives. Atmospheric
+lighting and motion may strengthen invitation, but they never outrank exact
+labels, truthful state, or the learner action.</p>
+<h2 id="representation-routes">Representation routes</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Semantic job</th>
+<th>Preferred representation</th>
+<th>Avoid</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Exact comparison</td>
+<td>Semantic table; optional verified Flint chart when the table is insufficient</td>
+<td>Decorative infographic</td>
+</tr>
+<tr>
+<td>Hierarchy / grouping</td>
+<td>Nested HTML, tree, SVG, diagram-as-code</td>
+<td>Unlabeled floating cards</td>
+</tr>
+<tr>
+<td>Process / decision</td>
+<td>Flow diagram, numbered states</td>
+<td>Animation when order is already obvious</td>
+</tr>
+<tr>
+<td>Time / transformation</td>
+<td>Learner-controlled state sequence or seekable motion</td>
+<td>Autoplay-only video</td>
+</tr>
+<tr>
+<td>Quantity / distribution</td>
+<td>Exact chart with source data, text summary, and data-table equivalent</td>
+<td>Image-generated chart, 3D, misleading axes</td>
+</tr>
+<tr>
+<td>Geometry / equations</td>
+<td>Exact SVG, math renderer, deterministic animation</td>
+<td>Generated image as source of truth</td>
+</tr>
+<tr>
+<td>Architecture / dependencies</td>
+<td>SVG, D2, Graphviz, Mermaid, C4/Structurizr</td>
+<td>Screenshot without editable source</td>
+</tr>
+<tr>
+<td>Practice / simulation</td>
+<td>Prax Visual Lab or another approved deterministic runtime</td>
+<td>Unbacked controls that imply grading or persistence</td>
+</tr>
+<tr>
+<td>Atmosphere / metaphor</td>
+<td>Sourced or generated illustration</td>
+<td>Treating metaphor as factual evidence</td>
+</tr>
+</tbody></table></div>
+<p>The bundled Markdown artifact path supports static semantic HTML plus linked,
+validated assets. Prax Visual Lab provides the packaged interactive surface.
+Inline SVG, Canvas, specialized animation/video, and other custom controls must
+use an authorized versioned tool/runtime plus manual browser review.</p>
+<p>Do not invent a bespoke visualization DSL or renderer for a single lesson. Reuse the bundled Markdown renderer and native elements; introduce a reusable component only after the learning action genuinely requires it.</p>
+<h2 id="optional-flint-chart-backend">Optional Flint chart backend</h2>
+<p>After choosing <code>static</code>, route an exact comparison, quantity, distribution, or time-series job through <a href="https://github.com/microsoft/flint-chart">Flint</a> only when:</p>
+<ol>
+<li>a semantic table is not already clearer;</li>
+<li>the source values and transformations are verified;</li>
+<li>a pinned Flint dependency or approved MCP tool is available;</li>
+<li>the requested chart type is supported by the chosen backend;</li>
+<li>every compiler/render warning will be inspected;</li>
+<li>a complete table or extended text equivalent will accompany the chart.</li>
+</ol>
+<p>Prefer build-time SVG. Preserve prepared data, the editable <code>.flint.json</code>, a render manifest with versions/hashes/warnings, and the generated asset. Treat the MCP live chart view as an authoring preview rather than the durable lesson.</p>
+<p>Flint is not a data-wrangling layer. Perform joins, pivots, derived fields, filtering, complex aggregation, and time bucketing upstream, then sanity-check the prepared values before authoring the semantic spec.</p>
+<p>Do not install Flint silently, use floating <code>npx -y</code> in a deterministic build, assume its SVG is accessible, or fail the lesson when the optional backend is unavailable. Fall back to a semantic table or verified native SVG.</p>
+<p>Read <a href="./FLINT-CHARTS.html">FLINT-CHARTS.md</a> before producing a Flint spec or artifact.</p>
+<h2 id="visual-brief">Visual brief</h2>
+<p>Before a substantial asset, write:</p>
+<pre><code class="language-text">Learning objective:
+Learner action:
+Semantic job:
+Route: none | static | interactive | motion
+Required entities, values, relationships, and states:
+Accuracy level:
+Source/data provenance:
+Editable source format and path:
+Fallback and reading order:
+Accessibility needs:
+Retrieval-answer leakage risk:
+Verification method:
+</code></pre>
+<p>If the brief cannot name a learner action or cognitive job, choose <code>none</code>.</p>
+<h2 id="accuracy-and-source-rules">Accuracy and source rules</h2>
+<ul>
+<li>Use exact HTML, SVG, diagram-as-code, data visualization, or compositing for authoritative text, equations, values, counts, geometry, architecture, and technical relationships.</li>
+<li>Use generated imagery only for appearance, atmosphere, scenes, objects, or memorable metaphors.</li>
+<li>Preserve editable semantic sources beside rendered derivatives.</li>
+<li>Separate semantics, layout, and style for complex visuals.</li>
+<li>Record source URL/data, authoring tool, render command, dimensions, attribution/license, verification date, and known limitations.</li>
+<li>Do not imply causality from association.</li>
+<li>For charts, show units, sample size, missingness, uncertainty, assumptions, and a textual/table equivalent when material.</li>
+<li>Do not infer a media license from search-result availability.</li>
+</ul>
+<h2 id="accessibility">Accessibility</h2>
+<h3 id="static">Static</h3>
+<ul>
+<li>Use <code>&lt;figure&gt;</code> and a useful <code>&lt;figcaption&gt;</code>.</li>
+<li>Give simple images concise alt text.</li>
+<li>Give complex visuals a short alternative plus an extended description or data table.</li>
+<li>Do not encode meaning through color alone.</li>
+<li>Keep text as text in SVG where practical.</li>
+<li>Include SVG <code>&lt;title&gt;</code> and <code>&lt;desc&gt;</code>, semantic groups, and stable IDs.</li>
+<li>Test clipping, contrast, zoom, mobile reflow, and print.</li>
+</ul>
+<h3 id="interactive">Interactive</h3>
+<p>These requirements apply after the packaged Prax Visual Lab or another approved
+interaction runtime boundary has been satisfied. Otherwise use host chat or the
+router's static <code>delivery_route</code>.</p>
+<ul>
+<li>Use native controls and semantic names.</li>
+<li>Support keyboard operation, logical focus, and visible focus.</li>
+<li>Avoid hover-only information.</li>
+<li>Give one precise learning task, immediate explanatory feedback, and a reset.</li>
+<li>Preserve essential meaning without JavaScript.</li>
+<li>Provide a static state and textual explanation.</li>
+</ul>
+<h3 id="motion">Motion</h3>
+<ul>
+<li>Use an explicit timeline, frame, or seekable state when determinism matters.</li>
+<li>Add captions and a transcript.</li>
+<li>Provide pause, replay, and scrubbing when applicable.</li>
+<li>Respect <code>prefers-reduced-motion</code> without removing information.</li>
+<li>Provide a poster or static sequence for print, failure, and low bandwidth.</li>
+<li>Avoid ambient motion, gratuitous camera movement, rapid zooms, and decorative transitions.</li>
+</ul>
+<p>WCAG 2.2 AA is the minimum web target. Automated checks do not replace keyboard, screen-reader, reduced-motion, zoom, and target-user testing. <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a></p>
+<h2 id="retrieval-safety">Retrieval safety</h2>
+<p>A visual can leak an answer through:</p>
+<ul>
+<li>labels visible before an attempt;</li>
+<li>alt text or captions containing the solution;</li>
+<li>the default slider/state position;</li>
+<li>source code or developer tools;</li>
+<li>thumbnails, posters, or animation end frames;</li>
+<li>choice length, color, or emphasis;</li>
+<li>a distant legend that highlights the correct path.</li>
+</ul>
+<p>When retrieval is the task:</p>
+<ol>
+<li>show the prompt and neutral representation first;</li>
+<li>require an attempt;</li>
+<li>reveal one hint or layer at a time;</li>
+<li>keep answer content out of pre-attempt alternatives;</li>
+<li>in static bundled HTML, use only reviewed native disclosure for reveal; use
+Prax Visual Lab or host chat for answer capture and grading;</li>
+<li>ensure the static/no-script fallback preserves the same attempt-before-answer order.</li>
+</ol>
+<p>Do not hide required accessibility information. If an alternative would reveal the assessed construct, offer an equivalent response task instead.</p>
+<h2 id="verification">Verification</h2>
+<p>For bundled delivery, do not stop at the route JSON. Save the exact
+<code>visual-route</code> output, canonical Markdown, generated HTML, and a small
+forbidden-answer rubric, then run:</p>
+<pre><code class="language-bash">python3 scripts/prax_teach.py visual-verify \
+  --route-output /absolute/path/to/route.json \
+  --source /absolute/path/to/lesson.md \
+  --html /absolute/path/to/lesson.html \
+  --forbidden-answer-file /absolute/path/to/forbidden-answer.json \
+  --receipt /absolute/path/to/visual-receipt.json
+</code></pre>
+<p>The verifier reruns exact Markdown/HTML parity and structural checks, scans the
+raw source, generated HTML, and linked textual assets after Unicode, entity,
+and percent normalization, rejects scripts/forms/remote assets, and requires a
+visible attempt prompt for retrieval. Opaque raster media and animated-capable
+media cannot receive this automated answer-leakage receipt. For <code>interactive</code>
+and <code>motion</code>, the command verifies the complete static fallback and reruns the
+packaged runtime verifier when Prax Visual Lab is the declared delivery surface.
+It does not certify arbitrary external animation/video tools. <code>--check</code>
+recomputes and byte-compares a frozen receipt.</p>
+<p>This scan covers only the declared textual answers. It cannot decide whether
+geometry, color, emphasis, spatial layout, or an unlabeled path visually gives
+away the answer. The receipt marks semantic visual leakage as requiring human
+review; do not promote it into a complete answer-leakage claim.</p>
+<p>The package carries a four-case <code>none</code>/<code>static</code>/<code>interactive</code>/<code>motion</code> fixture
+matrix and adversarial leakage, asset, link, accessibility-structure, stale
+HTML, and stale-receipt tests. These are engineering checks, not factual or
+human review of a particular lesson.</p>
+<p>Before any stronger delivery claim:</p>
+<ul>
+<li>compare required entities, labels, edges, directions, values, and states with the brief;</li>
+<li>render in the actual lesson environment;</li>
+<li>inspect at desktop, narrow viewport, zoom, print, and reduced motion;</li>
+<li>operate every control by keyboard;</li>
+<li>verify source/data transformations;</li>
+<li>for Flint, verify the pinned version, input spec, prepared-data and output hashes, warnings, backend coverage, and table/text equivalent;</li>
+<li>check the fallback with scripts and media disabled;</li>
+<li>inspect representative animation frames as stills;</li>
+<li>verify that no answer is exposed before the attempt;</li>
+<li>retain editable source and provenance.</li>
+</ul>
+<p>Automated output and structural checks do not authorize a browser-inspected,
+field-accessible, or production claim. A browser-inspected or production claim
+requires the real-browser checks above. A field-accessibility claim additionally
+requires appropriate assistive-technology and representative learner evidence;
+until then EG-03 remains parked.</p>
+<p>A polished but incorrect arrow, scale, label, or transition is a factual failure.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./VISUALIZATION-ROUTER.md">VISUALIZATION-ROUTER.md</a><br>
+    SHA-256: <code>c45af70d33231aaac78b41fe3a17f1d52cb6198b39f39d949ad649c00ddf9fc7</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "attestation": {
+    "cryptographic_authorship_verified": false,
+    "orchestration_task_identity_recorded": true,
+    "threat_model": "orchestration task identity is structurally recorded; cryptographic authorship is not verified"
+  },
+  "chair": {
+    "status": "passed",
+    "task": "/root/council21_chair"
+  },
+  "findings": [
+    "The embedded-engine architecture passed unanimously; current wrapper ENGINE-MANIFEST and verify_distribution drift is a promotion gate outside this exact embedded payload, not an embedded architecture defect.",
+    "Promotion remains blocked until the wrapper manifest and distribution verifier are current, AC-22 full verification passes, this AC-24 receipt is current, and AC-25 produces a clean-HEAD reproducible package plus sibling release receipt.",
+    "Human efficacy and representative field accessibility remain parked evidence gates and are not claimed by this architecture pass."
+  ],
+  "fixes": [
+    "Round 2 preserved and corrected the Round 1 dissent: Feynman's wrapper-failure classification changed from an embedded architecture block to a release-boundary gate.",
+    "Round 2 broadened the promotion boundary through Aristotle's release-scope challenge while Ada maintained the structural-pass and release-block distinction."
+  ],
+  "panelists": [
+    {
+      "status": "passed",
+      "task": "/root/council21_aristotle"
+    },
+    {
+      "status": "passed",
+      "task": "/root/council21_ada"
+    },
+    {
+      "status": "passed",
+      "task": "/root/council21_feynman"
+    }
+  ],
+  "payload": "evidence/reviews/payload.json",
+  "payload_file_sha256": "4ff26fde759a8b3dd7b4c5cff3ae9fab1c1c24b106410dc190dc3ba81a8b22af",
+  "payload_manifest_sha256": "7cf9995e3ff84bca35acf55d2e24fbc756628299d90d7de61a920da071255df6",
+  "recheck": {
+    "reviewer_confirmed": true,
+    "status": "passed"
+  },
+  "review_type": "architecture-council",
+  "reviewer": {
+    "identity": "independent architecture-council receipt reviewer",
+    "independent_from_implementation": true,
+    "task": "/root/architecture_receipt_21"
+  },
+  "schema_version": 2,
+  "status": "passed",
+  "unresolved_actionable": []
+}

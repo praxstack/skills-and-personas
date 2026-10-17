@@ -1,0 +1,25 @@
+{
+  "tool": "motion-canvas",
+  "versions": {
+    "@motion-canvas/core": "3.17.2",
+    "@motion-canvas/2d": "3.17.2",
+    "@motion-canvas/ui": "3.17.2",
+    "@motion-canvas/vite-plugin": "3.17.2",
+    "@motion-canvas/ffmpeg": "3.17.2",
+    "vite": "6.4.4 (installed with legacy-peer-deps: the plugin's peer range stops at 5.x)",
+    "typescript": "5.9.3",
+    "@codemirror/language": "6.12.4",
+    "@lezer/cpp": "1.1.6",
+    "@lezer/highlight": "1.2.5",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/bangers": "5.2.8",
+    "node": ">=18 (tested with 22)",
+    "playwright-core": "1.56.1 (template devDependency, installed by npm ci)"
+  },
+  "hints": {
+    "voice": "python3 {S}/mc.py setup --project .   (copies {SKILL}/assets/template to source/ and runs npm ci; skips what is done)  then  python3 {S}/voice.py --project . --emit source/src/timing.ts",
+    "visuals": "Write the film in source/src/scenes/ (data.ts, film.tsx, one chNN-*.tsx per chapter; reuse source/src/kit, key every beat to a line id with waitUntilLine/waitUntilCue). Then python3 {S}/mc.py stills --project .  (typecheck + build + one still per line into stills/, overview build/stills-sheet.jpg; it lists any [timing] late warnings). Read the sheet and every still, fix, repeat; check text size and contrast with python3 {S}/legibility.py --project . (fix every red box in stills/legibility/, re-render, re-run); then python3 {S}/vstate.py attest visuals \"<what you checked and fixed>\"",
+    "render": "python3 {S}/mc.py bench --project .   (prints fps and the ETA)  then  python3 {S}/mc.py render --project . --max-minutes 100   (segmented and resumable; exit code 3 means the budget ran out: run the same command again; run it in the background with a log if the ETA is over 2 minutes)"
+  }
+}

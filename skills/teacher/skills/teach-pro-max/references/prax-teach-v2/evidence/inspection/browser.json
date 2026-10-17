@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "attempted_at": "2026-08-19T14:15:29Z",
+  "surface": "Google Chrome 151.0.7922.169 through pinned Playwright 1.62.1",
+  "status": "passed",
+  "reason": "Five named package pages, including Prax Visual Lab, loaded in real Chrome at desktop and narrow viewports with no console errors, no document overflow, and headings present in the accessibility tree. The live parameter control also updated both the comparison table and the shared learning receipt.",
+  "planned_pages": [
+    {
+      "path": "STATUS.html",
+      "sha256": "8ab4b5ce5f164143f077b87c9b757277979a1e9d847b7908b17c9f62fb883961"
+    },
+    {
+      "path": "SKILL.html",
+      "sha256": "ef8a22953745ad5399b105c963f675a0345c76ba1d252e3e29a1267748d5c50b"
+    },
+    {
+      "path": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.html",
+      "sha256": "cf2d27cf0205e3f1eba9f90b25237a9986046ab4f29002122028ca35b590b7b9"
+    },
+    {
+      "path": "evidence/forward/outputs/practical-executable-learning.html",
+      "sha256": "6321c4a2b0660cc38dcd18ee74f67eb9cab6a17a6e0ac52f19c476525ded5d88"
+    },
+    {
+      "path": "runtime/prax-visual-lab/dist/index.html",
+      "sha256": "65ac34a732bf9123c855c6603c29328c0334050914ae1c32cd207e94a9e5a690"
+    }
+  ],
+  "observed_runtime_pages": 5,
+  "console_checked": true,
+  "responsive_viewports_checked": true,
+  "accessibility_tree_checked": true,
+  "manual_assistive_technology_checked": false,
+  "supports_field_accessibility_claim": false,
+  "claim_boundary": "This is engineering evidence from real Chrome on the exact named pages. It is not a manual assistive-technology, WCAG-conformance, representative-user, or learner-outcome claim."
+}

@@ -1,0 +1,74 @@
+{
+  "data": {
+    "values": [
+      {
+        "age_group": "Younger",
+        "group": "A",
+        "population": 20
+      },
+      {
+        "age_group": "Younger",
+        "group": "B",
+        "population": 18
+      },
+      {
+        "age_group": "Younger",
+        "group": "C",
+        "population": 17
+      },
+      {
+        "age_group": "Older",
+        "group": "A",
+        "population": 14
+      },
+      {
+        "age_group": "Older",
+        "group": "B",
+        "population": 13
+      },
+      {
+        "age_group": "Older",
+        "group": "C",
+        "population": 12
+      }
+    ]
+  },
+  "semantic_types": {
+    "age_group": "Category",
+    "group": "Category",
+    "population": "Quantity"
+  },
+  "field_display_names": {
+    "age_group": "Age group",
+    "group": "Illustrative group",
+    "population": "Illustrative population"
+  },
+  "chart_spec": {
+    "baseSize": {
+      "height": 240,
+      "width": 420
+    },
+    "canvasSize": {
+      "height": 240,
+      "width": 420
+    },
+    "chartType": "Pyramid Chart",
+    "encodings": {
+      "color": {
+        "field": "group"
+      },
+      "x": {
+        "field": "population"
+      },
+      "y": {
+        "field": "age_group"
+      }
+    }
+  },
+  "prax_teach": {
+    "reviewed": true,
+    "summary": "Synthetic machinery-only input deliberately uses three groups so pinned Flint emits its documented pyramid warning.",
+    "table_caption": "Synthetic warning fixture; not learner-outcome evidence",
+    "title": "Pinned Flint warning fixture"
+  }
+}

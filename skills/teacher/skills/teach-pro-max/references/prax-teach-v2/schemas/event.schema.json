@@ -1,0 +1,767 @@
+{
+  "$id": "https://prax.local/prax-teach-v2/schemas/event.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/observation"
+    },
+    {
+      "$ref": "#/$defs/observation_with_misconception"
+    },
+    {
+      "$ref": "#/$defs/correction"
+    },
+    {
+      "$ref": "#/$defs/invalidation"
+    },
+    {
+      "$ref": "#/$defs/misconception_rejection"
+    }
+  ],
+  "properties": {
+    "event_id": {
+      "$ref": "#/$defs/event_id"
+    },
+    "event_type": {
+      "enum": [
+        "observation",
+        "correction",
+        "invalidation",
+        "misconception_rejection"
+      ]
+    },
+    "schema_version": {
+      "$ref": "#/$defs/schema_version"
+    },
+    "timestamp": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "schema_version",
+    "timestamp"
+  ],
+  "title": "Prax Teach append-only evidence event",
+  "type": "object",
+  "$defs": {
+    "attempt_number": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "agent_inference": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "certainty": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "summary": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            }
+          },
+          "required": [
+            "certainty",
+            "summary"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "provenance": {
+          "enum": [
+            "learner_reported",
+            "not_reported"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "provenance",
+        "value"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "provenance": {
+                "const": "learner_reported"
+              }
+            },
+            "required": [
+              "provenance"
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "value": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ],
+      "type": "object"
+    },
+    "content_version": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "correction": {
+      "additionalProperties": false,
+      "properties": {
+        "corrected_event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "event_type": {
+          "const": "correction"
+        },
+        "reason": {
+          "$ref": "#/$defs/reason"
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schema_version"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "corrected_event_id",
+        "event_id",
+        "event_type",
+        "reason",
+        "schema_version",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "dimension": {
+      "enum": [
+        "recognition",
+        "recall",
+        "explanation",
+        "application",
+        "discrimination",
+        "transfer"
+      ]
+    },
+    "event_id": {
+      "pattern": "^evt-[0-9a-f]{32}$",
+      "type": "string"
+    },
+    "hint_level": {
+      "maximum": 4,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "identifier": {
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "type": "string"
+    },
+    "invalidation": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "event_type": {
+          "const": "invalidation"
+        },
+        "invalidated_event_ids": {
+          "$ref": "#/$defs/invalidated_event_ids"
+        },
+        "reason": {
+          "$ref": "#/$defs/reason"
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schema_version"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "event_id",
+        "event_type",
+        "invalidated_event_ids",
+        "reason",
+        "schema_version",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "invalidated_event_ids": {
+      "items": {
+        "$ref": "#/$defs/event_id"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "misconception_claim": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "misconception_learner_confirmed": {
+      "type": "boolean"
+    },
+    "misconception_provenance": {
+      "enum": [
+        "learner_reported",
+        "tutor_inference"
+      ]
+    },
+    "misconception_rejection": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "event_type": {
+          "const": "misconception_rejection"
+        },
+        "misconception_event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "reason": {
+          "$ref": "#/$defs/reason"
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schema_version"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "event_id",
+        "event_type",
+        "misconception_event_id",
+        "reason",
+        "schema_version",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "nullable_preserved_text": {
+      "anyOf": [
+        {
+          "maxLength": 16000,
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observation": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_inference": {
+          "$ref": "#/$defs/agent_inference"
+        },
+        "attempt_number": {
+          "$ref": "#/$defs/attempt_number"
+        },
+        "concept_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "content_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "content_version": {
+          "$ref": "#/$defs/content_version"
+        },
+        "dimension": {
+          "$ref": "#/$defs/dimension"
+        },
+        "event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "event_type": {
+          "const": "observation"
+        },
+        "hint_level": {
+          "$ref": "#/$defs/hint_level"
+        },
+        "item_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "item_version": {
+          "$ref": "#/$defs/identifier"
+        },
+        "learner_authored": {
+          "$ref": "#/$defs/nullable_preserved_text"
+        },
+        "model_and_prompt_version": {
+          "$ref": "#/$defs/model_and_prompt_version"
+        },
+        "objective_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "response": {
+          "$ref": "#/$defs/nullable_preserved_text"
+        },
+        "response_ref": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "rubric": {
+          "$ref": "#/$defs/rubric"
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schema_version"
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_provenance": {
+          "$ref": "#/$defs/source_provenance"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "agent_inference",
+        "attempt_number",
+        "concept_id",
+        "confidence",
+        "content_id",
+        "content_version",
+        "dimension",
+        "event_id",
+        "event_type",
+        "hint_level",
+        "item_id",
+        "item_version",
+        "learner_authored",
+        "model_and_prompt_version",
+        "objective_id",
+        "response",
+        "response_ref",
+        "result",
+        "rubric",
+        "schema_version",
+        "session_id",
+        "source_provenance",
+        "timestamp"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "response": {
+              "maxLength": 16000,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "response_ref": {
+              "type": "null"
+            }
+          }
+        },
+        {
+          "properties": {
+            "response": {
+              "type": "null"
+            },
+            "response_ref": {
+              "maxLength": 4096,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "type": "object"
+    },
+    "observation_with_misconception": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_inference": {
+          "$ref": "#/$defs/agent_inference"
+        },
+        "attempt_number": {
+          "$ref": "#/$defs/attempt_number"
+        },
+        "concept_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "content_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "content_version": {
+          "$ref": "#/$defs/content_version"
+        },
+        "dimension": {
+          "$ref": "#/$defs/dimension"
+        },
+        "event_id": {
+          "$ref": "#/$defs/event_id"
+        },
+        "event_type": {
+          "const": "observation"
+        },
+        "hint_level": {
+          "$ref": "#/$defs/hint_level"
+        },
+        "item_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "item_version": {
+          "$ref": "#/$defs/identifier"
+        },
+        "learner_authored": {
+          "$ref": "#/$defs/nullable_preserved_text"
+        },
+        "learner_reasoning": {
+          "$ref": "#/$defs/learner_reasoning"
+        },
+        "misconception_claim": {
+          "$ref": "#/$defs/misconception_claim"
+        },
+        "misconception_learner_confirmed": {
+          "$ref": "#/$defs/misconception_learner_confirmed"
+        },
+        "misconception_provenance": {
+          "$ref": "#/$defs/misconception_provenance"
+        },
+        "model_and_prompt_version": {
+          "$ref": "#/$defs/model_and_prompt_version"
+        },
+        "objective_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "response": {
+          "$ref": "#/$defs/nullable_preserved_text"
+        },
+        "response_ref": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "rubric": {
+          "$ref": "#/$defs/rubric"
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schema_version"
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_provenance": {
+          "$ref": "#/$defs/source_provenance"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "required": [
+        "agent_inference",
+        "attempt_number",
+        "concept_id",
+        "confidence",
+        "content_id",
+        "content_version",
+        "dimension",
+        "event_id",
+        "event_type",
+        "hint_level",
+        "item_id",
+        "item_version",
+        "learner_authored",
+        "learner_reasoning",
+        "misconception_claim",
+        "misconception_learner_confirmed",
+        "misconception_provenance",
+        "model_and_prompt_version",
+        "objective_id",
+        "response",
+        "response_ref",
+        "result",
+        "rubric",
+        "schema_version",
+        "session_id",
+        "source_provenance",
+        "timestamp"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "misconception_provenance": {
+                "const": "tutor_inference"
+              }
+            },
+            "required": [
+              "misconception_provenance"
+            ]
+          },
+          "then": {
+            "properties": {
+              "misconception_learner_confirmed": {
+                "const": false
+              }
+            }
+          }
+        }
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "response": {
+              "maxLength": 16000,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            "response_ref": {
+              "type": "null"
+            }
+          }
+        },
+        {
+          "properties": {
+            "response": {
+              "type": "null"
+            },
+            "response_ref": {
+              "maxLength": 4096,
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "type": "object"
+    },
+    "learner_reasoning": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "model_and_prompt_version": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "pattern": "\\S",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "result": {
+      "additionalProperties": false,
+      "properties": {
+        "correct": {
+          "type": "boolean"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "correct",
+        "score"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "score": {
+                "minimum": 0.8
+              }
+            },
+            "required": [
+              "score"
+            ]
+          },
+          "then": {
+            "properties": {
+              "correct": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "correct": {
+                "const": false
+              }
+            }
+          }
+        }
+      ],
+      "type": "object"
+    },
+    "rubric": {
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "additionalProperties": false,
+          "properties": {
+            "application": {
+              "$ref": "#/$defs/rubric_dimension_score"
+            },
+            "discrimination": {
+              "$ref": "#/$defs/rubric_dimension_score"
+            },
+            "explanation": {
+              "$ref": "#/$defs/rubric_dimension_score"
+            },
+            "recall": {
+              "$ref": "#/$defs/rubric_dimension_score"
+            },
+            "recognition": {
+              "$ref": "#/$defs/rubric_dimension_score"
+            },
+            "transfer": {
+              "$ref": "#/$defs/rubric_dimension_score"
+            }
+          },
+          "required": [
+            "application",
+            "discrimination",
+            "explanation",
+            "recall",
+            "recognition",
+            "transfer"
+          ],
+          "type": "object"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimensions",
+        "score"
+      ],
+      "type": "object"
+    },
+    "rubric_dimension_score": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "schema_version": {
+      "const": "1"
+    },
+    "source_provenance": {
+      "items": {
+        "$ref": "#/$defs/source_reference"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "source_reference": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version_or_date": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "version_or_date"
+      ],
+      "type": "object"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="914bf0d60d8e177320364d796939a76b94a489807ec16a919e73df7dd463dc6a">
+  <meta name="generated-at" content="2026-08-19T13:21:27.678Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lost-update lesson</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lost-update-lesson">Lost-update lesson</h1>
+<h2 id="user">User</h2>
+<p>Create a focused lesson that teaches me to diagnose a two-thread lost update. Include an unseen transfer task and do not reveal its answer before my attempt.</p>
+<h2 id="assistant">Assistant</h2>
+<p>Outcome: given a two-thread trace, identify any lost effect, the stale read, and the decisive overwriting write.</p>
+<p>Inventory starts at <code>50</code>.</p>
+<pre><code class="language-text">T1 reads 50
+T2 reads 50
+T1 sells 8 and writes 42
+T2 receives 5 and writes 55
+</code></pre>
+<p>What is the final value, is an update lost, and which read and write caused it?</p>
+<h2 id="user-2">User</h2>
+<p>The final value is 55. I think T2’s <code>+5</code> delivery was lost because T2 used an old value, and T1’s write of 42 caused it.</p>
+<h2 id="assistant-2">Assistant</h2>
+<p>Hint 1: Starting from <code>50</code>, check separately whether the final <code>55</code> still reflects the <code>−8</code> and whether it reflects the <code>+5</code>. Then revise which effect is missing and which later write removed it.</p>
+<h2 id="user-3">User</h2>
+<p>The <code>+5</code> is present, but the <code>−8</code> is missing. T1’s sale was lost. T2 read the stale value <code>50</code>, then its write of <code>55</code> overwrote T1’s <code>42</code>. If both operations survived, the result would be <code>47</code>.</p>
+<h2 id="assistant-3">Assistant</h2>
+<p>Correct. A lost update occurs when a later read–modify–write uses stale state and overwrites an earlier effect.</p>
+<p>Contrast this safe trace:</p>
+<pre><code class="language-text">score starts at 30
+T1 reads 30 and writes 40
+T2 reads 40 and writes 35
+</code></pre>
+<p>The final <code>35</code> preserves both changes because T2 read T1’s result.</p>
+<p>Unseen transfer problem:</p>
+<pre><code class="language-text">Shared task starts as:
+{ status: "draft", owner: "unassigned" }
+
+T1 reads the task
+T2 reads the task
+T1 sets status to "published" and replaces the whole task
+T2 sets owner to "Ana" in its saved copy and replaces the whole task
+</code></pre>
+<p>Diagnose whether a lost update occurs. Name the missing effect, stale read, decisive write, and combined state that should remain.</p>
+<h2 id="user-4">User</h2>
+<p>Yes. T1’s status change is lost. T2 read the original task with status <code>"draft"</code>, then its whole-task write restored that stale status while setting the owner. T2’s write is decisive. The combined state should be <code>{ status: "published", owner: "Ana" }</code>.</p>
+<h2 id="assistant-4">Assistant</h2>
+<p>Correct, without a case-specific hint. You transferred the diagnosis from arithmetic updates to whole-record replacement.</p>
+<p>Teach it back in two or three sentences: what general procedure would you use, and why can edits to different fields still conflict?</p>
+<h2 id="user-5">User</h2>
+<p>First, record what each thread read and compute the state that would preserve every intended change. Then compare that state with the actual final write and locate the stale-based write that made an earlier effect disappear. Different fields can still conflict when each thread replaces the whole record instead of updating only its own field.</p>
+<h2 id="assistant-5">Assistant</h2>
+<p>Accurate teach-back. Observed evidence: a correct repair after one orienting hint, followed by immediate unassisted transfer and explanation. Delayed retention remains untested, so retry a fresh no-hint lost-update versus safe-interleaving pair in about 48 hours. No files or learner state were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>914bf0d60d8e177320364d796939a76b94a489807ec16a919e73df7dd463dc6a</code><br>
+    Generated: 2026-08-19T13:21:27.678Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

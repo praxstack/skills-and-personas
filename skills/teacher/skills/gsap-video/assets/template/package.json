@@ -1,0 +1,18 @@
+{
+  "name": "gsap-explainer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "One HTML page animated by one paused GSAP timeline, keyed to timing.js; rendered by capture.mjs.",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "inter-ui": "4.1.1",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/bangers": "5.3.0"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}

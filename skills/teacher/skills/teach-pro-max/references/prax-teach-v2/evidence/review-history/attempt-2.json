@@ -1,0 +1,20 @@
+{
+  "attempt": 2,
+  "disposition": "failed-and-superseded",
+  "payload": {
+    "file_count": 336,
+    "manifest_sha256": "f3a6a45dac7afafa34ed8cf4a23d874b74a4256de4e67c0c6b8f9811383cde74",
+    "payload_file_sha256": "ffe788306a396f90c1ee6428891ddb829b8dd6280733aba5ed8757f7205faf99"
+  },
+  "result": "failed",
+  "finding": {
+    "severity": "high",
+    "surface": "learner-state generation containment",
+    "summary": "After a workspace lock was acquired, renaming a workspace ancestor and replacing it with a symlink could redirect pathname-based review-state I/O into another valid learner workspace."
+  },
+  "remediation": {
+    "implementation": "Lock-scoped workspace and state-directory descriptors now anchor reads and atomic replacements to the validated generation and revalidate the lexical parent before publication.",
+    "regression": "test_locked_review_write_rejects_ancestor_swap_redirection reproduces the race and proves both original and attacker review logs remain unchanged."
+  },
+  "claim_boundary": "This record preserves the failed review. It is not a passing review receipt and cannot satisfy AC-24."
+}

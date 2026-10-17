@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion editor</title>
+<!-- editor.html: the clip with every word, number, colour and time editable. Serve the project folder
+     (python3 -m http.server 8000 in it, then open http://localhost:8000/source/editor.html; the narration plays
+     from ../voice/). Edits rebuild the clip at once; "Save film.json" downloads the edited file: put it in source/,
+     then run motion_check.mjs and re-shoot the stills. -->
+<style>
+  :root { --bg: #111317; --panel: #191c22; --line: #2a2e37; --text: #e9e6df; --muted: #a39f97; --accent: #f0714a; --bad: #f06a6a; --good: #5fc795; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { display: grid; grid-template-columns: minmax(0, 1fr) 440px; grid-template-rows: 52px minmax(0, 1fr) 64px; height: 100vh; }
+  header { grid-column: 1 / 3; display: flex; align-items: center; gap: 10px; padding: 0 14px; border-bottom: 1px solid var(--line); }
+  header b { margin-right: 8px; }
+  button, select { background: #252932; color: var(--text); border: 1px solid var(--line); border-radius: 7px; padding: 6px 11px; font: inherit; cursor: pointer; }
+  button.on { border-color: var(--accent); color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #111; font-weight: 650; }
+  #view { position: relative; overflow: hidden; display: grid; place-items: center; background: #0a0b0d; }
+  #frame { border: 0; background: #000; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+  #side { overflow: auto; border-left: 1px solid var(--line); background: var(--panel); padding: 10px 12px 40px; }
+  #bar { grid-column: 1 / 3; display: flex; align-items: center; gap: 12px; padding: 0 14px; border-top: 1px solid var(--line); }
+  #bar input[type=range] { flex: 1; }
+  #t { font-variant-numeric: tabular-nums; min-width: 190px; color: var(--muted); }
+  details { border: 1px solid var(--line); border-radius: 9px; margin: 8px 0; background: #1d2027; }
+  summary { cursor: pointer; padding: 8px 10px; font-weight: 600; display: flex; gap: 8px; align-items: center; }
+  summary .at { color: var(--muted); font-weight: 400; font-size: 12px; }
+  .blk { border-top: 1px solid var(--line); padding: 8px 10px 10px; }
+  .blk h4 { margin: 0 0 6px; font-size: 13px; color: var(--accent); display: flex; justify-content: space-between; }
+  label { display: block; font-size: 12px; color: var(--muted); margin: 7px 0 3px; }
+  label i { font-style: normal; opacity: 0.8; }
+  input[type=text], input[type=number], textarea, select.f { width: 100%; background: #12141a; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: 13px/1.4 ui-monospace, Menlo, monospace; }
+  textarea { min-height: 54px; resize: vertical; }
+  .toff { display: flex; gap: 10px; align-items: center; }
+  .toff label { display: flex; gap: 5px; align-items: center; margin: 0; white-space: nowrap; }
+  .toff input[type=text]:disabled { opacity: 0.45; }
+  .msgs { font: 12px/1.5 ui-monospace, monospace; white-space: pre-wrap; margin: 6px 0; }
+  .msgs .e { color: var(--bad); } .msgs .w { color: #e8c26a; } .msgs .ok { color: var(--good); }
+  .hint { color: var(--muted); font-size: 12px; margin: 4px 0 10px; }
+  a { color: #9cc7ff; }
+</style>
+</head>
+<body>
+<header>
+  <b>Motion editor</b>
+  <span>Frame</span>
+  <span id="aspects"></span>
+  <span style="margin-left:10px">Look</span>
+  <select id="look"><option value="paper">paper (light)</option><option value="ink">ink (dark)</option></select>
+  <span style="flex:1"></span>
+  <button id="undo">Undo</button>
+  <button id="copy">Copy JSON</button>
+  <button id="save" class="primary">Save film.json</button>
+</header>
+<div id="view"><iframe id="frame" title="clip"></iframe></div>
+<div id="side">
+  <div class="hint">Every shot starts on a line of the narration and holds blocks. Text takes <code>*marks*</code> and <code>`code`</code>;
+    times are line references (<code>q2</code>, <code>q2:phrase</code>, <code>q2@0.5</code>, <code>q2.end -0.3</code>). A value starting with
+    <code>=</code> reads a dataset (<code>=speeds.fps:max</code>). The frame size here is a preview: the render size comes from the script.</div>
+  <div class="msgs" id="msgs"></div>
+  <div id="shots"></div>
+</div>
+<div id="bar">
+  <button id="play">play</button>
+  <input id="scrub" type="range" min="0" max="1" step="0.0333" value="0">
+  <span id="t"></span>
+</div>
+<script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const frame = $('#frame'), view = $('#view');
+  const params = new URLSearchParams(location.search);
+  let aspect = params.get('aspect') || '';
+  let film = null, history = [], W = 1920, H = 1080, cw = null, t = 0, playing = false, t0 = 0, w0 = 0, audio = null;
+
+  function load() {
+    frame.src = `index.html?embed=1${aspect ? '&aspect=' + encodeURIComponent(aspect) : ''}`;
+    frame.onload = async () => {
+      cw = frame.contentWindow;
+      try { await cw.READY; } catch (e) { showMsgs([String(e.message || e)], []); }
+      W = cw.M.W; H = cw.M.H;
+      Object.assign(frame.style, { width: W + 'px', height: H + 'px' });
+      fit();
+      if (!film) {
+        if (!cw.MOTION.film) return;   // film.json could not be read or parsed: the message above says why
+        film = JSON.parse(JSON.stringify(cw.MOTION.film));   // as read, even if it failed to build
+        if (!Array.isArray(film.shots)) film.shots = [];
+        // a one-block shorthand shot ({at, type, ...} or {at, id}) is shown and saved as {at, blocks: [...]}, as the engine reads it
+        film.shots = film.shots.map((s) => {
+          if (s.blocks) return s;
+          const { at, layout, split, light, ...b } = s, o = { at };
+          if (layout !== undefined) o.layout = layout;
+          if (split !== undefined) o.split = split;
+          if (light !== undefined) o.light = light;
+          return { ...o, blocks: [b] };
+        });
+      }
+      else await rebuild(false);
+      $('#look').value = (film.style && film.style.look) || 'paper';
+      $('#scrub').max = cw.M.TOTAL;
+      renderPanel();
+      seek(t);
+      if (!audio) { audio = new Audio('../voice/narration.wav'); audio.onerror = () => { audio = null; }; }
+    };
+  }
+  function fit() {
+    const r = view.getBoundingClientRect();
+    const s = Math.min((r.width - 24) / W, (r.height - 24) / H);
+    frame.style.transform = `translate(${(r.width - W * s) / 2}px, ${(r.height - H * s) / 2}px) scale(${s})`;
+  }
+  addEventListener('resize', fit);
+
+  // ------------------------------------------------------------------ aspect + look
+  const ASPECTS = ['', '16:9', '9:16', '1:1', '4:5'];
+  ASPECTS.forEach((a) => {
+    const b = document.createElement('button');
+    b.textContent = a || 'script';
+    b.title = a ? `preview at ${a}` : 'the size the script renders at';
+    b.onclick = () => { aspect = a; document.querySelectorAll('#aspects button').forEach((x) => x.classList.toggle('on', x === b)); load(); };
+    if (a === aspect) b.classList.add('on');
+    $('#aspects').appendChild(b);
+  });
+  $('#look').onchange = (e) => edit(() => { (film.style || (film.style = {})).look = e.target.value; });   // same object the style fields hold
+
+  // ------------------------------------------------------------------ edits
+  let timer = null;
+  function edit(fn) {
+    history.push(JSON.stringify(film));
+    if (history.length > 100) history.shift();
+    fn();
+    clearTimeout(timer);
+    timer = setTimeout(() => rebuild(), 250);
+  }
+  async function rebuild(panel = false) {
+    const r = await cw.MOTION.rebuild(JSON.parse(JSON.stringify(film)));
+    showMsgs(r.errors, r.warnings);
+    $('#scrub').max = cw.M.TOTAL;
+    seek(t);
+    if (panel) renderPanel();
+  }
+  function showMsgs(errors, warnings) {
+    const m = $('#msgs');
+    m.innerHTML = '';
+    const line = (cls, txt) => { const d = document.createElement('div'); d.className = cls; d.textContent = txt; m.appendChild(d); };
+    errors.forEach((e) => line('e', '✗ ' + e));
+    warnings.slice(0, 12).forEach((w) => line('w', '! ' + w));
+    if (warnings.length > 12) line('w', `… ${warnings.length - 12} more warnings`);
+    if (!errors.length && !warnings.length) line('ok', '✓ builds clean');
+  }
+  $('#undo').onclick = () => { if (!history.length) return; film = JSON.parse(history.pop()); $('#look').value = (film.style && film.style.look) || 'paper'; rebuild(true); };
+  $('#copy').onclick = () => navigator.clipboard.writeText(JSON.stringify(film, null, 2) + '\n').then(() => showMsgs([], ['film.json copied']));
+  $('#save').onclick = () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(film, null, 2) + '\n'], { type: 'application/json' }));
+    a.download = 'film.json';
+    a.click();
+  };
+
+  // ------------------------------------------------------------------ the panel: shots, blocks, fields
+  function field(parent, label, help, value, kind, set, opts) {
+    const l = document.createElement('label');
+    l.innerHTML = `${label} <i>${help ? '· ' + help.replace(/</g, '&lt;') : ''}</i>`;
+    parent.appendChild(l);
+    let inp;
+    if (kind === 'enum') {
+      inp = document.createElement('select'); inp.className = 'f';
+      ['', ...opts].forEach((o) => { const op = document.createElement('option'); op.value = o; op.textContent = o || '(default)'; inp.appendChild(op); });
+      inp.value = value ?? '';
+      inp.onchange = () => edit(() => set(inp.value || undefined));
+    } else if (kind === 'bool') {
+      inp = document.createElement('select'); inp.className = 'f';
+      [['', '(default)'], ['true', 'yes'], ['false', 'no']].forEach(([v, n]) => { const op = document.createElement('option'); op.value = v; op.textContent = n; inp.appendChild(op); });
+      inp.value = value === undefined ? '' : String(value);
+      inp.onchange = () => edit(() => set(inp.value === '' ? undefined : inp.value === 'true'));
+    } else if (kind === 'textoff') {
+      // a name, or false to hide it: typing "false" would show that word, so hiding is its own box
+      inp = document.createElement('div'); inp.className = 'toff';
+      const tx = document.createElement('input'), off = document.createElement('label'), cb = document.createElement('input');
+      tx.type = 'text'; cb.type = 'checkbox';
+      off.append(cb, ' hide');
+      cb.checked = value === false;
+      tx.value = value === false || value === undefined || value === null ? '' : String(value);
+      tx.disabled = cb.checked;
+      const put = () => edit(() => set(cb.checked ? false : tx.value === '' ? undefined : tx.value));
+      tx.oninput = put;
+      cb.onchange = () => { tx.disabled = cb.checked; put(); };
+      inp.append(tx, off);
+    } else if (kind === 'json' || kind === 'list' || kind === 'rows' || kind === 'code' || (typeof value === 'object' && value !== null)) {
+      inp = document.createElement('textarea');
+      // code is plain text whatever its first character; written as a list of lines in film.json, it stays one
+      const lines = kind === 'code' && Array.isArray(value);
+      inp.value = value === undefined ? '' : kind === 'code' ? (lines ? value.join('\n') : String(value)) : JSON.stringify(value, null, kind === 'json' || kind === 'rows' ? 1 : 0);
+      inp.oninput = () => {
+        let v;
+        if (inp.value.trim() === '') v = undefined;
+        else if (kind === 'code') v = lines ? inp.value.split('\n') : inp.value;
+        else { try { v = JSON.parse(inp.value); inp.style.borderColor = ''; } catch { inp.style.borderColor = 'var(--bad)'; return; } }
+        edit(() => set(v));
+      };
+    } else {
+      inp = document.createElement('input');
+      inp.type = kind === 'number' ? 'number' : 'text';
+      inp.value = value ?? '';
+      inp.oninput = () => edit(() => set(inp.value === '' ? undefined : kind === 'number' ? +inp.value : inp.value));
+    }
+    parent.appendChild(inp);
+  }
+  function renderPanel() {
+    const box = $('#shots');
+    box.innerHTML = '';
+    const lines = cw.M.lines;
+    const st = document.createElement('details');
+    st.innerHTML = '<summary>Style <span class="at">brand, tag, captions</span></summary>';
+    const sb = document.createElement('div'); sb.className = 'blk'; st.appendChild(sb);
+    const S = film.style || (film.style = {});
+    [['brand', 'textoff', 'the name top left (hide: no brand row)'], ['mark', 'text', 'two letters in the badge'], ['tag', 'text', 'top right'],
+      ['captions', 'bool', 'burned-in captions'], ['karaoke', 'bool', 'light each spoken word']].forEach(([k, kind, help]) =>
+      field(sb, k, help, S[k], kind, (v) => { if (v === undefined) delete S[k]; else S[k] = v; }));
+    box.appendChild(st);
+    film.shots.forEach((shot, i) => {
+      const d = document.createElement('details');
+      const rt = cw.M.shots[i];
+      d.open = rt && t >= rt.t0 && t < rt.t1;
+      const l = lines.find((x) => x.id === shot.at);
+      // a block's id as stage.js reads it: "id": 0 names the block "0", so a number is an id like any other
+      const idOf = (b) => (b.id === undefined || b.id === null || b.id === '' ? '' : String(b.id));
+      const typeOf = (b) => b.type || ((film.shots.slice(0, i).flatMap((s) => s.blocks || []).find((x) => idOf(x) && idOf(x) === idOf(b) && x.type) || {}).type || '');
+      // ids and types come from film.json, so they go in as text, never as markup
+      d.innerHTML = `<summary>Shot ${i + 1} <span class="at"></span></summary>`;
+      d.querySelector('.at').textContent = `${(shot.blocks || []).map((b) => typeOf(b) + (idOf(b) ? ' ' + idOf(b) : '')).join(' + ')} · ${rt ? rt.t0.toFixed(1) + ' s' : ''}`;
+      d.querySelector('summary').onclick = () => { if (rt) seek(rt.t0 + 0.6); };
+      const sh = document.createElement('div'); sh.className = 'blk'; d.appendChild(sh);
+      field(sh, 'at', `starts on this line${l ? ': “' + l.cap + '”' : ''}`, shot.at, 'enum', (v) => { shot.at = v; }, lines.map((x) => x.id));
+      field(sh, 'split', 'block sizes, e.g. [1.2, 1]', shot.split, 'json', (v) => { if (v === undefined) delete shot.split; else shot.split = v; });
+      field(sh, 'layout', 'row or column (default: by frame shape)', shot.layout, 'enum', (v) => { if (v === undefined) delete shot.layout; else shot.layout = v; }, ['row', 'column']);
+      field(sh, 'light', 'the backdrop light’s hue (default: the palette’s lights in turn)', shot.light, 'enum', (v) => { if (v === undefined) delete shot.light; else shot.light = v; }, cw.LOOK.HUES);
+      (shot.blocks || []).forEach((b) => {
+        const first = idOf(b) && film.shots.slice(0, i).findIndex((s) => (s.blocks || []).some((x) => idOf(x) === idOf(b)));
+        const carried = Boolean(idOf(b)) && first >= 0;
+        const type = typeOf(b);
+        const def = cw.M.blocks[type] || { fields: {} };
+        const bd = document.createElement('div'); bd.className = 'blk';
+        bd.innerHTML = '<h4><span></span></h4>';
+        bd.querySelector('span').textContent = `${type}${idOf(b) ? ' · ' + idOf(b) : ''}`;
+        if (carried) {
+          const n = document.createElement('div'); n.className = 'hint';
+          n.textContent = `Carried on from shot ${first + 1} (same id): its fields are edited there; here it can take new cues.`;
+          bd.appendChild(n);
+        } else Object.entries(def.fields || {}).forEach(([k, f]) => field(bd, k + (f.required ? ' *' : ''), f.help || f.type, b[k], f.type, (v) => { if (v === undefined) delete b[k]; else b[k] = v; }, f.options));
+        field(bd, 'cues', `changes on a line: ${(def.cues || []).join(', ') || 'none'}; [{"do": "...", "at": "q2:phrase"}]`, b.cues, 'json', (v) => { if (v === undefined) delete b.cues; else b.cues = v; });
+        d.appendChild(bd);
+      });
+      box.appendChild(d);
+    });
+  }
+
+  // ------------------------------------------------------------------ time
+  function seek(x) {
+    if (!cw || !cw.M) return;
+    t = Math.max(0, Math.min(cw.M.TOTAL, x));
+    const r = cw.renderFrame(t);   // until a film that failed to build is fixed, this waits on its failed load
+    if (r && r.catch) r.catch(() => {});
+    $('#scrub').value = t;
+    const l = cw.M.lineAt(t);
+    $('#t').textContent = `${t.toFixed(2)} / ${cw.M.TOTAL.toFixed(2)} s  ${l ? l.id : ''}`;
+  }
+  $('#scrub').oninput = (e) => { stop(); seek(+e.target.value); };
+  function stop() { playing = false; $('#play').textContent = 'play'; if (audio) audio.pause(); }
+  function tick() {
+    if (!playing) return;
+    const x = w0 + (performance.now() - t0) / 1000;
+    if (x >= cw.M.TOTAL) { stop(); seek(cw.M.TOTAL); return; }
+    seek(x);
+    requestAnimationFrame(tick);
+  }
+  $('#play').onclick = () => {
+    if (playing) return stop();
+    playing = true; $('#play').textContent = 'pause';
+    w0 = t; t0 = performance.now();
+    if (audio) { audio.currentTime = w0; audio.play().catch(() => {}); }
+    tick();
+  };
+  addEventListener('keydown', (e) => {
+    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    if (e.key === ' ') { e.preventDefault(); $('#play').click(); }
+    if (e.key === 'ArrowRight') seek(t + (e.shiftKey ? 5 : 1 / 30));
+    if (e.key === 'ArrowLeft') seek(t - (e.shiftKey ? 5 : 1 / 30));
+  });
+  load();
+})();
+</script>
+</body>
+</html>

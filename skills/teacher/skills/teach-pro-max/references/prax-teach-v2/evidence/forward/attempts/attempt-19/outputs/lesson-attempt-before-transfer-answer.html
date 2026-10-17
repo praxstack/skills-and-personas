@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="ced6c9c9f23590d91f98d5594960240af0768806e07239f1648a7244d44ada23">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lost-update lesson</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lost-update-lesson">Lost-update lesson</h1>
+<h2 id="learner-turn-1">Learner turn 1</h2>
+<p>Create a focused lesson that teaches me to diagnose a two-thread lost update. Include an unseen transfer task and do not reveal its answer before my attempt.</p>
+<h2 id="tutor-turn-1">Tutor turn 1</h2>
+<h2 id="focused-lesson-diagnose-a-two-thread-lost-update">Focused lesson: diagnose a two-thread lost update</h2>
+<p>Goal: Given an interleaving, identify:</p>
+<ol>
+<li>The shared state.</li>
+<li>Each thread’s read and write.</li>
+<li>The write that overwrites another thread’s update.</li>
+<li>The smallest synchronization boundary that prevents it.</li>
+</ol>
+<h3 id="first-prediction">First prediction</h3>
+<p>Start with <code>counter = 0</code>:</p>
+<pre><code class="language-text">Thread A: tmp = counter
+Thread A: tmp = tmp + 1
+Thread A: counter = tmp
+
+Thread B: tmp = counter
+Thread B: tmp = tmp + 1
+Thread B: counter = tmp
+</code></pre>
+<p>One possible schedule is:</p>
+<pre><code class="language-text">A reads counter
+B reads counter
+A writes counter
+B writes counter
+</code></pre>
+<p>What final value can result, and which two operations demonstrate the lost update? If uncertain, say “I don’t know.”</p>
+<h3 id="unseen-transfer-task">Unseen transfer task</h3>
+<p>Later, diagnose this new case without copying the counter example:</p>
+<pre><code class="language-text">inventory = 10
+
+Thread A: seen = inventory
+Thread A: seen = seen - 3
+Thread A: inventory = seen
+
+Thread B: seen = inventory
+Thread B: seen = seen - 4
+Thread B: inventory = seen
+</code></pre>
+<p>Do not solve the transfer task yet; we’ll use it after your first diagnosis.</p>
+<h2 id="learner-turn-2">Learner turn 2</h2>
+<p>I think the final value is 2 because both threads increment once. The two writes show both increments completed, so I do not see a lost update.</p>
+<h2 id="tutor-turn-2">Tutor turn 2</h2>
+<p>Track the value each thread reads into its own private <code>tmp</code>. If both reads happen before either write, what value does each thread eventually write to <code>counter</code>?</p>
+<p>Revise your answer with the two write values and the resulting final value.</p>
+<h2 id="learner-turn-3">Learner turn 3</h2>
+<p>Both threads read 0 into separate temporary variables, so each computes and writes 1. The final value is 1, not 2. The second write of 1 overwrites the first completed increment, so one update is lost.</p>
+<h2 id="tutor-turn-3">Tutor turn 3</h2>
+<p>Correct. You tracked the private reads, computed both writes, and identified the overwrite. The key principle is that “read → modify → write” is one logical update, but the threads can interleave those steps.</p>
+<p>Worked trace:</p>
+<pre><code class="language-text">A reads 0
+B reads 0
+A writes 1
+B writes 1
+</code></pre>
+<p>Now attempt the transfer task:</p>
+<pre><code class="language-text">inventory = 10
+
+Thread A: seen = inventory
+Thread A: seen = seen - 3
+Thread A: inventory = seen
+
+Thread B: seen = inventory
+Thread B: seen = seen - 4
+Thread B: inventory = seen
+</code></pre>
+<p>What final inventory results under the analogous interleaving, which update is lost, and what operation must be protected to prevent it?</p>
+<h2 id="learner-turn-4">Learner turn 4</h2>
+<p>Under the analogous interleaving, both threads read 10. A computes and writes 7, then B writes 6 from its stale read, so the final inventory is 6 instead of the correct 3. A's subtraction of 3 is lost. The entire read-modify-write sequence must be protected atomically, for example by one lock around it.</p>
+<h2 id="tutor-turn-4">Tutor turn 4</h2>
+<p>Correct. You transferred the diagnosis: both threads used stale reads, A’s update was overwritten, and the full read–modify–write sequence needs atomic protection.</p>
+<p>Evidence observed: your first diagnosis became correct after one hint (scaffolded); your transfer diagnosis was correct. That demonstrates application, but not yet independent retention.</p>
+<p>Teach-back in one sentence: why must protection cover the entire read–modify–write sequence rather than only the write?</p>
+<h2 id="learner-turn-5">Learner turn 5</h2>
+<p>Protection must cover read, modify, and write together because locking only the final write still allows both threads to compute from the same stale value, so a later write can still erase an earlier update.</p>
+<h2 id="tutor-turn-5">Tutor turn 5</h2>
+<p>Exactly. Locking only the write would still allow stale calculations; the whole read–modify–write must be atomic.</p>
+<p>Lesson complete:</p>
+<ul>
+<li>Initial diagnosis: correct after one hint (scaffolded).</li>
+<li>Transfer diagnosis: correct.</li>
+<li>Teach-back: correct and causal.</li>
+</ul>
+<p>Next retrieval: diagnose a fresh interleaving tomorrow without using the template.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>ced6c9c9f23590d91f98d5594960240af0768806e07239f1648a7244d44ada23</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

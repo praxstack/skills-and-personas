@@ -1,0 +1,146 @@
+{
+  "$id": "https://prax.local/prax-teach-v2/schemas/learner.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "consent": {
+      "additionalProperties": false,
+      "properties": {
+        "controls": {
+          "items": {
+            "enum": [
+              "inspect",
+              "correct",
+              "export",
+              "delete"
+            ]
+          },
+          "minItems": 4,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "granted_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "location": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "persistent_state": {
+          "type": "boolean"
+        },
+        "disabled_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "disable_reason": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "type": "string"
+        },
+        "purpose": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope": {
+          "items": {
+            "enum": [
+              "goal",
+              "practice_evidence",
+              "reviews"
+            ]
+          },
+          "minItems": 3,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "controls",
+        "granted_at",
+        "location",
+        "persistent_state",
+        "purpose",
+        "scope"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "persistent_state": {
+                "const": false
+              }
+            },
+            "required": [
+              "persistent_state"
+            ]
+          },
+          "then": {
+            "required": [
+              "disabled_at",
+              "disable_reason"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "disabled_at"
+                  ]
+                },
+                {
+                  "required": [
+                    "disable_reason"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "type": "object"
+    },
+    "goal": {
+      "additionalProperties": false,
+      "properties": {
+        "retention_horizon_days": {
+          "maximum": 3650,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "statement": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "target_performance": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "retention_horizon_days",
+        "statement",
+        "target_performance"
+      ],
+      "type": "object"
+    },
+    "learner_id": {
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1"
+    }
+  },
+  "required": [
+    "consent",
+    "goal",
+    "learner_id",
+    "schema_version"
+  ],
+  "title": "Prax Teach learner consent and goal",
+  "type": "object"
+}

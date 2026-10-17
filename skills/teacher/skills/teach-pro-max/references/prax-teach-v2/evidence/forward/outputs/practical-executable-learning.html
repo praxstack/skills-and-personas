@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="practical-executable-learning.md">
+  <meta name="source-sha256" content="4a1c850b3b5beacb71f6c687aebabc21360936945aabb86901b635a26c314da4">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Practical gradient-descent lesson</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./practical-executable-learning.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="practical-gradient-descent-lesson">Practical gradient-descent lesson</h1>
+<h2 id="user">User</h2>
+<p>Teach me gradient descent with a real two-parameter model. I should predict what one step will do, run it, inspect the result, change something, debug a bad step, explain the rule, and transfer it to new data.</p>
+<h2 id="assistant">Assistant</h2>
+<p>We’ll train the two-parameter model (\hat y = wx+b).</p>
+<p>Start with (w=1), (b=1), one data point (x=2,\ y=7), loss (L=\tfrac12(\hat y-y)^2), and learning rate (0.1). The current prediction is (3).</p>
+<p>Before running it: will one gradient-descent step make (w) and (b) increase, decrease, or move in opposite directions? Briefly explain your prediction—or say “I don’t know.”</p>
+<h2 id="user-2">User</h2>
+<p>Both should increase because the prediction is below the target. For replayable evidence, use the checked-in fixture at <code>/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py</code>; run its <code>rent-stable</code> case with the exact absolute command and show complete stdout.</p>
+<h2 id="assistant-2">Assistant</h2>
+<p>Correct: for this case, both gradients are negative, so subtracting them increases both parameters.</p>
+<pre><code class="language-text">$ /Users/prax/.local/share/mise/installs/python/3.13/bin/python3 /Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py rent-stable
+case=rent-stable learning_rate=0.10
+before w=0.200 b=0.500 predictions=[0.70, 0.90, 1.10] loss=1.270
+gradients dw=-4.800 db=-2.200
+after w=0.680 b=0.720 predictions=[1.40, 2.08, 2.76] loss=0.028
+</code></pre>
+<p>Which number is the clearest evidence that this was a good step, and how much did it change?</p>
+<h2 id="user-3">User</h2>
+<p>The clearest evidence is loss: it fell from 1.270 to 0.028, a decrease of 1.242. The predictions also moved close to the targets. I want to change only the learning rate to 1.0 next to see whether the same gradient direction overshoots.</p>
+<h2 id="assistant-3">Assistant</h2>
+<p>Exactly: the loss decreased by (1.242). Changing only the learning rate isolates step size while keeping the starting point and gradient unchanged.</p>
+<pre><code class="language-text">$ /Users/prax/.local/share/mise/installs/python/3.13/bin/python3 /Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py rent-overshoot
+case=rent-overshoot learning_rate=1.00
+before w=0.200 b=0.500 predictions=[0.70, 0.90, 1.10] loss=1.270
+gradients dw=-4.800 db=-2.200
+after w=5.000 b=2.700 predictions=[7.70, 12.70, 17.70] loss=127.990
+</code></pre>
+<p>Debug this bad step: was the problem the gradient direction or the step size? Justify your answer from the two runs.</p>
+<h2 id="user-4">User</h2>
+<p>The step size was wrong, not the gradient direction: both runs began at the same parameters and had the same negative gradients, but the ten-times-larger learning rate sent the loss from 1.270 to 127.990. The reusable rule is <code>new parameter = old parameter - learning_rate * gradient</code>: the gradient points uphill, subtraction moves downhill, and the learning rate controls how far; too large can cross the low-loss region.</p>
+<h2 id="assistant-4">Assistant</h2>
+<p>That diagnosis and rule are correct: the controlled comparison isolates the learning rate, and your “cross the low-loss region” explanation captures overshooting.</p>
+<p>Transfer to a delivery-time model (\hat y=wx+b): all distances (x) are positive, and every current prediction is above its observed delivery time. Before running anything, predict the signs of (dw) and (db), then say whether (w) and (b) should increase or decrease. Explain using your update rule.</p>
+<h2 id="user-5">User</h2>
+<p>For your stated above-target scenario, both gradients should be positive and subtracting them should decrease both parameters. The checked-in <code>delivery-transfer</code> fixture is the opposite case—its initial predictions are below the targets—so for that runnable transfer I predict negative <code>dw</code> and <code>db</code>, increases in both <code>w</code> and <code>b</code>, and lower loss. Please run that exact case with the absolute command and complete stdout.</p>
+<h2 id="assistant-5">Assistant</h2>
+<p>Correct distinction: above-target errors would produce positive gradients here, while this below-target transfer case predicts negative gradients and parameter increases.</p>
+<pre><code class="language-text">$ /Users/prax/.local/share/mise/installs/python/3.13/bin/python3 /Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/evidence/forward/execution/practical_gradient_descent.py delivery-transfer
+case=delivery-transfer learning_rate=0.10
+before w=1.000 b=1.000 predictions=[2.00, 3.00] loss=12.500
+gradients dw=-11.000 db=-7.000
+after w=2.100 b=1.700 predictions=[3.80, 5.90] loss=1.325
+</code></pre>
+<p>Did the run confirm every part of your prediction? Cite the gradient signs, parameter changes, and loss change.</p>
+<h2 id="user-6">User</h2>
+<p>Yes. <code>dw=-11</code> and <code>db=-7</code> are both negative; subtracting them increased <code>w</code> from 1.0 to 2.1 and <code>b</code> from 1.0 to 1.7. Loss fell from 12.500 to 1.325, so the step improved the new model. This also confirms the direction reverses when errors reverse.</p>
+<h2 id="assistant-6">Assistant</h2>
+<p>Yes—your interpretation matches every observed value.</p>
+<p>You independently predicted, ran, inspected, modified, debugged, explained, and transferred one gradient-descent step. Your reusable rule was correct: subtract the gradient, while the learning rate controls distance and can cause overshooting.</p>
+<p>Remaining uncertainty: durable recall and calculating gradients directly from raw data rather than reading them from the program.</p>
+<p>Retention horizon: 1 week. In 3 days, retrieve the rule without notes and compute one two-parameter update from fresh data before running it.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./practical-executable-learning.md">practical-executable-learning.md</a><br>
+    SHA-256: <code>4a1c850b3b5beacb71f6c687aebabc21360936945aabb86901b635a26c314da4</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

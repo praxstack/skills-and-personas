@@ -1,0 +1,68 @@
+{
+  "schema_version": "1",
+  "verified_at": "2026-08-04",
+  "runtime": [
+    {
+      "name": "fsrs",
+      "version": "6.3.1",
+      "source": "https://pypi.org/project/fsrs/6.3.1/",
+      "repository": "https://github.com/open-spaced-repetition/py-fsrs/tree/v6.3.1",
+      "license": "MIT",
+      "python": ">=3.10",
+      "wheel_sha256": "ac1bf9939573592d8c9bc1e11a00bd17e04146dc9f2c913127e2bcc431b9040b"
+    },
+    {
+      "name": "entities",
+      "version": "8.0.0",
+      "source": "https://www.npmjs.com/package/entities/v/8.0.0",
+      "repository": "https://github.com/fb55/entities",
+      "license": "BSD-2-Clause",
+      "purpose": "Standards-complete HTML named and numeric entity decoding before URL policy",
+      "npm_integrity": "sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA=="
+    },
+    {
+      "name": "marked",
+      "version": "18.0.7",
+      "source": "https://www.npmjs.com/package/marked/v/18.0.7",
+      "repository": "https://github.com/markedjs/marked",
+      "license": "MIT",
+      "purpose": "GFM parsing; does not sanitize HTML"
+    },
+    {
+      "name": "sanitize-html",
+      "version": "2.17.6",
+      "source": "https://www.npmjs.com/package/sanitize-html/v/2.17.6",
+      "repository": "https://github.com/apostrophecms/sanitize-html",
+      "license": "MIT",
+      "purpose": "Server-side allowlist sanitization of generated HTML"
+    }
+  ],
+  "optional_integrations": [
+    {
+      "name": "flint-chart",
+      "version": "0.4.1",
+      "source": "https://www.npmjs.com/package/flint-chart/v/0.4.1",
+      "repository_commit": "https://github.com/microsoft/flint-chart/tree/9372b03005b929003142c9d6c28dacb1cb1b1dbd",
+      "license": "MIT",
+      "npm_integrity": "sha512-4umtCbQpDiY5sRCAqNlBKxIpxRXg0FMRj0f1d2d1n/5p75MzfasiRJDEIkrPtjBdPffjmaXtDeBnSqazrh1opA=="
+    },
+    {
+      "name": "flint-chart-mcp",
+      "version": "0.4.1",
+      "source": "https://www.npmjs.com/package/flint-chart-mcp/v/0.4.1",
+      "repository_commit": "https://github.com/microsoft/flint-chart/tree/9372b03005b929003142c9d6c28dacb1cb1b1dbd",
+      "license": "MIT",
+      "npm_integrity": "sha512-0MefNsPQbkY9NS9S7BPfN2dzbTCej26qUHnYJEJ/X1BASEJNqAVRBXDKeJFjMIejaVZy97RINbuJNv5v/ySoAg=="
+    },
+    {
+      "name": "skillopt",
+      "version": "0.2.0",
+      "source": "https://pypi.org/project/skillopt/0.2.0/",
+      "repository_commit": "https://github.com/microsoft/SkillOpt/commit/e4ea6a6771e797ef820cdd8bfea64c57e0481065",
+      "license": "MIT",
+      "python": ">=3.10",
+      "status": "alpha",
+      "wheel_sha256": "818db802507c6f82553fd24c75aa70c953ab0a712647f60e68e4595052c4b150"
+    }
+  ]
+}

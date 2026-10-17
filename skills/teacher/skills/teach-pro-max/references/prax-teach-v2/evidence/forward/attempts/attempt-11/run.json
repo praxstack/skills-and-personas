@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "attempt": 11,
+  "rubric": "evals/forward-behavior.json",
+  "rubric_sha256": "f7e292f06b1df3fea178a818368a0078844278885d05f99428d4c86e5b600caa",
+  "runner_harness": "Codex collaboration child tasks",
+  "generated_at": "2026-08-18T17:25:47Z",
+  "scored_by_runner": false,
+  "claim_boundary": "Public forward behavior only; not held-out, candidate-superiority, accessibility-field, or learner-outcome evidence.",
+  "model": {
+    "exact_identifier": null,
+    "reported_as_unavailable": true,
+    "limitation": "The collaboration harness did not expose an exact provider model identifier to the coordinator."
+  },
+  "fresh_context_contract": {
+    "fork_turns": "none",
+    "one_child_task_per_case": true,
+    "coordinator_did_not_supply_prior_case_outputs": true
+  },
+  "prior_attempts": [
+    {"attempt": 1, "path": "evidence/forward/attempts/attempt-1", "status": "failed"},
+    {"attempt": 2, "path": "evidence/forward/attempts/attempt-2-driver-draft", "status": "unscored-disqualified"},
+    {"attempt": 3, "path": "evidence/forward/attempts/attempt-3", "status": "historical-ineligible"},
+    {"attempt": 4, "path": "evidence/forward/attempts/attempt-4", "status": "failed"},
+    {"attempt": 5, "path": "evidence/forward/attempts/attempt-5-composite", "status": "release-ineligible-composite"},
+    {"attempt": 6, "path": "evidence/forward/attempts/attempt-6", "status": "failed-stopped"},
+    {"attempt": 7, "path": "evidence/forward/attempts/attempt-7", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 8, "path": "evidence/forward/attempts/attempt-8-driver-context", "status": "unscored-release-ineligible"},
+    {"attempt": 9, "path": "evidence/forward/attempts/attempt-9", "status": "passed-then-invalidated-by-source-change"},
+    {"attempt": 10, "path": "evidence/forward/attempts/attempt-10", "status": "passed-then-invalidated-by-source-change"}
+  ],
+  "source_files": {
+    "SKILL.md": "ef39e730c4cdacf96908716de56b4bc5c1d75a7a080d89eb5f3e286603754ac6",
+    "references/ARTIFACT-CONTRACT.md": "5cb106553c35d0fa24af4c13fc739a87105abf3c5c88e20688e3ba0f306306d2",
+    "references/MODE-CONTRACT.md": "39c1b77171f789adcde1db7091149f038b1d8ab0ba5f44e154e6112ab9038ddc",
+    "references/TEACHING-PROTOCOL.md": "16a0c7ee87308bdf704e570d19a9e4c1e4a55f8713e3d86104d79dfa60349a2d",
+    "references/VISUALIZATION-ROUTER.md": "f3bfe940645547d025fdafc4dd7bf7441007dee768cf60d72e3fa07a6904caad",
+    "scripts/prax_teach.py": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+    "scripts/praxteach/routing.py": "8d584ba734defeb892368c5aee9f23bab9b1bda4c34f3428f195306fa4f442a1"
+  },
+  "cases": [
+    {
+      "case_id": "quick-bounded-explanation",
+      "fresh_task": "/root/forward11_quick",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/quick-bounded-explanation.md",
+      "output_sha256": "63e81d4ec71240be8778769537348f5bee99e893217b137a0d9c6887f4f7e871"
+    },
+    {
+      "case_id": "answer-now-override",
+      "fresh_task": "/root/forward11_answer",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/answer-now-override.md",
+      "output_sha256": "9f832695815547e6854832e73ce508003fddda000172a736847b60613a541eb7"
+    },
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "fresh_task": "/root/forward11_lesson",
+      "format_normalization": "The coordinator assembled exact alternating utterances under document and speaker headings; no tutor or learner wording was changed.",
+      "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+      "output_sha256": "1998677ea5d1e3d4cfbd3985990f5aedcf8d8410c3e2d3b7e96b04bd2d8b58bd",
+      "interaction": {
+        "tutor_turns": 6,
+        "learner_turns": 5,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "fresh_task": "/root/forward11_course",
+      "format_normalization": "The response already supplied the document H1; the body is unchanged.",
+      "output": "evidence/forward/outputs/course-consent-boundary.md",
+      "output_sha256": "fa5d30d594505f63928e229f02f3d0bc71aa67b1c1f5fc665177d432b8a1692a"
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "fresh_task": "/root/forward11_resume",
+      "context": "evidence/forward/context/resume-hinted.json",
+      "context_sha256": "fc284afe08daeaf3954780e2471efade865d3e49f6c1521409af992eac4beed9",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/resume-hinted-evidence.md",
+      "output_sha256": "5cb7642d52898d7c8d4a6f9b39c45b7653adfcbd70173a06b1ec3df39ce6267a"
+    },
+    {
+      "case_id": "visual-none",
+      "fresh_task": "/root/forward11_visual_none",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-none.md",
+      "output_sha256": "b3a8ad08a3c267987a413b33d69276a5dd481dbea17f98545b8486fd43b1b4c8"
+    },
+    {
+      "case_id": "visual-essential-static",
+      "fresh_task": "/root/forward11_visual_static",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-essential-static.md",
+      "output_sha256": "112e620a606f8b4a44621126c0777eba78e9de1ff616990358324880ca6228d8"
+    },
+    {
+      "case_id": "practical-executable-learning",
+      "fresh_task": "/root/forward11_practical",
+      "format_normalization": "The coordinator assembled exact alternating utterances under document and speaker headings; no tutor or learner wording was changed.",
+      "output": "evidence/forward/outputs/practical-executable-learning.md",
+      "output_sha256": "5e1887e4d1d6f380cf3bf088885e3da6c17144b6765c4828b17efa8da6303765",
+      "interaction": {
+        "tutor_turns": 7,
+        "learner_turns": 6,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    }
+  ]
+}

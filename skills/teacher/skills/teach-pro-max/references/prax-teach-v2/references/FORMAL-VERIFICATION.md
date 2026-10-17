@@ -1,0 +1,3 @@
+# Build-time formal receipts
+
+Formal verification is an authoring/build-time experiment, not a learner-runtime dependency. `integrations/formal/lean/adapter.py` runs the declared `.lean` source when a local Lean toolchain is present, derives pass/fail from the compiler exit status, and accepts display proof states only when their source hash, schema, status, and labeled-state shape validate. The packaged lesson always includes the static proof-state equivalent. Missing Lean is an explicit `unavailable` result, never a fabricated pass. Retention requires a measured content-error catch or usable proof-state benefit without runtime, accessibility, maintenance, or cognitive-cost regressions.

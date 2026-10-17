@@ -1,0 +1,5 @@
+# Stable published package. A custom benchmark additionally requires the pinned source checkout
+# recorded in SOURCE.json because v0.2.0 registries/configs are source-tree surfaces.
+skillopt==0.2.0 \
+    --hash=sha256:818db802507c6f82553fd24c75aa70c953ab0a712647f60e68e4595052c4b150
+

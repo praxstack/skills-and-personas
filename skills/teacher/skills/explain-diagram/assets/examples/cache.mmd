@@ -1,0 +1,6 @@
+flowchart LR
+  Q([A question arrives]) --> C{Is the answer<br/>in the cache?}
+  C -- yes: a hit --> R([Answer in about 1 ms])
+  C -- no: a miss --> O[Ask the origin<br/>about 120 ms]
+  O --> S[Store the answer<br/>in the cache]
+  S --> R

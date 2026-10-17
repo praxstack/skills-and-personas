@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "fixture_visibility": "public_forward_behavior_context",
+  "synthetic": true,
+  "workspace_id": "forward-resume-index-course",
+  "goal": {
+    "topic": "composite B-tree index selection",
+    "target_performance": "Choose whether an index can support an unseen query and justify the decision from left-prefix ordering",
+    "retention_horizon_days": 30
+  },
+  "prior_evidence": {
+    "concept_id": "composite-index-left-prefix",
+    "dimension": "application",
+    "original_response": "Use the index for WHERE a = 42 because a is the leading indexed column.",
+    "correct": true,
+    "hint_level": 3,
+    "hint_label": "strongest_hint",
+    "session_id": "forward-session-1",
+    "learner_authored": true
+  },
+  "derived_state": {
+    "status": "scaffolded",
+    "durable": false,
+    "reason": "One correct application response used the strongest hint; no later unassisted evidence exists."
+  },
+  "controls": ["inspect", "correct", "retest"]
+}

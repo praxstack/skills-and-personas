@@ -1,0 +1,43 @@
+{
+  "data": {
+    "values": [
+      {
+        "session": "Immediate",
+        "retrieval": 72
+      }
+    ]
+  },
+  "semantic_types": {
+    "retrieval": "Percentage",
+    "session": "Measurement window"
+  },
+  "field_display_names": {
+    "retrieval": "Independent retrieval (%)",
+    "session": "Measurement window"
+  },
+  "chart_spec": {
+    "baseSize": {
+      "height": 240,
+      "width": 420
+    },
+    "canvasSize": {
+      "height": 240,
+      "width": 420
+    },
+    "chartType": "Bar Chart",
+    "encodings": {
+      "x": {
+        "field": "session"
+      },
+      "y": {
+        "field": "missing_measure"
+      }
+    }
+  },
+  "prax_teach": {
+    "reviewed": true,
+    "title": "Invalid semantic binding",
+    "summary": "The encoded measure is deliberately absent from the inline data.",
+    "table_caption": "Invalid semantic binding fixture"
+  }
+}

@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="accessible-interaction-fallback.md">
+  <meta name="source-sha256" content="f4d68d4534ca107b7e6df725d200812717ac7a4681f2fd019104a1337e1c85f5">
+  <meta name="generated-at" content="2026-08-19T09:21:18.517Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Accessible interaction fallback</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./accessible-interaction-fallback.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="accessible-interaction-fallback">Accessible interaction fallback</h1>
+<p>Below is a self-contained practice page. JavaScript adds feedback; without JavaScript, the complete worksheet, hints, and native answer key remain available.</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Hash-table load-factor practice&lt;/title&gt;
+
+  &lt;style&gt;
+    :root {
+      color-scheme: light dark;
+      --page: #f7f7fb;
+      --panel: #ffffff;
+      --text: #20202a;
+      --muted: #5b5b69;
+      --border: #777784;
+      --accent: #3157c8;
+      --correct: #176b42;
+      --incorrect: #a12828;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #17171c;
+        --panel: #24242b;
+        --text: #f4f4f7;
+        --muted: #c1c1cb;
+        --border: #9696a3;
+        --accent: #9cb7ff;
+        --correct: #79d7a5;
+        --incorrect: #ff9a9a;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font: 1rem/1.55 system-ui, sans-serif;
+    }
+
+    header,
+    main,
+    footer {
+      width: min(44rem, calc(100% - 2rem));
+      margin-inline: auto;
+    }
+
+    header {
+      padding-block: 2rem 1rem;
+    }
+
+    main {
+      padding-bottom: 3rem;
+    }
+
+    h1,
+    h2 {
+      line-height: 1.2;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -5rem;
+      padding: 0.75rem;
+      background: var(--panel);
+      color: var(--text);
+      z-index: 10;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .rule,
+    .notice,
+    details,
+    .case,
+    #summary {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--panel);
+    }
+
+    .case {
+      margin-block: 1rem;
+    }
+
+    .case &gt; legend {
+      padding-inline: 0.35rem;
+      font-weight: 700;
+    }
+
+    .case[data-result="correct"] {
+      border-inline-start: 0.4rem solid var(--correct);
+    }
+
+    .case[data-result="incorrect"] {
+      border-inline-start: 0.4rem solid var(--incorrect);
+    }
+
+    label {
+      display: block;
+      margin-block: 0.75rem 0.25rem;
+      font-weight: 650;
+    }
+
+    input[type="number"] {
+      width: min(100%, 12rem);
+      padding: 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 0.35rem;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .decision {
+      margin-block-start: 1rem;
+      border: 0;
+      padding: 0;
+    }
+
+    .decision label {
+      display: inline-flex;
+      gap: 0.45rem;
+      align-items: center;
+      margin-inline-end: 1.5rem;
+      font-weight: 500;
+    }
+
+    .feedback {
+      min-height: 1.6em;
+      margin-block-end: 0;
+      font-weight: 650;
+    }
+
+    .feedback.correct {
+      color: var(--correct);
+    }
+
+    .feedback.incorrect {
+      color: var(--incorrect);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-block: 1.5rem;
+    }
+
+    button {
+      min-height: 2.75rem;
+      padding: 0.65rem 1rem;
+      border: 2px solid var(--accent);
+      border-radius: 0.4rem;
+      background: var(--accent);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    details + details {
+      margin-block-start: 0.75rem;
+    }
+
+    #summary:empty {
+      display: none;
+    }
+
+    footer {
+      padding-block: 1rem 2rem;
+      color: var(--muted);
+    }
+
+    /* The interface has no essential animation. */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    @media print {
+      .skip-link,
+      .actions,
+      .feedback,
+      #summary,
+      noscript {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      .case,
+      details {
+        break-inside: avoid;
+        background: #fff;
+      }
+
+      details:not([open]) &gt; :not(summary) {
+        display: block !important;
+      }
+
+      #answer-key {
+        break-before: page;
+      }
+    }
+  &lt;/style&gt;
+
+  &lt;noscript&gt;
+    &lt;style&gt;
+      .actions {
+        display: none;
+      }
+    &lt;/style&gt;
+  &lt;/noscript&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;a class="skip-link" href="#practice"&gt;Skip to practice&lt;/a&gt;
+
+  &lt;header&gt;
+    &lt;h1&gt;Hash-table load-factor practice&lt;/h1&gt;
+    &lt;p&gt;Calculate load factors and decide whether a table should rehash.&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main id="main"&gt;
+    &lt;section aria-labelledby="rule-heading"&gt;
+      &lt;h2 id="rule-heading"&gt;Decision rule&lt;/h2&gt;
+
+      &lt;p class="rule" id="rule"&gt;
+        &lt;strong&gt;Load factor:&lt;/strong&gt;
+        α = number of entries ÷ number of buckets.
+        Rehash only when α is &lt;strong&gt;strictly greater than&lt;/strong&gt; the stated
+        threshold. Enter load factors rounded to three decimal places.
+      &lt;/p&gt;
+
+      &lt;details&gt;
+        &lt;summary&gt;Worked example&lt;/summary&gt;
+        &lt;p&gt;
+          With 3 entries and 8 buckets, α = 3 ÷ 8 = 0.375.
+          At a threshold of 0.75, the table does not rehash because
+          0.375 is not greater than 0.75.
+        &lt;/p&gt;
+      &lt;/details&gt;
+
+      &lt;details&gt;
+        &lt;summary&gt;Hint ladder&lt;/summary&gt;
+        &lt;ol&gt;
+          &lt;li&gt;Identify the entries and buckets.&lt;/li&gt;
+          &lt;li&gt;Divide entries by buckets.&lt;/li&gt;
+          &lt;li&gt;Compare the unrounded result with the threshold using &lt;code&gt;&amp;gt;&lt;/code&gt;.&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/details&gt;
+    &lt;/section&gt;
+
+    &lt;section id="practice" aria-labelledby="practice-heading"&gt;
+      &lt;h2 id="practice-heading"&gt;Practice&lt;/h2&gt;
+
+      &lt;noscript&gt;
+        &lt;p class="notice"&gt;
+          Automatic feedback requires JavaScript. Complete every case, then
+          open the static answer key below to check your work.
+        &lt;/p&gt;
+      &lt;/noscript&gt;
+
+      &lt;form id="practice-form" novalidate&gt;
+        &lt;fieldset class="case" id="case-a"&gt;
+          &lt;legend&gt;Case A&lt;/legend&gt;
+          &lt;p id="prompt-a"&gt;
+            The table has &lt;strong&gt;6 entries&lt;/strong&gt;, &lt;strong&gt;8 buckets&lt;/strong&gt;,
+            and a rehash threshold of &lt;strong&gt;0.75&lt;/strong&gt;.
+          &lt;/p&gt;
+
+          &lt;label for="alpha-a"&gt;Load factor, rounded to three decimals&lt;/label&gt;
+          &lt;input
+            id="alpha-a"
+            type="number"
+            min="0"
+            step="0.001"
+            inputmode="decimal"
+            aria-describedby="prompt-a rule feedback-a"
+          &gt;
+
+          &lt;fieldset class="decision" aria-describedby="prompt-a rule feedback-a"&gt;
+            &lt;legend&gt;Should the table rehash?&lt;/legend&gt;
+            &lt;label&gt;&lt;input type="radio" name="rehash-a" value="yes"&gt; Yes&lt;/label&gt;
+            &lt;label&gt;&lt;input type="radio" name="rehash-a" value="no"&gt; No&lt;/label&gt;
+          &lt;/fieldset&gt;
+
+          &lt;p class="feedback" id="feedback-a" aria-live="polite"&gt;&lt;/p&gt;
+        &lt;/fieldset&gt;
+
+        &lt;fieldset class="case" id="case-b"&gt;
+          &lt;legend&gt;Case B&lt;/legend&gt;
+          &lt;p id="prompt-b"&gt;
+            The table has &lt;strong&gt;7 entries&lt;/strong&gt;, &lt;strong&gt;8 buckets&lt;/strong&gt;,
+            and a rehash threshold of &lt;strong&gt;0.75&lt;/strong&gt;.
+          &lt;/p&gt;
+
+          &lt;label for="alpha-b"&gt;Load factor, rounded to three decimals&lt;/label&gt;
+          &lt;input
+            id="alpha-b"
+            type="number"
+            min="0"
+            step="0.001"
+            inputmode="decimal"
+            aria-describedby="prompt-b rule feedback-b"
+          &gt;
+
+          &lt;fieldset class="decision" aria-describedby="prompt-b rule feedback-b"&gt;
+            &lt;legend&gt;Should the table rehash?&lt;/legend&gt;
+            &lt;label&gt;&lt;input type="radio" name="rehash-b" value="yes"&gt; Yes&lt;/label&gt;
+            &lt;label&gt;&lt;input type="radio" name="rehash-b" value="no"&gt; No&lt;/label&gt;
+          &lt;/fieldset&gt;
+
+          &lt;p class="feedback" id="feedback-b" aria-live="polite"&gt;&lt;/p&gt;
+        &lt;/fieldset&gt;
+
+        &lt;fieldset class="case" id="case-c"&gt;
+          &lt;legend&gt;Case C&lt;/legend&gt;
+          &lt;p id="prompt-c"&gt;
+            The table has &lt;strong&gt;9 entries&lt;/strong&gt;, &lt;strong&gt;12 buckets&lt;/strong&gt;,
+            and a rehash threshold of &lt;strong&gt;0.70&lt;/strong&gt;.
+          &lt;/p&gt;
+
+          &lt;label for="alpha-c"&gt;Load factor, rounded to three decimals&lt;/label&gt;
+          &lt;input
+            id="alpha-c"
+            type="number"
+            min="0"
+            step="0.001"
+            inputmode="decimal"
+            aria-describedby="prompt-c rule feedback-c"
+          &gt;
+
+          &lt;fieldset class="decision" aria-describedby="prompt-c rule feedback-c"&gt;
+            &lt;legend&gt;Should the table rehash?&lt;/legend&gt;
+            &lt;label&gt;&lt;input type="radio" name="rehash-c" value="yes"&gt; Yes&lt;/label&gt;
+            &lt;label&gt;&lt;input type="radio" name="rehash-c" value="no"&gt; No&lt;/label&gt;
+          &lt;/fieldset&gt;
+
+          &lt;p class="feedback" id="feedback-c" aria-live="polite"&gt;&lt;/p&gt;
+        &lt;/fieldset&gt;
+
+        &lt;fieldset class="case" id="case-d"&gt;
+          &lt;legend&gt;Transfer case D&lt;/legend&gt;
+          &lt;p id="prompt-d"&gt;
+            A table must hold &lt;strong&gt;10 entries&lt;/strong&gt;. Its threshold is
+            &lt;strong&gt;0.65&lt;/strong&gt;. What is the smallest whole number of buckets
+            that keeps its load factor at or below the threshold?
+          &lt;/p&gt;
+
+          &lt;label for="buckets-d"&gt;Minimum number of buckets&lt;/label&gt;
+          &lt;input
+            id="buckets-d"
+            type="number"
+            min="1"
+            step="1"
+            inputmode="numeric"
+            aria-describedby="prompt-d feedback-d"
+          &gt;
+
+          &lt;p class="feedback" id="feedback-d" aria-live="polite"&gt;&lt;/p&gt;
+        &lt;/fieldset&gt;
+
+        &lt;div class="actions"&gt;
+          &lt;button id="check" type="button"&gt;Check answers&lt;/button&gt;
+          &lt;button class="secondary" type="reset"&gt;Reset&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+
+      &lt;p id="summary" role="status" tabindex="-1"&gt;&lt;/p&gt;
+
+      &lt;details id="answer-key"&gt;
+        &lt;summary&gt;Static answer key — reveal after attempting every case&lt;/summary&gt;
+        &lt;ol&gt;
+          &lt;li&gt;&lt;strong&gt;A:&lt;/strong&gt; 6 ÷ 8 = 0.750; no rehash because equality does not exceed the threshold.&lt;/li&gt;
+          &lt;li&gt;&lt;strong&gt;B:&lt;/strong&gt; 7 ÷ 8 = 0.875; rehash because 0.875 is greater than 0.75.&lt;/li&gt;
+          &lt;li&gt;&lt;strong&gt;C:&lt;/strong&gt; 9 ÷ 12 = 0.750; rehash because 0.750 is greater than 0.70.&lt;/li&gt;
+          &lt;li&gt;&lt;strong&gt;D:&lt;/strong&gt; 16 buckets. Ten divided by 16 is 0.625, while ten divided by 15 is approximately 0.667.&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/details&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;No responses are stored or transmitted.&lt;/p&gt;
+  &lt;/footer&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const form = document.querySelector("#practice-form");
+      const summary = document.querySelector("#summary");
+
+      const cases = [
+        { id: "a", entries: 6, buckets: 8, threshold: 0.75 },
+        { id: "b", entries: 7, buckets: 8, threshold: 0.75 },
+        { id: "c", entries: 9, buckets: 12, threshold: 0.70 }
+      ];
+
+      function gradeLoadFactor(item) {
+        const container = document.querySelector(`#case-${item.id}`);
+        const alphaInput = document.querySelector(`#alpha-${item.id}`);
+        const decisionInputs = [
+          ...document.querySelectorAll(`[name="rehash-${item.id}"]`)
+        ];
+        const selected = decisionInputs.find(input =&gt; input.checked);
+        const feedback = document.querySelector(`#feedback-${item.id}`);
+
+        const exact = item.entries / item.buckets;
+        const rounded = Number(exact.toFixed(3));
+        const expectedDecision = exact &gt; item.threshold ? "yes" : "no";
+        const submittedAlpha = Number.parseFloat(alphaInput.value);
+
+        const alphaCorrect =
+          Number.isFinite(submittedAlpha) &amp;&amp;
+          Math.abs(submittedAlpha - rounded) &lt; 0.0006;
+
+        const decisionCorrect =
+          Boolean(selected) &amp;&amp; selected.value === expectedDecision;
+
+        alphaInput.setAttribute("aria-invalid", String(!alphaCorrect));
+        decisionInputs.forEach(input =&gt; {
+          input.setAttribute("aria-invalid", String(!decisionCorrect));
+        });
+
+        if (!Number.isFinite(submittedAlpha) || !selected) {
+          feedback.textContent =
+            "Incomplete: enter a load factor and choose a rehash decision.";
+          feedback.className = "feedback incorrect";
+          container.dataset.result = "incorrect";
+          return false;
+        }
+
+        if (alphaCorrect &amp;&amp; decisionCorrect) {
+          const comparison =
+            expectedDecision === "yes"
+              ? "exceeds the threshold"
+              : "does not exceed the threshold";
+
+          feedback.textContent =
+            `Correct: α = ${rounded.toFixed(3)}, which ${comparison}.`;
+          feedback.className = "feedback correct";
+          container.dataset.result = "correct";
+          return true;
+        }
+
+        if (alphaCorrect) {
+          feedback.textContent =
+            `Your load factor, ${rounded.toFixed(3)}, is correct. ` +
+            `Revise the decision by comparing it with ${item.threshold.toFixed(2)} ` +
+            `using “strictly greater than.”`;
+        } else if (decisionCorrect) {
+          feedback.textContent =
+            "Your rehash decision is correct. Recalculate entries ÷ buckets " +
+            "and round the result to three decimals.";
+        } else {
+          feedback.textContent =
+            "Recalculate entries ÷ buckets first. Then compare the unrounded " +
+            "result with the threshold.";
+        }
+
+        feedback.className = "feedback incorrect";
+        container.dataset.result = "incorrect";
+        return false;
+      }
+
+      function gradeTransfer() {
+        const container = document.querySelector("#case-d");
+        const input = document.querySelector("#buckets-d");
+        const feedback = document.querySelector("#feedback-d");
+        const submitted = Number.parseInt(input.value, 10);
+        const correct = submitted === 16;
+
+        input.setAttribute("aria-invalid", String(!correct));
+
+        if (correct) {
+          feedback.textContent =
+            "Correct: 10 ÷ 16 = 0.625. One fewer bucket gives 10 ÷ 15 ≈ 0.667, which is too high.";
+          feedback.className = "feedback correct";
+          container.dataset.result = "correct";
+          return true;
+        }
+
+        if (!Number.isInteger(submitted)) {
+          feedback.textContent = "Enter a whole number of buckets.";
+        } else {
+          feedback.textContent =
+            "Not yet. Test your number and one fewer bucket. The smallest valid answer must satisfy 10 ÷ buckets ≤ 0.65.";
+        }
+
+        feedback.className = "feedback incorrect";
+        container.dataset.result = "incorrect";
+        return false;
+      }
+
+      document.querySelector("#check").addEventListener("click", () =&gt; {
+        const results = cases.map(gradeLoadFactor);
+        results.push(gradeTransfer());
+
+        const correctCount = results.filter(Boolean).length;
+        const firstIncorrect = results.findIndex(result =&gt; !result);
+
+        summary.textContent =
+          correctCount === results.length
+            ? "All four checks are correct on this attempt. Try explaining the boundary rule in your own words."
+            : `${correctCount} of ${results.length} checks are correct. Revise Case ${"ABCD"[firstIncorrect]} first.`;
+
+        summary.focus();
+      });
+
+      form.addEventListener("reset", () =&gt; {
+        document.querySelectorAll(".feedback").forEach(element =&gt; {
+          element.textContent = "";
+          element.className = "feedback";
+        });
+
+        document.querySelectorAll(".case").forEach(element =&gt; {
+          delete element.dataset.result;
+        });
+
+        document.querySelectorAll("[aria-invalid]").forEach(element =&gt; {
+          element.removeAttribute("aria-invalid");
+        });
+
+        summary.textContent = "";
+        document.querySelector("#alpha-a").focus();
+      });
+    })();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</main>
+  <footer>
+    Canonical source: <a href="./accessible-interaction-fallback.md">accessible-interaction-fallback.md</a><br>
+    SHA-256: <code>f4d68d4534ca107b7e6df725d200812717ac7a4681f2fd019104a1337e1c85f5</code><br>
+    Generated: 2026-08-19T09:21:18.517Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

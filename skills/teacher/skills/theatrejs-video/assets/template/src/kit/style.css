@@ -1,0 +1,128 @@
+/* style.css: the look of the kit. Every colour is a CSS variable built in tokens.js (cssVars(); main.js sets them on
+   :root), so a theme (src/kit/theme.js) restyles the whole page. No colour literals here. */
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--page); }
+body { font-family: var(--font-ui); color: var(--ink); -webkit-font-smoothing: antialiased; font-optical-sizing: auto; }
+.mono, .code-body, .tbl-cell, .dec-row, .dec-fly, .lad-o {
+  font-family: var(--font-mono);
+  font-feature-settings: "calt" 0, "liga" 0, "dlig" 0; font-variant-ligatures: none; /* != must stay != */
+}
+.ui { font-family: var(--font-ui); }
+.comic { font-family: var(--font-comic); letter-spacing: 1px; }
+
+#viewport { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--viewport); }
+.sky, .scrim, .hud, .vignette, .grain { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.layer { position: absolute; will-change: transform; }
+.layer-inner { position: absolute; width: 1920px; height: 1080px; }
+.layer .fill, .layer canvas { position: absolute; left: 0; top: 0; }
+.layer .fill { width: 100%; height: 100%; }
+.scrim { background: var(--scrim-bg); opacity: 0; }
+.vignette { background: var(--vignette-bg); }
+.grain { opacity: var(--grain-op); mix-blend-mode: var(--grain-blend); background-repeat: repeat; }
+
+/* panels: glass cards with a depth shadow */
+.panel { position: absolute; background: var(--panel); border: 1.5px solid var(--panel-edge); border-radius: 22px;
+  box-shadow: var(--panel-shadow);
+  transform-origin: 50% 50%; }
+.panel-kick { position: absolute; left: 30px; top: 18px; font: 800 30px/36px var(--font-ui); letter-spacing: 4px; color: var(--gold-ink); text-transform: uppercase; }
+
+/* graph */
+svg.graph, svg.bursts { position: absolute; left: 0; top: 0; overflow: visible; }
+
+/* decoder */
+.decoder .dec-row { position: absolute; white-space: pre; color: var(--ink); }
+.dec-bar { position: absolute; left: 10px; right: 10px; border-radius: 10px; background: var(--accent-wash); border: 2px solid var(--dec-bar-edge); }
+.dec-fly { position: absolute; left: 0; top: 0; z-index: 5; padding: 8px 18px; border-radius: 12px; background: var(--gold); color: var(--on-gold); font-size: 32px; font-weight: 800;
+  border: 3px solid var(--outline); box-shadow: 6px 6px 0 var(--outline); white-space: pre; will-change: transform; } /* z-index: flies above the graph */
+
+/* caption band */
+.caption { position: absolute; left: 0; bottom: 0; width: 1920px; height: 180px;
+  background: var(--cap-band); }
+.caption-text { position: absolute; left: 210px; right: 210px; top: 46px; height: 108px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font: 560 40px/52px var(--font-ui); color: var(--ink); text-shadow: var(--cap-shadow); text-wrap: balance; }
+.caption-chapters { position: absolute; left: 210px; right: 210px; top: 24px; height: 6px; display: flex; gap: 8px; }
+.cap-seg { position: relative; height: 6px; border-radius: 3px; background: var(--cap-track); overflow: hidden; }
+.cap-seg-fill { position: absolute; inset: 0; background: linear-gradient(90deg, var(--accent), var(--gold)); transform-origin: 0 50%; transform: scaleX(0); }
+.hl-num, .hl-arr { font-family: var(--font-mono); font-feature-settings: "calt" 0, "liga" 0; color: var(--gold-ink); font-weight: 700; }
+.hl-o { font-family: var(--font-mono); font-feature-settings: "calt" 0, "liga" 0; color: var(--cool-ink); font-weight: 700; }
+.hl-sym { color: var(--accent-ink); font-weight: 700; }
+sup { font-size: 0.62em; line-height: 0; vertical-align: 0.75em; }
+
+/* title card */
+.title-card { position: absolute; left: 0; top: 0; width: 1920px; height: 900px; display: flex; align-items: center; justify-content: center; }
+.title-inner { text-align: center; transform-origin: 50% 70%; }
+.title-badge { display: inline-block; padding: 10px 26px 6px; margin-bottom: 30px; background: var(--gold); color: var(--on-gold); border: 4px solid var(--outline);
+  box-shadow: 8px 8px 0 var(--outline); font: 400 54px/1 var(--font-comic); letter-spacing: 2px; }
+.title-h { font: 850 112px/1.02 var(--font-ui); letter-spacing: -2px; max-width: 1400px; text-wrap: balance; color: var(--ink);
+  text-shadow: var(--title-shadow); }
+.title-sub { margin-top: 26px; font: 500 40px/1.2 var(--font-ui); color: var(--title-sub); }
+.title-rule { margin: 34px auto 0; width: 420px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--gold)); transform-origin: 50% 50%; }
+
+/* chapter swipe */
+.chapter-swipe { position: absolute; inset: 0; display: none; }
+.chapter-band { position: absolute; left: -200px; top: 300px; width: 2320px; height: 380px; background: var(--chapter-band); border-top: 10px solid var(--gold); border-bottom: 10px solid var(--gold);
+  display: flex; align-items: center; justify-content: center; gap: 56px; box-shadow: var(--chapter-shadow); }
+.chapter-stripe { position: absolute; left: -300px; top: 650px; width: 2520px; height: 46px; background: var(--accent); }
+.chapter-num { font: 400 250px/1 var(--font-comic); color: var(--chapter-num); -webkit-text-stroke: 6px var(--outline); text-shadow: 12px 12px 0 var(--outline); transform: skewX(12deg); }
+.chapter-col { transform: skewX(12deg); }
+.chapter-kicker { font: 700 30px/1 var(--font-mono); letter-spacing: 6px; color: var(--ink-dim); margin-bottom: 18px; }
+.chapter-name { font: 900 92px/1 var(--font-ui); letter-spacing: 1px; color: var(--ink); }
+
+/* chapter tag (lower third, top left) */
+.chapter-tag { position: absolute; left: 96px; top: 96px; display: flex; align-items: stretch; border: 4px solid var(--outline); box-shadow: 7px 7px 0 var(--outline); transform-origin: 0 50%; }
+.ct-num { background: var(--ct-num-bg); color: var(--ct-num-ink); font: 400 40px/1 var(--font-comic); padding: 8px 14px 4px; letter-spacing: 1px; }
+.ct-name { background: var(--gold); color: var(--on-gold); font: 900 28px/1 var(--font-ui); letter-spacing: 3px; padding: 14px 18px 10px; }
+
+/* question card */
+.qcard { position: absolute; transform-origin: 50% 0; }
+.qface { position: relative; display: flex; align-items: center; gap: 36px; padding: 30px 40px; border-radius: 24px; background: var(--panel); border: 2px solid var(--gold);
+  box-shadow: var(--q-shadow); transform-origin: 50% 50%; }
+.qback { border-color: var(--good); box-shadow: var(--qback-shadow); }
+.qkick { position: absolute; left: 40px; top: -32px; padding: 12px 22px 9px; background: var(--gold); color: var(--on-gold); border: 3px solid var(--outline); font: 400 42px/1 var(--font-comic); letter-spacing: 2px; transform: rotate(-2deg); }
+.qback .qkick { background: var(--good); color: var(--on-good); }
+.qtext { flex: 1; font: 650 50px/1.22 var(--font-ui); color: var(--ink); padding-top: 10px; }
+.qring { flex: none; }
+
+/* code panel */
+.code { padding: 0 0 22px; }
+.code-head { height: 62px; display: flex; align-items: center; gap: 12px; padding: 0 24px; border-bottom: 1px solid var(--code-rule); }
+.code-head i { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+.code-file { margin-left: 16px; font: 600 30px/1 var(--font-mono); color: var(--ink-dim); letter-spacing: 1px; }
+.code-body { position: relative; padding: 16px 0 0; }
+.code-bar { position: absolute; left: 6px; right: 8px; top: 16px; border-radius: 0 10px 10px 0; background: var(--accent-wash); border-left: 5px solid var(--accent); box-shadow: var(--code-bar-shadow); }
+.code-line { position: relative; display: flex; white-space: pre; }
+.code-ln { width: 78px; text-align: right; padding-right: 22px; color: var(--code-ln); flex: none; } /* 5.4:1 on the panel; wide enough that "12" clears the bar's edge */
+.code-src { color: var(--ink); }
+.code-line.active .code-ln { color: var(--accent-ink); }
+.tk-k { color: var(--tk-k); } .tk-t { color: var(--tk-t); } .tk-n { color: var(--tk-n); } .tk-c { color: var(--tk-c); font-style: italic; } /* comments: dimmer than code, 7:1 */
+.tk-s { color: var(--tk-s); } .tk-f { color: var(--tk-f); } .tk-i { color: var(--tk-i); } .tk-p { color: var(--tk-p); } .tk-o { color: var(--tk-o); }
+
+/* table */
+.table { padding: 70px 26px 22px; }
+.tbl-grid { position: relative; }
+.tbl-row { display: flex; align-items: center; height: 84px; }
+.tbl-row:first-child { height: 48px; }
+.tbl-label { font-size: 34px; font-weight: 800; color: var(--gold-ink); }
+.tbl-head { text-align: center; font-size: 30px; color: var(--ink-dim); }
+.tbl-cell { margin: 0 5px; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; border-radius: 12px;
+  background: var(--cell-bg); border: 2px solid var(--cell-edge); }
+.tbl-colbar { position: absolute; top: 0; bottom: 0; border-radius: 14px; border: 3px solid var(--accent); box-shadow: var(--colbar-shadow); }
+
+/* ladder */
+.ladder { padding: 76px 30px 26px; }
+.lad-row { position: relative; display: flex; align-items: center; height: 92px; padding: 0 16px; border-radius: 14px; border: 2px solid transparent; }
+.lad-head { height: 44px; font: 700 28px/1 var(--font-ui); letter-spacing: 3px; color: var(--ink-dim); text-transform: uppercase; }
+.lad-name { flex: 1; font: 650 34px/1.1 var(--font-ui); }
+.lad-o { width: 190px; text-align: left; font-size: 32px; font-weight: 700; color: var(--lad-o); }
+.lad-o .hl-o { color: var(--lad-o); }
+.lad-head .lad-o { font: 700 28px/1 var(--font-ui); letter-spacing: 3px; color: var(--ink-dim); }
+.lad-track { margin-top: 10px; width: 300px; height: 8px; border-radius: 4px; background: var(--lad-track); overflow: hidden; }
+.lad-fill { height: 100%; transform-origin: 0 50%; }
+.lad-box { position: relative; }
+.lad-hl { position: absolute; left: 0; right: 0; top: 0; height: 92px; border-radius: 14px; background: var(--lad-hl); }
+.lad-row.picked { border-color: var(--good); background: var(--picked-bg); box-shadow: var(--picked-shadow); }
+.lad-stamp { position: absolute; left: 70%; padding: 8px 18px 4px; border: 5px solid var(--good); color: var(--good-ink); font: 400 44px/1 var(--font-comic); letter-spacing: 3px;
+  background: var(--stamp-bg); border-radius: 8px; white-space: nowrap; }
+.orb { position: absolute; border-radius: 50%; }
+/* Bangers' 7 reads as a 1: numerals switch to Inter Black when a 7 can appear (cards.js) */
+.num-safe { font-family: var(--font-ui) !important; font-weight: 900 !important; letter-spacing: -1px !important; }

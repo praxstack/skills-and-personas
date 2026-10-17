@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "attempt": 7,
+  "rubric": "evals/forward-behavior.json",
+  "rubric_sha256": "fbe82d767fdec3e73ebcf9156f8627b3760e92edf3908e6f96f40027b4cf0b1e",
+  "runner_harness": "Codex collaboration child tasks",
+  "generated_at": "2026-08-04T22:34:08Z",
+  "scored_by_runner": false,
+  "claim_boundary": "Public forward behavior only; not held-out, candidate-superiority, accessibility-field, or learner-outcome evidence.",
+  "model": {
+    "exact_identifier": null,
+    "reported_as_unavailable": true,
+    "limitation": "The collaboration harness did not expose an exact provider model identifier to the coordinator."
+  },
+  "fresh_context_contract": {
+    "fork_turns": "none",
+    "one_child_task_per_case": true,
+    "coordinator_did_not_supply_prior_case_outputs": true
+  },
+  "prior_attempts": [
+    {
+      "attempt": 1,
+      "path": "evidence/forward/attempts/attempt-1",
+      "status": "failed",
+      "pass_count": 5,
+      "case_count": 8
+    },
+    {
+      "attempt": 2,
+      "path": "evidence/forward/attempts/attempt-2-driver-draft",
+      "status": "unscored-disqualified",
+      "reason": "The driver named desired closing behavior, so the transcript was retained but excluded from evidence."
+    },
+    {
+      "attempt": 3,
+      "path": "evidence/forward/attempts/attempt-3",
+      "status": "historical-ineligible",
+      "reason": "The reported 8/8 output corpus was not fully archived, so the retained missing-evidence notice forbids treating it as current release evidence."
+    },
+    {
+      "attempt": 4,
+      "path": "evidence/forward/attempts/attempt-4",
+      "status": "failed",
+      "pass_count": 6,
+      "case_count": 8,
+      "reason": "Independent review found no progressive post-error hint turn in the lesson and invented or altered saved-state details in the resume case."
+    },
+    {
+      "attempt": 5,
+      "path": "evidence/forward/attempts/attempt-5-composite",
+      "status": "release-ineligible-composite",
+      "reason": "Only the two attempt-4 failures were rerun, so the composite 8/8 did not satisfy the all-case fix-and-rerun gate."
+    },
+    {
+      "attempt": 6,
+      "path": "evidence/forward/attempts/attempt-6",
+      "status": "failed-stopped",
+      "generated_case_count": 5,
+      "reason": "The accessibility response omitted the explicit host-UI unverified and no-custom-artifact-control boundary; the partial run was stopped and retained before source repair."
+    }
+  ],
+  "source_files": {
+    "SKILL.md": "f652edbb2d597311166542f9ca1fdd0f5d58d28f3adf9f0c8da7c1154bc26197",
+    "references/ARTIFACT-CONTRACT.md": "4f05f9bd6e0cd570f3529a5fdf7e35fea81fea25662318a5eb78b2c612acd44d",
+    "references/MODE-CONTRACT.md": "522d5a13bcb69fb230125acd9f239bad640afdcfb36a0b8a4bf52075fbd48dce",
+    "references/TEACHING-PROTOCOL.md": "a0f5ecf66ba512ac2e8dd2bcebbc51ba892f1212bbedd6a7f8e1d80bdd0948c9",
+    "scripts/prax_teach.py": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+    "scripts/praxteach/routing.py": "c0774f2fa9a0580611d813d38b961e3224627e644b06e925262aef8e4d88cdec"
+  },
+  "cases": [
+    {
+      "case_id": "quick-bounded-explanation",
+      "fresh_task": "/root/scheduler_schema_fix/attempt7_case_a",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/quick-bounded-explanation.md",
+      "output_sha256": "5e9c9e776711032f3307c666ab88012569fa7d61b60a3b4af50917f085ff8834"
+    },
+    {
+      "case_id": "answer-now-override",
+      "fresh_task": "/root/scheduler_schema_fix/attempt7_case_b",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/answer-now-override.md",
+      "output_sha256": "b236681c6f2f08995eadf77ab0675a5d4e98b4ef72e5d269ad31c2408ff2911d"
+    },
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "fresh_task": "/root/release_claim_audit/forward7_lesson",
+      "format_normalization": "The coordinator assembled exact alternating utterances under document and speaker headings and shifted nested heading levels; no tutor or learner wording was changed.",
+      "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+      "output_sha256": "b9beda5a1321604a16edd7d13b3b3fa316bd62a34279e04be68f7c3f29577097",
+      "interaction": {
+        "tutor_turns": 6,
+        "learner_turns": 5,
+        "driver_supplied_only_natural_learner_messages": true,
+        "rubric_or_desired_behavior_disclosed_to_tutor": false,
+        "prior_outputs_disclosed_to_tutor": false
+      }
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "fresh_task": "/root/release_claim_audit/forward7_course_consent",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/course-consent-boundary.md",
+      "output_sha256": "c7127e97fc828c7e338668328c8ae86f90c01a7b9d69fc26521adeaa4b02d506"
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "fresh_task": "/root/scheduler_schema_fix/attempt7_resume_hinted",
+      "context": "evidence/forward/context/resume-hinted.json",
+      "context_sha256": "fc284afe08daeaf3954780e2471efade865d3e49f6c1521409af992eac4beed9",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/resume-hinted-evidence.md",
+      "output_sha256": "1788cd9cca488fd789ee80f43507d2364890ed9d910f04323c10e6ffca7d27f0"
+    },
+    {
+      "case_id": "visual-none",
+      "fresh_task": "/root/scheduler_schema_fix/attempt7_visual_none",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-none.md",
+      "output_sha256": "4176aec184d0b02ab7884c26e1ed0312fd92d9fb977a6b0abcb621ff0e3d7a75"
+    },
+    {
+      "case_id": "visual-essential-static",
+      "fresh_task": "/root/scheduler_schema_fix/attempt7_visual_essential_static",
+      "format_normalization": "The coordinator added the document H1; the response body is unchanged.",
+      "output": "evidence/forward/outputs/visual-essential-static.md",
+      "output_sha256": "70cb820adafcda3269863e7847f968fd57c2005feea60573f02620db08ffe298"
+    },
+    {
+      "case_id": "accessible-interaction-fallback",
+      "fresh_task": "/root/scheduler_schema_fix/attempt7_accessible_interaction",
+      "format_normalization": "The coordinator added the document H1 above the response's original H2; the response body is unchanged.",
+      "output": "evidence/forward/outputs/accessible-interaction-fallback.md",
+      "output_sha256": "09b38776e3221ac7f2aee7c2b7aa7878833c4ced6f316683fd7e85da4a03a9ae"
+    }
+  ]
+}

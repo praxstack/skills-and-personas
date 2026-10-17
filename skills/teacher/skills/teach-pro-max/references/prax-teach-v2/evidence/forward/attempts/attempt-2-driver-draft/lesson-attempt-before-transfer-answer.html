@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="b9532cd8f1efcc09452d724368d2a897f696647ea175a361cb229c22fe332f29">
+  <meta name="generated-at" content="2026-08-19T09:21:22.577Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lesson attempt before transfer answer</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lesson-attempt-before-transfer-answer">Lesson attempt before transfer answer</h1>
+<h2 id="turn-1-learner">Turn 1 — Learner</h2>
+<p>Create a focused lesson that teaches me to diagnose a two-thread lost update. Include an unseen transfer task and do not reveal its answer before my attempt.</p>
+<h2 id="turn-1-tutor">Turn 1 — Tutor</h2>
+<p>We’ll focus on one outcome: given a two-thread interleaving, you’ll be able to locate the lost update and justify a repair from the actual read–compute–write sequence. After we work through this case, I’ll give you a genuinely different, unseen transfer task; its answer stays hidden until you attempt it.</p>
+<p>Start with diagnosis—no need to know the formal terminology yet.</p>
+<p><code>counter</code> starts at <code>10</code>. Each individual read and write is atomic, but the whole increment is not.</p>
+<pre><code class="language-text">Step   Thread A                       Thread B
+1      a = counter   // a = 10
+2                                     b = counter   // b = 10
+3      a = a + 1     // a = 11
+4                                     b = b + 1     // b = 11
+5      counter = a   // counter = 11
+6                                     counter = b   // counter = 11
+</code></pre>
+<p>If both increments took effect, <code>counter</code> would end at <code>12</code>.</p>
+<p>What is the earliest numbered step after which this shown execution can no longer end at <code>12</code>, and why? Answer in one or two sentences. If you’re unsure, say <code>I don’t know</code> and name the step you’re torn about.</p>
+<h2 id="turn-2-learner">Turn 2 — Learner</h2>
+<p>Step 5, because that is when Thread A writes 11 and overwrites the shared value.</p>
+<h2 id="turn-2-tutor">Turn 2 — Tutor</h2>
+<p>You’re correctly looking at the moment a write reaches shared memory and noticing that the value written is <code>11</code>. The part to revise is the overwrite claim: at step 5, Thread A replaces the initial <code>10</code>; Thread B has not written an update yet.</p>
+<p>To locate the earliest point of no return, inspect the thread-local values before either write. Which earlier numbered step first leaves both threads holding values derived from the same shared <code>counter</code> value? Reply with the step and your reason.</p>
+<h2 id="turn-3-learner">Turn 3 — Learner</h2>
+<p>I’m not sure. Hint 1, please.</p>
+<h2 id="turn-3-tutor">Turn 3 — Tutor</h2>
+<p><strong>Hint 1 — Orienting prompt:</strong> Temporarily ignore the additions and writes. Look only at the reads in steps 1 and 2, and track when <code>a</code> and <code>b</code> have each copied a value from the shared <code>counter</code>.</p>
+<p>After which of those two steps are both local copies fixed from the same shared value? Reply with the step and what <code>a</code> and <code>b</code> contain then.</p>
+<h2 id="turn-4-learner">Turn 4 — Learner</h2>
+<p>Step 2; both a and b now contain 10, copied from the same shared value.</p>
+<h2 id="turn-4-tutor">Turn 4 — Tutor</h2>
+<p>Correct—with Hint 1, you located the earliest causal point. Once step 2 finishes, both local copies are <code>10</code>. Neither thread rereads <code>counter</code>, so both later compute a fixed result of <code>11</code>. Step 5 publishes A’s increment; step 6 publishes B’s independently computed <code>11</code>, which does not include A’s increment. The loss becomes visible at the final write, but the paired reads from the same starting value are what make this shown execution unable to reach <code>12</code>.</p>
+<p>This is a read–modify–write race: making each read and write atomic is not enough when another thread can change the shared state between one thread’s read and its write.</p>
+<p>A teammate proposes putting a mutex around only steps 5 and 6, so the writes cannot overlap, while leaving steps 1–4 outside the mutex. Would that guarantee a final value of <code>12</code>? Answer yes or no, then state which operations one increment’s protected boundary must include.</p>
+<h2 id="turn-5-learner">Turn 5 — Learner</h2>
+<p>No. The mutex must cover the read, compute, and write as one critical section for each increment.</p>
+<h2 id="turn-5-tutor">Turn 5 — Tutor</h2>
+<p>Exactly. Locking only the writes would merely serialize publication of values that may already be stale. The protected boundary must begin before the read and end after the corresponding write, so another thread cannot base a competing update on the same old state.</p>
+<h3 id="unseen-transfer-task">Unseen transfer task</h3>
+<p>A service stores this shared record:</p>
+<pre><code class="language-text">profile = { theme: "light", language: "en" }
+</code></pre>
+<p>Both changes below are intended to persist. Each thread reads a private copy, modifies it, and atomically replaces the entire shared record; replacement does not merge fields.</p>
+<pre><code class="language-text">1. Thread A reads profile into a
+2. Thread B reads profile into b
+3. Thread A sets a.theme = "dark"
+4. Thread B sets b.language = "fr"
+5. Thread A writes profile = a
+6. Thread B writes profile = b
+</code></pre>
+<p>Diagnose this execution in three or four sentences: state the final shared record, identify whether a logical update is lost and which one, explain the cause using the private copies, and propose one safe update strategy. Make your attempt before requesting a hint; you can also say <strong>Answer now</strong>.</p>
+<h2 id="turn-6-learner">Turn 6 — Learner</h2>
+<p>The final record is {theme: "light", language: "fr"}. Thread A’s dark-theme update is lost because B’s private copy still had theme = "light" and B replaced the entire record after A. Protect the whole read–modify–write with a lock, or use an atomic compare-and-swap/retry so B cannot commit a stale whole-record copy.</p>
+<h2 id="turn-6-tutor">Turn 6 — Tutor</h2>
+<p>Your transfer diagnosis is correct. You traced the final record accurately, identified A’s lost logical change, connected it to B’s stale private copy, and proposed two valid repair families. The governing principle is that a whole-record update must either serialize the complete read–modify–write or detect a stale commit and retry from fresh state; no correction is needed here.</p>
+<h3 id="lesson-close">Lesson close</h3>
+<ul>
+<li><strong>Outcome:</strong> You can diagnose a two-thread lost update from the local and shared state, distinguish the causal stale reads from the later write where the loss becomes visible, and justify a safe update boundary.</li>
+<li><strong>Observed evidence:</strong> Your first diagnosis placed the problem at step 5. With Hint 1, you revised it to the earliest causal point at step 2, so that first success was scaffolded. You then selected the full critical-section boundary correctly, and you solved the unseen whole-record transfer without a hint by tracing state, naming the lost change, explaining the cause, and proposing valid repairs.</li>
+<li><strong>Remaining uncertainty:</strong> We have not observed delayed recall, and one unassisted transfer does not show how reliably you will diagnose other interleavings or choose among locking, atomic read–modify–write, and compare-and-swap under different constraints.</li>
+<li><strong>Next retrieval for a 30-day retention horizon:</strong> In 3 days, solve a fresh interleaving without notes or hints and state the final state, earliest causal point, lost effect, and safe repair. If that is unassisted, repeat with new cases around day 14 and day 30; if you need help, review the read–modify–write model and retry sooner.</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>b9532cd8f1efcc09452d724368d2a897f696647ea175a361cb229c22fe332f29</code><br>
+    Generated: 2026-08-19T09:21:22.577Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

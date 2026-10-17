@@ -1,0 +1,50 @@
+/* Course page, on top of lesson-notebook/assets/notebook.css. Map + drawer side by side; outline and notes as their own views. */
+#app { max-width: 1240px; margin: 0 auto; display: grid; gap: var(--s-5); padding-block: var(--s-6) 0; }
+.cs-head { display: grid; gap: var(--s-2); border-bottom: 3px double var(--ink); padding-bottom: var(--s-4); }
+.cs-sub { color: var(--ink-2); max-width: 62ch; }
+.cs-head-row { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: center; }
+.cs-progress { flex: 0 1 18rem; height: 6px; background: var(--rule-soft); }
+.cs-progress > span { display: block; height: 100%; width: 0; background: var(--green); transition: width 300ms var(--ease-out); }
+.cs-tabs { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+.cs-tab { min-height: 40px; padding: 6px 14px; border: 1.5px solid transparent; border-radius: var(--radius); background: transparent; cursor: pointer; font-family: var(--font-book); color: var(--ink-2); }
+.cs-tab[aria-selected="true"] { border-color: var(--ink); background: var(--card); color: var(--ink); font-weight: 650; }
+.cs-mapview { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr) 22rem; align-items: start; }
+@media (max-width: 960px) { .cs-mapview { grid-template-columns: minmax(0, 1fr); } }
+.cs-map { margin: 0; padding: var(--s-3); overflow-x: auto; }
+.cs-map-svg { display: block; margin-inline: auto; max-width: none; }
+.cs-node { cursor: pointer; }
+.cs-node:focus { outline: none; }
+.cs-node:focus-visible rect { stroke: var(--focus); stroke-width: 3; }
+.cs-node.is-skip text { opacity: 0.6; }
+.cs-drawer { padding: var(--s-4); display: grid; gap: var(--s-3); position: sticky; top: var(--s-4); }
+@media (max-width: 960px) { .cs-drawer { position: static; } }
+.cs-drawer h2:focus { outline: none; }
+.cs-status, .cs-actions, .cs-row, .cs-opts { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.cs-actions .nb-btn { text-decoration: none; display: inline-flex; align-items: center; }
+.cs-chip { min-height: 36px; padding: 4px 12px; border: 1.5px solid var(--rule); border-radius: 999px; background: var(--card); color: var(--ink); cursor: pointer; font-family: var(--font-book); }
+.cs-chip[aria-pressed="true"] { border-color: var(--blue); background: var(--blue-soft); font-weight: 650; }
+.cs-summary { font-size: 1.05rem; }
+.cs-hook summary { cursor: pointer; font-weight: 600; }
+.cs-quiz { display: grid; gap: var(--s-2); }
+.cs-video { display: grid; gap: var(--s-1); }
+.cs-video:empty { display: none; }
+.cs-video video { width: 100%; aspect-ratio: 16 / 9; border-radius: 4px; background: #000; }
+.cs-quiz:empty { display: none; }
+.cs-q { font-weight: 650; }
+.cs-opt { min-height: 44px; padding: 8px 12px; text-align: left; border: 1.5px solid var(--rule); border-radius: var(--radius); background: var(--card); color: var(--ink); cursor: pointer; font-family: var(--font-book); width: 100%; }
+.cs-opt[aria-pressed="true"] { border-color: var(--blue); box-shadow: inset 0 0 0 1.5px var(--blue); }
+.cs-opts input { width: 9em; }
+.cs-why { border-left: 3px solid var(--blue); padding-left: var(--s-3); }
+.cs-outline { display: grid; gap: var(--s-4); padding-left: 1.4em; max-width: 52rem; }
+.cs-outline li { display: grid; gap: var(--s-1); }
+.cs-outline li.is-done > .cs-outline-head a { text-decoration-color: var(--green); }
+.cs-outline-head { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: baseline; justify-content: space-between; font-size: 1.15rem; font-weight: 650; }
+.cs-needs { font-size: 0.85rem; }
+.cs-notes { display: grid; gap: var(--s-5); max-width: 52rem; }
+.cs-note-card { display: grid; gap: var(--s-2); border-top: 1px solid var(--rule); padding-top: var(--s-4); }
+.cs-note-card ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-1); }
+.cs-explain { font-size: 1.1rem; }
+.cs-catalog { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+.cs-card { padding: var(--s-4); display: grid; gap: var(--s-2); align-content: start; }
+.cs-card a.cs-title { font: 750 1.3rem/1.2 var(--font-book); color: var(--ink); text-decoration: none; }
+.cs-card a.cs-title:hover { text-decoration: underline; }

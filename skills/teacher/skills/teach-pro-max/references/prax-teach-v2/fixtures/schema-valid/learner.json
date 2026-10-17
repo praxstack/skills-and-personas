@@ -1,0 +1,17 @@
+{
+  "consent": {
+    "controls": ["inspect", "correct", "export", "delete"],
+    "granted_at": "2026-08-04T10:00:00Z",
+    "location": "/private/tmp/prax-teach-v2-schema-fixture",
+    "persistent_state": true,
+    "purpose": "Adapt future teaching from the approved goal, practice evidence, and reviews.",
+    "scope": ["goal", "practice_evidence", "reviews"]
+  },
+  "goal": {
+    "retention_horizon_days": 30,
+    "statement": "Explain and transfer index selection",
+    "target_performance": "Explain and transfer index selection"
+  },
+  "learner_id": "learner-fixture",
+  "schema_version": "1"
+}

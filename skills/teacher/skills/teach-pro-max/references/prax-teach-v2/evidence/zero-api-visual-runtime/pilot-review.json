@@ -1,0 +1,12 @@
+{
+  "schema_version":"prax.visual-pilot-review/v1",
+  "review_type":"bounded-stop-go",
+  "status":"go-for-reuse",
+  "scope":"python-floating-point-pilot",
+  "checks":["runtime tests","static/no-script fallback","receipt round-trip","no-network scan","deterministic build","ruff/package validator"],
+  "findings":[],
+  "limitations":["Nested macOS sandbox E2E is unavailable in the current desktop sandbox.","No human learner, field accessibility, delayed retention, or novel-transfer claim is made."],
+  "reviewer":"primary-engineering-review",
+  "evidence_level":"engineering",
+  "independent_human_review":false
+}

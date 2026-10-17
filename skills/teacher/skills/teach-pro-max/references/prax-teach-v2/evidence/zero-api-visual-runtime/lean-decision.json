@@ -1,0 +1,7 @@
+{
+  "schema_version":"prax.lean-experiment-decision/v1",
+  "decision":"deferred",
+  "reason":"The build-time adapter and static proof-state contract are implemented, but Lean is not installed in this environment and no learner-value experiment has run. Keep the generic formal-receipt boundary; do not claim Lean benefit or add a live prover.",
+  "threshold":"Retain only if a content error is caught or a usable proof-state representation is demonstrated without runtime/accessibility/maintenance/cognitive-cost regression.",
+  "status":"engineering-prepared-scientific-value-unmeasured"
+}

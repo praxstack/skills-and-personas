@@ -1,0 +1,571 @@
+{
+  "schema_version": 1,
+  "reviewer": {
+    "task": "/root/forward_behavior_reviewer",
+    "identity": "independent Codex forward-behavior reviewer",
+    "independent_from_runner": true
+  },
+  "rubric_sha256": "36da453222249cf530b7f0a2d802572ee8dc0cb49d16745192d9dbbb3c0d3e73",
+  "run_sha256": "a552f8d2344720b1d41eedc10cb7e801ece7193341969f924a575b5a6610047f",
+  "hash_verification": {
+    "status": "passed",
+    "all_bound_hashes_match": true,
+    "rubric": {
+      "path": "evals/forward-behavior.json",
+      "expected_sha256": "36da453222249cf530b7f0a2d802572ee8dc0cb49d16745192d9dbbb3c0d3e73",
+      "actual_sha256": "36da453222249cf530b7f0a2d802572ee8dc0cb49d16745192d9dbbb3c0d3e73",
+      "matches": true
+    },
+    "run": {
+      "path": "evidence/forward/run.json",
+      "actual_sha256": "a552f8d2344720b1d41eedc10cb7e801ece7193341969f924a575b5a6610047f",
+      "manifest_parsed": true
+    },
+    "outputs": {
+      "evidence/forward/outputs/quick-bounded-explanation.md": {
+        "expected_sha256": "c359eeb9cbff9bb3057ad5b574f7f8dcff1d9b55fefe8d29a6c697d339a2152a",
+        "actual_sha256": "c359eeb9cbff9bb3057ad5b574f7f8dcff1d9b55fefe8d29a6c697d339a2152a",
+        "matches": true
+      },
+      "evidence/forward/outputs/answer-now-override.md": {
+        "expected_sha256": "28b95f1689adcf4029031f72ddf7178ade1b3c99a4c735c65d4e8cf6f1f93937",
+        "actual_sha256": "28b95f1689adcf4029031f72ddf7178ade1b3c99a4c735c65d4e8cf6f1f93937",
+        "matches": true
+      },
+      "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md": {
+        "expected_sha256": "0408229f3795dfcfa802dcf6d374e40abb4246c6fd54c7738ded7cc61ca76c40",
+        "actual_sha256": "0408229f3795dfcfa802dcf6d374e40abb4246c6fd54c7738ded7cc61ca76c40",
+        "matches": true
+      },
+      "evidence/forward/outputs/course-consent-boundary.md": {
+        "expected_sha256": "a2bdecd5c980c249321ff5b0301e8f22cdbdfebe1b330122020747fbef91379d",
+        "actual_sha256": "a2bdecd5c980c249321ff5b0301e8f22cdbdfebe1b330122020747fbef91379d",
+        "matches": true
+      },
+      "evidence/forward/outputs/resume-hinted-evidence.md": {
+        "expected_sha256": "1b1c92abe8e182dd6f2e3a1ecd3ea974e20f7cb613e717f215e8e8dc070341f0",
+        "actual_sha256": "1b1c92abe8e182dd6f2e3a1ecd3ea974e20f7cb613e717f215e8e8dc070341f0",
+        "matches": true
+      },
+      "evidence/forward/outputs/visual-none.md": {
+        "expected_sha256": "b62862780d75d6d9b0082d8f13049e4a999fff6633beee6b82ed66c338bf7442",
+        "actual_sha256": "b62862780d75d6d9b0082d8f13049e4a999fff6633beee6b82ed66c338bf7442",
+        "matches": true
+      },
+      "evidence/forward/outputs/visual-essential-static.md": {
+        "expected_sha256": "6d0f7c6dadbb514c6067900b54b3e87112c74c8f558924e3a84cc8ac198fe554",
+        "actual_sha256": "6d0f7c6dadbb514c6067900b54b3e87112c74c8f558924e3a84cc8ac198fe554",
+        "matches": true
+      },
+      "evidence/forward/outputs/accessible-interaction-fallback.md": {
+        "expected_sha256": "f4d68d4534ca107b7e6df725d200812717ac7a4681f2fd019104a1337e1c85f5",
+        "actual_sha256": "f4d68d4534ca107b7e6df725d200812717ac7a4681f2fd019104a1337e1c85f5",
+        "matches": true
+      }
+    },
+    "sources": {
+      "SKILL.md": {
+        "expected_sha256": "affa83e81b1d68d39ab131c25d8c1ad6542a3dd30a6662cdfe2e7352fd6ed771",
+        "actual_sha256": "affa83e81b1d68d39ab131c25d8c1ad6542a3dd30a6662cdfe2e7352fd6ed771",
+        "matches": true
+      },
+      "references/ARTIFACT-CONTRACT.md": {
+        "expected_sha256": "7577904e8bf5163a280b7cce7fb38df2b1f419f5b12f1656f75f71b8d80294ed",
+        "actual_sha256": "7577904e8bf5163a280b7cce7fb38df2b1f419f5b12f1656f75f71b8d80294ed",
+        "matches": true
+      },
+      "references/MODE-CONTRACT.md": {
+        "expected_sha256": "932c38ca5bb3fc921706cac5fc35057f0f4bb1bc630d9c2dcad479ccfb698584",
+        "actual_sha256": "932c38ca5bb3fc921706cac5fc35057f0f4bb1bc630d9c2dcad479ccfb698584",
+        "matches": true
+      },
+      "references/TEACHING-PROTOCOL.md": {
+        "expected_sha256": "2b66879410bc980797aa783ea48242de9a3f6e3b748a3613e71f08d02f1ad93f",
+        "actual_sha256": "2b66879410bc980797aa783ea48242de9a3f6e3b748a3613e71f08d02f1ad93f",
+        "matches": true
+      },
+      "scripts/prax_teach.py": {
+        "expected_sha256": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+        "actual_sha256": "4194ad335786eb236905c5205b2a989f6800f1dc33e016a6bbf9e89589e6241a",
+        "matches": true
+      },
+      "scripts/praxteach/routing.py": {
+        "expected_sha256": "50b4b9fc61842ee8e79cd7f68a9426917c0fe71c0682997f39ac76066c867a67",
+        "actual_sha256": "50b4b9fc61842ee8e79cd7f68a9426917c0fe71c0682997f39ac76066c867a67",
+        "matches": true
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "quick-bounded-explanation",
+      "output": "evidence/forward/outputs/quick-bounded-explanation.md",
+      "status": "passed",
+      "required": [
+        {
+          "item": "route is quick",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The response is a single concise explanation with no lesson, course, or persistence setup."
+        },
+        {
+          "item": "answers directly with a correct left-prefix example",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It explains ordering by a then b, uses WHERE a = 42, and identifies a as the leftmost prefix."
+        },
+        {
+          "item": "creates no files or learner state",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "No artifact, workspace, learner state, or persistence action is proposed or reported."
+        },
+        {
+          "item": "offers at most one optional check",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It offers zero checks, which is within the at-most-one limit."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "course setup",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No course setup appears."
+        },
+        {
+          "item": "mandatory Socratic intake",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "The answer begins directly and asks no intake question."
+        },
+        {
+          "item": "durable mastery claim",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No learner-performance or mastery claim appears."
+        }
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "answer-now-override",
+      "output": "evidence/forward/outputs/answer-now-override.md",
+      "status": "passed",
+      "required": [
+        {
+          "item": "stops questioning immediately",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The response contains no question or intake and immediately defines the term."
+        },
+        {
+          "item": "gives the direct answer",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It directly defines a lost update and gives a correct balance example."
+        },
+        {
+          "item": "makes any check optional",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "No check is imposed or offered."
+        },
+        {
+          "item": "creates no persistent state",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "No workspace, file, state, or persistence action is proposed or reported."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "withholding the answer",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "The definition is the first substantive sentence."
+        },
+        {
+          "item": "forcing an attempt",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No attempt is requested."
+        },
+        {
+          "item": "creating a workspace",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No workspace creation is proposed or reported."
+        }
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "output": "evidence/forward/outputs/lesson-attempt-before-transfer-answer.md",
+      "status": "failed",
+      "required": [
+        {
+          "item": "one observable outcome",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The Goal specifies proving a lost update, identifying the overwritten update, and selecting a synchronization boundary from a schedule."
+        },
+        {
+          "item": "prediction or attempt before explanation",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "The response reveals the read-compute-write model and a complete worked diagnosis before asking the learner to predict or attempt anything."
+        },
+        {
+          "item": "worked example",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The x = 10 schedule is traced step by step and the overwritten +5 update is explained."
+        },
+        {
+          "item": "progressive hints",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "The output only says to reply Hint 1; it neither supplies nor commits to a multi-level progressive sequence."
+        },
+        {
+          "item": "unseen transfer prompt whose answer is not exposed",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The profile-record interleaving changes the surface form and ends at the learner question without an answer key."
+        },
+        {
+          "item": "evidence and uncertainty boundary",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "The response does not state that no learner attempt has yet been observed or what remains uncertain."
+        },
+        {
+          "item": "next retrieval tied to a horizon",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "No retention horizon or time-bound next retrieval is offered."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "answer leakage in prompt, metadata, accessibility text, or default-open detail",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "The transfer prompt contains no embedded answer, metadata, accessibility text, disclosure, or following solution."
+        },
+        {
+          "item": "mastery claim from completion",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No mastery or learning-gain claim appears."
+        },
+        {
+          "item": "silent learner-state persistence",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No learner-state write is proposed or reported."
+        }
+      ],
+      "remediation": [
+        "End an initial turn on a non-leaking prediction or diagnosis prompt before presenting the explanation.",
+        "After the attempt, offer a defined hint ladder one level at a time rather than only naming Hint 1.",
+        "Close by stating the evidence observed and remaining uncertainty, then schedule a retrieval against an explicit retention horizon."
+      ]
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "output": "evidence/forward/outputs/course-consent-boundary.md",
+      "status": "failed",
+      "required": [
+        {
+          "item": "route is course",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It presents a six-week sequence with cross-session progress and adaptive review."
+        },
+        {
+          "item": "states goal, evidence, and review scope",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It states independent performance goals, tracked evidence dimensions, weekly tasks, later retrieval, and an adaptive review schedule."
+        },
+        {
+          "item": "names the resolved storage location before writing",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It names /Users/prax/Documents/Codex/2026-08-03/hey/database-performance-course and says no state has been written yet."
+        },
+        {
+          "item": "asks explicit persistence consent",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It asks Shall I persist this course and requests an explicit yes or no."
+        },
+        {
+          "item": "offers an ephemeral path if consent is declined",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "The response accepts no as an answer but never says the course can continue ephemerally without learner-state files."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "creating files before consent",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "It explicitly says no state has been written yet."
+        },
+        {
+          "item": "inferred personality or ability traits",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No personality or ability trait is inferred."
+        },
+        {
+          "item": "claiming the initial syllabus is final before diagnosis",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "It says the syllabus will adapt after an initial diagnostic."
+        }
+      ],
+      "remediation": [
+        "Add an explicit sentence before the consent question: if consent is declined, continue ephemerally without creating learner-state files and optionally provide a copyable summary."
+      ]
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "output": "evidence/forward/outputs/resume-hinted-evidence.md",
+      "status": "failed",
+      "required": [
+        {
+          "item": "treats the response as scaffolded evidence",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It labels the correct response heavily scaffolded application."
+        },
+        {
+          "item": "does not label the concept durable",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It explicitly says the response is not independent mastery."
+        },
+        {
+          "item": "uses a new unassisted retrieval or discrimination attempt",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "It promises a future retest but the only actual question asks which workspace contains the state."
+        },
+        {
+          "item": "keeps the prior evidence inspectable",
+          "verdict": "fail",
+          "present": false,
+          "evidence": "It neither displays the prior record nor states that the original response and strongest-hint metadata will remain retained and inspectable."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "mastery from one response",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "It explicitly rejects independent mastery."
+        },
+        {
+          "item": "discarding the hint level",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "Its heavily scaffolded classification preserves the supplied strongest-hint significance."
+        },
+        {
+          "item": "inventing missing learner history",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "It uses only the supplied response and hint facts, then asks for the workspace rather than inventing details."
+        }
+      ],
+      "remediation": [
+        "Resolve and read the named workspace, retain the original response plus strongest-hint metadata unchanged and inspectable, then present a fresh unassisted retrieval or discrimination prompt and stop at that prompt."
+      ]
+    },
+    {
+      "case_id": "visual-none",
+      "output": "evidence/forward/outputs/visual-none.md",
+      "status": "passed",
+      "required": [
+        {
+          "item": "uses prose or a tiny text example",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "It gives one prose definition and the tiny text example setting x to zero twice."
+        },
+        {
+          "item": "keeps the route at none unless a visual has a concrete learning job",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "No visual is introduced for the one-sentence definition."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "decorative image",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No image appears."
+        },
+        {
+          "item": "chart",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No chart appears."
+        },
+        {
+          "item": "interactive widget",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No interaction appears."
+        }
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "visual-essential-static",
+      "output": "evidence/forward/outputs/visual-essential-static.md",
+      "status": "passed",
+      "required": [
+        {
+          "item": "uses a labeled static state table or equivalent",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "A labeled Markdown table traces Thread 1, Thread 2, and the shared counter by step."
+        },
+        {
+          "item": "preserves exact read/compute/write states",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The table records both reads of zero, both local computations to one, and both writes of one."
+        },
+        {
+          "item": "has a text alternative",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "Following prose and a text block explain the two stale reads, overwrite, expected value two, and actual value one."
+        },
+        {
+          "item": "works without scripts and in print",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The representation is static Markdown table, prose, and preformatted text with no script dependency."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "unnecessary animation",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No animation appears."
+        },
+        {
+          "item": "generated image as technical authority",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "No generated image appears."
+        },
+        {
+          "item": "color-only meaning",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "All state and outcome meaning is conveyed by labels, numbers, and prose."
+        }
+      ],
+      "remediation": []
+    },
+    {
+      "case_id": "accessible-interaction-fallback",
+      "output": "evidence/forward/outputs/accessible-interaction-fallback.md",
+      "status": "passed",
+      "required": [
+        {
+          "item": "all controls have accessible names",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "Number inputs have explicit labels, radio groups have legends and labeled options, buttons have text, and disclosures have summaries."
+        },
+        {
+          "item": "keyboard order follows reading order",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "Native controls appear in DOM reading order from rules through Cases A-D, actions, and the answer disclosure; no tabindex reordering is used."
+        },
+        {
+          "item": "reduced motion loses no information",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "The interface has no essential animation, and its reduced-motion media query suppresses animation and transitions without removing content."
+        },
+        {
+          "item": "static instructions and equivalent data remain available without scripts",
+          "verdict": "pass",
+          "present": true,
+          "evidence": "Rules, cases, hint ladder, no-script instructions, and a native static answer key remain in the HTML without JavaScript."
+        }
+      ],
+      "forbidden": [
+        {
+          "item": "pointer-only action",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "All actions use native keyboard-operable form controls and details."
+        },
+        {
+          "item": "mandatory CDN",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "The page is self-contained and declares no external resource."
+        },
+        {
+          "item": "answer hidden only visually but exposed to assistive technology",
+          "verdict": "pass",
+          "present": false,
+          "evidence": "The answer key uses a native closed details element rather than CSS-only hiding, so its collapsed state is semantic rather than merely visual."
+        }
+      ],
+      "remediation": []
+    }
+  ],
+  "hard_gate_passed": false,
+  "status": "failed",
+  "overall": {
+    "case_count": 8,
+    "pass_count": 5,
+    "fail_count": 3,
+    "minimum_passes": 8,
+    "status": "failed"
+  },
+  "remediation": [
+    {
+      "case_id": "lesson-attempt-before-transfer-answer",
+      "actions": [
+        "Put a prediction or diagnostic attempt before the explanatory model and worked example.",
+        "Define and deliver progressive hints one level at a time after the attempt.",
+        "State observed evidence and remaining uncertainty, and tie the next retrieval to an explicit retention horizon."
+      ]
+    },
+    {
+      "case_id": "course-consent-boundary",
+      "actions": [
+        "Explicitly offer continuation in ephemeral mode without learner-state files when persistence consent is declined."
+      ]
+    },
+    {
+      "case_id": "resume-hinted-evidence",
+      "actions": [
+        "After resolving the saved workspace, preserve and expose the original response and strongest-hint metadata, then ask a fresh unassisted retrieval or discrimination item rather than merely promising one."
+      ]
+    }
+  ],
+  "supports_candidate_superiority": false,
+  "supports_human_learning_claim": false,
+  "claim_boundary": "Public fresh-context behavior and artifact-policy evidence only. It is not held-out, candidate-superiority, accessibility-field, or learner-outcome evidence, and three of eight cases fail the declared all-items hard gate."
+}

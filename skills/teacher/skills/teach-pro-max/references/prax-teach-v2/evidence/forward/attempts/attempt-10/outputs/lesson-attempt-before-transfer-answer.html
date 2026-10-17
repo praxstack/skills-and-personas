@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="587d46a704fd40323c1ec85dcd9d9276a3f880d0f499ea97963e17b07f26cedd">
+  <meta name="generated-at" content="2026-08-19T09:21:19.239Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Lesson: attempt before transfer answer</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="lesson-attempt-before-transfer-answer">Lesson: attempt before transfer answer</h1>
+<h2 id="tutor-turn-1">Tutor turn 1</h2>
+<p>We’ll build toward this outcome: given a two-thread execution trace, you can identify a lost update and explain precisely where it occurs. After guided practice, I’ll give you an unseen transfer task; its answer will remain hidden until you attempt it.</p>
+<h3 id="first-diagnosis">First diagnosis</h3>
+<p>A shared balance starts at <code>100</code>.</p>
+<pre><code class="language-text">T1 reads balance → 100
+T2 reads balance → 100
+T1 computes 100 + 20
+T1 writes balance → 120
+T2 computes 100 - 10
+T2 writes balance → 90
+</code></pre>
+<p>Assume ordinary reads and writes—no locks, transactions, or atomic update operation.</p>
+<p>In a few lines, diagnose:</p>
+<ol>
+<li>The final stored balance.</li>
+<li>Which update was lost.</li>
+<li>Why the trace permits that loss.</li>
+</ol>
+<p>“I don’t know yet” is a valid answer.</p>
+<h2 id="learner-turn-1">Learner turn 1</h2>
+<p>The final balance is 90. T1’s +20 update was lost. Both threads read the same starting 100; T2 later wrote 90 from its stale copy, overwriting T1’s 120 instead of incorporating it.</p>
+<h2 id="tutor-turn-2">Tutor turn 2</h2>
+<p>Exactly right—and unassisted. You reconstructed both the stored result and the causal mechanism: T2’s write was based on a stale read, so it replaced rather than composed with T1’s update.</p>
+<p>The diagnostic rule is:</p>
+<blockquote>
+<p>A lost update occurs when overlapping read–modify–write operations derive new values from the same old state, and a later write overwrites an earlier operation’s effect.</p>
+</blockquote>
+<p>Contrast that with this safe interleaving:</p>
+<pre><code class="language-text">score starts at 40
+T1 reads 40, adds 5, writes 45
+T2 reads 45, subtracts 3, writes 42
+</code></pre>
+<p>No update is lost because T2 reads the result of T1’s completed write.</p>
+<h3 id="guided-practice">Guided practice</h3>
+<pre><code class="language-text">stock starts at 12
+T1 reads stock → 12
+T2 reads stock → 12
+T2 computes 12 - 4
+T2 writes stock → 8
+T1 computes 12 + 3
+T1 writes stock → 15
+</code></pre>
+<p>Diagnose the final stored value, which operation—if any—was lost, and what the final value would have been if both operations had been preserved.</p>
+<h2 id="learner-turn-2">Learner turn 2</h2>
+<p>The final stored value is 15. T2’s subtraction of 4 was lost when T1 wrote 15 from its stale read of 12. If both changes were preserved, the result would be 12 - 4 + 3 = 11.</p>
+<h2 id="tutor-turn-3">Tutor turn 3</h2>
+<p>Correct again, unassisted. You tracked the write order, identified the stale snapshot, and compared the observed result (<code>15</code>) with the correctly composed result (<code>11</code>). That is the full diagnostic method.</p>
+<h3 id="unseen-transfer-task">Unseen transfer task</h3>
+<p>A profile service stores this document:</p>
+<pre><code class="language-json">{
+  "theme": "light",
+  "email": "old@example.com"
+}
+</code></pre>
+<p>Two request threads use whole-document read–modify–write operations:</p>
+<pre><code class="language-text">T1 reads the document
+T2 reads the document
+T1 changes theme to "dark"
+T1 writes its whole document
+T2 changes email to "new@example.com"
+T2 writes its whole document
+</code></pre>
+<p>Without assuming any automatic merge, diagnose:</p>
+<ol>
+<li>The final stored document.</li>
+<li>Whether a lost update occurred and precisely what was lost.</li>
+<li>The trace evidence that distinguishes this from two safe updates to different fields.</li>
+</ol>
+<h2 id="learner-turn-3">Learner turn 3</h2>
+<p>The final document is <code>{"theme":"light","email":"new@example.com"}</code>. Yes, T1’s theme change to dark was lost. T2’s whole-document write used the stale copy that still had theme light and overwrote T1’s later state; different logical fields are not safe when each thread replaces the entire document.</p>
+<h2 id="tutor-turn-4">Tutor turn 4</h2>
+<p>Correct. The key transfer insight is that the overwrite unit is the whole document, not the individual field. T2’s stale document therefore restores <code>"theme": "light"</code> while saving its email change.</p>
+<p>Lesson outcome met for this session: you correctly diagnosed three traces, including a changed-domain transfer case, all without hints. You demonstrated application, causal explanation, and transfer—not merely recognition.</p>
+<p>Your learner-authored decision rule was especially strong:</p>
+<blockquote>
+<p>Different logical fields are not safe when each thread replaces the entire document.</p>
+</blockquote>
+<p>What remains uncertain is retention over time and whether you can distinguish lost-update prevention mechanisms; neither was tested. For a one-week retention goal, try one fresh, unassisted trace in 2–3 days. No learner state or files were created.</p>
+<h2 id="learner-turn-4">Learner turn 4</h2>
+<p>I’m still unsure about prevention mechanisms. Before we close, give me one short compare-and-set or retry trace to diagnose.</p>
+<h2 id="tutor-turn-5">Tutor turn 5</h2>
+<h3 id="compare-and-set-retry-trace">Compare-and-set retry trace</h3>
+<pre><code class="language-text">balance starts at (value=100, version=7)
+
+T1 reads (100, v7) and computes 120
+T2 reads (100, v7) and computes 90
+
+T1 compare-and-set(expected=v7, new=120) → succeeds; version becomes v8
+T2 compare-and-set(expected=v7, new=90)  → fails
+
+T2 rereads (120, v8) and recomputes 110
+T2 compare-and-set(expected=v8, new=110) → succeeds; version becomes v9
+</code></pre>
+<p>What is the final balance, did a lost update occur, and which event prevented or repaired the dangerous stale write?</p>
+<h2 id="learner-turn-5">Learner turn 5</h2>
+<p>The final balance is 110, but T1’s +20 was lost because T2 eventually wrote 110 instead of leaving T1’s 120.</p>
+<h2 id="tutor-turn-6">Tutor turn 6</h2>
+<p>Your final balance of <code>110</code> is correct.</p>
+<p>Hint: judge preservation by whether both intended changes are represented in the final value—not by whether T1’s intermediate value of <code>120</code> remains unchanged.</p>
+<p>Revise only this part: was either update actually lost, and what in the trace supports your answer?</p>
+<h2 id="learner-turn-6">Learner turn 6</h2>
+<p>No update was lost. The final 110 equals 100 + 20 - 10, so both changes are represented. T2’s stale compare-and-set failed at version 7; after rereading version 8 it recomputed from 120 and successfully applied the subtraction.</p>
+<h2 id="tutor-turn-7">Tutor turn 7</h2>
+<p>Correct on revision. The failed compare-and-set rejected T2’s stale write; rereading and recomputing rebased the subtraction onto T1’s result.</p>
+<p>Evidence observed:</p>
+<ul>
+<li>Three lost-update diagnoses, including cross-domain transfer: correct and unassisted.</li>
+<li>Compare-and-set/retry diagnosis: correct after one principle cue, so this is scaffolded evidence.</li>
+<li>Remaining uncertainty: unassisted recognition of prevention mechanisms after a delay.</li>
+</ul>
+<p>Your useful decision rule is: check whether every intended change survives in the final state, not whether an intermediate value remains unchanged.</p>
+<p>For a one-week retention goal, diagnose a fresh compare-and-set trace without hints in 2–3 days. No learner state or files were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>587d46a704fd40323c1ec85dcd9d9276a3f880d0f499ea97963e17b07f26cedd</code><br>
+    Generated: 2026-08-19T09:21:19.239Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

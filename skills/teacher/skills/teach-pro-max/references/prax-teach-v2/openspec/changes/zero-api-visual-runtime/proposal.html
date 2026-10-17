@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="proposal.md">
+  <meta name="source-sha256" content="e785d4ff60ce89b942a910b2c6c54b36d9dfc27d2f817a41eac164cb8fa25675">
+  <meta name="generated-at" content="2026-08-17T09:15:42.098Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>proposal</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./proposal.md">Markdown source</a></div></header>
+  <main id="main-content"><h2 id="why">Why</h2>
+<p>The existing <code>teach-pro-max</code> engine has the teaching contract, learner state, visual routing, and static artifact path, but its planned offline visual runtime is still only a tracker. The learner needs a small, deterministic environment where they can predict, manipulate, compare, receive ordered hints, and export inspectable evidence without an API, telemetry, or hidden subscription backend.</p>
+<p>This change turns the repository-defined Zero-API Visual Runtime plan into one OpenSpec-governed implementation, while keeping the host tutor and the universal static fallback intact. It also makes engineering completion and genuine human-learning evidence visibly separate.</p>
+<h2 id="what-changes">What Changes</h2>
+<ul>
+<li>Add a separately versioned, offline visual-runtime package inside the candidate.</li>
+<li>Add versioned visual-lesson and learning-receipt contracts with validation, import, export, inspection, and deletion.</li>
+<li>Add reusable accessible components for state stepping, parameter manipulation, synchronized comparison, ordered hints, and receipt display.</li>
+<li>Build three local lessons: Python floating-point representation, Rubik's legal moves, and concurrency lost updates.</li>
+<li>Preserve a complete static, JavaScript-off, print, zoom/reflow, and reduced-motion path for every lesson.</li>
+<li>Enforce a no-network/no-API/no-telemetry runtime boundary with deterministic builds and local asset containment.</li>
+<li>Add one explicitly bounded, build-time-only Lean experiment with a static equivalent and a keep-or-revert decision.</li>
+<li>Prepare evaluation, accessibility, privacy, security, deterministic-build, review, packaging, and rollback evidence.</li>
+<li>Update the canonical tracker and its Markdown/HTML views from evidence; never convert synthetic or planned results into human-learning claims.</li>
+</ul>
+<h2 id="capabilities">Capabilities</h2>
+<h3 id="new-capabilities">New Capabilities</h3>
+<ul>
+<li><code>offline-visual-runtime</code>: deterministic local lesson runtime, shared components, fallback routes, and receipts.</li>
+<li><code>visual-lesson-contracts</code>: versioned lesson specifications, learning receipts, formal receipts, and validators.</li>
+<li><code>visual-learning-labs</code>: floating-point, Rubik's move, and lost-update lessons using the shared runtime.</li>
+<li><code>build-time-formal-receipts</code>: one pinned Lean adapter and proof-state export with a removable boundary.</li>
+<li><code>runtime-evidence-and-packaging</code>: no-network enforcement, evaluation capture, exact-byte evidence, review, and candidate packaging.</li>
+<li><code>teaching-runtime</code>: explicit receipt bridge to the offline visual runtime while preserving host-chat interpretation and static fallback behavior.</li>
+</ul>
+<h3 id="modified-capabilities">Modified Capabilities</h3>
+<p>None. The repository has no pre-existing OpenSpec capability specs; these are new contracts for the candidate.</p>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>Adds runtime, lesson, schema, fixture, test, build, and evidence files under the candidate repository.</li>
+<li>Adds repo-local OpenSpec artifacts under <code>openspec/</code> and a project-local Codex skill configuration generated by <code>openspec init</code>.</li>
+<li>Extends the existing Python/Node toolchain with only pinned, project-scoped dependencies required by the runtime and one build-time Lean experiment.</li>
+<li>Does not add an API client, telemetry, remote runtime asset, browser automation, or automatic learner-data upload.</li>
+<li>Does not install or replace the global <code>teach-pro-max</code> skill until a separate promotion decision is made.</li>
+</ul>
+</main>
+  <footer>
+    Canonical source: <a href="./proposal.md">proposal.md</a><br>
+    SHA-256: <code>e785d4ff60ce89b942a910b2c6c54b36d9dfc27d2f817a41eac164cb8fa25675</code><br>
+    Generated: 2026-08-17T09:15:42.098Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

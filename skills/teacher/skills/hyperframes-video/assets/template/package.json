@@ -1,0 +1,19 @@
+{
+  "name": "explainer-hyperframes",
+  "private": true,
+  "type": "module",
+  "description": "Narrated explainer film: HTML + GSAP compositions rendered by the HyperFrames CLI.",
+  "scripts": {
+    "postinstall": "node setup.mjs",
+    "setup": "node setup.mjs",
+    "lint": "hyperframes lint .",
+    "snapshot": "hyperframes snapshot ."
+  },
+  "dependencies": {
+    "@fontsource/bangers": "5.3.0",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "gsap": "3.15.0",
+    "hyperframes": "0.8.137"
+  }
+}

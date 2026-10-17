@@ -1,0 +1,19 @@
+{
+  "attempt": 1,
+  "disposition": "failed-and-superseded",
+  "payload": {
+    "file_count": 312,
+    "manifest_sha256": "891b48b9d5714ff16b6322ede0bcd399dceb5be9b1d047a5bdd2ec4715fbc33e",
+    "payload_file_sha256": "844a1b271970875a55c2c3a5ac9dfdb12a140831223a165b8205d341090fb00b"
+  },
+  "result": "failed",
+  "summary": [
+    "Visual verification accepted non-semantic fallback content, and renderer publication and URL handling were not strict enough.",
+    "Evaluation and SkillOpt isolation admitted identity or content aliases and did not bind every input strongly enough.",
+    "Review and packaging receipts had overly broad exclusions, mutable-worktree and publication-race exposure, and incomplete exact-schema boundaries.",
+    "Scheduler reviews were not causally bound to source observation events, timestamp ordering was ambiguous, and ordinary engineering requests could be misrouted.",
+    "Aggregate phase labels could promote mixed evidence, and reviewer task identities were described too strongly as authorship proof."
+  ],
+  "remediation": "Implemented in the candidate worktree; none of these fixes count as accepted until new exact-payload code, frozen-spec, and three-panel architecture-council reviews pass with no unresolved actionables.",
+  "claim_boundary": "This record preserves the failed first review. It is not a passing review receipt and cannot satisfy AC-24."
+}

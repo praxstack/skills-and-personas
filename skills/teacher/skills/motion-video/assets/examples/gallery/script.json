@@ -1,0 +1,20 @@
+{
+ "meta": {
+  "title": "Block gallery",
+  "subtitle": "Every block the motion-video engine has, in about 40 seconds (a test film and a copy-paste reference)",
+  "format": "general",
+  "chapters": ["Words", "Numbers", "Code"],
+  "voice": "af_heart", "speed": 1.05, "music": "calm",
+  "fps": 30, "width": 1920, "height": 1080
+ },
+ "lines": [
+  {"id": "a1", "chapter": 0, "scene": "compare", "cap": "Brute force, against Bellman-Ford.", "say": "Brute force, against Bellman Ford."},
+  {"id": "a2", "chapter": 0, "scene": "compare", "cap": "Bellman-Ford wins: k + 1 rounds.", "say": "Bellman Ford wins, with k plus one rounds."},
+  {"id": "s1", "chapter": 0, "scene": "steps", "cap": "Three steps: read, relax, repeat.", "say": "Three steps. Read the old row, relax every flight, and repeat."},
+  {"id": "b1", "chapter": 1, "scene": "week", "cap": "Questions solved per day, peaking on Friday.", "say": "Questions solved per day this week, peaking on Friday."},
+  {"id": "b2", "chapter": 1, "scene": "week", "cap": "72% of the plan is done.", "say": "Seventy two percent of the plan is done."},
+  {"id": "c1", "chapter": 2, "scene": "code", "cap": "Copy the row first, then relax every flight.", "say": "Copy the row first, then relax every flight."},
+  {"id": "c2", "chapter": 2, "scene": "code", "cap": "The check reads the old row, so each round adds one flight.", "say": "The check reads the old row, so each round adds exactly one flight."},
+  {"id": "e1", "chapter": 2, "scene": "array", "cap": "Two pointers start at both ends and walk inward.", "say": "Two pointers start at both ends, and walk inward."}
+ ]
+}

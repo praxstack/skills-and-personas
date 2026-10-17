@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="EVALUATION.md">
+  <meta name="source-sha256" content="8191f14167097656dc91494e5039f601544ccb2933c32aec190e3fec665e0bd6">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Evaluation contract</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./EVALUATION.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="evaluation-contract">Evaluation contract</h1>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#separate-the-claims">Separate the claims</a></li>
+<li><a href="#agent-level-evaluation">Agent-level evaluation</a></li>
+<li><a href="#behavioral-fixtures">Behavioral fixtures</a></li>
+<li><a href="#optimizer-evaluation">Optimizer evaluation</a></li>
+<li><a href="#artifact-and-html-checks">Artifact and HTML checks</a></li>
+<li><a href="#learner-outcome-evaluation">Learner-outcome evaluation</a></li>
+<li><a href="#release-gates">Release gates</a></li>
+</ol>
+<h2 id="separate-the-claims">Separate the claims</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Skill is valid</td>
+<td>Package/schema/script validation</td>
+</tr>
+<tr>
+<td>Skill triggers correctly</td>
+<td>Positive, negative, and boundary cases</td>
+</tr>
+<tr>
+<td>Tutor follows policy</td>
+<td>Observable behavior and forbidden-outcome graders</td>
+</tr>
+<tr>
+<td>Artifact passes engineering checks</td>
+<td>Parity, structure, security, deterministic rendering, provenance</td>
+</tr>
+<tr>
+<td>Artifact is browser-inspected</td>
+<td>Named-page hashes plus completed real-browser receipt</td>
+</tr>
+<tr>
+<td>Artifact is field-accessible</td>
+<td>Appropriate assistive-technology and representative learner evidence with EG-03 passed</td>
+</tr>
+<tr>
+<td>Learner improved</td>
+<td>Randomized learner outcomes</td>
+</tr>
+<tr>
+<td>Learning endured and transferred</td>
+<td>Delayed unseen retention and novel transfer</td>
+</tr>
+</tbody></table></div>
+<p>Never describe artifact preference or evaluator score as a learning gain.</p>
+<h2 id="agent-level-evaluation">Agent-level evaluation</h2>
+<p>Use a truly skill-absent control. Merely omitting the skill name from the prompt is not absence if the target files or excerpts remain discoverable.</p>
+<p>Hold constant:</p>
+<ul>
+<li>exact model and sampling settings;</li>
+<li>system/configuration fingerprint;</li>
+<li>all non-target skills and tools;</li>
+<li>fixture bytes and starting state;</li>
+<li>network, permissions, dependencies, timeout, and token budget;</li>
+<li>hidden graders;</li>
+<li>fresh context and workspace.</li>
+</ul>
+<p>Fingerprint the whole target skill. Randomize run order. Keep outputs outside future agents’ visible workspaces.</p>
+<p>For the current evaluation architecture, run:</p>
+<ol>
+<li>normal agent vs frozen <code>teach</code>;</li>
+<li>normal agent vs fingerprinted <code>prax-teach-v2</code>.</li>
+</ol>
+<p>Use three trials per arm as a smoke stage and predeclare a ceiling of five. Expand only inconclusive cases without changing substantive settings. This is an engineering procedure, not a powered human-study design.</p>
+<h2 id="behavioral-fixtures">Behavioral fixtures</h2>
+<p>Include positive, negative, and boundary cases across:</p>
+<ul>
+<li><code>quick</code>, <code>lesson</code>, and <code>course</code>;</li>
+<li>no visual, static, interactive, motion, and ambiguous visual need;</li>
+<li>novice, expert, high-confidence error, low-confidence correct response;</li>
+<li>retrieval, hinting, misconception repair, feedback, teach-back, and transfer;</li>
+<li>no persistence consent, accepted persistence, resume, stale evidence, correction, export, deletion;</li>
+<li>reduced motion, keyboard-only, no JavaScript, screen-reader, and narrow viewport;</li>
+<li>explicit <strong>Answer now</strong> and frustration;</li>
+<li>missing, contradictory, unstable, and high-stakes sources.</li>
+</ul>
+<p>Score desired behavior and forbidden behavior separately.</p>
+<p>The bundled <code>references/eval-cases.json</code>, <code>evals/evals.json</code>, and
+<code>evals/forward-behavior.json</code> files are public development material because the
+target package can discover them. Never call those cases held-out. Keep external
+<code>valid_unseen</code>, test and OOD prompts, answers, rubrics, grader instructions, and
+exact hard-gate fixtures outside every target workspace.</p>
+<p>For the frozen forward suite, bind the unchanged rubric hash, current skill and
+reference hashes, one distinct fresh-context task per case, exact output bytes,
+and a separate reviewer receipt. Multi-turn cases must record the real turn
+order; a prose promise to ask before explaining is not equivalent to doing so.
+Retain failed attempts and their remediation before rerunning the current skill.
+All eight public cases must pass, but even 8/8 remains behavior-policy evidence,
+not superiority or learner-outcome evidence.</p>
+<p>The evaluator distinguishes <code>public_machinery_fixture</code>,
+<code>containment_mechanism_fixture</code>, and real candidate-quality scopes. A public
+adversarial sandbox probe can demonstrate denied reads, writes and network
+access, but it is categorically ineligible for held-out or candidate-quality
+claims even when every containment check passes.</p>
+<p>For a held-out run, <code>scripts/evaluate.py run</code> atomically creates the only
+claim-bearing <code>report.json</code>. Its evidence binding covers the exact experiment
+specification, hidden-bank digest, target package, randomized matrix, runner
+fingerprint, sandbox executor/profile/probe hashes, results bytes, and the
+complete set of per-run receipts. The standalone <code>report</code> subcommand accepts
+public or containment results for diagnostic analysis only and rejects
+held-out inputs, even when caller-supplied rows are structurally valid. Copying
+or rewriting JSONL can therefore never promote itself to candidate-quality
+evidence.</p>
+<h3 id="hard-forbidden-outcomes">Hard forbidden outcomes</h3>
+<ul>
+<li>premature or interface-level answer leakage;</li>
+<li>continued Socratic interrogation after <strong>Answer now</strong>;</li>
+<li>fabricated fact, citation, observation, learner history, or scheduler rating;</li>
+<li>silent persistence or sensitive-trait inference;</li>
+<li>false mastery from one response, fluency, confidence, completion, or activity;</li>
+<li>essential information lost under keyboard, no-script, print, zoom, or reduced motion;</li>
+<li>visual or interaction chosen only for decoration;</li>
+<li>hidden grader content exposed to the teaching agent.</li>
+</ul>
+<p>Any critical instance blocks release regardless of the average score.</p>
+<h2 id="optimizer-evaluation">Optimizer evaluation</h2>
+<p>An instruction optimizer such as <a href="https://github.com/microsoft/SkillOpt">SkillOpt</a> may propose a stronger <code>SKILL.md</code>, but it does not change the evidence ladder.</p>
+<p>Use five isolated banks:</p>
+<ul>
+<li>public train/development cases for reflection;</li>
+<li>public <code>valid_seen</code> selection cases for optimizer iteration;</li>
+<li>external hidden <code>valid_unseen</code> cases for pre-test gating;</li>
+<li>an untouched hidden test opened once after freezing the candidate;</li>
+<li>an out-of-distribution bank for a different model, harness, topic, and surface form.</li>
+</ul>
+<p>For each optimizer rollout, clone the complete package, replace only the cloned <code>SKILL.md</code>, and leave the references/scripts frozen. Fingerprint the target, optimizer, configuration, permissions, dependencies, splits, graders, and budgets.</p>
+<p>Apply deterministic critical checks before any soft judge. Reject a candidate for any answer leakage, silent persistence, fabricated source or state, false mastery, inaccessible essential content, destructive behavior, or hidden-grader exposure. These failures are non-compensatory; a higher scalar mean cannot offset them.</p>
+<p>Because rollouts and judges are nondeterministic, require repeated paired trials
+and an improvement larger than measured noise. Quarantine the optimizer artifact
+for human diff review, regenerate the full package, and rerun forward tests.
+Structural score JSON is self-attested unless a trusted evaluation authority
+reruns it, so it cannot itself support promotion. Never auto-adopt.</p>
+<p>Read <a href="./SKILLOPT-OPTIMIZATION.html">SKILLOPT-OPTIMIZATION.md</a> for the complete boundary and pilot policy.</p>
+<h2 id="artifact-and-html-checks">Artifact and HTML checks</h2>
+<p>For every Markdown artifact:</p>
+<ul>
+<li>same-basename HTML exists;</li>
+<li>recorded source SHA-256 matches;</li>
+<li>title, headings, links, code, tables, and citations remain present;</li>
+<li>local links and anchors resolve;</li>
+<li>semantic landmarks, skip link, language, viewport, and focus styles exist;</li>
+<li>the bundled surface remains static/native-disclosure only; any separately
+versioned interaction runtime is keyboard-operable and has static/no-script
+fallbacks;</li>
+<li>reduced-motion and print paths preserve information;</li>
+<li>no mandatory external request is introduced;</li>
+<li>retrieval answers are not exposed in pre-attempt HTML, metadata, CSS, scripts, or alternatives.</li>
+</ul>
+<p>For a Flint-derived chart, additionally require a pinned version, prepared source data, editable semantic spec, render manifest, recorded warnings, reproducible hashes, exact axes/units/domains, and a complete table or extended text equivalent. An unresolved filtering, truncation, semantic-type, or backend warning blocks delivery.</p>
+<p>Automated checks satisfy the structural engineering gate (AC12); they do not
+show that a page was exercised in a browser or by assistive technology. Bind
+manual browser inspection to <code>evidence/inspection/browser.json</code>, including exact
+planned-page hashes. A blocked receipt is valid for an engineering candidate
+only with zero observed pages, all checks false, no browser or field claim, and
+EG-03 parked.</p>
+<p>Before calling an artifact <strong>browser-inspected</strong> or <strong>production-ready</strong>, require
+a passed receipt for real-browser console, responsive viewport, accessibility
+tree, keyboard, zoom/reflow, reduced-motion, print, and no-script inspection as
+applicable. A passed browser receipt supports only that named-page manual
+inspection. It never substitutes for assistive-technology or representative
+learner evidence. Call an artifact <strong>field-accessible</strong> only after those checks
+and the external EG-03 evidence pass.</p>
+<h2 id="learner-outcome-evaluation">Learner-outcome evaluation</h2>
+<p>Use a user-level, parallel randomized design when making a causal product claim:</p>
+<ol>
+<li>active-control agent without a teaching skill;</li>
+<li>frozen <code>teach</code>;</li>
+<li><code>prax-teach-v2</code>.</li>
+</ol>
+<p>Do not use crossover as the main design because acquired knowledge carries into later conditions.</p>
+<p>The executable study path treats allocation provenance as a hard gate. The
+frozen protocol must name the SHA-256 of an external hidden task-bank file.
+Allocation requires that exact file, the participant-roster bytes, and an
+external private blinding key. It writes a set-level HMAC covering every arm,
+pretest, instruction timestamp, opaque assessment ID, the protocol, and both
+content hashes. Analysis requires the same key, roster, and task bank,
+deterministically rebuilds the full allocation set, and constant-time compares
+it with the supplied allocation receipt before consuming scores. A changed or
+deleted allocation, substituted roster, wrong key, altered task bank, or
+rewritten task-bank hash fails closed without a report. The task bank is strict
+UTF-8 JSON: duplicate keys, unknown fields, duplicate task IDs, unsupported or
+missing primary outcomes, empty prompts, and empty rubric references are
+rejected. On POSIX systems the blinding key must be a current-user-owned,
+non-symlink regular file with a private <code>0600</code>-style mode beneath trusted,
+non-writable ancestors. Report publication is descriptor-anchored and rejects
+parent-directory replacement instead of following a swapped symlink.</p>
+<p>Each imported score is validated against the versioned score schema and must
+bind an assessment, primary outcome, hidden <code>task_id</code>, external <code>rubric_ref</code>,
+blind scorer, timestamp, and finite <code>[0,1]</code> score. The task and rubric must
+match the frozen task bank. Analysis canonicalizes timestamps and row order;
+byte-identical duplicate assessment/outcome rows are counted and deduplicated,
+while conflicting duplicates fail closed. The report binds the raw score-file
+SHA-256, validated canonical-score SHA-256, exact schema SHA-256, and public
+task/rubric identifiers. It never includes participant IDs or hidden prompts.</p>
+<h3 id="predeclare-with-evidence-centered-design">Predeclare with evidence-centered design</h3>
+<ul>
+<li><strong>competency claim:</strong> the independent performance expected;</li>
+<li><strong>evidence:</strong> observable behavior that supports it;</li>
+<li><strong>task:</strong> unseen item that elicits the evidence without copying lesson wording.</li>
+</ul>
+<p>Reference <a href="https://www.ets.org/research/policy_research_reports/publications/report/2003/hsgs.html">Evidence-Centered Design</a>, the <a href="https://www.testingstandards.net/">Standards for Educational and Psychological Testing</a>, and applicable <a href="https://ies.ed.gov/ncee/wwc/Handbooks">What Works Clearinghouse standards</a>.</p>
+<h3 id="primary-outcomes">Primary outcomes</h3>
+<ul>
+<li>delayed retention on unseen parallel items;</li>
+<li>novel transfer blind-scored against a rubric.</li>
+</ul>
+<h3 id="secondary-outcomes">Secondary outcomes</h3>
+<ul>
+<li>immediate comprehension;</li>
+<li>time/attempts to durable evidence;</li>
+<li>misconception recurrence;</li>
+<li>confidence calibration;</li>
+<li>hint dependence;</li>
+<li>voluntary continuation.</li>
+</ul>
+<h3 id="guardrails">Guardrails</h3>
+<ul>
+<li>dropout, frustration, and session burden;</li>
+<li>tutor factual errors;</li>
+<li>false-mastered rate;</li>
+<li>accessibility failures;</li>
+<li>subgroup outcome/calibration gaps;</li>
+<li>learner-model corrections;</li>
+<li>latency, token, and monetary cost.</li>
+</ul>
+<p>Use a delay aligned to the real retention goal—commonly 7–14 days plus an
+optional 30-day check. Keep assessment items hidden from lesson generation. Use
+parallel forms, an external HMAC blinding key, blind graders, and a predeclared
+intention-to-treat estimand that retains every assigned learner. The implemented
+missing-outcome policy carries baseline forward as zero adjusted change; report
+complete-case analysis only as sensitivity. Bootstrap learners rather than
+individual observations, and report attrition, fidelity, effect sizes,
+confidence intervals, and pilot-informed power.</p>
+<h2 id="release-gates">Release gates</h2>
+<p>Promote to production delivery only when:</p>
+<ul>
+<li>structure, scripts, state invariants, and artifact parity pass;</li>
+<li>trigger behavior stays within predeclared bounds in every critical stratum;</li>
+<li>no critical forbidden outcome appears;</li>
+<li>optimizer proposals pass hidden non-compensatory guardrails, repeated improvement beyond measured noise, human diff review, and untouched test evaluation;</li>
+<li>quick/no-visual cases are non-inferior and use less or equal ceremony;</li>
+<li>visual-benefit cases improve representation appropriateness without accessibility regressions;</li>
+<li>course state survives resume, is correctable, and drives relevant review;</li>
+<li>claims are limited to the level of evidence actually collected.</li>
+</ul>
+<p>An engineering-candidate package may retain a well-formed blocked browser
+receipt and parked EG-03. That state is not production delivery and authorizes no
+browser-inspected, WCAG-conformance, assistive-technology, or field-accessibility
+claim.</p>
+<p>Treat existing 10% lift and 5% regression/over-trigger values as provisional agent-evaluation defaults only. Define metric-specific educational thresholds and power before learner data collection.</p>
+<p>Until delayed learner outcomes exist, use this claim:</p>
+<blockquote>
+<p>The candidate implements a more explicit, inspectable, and testable tutoring policy.</p>
+</blockquote>
+<p>Do not claim it teaches better yet.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./EVALUATION.md">EVALUATION.md</a><br>
+    SHA-256: <code>8191f14167097656dc91494e5039f601544ccb2933c32aec190e3fec665e0bd6</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

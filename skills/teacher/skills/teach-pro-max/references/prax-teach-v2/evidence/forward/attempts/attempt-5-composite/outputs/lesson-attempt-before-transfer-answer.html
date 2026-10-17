@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="lesson-attempt-before-transfer-answer.md">
+  <meta name="source-sha256" content="0160a0e0480995437891d31ab958879401133bfe6f45ef21c60c7710f50ebcf2">
+  <meta name="generated-at" content="2026-08-19T09:21:23.706Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Focused lesson: diagnosing a two-thread lost update</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./lesson-attempt-before-transfer-answer.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="focused-lesson-diagnosing-a-two-thread-lost-update">Focused lesson: diagnosing a two-thread lost update</h1>
+<h2 id="tutor-initial-diagnosis">Tutor — initial diagnosis</h2>
+<p>Goal: Given an interleaved trace, identify the final stored value, the value expected if both operations took effect, and exactly which update disappeared.</p>
+<p>We’ll use this sequence: initial diagnosis → compact model → guided practice → an unseen transfer task with changed surface details. I’ll keep each answer hidden until you attempt it.</p>
+<p>Start with <code>balance = 100</code>:</p>
+<pre><code class="language-text">1. Thread A reads balance into a
+2. Thread B reads balance into b
+3. Thread A computes a + 20
+4. Thread B computes b - 15
+5. Thread A writes its computed value to balance
+6. Thread B writes its computed value to balance
+</code></pre>
+<p>Assume each read and write is atomic, with no lock, retry, or transaction conflict detection.</p>
+<p>What final value is stored, what value would reflect both operations, and which update—if any—was lost? Explain your diagnosis in one or two sentences. “I don’t know yet” is a valid answer.</p>
+<h2 id="learner-first-attempt">Learner — first attempt</h2>
+<p>The final value is 85 and the combined value should be 105. I think B's minus 15 was lost because A wrote first.</p>
+<h2 id="tutor-light-hint">Tutor — light hint</h2>
+<p>You correctly computed both values: the stored value is <code>85</code>, while applying both operations would produce <code>105</code>.</p>
+<p>The part to revise is which update was lost. “Lost” means its effect is absent from the final stored value—not that its thread wrote first.</p>
+<p>Hint 1: <code>85</code> is exactly the value Thread B computed from its original read. So whose operation is missing from <code>85</code>?</p>
+<p>Revise just this statement: <strong>Thread ___’s update was lost because ___ overwrote it.</strong></p>
+<h2 id="learner-revised-attempt">Learner — revised attempt</h2>
+<p>Thread A's plus 20 update was lost because Thread B overwrote it with 85, which B computed from its earlier read of 100.</p>
+<h2 id="tutor-diagnostic-method-worked-example-and-unassisted-practice">Tutor — diagnostic method, worked example, and unassisted practice</h2>
+<p>Exactly. Thread A’s <code>+20</code> effect is absent because Thread B’s later write used the stale value it had read before A’s update. You reached the correct diagnosis after one cue, so we’ll now test the method unassisted.</p>
+<p>Use this diagnostic:</p>
+<ol>
+<li>Record what each thread read.</li>
+<li>Calculate what each thread will write.</li>
+<li>Replay the writes in actual order.</li>
+<li>Calculate the value containing both operations.</li>
+<li>Compare the two values: the missing effect is the lost update.</li>
+</ol>
+<p>Worked example: inventory starts at <code>50</code>. A shipment thread reads <code>50</code> and computes <code>+10</code>; an order thread also reads <code>50</code> and computes <code>-4</code>. The shipment writes <code>60</code>, then the order writes <code>46</code>. The stored value is <code>46</code>, but both operations should yield <code>56</code>; therefore the shipment’s <code>+10</code> was lost.</p>
+<p>Now try a similar case unassisted:</p>
+<pre><code class="language-text">score starts at 60
+
+1. Thread A reads score
+2. Thread B reads score
+3. Thread A computes +12
+4. Thread B computes -8
+5. Thread B writes its result
+6. Thread A writes its result
+</code></pre>
+<p>What is the final stored value, what value includes both operations, and which update was lost?</p>
+<h2 id="learner-unassisted-similar-case">Learner — unassisted similar case</h2>
+<p>The final stored value is 72. If both operations survived it would be 64, so Thread B's minus 8 update was lost when A later wrote 72 from its stale read.</p>
+<h2 id="tutor-unseen-transfer-prompt">Tutor — unseen transfer prompt</h2>
+<p>Correct—and unassisted this time. You derived both values and identified the lost operation from the later stale write, which is the full diagnostic method.</p>
+<p>A settings service stores the entire profile as one record:</p>
+<pre><code class="language-json">{
+  "email": "old@example.com",
+  "alerts": true
+}
+</code></pre>
+<p>Two threads execute this interleaving:</p>
+<pre><code class="language-text">1. Thread A loads the whole profile into localA
+2. Thread B loads the whole profile into localB
+3. Thread A changes localA.email to "new@example.com"
+4. Thread B changes localB.alerts to false
+5. Thread A saves all of localA
+6. Thread B saves all of localB
+</code></pre>
+<p>Each save replaces the entire stored profile.</p>
+<p>Diagnose the result: what profile is finally stored, what profile should contain both changes, and is there a lost update? If so, identify it and explain the causal chain.</p>
+<h2 id="learner-unseen-transfer-attempt">Learner — unseen transfer attempt</h2>
+<p>The final stored profile is <code>{ email: "old@example.com", alerts: false }</code>. If both changes survived it would be <code>{ email: "new@example.com", alerts: false }</code>. Yes, A's email update was lost: B read the old whole profile, then B's later whole-record save restored the stale email while keeping B's alerts change.</p>
+<h2 id="tutor-evidence-calibrated-close">Tutor — evidence-calibrated close</h2>
+<p>Correct. You recognized the deeper pattern: threads can modify different fields and still lose an update when each later replaces the whole record from a stale snapshot.</p>
+<p>Lesson outcome achieved for this session:</p>
+<ul>
+<li>On the first trace, you calculated both values correctly but reversed which update was lost; one cue resolved that gap.</li>
+<li>You then diagnosed a similar case unassisted.</li>
+<li>You correctly transferred the method to a whole-record replacement case and explained the causal chain unassisted.</li>
+</ul>
+<p>That is strong evidence of immediate application and transfer. It is not yet evidence of delayed retention or durable mastery because we have not tested you after time has passed.</p>
+<p>For a one-week retention goal, try a fresh, no-notes diagnosis in about 48 hours—ideally contrasting this bug with an atomic update or a rejected versioned write. If that is correct unassisted, retrieve it once more after seven days. No files or learner state were created.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./lesson-attempt-before-transfer-answer.md">lesson-attempt-before-transfer-answer.md</a><br>
+    SHA-256: <code>0160a0e0480995437891d31ab958879401133bfe6f45ef21c60c7710f50ebcf2</code><br>
+    Generated: 2026-08-19T09:21:23.706Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="source-path" content="SKILLOPT-OPTIMIZATION.md">
+  <meta name="source-sha256" content="ab42e16e9b54c8a083a0015af7593611b271ff630038ee4933dd08f1708a1dbf">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
+  <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
+  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <title>Optional SkillOpt optimization</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--accent); text-underline-offset:.16em; }
+    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
+    .skip-link:focus { transform:translateY(0); }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
+    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
+    header strong { color:var(--teal); letter-spacing:.04em; }
+    main { padding:clamp(2.4rem,7vw,5rem) 0; }
+    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
+    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
+    p,li { max-width:72ch; }
+    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
+    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
+    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
+    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
+    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
+    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
+    summary { cursor:pointer; font-weight:700; }
+    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header><div><strong>Prax Teach lesson</strong><a href="./SKILLOPT-OPTIMIZATION.md">Markdown source</a></div></header>
+  <main id="main-content"><h1 id="optional-skillopt-optimization">Optional SkillOpt optimization</h1>
+<p><em>Verified upstream snapshot: 2026-08-04. This integration is off by default and is not installed by this package.</em></p>
+<h2 id="purpose">Purpose</h2>
+<p>Use <a href="https://github.com/microsoft/SkillOpt">Microsoft SkillOpt</a> as an <strong>offline proposal generator</strong> for measurable instruction changes. Do not let it rewrite a live installed teaching skill, update learner state, or replace learner-outcome evaluation.</p>
+<p>SkillOpt treats one Markdown skill document as trainable text. A frozen target agent performs scored tasks; a separate optimizer proposes bounded edits; a selection split gates candidates; the best accepted document is emitted as <code>best_skill.md</code>. The authors report strong benchmark results across tested models and harnesses, but those results are an arXiv preprint's own evaluation rather than an independent replication. <a href="https://arxiv.org/abs/2605.23904">Paper</a></p>
+<h2 id="verified-upstream-boundary">Verified upstream boundary</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Current verified fact</th>
+<th>Consequence here</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Release</td>
+<td>PyPI <code>skillopt</code> 0.2.0; Python 3.10+; alpha; MIT</td>
+<td>Pin the reviewed release or a specific source commit</td>
+</tr>
+<tr>
+<td>Commands</td>
+<td><code>skillopt-train</code>, <code>skillopt-eval</code>, <code>skillopt-sleep</code></td>
+<td>Keep execution outside the runtime tutor</td>
+</tr>
+<tr>
+<td>Artifact</td>
+<td>One trained Markdown document, normally <code>best_skill.md</code></td>
+<td>Optimize only <code>SKILL.md</code>; keep package references frozen</td>
+</tr>
+<tr>
+<td>Gate</td>
+<td>Candidate must strictly improve the repeatedly queried selection score in the paper-style path</td>
+<td>Add repeated trials and an external hard-safety gate</td>
+</tr>
+<tr>
+<td>Custom task</td>
+<td>A benchmark adapter supplies train/selection/test data, scored rollouts, and saved trajectories</td>
+<td>A Prax Teach adapter is required before real training</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>The paper reports roughly 20.8M–213.8M training tokens for showcased benchmarks</td>
+<td>Begin with a budgeted smoke pilot, not a broad run</td>
+</tr>
+<tr>
+<td>Portability</td>
+<td>Multiple backends and selected transfer settings were tested</td>
+<td>Re-test every target model and harness; do not promise zero lock-in</td>
+</tr>
+</tbody></table></div>
+<p>Primary references: <a href="https://microsoft.github.io/SkillOpt/docs/guide/installation.html">installation</a>, <a href="https://microsoft.github.io/SkillOpt/docs/guide/configuration.html">configuration</a>, <a href="https://microsoft.github.io/SkillOpt/docs/guide/skill-document.html">skill document</a>, <a href="https://microsoft.github.io/SkillOpt/docs/guide/new-benchmark.html">custom benchmark guide</a>, and <a href="https://arxiv.org/html/2605.23904#S3">method</a>.</p>
+<p>The documentation tracks <code>main</code>, while PyPI 0.2.0 omits repository benchmark configs, plugin shells, materializers, and tests. Features present only on <code>main</code> require a reviewed commit pin rather than an unversioned checkout.</p>
+<p>Check availability without changing the environment:</p>
+<pre><code class="language-bash">python3 scripts/check_optional_integrations.py --json
+</code></pre>
+<h2 id="architecture">Architecture</h2>
+<pre><code class="language-text">frozen package + public development cases
+                 |
+                 v
+     isolated Prax Teach benchmark adapter
+                 |
+       train rollouts and reflection
+                 |
+                 v
+        candidate best_skill.md
+                 |
+       +---------+------------------+
+       |                            |
+       v                            v
+hidden critical guardrails   repeated selection score
+       |                            |
+       +-------------+--------------+
+                     v
+          staged diff for human review
+                     |
+       package clone + HTML regeneration
+                     |
+       untouched test + cross-model check
+                     |
+                     v
+             candidate release only
+</code></pre>
+<p>The optimizer never owns the installed package. Promotion remains a separate, reviewable release action.</p>
+<h2 id="trainable-and-protected-surfaces">Trainable and protected surfaces</h2>
+<p>SkillOpt optimizes a single text file, while Prax Teach is a multi-file package. Use this boundary:</p>
+<h3 id="trainable-proposal-surface">Trainable proposal surface</h3>
+<ul>
+<li>mode-routing wording and order;</li>
+<li>teaching-loop phrasing and compression rules;</li>
+<li>when references should be loaded;</li>
+<li>hint, feedback, and transfer instructions;</li>
+<li>concise routing language that affects observed agent behavior.</li>
+</ul>
+<h3 id="protected-package-surface">Protected package surface</h3>
+<ul>
+<li>all files below <code>references/</code> and <code>scripts/</code> during an optimization run;</li>
+<li>the <code>name</code> field and package-relative links;</li>
+<li><strong>Answer now</strong> and the live retrieval turn boundary;</li>
+<li>no silent persistence and correctable evidence-based learner state;</li>
+<li>no premature answer leakage, fabricated sources, or false mastery;</li>
+<li>Markdown-as-canonical, accessibility, privacy, and claim-boundary contracts.</li>
+</ul>
+<p>Enforce the protected surface with hidden hard graders and deterministic package checks. Do not expose their exact prompts, answers, or judge instructions to the target workspace.</p>
+<p>For each rollout, clone the complete package into a fresh isolated workspace, replace only the cloned <code>SKILL.md</code> with the proposed text, and leave the frozen references and scripts beside it. This preserves relative links while allowing SkillOpt to train one document.</p>
+<h2 id="benchmark-contract">Benchmark contract</h2>
+<p>Maintain five banks:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
+<thead>
+<tr>
+<th>Bank</th>
+<th align="right">Visible to optimizer?</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Public train</td>
+<td align="right">Yes</td>
+<td>Reflection, failure analysis, and rapid iteration</td>
+</tr>
+<tr>
+<td>Public <code>valid_seen</code> selection</td>
+<td align="right">Yes</td>
+<td>Upstream-compatible optimizer iteration</td>
+</tr>
+<tr>
+<td>External hidden <code>valid_unseen</code></td>
+<td align="right">No</td>
+<td>Repeated pre-test hard gating through trusted isolation</td>
+</tr>
+<tr>
+<td>Test</td>
+<td align="right">No</td>
+<td>One final evaluation after the candidate is frozen</td>
+</tr>
+<tr>
+<td>OOD / transfer</td>
+<td align="right">No</td>
+<td>Different target model, harness, topic, and surface form</td>
+</tr>
+</tbody></table></div>
+<p>The bundled <code>references/eval-cases.json</code> and <code>evals/evals.json</code> files are public and discoverable. Treat them as development material, never held-out proof.</p>
+<p>Each custom SkillOpt rollout must emit the upstream-required <code>id</code>, <code>hard</code>, and <code>soft</code> values and persist <code>predictions/&lt;id&gt;/conversation.json</code> for reflection. Keep reference answers, rubrics, graders, and test fixtures outside every target-agent workspace. <a href="https://microsoft.github.io/SkillOpt/docs/guide/new-benchmark.html">Benchmark adapter contract</a></p>
+<h2 id="non-compensatory-scoring">Non-compensatory scoring</h2>
+<p>Use a lexicographic gate:</p>
+<ol>
+<li><strong>Integrity:</strong> reject on any critical answer leakage, silent persistence, fabricated source/state, false mastery, accessibility loss, hidden-grader exposure, or destructive action.</li>
+<li><strong>Behavior:</strong> require a repeated paired improvement larger than measured rollout/judge noise on the frozen selection set.</li>
+<li><strong>Regression:</strong> require non-inferiority for quick, no-visual, <strong>Answer now</strong>, no-persistence, and accessibility strata.</li>
+<li><strong>Efficiency:</strong> among otherwise passing candidates, prefer lower latency, tokens, cost, and instruction length.</li>
+</ol>
+<p>A scalar mean must never compensate for a critical tutoring failure. SkillOpt's internal score gate is necessary but not sufficient.</p>
+<h2 id="conservative-pilot">Conservative pilot</h2>
+<p>Start with:</p>
+<ul>
+<li>patch mode rather than full-document rewrite;</li>
+<li>edit budget <code>1</code>;</li>
+<li>one or two epochs;</li>
+<li>fixed target, optimizer, configuration fingerprint, permissions, and tool set;</li>
+<li>full selection-set evaluation;</li>
+<li>repeated paired trials with deterministic checks before judge scoring;</li>
+<li>no test-set access during tuning;</li>
+<li>slow update disabled for the first pilot;</li>
+<li>externally enforced token, time, and monetary budgets.</li>
+</ul>
+<p>These are local safety-first pilot choices, not the paper defaults. Record the difference.</p>
+<h2 id="adoption-runbook">Adoption runbook</h2>
+<ol>
+<li>Freeze and fingerprint the current candidate package.</li>
+<li>Pin SkillOpt by release or source commit in a sibling experiment environment.</li>
+<li>Build the <code>prax_teach</code> benchmark adapter and hidden split banks.</li>
+<li>Verify the adapter with no-provider or minimal smoke tasks.</li>
+<li>Train only within the predeclared budget.</li>
+<li>Quarantine <code>best_skill.md</code>; do not copy it into an installed skill. The
+bundled <code>stage_proposal.py</code> validates exact fields and byte bindings only:
+its score JSON is self-attested, so its receipt is never evidence-eligible
+or adoption-eligible. A trusted isolated evaluator must independently rerun
+the proposal before a human decision.</li>
+<li>Review the diff for generalization, contradictions, bloat, and protected-contract changes.</li>
+<li>Put the approved proposal into a cloned candidate package.</li>
+<li>Regenerate <code>SKILL.html</code>, run <code>validate_workspace.py</code>, and repeat forward tests.</li>
+<li>Open the untouched test once; then run at least one different model or harness.</li>
+<li>Package a new candidate only after human approval.</li>
+</ol>
+<p>Record the SkillOpt version/commit, dependency lock, model identifiers, sampling settings, split hashes, run seeds, costs, accepted/rejected edits, and complete grader fingerprint.</p>
+<h2 id="skillopt-sleep-boundary">SkillOpt-Sleep boundary</h2>
+<p>SkillOpt-Sleep can harvest supported coding-agent sessions and stage an update. Its Codex integration defaults to a no-provider <code>mock</code> backend; provider-backed runs send transcript-derived tasks or excerpts to the selected provider, and upstream warns that pattern-based redaction cannot guarantee secret-free prompts. <a href="https://github.com/microsoft/SkillOpt/tree/main/plugins/codex">Codex integration</a> and <a href="https://github.com/microsoft/SkillOpt/blob/main/docs/sleep/README.html">data boundary</a></p>
+<p>For Prax Teach:</p>
+<ul>
+<li>do not harvest learner sessions by default;</li>
+<li>require explicit, scoped consent before reading archives;</li>
+<li>export, inspect, redact, and mark a reviewed task file before any real backend;</li>
+<li>exclude learner state, sensitive content, source documents, and hidden assessments unless separately authorized;</li>
+<li>keep <code>--auto-adopt</code> off;</li>
+<li>prefer benchmark-driven training before transcript-driven optimization.</li>
+</ul>
+<h2 id="claim-boundary">Claim boundary</h2>
+<p>SkillOpt may show that a revised instruction document scores better on an agent benchmark. It cannot establish that people learn, retain, or transfer better. Delayed learner outcomes remain a separate study governed by <a href="./EVALUATION.html">EVALUATION.md</a>.</p>
+</main>
+  <footer>
+    Canonical source: <a href="./SKILLOPT-OPTIMIZATION.md">SKILLOPT-OPTIMIZATION.md</a><br>
+    SHA-256: <code>ab42e16e9b54c8a083a0015af7593611b271ff630038ee4933dd08f1708a1dbf</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
+    Renderer: prax-teach-markdown/2.2.0<br>
+    Template: prax-teach-lesson/2.0.0
+  </footer>
+</body>
+</html>

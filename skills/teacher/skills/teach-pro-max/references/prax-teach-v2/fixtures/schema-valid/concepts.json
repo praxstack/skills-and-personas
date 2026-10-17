@@ -1,0 +1,25 @@
+{
+  "algorithm": {"name": "transparent-evidence-projection", "version": "1.0.0"},
+  "concepts": [
+    {
+      "concept_id": "index-selection",
+      "confidence": 0.9,
+      "contradictions": [],
+      "dimensions": {
+        "application": {"estimate": 0.9, "evidence_ids": ["evt-317798d6e743e3c53cd893cd1d497880"]},
+        "discrimination": {"estimate": null, "evidence_ids": []},
+        "explanation": {"estimate": null, "evidence_ids": []},
+        "recall": {"estimate": null, "evidence_ids": []},
+        "recognition": {"estimate": null, "evidence_ids": []},
+        "transfer": {"estimate": null, "evidence_ids": []}
+      },
+      "evidence_ids": ["evt-317798d6e743e3c53cd893cd1d497880"],
+      "higher_order_evidence_ids": ["evt-317798d6e743e3c53cd893cd1d497880"],
+      "last_updated": "2026-08-04T11:00:00.000000Z",
+      "status": "emerging",
+      "status_reason": "Only one independently demonstrated dimension is available.",
+      "unassisted_dimensions": ["application"]
+    }
+  ],
+  "schema_version": "1"
+}

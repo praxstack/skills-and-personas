@@ -1,0 +1,51 @@
+{
+  "data": {
+    "values": [
+      {
+        "session": "Immediate",
+        "independent_retrieval": 72
+      },
+      {
+        "session": "Seven days",
+        "independent_retrieval": 61
+      },
+      {
+        "session": "Fourteen days",
+        "independent_retrieval": 55
+      }
+    ]
+  },
+  "semantic_types": {
+    "independent_retrieval": "Percentage",
+    "session": "Measurement window"
+  },
+  "field_display_names": {
+    "independent_retrieval": "Independent retrieval (%)",
+    "session": "Measurement window"
+  },
+  "chart_spec": {
+    "baseSize": {
+      "height": 240,
+      "width": 420
+    },
+    "canvasSize": {
+      "height": 240,
+      "width": 420
+    },
+    "chartType": "Bar Chart",
+    "encodings": {
+      "x": {
+        "field": "session"
+      },
+      "y": {
+        "field": "independent_retrieval"
+      }
+    }
+  },
+  "prax_teach": {
+    "reviewed": true,
+    "title": "Independent retrieval by measurement window",
+    "summary": "Illustrative synthetic machinery data: retrieval is 72% immediately, 61% after seven days, and 55% after fourteen days. This is not learner-outcome evidence.",
+    "table_caption": "Synthetic independent-retrieval fixture; not learner-outcome evidence"
+  }
+}

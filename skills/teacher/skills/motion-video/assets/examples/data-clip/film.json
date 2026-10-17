@@ -1,0 +1,62 @@
+{
+  "style": { "look": "paper", "brand": "Claude video skills", "mark": "CV", "tag": "By the numbers" },
+  "data": { "speeds": "data/render-speed.csv", "facts": "data/facts.csv" },
+  "shots": [
+    {
+      "at": "d1",
+      "blocks": [
+        { "type": "title", "kicker": "Claude video skills", "title": "One pipeline, every film *checked*", "sub": "Pick the drawing kit; the rest is shared." },
+        { "type": "stat", "value": "=speeds.fps:count", "label": "drawing kits", "align": "center" }
+      ]
+    },
+    {
+      "at": "d2",
+      "blocks": [
+        { "type": "text", "kicker": "Shared by every kit", "text": "Same *voice, music, captions* and checks", "chips": ["Kokoro voice", "music + effects", "karaoke captions", "QA report"] }
+      ]
+    },
+    {
+      "at": "d3",
+      "blocks": [
+        { "type": "bars", "id": "speed", "title": "Render speed", "unit": "frames/s per worker, 1080p, CPU only",
+          "rows": { "from": "speeds", "x": "kit", "y": "fps", "sort": "desc" }, "format": "0.0",
+          "cues": [
+            { "do": "highlight", "at": "d4:motion canvas", "label": "max" },
+            { "do": "highlight", "at": "d5:three j s", "label": "min" }
+          ] }
+      ]
+    },
+    {
+      "at": "d6",
+      "blocks": [
+        { "type": "stat", "kicker": "A six-minute film", "value": "=facts.value[fact=frames_6min]", "format": "int", "label": "frames, each drawn and checked", "align": "center" }
+      ]
+    },
+    {
+      "at": "d7", "split": [0.7, 1.3],
+      "blocks": [
+        { "type": "stat", "value": "=facts.value[fact=gates]", "label": "gates before anything ships" },
+        { "type": "steps", "items": ["Brief", "Script", "Voice | Kokoro, timed per line", "Visuals | stills looked at, 26 px, 4.5:1", "Render", "Mix | -16 LUFS", "QA | sync, black, frozen, flicker", "Deliver"] }
+      ]
+    },
+    {
+      "at": "d8",
+      "blocks": [
+        { "type": "stat", "value": "=facts.value[fact=themes]", "label": "colour themes" },
+        { "type": "stat", "value": "=facts.value[fact=contrast]", "format": "0.0", "suffix": ":1", "label": "contrast, at least, for every text" }
+      ]
+    },
+    {
+      "at": "d9",
+      "blocks": [
+        { "type": "text", "kicker": "Data in, film out", "text": "Edit the CSV. *Everything* follows.", "chips": ["data/*.csv", "film.json", "motion_fill.py"] }
+      ]
+    },
+    {
+      "at": "e1",
+      "blocks": [
+        { "type": "end", "title": "Pick a kit. *Ship a film.*", "handle": "claude-video-skills", "cta": "explainer-video picks one for you" }
+      ]
+    }
+  ]
+}

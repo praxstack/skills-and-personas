@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"segFrom","type":"number","label":"Render from (s)","default":0},{"id":"segTo","type":"number","label":"Render to (s, 0 = film end)","default":0}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Explainer</title>
+    <link rel="stylesheet" href="vendor/fonts.css" />
+    <link rel="stylesheet" href="style/kit.css" />
+    <!-- GSAP 3.15 + plugins (all free since 3.13), copied from node_modules by setup.mjs -->
+    <script src="vendor/js/gsap.min.js"></script>
+    <script src="vendor/js/DrawSVGPlugin.min.js"></script>
+    <script src="vendor/js/MotionPathPlugin.min.js"></script>
+    <script src="vendor/js/SplitText.min.js"></script>
+    <script src="vendor/js/TextPlugin.min.js"></script>
+    <script src="vendor/js/CustomEase.min.js"></script>
+    <!-- the film's clock: written by voice.py --emit source/timing.js (do not edit) -->
+    <script src="timing.js"></script>
+  </head>
+  <body>
+    <!-- data-start/data-duration are stamped by the registration script at the end (from timing.js), so the length
+         always equals the voice timing; there is deliberately no static data-duration on the root. -->
+    <div id="root" data-composition-id="main" data-width="1920" data-height="1080">
+      <div id="bg" class="layer clip" data-track-index="0"></div>
+      <div id="scene" class="layer clip" data-track-index="1">
+        <div id="cam"><div id="drift"><div id="world">
+          <svg id="wsvg" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+          <div id="whtml"></div>
+        </div></div></div>
+      </div>
+      <div id="hud" class="layer clip" data-track-index="2"><svg id="hudsvg" width="1920" height="1080" viewBox="0 0 1920 1080"></svg></div>
+      <div id="chrome" class="layer clip" data-track-index="3"></div>
+      <div id="fx" class="layer clip" data-track-index="4"></div>
+      <div id="cards" class="layer clip" data-track-index="5"></div>
+      <div id="caps" class="layer clip" data-track-index="6"></div>
+    </div>
+
+    <!-- the colour theme (null = the kit's own palette); theme.py emit <id> --format global --out source/theme.js -->
+    <script src="theme.js"></script>
+    <!-- the kit (reusable) -->
+    <script src="kit/tokens.js"></script>
+    <script src="kit/core.js"></script>
+    <script src="kit/camera.js"></script>
+    <script src="kit/background.js"></script>
+    <script src="kit/cards.js"></script>
+    <script src="kit/captions.js"></script>
+    <script src="kit/graph.js"></script>
+    <script src="kit/decoder.js"></script>
+    <script src="kit/question.js"></script>
+    <script src="kit/code.js"></script>
+    <script src="kit/table.js"></script>
+    <script src="kit/ladder.js"></script>
+    <script src="kit/burst.js"></script>
+    <script src="kit/widgets.js"></script>
+    <!-- this film (replace these two for a new film) -->
+    <script src="scenes/subject.js"></script>
+    <script src="scenes/film.js"></script>
+
+    <!-- Register the film with HyperFrames. The film timeline is wrapped so a render can cover any range
+         [segFrom, segTo) of it: render_hyperframes.mjs passes --variables '{"segFrom":a,"segTo":b}' per segment.
+         Without variables (studio, snapshot, a plain `hyperframes render`) it is the whole film. -->
+    <script>
+      (function () {
+        var V = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+        var film = KIT.film();
+        var from = Math.max(0, Number(V.segFrom) || 0);
+        var to = Number(V.segTo) > from ? Number(V.segTo) : KIT.T.total;
+        var tl = gsap.timeline({ paused: true });
+        tl.add(film.tweenFromTo(from, to, { ease: "none" }), 0);
+        var root = document.getElementById("root");
+        root.setAttribute("data-start", "0");
+        root.setAttribute("data-duration", String(+(to - from).toFixed(4)));
+        Array.prototype.forEach.call(root.querySelectorAll(".clip"), function (el) {
+          el.setAttribute("data-start", "0");
+          el.setAttribute("data-duration", String(+(to - from).toFixed(4)));
+        });
+        window.__FILM_RANGE = { from: from, to: to, total: KIT.T.total, hash: KIT.T.hash };
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>
