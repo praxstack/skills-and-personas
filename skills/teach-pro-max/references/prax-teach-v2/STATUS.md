@@ -10,7 +10,7 @@ current acceptance, installed state or improved human learning.
 The source status remains a candidate after its final source freeze. Final
 review, teaching comparison, rendered inspection, verification, release decision
 and installation results belong outside the source inventory they attest to.
-The planned record for this run is `completion-v5/ACCEPTANCE.json` in the
+The planned record for this run is `completion-v6/ACCEPTANCE.json` in the
 external evaluation workspace. It is not yet established by this page and may
 be absent; the filename alone conveys no authority. General consumers need no
 particular machine path. Runtime eligibility uses the trusted, explicitly

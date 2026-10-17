@@ -59,6 +59,18 @@ is not evidence of impossibility. Use a boundary case when it reveals a mistaken
 claim, without turning every subject into a formal-logic exercise or removing
 uncertainty from interpretation.
 
+When a lesson depends on necessity, sufficiency or a guarantee, work through
+a small checkable model before using an open-ended causal analogy. Define
+the condition, outcome and fixed background assumptions. A sufficient
+condition must imply the outcome throughout that scope; find whether the
+condition can hold while the outcome fails. For necessity, ask whether the
+outcome can hold without the condition. Keep possibility, contribution and
+guarantee separate in both the words and the visual arrows. Match the unit,
+place and time horizon of every purported counterexample. Historical or
+interpretive evidence may leave a conditional unsettled; do not turn lack
+of proof into proof of impossibility. This is the teacher's preparation,
+not a compulsory learner quiz or a requirement for unrelated lessons.
+
 Build the whole bounded lesson before delivery. Give immediate access to the
 complete figure and finished state; optional replay or learner-requested layers
 can expose how it unfolds. Navigable pacing is useful; mandatory learner turns

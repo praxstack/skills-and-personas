@@ -50,6 +50,11 @@ story under the same conditions. When relevant, distinguish a necessary conditio
 a sufficient condition and a contributing cause; slowing a process or reducing its
 likelihood does not by itself make it impossible. Use these distinctions only where
 they fit the subject, and preserve uncertainty in interpretive claims.
+For claims about necessity, sufficiency or guarantees, fix the outcome and
+background conditions first. Test the implication against a concrete example
+and counterexample; "can cause" establishes possibility, not a guarantee.
+Keep the unit, place and time horizon unchanged when transferring the example
+to a causal account. If evidence cannot settle the conditional, say so.
 
 Read [references/TEACHING-PROTOCOL.md](./references/TEACHING-PROTOCOL.md) for
 adaptation, optional practice, feedback and evidence rules. Retrieve only the
