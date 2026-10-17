@@ -31,12 +31,12 @@ if (await quizBtn.count()) {
   await page.locator(".cs-quiz button", { hasText: "Check" }).click();
   check("quiz reveals why after a try", (await page.locator(".cs-quiz .cs-why").count()) === 1);
 }
-for (const l of ids) {
-  const href = await page.evaluate((id) => document.querySelector(".cs-drawer") && id, l);
-  check(`lesson ${l} listed`, Boolean(href));
-}
 await page.getByRole("tab", { name: "Outline" }).click();
 check("outline lists every lesson", (await page.locator(".cs-outline li").count()) === ids.length);
+const unlinked = await page.evaluate(() =>
+  window.COURSE.lessons.filter((l) => ![...document.querySelectorAll(".cs-outline a")].some((a) => a.getAttribute("href") === l.page)).map((l) => l.id),
+);
+check("every lesson links to its page", unlinked.length === 0, unlinked.join(", "));
 await page.getByRole("tab", { name: "Notes" }).click();
 check("notes view has a card per lesson", (await page.locator(".cs-note-card").count()) === ids.length);
 await page.reload();

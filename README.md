@@ -21,6 +21,7 @@ The canonical, production-ready portfolio lives in `new-skills/` — 38 skills t
 | `new-skills/_audit/` | Audit trail — inventory, judge rubric scores, lint report, smoke-test report, council review, code-review report, session log, reusable tooling (lint.py, fix_lint_issues.py, smoke_test.py, install.sh, check_links.py, pytest suite) |
 | `skills/` | Original skills — superseded by `new-skills/` but preserved for reference and as the source material for several `new-skills/` entries |
 | `skills/teach-pro-max/` | Public, skills.sh-discoverable adaptive teaching system with runtime tools, schemas, tests, and optional integrations |
+| `skills/teacher/` | Standalone visual teacher for any host: picks the medium (hand-drawn diagrams, explorables, animations, narrated video), re-explains on confusion, vendors its video and teaching skills |
 | `docs/teach-pro-max/` | Teach Pro Max research dossier, historical evidence, original release archives, and source manifest |
 | `personas/teach-pro-max-agent-persona/` | Cross-harness Teach Pro Max identity, user-context, tool, heartbeat, bootstrap, and agent-operation files |
 | `personas/` | Multi-file persona packs (system prompts + domain knowledge + examples + platform configs) |

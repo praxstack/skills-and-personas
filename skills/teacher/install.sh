@@ -41,8 +41,8 @@ ALL="claude codex agents pi opencode gemini hermes cursor cline kilocode copilot
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --targets) TARGETS="${2//,/ }"; shift 2 ;;
-    --dir) DIR="$2"; shift 2 ;;
+    --targets) [ $# -ge 2 ] || { echo "--targets needs a value" >&2; exit 2; }; TARGETS="${2//,/ }"; shift 2 ;;
+    --dir) [ $# -ge 2 ] || { echo "--dir needs a value" >&2; exit 2; }; DIR="$2"; shift 2 ;;
     --copy) MODE="copy"; shift ;;
     --with-subskills) SUBSKILLS=1; shift ;;
     --dry-run) DRY=1; shift ;;
@@ -55,15 +55,19 @@ done
 
 run() { if [ "$DRY" = 1 ]; then echo "would: $*"; else "$@"; fi; }
 
+ours() { # ours <source dir> <dest>: a link to this source, or a copy this script made
+  if [ -L "$2" ]; then [ "$(readlink "$2")" = "$1" ]; else [ -f "$2/.installed-by-teacher" ]; fi
+}
+
 place() { # place <source dir> <dest dir> <name>
   local src="$1" dest="$2/$3"
   if [ "$UNINSTALL" = 1 ]; then
-    if [ -L "$dest" ] || [ -f "$dest/.installed-by-teacher" ]; then run rm -rf "$dest"; echo "removed $dest"; fi
+    if ours "$src" "$dest"; then run rm -rf "$dest"; echo "removed $dest"; fi
     return
   fi
   if [ -e "$dest" ] || [ -L "$dest" ]; then
-    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then echo "ok      $dest"; return; fi
-    if [ "$FORCE" != 1 ] && ! [ -f "$dest/.installed-by-teacher" ] && ! [ -L "$dest" ]; then
+    if [ "$MODE" != "copy" ] && [ -L "$dest" ] && ours "$src" "$dest"; then echo "ok      $dest"; return; fi
+    if [ "$FORCE" != 1 ] && ! ours "$src" "$dest"; then
       echo "skip    $dest (exists and isn't ours; --force replaces it)"; return
     fi
     run rm -rf "$dest"

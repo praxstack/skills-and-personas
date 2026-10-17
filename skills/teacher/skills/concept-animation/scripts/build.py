@@ -20,7 +20,7 @@ sys.path.insert(0, str(HERE.parent.parent / "lesson-notebook" / "scripts"))
 import bundle  # noqa: E402
 
 
-def build(source: Path, out: Path, fragment: bool = False) -> Path:
+def build(source: Path, out: Path, fragment: bool = False, include: list[Path] | None = None) -> Path:
     src = source.read_text()
     if "window.ANIMATION" not in src:
         raise SystemExit(f"{source}: expected `window.ANIMATION = {{...}}`")
@@ -29,7 +29,7 @@ def build(source: Path, out: Path, fragment: bool = False) -> Path:
         title=m.group(2) if m else source.stem,
         css=[bundle.NOTEBOOK_CSS, ENGINE / "animate.css"],
         modules=[*bundle.NOTEBOOK_MODULES, ENGINE / "animate.js"],
-        scripts=[source],
+        scripts=[*(include or []), source],
         body='<main id="app"><noscript><p>This animation needs JavaScript. The transcript is in the source file.</p></noscript></main>',
         fragment=fragment,
     )
@@ -43,8 +43,9 @@ def main() -> int:
     ap.add_argument("source", type=Path)
     ap.add_argument("-o", "--out", type=Path)
     ap.add_argument("--fragment", action="store_true")
+    ap.add_argument("--include", action="append", default=[], type=Path, help="shared scripts (a course's model) loaded before the animation")
     a = ap.parse_args()
-    out = build(a.source, a.out or a.source.with_suffix(".html"), a.fragment)
+    out = build(a.source, a.out or a.source.with_suffix(".html"), a.fragment, a.include)
     print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
     return 0
 

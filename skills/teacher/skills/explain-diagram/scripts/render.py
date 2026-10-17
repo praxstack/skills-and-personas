@@ -71,11 +71,17 @@ def local_render(kind: str, src: str, hand: bool) -> str | None:
             inp.rename(mmd)
             cmd = ["mmdc", "-i", str(mmd), "-o", str(out), "-b", "transparent"]
         elif kind == "plantuml" and shutil.which("plantuml"):
-            res = subprocess.run(["plantuml", "-tsvg", "-pipe"], input=src, capture_output=True, text=True, check=True)
-            return res.stdout
+            res = subprocess.run(["plantuml", "-tsvg", "-pipe"], input=src, capture_output=True, text=True)
+            if res.returncode == 0 and res.stdout.strip():
+                return res.stdout
+            print(f"local plantuml failed: {res.stderr.strip()[:300]}", file=sys.stderr)
+            return None
         if not cmd:
             return None
-        subprocess.run(cmd, check=True, capture_output=True)
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        if res.returncode or not out.exists():
+            print(f"local {cmd[0]} failed: {(res.stderr or res.stdout).strip()[:300]}", file=sys.stderr)
+            return None  # let Kroki try, unless --offline
         return out.read_text()
 
 
@@ -166,7 +172,10 @@ def clean_svg(svg: str, title: str) -> str:
     svg = sanitize_svg(svg)
     # Give the figure a text alternative and let it scale with its column.
     svg = re.sub(r"<svg\b", f'<svg role="img" aria-label="{html.escape(title, quote=True)}"', svg, count=1)
-    svg = re.sub(r'(<svg\b[^>]*?)\s(width|height)="[^"]*"', r"\1", svg, count=2)
+    root = re.match(r"\s*<svg\b[^>]*>", svg)
+    if root:
+        head = re.sub(r'\s(width|height)="[^"]*"', "", root.group(0))
+        svg = head + svg[root.end():]
     return svg
 
 

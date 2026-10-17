@@ -35,6 +35,11 @@ LEVELS = ["L0", "L1", "L2", "L3", "L4"]
 LEVEL_NAMES = {"L0": "intuition", "L1": "mechanism", "L2": "formal model", "L3": "edge cases and limits", "L4": "transfer"}
 
 
+def asked(point: dict, slot: int) -> bool:
+    """A due slot is covered once the point was asked in that session or any later one."""
+    return any(s >= slot for s in point["asked_in"])
+
+
 def now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
@@ -78,7 +83,7 @@ class Journal:
             for i, p in enumerate(t.get("recall", [])):
                 if p["demonstrated"]:
                     continue
-                nxt = next((d for d in p["due"] if d not in p["asked_in"]), None)
+                nxt = next((d for d in p["due"] if not asked(p, d)), None)
                 if nxt is not None and nxt <= self.session:
                     out.append((tid, i, p))
         return out
@@ -129,7 +134,7 @@ class Journal:
             if t.get("recall"):
                 out += ["", "Recall:"]
                 for p in t["recall"]:
-                    state = "demonstrated" if p["demonstrated"] else f"due in sessions {', '.join(str(x) for x in p['due'] if x not in p['asked_in'])}"
+                    state = "demonstrated" if p["demonstrated"] else f"due in sessions {', '.join(str(x) for x in p['due'] if not asked(p, x))}"
                     out.append(f"- {p['point']} ({state})")
             if t["status"] == "satisfied":
                 out += ["", f"Satisfied in session {t['satisfied_session']}: {t.get('satisfied_note') or 'the learner said so'}."]

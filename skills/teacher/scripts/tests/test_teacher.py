@@ -193,6 +193,19 @@ class Scripts(unittest.TestCase):
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists())
 
+    def test_recall_asked_late_is_no_longer_due(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            run(s, "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            run(s, "thread", "add", "t", "--title", "T", "--level", "L1", cwd=Path(tmp))
+            run(s, "recall", "add", "t", "late point", cwd=Path(tmp))  # due in 2, 4, 7
+            run(s, "resume", cwd=Path(tmp))
+            run(s, "resume", cwd=Path(tmp))  # session 3: slot 2 was missed
+            run(s, "recall", "result", "t", "0", "--right", cwd=Path(tmp))  # asked, with help
+            self.assertNotIn("late point", run(s, "status", cwd=Path(tmp)).stdout, "asked in 3 covers the slot due in 2")
+            run(s, "resume", cwd=Path(tmp))  # session 4: the next slot is due
+            self.assertIn("late point", run(s, "status", cwd=Path(tmp)).stdout)
+
     def test_forget_only_deletes_the_journal(self):
         s = str(ROOT / "scripts/series.py")
         with tempfile.TemporaryDirectory() as tmp:
@@ -247,6 +260,18 @@ class Builds(unittest.TestCase):
             r = run(str(SKILLS / "concept-animation/scripts/build.py"), str(SKILLS / "concept-animation/assets/examples/neuron.anim.js"), "-o", str(out))
             self.assertEqual(r.returncode, 0, r.stderr)
             self.check_single_file(out.read_text())
+
+    def test_animation_includes_shared_scripts_first(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            shared = Path(tmp) / "model.js"
+            shared.write_text("window.SHARED_MODEL_MARKER = 1;\n")
+            out = Path(tmp) / "n.html"
+            r = run(str(SKILLS / "concept-animation/scripts/build.py"), str(SKILLS / "concept-animation/assets/examples/neuron.anim.js"),
+                    "-o", str(out), "--include", str(shared))
+            self.assertEqual(r.returncode, 0, r.stderr)
+            page = out.read_text()
+            self.assertIn("SHARED_MODEL_MARKER", page)
+            self.assertLess(page.index("SHARED_MODEL_MARKER"), page.index("window.ANIMATION"))
 
     def test_bundler_refuses_name_clash(self):
         sys.path.insert(0, str(SKILLS / "lesson-notebook/scripts"))
