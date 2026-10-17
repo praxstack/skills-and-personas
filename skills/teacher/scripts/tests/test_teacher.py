@@ -309,7 +309,7 @@ class Builds(unittest.TestCase):
         out = render.sanitize_svg(evil)
         for bad in ("a()", "b()", "c()", "d()", "e()", "f()", "g()", "h()", "i()", "j()", "onload", "onerror", "javascript", "<script", "<iframe", "<set"):
             self.assertNotIn(bad, out.lower() if bad.startswith("<") else out)
-        self.assertIn("<rect fill='#e33' data-x=\"ok\"/>", out)
+        self.assertIn('<rect fill="#e33" data-x="ok"/>', out)
         self.assertIn('<image href="x"/>', out)
 
     def test_diagram_sanitizer_keeps_css_and_raster_data(self):

@@ -119,7 +119,7 @@ BLOCKED_TAGS = {"script", "iframe", "frame", "frameset", "object", "embed", "app
 URL_ATTRS = {"href", "xlink:href", "src", "action", "formaction", "data", "poster", "background",
              "to", "from", "by", "values"}
 ANIMATE_TAGS = {"set", "animate", "animatetransform", "animatemotion"}
-TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>""")
+TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^<>"']|"[^"]*"|'[^']*')*)>|<""")
 ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
 
 
@@ -131,6 +131,8 @@ def _unsafe_url(value: str) -> bool:
 
 
 def _clean_tag(m: re.Match) -> str:
+    if m.group(2) is None:
+        return "&lt;"  # a "<" that doesn't start a well-formed tag stays text, whatever a browser would make of it
     close, name, rest = m.group(1), m.group(2), m.group(3)
     low = name.lower()
     if low in BLOCKED_TAGS:
@@ -148,7 +150,8 @@ def _clean_tag(m: re.Match) -> str:
             return ""  # <set attributeName="href" to="javascript:..."> swaps in a link at run time
         if aln in URL_ATTRS and _unsafe_url(raw):
             continue
-        kept.append(f" {an}" if av is None else f" {an}={av}")
+        # Re-quote every value, so the browser reads exactly the attributes kept here.
+        kept.append(f" {an}" if av is None else f' {an}="{raw.replace(chr(34), "&quot;")}"')
     end = "/" if rest.rstrip().endswith("/") else ""
     return f"<{name}{''.join(kept)}{end}>"
 
