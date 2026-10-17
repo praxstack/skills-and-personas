@@ -116,6 +116,14 @@ def git_dirty(root: Path, rel: str) -> bool:
 
 def sync(sources: dict[str, Path], only: list[str] | None) -> int:
     manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"skills": {}}
+    # Check every source before touching any copy, so a failure can't leave a
+    # copy replaced while VENDOR.json still records its old hash.
+    picked = [(n, k, r) for n, (k, r, *_) in ENTRIES.items() if (not only or n in only) and k in sources]
+    picked += [(d, k, r) for d, (k, r, *_) in FILES.items() if k in sources]
+    for label, key, rel in picked:
+        if git_dirty(sources[key], rel):
+            print(f"FAIL {label}: {sources[key] / rel} has uncommitted changes; commit or stash them first", file=sys.stderr)
+            return 1
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
         if only and name not in only:
             continue
@@ -125,9 +133,6 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
         src = sources[key] / rel
         if not (src / "SKILL.md").is_file():
             print(f"FAIL {name}: {src}/SKILL.md not found", file=sys.stderr)
-            return 1
-        if git_dirty(sources[key], rel):
-            print(f"FAIL {name}: {src} has uncommitted changes; commit or stash them first", file=sys.stderr)
             return 1
         dest = SKILLS / name
         if dest.exists():
@@ -159,9 +164,6 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
         src = sources[key] / rel
         if not src.is_file():
             print(f"FAIL {dest}: {src} not found", file=sys.stderr)
-            return 1
-        if git_dirty(sources[key], rel):
-            print(f"FAIL {dest}: {src} has uncommitted changes; commit or stash them first", file=sys.stderr)
             return 1
         target = SKILLS / dest
         target.parent.mkdir(parents=True, exist_ok=True)

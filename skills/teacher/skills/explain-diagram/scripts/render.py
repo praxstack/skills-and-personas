@@ -123,6 +123,26 @@ TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^<>"']|"[^"]*"|'[^']*')*)>|<
 ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
 
 
+_EXTERNAL_URL = r"url\(\s*(?![\"']?\s*#)[^)]*\)"
+
+
+def clean_css(css: str) -> str | None:
+    """CSS with every outside fetch removed, or None when it hides one we can't strip.
+
+    Inline SVG styles apply to the whole page, and @import, url() and image-set()
+    would let a figure make requests of its own. In-figure references (url(#id))
+    stay. CSS escapes and HTML entities are decoded only to check what is left.
+    """
+    css = re.sub(r"@import\b[^;]*;?", "", css, flags=re.I)
+    css = re.sub(_EXTERNAL_URL, "none", css, flags=re.I)
+    seen = html.unescape(css)
+    seen = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(min(int(m.group(1), 16), 0x10FFFF)), seen)
+    seen = re.sub(r"\\(.)", r"\1", seen, flags=re.S)
+    if re.search(r"@import|image-set\(|expression\(|" + _EXTERNAL_URL, seen, flags=re.I):
+        return None
+    return css
+
+
 def _unsafe_url(value: str) -> bool:
     v = re.sub(r"[\x00-\x20]", "", html.unescape(value)).lower()
     if v.startswith("data:"):
@@ -150,6 +170,12 @@ def _clean_tag(m: re.Match) -> str:
             return ""  # <set attributeName="href" to="javascript:..."> swaps in a link at run time
         if aln in URL_ATTRS and _unsafe_url(raw):
             continue
+        if aln == "style":
+            css = clean_css(html.unescape(raw))
+            if css is None:
+                continue
+            kept.append(f' style="{html.escape(css, quote=True)}"')
+            continue
         # Re-quote every value, so the browser reads exactly the attributes kept here.
         kept.append(f" {an}" if av is None else f' {an}="{raw.replace(chr(34), "&quot;")}"')
     end = "/" if rest.rstrip().endswith("/") else ""
@@ -168,7 +194,7 @@ def sanitize_svg(svg: str) -> str:
     # as a tag. Turn CDATA into escaped text and escape "<" inside <style>.
     svg = re.sub(r"<!\[CDATA\[(.*?)(\]\]>|$)", lambda m: html.escape(m.group(1), quote=False), svg, flags=re.S)
     svg = re.sub(r"(<style\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>)(.*?)(?=</style\s*>|$)",
-                 lambda m: m.group(1) + m.group(2).replace("<", "&lt;"), svg, flags=re.S | re.I)
+                 lambda m: m.group(1) + html.escape(clean_css(html.unescape(m.group(2))) or "", quote=False), svg, flags=re.S | re.I)
     for tag in ("script", "iframe", "object", "applet", "form", "textarea", "select", "button"):
         svg = re.sub(rf"<{tag}\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*?/>", "", svg, flags=re.I)
         svg = re.sub(rf"<{tag}\b.*?</{tag}\s*>", "", svg, flags=re.S | re.I)

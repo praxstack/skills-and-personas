@@ -318,9 +318,20 @@ class Builds(unittest.TestCase):
 
         out = render.sanitize_svg('<svg><style>/* a<b */ .n > rect{}</style><style><img onerror="x()"></style>'
                                   '<![CDATA[<img onerror="y()">]]><image href="data:image/png,abc"/></svg>')
-        self.assertIn("/* a&lt;b */ .n > rect{}</style>", out, "a < in CSS must not eat </style>")
+        self.assertIn("/* a&lt;b */ .n &gt; rect{}</style>", out, "a < in CSS must not eat </style>")
         self.assertNotIn("<img", out)
         self.assertIn('<image href="data:image/png,abc"/>', out)
+
+    def test_diagram_sanitizer_blocks_css_fetches(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        out = render.sanitize_svg('<svg><style>@import url(http://e/a.css); .a{fill:url(#g);background:url("http://e/b")}</style>'
+                                  '<style>.b{background:u\\72l(http://e/c)}</style><style>@&#105;mport "d.css";</style>'
+                                  '<rect style="fill:red;background:url(//e/f)"/></svg>')
+        self.assertNotRegex(out, r"e/[a-f]")
+        self.assertIn("fill:url(#g)", out, "in-figure references stay")
+        self.assertIn('style="fill:red;background:none"', out)
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg not installed")
