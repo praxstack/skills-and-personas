@@ -5,44 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="MODE-CONTRACT.md">
-  <meta name="source-sha256" content="a5eb902ff996bebc7efa46a5a8510ef8215d27d05be1546e88ade1c7391637e6">
-  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
+  <meta name="source-sha256" content="294f3544560d00c84c7a5e867ec0444366dc4e9987a66bb151f9ff9dac7c7b68">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
-  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <meta name="template-version" content="prax-teach-lesson/3.0.0">
+  <meta name="presentation-sha256" content="839fa2c5f82278d49fa1591949c5ed44dbdb1974463be8eeb647f3d0a0563c9d">
   <title>Mode contract</title>
   <style>
-    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
-    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    a { color:var(--accent); text-underline-offset:.16em; }
-    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
-    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
-    .skip-link:focus { transform:translateY(0); }
-    header { border-bottom:1px solid var(--line); background:var(--surface); }
-    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
-    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
-    header strong { color:var(--teal); letter-spacing:.04em; }
-    main { padding:clamp(2.4rem,7vw,5rem) 0; }
-    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
-    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
-    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
-    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
-    p,li { max-width:72ch; }
-    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
-    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
-    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
-    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
-    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
-    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
-    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
-    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
-    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
-    summary { cursor:pointer; font-weight:700; }
-    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
-    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
-    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+/* AskTheMove teaching presentation. Embedded by render_markdown.mjs. */
+:root { color-scheme:light; --paper:#fbfaf4; --ink:#171d29; --blue:#1f48ae; --red:#c92324; --muted:#535965; --line:#c8c7bf; --surface:#f7f3e9; --book:Vollkorn,Georgia,"Times New Roman",serif; --technical:"Courier Prime",ui-monospace,SFMono-Regular,Menlo,monospace; --coach:Kalam,"Segoe Print","Bradley Hand","Comic Sans MS",cursive; }
+@media (prefers-color-scheme: dark) { :root { color-scheme:dark; --paper:#171d29; --ink:#fbfaf4; --blue:#a6c1ff; --red:#ffaaa7; --muted:#c1c5ce; --line:#666c79; --surface:#202735; } }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.65 var(--book); overflow-wrap:break-word; }
+a { color:var(--blue); text-underline-offset:.18em; }
+a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--blue); outline-offset:4px; }
+::selection { background:#f3e797; color:#171d29; }
+.skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; background:var(--ink); color:var(--paper); }
+.skip-link:focus { transform:translateY(0); }
+header { border-bottom:3px double var(--line); }
+header div, main, footer { width:min(840px, calc(100% - 2.5rem)); margin-inline:auto; }
+header div { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1rem; padding:1rem 0; }
+header strong { color:var(--ink); }
+main { padding:clamp(2.4rem,7vw,5rem) 0; }
+h1,h2,h3,h4,h5,h6 { font-family:var(--book); font-style:normal; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+h1 { max-width:20ch; margin:0 0 1.5rem; font-size:clamp(2.35rem,7vw,4.6rem); letter-spacing:-.025em; }
+h2 { margin:3rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+h3 { margin:2rem 0 .6rem; font-size:1.4rem; }
+p,li { max-width:68ch; }
+blockquote { margin:1.4rem 0; padding:.4rem 1.1rem; border-left:2px solid var(--line); font-family:var(--book); }
+[role="note"] { margin:1.5rem 0; max-width:48ch; color:var(--blue); font:1.2rem/1.45 var(--coach); }
+[role="note"][aria-label="Correction"] { color:var(--red); border-left:2px solid currentColor; padding-left:1rem; }
+[role="note"] p { margin:.5rem 0; }
+code,kbd,samp { font-family:var(--technical); font-size:.88em; overflow-wrap:anywhere; }
+code { padding:.08em .22em; border:1px solid var(--line); }
+pre { overflow:auto; padding:1rem 1.1rem; border-block:1px solid var(--line); background:var(--surface); color:var(--ink); }
+pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+figure { margin:1.7rem 0; }
+img { max-width:100%; height:auto; }
+figcaption { margin-top:.65rem; font-size:1rem; }
+.table-wrap { overflow:auto; margin:1.4rem 0; border-block:1px solid var(--line); }
+table { width:100%; border-collapse:collapse; font-size:1rem; font-variant-numeric:lining-nums tabular-nums; }
+th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { font-family:var(--technical); font-size:.85rem; }
+details { margin:1rem 0; padding:.75rem 0; border-block:1px solid var(--line); }
+summary { cursor:pointer; font-weight:700; }
+footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font: .8rem/1.65 var(--technical); overflow-wrap:anywhere; }
+@media (prefers-contrast:more) { :root { --paper:#fff; --ink:#000; --blue:#123479; --red:#9b1717; --muted:#222; --line:#555; --surface:#fff; } a { text-decoration-thickness:2px; } }
+@media (forced-colors:active) { :root { --paper:Canvas; --ink:CanvasText; --blue:LinkText; --red:CanvasText; --muted:CanvasText; --line:CanvasText; --surface:Canvas; } }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+@media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; --muted:#333; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote,figure { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
   </style>
 </head>
 <body>
@@ -92,17 +104,17 @@
 <tr>
 <td>“Teach me to do X today”</td>
 <td><code>lesson</code></td>
-<td>One observable competency and transfer task</td>
+<td>Explain one practical goal; offer a transfer task when practice is chosen</td>
 </tr>
 <tr>
 <td>“Make me an interactive lesson”</td>
 <td><code>lesson</code></td>
-<td>Use host chat plus a complete static Markdown/HTML representation unless an approved interaction runtime is available</td>
+<td>Discover a suitable authorized packaged or host capability; retain a complete static companion and disclose actual delivery</td>
 </tr>
 <tr>
 <td>“Help me learn X over six weeks”</td>
 <td><code>course</code></td>
-<td>Confirm mission, horizon, persistence, and review policy</td>
+<td>Establish the purpose and path; persistence and review remain separate choices</td>
 </tr>
 <tr>
 <td>“Continue where we stopped”</td>
@@ -138,7 +150,7 @@
 <h2 id="lesson-mode">Lesson mode</h2>
 <h3 id="contract-2">Contract</h3>
 <ul>
-<li>Define one observable outcome.</li>
+<li>Define one bounded question or chosen practical outcome.</li>
 <li>Build the complete bounded visual explanation before delivery. Practice, diagnosis and transfer checks are optional unless requested.</li>
 <li>Offer at most one optional intuition check; a skipped check is not evidence.</li>
 <li>Ask once before persisting a session summary or learner evidence.</li>
@@ -155,14 +167,25 @@
 <h3 id="contract-3">Contract</h3>
 <ul>
 <li>Offer explicit persistence consent; declining or silence does not block ephemeral course teaching.</li>
-<li>Establish the mission, target independent performance, desired retention horizon, source constraints, and access needs.</li>
+<li>Establish the purpose, prerequisites, branches, current location, source constraints and access needs. Define independent performance for chosen practice and a retention horizon for chosen review.</li>
 <li>Introduce prerequisites where needed; diagnose first only when requested or material ambiguity requires it.</li>
 <li>Store raw observations separately from inferred concept state.</li>
-<li>Maintain a review queue and use later-session evidence before durable-mastery claims.</li>
+<li>Maintain a review queue only when review is chosen; require later-session evidence before durable-mastery claims.</li>
+<li>Keep the map, current explanation and reusable notes separate and linked when useful. Notes retain definitions, worked reasoning, limitations, sources and open questions. Coverage is exposure, not competence.</li>
 <li>Let learner questions, annotations, errors, and goals change the next lesson.</li>
 <li>Show every material learner-state update at session close.</li>
 <li>After validating active consent, state the actually recovered topic/position and offer exactly one next learner action as a suggestion. Allow continuation, topic change or starting fresh without mandatory assessment.</li>
 </ul>
+<h2 id="style-and-learner-control">Style and learner control</h2>
+<p>Default to AskTheMove paper <code>#fbfaf4</code>, ink <code>#171d29</code>, blue explanation <code>#1f48ae</code>
+and red correction <code>#c92324</code>, with serif prose, monospace technical content and
+short handwritten coach notes. Every mark explains a claim; words preserve its
+meaning without color. Keep labels and precise geometry consistent across media.
+Learner style/accessibility choices override the default, including dark and
+high-contrast views. Offer the whole finished figure immediately; replay and
+layers remain optional. Preserve complete no-script and reduced-motion delivery.
+Continue adapting the explanation, example, depth or medium until the learner is
+satisfied or chooses to stop; satisfaction never certifies mastery.</p>
 <h2 id="host-adapters">Host adapters</h2>
 <p>Adapters contain no teaching policy. They may map host capabilities, file
 locations, tool names, and input/output formats onto the core mode and teaching
@@ -181,9 +204,9 @@ honor explicit save-nothing. For base practice tracking, say:</p>
 </blockquote>
 <p>If the learner declines:</p>
 <ul>
-<li>continue in ephemeral lesson mode;</li>
+<li>continue in the requested mode, including an ephemeral course with its organization intact;</li>
 <li>do not create learner-state files;</li>
-<li>save lesson artifacts independently in <code>lessons/</code> by default and explain this; an explicit save-nothing request forbids durable lesson files too;</li>
+<li>in lesson/course mode, save artifacts independently in <code>lessons/</code> by default and explain this; quick mode creates files only on request, and explicit save-nothing forbids durable lesson files too;</li>
 <li>offer a copyable summary if useful.</li>
 </ul>
 <p>Consent to lesson files does not automatically grant consent to behavioral analytics or inferred learner state.</p>
@@ -278,10 +301,11 @@ honor explicit save-nothing. For base practice tracking, say:</p>
 </main>
   <footer>
     Canonical source: <a href="./MODE-CONTRACT.md">MODE-CONTRACT.md</a><br>
-    SHA-256: <code>a5eb902ff996bebc7efa46a5a8510ef8215d27d05be1546e88ade1c7391637e6</code><br>
-    Generated: 2026-10-16T17:34:54.000Z<br>
+    SHA-256: <code>294f3544560d00c84c7a5e867ec0444366dc4e9987a66bb151f9ff9dac7c7b68</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
-    Template: prax-teach-lesson/2.0.0
+    Template: prax-teach-lesson/3.0.0<br>
+    Presentation SHA-256: <code>839fa2c5f82278d49fa1591949c5ed44dbdb1974463be8eeb647f3d0a0563c9d</code>
   </footer>
 </body>
 </html>

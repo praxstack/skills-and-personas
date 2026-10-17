@@ -5,44 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="VISUALIZATION-ROUTER.md">
-  <meta name="source-sha256" content="d32a3b2f7cdc670fcff8383b26c2bdc27f30b044b007e896b231f8b9f1eec2d4">
-  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
+  <meta name="source-sha256" content="52f692b5a00d0a3c065c574308e75d147c83f705c5b03798739519b00d0259ed">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
-  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <meta name="template-version" content="prax-teach-lesson/3.0.0">
+  <meta name="presentation-sha256" content="839fa2c5f82278d49fa1591949c5ed44dbdb1974463be8eeb647f3d0a0563c9d">
   <title>Visualization router</title>
   <style>
-    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
-    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    a { color:var(--accent); text-underline-offset:.16em; }
-    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
-    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
-    .skip-link:focus { transform:translateY(0); }
-    header { border-bottom:1px solid var(--line); background:var(--surface); }
-    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
-    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
-    header strong { color:var(--teal); letter-spacing:.04em; }
-    main { padding:clamp(2.4rem,7vw,5rem) 0; }
-    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
-    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
-    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
-    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
-    p,li { max-width:72ch; }
-    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
-    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
-    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
-    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
-    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
-    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
-    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
-    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
-    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
-    summary { cursor:pointer; font-weight:700; }
-    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
-    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
-    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+/* AskTheMove teaching presentation. Embedded by render_markdown.mjs. */
+:root { color-scheme:light; --paper:#fbfaf4; --ink:#171d29; --blue:#1f48ae; --red:#c92324; --muted:#535965; --line:#c8c7bf; --surface:#f7f3e9; --book:Vollkorn,Georgia,"Times New Roman",serif; --technical:"Courier Prime",ui-monospace,SFMono-Regular,Menlo,monospace; --coach:Kalam,"Segoe Print","Bradley Hand","Comic Sans MS",cursive; }
+@media (prefers-color-scheme: dark) { :root { color-scheme:dark; --paper:#171d29; --ink:#fbfaf4; --blue:#a6c1ff; --red:#ffaaa7; --muted:#c1c5ce; --line:#666c79; --surface:#202735; } }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.65 var(--book); overflow-wrap:break-word; }
+a { color:var(--blue); text-underline-offset:.18em; }
+a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--blue); outline-offset:4px; }
+::selection { background:#f3e797; color:#171d29; }
+.skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; background:var(--ink); color:var(--paper); }
+.skip-link:focus { transform:translateY(0); }
+header { border-bottom:3px double var(--line); }
+header div, main, footer { width:min(840px, calc(100% - 2.5rem)); margin-inline:auto; }
+header div { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1rem; padding:1rem 0; }
+header strong { color:var(--ink); }
+main { padding:clamp(2.4rem,7vw,5rem) 0; }
+h1,h2,h3,h4,h5,h6 { font-family:var(--book); font-style:normal; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+h1 { max-width:20ch; margin:0 0 1.5rem; font-size:clamp(2.35rem,7vw,4.6rem); letter-spacing:-.025em; }
+h2 { margin:3rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+h3 { margin:2rem 0 .6rem; font-size:1.4rem; }
+p,li { max-width:68ch; }
+blockquote { margin:1.4rem 0; padding:.4rem 1.1rem; border-left:2px solid var(--line); font-family:var(--book); }
+[role="note"] { margin:1.5rem 0; max-width:48ch; color:var(--blue); font:1.2rem/1.45 var(--coach); }
+[role="note"][aria-label="Correction"] { color:var(--red); border-left:2px solid currentColor; padding-left:1rem; }
+[role="note"] p { margin:.5rem 0; }
+code,kbd,samp { font-family:var(--technical); font-size:.88em; overflow-wrap:anywhere; }
+code { padding:.08em .22em; border:1px solid var(--line); }
+pre { overflow:auto; padding:1rem 1.1rem; border-block:1px solid var(--line); background:var(--surface); color:var(--ink); }
+pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+figure { margin:1.7rem 0; }
+img { max-width:100%; height:auto; }
+figcaption { margin-top:.65rem; font-size:1rem; }
+.table-wrap { overflow:auto; margin:1.4rem 0; border-block:1px solid var(--line); }
+table { width:100%; border-collapse:collapse; font-size:1rem; font-variant-numeric:lining-nums tabular-nums; }
+th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { font-family:var(--technical); font-size:.85rem; }
+details { margin:1rem 0; padding:.75rem 0; border-block:1px solid var(--line); }
+summary { cursor:pointer; font-weight:700; }
+footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font: .8rem/1.65 var(--technical); overflow-wrap:anywhere; }
+@media (prefers-contrast:more) { :root { --paper:#fff; --ink:#000; --blue:#123479; --red:#9b1717; --muted:#222; --line:#555; --surface:#fff; } a { text-decoration-thickness:2px; } }
+@media (forced-colors:active) { :root { --paper:Canvas; --ink:CanvasText; --blue:LinkText; --red:CanvasText; --muted:CanvasText; --line:CanvasText; --surface:Canvas; } }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+@media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; --muted:#333; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote,figure { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
   </style>
 </head>
 <body>
@@ -79,9 +91,10 @@
 executable router separately reports the actual delivery surface. The Markdown
 renderer supports <code>none</code> and <code>static</code>; the packaged, verified Prax Visual Lab
 supports interactive controls and learner-controlled state sequences. If that
-runtime is absent or invalid, rich routes fail closed to static delivery. A
-specialized registry-selected renderer remains an authoring route whose output
-must be inspected in the actual lesson environment.</p>
+runtime is absent, invalid or unrelated to the subject, its packaged route fails
+closed to static delivery. Independently inspect suitable authorized host
+capabilities before concluding rich delivery is unavailable. The actual host
+artifact requires its own inspection and never inherits packaged verification.</p>
 <h2 id="production-capability-routing">Production capability routing</h2>
 <p>Retrieve relevant sections of <a href="./LEGACY-VISUALIZATION-ROUTER.html">LEGACY-VISUALIZATION-ROUTER.md</a>
 on demand as production guidance. Its technical fidelity, accessibility and
@@ -132,9 +145,8 @@ learner switch among intuition, primary source, schematic, interactive model,
 and split comparison without losing context; bind controls, telemetry,
 equations, labels, and explanation to one authored model; preserve source
 provenance; and test finite outputs, real 2D/3D rendering, console errors,
-overflow, keyboard access, reduced motion, and static alternatives. Atmospheric
-lighting and motion may strengthen invitation, but they never outrank exact
-labels, truthful state, or the learner action.</p>
+overflow, keyboard access, reduced motion, and static alternatives. Keep every visual change tied to the explained claim, with exact labels,
+truthful state and a meaningful learner action.</p>
 <h2 id="representation-routes">Representation routes</h2>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
 <thead>
@@ -194,7 +206,14 @@ labels, truthful state, or the learner action.</p>
 validated assets. Prax Visual Lab provides the packaged interactive surface.
 Inline SVG, Canvas, specialized animation/video, and other custom controls must
 use an authorized versioned tool/runtime plus manual browser review.</p>
-<p>Do not invent a bespoke visualization DSL or renderer for a single lesson. Reuse the bundled Markdown renderer and native elements; introduce a reusable component only after the learning action genuinely requires it.</p>
+<p>A small editable task-specific HTML/CSS/JS visual built with existing browser
+capabilities is a legitimate host authoring path across subjects. Check its content,
+model effects, keyboard controls, complete finished state, no-script/static
+companion and reduced-motion behavior. Inspect it in the real browser before a
+browser-inspected claim. Name the authoring environment/version and actual checks;
+never label it packaged-runtime verified or pass scripts/SVG through sanitized
+Markdown. Reuse native browser elements; do not build a new app, general
+framework, visualization DSL or universal generator.</p>
 <h2 id="optional-flint-chart-backend">Optional Flint chart backend</h2>
 <p>After choosing <code>static</code>, route an exact comparison, quantity, distribution, or time-series job through <a href="https://github.com/microsoft/flint-chart">Flint</a> only when:</p>
 <ol>
@@ -222,6 +241,22 @@ applicable, keyboard access, reduced motion, and a complete static equivalent.
 Build the whole bounded explanation before delivery unless layered delivery was
 requested. Add a purposeful contrast and formal bridge when they aid understanding;
 state analogy limits and distinguish interpretation from physical mechanism.</p>
+<h2 id="presentation-default">Presentation default</h2>
+<p>Use AskTheMove warm paper <code>#fbfaf4</code>, ink <code>#171d29</code>, explanatory blue <code>#1f48ae</code>
+and correction red <code>#c92324</code>; words must carry each color's meaning too. Serif
+prose, monospace technical work and short handwritten coach annotations have
+different jobs. Precise geometry, equations, code and long text stay crisp.
+Every drawn arrow, circle, highlight and motion explains an identified claim.
+No decorative looping, sticky-note clutter or all-text handwriting.</p>
+<p>Show the whole figure/finished state immediately. Optional replay or requested
+layers follow the reasoning without withholding the explanation. Preserve object
+labels across drawing, animation, interaction and video; explain entities,
+relationships, intermediate states, reasons and limitations. Keep complete
+reduced-motion and no-script equivalents. Honor style/accessibility overrides,
+including dark/high-contrast, and medium changes at any time. On confusion change
+the explanation, example or depth and keep exploring until satisfaction or chosen
+stop, with mastery evidence kept separate. See
+<a href="./ASKTHEMOVE-PRESENTATION.html">ASKTHEMOVE-PRESENTATION.md</a> for authoring examples.</p>
 <h2 id="visual-brief">Visual brief</h2>
 <p>Before a substantial asset, write:</p>
 <pre><code class="language-text">Learning objective:
@@ -357,10 +392,11 @@ until then EG-03 remains parked.</p>
 </main>
   <footer>
     Canonical source: <a href="./VISUALIZATION-ROUTER.md">VISUALIZATION-ROUTER.md</a><br>
-    SHA-256: <code>d32a3b2f7cdc670fcff8383b26c2bdc27f30b044b007e896b231f8b9f1eec2d4</code><br>
-    Generated: 2026-10-16T17:34:54.000Z<br>
+    SHA-256: <code>52f692b5a00d0a3c065c574308e75d147c83f705c5b03798739519b00d0259ed</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
-    Template: prax-teach-lesson/2.0.0
+    Template: prax-teach-lesson/3.0.0<br>
+    Presentation SHA-256: <code>839fa2c5f82278d49fa1591949c5ed44dbdb1974463be8eeb647f3d0a0563c9d</code>
   </footer>
 </body>
 </html>

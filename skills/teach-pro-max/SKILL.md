@@ -63,8 +63,11 @@ production guidance on demand. Use the packaged Prax Visual Lab for compatible
 interactive and learner-controlled sequence work. For specialized diagrams,
 charts, generated imagery, 3D, animation, or video, inspect the current harness
 for an authorized equivalent skill, tool, MCP server, plugin, or CLI and query
-the embedded 38-tool registry. Specify the capability and outcome rather than a
-provider-specific command.
+the embedded 38-tool registry. A task-specific editable HTML/CSS/JS visual
+using existing browser capabilities is allowed after content, control and
+accessibility checks, with a complete canonical static companion. Report it as
+host-authored, not packaged-runtime verified. Specify the capability and outcome
+rather than a provider-specific command.
 
 Preserve editable semantic source, exact labels and data, provenance,
 accessibility, retrieval safety, and a complete static fallback. Render in the
@@ -81,6 +84,15 @@ mandates or bans. Add dependencies only when the actual learning job needs them.
 For LLM visuals, put one of
 `illustration`, `measured`, `correlational`, `intervention`, or `hypothesis` in
 the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model thought.”
+
+Default to the embedded AskTheMove presentation: warm paper, semantic blue/red
+ink, serif prose, crisp technical content and short handwritten coach notes.
+Every mark explains a claim. Keep labels consistent across media; offer the
+complete finished figure immediately, optional replay, reduced-motion and
+no-script equivalents. Learner style/accessibility requests override the default.
+Separate the course map, current teaching and reusable notes when useful; short
+questions need no course setup. Satisfaction ends learner-led exploration when
+the learner chooses, while mastery still requires evidence.
 
 ## Preserve the teaching invariants
 

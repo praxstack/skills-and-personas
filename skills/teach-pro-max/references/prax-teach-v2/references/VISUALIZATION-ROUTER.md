@@ -33,9 +33,10 @@ Sequence or causality makes motion *eligible*, not mandatory. First test whether
 executable router separately reports the actual delivery surface. The Markdown
 renderer supports `none` and `static`; the packaged, verified Prax Visual Lab
 supports interactive controls and learner-controlled state sequences. If that
-runtime is absent or invalid, rich routes fail closed to static delivery. A
-specialized registry-selected renderer remains an authoring route whose output
-must be inspected in the actual lesson environment.
+runtime is absent, invalid or unrelated to the subject, its packaged route fails
+closed to static delivery. Independently inspect suitable authorized host
+capabilities before concluding rich delivery is unavailable. The actual host
+artifact requires its own inspection and never inherits packaged verification.
 
 ## Production capability routing
 
@@ -93,9 +94,8 @@ learner switch among intuition, primary source, schematic, interactive model,
 and split comparison without losing context; bind controls, telemetry,
 equations, labels, and explanation to one authored model; preserve source
 provenance; and test finite outputs, real 2D/3D rendering, console errors,
-overflow, keyboard access, reduced motion, and static alternatives. Atmospheric
-lighting and motion may strengthen invitation, but they never outrank exact
-labels, truthful state, or the learner action.
+overflow, keyboard access, reduced motion, and static alternatives. Keep every visual change tied to the explained claim, with exact labels,
+truthful state and a meaningful learner action.
 
 ## Representation routes
 
@@ -116,7 +116,14 @@ validated assets. Prax Visual Lab provides the packaged interactive surface.
 Inline SVG, Canvas, specialized animation/video, and other custom controls must
 use an authorized versioned tool/runtime plus manual browser review.
 
-Do not invent a bespoke visualization DSL or renderer for a single lesson. Reuse the bundled Markdown renderer and native elements; introduce a reusable component only after the learning action genuinely requires it.
+A small editable task-specific HTML/CSS/JS visual built with existing browser
+capabilities is a legitimate host authoring path across subjects. Check its content,
+model effects, keyboard controls, complete finished state, no-script/static
+companion and reduced-motion behavior. Inspect it in the real browser before a
+browser-inspected claim. Name the authoring environment/version and actual checks;
+never label it packaged-runtime verified or pass scripts/SVG through sanitized
+Markdown. Reuse native browser elements; do not build a new app, general
+framework, visualization DSL or universal generator.
 
 ## Optional Flint chart backend
 
@@ -152,6 +159,25 @@ applicable, keyboard access, reduced motion, and a complete static equivalent.
 Build the whole bounded explanation before delivery unless layered delivery was
 requested. Add a purposeful contrast and formal bridge when they aid understanding;
 state analogy limits and distinguish interpretation from physical mechanism.
+
+## Presentation default
+
+Use AskTheMove warm paper `#fbfaf4`, ink `#171d29`, explanatory blue `#1f48ae`
+and correction red `#c92324`; words must carry each color's meaning too. Serif
+prose, monospace technical work and short handwritten coach annotations have
+different jobs. Precise geometry, equations, code and long text stay crisp.
+Every drawn arrow, circle, highlight and motion explains an identified claim.
+No decorative looping, sticky-note clutter or all-text handwriting.
+
+Show the whole figure/finished state immediately. Optional replay or requested
+layers follow the reasoning without withholding the explanation. Preserve object
+labels across drawing, animation, interaction and video; explain entities,
+relationships, intermediate states, reasons and limitations. Keep complete
+reduced-motion and no-script equivalents. Honor style/accessibility overrides,
+including dark/high-contrast, and medium changes at any time. On confusion change
+the explanation, example or depth and keep exploring until satisfaction or chosen
+stop, with mastery evidence kept separate. See
+[ASKTHEMOVE-PRESENTATION.md](./ASKTHEMOVE-PRESENTATION.md) for authoring examples.
 
 ## Visual brief
 

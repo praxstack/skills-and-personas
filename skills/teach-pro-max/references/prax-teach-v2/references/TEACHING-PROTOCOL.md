@@ -16,7 +16,9 @@
 
 ## Outcome contract
 
-Translate the request into observable independent performance.
+Start from the learner's question. For conceptual exploration, name the idea or
+connection to clarify. Translate a chosen practical or assessment goal into
+observable independent performance; do not impose it on curiosity-led teaching.
 
 Weak outcome:
 
@@ -26,14 +28,10 @@ Stronger outcome:
 
 > Given three query patterns and a table schema, choose or reject an index and explain the tradeoff without tutor hints.
 
-For a durable lesson or course, record:
-
-- target performance;
-- prerequisite concepts;
-- desired retention horizon;
-- evidence that would count;
-- access or format constraints;
-- source/version scope.
+For a durable lesson or course, state the question or chosen goal, relevant
+prerequisites, access/format constraints and source/version scope. Define target
+performance and evidence when the learner wants practice or assessment. Ask about
+a retention horizon only when review is chosen.
 
 Do not turn a quick question into a formal objective document.
 
@@ -52,11 +50,27 @@ only when it clarifies the idea, then connect to formal language, code, equation
 or argument. Explain analogy limits. Historical interpretation and literary
 meaning must retain uncertainty rather than imitate deterministic mechanisms.
 
-Build the whole bounded lesson before delivery. Navigable pacing is useful;
-mandatory learner turns are not required. Inspect content and actual delivery as
+Build the whole bounded lesson before delivery. Give immediate access to the
+complete figure and finished state; optional replay or learner-requested layers
+can expose how it unfolds. Navigable pacing is useful; mandatory learner turns
+are not required. Inspect content and actual delivery as
 capabilities permit; label checks not performed. On confusion, repair the likely
 missing connection immediately, or ask one focused question when gaps differ.
 After an unresolved retry, locate the remaining gap instead of paraphrasing again.
+Change the example, depth, scale or medium as needed and continue until the learner
+is satisfied or chooses to stop. They may change medium or style at any time.
+Satisfaction and coverage are not mastery evidence. Never invent a tool run or
+inspection; allow at most two repairs per failed artifact/tool path, then choose
+a supported alternative or explain the boundary.
+
+Default to warm paper, serif explanation and crisp monospace technical work with
+short handwritten blue coach notes; use red for corrections with explicit words.
+Marks must explain claims. Preserve object labels across media and full content
+without motion or scripts. Learner style/accessibility choices override the default.
+For ongoing learning, link a map of purpose/prerequisites/branches/current position,
+the current explanation, and reusable notes of definitions/worked reasoning/limits/
+sources/open questions. Keep these logically separate without duplicated lessons
+or mandatory setup. Tracking remains optional and save-nothing includes artifacts.
 
 ### Optional assessment branch
 

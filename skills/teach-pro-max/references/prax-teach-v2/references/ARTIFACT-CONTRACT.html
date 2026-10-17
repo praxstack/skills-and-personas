@@ -5,44 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="ARTIFACT-CONTRACT.md">
-  <meta name="source-sha256" content="e64403d930720f8fff5de44af764c9b0f376707136a5c1de1546f9f06953be12">
-  <meta name="generated-at" content="2026-10-16T17:34:54.000Z">
+  <meta name="source-sha256" content="880025f5e70078560026e21d117891b2caea00f6f976e2984a0bb58d809dbf22">
+  <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
-  <meta name="template-version" content="prax-teach-lesson/2.0.0">
+  <meta name="template-version" content="prax-teach-lesson/3.0.0">
+  <meta name="presentation-sha256" content="839fa2c5f82278d49fa1591949c5ed44dbdb1974463be8eeb647f3d0a0563c9d">
   <title>Markdown and HTML artifact contract</title>
   <style>
-    :root { color-scheme: light; --paper:#f7f3ea; --ink:#172235; --muted:#5d6674; --accent:#8f3b20; --teal:#176b69; --line:#d7cbb8; --surface:#fffdf8; --code:#1c2837; --code-ink:#f4f1ea; }
-    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper:#111923; --ink:#edf2f5; --muted:#b4bdc8; --accent:#f19a72; --teal:#72cbc5; --line:#344355; --surface:#182331; --code:#09111a; --code-ink:#edf2f5; } }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.68 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    a { color:var(--accent); text-underline-offset:.16em; }
-    a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
-    .skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; border-radius:.4rem; background:var(--ink); color:var(--paper); }
-    .skip-link:focus { transform:translateY(0); }
-    header { border-bottom:1px solid var(--line); background:var(--surface); }
-    header div, main, footer { width:min(840px, calc(100% - 2rem)); margin-inline:auto; }
-    header div { display:flex; justify-content:space-between; gap:1rem; padding:1rem 0; }
-    header strong { color:var(--teal); letter-spacing:.04em; }
-    main { padding:clamp(2.4rem,7vw,5rem) 0; }
-    h1,h2,h3,h4 { font-family:ui-serif,Georgia,Cambria,serif; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
-    h1 { max-width:16ch; margin:0 0 1.5rem; font-size:clamp(2.5rem,8vw,4.8rem); letter-spacing:-.04em; }
-    h2 { margin:3.2rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
-    h3 { margin:2.1rem 0 .6rem; font-size:1.35rem; }
-    p,li { max-width:72ch; }
-    blockquote { margin:1.4rem 0; padding:.75rem 1.1rem; border-left:.3rem solid var(--accent); background:var(--surface); }
-    code { overflow-wrap:anywhere; padding:.1em .3em; border:1px solid var(--line); border-radius:.3rem; font: .88em/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
-    pre { overflow:auto; padding:1rem 1.1rem; border-radius:.65rem; background:var(--code); color:var(--code-ink); }
-    pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
-    .table-wrap { overflow:auto; margin:1.4rem 0; border:1px solid var(--line); border-radius:.65rem; }
-    table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.92rem; }
-    th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
-    th { font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; }
-    details { margin:1rem 0; padding:.75rem 1rem; border:1px solid var(--line); border-radius:.6rem; background:var(--surface); }
-    summary { cursor:pointer; font-weight:700; }
-    footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
-    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
-    @media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
+/* AskTheMove teaching presentation. Embedded by render_markdown.mjs. */
+:root { color-scheme:light; --paper:#fbfaf4; --ink:#171d29; --blue:#1f48ae; --red:#c92324; --muted:#535965; --line:#c8c7bf; --surface:#f7f3e9; --book:Vollkorn,Georgia,"Times New Roman",serif; --technical:"Courier Prime",ui-monospace,SFMono-Regular,Menlo,monospace; --coach:Kalam,"Segoe Print","Bradley Hand","Comic Sans MS",cursive; }
+@media (prefers-color-scheme: dark) { :root { color-scheme:dark; --paper:#171d29; --ink:#fbfaf4; --blue:#a6c1ff; --red:#ffaaa7; --muted:#c1c5ce; --line:#666c79; --surface:#202735; } }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.65 var(--book); overflow-wrap:break-word; }
+a { color:var(--blue); text-underline-offset:.18em; }
+a:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible { outline:3px solid var(--blue); outline-offset:4px; }
+::selection { background:#f3e797; color:#171d29; }
+.skip-link { position:fixed; left:1rem; top:.7rem; transform:translateY(-180%); z-index:10; padding:.6rem .85rem; background:var(--ink); color:var(--paper); }
+.skip-link:focus { transform:translateY(0); }
+header { border-bottom:3px double var(--line); }
+header div, main, footer { width:min(840px, calc(100% - 2.5rem)); margin-inline:auto; }
+header div { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1rem; padding:1rem 0; }
+header strong { color:var(--ink); }
+main { padding:clamp(2.4rem,7vw,5rem) 0; }
+h1,h2,h3,h4,h5,h6 { font-family:var(--book); font-style:normal; line-height:1.15; text-wrap:balance; scroll-margin-top:2rem; }
+h1 { max-width:20ch; margin:0 0 1.5rem; font-size:clamp(2.35rem,7vw,4.6rem); letter-spacing:-.025em; }
+h2 { margin:3rem 0 1rem; font-size:clamp(1.7rem,4vw,2.4rem); }
+h3 { margin:2rem 0 .6rem; font-size:1.4rem; }
+p,li { max-width:68ch; }
+blockquote { margin:1.4rem 0; padding:.4rem 1.1rem; border-left:2px solid var(--line); font-family:var(--book); }
+[role="note"] { margin:1.5rem 0; max-width:48ch; color:var(--blue); font:1.2rem/1.45 var(--coach); }
+[role="note"][aria-label="Correction"] { color:var(--red); border-left:2px solid currentColor; padding-left:1rem; }
+[role="note"] p { margin:.5rem 0; }
+code,kbd,samp { font-family:var(--technical); font-size:.88em; overflow-wrap:anywhere; }
+code { padding:.08em .22em; border:1px solid var(--line); }
+pre { overflow:auto; padding:1rem 1.1rem; border-block:1px solid var(--line); background:var(--surface); color:var(--ink); }
+pre code { overflow-wrap:normal; padding:0; border:0; color:inherit; }
+figure { margin:1.7rem 0; }
+img { max-width:100%; height:auto; }
+figcaption { margin-top:.65rem; font-size:1rem; }
+.table-wrap { overflow:auto; margin:1.4rem 0; border-block:1px solid var(--line); }
+table { width:100%; border-collapse:collapse; font-size:1rem; font-variant-numeric:lining-nums tabular-nums; }
+th,td { padding:.72rem .8rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { font-family:var(--technical); font-size:.85rem; }
+details { margin:1rem 0; padding:.75rem 0; border-block:1px solid var(--line); }
+summary { cursor:pointer; font-weight:700; }
+footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--muted); font: .8rem/1.65 var(--technical); overflow-wrap:anywhere; }
+@media (prefers-contrast:more) { :root { --paper:#fff; --ink:#000; --blue:#123479; --red:#9b1717; --muted:#222; --line:#555; --surface:#fff; } a { text-decoration-thickness:2px; } }
+@media (forced-colors:active) { :root { --paper:Canvas; --ink:CanvasText; --blue:LinkText; --red:CanvasText; --muted:CanvasText; --line:CanvasText; --surface:Canvas; } }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+@media print { :root { --paper:#fff; --ink:#000; --surface:#fff; --line:#aaa; --muted:#333; } header,.skip-link { display:none; } body { font-size:10.5pt; } main,footer { width:100%; } h1 { max-width:none; font-size:28pt; } pre,table,blockquote,figure { break-inside:avoid; } details > *:not(summary),details::details-content { display:block!important; content-visibility:visible!important; } a[href^="http"]::after { content:" (" attr(href) ")"; font-size:8pt; } }
   </style>
 </head>
 <body>
@@ -61,7 +73,7 @@
 <li><a href="#acceptance-checklist">Acceptance checklist</a></li>
 </ol>
 <h2 id="canonical-source">Canonical source</h2>
-<p>Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory. Save learner-facing artifacts in <code>&lt;learning-directory&gt;/lessons/</code> independently of consented learner-state tracking and explain the distinction. Explicit save-nothing forbids durable lesson files too; use host delivery or an actually removable temporary preview and disclose host storage limits.</p>
+<p>Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory. In lesson/course mode, save learner-facing artifacts in <code>&lt;learning-directory&gt;/lessons/</code> independently of consented learner-state tracking and explain the distinction. Quick mode creates a file only on request. Explicit save-nothing forbids durable lesson files too; use host delivery or an actually removable temporary preview and disclose host storage limits.</p>
 <pre><code class="language-text">lessons/0001-index-prefixes.md
 lessons/0001-index-prefixes.html
 </code></pre>
@@ -75,6 +87,21 @@ lessons/0001-index-prefixes.html
 <li>Make regeneration deterministic. Use a fixed timestamp such as <code>SOURCE_DATE_EPOCH</code> when byte-for-byte reproducibility matters.</li>
 <li>Fail validation when HTML is missing or the recorded source hash is stale.</li>
 </ul>
+<h2 id="course-map-current-teaching-and-notes">Course map, current teaching and notes</h2>
+<p>Keep these logical documents distinct when ongoing organization helps:</p>
+<ul>
+<li>The course map records purpose, prerequisites, optional branches and current
+location. Mark coverage as exposure, never competence without learner evidence.</li>
+<li>The teaching stage contains the current complete bounded explanation.</li>
+<li>Reusable notes retain definitions, worked reasoning, limitations, sources and
+open questions, linked to the relevant lesson rather than repeating it.</li>
+</ul>
+<p>Use links or short labeled sections in the host; separate files are optional.
+Do not force a course setup for a short question or copy the same content three
+times. Declining tracking preserves requested course organization ephemerally.
+Consent controls <code>.prax-teach/state</code>; artifact saving is separate, and explicit
+save-nothing forbids durable map, notes and lesson files alike. See
+<a href="./COURSE-MAP-AND-NOTES.html">COURSE-MAP-AND-NOTES.md</a> for a small file example.</p>
 <h2 id="required-html">Required HTML</h2>
 <p>Each standalone page must include:</p>
 <ul>
@@ -110,14 +137,28 @@ for a single lesson. If a new semantic block becomes reusable, specify and test
 it as a versioned renderer feature before using it in canonical content.</p>
 <h2 id="explanation-delivery">Explanation delivery</h2>
 <p>Build the complete bounded lesson before delivery unless layered delivery was
-requested. Each scene answers a relevant question and connects to adjacent
+requested. Give immediate access to the whole figure and finished state in either
+case; replay is optional. Learners may change style or medium at any time. Each scene answers a relevant question and connects to adjacent
 scenes, with context, labels and a reason for each change. No fixed scene quota
 or new scene language is needed. Exact relationships use deterministic models.
 Controls must change an interpretable condition and expose its effect. Provide
 keyboard access, reduced motion, pause/replay/step when applicable and a complete
 static equivalent. If an essential requested medium is unavailable, pause;
 otherwise disclose the missing medium and deliver an accurate static explanation.
-A fallback is never proof that the missing medium was delivered.</p>
+A fallback is never proof that the missing medium was delivered. Keep exploring
+through changed explanations, examples, depth or media until the learner is
+satisfied or chooses to stop. Satisfaction is not mastery. Never invent tool
+execution; limit a failed artifact/tool path to two repair attempts before an
+alternative or explicit boundary.</p>
+<p>The default rendered presentation is AskTheMove: warm paper <code>#fbfaf4</code>, ink
+<code>#171d29</code>, explanatory blue <code>#1f48ae</code>, correction red <code>#c92324</code>, serif prose,
+monospace technical text and short handwritten coach notes. Words carry color
+meaning. Every mark explains an identified claim; exact diagrams, code, math and
+long text stay crisp. Keep labels consistent across media, with complete static,
+no-script and reduced-motion versions. Learner style/accessibility preferences,
+including dark/high-contrast, override defaults. The renderer embeds
+<code>assets/askthemove-teaching.css</code> in standalone output; local font fallbacks require
+no network or package-relative font paths. Exact AskTheMove fonts are not bundled.</p>
 <h2 id="learning-interactions">Learning interactions</h2>
 <p>The executable boundary is deliberate:</p>
 <ul>
@@ -135,7 +176,13 @@ independent tests, a complete static fallback, and manual browser review.</li>
 state stepping, parameter manipulation, representation comparison, progressive
 hints, local receipts, and learner-controlled sequences. Use the visualization
 registry and current harness capabilities for specialized diagrams, charts,
-3D, animation, or video.</p>
+3D, animation, or video. A small editable task-specific HTML/CSS/JS visual using
+existing browser capabilities is a supported host route for other subjects after
+content, model/control and accessibility checks. Retain canonical static Markdown
+and its generated companion; keep the rich artifact separately. Record its source,
+authoring environment/version and actual browser checks. It is host-authored,
+never packaged-runtime verified, and must not go through the static sanitizer.
+This does not require a new app, general framework or universal generator.</p>
 <p>Prefer direct reuse of one authoritative executable model across the lesson and
 its visual surfaces. Only when direct reuse is impossible and the duplicated
 calculation is deliberately small may an executable visual prove parity against
@@ -331,7 +378,7 @@ stateful components, or persistence hooks.</li>
 <h2 id="acceptance-checklist">Acceptance checklist</h2>
 <h3 id="content">Content</h3>
 <ul>
-<li>One observable outcome.</li>
+<li>One bounded question or chosen practical outcome.</li>
 <li>Correct, versioned, nearby sources.</li>
 <li>Attempt before answer when retrieval is intended.</li>
 <li>Explained worked example where useful.</li>
@@ -366,10 +413,11 @@ remaining claim limitation.</li>
 </main>
   <footer>
     Canonical source: <a href="./ARTIFACT-CONTRACT.md">ARTIFACT-CONTRACT.md</a><br>
-    SHA-256: <code>e64403d930720f8fff5de44af764c9b0f376707136a5c1de1546f9f06953be12</code><br>
-    Generated: 2026-10-16T17:34:54.000Z<br>
+    SHA-256: <code>880025f5e70078560026e21d117891b2caea00f6f976e2984a0bb58d809dbf22</code><br>
+    Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
-    Template: prax-teach-lesson/2.0.0
+    Template: prax-teach-lesson/3.0.0<br>
+    Presentation SHA-256: <code>839fa2c5f82278d49fa1591949c5ed44dbdb1974463be8eeb647f3d0a0563c9d</code>
   </footer>
 </body>
 </html>

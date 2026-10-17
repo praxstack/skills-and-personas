@@ -13,7 +13,7 @@
 
 ## Canonical source
 
-Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory. Save learner-facing artifacts in `<learning-directory>/lessons/` independently of consented learner-state tracking and explain the distinction. Explicit save-nothing forbids durable lesson files too; use host delivery or an actually removable temporary preview and disclose host storage limits.
+Every durable instructional document starts as Markdown. Generate an HTML file with the same basename in the same directory. In lesson/course mode, save learner-facing artifacts in `<learning-directory>/lessons/` independently of consented learner-state tracking and explain the distinction. Quick mode creates a file only on request. Explicit save-nothing forbids durable lesson files too; use host delivery or an actually removable temporary preview and disclose host storage limits.
 
 ```text
 lessons/0001-index-prefixes.md
@@ -29,6 +29,23 @@ Rules:
 - Record the Markdown source path and SHA-256 in machine-readable HTML metadata and visible page provenance.
 - Make regeneration deterministic. Use a fixed timestamp such as `SOURCE_DATE_EPOCH` when byte-for-byte reproducibility matters.
 - Fail validation when HTML is missing or the recorded source hash is stale.
+
+## Course map, current teaching and notes
+
+Keep these logical documents distinct when ongoing organization helps:
+
+- The course map records purpose, prerequisites, optional branches and current
+  location. Mark coverage as exposure, never competence without learner evidence.
+- The teaching stage contains the current complete bounded explanation.
+- Reusable notes retain definitions, worked reasoning, limitations, sources and
+  open questions, linked to the relevant lesson rather than repeating it.
+
+Use links or short labeled sections in the host; separate files are optional.
+Do not force a course setup for a short question or copy the same content three
+times. Declining tracking preserves requested course organization ephemerally.
+Consent controls `.prax-teach/state`; artifact saving is separate, and explicit
+save-nothing forbids durable map, notes and lesson files alike. See
+[COURSE-MAP-AND-NOTES.md](./COURSE-MAP-AND-NOTES.md) for a small file example.
 
 ## Required HTML
 
@@ -68,14 +85,29 @@ it as a versioned renderer feature before using it in canonical content.
 ## Explanation delivery
 
 Build the complete bounded lesson before delivery unless layered delivery was
-requested. Each scene answers a relevant question and connects to adjacent
+requested. Give immediate access to the whole figure and finished state in either
+case; replay is optional. Learners may change style or medium at any time. Each scene answers a relevant question and connects to adjacent
 scenes, with context, labels and a reason for each change. No fixed scene quota
 or new scene language is needed. Exact relationships use deterministic models.
 Controls must change an interpretable condition and expose its effect. Provide
 keyboard access, reduced motion, pause/replay/step when applicable and a complete
 static equivalent. If an essential requested medium is unavailable, pause;
 otherwise disclose the missing medium and deliver an accurate static explanation.
-A fallback is never proof that the missing medium was delivered.
+A fallback is never proof that the missing medium was delivered. Keep exploring
+through changed explanations, examples, depth or media until the learner is
+satisfied or chooses to stop. Satisfaction is not mastery. Never invent tool
+execution; limit a failed artifact/tool path to two repair attempts before an
+alternative or explicit boundary.
+
+The default rendered presentation is AskTheMove: warm paper `#fbfaf4`, ink
+`#171d29`, explanatory blue `#1f48ae`, correction red `#c92324`, serif prose,
+monospace technical text and short handwritten coach notes. Words carry color
+meaning. Every mark explains an identified claim; exact diagrams, code, math and
+long text stay crisp. Keep labels consistent across media, with complete static,
+no-script and reduced-motion versions. Learner style/accessibility preferences,
+including dark/high-contrast, override defaults. The renderer embeds
+`assets/askthemove-teaching.css` in standalone output; local font fallbacks require
+no network or package-relative font paths. Exact AskTheMove fonts are not bundled.
 
 ## Learning interactions
 
@@ -95,7 +127,13 @@ Prax Visual Lab is part of this package, not a second teaching skill. Use it for
 state stepping, parameter manipulation, representation comparison, progressive
 hints, local receipts, and learner-controlled sequences. Use the visualization
 registry and current harness capabilities for specialized diagrams, charts,
-3D, animation, or video.
+3D, animation, or video. A small editable task-specific HTML/CSS/JS visual using
+existing browser capabilities is a supported host route for other subjects after
+content, model/control and accessibility checks. Retain canonical static Markdown
+and its generated companion; keep the rich artifact separately. Record its source,
+authoring environment/version and actual browser checks. It is host-authored,
+never packaged-runtime verified, and must not go through the static sanitizer.
+This does not require a new app, general framework or universal generator.
 
 Prefer direct reuse of one authoritative executable model across the lesson and
 its visual surfaces. Only when direct reuse is impossible and the duplicated
@@ -320,7 +358,7 @@ When an HTML renderer cannot safely preserve a construct, fail with a clear diag
 
 ### Content
 
-- One observable outcome.
+- One bounded question or chosen practical outcome.
 - Correct, versioned, nearby sources.
 - Attempt before answer when retrieval is intended.
 - Explained worked example where useful.

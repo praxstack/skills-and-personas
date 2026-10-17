@@ -5,7 +5,10 @@ description: Teach a concept or skill through adaptive, evidence-oriented tutori
 
 # Prax Teach v2
 
-Help the learner become independently capable, not merely satisfied with an explanation. Use the lightest mode that achieves their outcome and make persistence an explicit choice.
+Teach across subjects and levels, from first intuition to deep technical understanding.
+Follow the learner's question and keep adapting until they are satisfied or choose
+to stop. Satisfaction is not mastery; make independent-ability claims only from
+observed learner evidence. Use the lightest useful mode and make persistence a choice.
 
 ## Route the mode
 
@@ -52,6 +55,31 @@ actually recovered, consented context. Discover the best suitable available
 visual, animation, interaction or video capabilities of the current harness;
 this policy does not depend on Codex, Claude, Pi or any one agent host.
 
+## Presentation and organization
+
+Default to AskTheMove: warm paper `#fbfaf4`, ink `#171d29`, explanatory blue
+`#1f48ae`, correction red `#c92324`. Use serif prose, monospace technical text
+and short handwritten coach notes. Keep diagrams, code, mathematics and long
+text crisp. Every arrow, circle, highlight or animated stroke must explain an
+identified claim, with words as well as color. Avoid decorative motion and
+sticky-note clutter. Learner style and accessibility choices, including dark or
+high-contrast presentation, override this default at any time.
+
+Show the whole figure and finished state immediately; replay and layered teaching
+are optional views, including when requested later. Keep object labels stable
+across drawing, animation, interaction and video. Explain entities, relationships,
+intermediate states, reasons and limitations in every substantial visual. Reduced
+motion and no-script delivery must retain the complete explanation.
+
+For ongoing learning, distinguish the **course map** (purpose, prerequisites,
+branches, current location), **teaching stage** (current bounded explanation), and
+**notes** (reusable definitions, worked reasoning, limitations, sources, open
+questions). Link them when useful; do not repeat the lesson three times or force
+setup for a short question. Keep requested course organization ephemerally when
+tracking is declined. Coverage records exposure, never demonstrated competence.
+The optional [presentation guide](./references/ASKTHEMOVE-PRESENTATION.md) and
+[map/notes guide](./references/COURSE-MAP-AND-NOTES.md) elaborate these rules.
+
 ## Persistence and continuity
 
 Offer local learner-state persistence when applicable consent is absent. Declining
@@ -62,8 +90,9 @@ Do not write learner state before affirmative consent.
 
 Use `<learning-directory>/.prax-teach` for consented runtime state and its existing
 `state/` subdirectory. Do not precreate it or silently migrate old workspaces.
-Lesson artifacts are saved independently in `<learning-directory>/lessons/` by
-default even when tracking is declined; explain this distinction. An explicit
+In lesson/course mode, lesson artifacts are saved independently in
+`<learning-directory>/lessons/` by default even when tracking is declined; explain
+this distinction. In quick mode, create a one-off file only when requested. An explicit
 save-nothing request forbids durable lesson files too: use host delivery or an
 actually removable temporary preview, and disclose host storage limits.
 
@@ -146,10 +175,13 @@ visual experience.
 The package has two native delivery surfaces: the deterministic Markdown
 renderer for exact static lessons and the separately versioned, tested Prax
 Visual Lab for interactive state, parameter, comparison, hint, and
-learner-controlled sequence work. For specialized diagrams, charts, generated
-imagery, 3D, animation, or video, inspect the current harness for an authorized
-equivalent skill, tool, MCP server, plugin, or CLI and query the bundled 38-tool
-registry. Describe the capability and required outcome rather than hardcoding a
+learner-controlled sequence work. For any subject outside its implemented lessons, inspect the current host for
+authorized drawing, animation, interaction or video capabilities and query the
+bundled 38-tool registry. A small editable task-specific HTML/CSS/JS artifact
+using existing browser capabilities is a supported host route after content,
+control and accessibility checks. It is separate from sanitized Markdown and
+needs a complete canonical static companion; do not call it packaged-runtime
+verified. No new general app, framework or universal generator is required. Describe the capability and required outcome rather than hardcoding a
 provider command. Preserve editable sources, accessibility, provenance, and a
 complete static fallback. Downgrade to host chat or static delivery only after
 the packaged runtime and suitable authorized harness capabilities are actually
@@ -175,8 +207,8 @@ When a durable instructional Markdown file is created, generate a same-basename 
 Default to ordinary GFM plus the native semantic HTML supported by the bundled
 renderer. Do not invent a custom Markdown directive language, renderer, or
 component framework for one lesson. The Markdown renderer remains static; use
-the packaged Prax Visual Lab for compatible stateful interaction and an
-authorized registry-selected capability for specialized visuals. Every rich
+the packaged Prax Visual Lab for compatible stateful interaction or a suitable
+authorized host capability for other subjects and media. Every rich
 route retains a static fallback and requires manual browser review before a
 browser-inspected claim.
 

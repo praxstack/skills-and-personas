@@ -21,9 +21,9 @@ Route each request to the least costly teaching experience that can achieve the 
 | “Explain X in one sentence” | `quick` | Honor explicit brevity |
 | “Explain X in five minutes” | `quick` | Respect the timebox; one visual only if it materially helps |
 | “Quiz me on X” | `quick` or `lesson` | Quick for a short check; lesson for diagnosis plus remediation |
-| “Teach me to do X today” | `lesson` | One observable competency and transfer task |
-| “Make me an interactive lesson” | `lesson` | Use host chat plus a complete static Markdown/HTML representation unless an approved interaction runtime is available |
-| “Help me learn X over six weeks” | `course` | Confirm mission, horizon, persistence, and review policy |
+| “Teach me to do X today” | `lesson` | Explain one practical goal; offer a transfer task when practice is chosen |
+| “Make me an interactive lesson” | `lesson` | Discover a suitable authorized packaged or host capability; retain a complete static companion and disclose actual delivery |
+| “Help me learn X over six weeks” | `course` | Establish the purpose and path; persistence and review remain separate choices |
 | “Continue where we stopped” | `course` if state exists | Read state only after resolving the intended workspace |
 | “Just give me the answer” | current mode → direct answer | Stop the Socratic loop immediately |
 | Ordinary task completion | no trigger | Teach only when requested or clearly the goal |
@@ -48,7 +48,7 @@ Route each request to the least costly teaching experience that can achieve the 
 
 ### Contract
 
-- Define one observable outcome.
+- Define one bounded question or chosen practical outcome.
 - Build the complete bounded visual explanation before delivery. Practice, diagnosis and transfer checks are optional unless requested.
 - Offer at most one optional intuition check; a skipped check is not evidence.
 - Ask once before persisting a session summary or learner evidence.
@@ -66,13 +66,26 @@ Route each request to the least costly teaching experience that can achieve the 
 ### Contract
 
 - Offer explicit persistence consent; declining or silence does not block ephemeral course teaching.
-- Establish the mission, target independent performance, desired retention horizon, source constraints, and access needs.
+- Establish the purpose, prerequisites, branches, current location, source constraints and access needs. Define independent performance for chosen practice and a retention horizon for chosen review.
 - Introduce prerequisites where needed; diagnose first only when requested or material ambiguity requires it.
 - Store raw observations separately from inferred concept state.
-- Maintain a review queue and use later-session evidence before durable-mastery claims.
+- Maintain a review queue only when review is chosen; require later-session evidence before durable-mastery claims.
+- Keep the map, current explanation and reusable notes separate and linked when useful. Notes retain definitions, worked reasoning, limitations, sources and open questions. Coverage is exposure, not competence.
 - Let learner questions, annotations, errors, and goals change the next lesson.
 - Show every material learner-state update at session close.
 - After validating active consent, state the actually recovered topic/position and offer exactly one next learner action as a suggestion. Allow continuation, topic change or starting fresh without mandatory assessment.
+
+## Style and learner control
+
+Default to AskTheMove paper `#fbfaf4`, ink `#171d29`, blue explanation `#1f48ae`
+and red correction `#c92324`, with serif prose, monospace technical content and
+short handwritten coach notes. Every mark explains a claim; words preserve its
+meaning without color. Keep labels and precise geometry consistent across media.
+Learner style/accessibility choices override the default, including dark and
+high-contrast views. Offer the whole finished figure immediately; replay and
+layers remain optional. Preserve complete no-script and reduced-motion delivery.
+Continue adapting the explanation, example, depth or medium until the learner is
+satisfied or chooses to stop; satisfaction never certifies mastery.
 
 ## Host adapters
 
@@ -95,9 +108,9 @@ honor explicit save-nothing. For base practice tracking, say:
 
 If the learner declines:
 
-- continue in ephemeral lesson mode;
+- continue in the requested mode, including an ephemeral course with its organization intact;
 - do not create learner-state files;
-- save lesson artifacts independently in `lessons/` by default and explain this; an explicit save-nothing request forbids durable lesson files too;
+- in lesson/course mode, save artifacts independently in `lessons/` by default and explain this; quick mode creates files only on request, and explicit save-nothing forbids durable lesson files too;
 - offer a copyable summary if useful.
 
 Consent to lesson files does not automatically grant consent to behavioral analytics or inferred learner state.

@@ -2,14 +2,18 @@
 
 The runtime is a separately versioned, zero-dependency ES-module/Web-Component package. Shared components are `prax-state-stepper`, `prax-parameter-lab`, `prax-compare-views`, `prax-hint-engine`, and `prax-receipt-panel`. Lesson specs are declarative JSON; pure domain modules provide exact transitions and structural graders. Every interactive lesson ships a semantic static sequence and print/no-script route.
 
-The three first labs are Python floating point, legal Rubik's moves, and lost-update interleavings. Motion is optional and reduced motion removes transitions. Deliberate learner actions produce local receipts; parameter changes update the comparison and receipt through the shared session rather than an isolated control. No receipt is uploaded automatically. Imported receipts are untrusted input: action identifiers must belong to the lesson and observations and learner-authored evidence must remain objects. The floating-point Python and browser models are checked against one independently specified literal vector file.
+The implemented browser lesson and route binding currently cover Python floating point. Rubik's moves and lost-update lesson plans do not establish implemented browser delivery. Motion is optional and reduced motion removes transitions. Deliberate learner actions produce local receipts; parameter changes update the comparison and receipt through the shared session rather than an isolated control. No receipt is uploaded automatically. Imported receipts are untrusted input: action identifiers must belong to the lesson and observations and learner-authored evidence must remain objects. The floating-point Python and browser models are checked against one independently specified literal vector file.
 
 The visual router treats this packaged runtime as the default direct delivery
 surface only when an `interactive` or learner-controlled `motion` job binds to
-an implemented lesson capability. An unbound job falls back to static. For
-specialized charting, diagrams, generated imagery, 3D, animation, or video, the
-agent selects an authorized equivalent capability from the current harness and
-the bundled visualization registry. Static fallback is a resilience and
+an implemented lesson capability. An unbound packaged job falls back to static in route metadata. Independently
+discover a suitable authorized host capability for other subjects, drawings,
+animation, interaction or video, using the bundled registry as a reference.
+A task-specific editable HTML/CSS/JS visual using existing browser capabilities
+is supported after content/model/control/accessibility checks and real-browser
+inspection, with a complete canonical static companion. Name this as host-authored
+and report exactly what was inspected; it is not packaged-runtime verified.
+Never pass arbitrary JS or SVG through sanitized Markdown. Static fallback is a resilience and
 accessibility requirement, not the default replacement for a working rich
 route.
 
@@ -37,8 +41,12 @@ surface, including source and static alternatives. Controls must expose a
 meaningful model effect with consistent identities, notation and units. Inspect
 representative states against the explanation, and provide keyboard access,
 reduced motion, pause/replay/step when applicable and a complete static equivalent.
-There is no fixed scene quota or requirement to use this runtime before another
-suitable available capability. Do not create a new rendering framework.
+Show the whole figure and finished state immediately, with optional replay or
+requested layers. Keep short handwritten coach notes over crisp serif prose and
+monospace technical work, warm paper, blue explanation and red correction. Every
+mark explains a claim in words too. Learner style/accessibility choices override
+these defaults. There is no fixed scene quota or requirement to use this runtime
+before another suitable available capability. Do not create a new rendering framework.
 
 An unbound or unavailable rich route is not fabricated output. Try suitable
 authorized alternatives, with at most two repair attempts on the same failed

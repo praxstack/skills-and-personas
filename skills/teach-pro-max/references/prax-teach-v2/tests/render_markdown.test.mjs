@@ -162,7 +162,7 @@ Compare the two cases before revealing the rule.
   assert.match(html, /<main id="main-content">/);
   assert.match(html, /<footer>/);
   assert.match(html, /renderer-version" content="prax-teach-markdown\/2\.2\.0"/);
-  assert.match(html, /template-version" content="prax-teach-lesson\/2\.0\.0"/);
+  assert.match(html, /template-version" content="prax-teach-lesson\/3\.0\.0"/);
   assert.match(html, /generated-at" content="2026-08-04T12:00:00\.000Z"/);
 });
 
@@ -342,4 +342,56 @@ test("generated task-list checkboxes receive accessible state labels", async () 
   const html = await readFile(htmlPath, "utf8");
   assert.match(html, /aria-label="Incomplete checklist item"/);
   assert.match(html, /aria-label="Completed checklist item"/);
+});
+
+
+test("AskTheMove presentation is embedded, portable and preserves semantic voices", async () => {
+  const directory = await temporaryDirectory("prax-render-coach-");
+  const markdown = path.join(directory, "ratios.md");
+  const htmlPath = path.join(directory, "ratios.html");
+  const source = `# Ratios
+
+The ratio stays constant when both quantities double.
+
+> A quoted definition stays in the book voice.
+
+<div role="note" aria-label="Coach note"><p>Coach note: compare the same two objects.</p></div>
+<div role="note" aria-label="Correction"><p>Correction: changing only one quantity changes the ratio.</p></div>
+
+\`a / b\` remains exact technical text.
+
+| State | A | B |
+| --- | --- | --- |
+| Start | 2 | 3 |
+| Both doubled | 4 | 6 |
+`;
+  await writeFile(markdown, source, "utf8");
+  run([markdown, htmlPath]);
+  const html = await readFile(htmlPath, "utf8");
+  const css = await readFile(path.join(ROOT, "assets", "askthemove-teaching.css"), "utf8");
+  assert.ok(html.includes(css), "standalone output embeds the consumed stylesheet");
+  const cssHash = createHash("sha256").update(css).digest("hex");
+  assert.ok(html.includes(`name="presentation-sha256" content="${cssHash}"`));
+  assert.ok(html.includes(`Presentation SHA-256: <code>${cssHash}</code>`));
+  for (const color of ["#fbfaf4", "#171d29", "#1f48ae", "#c92324"]) {
+    assert.ok(html.includes(color), `default semantic color ${color} is present`);
+  }
+  assert.match(html, /font:18px\/1\.65 var\(--book\)/);
+  assert.match(html, /\[role="note"\] \{[^}]*color:var\(--blue\)[^}]*var\(--coach\)/);
+  assert.match(html, /\[role="note"\]\[aria-label="Correction"\] \{[^}]*color:var\(--red\)/);
+  assert.match(html, /blockquote \{[^}]*font-family:var\(--book\)/);
+  assert.match(html, /code,kbd,samp \{[^}]*font-family:var\(--technical\)/);
+  assert.match(html, /<div role="note" aria-label="Coach note">/);
+  assert.match(html, /<div role="note" aria-label="Correction">/);
+  assert.match(html, /<code>a \/ b<\/code>/);
+  assert.match(html, /source-sha256" content="[a-f0-9]{64}"/);
+  assert.match(html, /prefers-color-scheme: dark/);
+  assert.match(html, /prefers-contrast:more/);
+  assert.match(html, /forced-colors:active/);
+  assert.match(html, /prefers-reduced-motion:reduce/);
+  assert.doesNotMatch(html, /<script|<link|@import|url\(/i);
+  const moved = await temporaryDirectory("prax-render-moved-");
+  await writeFile(path.join(moved, "ratios.md"), source, "utf8");
+  await writeFile(path.join(moved, "ratios.html"), html, "utf8");
+  run(["--check", path.join(moved, "ratios.md"), path.join(moved, "ratios.html")]);
 });
