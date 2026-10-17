@@ -2058,6 +2058,15 @@ def _bound_regular_file(
 def validate_forward_behavior_receipt(root: Path) -> tuple[int, list[str]]:
     """Bind fresh-context outputs to the frozen rubric and independent score."""
 
+    try:
+        current = resolve_current(
+            root, allow_pending=bool(os.environ.get("PRAX_ACTIVE_VERIFICATION_RUN_ID"))
+        )
+        if current:
+            root = current.historical_root()
+    except EvidenceError as exc:
+        return 0, [f"historical evidence: {exc}"]
+
     rubric_path = root / FORWARD_RUBRIC_RELATIVE
     if not rubric_path.is_file():
         return 0, []

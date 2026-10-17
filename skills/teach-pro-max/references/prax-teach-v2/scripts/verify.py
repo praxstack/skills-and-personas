@@ -200,7 +200,7 @@ def run_gate(
     name: str, command: list[str], environment: dict[str, str]
 ) -> dict[str, Any]:
     gate_environment = dict(environment)
-    if name == "python-tests":
+    if name in {"python-tests", "node-tests"}:
         # Tests construct independent temporary packages and their own evidence.
         # Selection for the candidate is exercised separately by package-validator.
         for key in (

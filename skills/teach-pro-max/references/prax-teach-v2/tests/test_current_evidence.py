@@ -16,6 +16,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import current_evidence as evidence
+import validate_workspace as validator
 from praxteach import routing
 from review_payload import atomic_write_json, payload_manifest
 
@@ -111,6 +112,108 @@ class CurrentEvidenceTests(unittest.TestCase):
             original_receipt.read_bytes(),
             (self.original / original_receipt.relative_to(self.root)).read_bytes(),
         )
+
+    def assert_forward_receipt_rejected(self, message: str) -> None:
+        count, errors = validator.validate_forward_behavior_receipt(self.root)
+        self.assertEqual(count, 0)
+        self.assertTrue(any(message in error for error in errors), errors)
+        dispatched = validator._criterion_receipt_errors(
+            self.root, validator.FORWARD_RECEIPT_RELATIVE, {}
+        )
+        self.assertTrue(any(message in error for error in dispatched), dispatched)
+
+    def test_forward_receipt_uses_authenticated_history_for_direct_and_status(
+        self,
+    ) -> None:
+        skill = self.root / "SKILL.md"
+        skill.write_text(skill.read_text() + "\nCurrent candidate change.\n")
+        for pending in (False, True):
+            with self.subTest(pending=pending):
+                pin = self.select(pending=pending)
+                os.environ.update(
+                    PRAX_CURRENT_EVIDENCE=pin["path"],
+                    PRAX_CURRENT_EVIDENCE_SHA256=pin["sha256"],
+                    PRAX_ACTIVE_VERIFICATION_RUN_ID="active" if pending else "",
+                )
+                count, errors = validator.validate_forward_behavior_receipt(self.root)
+                self.assertGreater(count, 0)
+                self.assertEqual(errors, [])
+                self.assertEqual(
+                    validator._criterion_receipt_errors(
+                        self.root, validator.FORWARD_RECEIPT_RELATIVE, {}
+                    ),
+                    [],
+                )
+
+    def test_renderer_with_explicit_selection_still_rejects_foreign_fixture(
+        self,
+    ) -> None:
+        fixture = self.directory / "foreign-fixture"
+        fixture.mkdir()
+        (fixture / "current.md").write_text("# Independent fixture\n")
+        completed = subprocess.run(
+            ["node", str(ROOT / "scripts/render_all.mjs"), str(fixture)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("different source bytes", completed.stderr)
+        self.assertFalse((fixture / "current.html").exists())
+
+    def test_forward_receipt_without_selection_retains_same_root_binding(self) -> None:
+        with mock.patch.dict(os.environ):
+            os.environ.pop("PRAX_CURRENT_EVIDENCE", None)
+            os.environ.pop("PRAX_CURRENT_EVIDENCE_SHA256", None)
+            count, errors = validator.validate_forward_behavior_receipt(self.original)
+            self.assertGreater(count, 0)
+            self.assertEqual(errors, [])
+            skill = self.root / "SKILL.md"
+            skill.write_text(skill.read_text() + "\nUnbound current change.\n")
+            _, errors = validator.validate_forward_behavior_receipt(self.root)
+            self.assertTrue(
+                any(
+                    "source: digest mismatch for SKILL.md" in error for error in errors
+                ),
+                errors,
+            )
+
+    def test_forward_receipt_rejects_wrong_selector_and_wrong_source(self) -> None:
+        with mock.patch.dict(os.environ, {"PRAX_CURRENT_EVIDENCE_SHA256": "0" * 64}):
+            self.assert_forward_receipt_rejected("selector digest mismatch")
+        skill = self.root / "SKILL.md"
+        skill.write_text(skill.read_text() + "\nUnselected source change.\n")
+        self.assert_forward_receipt_rejected("different source bytes")
+
+    def test_forward_receipt_rejects_historical_source_and_receipt_drift(self) -> None:
+        for relative in (
+            "SKILL.md",
+            validator.FORWARD_RUBRIC_RELATIVE,
+            validator.FORWARD_RUN_RELATIVE,
+            validator.FORWARD_RECEIPT_RELATIVE,
+        ):
+            with self.subTest(relative=relative):
+                target = self.original / relative
+                original = target.read_bytes()
+                try:
+                    target.write_bytes(original + b"\n")
+                    self.assert_forward_receipt_rejected("historical snapshot drift")
+                finally:
+                    target.write_bytes(original)
+
+    def test_forward_receipt_rejects_inventory_hash_and_rebound_forgery(self) -> None:
+        inventory_path = self.directory / "original-inventory.json"
+        inventory_bytes = inventory_path.read_bytes()
+        inventory_path.write_bytes(inventory_bytes + b"\n")
+        self.assert_forward_receipt_rejected("historical inventory digest mismatch")
+        inventory = json.loads(inventory_bytes)
+        inventory["files"].pop()
+        atomic_write_json(inventory_path, inventory)
+        document = json.loads(Path(self.pin["path"]).read_text())
+        document["historical"]["sha256"] = evidence.digest(inventory_path.read_bytes())
+        self.repin(document)
+        self.assert_forward_receipt_rejected("original Git tree")
 
     def test_wrong_source_wrong_tool_and_superseded_selection_fail_closed(self) -> None:
         document = json.loads(Path(self.pin["path"]).read_text())
