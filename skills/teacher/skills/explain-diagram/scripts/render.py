@@ -116,8 +116,10 @@ def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str
 # Elements that can run code, load a page or take input. They never belong in a figure.
 BLOCKED_TAGS = {"script", "iframe", "frame", "frameset", "object", "embed", "applet", "meta", "link", "base",
                 "form", "input", "button", "textarea", "select", "handler", "listener"}
-URL_ATTRS = {"href", "xlink:href", "src", "action", "formaction", "data", "poster", "background",
-             "to", "from", "by", "values"}
+# Attributes that load a resource as soon as the page opens: only in-figure #references
+# and embedded raster images may stay. A link (<a href>) only navigates when clicked.
+RESOURCE_ATTRS = {"href", "xlink:href", "src", "srcset", "action", "formaction", "data", "poster", "background"}
+ANIMATION_VALUE_ATTRS = {"to", "from", "by", "values"}
 ANIMATE_TAGS = {"set", "animate", "animatetransform", "animatemotion"}
 TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^<>"']|"[^"]*"|'[^']*')*)>|<""")
 ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
@@ -143,11 +145,15 @@ def clean_css(css: str) -> str | None:
     return css
 
 
-def _unsafe_url(value: str) -> bool:
+def _unsafe_url(value: str, *, fetches: bool) -> bool:
+    """True for script URLs, for data: other than raster images, and, when the
+    attribute fetches on load, for anything but a #reference or embedded image."""
     v = re.sub(r"[\x00-\x20]", "", html.unescape(value)).lower()
     if v.startswith("data:"):
         return not re.match(r"data:image/(png|jpe?g|gif|webp|avif)[;,]", v)
-    return v.startswith(("javascript:", "vbscript:"))
+    if v.startswith(("javascript:", "vbscript:")):
+        return True
+    return fetches and not (v == "" or v.startswith("#"))
 
 
 def _clean_tag(m: re.Match) -> str:
@@ -168,7 +174,9 @@ def _clean_tag(m: re.Match) -> str:
             continue
         if low in ANIMATE_TAGS and aln == "attributename" and html.unescape(raw).strip().lower().endswith("href"):
             return ""  # <set attributeName="href" to="javascript:..."> swaps in a link at run time
-        if aln in URL_ATTRS and _unsafe_url(raw):
+        if aln in RESOURCE_ATTRS and _unsafe_url(raw, fetches=not (low == "a" and aln in ("href", "xlink:href"))):
+            continue
+        if aln in ANIMATION_VALUE_ATTRS and any(_unsafe_url(x, fetches=False) for x in raw.split(";")):
             continue
         if aln == "style":
             css = clean_css(html.unescape(raw))
@@ -176,6 +184,8 @@ def _clean_tag(m: re.Match) -> str:
                 continue
             kept.append(f' style="{html.escape(css, quote=True)}"')
             continue
+        if re.search(_EXTERNAL_URL, html.unescape(raw), flags=re.I):
+            continue  # fill="url(https://...)", filter=, mask=, cursor= and friends
         # Re-quote every value, so the browser reads exactly the attributes kept here.
         kept.append(f" {an}" if av is None else f' {an}="{raw.replace(chr(34), "&quot;")}"')
     end = "/" if rest.rstrip().endswith("/") else ""

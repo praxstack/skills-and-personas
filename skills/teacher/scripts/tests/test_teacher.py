@@ -310,7 +310,7 @@ class Builds(unittest.TestCase):
         for bad in ("a()", "b()", "c()", "d()", "e()", "f()", "g()", "h()", "i()", "j()", "onload", "onerror", "javascript", "<script", "<iframe", "<set"):
             self.assertNotIn(bad, out.lower() if bad.startswith("<") else out)
         self.assertIn('<rect fill="#e33" data-x="ok"/>', out)
-        self.assertIn('<image href="x"/>', out)
+        self.assertIn("<image/>", out, "a relative href would fetch on load")
 
     def test_diagram_sanitizer_keeps_css_and_raster_data(self):
         sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
@@ -332,6 +332,18 @@ class Builds(unittest.TestCase):
         self.assertNotRegex(out, r"e/[a-f]")
         self.assertIn("fill:url(#g)", out, "in-figure references stay")
         self.assertIn('style="fill:red;background:none"', out)
+
+    def test_diagram_sanitizer_blocks_resource_fetches(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        out = render.sanitize_svg('<svg><image href="https://e/a.png"/><feImage xlink:href="http://127.0.0.1/b"/><use href="c.svg#n"/>'
+                                  '<rect filter="url(http://e/d)"/><foreignObject><img src="http://e/f"/></foreignObject>'
+                                  '<use href="#n"/><rect fill="url(#g)"/><image href="data:image/png;base64,AA"/>'
+                                  '<a href="https://ok.example/">a link</a><animate attributeName="fill" values="red;blue"/></svg>')
+        self.assertNotRegex(out, r"e/[a-f]|127\.0\.0\.1|c\.svg")
+        for kept in ('<use href="#n"/>', '<rect fill="url(#g)"/>', 'data:image/png;base64,AA', 'href="https://ok.example/"', 'values="red;blue"'):
+            self.assertIn(kept, out)
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg not installed")
