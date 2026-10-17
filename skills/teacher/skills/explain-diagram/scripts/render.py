@@ -107,10 +107,63 @@ def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str
     return kroki_render(kind, src, hand), "kroki"
 
 
+# Elements that can run code, load a page or take input. They never belong in a figure.
+BLOCKED_TAGS = {"script", "iframe", "frame", "frameset", "object", "embed", "applet", "meta", "link", "base",
+                "form", "input", "button", "textarea", "select", "handler", "listener"}
+URL_ATTRS = {"href", "xlink:href", "src", "action", "formaction", "data", "poster", "background",
+             "to", "from", "by", "values"}
+ANIMATE_TAGS = {"set", "animate", "animatetransform", "animatemotion"}
+TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>""")
+ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
+
+
+def _unsafe_url(value: str) -> bool:
+    v = re.sub(r"[\x00-\x20]", "", html.unescape(value)).lower()
+    if v.startswith("data:"):
+        return not re.match(r"data:image/(png|jpe?g|gif|webp|avif);", v)
+    return v.startswith(("javascript:", "vbscript:"))
+
+
+def _clean_tag(m: re.Match) -> str:
+    close, name, rest = m.group(1), m.group(2), m.group(3)
+    low = name.lower()
+    if low in BLOCKED_TAGS:
+        return ""
+    if close:
+        return f"</{name}>"
+    kept = []
+    for a in ATTR_RE.finditer(rest):
+        an, av = a.group(1), a.group(2)
+        aln = an.lower()
+        raw = av[1:-1] if av and av[0] in "\"'" else (av or "")
+        if aln.startswith("on"):
+            continue
+        if low in ANIMATE_TAGS and aln == "attributename" and html.unescape(raw).strip().lower().endswith("href"):
+            return ""  # <set attributeName="href" to="javascript:..."> swaps in a link at run time
+        if aln in URL_ATTRS and _unsafe_url(raw):
+            continue
+        kept.append(f" {an}" if av is None else f" {an}={av}")
+    end = "/" if rest.rstrip().endswith("/") else ""
+    return f"<{name}{''.join(kept)}{end}>"
+
+
+def sanitize_svg(svg: str) -> str:
+    """Strip anything in an SVG that can run code before it is inlined into a lesson page.
+
+    Rendered and hand-supplied SVGs are both untrusted: drop comments, script-like
+    elements with their content, every on* handler (any quoting), executable URL
+    schemes (entity-encoded too) and animations that rewrite a link.
+    """
+    svg = re.sub(r"<!--.*?(-->|$)", "", svg, flags=re.S)
+    for tag in ("script", "iframe", "object", "applet", "form", "textarea", "select", "button"):
+        svg = re.sub(rf"<{tag}\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*?/>", "", svg, flags=re.I)
+        svg = re.sub(rf"<{tag}\b.*?</{tag}\s*>", "", svg, flags=re.S | re.I)
+    return TAG_RE.sub(_clean_tag, svg)
+
+
 def clean_svg(svg: str, title: str) -> str:
     svg = re.sub(r"<\?xml[^>]*>|<!DOCTYPE[^>]*>", "", svg).strip()
-    svg = re.sub(r"<script\b.*?</script>", "", svg, flags=re.S | re.I)
-    svg = re.sub(r"\son\w+=\"[^\"]*\"", "", svg)
+    svg = sanitize_svg(svg)
     # Give the figure a text alternative and let it scale with its column.
     svg = re.sub(r"<svg\b", f'<svg role="img" aria-label="{html.escape(title, quote=True)}"', svg, count=1)
     svg = re.sub(r'(<svg\b[^>]*?)\s(width|height)="[^"]*"', r"\1", svg, count=2)

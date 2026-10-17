@@ -193,6 +193,34 @@ class Scripts(unittest.TestCase):
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists())
 
+    def test_forget_only_deletes_the_journal(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            keep = Path(tmp) / "notes.txt"
+            keep.write_text("mine")
+            self.assertNotEqual(run(s, "--dir", ".", "forget", "--yes", cwd=Path(tmp)).returncode, 0, "no journal here")
+            self.assertTrue(keep.exists())
+            run(s, "--dir", ".", "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            self.assertEqual(run(s, "--dir", ".", "forget", "--yes", cwd=Path(tmp)).returncode, 0)
+            self.assertFalse((Path(tmp) / "journal.json").exists())
+            self.assertFalse((Path(tmp) / "JOURNAL.md").exists())
+            self.assertTrue(keep.exists(), "forget must not touch other files")
+
+    def test_vendor_refuses_dirty_git_source(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import vendor  # type: ignore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            (root / "s").mkdir()
+            (root / "s/SKILL.md").write_text("a\n")
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x"], check=True)
+            self.assertFalse(vendor.git_dirty(root, "s"))
+            (root / "s/SKILL.md").write_text("edited\n")
+            self.assertTrue(vendor.git_dirty(root, "s"))
+
 
 class Builds(unittest.TestCase):
     def check_single_file(self, html: str):
@@ -243,6 +271,21 @@ class Builds(unittest.TestCase):
             self.assertNotIn("alert(1)", page)
             self.assertNotIn("onclick", page)
             self.assertIn('aria-label="A box"', page)
+
+    def test_diagram_sanitizer_strips_active_content(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        evil = ("<svg onload='a()'><!--><script>b()</script>--><svg/onload=c()>"
+                '<image href="x" onerror = "d()"/><a href="java&#x09;script:e()">t</a>'
+                "<a xlink:href=javascript:f()>t</a><set attributeName='href' to='javascript:g()'/>"
+                '<foreignObject><div><img src="x" onerror="h()"/><iframe src="javascript:i()"></iframe></div></foreignObject>'
+                "<SCRIPT>j()</SCRIPT><rect fill='#e33' data-x=\"ok\"/></svg>")
+        out = render.sanitize_svg(evil)
+        for bad in ("a()", "b()", "c()", "d()", "e()", "f()", "g()", "h()", "i()", "j()", "onload", "onerror", "javascript", "<script", "<iframe", "<set"):
+            self.assertNotIn(bad, out.lower() if bad.startswith("<") else out)
+        self.assertIn("<rect fill='#e33' data-x=\"ok\"/>", out)
+        self.assertIn('<image href="x"/>', out)
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg not installed")

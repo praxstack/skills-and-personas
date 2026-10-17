@@ -103,6 +103,17 @@ def git_files(root: Path, rel: str) -> list[str] | None:
     return sorted(f for f in out.split("\0") if f and (root / f).is_file() and not (root / f).is_symlink())
 
 
+def git_dirty(root: Path, rel: str) -> bool:
+    """True when a git source has uncommitted or untracked changes under rel.
+
+    The manifest attributes the copy to HEAD, so the bytes copied must be HEAD's.
+    """
+    if git_head(root) is None:
+        return False
+    out = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain", "--", rel], text=True)
+    return bool(out.strip())
+
+
 def sync(sources: dict[str, Path], only: list[str] | None) -> int:
     manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"skills": {}}
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
@@ -114,6 +125,9 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
         src = sources[key] / rel
         if not (src / "SKILL.md").is_file():
             print(f"FAIL {name}: {src}/SKILL.md not found", file=sys.stderr)
+            return 1
+        if git_dirty(sources[key], rel):
+            print(f"FAIL {name}: {src} has uncommitted changes; commit or stash them first", file=sys.stderr)
             return 1
         dest = SKILLS / name
         if dest.exists():
@@ -145,6 +159,9 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
         src = sources[key] / rel
         if not src.is_file():
             print(f"FAIL {dest}: {src} not found", file=sys.stderr)
+            return 1
+        if git_dirty(sources[key], rel):
+            print(f"FAIL {dest}: {src} has uncommitted changes; commit or stash them first", file=sys.stderr)
             return 1
         target = SKILLS / dest
         target.parent.mkdir(parents=True, exist_ok=True)

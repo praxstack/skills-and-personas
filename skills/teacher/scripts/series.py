@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -189,8 +188,16 @@ def main() -> int:
     if a.cmd == "forget":
         if not a.yes:
             raise SystemExit("this deletes the journal; run again with --yes once the learner has confirmed")
-        shutil.rmtree(a.dir, ignore_errors=True)
-        print(f"deleted {a.dir}")
+        if not j.file.is_file():
+            raise SystemExit(f"no journal in {a.dir}; nothing deleted")
+        # Delete only the files this script writes, never the folder's other contents.
+        for f in (j.file, j.file.with_suffix(".tmp"), j.root / "JOURNAL.md"):
+            f.unlink(missing_ok=True)
+        try:
+            j.root.rmdir()
+        except OSError:
+            pass  # the folder holds other files; leave them alone
+        print(f"deleted the journal in {a.dir}")
         return 0
     j.need()
     if a.cmd == "resume":
