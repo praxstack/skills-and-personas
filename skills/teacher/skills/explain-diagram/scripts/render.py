@@ -126,7 +126,7 @@ ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
 def _unsafe_url(value: str) -> bool:
     v = re.sub(r"[\x00-\x20]", "", html.unescape(value)).lower()
     if v.startswith("data:"):
-        return not re.match(r"data:image/(png|jpe?g|gif|webp|avif);", v)
+        return not re.match(r"data:image/(png|jpe?g|gif|webp|avif)[;,]", v)
     return v.startswith(("javascript:", "vbscript:"))
 
 
@@ -161,6 +161,11 @@ def sanitize_svg(svg: str) -> str:
     schemes (entity-encoded too) and animations that rewrite a link.
     """
     svg = re.sub(r"<!--.*?(-->|$)", "", svg, flags=re.S)
+    # Inline SVG has no raw-text elements: a "<" in CDATA or in CSS would be read
+    # as a tag. Turn CDATA into escaped text and escape "<" inside <style>.
+    svg = re.sub(r"<!\[CDATA\[(.*?)(\]\]>|$)", lambda m: html.escape(m.group(1), quote=False), svg, flags=re.S)
+    svg = re.sub(r"(<style\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>)(.*?)(?=</style\s*>|$)",
+                 lambda m: m.group(1) + m.group(2).replace("<", "&lt;"), svg, flags=re.S | re.I)
     for tag in ("script", "iframe", "object", "applet", "form", "textarea", "select", "button"):
         svg = re.sub(rf"<{tag}\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*?/>", "", svg, flags=re.I)
         svg = re.sub(rf"<{tag}\b.*?</{tag}\s*>", "", svg, flags=re.S | re.I)

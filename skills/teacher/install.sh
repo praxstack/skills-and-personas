@@ -55,8 +55,13 @@ done
 
 run() { if [ "$DRY" = 1 ]; then echo "would: $*"; else "$@"; fi; }
 
-ours() { # ours <source dir> <dest>: a link to this source, or a copy this script made
-  if [ -L "$2" ]; then [ "$(readlink "$2")" = "$1" ]; else [ -f "$2/.installed-by-teacher" ]; fi
+ours() { # ours <source dir> <dest>: a link to this source (by physical path, or dangling), or a copy this script made
+  if [ -L "$2" ]; then
+    [ -e "$2" ] || return 0  # a dangling link left by a moved or deleted clone
+    [ "$(cd "$2" 2>/dev/null && pwd -P)" = "$(cd "$1" && pwd -P)" ]
+  else
+    [ -f "$2/.installed-by-teacher" ]
+  fi
 }
 
 place() { # place <source dir> <dest dir> <name>
@@ -66,7 +71,7 @@ place() { # place <source dir> <dest dir> <name>
     return
   fi
   if [ -e "$dest" ] || [ -L "$dest" ]; then
-    if [ "$MODE" != "copy" ] && [ -L "$dest" ] && ours "$src" "$dest"; then echo "ok      $dest"; return; fi
+    if [ "$MODE" != "copy" ] && [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then echo "ok      $dest"; return; fi
     if [ "$FORCE" != 1 ] && ! ours "$src" "$dest"; then
       echo "skip    $dest (exists and isn't ours; --force replaces it)"; return
     fi
