@@ -105,8 +105,8 @@ monospace technical text and short handwritten coach notes. Words carry color
 meaning. Every mark explains an identified claim; exact diagrams, code, math and
 long text stay crisp. Keep labels consistent across media, with complete static,
 no-script and reduced-motion versions. Learner style/accessibility preferences,
-including dark/high-contrast, override defaults. The renderer embeds
-`assets/askthemove-teaching.css` in standalone output; local font fallbacks require
+including dark/high-contrast, override defaults. The renderer keeps its canonical CSS in `scripts/render_markdown.mjs` and embeds
+it in standalone output; local font fallbacks require
 no network or package-relative font paths. Exact AskTheMove fonts are not bundled.
 
 ## Learning interactions

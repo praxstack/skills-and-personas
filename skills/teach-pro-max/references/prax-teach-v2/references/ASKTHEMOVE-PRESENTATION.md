@@ -11,7 +11,8 @@ ChessLab `site/DESIGN.md` inspected at commit
 | Coach annotation | Short handwriting, blue `#1f48ae` | Explain one identified connection |
 | Correction | Red `#c92324` with the word “Correction” | Name what changes and why |
 
-The embedded stylesheet uses local fallback families. Vollkorn, Courier Prime and
+The canonical stylesheet lives in `scripts/render_markdown.mjs` and uses local
+fallback families. Vollkorn, Courier Prime and
 Kalam appear only if already available; exact branded font rendering is not
 promised. Generated HTML embeds the CSS and needs no font/network request or
 package-relative stylesheet. Quotations remain serif. Use existing semantic HTML

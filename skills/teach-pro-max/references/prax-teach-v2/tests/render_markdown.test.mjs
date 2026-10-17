@@ -368,9 +368,10 @@ The ratio stays constant when both quantities double.
   await writeFile(markdown, source, "utf8");
   run([markdown, htmlPath]);
   const html = await readFile(htmlPath, "utf8");
-  const css = await readFile(path.join(ROOT, "assets", "askthemove-teaching.css"), "utf8");
-  assert.ok(html.includes(css), "standalone output embeds the consumed stylesheet");
+  const css = html.match(/<style>\n([\s\S]*?)  <\/style>/)?.[1];
+  assert.ok(css, "standalone output embeds the complete presentation");
   const cssHash = createHash("sha256").update(css).digest("hex");
+  assert.equal(cssHash, "f7673d0d7da7396446955dcb087de0e23be6793d681731a5c3ef75bdbb45f241", "portable renderer retains the exact reviewed CSS bytes");
   assert.ok(html.includes(`name="presentation-sha256" content="${cssHash}"`));
   assert.ok(html.includes(`Presentation SHA-256: <code>${cssHash}</code>`));
   for (const color of ["#fbfaf4", "#171d29", "#1f48ae", "#c92324"]) {
@@ -394,4 +395,28 @@ The ratio stays constant when both quantities double.
   await writeFile(path.join(moved, "ratios.md"), source, "utf8");
   await writeFile(path.join(moved, "ratios.html"), html, "utf8");
   run(["--check", path.join(moved, "ratios.md"), path.join(moved, "ratios.html")]);
+});
+
+
+test("copied renderer publishes current HTML without companion asset directories", async () => {
+  const directory = await temporaryDirectory("prax-render-copy-");
+  const scripts = path.join(directory, "scripts");
+  await mkdir(scripts);
+  const copiedRenderer = path.join(scripts, "render_markdown.mjs");
+  await writeFile(copiedRenderer, await readFile(RENDERER));
+  await symlink(path.join(ROOT, "node_modules"), path.join(directory, "node_modules"));
+  const source = path.join(directory, "lesson.md");
+  await writeFile(source, "# Portable current lesson\n\nBoth quantities double.\n");
+  const args = [copiedRenderer, "--trusted-root", directory, source];
+  for (const check of [false, true]) {
+    const completed = spawnSync(process.execPath, check ? [args[0], "--check", ...args.slice(1)] : args, {
+      cwd: directory,
+      encoding: "utf8",
+      env: { ...process.env, SOURCE_DATE_EPOCH: "1785844800" },
+    });
+    assert.equal(completed.status, 0, completed.stderr);
+  }
+  const html = await readFile(path.join(directory, "lesson.html"), "utf8");
+  assert.match(html, /presentation-sha256" content="f7673d0d7da7396446955dcb087de0e23be6793d681731a5c3ef75bdbb45f241"/);
+  await assert.rejects(stat(path.join(directory, "assets")));
 });
