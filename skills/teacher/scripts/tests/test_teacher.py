@@ -348,8 +348,9 @@ class Builds(unittest.TestCase):
         out = render.sanitize_svg('<svg><image href="https://e/a.png"/><feImage xlink:href="http://127.0.0.1/b"/><use href="c.svg#n"/>'
                                   '<rect filter="url(http://e/d)"/><foreignObject><img src="http://e/f"/></foreignObject>'
                                   '<use href="#n"/><rect fill="url(#g)"/><image href="data:image/png;base64,AA"/>'
-                                  '<a href="https://ok.example/">a link</a><animate attributeName="fill" values="red;blue"/></svg>')
-        self.assertNotRegex(out, r"e/[a-f]|127\.0\.0\.1|c\.svg")
+                                  '<a href="https://ok.example/" ping="https://e/g">a link</a><animate attributeName="fill" values="red;blue"/>'
+                                  '<foreignObject><img srcset="data:image/png;base64,AA 1x, https://e/h 2x"/></foreignObject></svg>')
+        self.assertNotRegex(out, r"e/[a-h]|127\.0\.0\.1|c\.svg|srcset|ping")
         for kept in ('<use href="#n"/>', '<rect fill="url(#g)"/>', 'data:image/png;base64,AA', 'href="https://ok.example/"', 'values="red;blue"'):
             self.assertIn(kept, out)
 

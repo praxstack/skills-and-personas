@@ -120,7 +120,10 @@ BLOCKED_TAGS = {"script", "iframe", "frame", "frameset", "object", "embed", "app
                 "noscript", "xmp", "noembed", "noframes", "plaintext"}
 # Attributes that load a resource as soon as the page opens: only in-figure #references
 # and embedded raster images may stay. A link (<a href>) only navigates when clicked.
-RESOURCE_ATTRS = {"href", "xlink:href", "src", "srcset", "action", "formaction", "data", "poster", "background"}
+RESOURCE_ATTRS = {"href", "xlink:href", "src", "action", "formaction", "data", "poster", "background"}
+# URL-list or legacy fetch attributes a figure never needs; checking only the first entry would
+# miss "data:image/png,... 1x, https://... 2x", so they are dropped outright.
+DROPPED_ATTRS = {"srcset", "imagesrcset", "ping", "archive", "codebase", "longdesc", "lowsrc", "dynsrc", "manifest", "icon"}
 ANIMATION_VALUE_ATTRS = {"to", "from", "by", "values"}
 ANIMATE_TAGS = {"set", "animate", "animatetransform", "animatemotion"}
 TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^<>"']|"[^"]*"|'[^']*')*)>|<""")
@@ -172,7 +175,7 @@ def _clean_tag(m: re.Match) -> str:
         an, av = a.group(1), a.group(2)
         aln = an.lower()
         raw = av[1:-1] if av and av[0] in "\"'" else (av or "")
-        if aln.startswith("on"):
+        if aln.startswith("on") or aln in DROPPED_ATTRS:
             continue
         if low in ANIMATE_TAGS and aln == "attributename" and html.unescape(raw).strip().lower().endswith("href"):
             return ""  # <set attributeName="href" to="javascript:..."> swaps in a link at run time
