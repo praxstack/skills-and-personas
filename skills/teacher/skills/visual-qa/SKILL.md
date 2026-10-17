@@ -35,6 +35,14 @@ python3 scripts/check_video.py clip.mp4 --sheet sheet.png [--min-height 720] [--
 
 Fails on missing video, odd dimensions, under 720p, under 24 fps, non-yuv420p pixels, black stretches over 1.5 s, frozen stretches over 4 s, no captions (sidecar .vtt/.srt or a subtitle stream), loudness more than 2 LU off target, or a true peak above -1 dBTP. The contact sheet tiles 12 frames from across the clip into one image.
 
+For narrated clips, also check the words:
+
+```sh
+python3 scripts/check_speech.py clip.mp4 [--vtt clip.vtt] [--model base.en] [--min-recall 0.85]
+```
+
+Whisper (`pip install faster-whisper`) listens to the clip and checks, cue by cue, that the caption's words are heard near that time. Fails under 85% overall or when any cue drops below half: a voice that skips, slurs, mangles a symbol or drifts out of sync.
+
 ## Then look
 
 Automated checks catch the measurable problems. They don't catch a label sitting on a line, a figure that says the wrong thing, or a cut-off note. Open the desktop and phone screenshots and the contact sheet and ask:

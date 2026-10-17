@@ -57,11 +57,15 @@ If several gaps are plausible, ask one focused question to find which. After two
 | how parts connect, a flow, a map of a subject | an explained still | `skills/explain-diagram` |
 | what happens when you change something | an explorable | `skills/explorable` |
 | a change the learner should watch | a scrubbable animation, exported to MP4 or GIF | `skills/concept-animation` |
-| a story: intro, walkthrough, recap to rewatch | a narrated video | `skills/explainer-video` (routes to Manim, Motion Canvas, Remotion, HyperFrames, Three.js and more) |
+| a story: intro, walkthrough, recap to rewatch | a narrated video with a natural voice | `skills/explorable/scripts/narrate.py` turns any lesson into one; `skills/explainer-video` for bespoke films (Manim, Motion Canvas, Remotion, HyperFrames, Three.js and more) |
+| code the learner should read and run | the lesson's code panel (C++ / Python, line lit per step, Python runs in the page) | `skills/explorable` (`code` field) |
+| a whole subject over many sittings | a course: map, outline, notes, quiz, every lesson in every medium | `skills/course` |
 | equations transforming, proofs | a math animation | `skills/manim-video` |
 | shape in space | 3D | `skills/threejs-video`, Three.js in an explorable |
 | numbers to compare | an honest chart | Vega-Lite via explain-diagram, D3 or Observable Plot |
 | a one-line fact | words, maybe one small sketch | nothing to build |
+
+The learner can ask for the same idea in another medium as often as they like: every lesson page offers "see it as a film / code", and every course map offers Teach me, Watch, Read and run the code, and Quiz me for each lesson. A request for a different medium is a signal, not a nuisance: note it and use it.
 
 Use the cheapest medium that carries the idea. A still beats an animation unless the change is the point. An animation beats an explorable unless the learner needs to drive. Never make a visual because it looks impressive. The full router, with the questions to ask: [references/MEDIUM-ROUTER.md](references/MEDIUM-ROUTER.md).
 
@@ -76,7 +80,7 @@ The registry (`assets/registry.json`) maps jobs to 45 tools and host surfaces, a
 
 ## Make it look like a lesson
 
-Every visual uses the `lesson-notebook` style by default: quad-ruled paper, a red margin rule, the book's serif for explanations, a typewriter voice for computed numbers, and the coach's handwriting for notes, circles and arrows, drawn live by a pen. The house rules are in `skills/lesson-notebook/SKILL.md`. Change the look only when the learner asks or the project has its own design system.
+Every visual uses the `lesson-notebook` style by default: quad-ruled paper (a chalkboard automatically in dark mode), a red margin rule, the book's serif for explanations, a typewriter voice for computed numbers, and the coach's handwriting for notes, circles and arrows, drawn live by a pen that sounds like real chalk or pencil (CC0 recordings). Narration is a natural neural voice, never a robotic one. The house rules are in `skills/lesson-notebook/SKILL.md`; the voice and sound choices, with sources, are in [references/VOICE-AND-SOUND.md](references/VOICE-AND-SOUND.md). Change the look only when the learner asks or the project has its own design system.
 
 Patterns borrowed from the best learning products (manipulate-first problems, separate outline, lesson and notes panes, bite-size steps, roadmaps): [references/DESIGN-INSPIRATION.md](references/DESIGN-INSPIRATION.md).
 
@@ -129,7 +133,8 @@ All live in `skills/`, so this folder works on its own. Provenance and hashes: `
 | Skill | What it adds |
 | --- | --- |
 | `lesson-notebook` | the default look, the pen, the bundler |
-| `explorable` | interactive lessons from one model |
+| `explorable` | interactive lessons from one model: figure, questions, explain-back, code panel, film, narrated video |
+| `course` | courses: subject map, Learning / Done / Skip, any medium per lesson, outline, notes, quiz |
 | `concept-animation` | scrubbable animations, exported to MP4, GIF and captions |
 | `explain-diagram` | explained stills from Mermaid, D2, Graphviz, PlantUML, Vega-Lite, Excalidraw |
 | `visual-qa` | page and video checks |

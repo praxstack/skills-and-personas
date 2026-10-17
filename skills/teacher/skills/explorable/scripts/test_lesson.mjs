@@ -38,7 +38,7 @@ page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
 await page.goto(url);
 await page.waitForFunction(() => window.__explorable);
 
-const steps = await page.evaluate(() => window.LESSON.steps.map((s) => ({ title: s.title, ask: s.ask ? { kind: s.ask.kind, n: s.ask.options?.length } : null, alts: (s.alts || []).length })));
+const steps = await page.evaluate(() => window.LESSON.steps.map((s) => ({ title: s.title, ask: s.ask ? { kind: s.ask.kind, n: s.ask.options?.length } : null, alts: (s.alts || []).length, line: s.line !== undefined, hasCode: Boolean(window.LESSON.code) })));
 check("lesson has steps", steps.length > 0);
 const modelChecks = await page.evaluate(() => window.__explorable.check());
 for (const c of modelChecks) check(`model: ${c.name}`, c.ok);
@@ -69,7 +69,19 @@ for (let i = 0; i < steps.length; i++) {
   }
 
   const next = step.locator(".xp-next");
-  if (st.ask) {
+  if (st.line && st.hasCode) {
+    check(`step ${i + 1} code panel lights its line`, (await step.locator(".xp-code-line.is-active").count()) === 1);
+  }
+  if (st.ask && st.ask.kind === "explain") {
+    check(`step ${i + 1} Next locked before explaining`, await next.isDisabled());
+    await step.getByRole("button", { name: /Compare/ }).click();
+    check(`step ${i + 1} an empty explanation is refused`, await next.isDisabled());
+    await step.locator(".xp-explain").fill("Stored sums of slices let a query use a few boxes instead of every number.");
+    await step.getByRole("button", { name: /Compare/ }).click();
+    check(`step ${i + 1} explaining reveals the teacher's version and opens Next`, (await step.locator(".xp-why").count()) === 1 && !(await next.isDisabled()));
+    const boxes = step.locator(".xp-points input[type=checkbox]");
+    if (await boxes.count()) await boxes.first().check();
+  } else if (st.ask) {
     check(`step ${i + 1} Next locked before answering`, await next.isDisabled());
     // A wrong answer first.
     if (st.ask.kind === "choice") {
@@ -88,6 +100,7 @@ for (let i = 0; i < steps.length; i++) {
   } else {
     check(`step ${i + 1} no question: Next open`, !(await next.isDisabled()));
   }
+  check(`step ${i + 1} shows no stray "null" or "undefined"`, !/(^|\n)\s*(null|undefined)\s*(\n|$)/.test(await step.innerText()));
   if (shots) await page.screenshot({ path: `${shots}/step-${i + 1}.png`, fullPage: true });
 }
 
@@ -120,6 +133,32 @@ check("film plays", (await film.getByRole("button", { name: "Pause" }).count()) 
 await film.getByRole("button", { name: "Pause" }).click();
 check("film transcript lists every scene", (await film.locator(".xp-transcript li").count()) >= steps.length);
 if (shots) await page.screenshot({ path: `${shots}/film.png`, fullPage: true });
+
+// Code view: languages, line numbers, what it prints.
+const hasCode = await page.evaluate(() => Boolean(window.LESSON.code));
+if (hasCode) {
+  await page.getByRole("tab", { name: "Code" }).click();
+  const panel = page.locator("#view-code .xp-code");
+  check("code view shows the program", (await panel.locator(".xp-code-line").count()) > 5);
+  const langs = panel.locator(".xp-code-tabs button");
+  const n = await langs.count();
+  if (n > 1) {
+    const first = await panel.locator(".xp-code-pre").textContent();
+    await langs.nth(1).click();
+    check("code view switches language", (await panel.locator(".xp-code-pre").textContent()) !== first);
+  }
+  const printed = await panel.locator(".xp-code-out").first().textContent();
+  check("code view shows what the program prints, from the model", /prints:/.test(printed || ""));
+  if (shots) await page.screenshot({ path: `${shots}/code.png`, fullPage: true });
+}
+
+// Curiosity list goes into the report.
+await page.getByRole("tab", { name: "Lesson" }).click();
+await page.locator("#xp-curious-input").fill("what about the minimum instead of the sum?");
+await page.locator(".xp-curious-box").getByRole("button", { name: "Add" }).click();
+check("curiosity list keeps a question", (await page.locator(".xp-curious li").count()) === 1);
+const rep2 = await page.evaluate(() => window.__explorable.report());
+check("report carries the curiosity list", rep2.includes("Questions I want to chase"));
 
 // Notes view and persistence.
 await page.getByRole("tab", { name: "Notes and report" }).click();

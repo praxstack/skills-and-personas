@@ -55,7 +55,7 @@ ENTRIES = {
     "eli": ("snapshot", "eli", "Prax's local skill library (16 Oct 2026 snapshot)", "Prax's own"),
 }
 
-NATIVE = ["lesson-notebook", "explorable", "concept-animation", "explain-diagram", "visual-qa"]
+NATIVE = ["lesson-notebook", "explorable", "concept-animation", "explain-diagram", "visual-qa", "course"]
 
 CHESSLAB_REPO = "https://github.com/praxstack/ChessLab"
 # Single files copied byte-for-byte into native skills: dest -> (source key, source path, upstream, licence).

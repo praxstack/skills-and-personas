@@ -18,6 +18,7 @@ The learner moves the thing, commits an answer, and only then reads why. Every n
 ```sh
 python3 scripts/build.py assets/examples/seasons.lesson.js -o seasons.html        # one file, opens anywhere
 node scripts/test_lesson.mjs seasons.html                                  # drives every step in Chromium
+node scripts/check_code.mjs lesson.js --include course.model.js            # when the lesson shows code
 node ../visual-qa/scripts/check_page.mjs seasons.html --eval "window.__explorable.check()"
 ```
 
@@ -49,12 +50,23 @@ window.LESSON = {
 
 `kit.mark(ink.arrow(...), { tone: "red" })` and `kit.hand(x, y, "text", { tone: "blue" })` draw in the coach's hand; the pen animates them when a step opens and redraws instantly when a slider moves. `kit.group("translate(...)")` returns a kit for a sub-panel, which is how a figure rearranges itself when `kit.narrow` is true.
 
+### More lesson fields
+
+- `hook`: HTML shown above step 1 under "Why this mattered": the stakes or the story (who needed this, what broke without it). Short.
+- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide) where the host allows it, and every panel shows what the model says the program prints for the current inputs. `node scripts/check_code.mjs lesson.js` compiles and runs both languages on every case and fails if either disagrees with `expect`.
+- `ask: { kind: "explain", q, model, points: [...] }`: the learner writes the idea in their own words first, then sees the teacher's version and ticks the key points they covered. The text goes into the report so the teacher can correct it.
+- Shared course code: put the model in one file that sets `window.Something` and build with `--include course.model.js` (also for `check_code.mjs`).
+- `figure.narrowText`: text scale on narrow screens (default 1). Raise it until `visual-qa` stops flagging figure text under 11px.
+- Readout labels are set in capitals. When case carries meaning (`|a|` against `|A|`), give the row a third item: `["|a|", "5", { keepCase: true }]`. Long values wrap on phones.
+
+Every page also has: "Or see it as a film / code" under "Still confused?", a "Questions to chase" list in the margin that goes into the report, Board (auto/paper/chalk) and Sound buttons.
+
 ## What the page does
 
 - Layout: contents, lesson, margin notes, kept apart, with Film and "Notes and report" as their own tabs. Progress, answers and the learner's notes stay in the browser (and the page works when storage is blocked).
 - Questions: Next stays locked until the step's question is resolved. A miss gets the hint. A second miss, or "Show me", teaches it directly. Every attempt is recorded.
 - "Still confused? Try another way": cycles through `alts`, changing the representation, example or analogy, and records which ones were tried.
-- Film: the same figure, eased between each scene's parameters, with captions, play, pause, scrub, chapters, speed, an optional browser voice and a transcript.
+- Film: the same figure, eased between each scene's parameters, with captions, play, pause, scrub, chapters, speed and a transcript (the human-sounding voice is in the narrated video: `scripts/narrate.py`).
 - The end isn't a score. "Where to next?" offers: got it, go deeper, another example, explain it differently, practise. Then a plain-text report (steps, misses, explanations tried, notes, choice) the learner copies back to the teacher, so the next session fits them.
 - Chalkboard toggle, keyboard control of the film, reduced motion, phone layout.
 

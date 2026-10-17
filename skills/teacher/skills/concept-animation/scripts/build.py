@@ -28,7 +28,7 @@ def build(source: Path, out: Path, fragment: bool = False) -> Path:
     page = bundle.page(
         title=m.group(2) if m else source.stem,
         css=[bundle.NOTEBOOK_CSS, ENGINE / "animate.css"],
-        modules=[bundle.INK_JS, bundle.PEN_JS, ENGINE / "animate.js"],
+        modules=[*bundle.NOTEBOOK_MODULES, ENGINE / "animate.js"],
         scripts=[source],
         body='<main id="app"><noscript><p>This animation needs JavaScript. The transcript is in the source file.</p></noscript></main>',
         fragment=fragment,

@@ -9,6 +9,14 @@
 
 import { seedFrom, rng, smoothPath, line, polyline, loop, arrow, arrowHead, curvedArrow, cross, tick, underline, swipe, ring, bracket } from "../../../lesson-notebook/assets/ink.js";
 import { svgEl, inkMark, handText, reducedMotion, scaledSize } from "../../../lesson-notebook/assets/pen.js";
+import { scratch, strokeShape, soundButton, hush } from "../../../lesson-notebook/assets/sound.js";
+import { boardButton, restoreBoard } from "../../../lesson-notebook/assets/board.js";
+
+// Marks that started drawing during playback, so each one scratches once.
+// Every mark's drawing is also logged (time, progress, shape), which is what
+// scripts/export.mjs turns into the chalk or pencil track of a video.
+const sounding = new Set();
+const strokeLog = [];
 
 const INK = { seedFrom, rng, smoothPath, line, polyline, loop, arrow, arrowHead, curvedArrow, cross, tick, underline, swipe, ring, bracket };
 const A = window.ANIMATION;
@@ -80,7 +88,20 @@ function render(time) {
   const kit = {
     ink: INK, t: time, key: k, u, layer, narrow, textScale: scale,
     el: (tag, attrs = {}) => svgEl(tag, tag === "text" ? { ...attrs, "font-size": scaledSize(attrs, scale) } : attrs, layer),
-    mark: (paths, opts = {}) => inkMark(layer, paths, { pen: false, ...opts }),
+    mark: (paths, opts = {}) => {
+      const g = inkMark(layer, paths, { pen: false, ...opts });
+      const p = opts.progress;
+      if (p !== undefined && p > 0 && p < 1) {
+        const key = paths.join("|").slice(0, 120);
+        const first = g.querySelector("path");
+        if (logging) strokeLog.push({ t: time, key, p, shape: first ? strokeShape(first) : null, tone: opts.tone || "blue" });
+        if (playing && !sounding.has(key) && first) {
+          sounding.add(key);
+          scratch(0, Math.max(120, (1 - p) * TRANSITION * 1000) / Number(speed.value), strokeShape(first));
+        }
+      }
+      return g;
+    },
     hand: (x, y, text, opts = {}) => handText(layer, x, y, text, { pen: false, ...opts, size: scaledSize({ class: "t-hand", "font-size": opts.size }, scale) }),
     seed: (name) => seedFrom(`${A.id || A.title}:${name}`),
     since: (i) => (k > i ? 1 : k === i ? u : 0), // how far key i's change has played
@@ -94,8 +115,14 @@ function render(time) {
   chapters.querySelectorAll(".ca-chip").forEach((b) => b.classList.toggle("is-current", Number(b.dataset.i) === keys.indexOf(sayKey)));
 }
 
+let logging = false;
 function seek(time, keepPlaying = false) {
-  t = Math.max(0, Math.min(duration, time));
+  const next = Math.max(0, Math.min(duration, time));
+  if (next < t || !keepPlaying) {
+    sounding.clear();
+    hush();
+  }
+  t = next;
   if (!keepPlaying) setPlaying(false);
   render(t);
 }
@@ -139,7 +166,7 @@ const root = h(
   { class: "ca-player", tabindex: "0", "aria-label": `${A.title}. Space plays or pauses, arrow keys jump between steps.` },
   h("figure", { class: "ca-stage nb-sheet" }, svg),
   caption,
-  h("div", { class: "ca-bar" }, playBtn, scrub, clock, speed),
+  h("div", { class: "ca-bar" }, playBtn, scrub, clock, speed, boardButton(), soundButton()),
   chapters,
   transcript,
 );
@@ -169,8 +196,17 @@ app.replaceChildren(
   root,
 );
 document.documentElement.toggleAttribute("data-export", new URLSearchParams(location.search).has("export"));
-if (A.board === "chalk") document.documentElement.dataset.board = "chalk";
+restoreBoard(A.board || "auto");
 seek(reducedMotion() ? Math.min(duration, keys[0].at + TRANSITION) : 0);
 
 // Used by scripts/export.mjs and by tests.
-window.__anim = { duration, keys: keys.map(({ at, say }) => ({ at, say: say || "" })), seek: (time) => seek(time), frameAt, render };
+window.__anim = {
+  duration,
+  keys: keys.map(({ at, say }) => ({ at, say: say || "" })),
+  seek: (time) => seek(time),
+  frameAt,
+  render,
+  // For export: record every partly drawn mark while seeking frame by frame.
+  startStrokeLog: () => ((logging = true), (strokeLog.length = 0)),
+  strokeLog: () => strokeLog.slice(),
+};

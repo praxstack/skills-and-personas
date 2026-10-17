@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Check a teaching page in real Chromium before a learner sees it.
 //
-//   node check_page.mjs page.html [--out shots/] [--board chalk] [--eval "expr"] [--json]
+//   node check_page.mjs page.html [--out shots/] [--board chalk] [--eval "expr"] [--all-steps] [--json]
 //
 // Runs desktop and phone, light and dark (prefers-color-scheme), with and
 // without reduced motion. Fails on: console or page errors, sideways scroll,
@@ -9,6 +9,8 @@
 // under 24px, images or figures without a text alternative, controls without a
 // name. --eval runs an expression in the page that returns a list of
 // {name, ok} results (for example "window.__explorable.check()").
+// --all-steps, on an explorable lesson, also audits every later step (not
+// just the first screen) in the four runs with motion, with a screenshot each.
 //
 // Needs the playwright package (npm i playwright). Set CHROMIUM_PATH to use an
 // already-installed Chromium instead of downloading one.
@@ -33,6 +35,7 @@ const out = opt("--out");
 const evalExpr = opt("--eval");
 const board = opt("--board");
 const asJson = args.includes("--json");
+const allSteps = args.includes("--all-steps");
 
 const VIEWS = [
   { name: "desktop", viewport: { width: 1280, height: 860 } },
@@ -159,6 +162,19 @@ for (const view of VIEWS) {
         for (const c of checks || []) if (!c.ok) problems.push(`check failed: ${c.name}`);
       }
       if (out) await page.screenshot({ path: `${out}/${label}.png`, fullPage: true });
+      if (allSteps && !reduced) {
+        const n = await page.evaluate(() => (window.LESSON && window.__explorable ? window.LESSON.steps.length : 0));
+        for (let i = 1; i < n; i += 1) {
+          await page.evaluate((k) => window.__explorable.goStep(k, { focus: false }), i);
+          await page
+            .waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running" && a.playState !== "pending"), null, { timeout: 12000, polling: 200 })
+            .catch(() => {});
+          await page.waitForTimeout(150);
+          for (const pr of await page.evaluate(audit)) problems.push(`step ${i + 1}: ${pr}`);
+          if (out) await page.screenshot({ path: `${out}/${label}-step-${i + 1}.png`, fullPage: true });
+        }
+      }
+      problems.push(...errors.filter((e) => !problems.includes(e)));
       results.push({ run: label, problems: [...new Set(problems)] });
       await context.close();
     }

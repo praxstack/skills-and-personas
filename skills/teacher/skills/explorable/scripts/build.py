@@ -30,7 +30,7 @@ def lesson_field(src: str, name: str) -> str | None:
     return m.group(2) if m else None
 
 
-def build(lesson: Path, out: Path, fragment: bool = False) -> Path:
+def build(lesson: Path, out: Path, fragment: bool = False, include: list[Path] | None = None) -> Path:
     src = lesson.read_text()
     if "window.LESSON" not in src:
         raise SystemExit(f"{lesson}: expected `window.LESSON = {{...}}`")
@@ -39,8 +39,8 @@ def build(lesson: Path, out: Path, fragment: bool = False) -> Path:
         title=title,
         description=lesson_field(src, "subtitle") or "",
         css=[bundle.NOTEBOOK_CSS, ENGINE / "explorable.css"],
-        modules=[bundle.INK_JS, bundle.PEN_JS, ENGINE / "explorable.js"],
-        scripts=[lesson],
+        modules=[*bundle.NOTEBOOK_MODULES, ENGINE / "code.js", ENGINE / "explorable.js"],
+        scripts=[*(include or []), lesson],
         body=BODY,
         fragment=fragment,
     )
@@ -54,8 +54,9 @@ def main() -> int:
     ap.add_argument("lesson", type=Path)
     ap.add_argument("-o", "--out", type=Path)
     ap.add_argument("--fragment", action="store_true", help="omit doctype/html/head/body (for hosts that wrap pages)")
+    ap.add_argument("--include", action="append", default=[], type=Path, help="shared scripts (a course's model) loaded before the lesson")
     args = ap.parse_args()
-    out = build(args.lesson, args.out or args.lesson.with_suffix(".html"), args.fragment)
+    out = build(args.lesson, args.out or args.lesson.with_suffix(".html"), args.fragment, args.include)
     print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
     return 0
 

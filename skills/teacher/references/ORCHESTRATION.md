@@ -58,6 +58,10 @@ Other cards worth keeping:
 - **examiner**: given only the concept and the depth rung, write fresh-case questions with worked answers. Never sees the lesson's examples.
 - **researcher**: find two or three reliable sources for a claim, with links and the exact passages.
 
+## When a helper vanishes
+
+Containers restart and background helpers die with them, silently. Ask helpers to write each finished piece to disk as soon as it passes its checks, so a restart loses at most one piece. If one stops reporting, look at what it left on disk, run its checks on that, and start a fresh helper with a card that says what's already done. Don't wait on a helper that can't answer.
+
 ## Verify what comes back
 
 Treat a helper's report as a claim. Open the file it says it made, re-run its check, look at the picture. If it says a test passed, run the test. Then teach from what you verified, and tell the learner about anything you couldn't check.

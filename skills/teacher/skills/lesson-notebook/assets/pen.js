@@ -5,6 +5,8 @@
 // with clip-path. Under reduced motion everything is shown finished at once.
 // Nothing loops, bounces or floats.
 
+import { scratch, writing, strokeShape, hush } from "./sound.js";
+
 const EASE_STROKE = "cubic-bezier(0.65, 0, 0.35, 1)";
 const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
 const EASE_WRITE = "cubic-bezier(0.4, 0, 0.6, 1)";
@@ -71,10 +73,11 @@ export function unsplitWords(el) {
 
 /** One passage of drawing and writing, laid out in time, then played. */
 export class Timeline {
-  constructor({ speed = 1 } = {}) {
+  constructor({ speed = 1, sound = true } = {}) {
     this.t = 0;
     this.speed = speed;
     this.anims = [];
+    this.sound = sound;
   }
   wait(ms) {
     this.t += ms / this.speed;
@@ -87,11 +90,13 @@ export class Timeline {
     this.anims.push(
       path.animate([{ strokeDashoffset: 1.01 }, { strokeDashoffset: 0 }], { duration: d, delay: this.t, easing, fill: "backwards" }),
     );
+    if (this.sound) scratch(this.t, d, strokeShape(path), { gain: this.swiping ? 0.5 : 1 });
     this.t += d;
   }
   /** Every stroke of one mark, with a short pen lift between them. */
   mark(el) {
     const swipe = el.classList.contains("tone-highlight") || Boolean(el.closest?.(".tone-highlight"));
+    this.swiping = swipe;
     const strokes = el.matches?.(".stroke") ? [el] : el.querySelectorAll(".stroke");
     strokes.forEach((path, i) => {
       if (i) this.wait(70);
@@ -121,17 +126,21 @@ export class Timeline {
           duration: d, delay: this.t, easing: EASE_WRITE, fill: "backwards",
         }),
       );
+      if (this.sound) writing(this.t, d, (el.textContent || "").trim().split(/\s+/).length);
       this.t += d;
       return;
     }
     const units = splitWords(el);
+    const start = this.t;
     const chars = units.reduce((n, u) => n + (u.textContent || "").length, 0);
     this.words(units, Math.min(CHAR_MS, 2400 / Math.max(chars, 1)) / this.speed);
+    if (this.sound) writing(start, this.t - start, units.length);
   }
   done() {
     return Promise.all(this.anims.map((a) => a.finished.catch(() => {})));
   }
   finish() {
+    hush();
     for (const a of this.anims) {
       try {
         a.finish();
@@ -141,6 +150,7 @@ export class Timeline {
     }
   }
   cancel() {
+    hush();
     for (const a of this.anims) a.cancel();
   }
 }

@@ -48,7 +48,8 @@
     "explorable",
     "concept-animation",
     "explain-diagram",
-    "visual-qa"
+    "visual-qa",
+    "course"
   ],
   "note": "Vendored skills are byte copies of their sources. Edit them upstream and re-run scripts/vendor.py sync; scripts/vendor.py verify fails if a copy drifts.",
   "skills": {

@@ -3,7 +3,7 @@
  * coach's hand (Kalam) on quad-ruled paper with a red margin rule. Adapted from
  * the AskTheMove design system (praxstack/ChessLab, site/DESIGN.md).
  * Colour and type come only from these tokens. The default is light paper; the
- * chalkboard variant is opt-in with data-board="chalk" on <html>.
+ * chalkboard follows dark mode automatically (data-board="paper" or "chalk" on <html> pins one).
  */
 
 @font-face { font-family: "Vollkorn"; src: url("fonts/vollkorn-var.woff2") format("woff2"); font-weight: 400 900; font-display: swap; }
@@ -37,6 +37,8 @@
   --on-blue: oklch(99% 0.004 95);
   --shadow: oklch(23% 0.025 265 / 0.18);
   --focus: oklch(48% 0.2 264);
+  --hl-blend: multiply;
+  --stroke-grain: none;
 
   --font-book: "Vollkorn", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --font-hand: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
@@ -55,9 +57,10 @@
   --ease-stroke: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Chalkboard: the same voices on a dark slate, for night study or a lecture-hall feel. */
+/* Chalkboard: the same voices on a dark slate. It follows the viewer's theme
+ * automatically (dark system or host theme means chalk) unless the page sets
+ * data-board="paper" or data-board="chalk" on <html> to pin one. */
 :root[data-board="chalk"] {
-  color-scheme: dark;
   --paper: oklch(27% 0.025 165);
   --paper-2: oklch(31% 0.025 165);
   --card: oklch(30% 0.022 165);
@@ -79,6 +82,63 @@
   --on-blue: oklch(22% 0.02 165);
   --shadow: oklch(0% 0 0 / 0.35);
   --focus: oklch(85% 0.12 240);
+  --hl-blend: screen;
+  --stroke-grain: url(#nb-chalk);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-board="paper"]):not([data-theme="light"]) {
+  --paper: oklch(27% 0.025 165);
+  --paper-2: oklch(31% 0.025 165);
+  --card: oklch(30% 0.022 165);
+  --grid: oklch(60% 0.02 165 / 0.14);
+  --margin: oklch(70% 0.12 15 / 0.55);
+  --ink: oklch(95% 0.01 95);
+  --ink-2: oklch(84% 0.012 95);
+  --rule: oklch(50% 0.02 165);
+  --rule-soft: oklch(40% 0.02 165);
+  --graphite: oklch(80% 0.01 95);
+  --graphite-2: oklch(64% 0.01 95);
+  --red: oklch(76% 0.13 25);
+  --red-soft: oklch(36% 0.05 25);
+  --blue: oklch(82% 0.09 240);
+  --blue-soft: oklch(35% 0.04 240);
+  --green: oklch(84% 0.12 150);
+  --green-soft: oklch(34% 0.04 150);
+  --highlight: oklch(86% 0.14 100 / 0.38);
+  --on-blue: oklch(22% 0.02 165);
+  --shadow: oklch(0% 0 0 / 0.35);
+  --focus: oklch(85% 0.12 240);
+  --hl-blend: screen;
+  --stroke-grain: url(#nb-chalk);
+  color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]:not([data-board="paper"]) {
+  --paper: oklch(27% 0.025 165);
+  --paper-2: oklch(31% 0.025 165);
+  --card: oklch(30% 0.022 165);
+  --grid: oklch(60% 0.02 165 / 0.14);
+  --margin: oklch(70% 0.12 15 / 0.55);
+  --ink: oklch(95% 0.01 95);
+  --ink-2: oklch(84% 0.012 95);
+  --rule: oklch(50% 0.02 165);
+  --rule-soft: oklch(40% 0.02 165);
+  --graphite: oklch(80% 0.01 95);
+  --graphite-2: oklch(64% 0.01 95);
+  --red: oklch(76% 0.13 25);
+  --red-soft: oklch(36% 0.05 25);
+  --blue: oklch(82% 0.09 240);
+  --blue-soft: oklch(35% 0.04 240);
+  --green: oklch(84% 0.12 150);
+  --green-soft: oklch(34% 0.04 150);
+  --highlight: oklch(86% 0.14 100 / 0.38);
+  --on-blue: oklch(22% 0.02 165);
+  --shadow: oklch(0% 0 0 / 0.35);
+  --focus: oklch(85% 0.12 240);
+  --hl-blend: screen;
+  --stroke-grain: url(#nb-chalk);
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -172,26 +232,27 @@ button, input, select, textarea { font: inherit; color: inherit; accent-color: v
  * Tone classes say who holds the pen: blue explains, red marks a mistake, graphite works things out.
  */
 .ink-svg { overflow: visible; }
-.ink-svg .stroke, svg .stroke { fill: none; stroke: var(--red); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; }
+.ink-svg .stroke, svg .stroke { filter: var(--stroke-grain); fill: none; stroke: var(--red); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; }
 .tone-blue .stroke, .stroke.tone-blue { stroke: var(--blue); }
 .tone-red .stroke, .stroke.tone-red { stroke: var(--red); }
 .tone-graphite .stroke, .stroke.tone-graphite { stroke: var(--graphite); stroke-width: 1.8; }
 .tone-green .stroke, .stroke.tone-green { stroke: var(--green); }
-.tone-highlight .stroke, .stroke.tone-highlight { stroke: var(--highlight); stroke-width: 14; stroke-linecap: butt; mix-blend-mode: multiply; }
-:root[data-board="chalk"] .tone-highlight .stroke, :root[data-board="chalk"] .stroke.tone-highlight { mix-blend-mode: screen; }
+.tone-highlight .stroke, .stroke.tone-highlight { stroke: var(--highlight); stroke-width: 14; stroke-linecap: butt; mix-blend-mode: var(--hl-blend); }
 
 /* SVG text and shapes in the three voices, for figures. */
 svg .t-book { font-family: var(--font-book); fill: var(--ink); font-size: 17px; font-variant-numeric: lining-nums tabular-nums; }
-svg .t-hand { font-family: var(--font-hand); fill: var(--blue); font-size: 18px; }
+svg .t-hand { font-family: var(--font-hand); fill: var(--blue); font-size: 18px; filter: var(--stroke-grain); }
 svg .t-hand.is-red { fill: var(--red); }
 svg .t-hand.is-graphite { fill: var(--graphite); }
 svg .t-print { font-family: var(--font-print); fill: var(--graphite); font-size: 14px; }
-svg .f-paper { fill: var(--card); } svg .f-paper-2 { fill: var(--paper-2); }
-svg .f-ink { fill: var(--ink); } svg .f-blue { fill: var(--blue); } svg .f-red { fill: var(--red); } svg .f-green { fill: var(--green); }
-svg .f-blue-soft { fill: var(--blue-soft); } svg .f-red-soft { fill: var(--red-soft); } svg .f-green-soft { fill: var(--green-soft); } svg .f-hl { fill: var(--highlight); }
 svg .s-ink { stroke: var(--ink); fill: none; stroke-width: 1.5; } svg .s-rule { stroke: var(--rule); fill: none; }
 svg .s-blue { stroke: var(--blue); fill: none; stroke-width: 2; } svg .s-red { stroke: var(--red); fill: none; stroke-width: 2; }
 svg .s-graphite { stroke: var(--graphite); fill: none; stroke-width: 1.5; }
+/* Fills come after strokes: "f-paper s-ink" is a filled box with an ink outline,
+ * while "s-ink" alone stays unfilled. */
+svg .f-paper { fill: var(--card); } svg .f-paper-2 { fill: var(--paper-2); }
+svg .f-ink { fill: var(--ink); } svg .f-blue { fill: var(--blue); } svg .f-red { fill: var(--red); } svg .f-green { fill: var(--green); }
+svg .f-blue-soft { fill: var(--blue-soft); } svg .f-red-soft { fill: var(--red-soft); } svg .f-green-soft { fill: var(--green-soft); } svg .f-hl { fill: var(--highlight); }
 
 /* Written words: pen.js wraps words in .w and reveals them left to right. */
 .w { display: inline; }

@@ -30,6 +30,11 @@ ASSETS = HERE.parent / "assets"
 NOTEBOOK_CSS = ASSETS / "notebook.css"
 INK_JS = ASSETS / "ink.js"
 PEN_JS = ASSETS / "pen.js"
+SOUND_JS = ASSETS / "sound.js"
+PEN_SAMPLES_JS = ASSETS / "pen-samples.js"
+BOARD_JS = ASSETS / "board.js"
+# The notebook's modules in dependency order: put these before any engine.
+NOTEBOOK_MODULES = [INK_JS, PEN_SAMPLES_JS, SOUND_JS, BOARD_JS, PEN_JS]
 
 FONT_URL = re.compile(r"""url\(["']?([^"')]+\.woff2)["']?\)""")
 IMPORT_LINE = re.compile(r"^\s*import\s[^;]*;\s*$", re.M)
@@ -101,7 +106,7 @@ def main() -> int:
     ap.add_argument("-o", "--out", type=Path, required=True)
     args = ap.parse_args()
     body = args.body.read_text() if args.body else '<main id="app"></main>'
-    out = page(title=args.title, css=[NOTEBOOK_CSS, *args.css], modules=[INK_JS, PEN_JS, *args.module], scripts=args.script,
+    out = page(title=args.title, css=[NOTEBOOK_CSS, *args.css], modules=[*NOTEBOOK_MODULES, *args.module], scripts=args.script,
                body=body, fragment=args.fragment)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(out)

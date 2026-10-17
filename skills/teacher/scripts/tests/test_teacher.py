@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SKILLS = ROOT / "skills"
-NATIVE = ["lesson-notebook", "explorable", "concept-animation", "explain-diagram", "visual-qa"]
+NATIVE = ["lesson-notebook", "explorable", "concept-animation", "explain-diagram", "visual-qa", "course"]
 PY = sys.executable
 
 
@@ -55,6 +55,20 @@ class SkillFormat(unittest.TestCase):
             self.assertTrue(1 <= len(desc) <= 1024, f"{d.name}: description is {len(desc)} chars")
             self.assertNotRegex(desc, r"[<>]", d.name)
             self.assertLessEqual(set(fm), {"name", "description"}, d.name)
+
+    def test_frontmatter_is_valid_yaml(self):
+        # Hosts parse the header as YAML: an unquoted ": " in the description breaks it.
+        try:
+            import yaml
+        except ImportError:
+            self.skipTest("PyYAML not installed")
+        for d in self.skill_dirs():
+            head = (d / "SKILL.md").read_text().split("---")[1]
+            try:
+                data = yaml.safe_load(head)
+            except yaml.YAMLError as e:
+                self.fail(f"{d.name}: SKILL.md header is not valid YAML: {str(e).splitlines()[0]}")
+            self.assertEqual(data.get("name"), d.name)
 
     def test_length_and_layout(self):
         for d in self.skill_dirs():
@@ -137,6 +151,15 @@ class Scripts(unittest.TestCase):
     def test_vendor_verify(self):
         r = run(str(ROOT / "scripts/vendor.py"), "verify")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_pen_samples_are_embedded_and_fresh(self):
+        r = run(str(SKILLS / "lesson-notebook/scripts/make_pen_samples.py"), "--check")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        sounds = SKILLS / "lesson-notebook/assets/sounds"
+        notes = (sounds / "SOUNDS.md").read_text()
+        for f in sorted(sounds.glob("*.mp3")):
+            self.assertIn(f"`{f.name}`", notes, f"{f.name} needs a source and licence in SOUNDS.md")
+            self.assertLess(f.stat().st_size, 40_000, f"{f.name} is too big to embed in every lesson")
 
     def test_find_tool_ranks_bundled_first(self):
         r = run(str(ROOT / "scripts/find_tool.py"), "--job", "cause", "--json")
