@@ -71,11 +71,17 @@ def local_render(kind: str, src: str, hand: bool) -> str | None:
             inp.rename(mmd)
             cmd = ["mmdc", "-i", str(mmd), "-o", str(out), "-b", "transparent"]
         elif kind == "plantuml" and shutil.which("plantuml"):
-            res = subprocess.run(["plantuml", "-tsvg", "-pipe"], input=src, capture_output=True, text=True, check=True)
-            return res.stdout
+            res = subprocess.run(["plantuml", "-tsvg", "-pipe"], input=src, capture_output=True, text=True)
+            if res.returncode == 0 and res.stdout.strip():
+                return res.stdout
+            print(f"local plantuml failed: {res.stderr.strip()[:300]}", file=sys.stderr)
+            return None
         if not cmd:
             return None
-        subprocess.run(cmd, check=True, capture_output=True)
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        if res.returncode or not out.exists():
+            print(f"local {cmd[0]} failed: {(res.stderr or res.stdout).strip()[:300]}", file=sys.stderr)
+            return None  # let Kroki try, unless --offline
         return out.read_text()
 
 
@@ -107,13 +113,128 @@ def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str
     return kroki_render(kind, src, hand), "kroki"
 
 
+# Elements that can run code, load a page or take input. They never belong in a figure.
+BLOCKED_TAGS = {"script", "iframe", "frame", "frameset", "object", "embed", "applet", "meta", "link", "base",
+                "form", "input", "button", "textarea", "select", "handler", "listener",
+                # HTML raw-text elements: inside <foreignObject> they swallow markup up to their end tag.
+                "noscript", "xmp", "noembed", "noframes", "plaintext"}
+# Attributes that load a resource as soon as the page opens: only in-figure #references
+# and embedded raster images may stay. A link (<a href>) only navigates when clicked.
+RESOURCE_ATTRS = {"href", "xlink:href", "src", "action", "formaction", "data", "poster", "background"}
+# URL-list or legacy fetch attributes a figure never needs; checking only the first entry would
+# miss "data:image/png,... 1x, https://... 2x", so they are dropped outright.
+DROPPED_ATTRS = {"srcset", "imagesrcset", "ping", "archive", "codebase", "longdesc", "lowsrc", "dynsrc", "manifest", "icon"}
+ANIMATION_VALUE_ATTRS = {"to", "from", "by", "values"}
+ANIMATE_TAGS = {"set", "animate", "animatetransform", "animatemotion"}
+TAG_RE = re.compile(r"""<(/?)([A-Za-z][\w:.-]*)((?:[^<>"']|"[^"]*"|'[^']*')*)>|<""")
+ATTR_RE = re.compile(r"""([^\s=/>"']+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s>]+))?""")
+
+
+_EXTERNAL_URL = r"url\(\s*(?![\"']?\s*#)[^)]*\)"
+
+
+_CSS_FETCH = r"@import|image-set\(|expression\(|" + _EXTERNAL_URL
+
+
+def _css_decoded(text: str) -> str:
+    """Text as a browser reads it once HTML entities and CSS escapes are decoded: u\\72l( becomes url(."""
+    seen = html.unescape(text)
+    seen = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(min(int(m.group(1), 16), 0x10FFFF)), seen)
+    return re.sub(r"\\(.)", r"\1", seen, flags=re.S)
+
+
+def clean_css(css: str) -> str | None:
+    """CSS with every outside fetch removed, or None when it hides one we can't strip.
+
+    Inline SVG styles apply to the whole page, and @import, url() and image-set()
+    would let a figure make requests of its own. In-figure references (url(#id))
+    stay. CSS escapes and HTML entities are decoded only to check what is left.
+    """
+    css = re.sub(r"@import\b[^;]*;?", "", css, flags=re.I)
+    css = re.sub(_EXTERNAL_URL, "none", css, flags=re.I)
+    if re.search(_CSS_FETCH, _css_decoded(css), flags=re.I):
+        return None
+    return css
+
+
+def _unsafe_url(value: str, *, fetches: bool) -> bool:
+    """True for script URLs, for data: other than raster images, and, when the
+    attribute fetches on load, for anything but a #reference or embedded image."""
+    v = re.sub(r"[\x00-\x20]", "", html.unescape(value)).lower()
+    if v.startswith("data:"):
+        return not re.match(r"data:image/(png|jpe?g|gif|webp|avif)[;,]", v)
+    if v.startswith(("javascript:", "vbscript:")):
+        return True
+    return fetches and not (v == "" or v.startswith("#"))
+
+
+def _clean_tag(m: re.Match) -> str:
+    if m.group(2) is None:
+        return "&lt;"  # a "<" that doesn't start a well-formed tag stays text, whatever a browser would make of it
+    close, name, rest = m.group(1), m.group(2), m.group(3)
+    low = name.lower()
+    if low in BLOCKED_TAGS:
+        return ""
+    if close:
+        return f"</{name}>"
+    kept = []
+    for a in ATTR_RE.finditer(rest):
+        an, av = a.group(1), a.group(2)
+        aln = an.lower()
+        raw = av[1:-1] if av and av[0] in "\"'" else (av or "")
+        if aln.startswith("on") or aln in DROPPED_ATTRS:
+            continue
+        if low in ANIMATE_TAGS and aln == "attributename" and html.unescape(raw).strip().lower().endswith("href"):
+            return ""  # <set attributeName="href" to="javascript:..."> swaps in a link at run time
+        if aln in RESOURCE_ATTRS and _unsafe_url(raw, fetches=not (low == "a" and aln in ("href", "xlink:href"))):
+            continue
+        if aln in ANIMATION_VALUE_ATTRS and any(_unsafe_url(x, fetches=False) for x in raw.split(";")):
+            continue
+        if aln == "style":
+            css = clean_css(html.unescape(raw))
+            if css is None:
+                continue
+            kept.append(f' style="{html.escape(css, quote=True)}"')
+            continue
+        if re.search(_CSS_FETCH, _css_decoded(raw), flags=re.I):
+            continue  # fill="url(https://...)", filter="u\72l(...)", mask=, cursor= and friends
+        # Re-quote every value, so the browser reads exactly the attributes kept here. Escape
+        # < and > too: inside an HTML <title> or <noscript> the browser ignores quotes.
+        safe = raw.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+        kept.append(f" {an}" if av is None else f' {an}="{safe}"')
+    end = "/" if rest.rstrip().endswith("/") else ""
+    return f"<{name}{''.join(kept)}{end}>"
+
+
+def sanitize_svg(svg: str) -> str:
+    """Strip anything in an SVG that can run code before it is inlined into a lesson page.
+
+    Rendered and hand-supplied SVGs are both untrusted: drop comments, script-like
+    elements with their content, every on* handler (any quoting), executable URL
+    schemes (entity-encoded too) and animations that rewrite a link.
+    """
+    svg = re.sub(r"<!--.*?(-->|$)", "", svg, flags=re.S)
+    # Inline SVG has no raw-text elements: a "<" in CDATA or in CSS would be read
+    # as a tag. Turn CDATA into escaped text and escape "<" inside <style>.
+    svg = re.sub(r"<!\[CDATA\[(.*?)(\]\]>|$)", lambda m: html.escape(m.group(1), quote=False), svg, flags=re.S)
+    svg = re.sub(r"(<style\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>)(.*?)(?=</style\s*>|$)",
+                 lambda m: m.group(1) + html.escape(clean_css(html.unescape(m.group(2))) or "", quote=False), svg, flags=re.S | re.I)
+    for tag in ("script", "iframe", "object", "applet", "form", "textarea", "select", "button",
+                "noscript", "xmp", "noembed", "noframes"):
+        svg = re.sub(rf"<{tag}\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*?/>", "", svg, flags=re.I)
+        svg = re.sub(rf"<{tag}\b.*?</{tag}\s*>", "", svg, flags=re.S | re.I)
+    return TAG_RE.sub(_clean_tag, svg)
+
+
 def clean_svg(svg: str, title: str) -> str:
     svg = re.sub(r"<\?xml[^>]*>|<!DOCTYPE[^>]*>", "", svg).strip()
-    svg = re.sub(r"<script\b.*?</script>", "", svg, flags=re.S | re.I)
-    svg = re.sub(r"\son\w+=\"[^\"]*\"", "", svg)
+    svg = sanitize_svg(svg)
     # Give the figure a text alternative and let it scale with its column.
     svg = re.sub(r"<svg\b", f'<svg role="img" aria-label="{html.escape(title, quote=True)}"', svg, count=1)
-    svg = re.sub(r'(<svg\b[^>]*?)\s(width|height)="[^"]*"', r"\1", svg, count=2)
+    root = re.match(r"\s*<svg\b[^>]*>", svg)
+    if root:
+        head = re.sub(r'\s(width|height)="[^"]*"', "", root.group(0))
+        svg = head + svg[root.end():]
     return svg
 
 

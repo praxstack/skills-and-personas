@@ -18,7 +18,7 @@ courses/<id>/
   videos/<lesson-id>.mp4 optional narrated videos, with .vtt captions beside them
 ```
 
-Each `lessons[]` entry: `id`, `file`, `title`, `needs` (ids of lessons it builds on, which place it on the map), `minutes`, `summary` (the plain one- or two-sentence Quick explain).
+Each `lessons[]` entry: `id` (letters, digits, `-` and `_`; it becomes a file name), `file`, `title`, `needs` (ids of lessons it builds on, which place it on the map), `minutes`, `summary` (the plain one- or two-sentence Quick explain).
 
 ## Build and test
 

@@ -83,6 +83,7 @@ Human-readable dispatch map over `skills/<slug>/SKILL.md`. Frontmatter `triggers
 | [superimprove](superimprove/SKILL.md) | `improve this codebase`, `harden the codebase`, `fix all confirmed defects`, `overhaul this repo` |
 | [svg-logo-designer](svg-logo-designer/SKILL.md) | `design an SVG logo`, `brand mark`, `wordmark design`, `vector logo` |
 | [teach-pro-max](teach-pro-max/SKILL.md) | `teach me`, `build intuition`, `quiz me`, `Socratic guidance`, `resume my course` |
+| [teacher](teacher/SKILL.md) | `teach me visually`, `explain this visually`, `make a lesson`, `make an explainer video`, `I still don't get it`, `interactive lesson` |
 | [techtutor](techtutor/SKILL.md) | `explain X`, `how does X work`, `tutor me on`, `mock interview`, `intuition for` |
 | [testing](testing/SKILL.md) | `validate skills`, `test skills`, `skill health check`, `run conformance tests`, `run the tests`, `how are the tests`, `what's broken`, `daily test run` |
 | [transcribe-refiner](transcribe-refiner/SKILL.md) | `clean this transcript`, `refine captions`, `fix this transcript`, `clean up meeting notes` |

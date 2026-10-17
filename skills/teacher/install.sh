@@ -41,8 +41,9 @@ ALL="claude codex agents pi opencode gemini hermes cursor cline kilocode copilot
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --targets) TARGETS="${2//,/ }"; shift 2 ;;
-    --dir) DIR="$2"; shift 2 ;;
+    --targets|--dir)
+      case "${2-}" in ""|-*) echo "$1 needs a value" >&2; exit 2 ;; esac
+      if [ "$1" = --dir ]; then DIR="$2"; else TARGETS="${2//,/ }"; fi; shift 2 ;;
     --copy) MODE="copy"; shift ;;
     --with-subskills) SUBSKILLS=1; shift ;;
     --dry-run) DRY=1; shift ;;
@@ -55,15 +56,24 @@ done
 
 run() { if [ "$DRY" = 1 ]; then echo "would: $*"; else "$@"; fi; }
 
+ours() { # ours <source dir> <dest>: a link that resolves to this source, or a copy this script made
+  if [ -L "$2" ]; then
+    # A dangling link can't be traced back to us, so it counts as foreign (--force replaces it).
+    [ -e "$2" ] && [ "$(cd "$2" && pwd -P)" = "$(cd "$1" && pwd -P)" ]
+  else
+    [ -f "$2/.installed-by-teacher" ]
+  fi
+}
+
 place() { # place <source dir> <dest dir> <name>
   local src="$1" dest="$2/$3"
   if [ "$UNINSTALL" = 1 ]; then
-    if [ -L "$dest" ] || [ -f "$dest/.installed-by-teacher" ]; then run rm -rf "$dest"; echo "removed $dest"; fi
+    if ours "$src" "$dest"; then run rm -rf "$dest"; echo "removed $dest"; fi
     return
   fi
   if [ -e "$dest" ] || [ -L "$dest" ]; then
-    if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then echo "ok      $dest"; return; fi
-    if [ "$FORCE" != 1 ] && ! [ -f "$dest/.installed-by-teacher" ] && ! [ -L "$dest" ]; then
+    if [ "$MODE" != "copy" ] && [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then echo "ok      $dest"; return; fi
+    if [ "$FORCE" != 1 ] && ! ours "$src" "$dest"; then
       echo "skip    $dest (exists and isn't ours; --force replaces it)"; return
     fi
     run rm -rf "$dest"

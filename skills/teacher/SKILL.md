@@ -1,6 +1,6 @@
 ---
 name: teacher
-description: A standalone teacher for any subject at any level, from first intuition to deep technical understanding. It picks the medium that makes the idea click (hand-drawn diagrams, interactive explorables, scrubbable animations, narrated videos), finds and checks the best tool the host can run, changes the explanation, example or medium when the learner is still confused, and keeps exploring until the learner says they're satisfied. Runs a single session or a series with a consented journal, and coordinates other agents when the host supports it. Works in Claude Code, Codex, Pi, OpenCode, Gemini CLI, Cursor and any host that can read files and run commands.
+description: A standalone teacher for any subject at any level, from first intuition to deep technical understanding. It picks the medium that makes the idea click (hand-drawn diagrams, interactive explorables, scrubbable animations, narrated videos), finds and checks the best tool the host can run, changes the explanation, example or medium when the learner is still confused, and keeps exploring until the learner says they're satisfied. Runs a single session or a series with a consented journal, and coordinates other agents when the host supports it. Works in Claude Code, Codex, Pi, OpenCode, Gemini CLI, Hermes, Cursor and any host that can read files and run commands. Use when someone says "teach me", "explain this visually", "help me understand", "make a lesson", "I still don't get it" or asks for an explainer, animation or interactive lesson.
 ---
 
 # Teacher

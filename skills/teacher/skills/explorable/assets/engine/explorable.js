@@ -457,10 +457,16 @@ function finishStep(i) {
   if (next) next.disabled = false;
 }
 
+// A step's settings are the defaults plus every step's `set` up to it, so a
+// reload, a #step-N link or an outline jump shows the same figure (and the
+// same quiz answer) as walking there. Slider moves last until the step changes.
+const paramsAt = (i) => L.steps.slice(0, i + 1).reduce((acc, st) => Object.assign(acc, st.set || {}), { ...defaults });
+let paramsStep = null;
+
 function goStep(i, { focus = true } = {}) {
   S.step = Math.max(0, Math.min(L.steps.length - 1, i));
   const step = L.steps[S.step];
-  if (step.set) Object.assign(S.params, step.set);
+  if (paramsStep !== S.step) (S.params = paramsAt(S.step)), (paramsStep = S.step);
   persist();
   paintOutline();
   paintControls(step);
@@ -585,6 +591,9 @@ function filmView() {
   scenes.forEach((sc, i) => (!chapters.length || chapters.at(-1).name !== sc.chapter) && chapters.push({ name: sc.chapter, start: i }));
   const ffig = makeFigure();
   const params = { ...defaults };
+  // Each scene's values build on the scenes before it, exactly as the exported film does.
+  const full = [];
+  scenes.reduce((acc, sc) => (full.push({ ...acc, ...(sc.set || {}) }), { ...acc, ...(sc.set || {}) }), { ...defaults });
   const caption = h("p", { class: "xp-film-caption nb-hand", "aria-live": "polite" });
   const counter = h("span", { class: "nb-print" });
   const play = h("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Play" });
@@ -645,7 +654,7 @@ function filmView() {
     index = Math.max(0, Math.min(scenes.length - 1, i));
     paint();
     const sc = scenes[index];
-    const moving = tweenTo({ ...defaults, ...sc.set }, animate ? 900 / Number(speed.value) : 0, my);
+    const moving = tweenTo(full[index], animate ? 900 / Number(speed.value) : 0, my);
     if (!playing) return moving;
     await Promise.all([moving, speak(sc.say, my)]);
     if (my !== token || !playing) return;

@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,6 +33,11 @@ from pathlib import Path
 SPACING = [1, 3, 6]
 LEVELS = ["L0", "L1", "L2", "L3", "L4"]
 LEVEL_NAMES = {"L0": "intuition", "L1": "mechanism", "L2": "formal model", "L3": "edge cases and limits", "L4": "transfer"}
+
+
+def asked(point: dict, slot: int) -> bool:
+    """A due slot is covered once the point was asked in that session or any later one."""
+    return any(s >= slot for s in point["asked_in"])
 
 
 def now() -> str:
@@ -79,7 +83,7 @@ class Journal:
             for i, p in enumerate(t.get("recall", [])):
                 if p["demonstrated"]:
                     continue
-                nxt = next((d for d in p["due"] if d not in p["asked_in"]), None)
+                nxt = next((d for d in p["due"] if not asked(p, d)), None)
                 if nxt is not None and nxt <= self.session:
                     out.append((tid, i, p))
         return out
@@ -130,7 +134,7 @@ class Journal:
             if t.get("recall"):
                 out += ["", "Recall:"]
                 for p in t["recall"]:
-                    state = "demonstrated" if p["demonstrated"] else f"due in sessions {', '.join(str(x) for x in p['due'] if x not in p['asked_in'])}"
+                    state = "demonstrated" if p["demonstrated"] else f"due in sessions {', '.join(str(x) for x in p['due'] if not asked(p, x))}"
                     out.append(f"- {p['point']} ({state})")
             if t["status"] == "satisfied":
                 out += ["", f"Satisfied in session {t['satisfied_session']}: {t.get('satisfied_note') or 'the learner said so'}."]
@@ -189,8 +193,18 @@ def main() -> int:
     if a.cmd == "forget":
         if not a.yes:
             raise SystemExit("this deletes the journal; run again with --yes once the learner has confirmed")
-        shutil.rmtree(a.dir, ignore_errors=True)
-        print(f"deleted {a.dir}")
+        if not j.file.is_file():
+            raise SystemExit(f"no journal in {a.dir}; nothing deleted")
+        # Delete only the files this script writes, never the folder's other contents.
+        # journal.json goes last, so a forget that stops partway can be run again.
+        for f in (j.file.with_suffix(".tmp"), j.root / "JOURNAL.md", j.file):
+            f.unlink(missing_ok=True)
+        if j.root.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
+            try:
+                j.root.rmdir()
+            except OSError:
+                pass  # the folder holds other files; leave them alone
+        print(f"deleted the journal in {a.dir}")
         return 0
     j.need()
     if a.cmd == "resume":
@@ -238,6 +252,9 @@ def main() -> int:
             elif not a.right:
                 # A miss brings it back next session, then restarts the spacing.
                 p["due"] = sorted(set(p["asked_in"]) | {j.session + s for s in SPACING})
+            if not p["demonstrated"] and all(asked(p, d) for d in p["due"]):
+                # Asked late and not yet shown unaided: keep it coming back.
+                p["due"].append(j.session + SPACING[0])
             j.save()
             print("demonstrated" if p["demonstrated"] else "recorded")
     elif a.cmd in ("satisfied", "reopen", "park"):

@@ -1,6 +1,7 @@
 // The board: paper or chalkboard. By default it follows the viewer's theme
 // (dark means chalkboard); the learner can pin either one, and the choice is
-// remembered per page.
+// remembered for every page on this site. A lesson's own fallback is applied
+// but never saved, so it can't override another lesson's default.
 
 const BOARD_KEY = "notebook:board";
 const MODES = ["auto", "paper", "chalk"];
@@ -11,10 +12,14 @@ export function getBoard() {
   return b === "paper" || b === "chalk" ? b : "auto";
 }
 
-export function setBoard(mode) {
+function applyBoard(mode) {
   const root = document.documentElement;
   if (mode === "paper" || mode === "chalk") root.dataset.board = mode;
   else delete root.dataset.board;
+}
+
+export function setBoard(mode) {
+  applyBoard(mode);
   try {
     localStorage.setItem(BOARD_KEY, getBoard());
   } catch {
@@ -30,7 +35,7 @@ export function restoreBoard(fallback = "auto") {
   } catch {
     /* storage blocked */
   }
-  setBoard(MODES.includes(saved) ? saved : fallback);
+  applyBoard(MODES.includes(saved) ? saved : fallback);
 }
 
 /** A button that cycles auto, paper, chalk. */

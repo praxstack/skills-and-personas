@@ -193,6 +193,63 @@ class Scripts(unittest.TestCase):
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists())
 
+    def test_recall_asked_late_is_no_longer_due(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            run(s, "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            run(s, "thread", "add", "t", "--title", "T", "--level", "L1", cwd=Path(tmp))
+            run(s, "recall", "add", "t", "late point", cwd=Path(tmp))  # due in 2, 4, 7
+            run(s, "resume", cwd=Path(tmp))
+            run(s, "resume", cwd=Path(tmp))  # session 3: slot 2 was missed
+            run(s, "recall", "result", "t", "0", "--right", cwd=Path(tmp))  # asked, with help
+            self.assertNotIn("late point", run(s, "status", cwd=Path(tmp)).stdout, "asked in 3 covers the slot due in 2")
+            run(s, "resume", cwd=Path(tmp))  # session 4: the next slot is due
+            self.assertIn("late point", run(s, "status", cwd=Path(tmp)).stdout)
+            for _ in range(4):
+                run(s, "resume", cwd=Path(tmp))  # session 8: every slot (2, 4, 7) has passed
+            run(s, "recall", "result", "t", "0", "--right", cwd=Path(tmp))  # asked, with help again
+            run(s, "resume", cwd=Path(tmp))
+            self.assertIn("late point", run(s, "status", cwd=Path(tmp)).stdout, "not demonstrated yet, so it must come back")
+
+    def test_forget_only_deletes_the_journal(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            keep = Path(tmp) / "notes.txt"
+            keep.write_text("mine")
+            self.assertNotEqual(run(s, "--dir", ".", "forget", "--yes", cwd=Path(tmp)).returncode, 0, "no journal here")
+            self.assertTrue(keep.exists())
+            run(s, "--dir", ".", "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            self.assertEqual(run(s, "--dir", ".", "forget", "--yes", cwd=Path(tmp)).returncode, 0)
+            self.assertFalse((Path(tmp) / "journal.json").exists())
+            self.assertFalse((Path(tmp) / "JOURNAL.md").exists())
+            self.assertTrue(keep.exists(), "forget must not touch other files")
+            own = Path(tmp) / "mine"
+            own.mkdir()
+            run(s, "--dir", str(own), "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            run(s, "--dir", str(own), "forget", "--yes", cwd=Path(tmp))
+            self.assertTrue(own.is_dir(), "a --dir folder belongs to the caller")
+            run(s, "init", "--learner", "L", "--goal", "g", cwd=Path(tmp))
+            run(s, "forget", "--yes", cwd=Path(tmp))
+            self.assertFalse((Path(tmp) / ".teacher").exists(), "the default folder goes once empty")
+
+    def test_vendor_refuses_dirty_git_source(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import vendor  # type: ignore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            (root / "s").mkdir()
+            (root / "s/SKILL.md").write_text("a\n")
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root), "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x"], check=True)
+            self.assertFalse(vendor.git_dirty(root, "s"))
+            (root / "s/SKILL.md").write_text("edited\n")
+            self.assertTrue(vendor.git_dirty(root, "s"))
+            (root / ".gitignore").write_text("x.txt\n")
+            (root / "x.txt").write_text("not in HEAD\n")
+            self.assertTrue(vendor.git_dirty(root, "x.txt"), "an ignored file isn't HEAD's")
+
 
 class Builds(unittest.TestCase):
     def check_single_file(self, html: str):
@@ -220,6 +277,18 @@ class Builds(unittest.TestCase):
             self.assertEqual(r.returncode, 0, r.stderr)
             self.check_single_file(out.read_text())
 
+    def test_animation_includes_shared_scripts_first(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            shared = Path(tmp) / "model.js"
+            shared.write_text("window.SHARED_MODEL_MARKER = 1;\n")
+            out = Path(tmp) / "n.html"
+            r = run(str(SKILLS / "concept-animation/scripts/build.py"), str(SKILLS / "concept-animation/assets/examples/neuron.anim.js"),
+                    "-o", str(out), "--include", str(shared))
+            self.assertEqual(r.returncode, 0, r.stderr)
+            page = out.read_text()
+            self.assertIn("SHARED_MODEL_MARKER", page)
+            self.assertLess(page.index("SHARED_MODEL_MARKER"), page.index("window.ANIMATION"))
+
     def test_bundler_refuses_name_clash(self):
         sys.path.insert(0, str(SKILLS / "lesson-notebook/scripts"))
         import bundle  # type: ignore
@@ -243,6 +312,66 @@ class Builds(unittest.TestCase):
             self.assertNotIn("alert(1)", page)
             self.assertNotIn("onclick", page)
             self.assertIn('aria-label="A box"', page)
+
+    def test_diagram_sanitizer_strips_active_content(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        evil = ("<svg onload='a()'><!--><script>b()</script>--><svg/onload=c()>"
+                '<image href="x" onerror = "d()"/><a href="java&#x09;script:e()">t</a>'
+                "<a xlink:href=javascript:f()>t</a><set attributeName='href' to='javascript:g()'/>"
+                '<foreignObject><div><img src="x" onerror="h()"/><iframe src="javascript:i()"></iframe></div></foreignObject>'
+                "<SCRIPT>j()</SCRIPT><rect fill='#e33' data-x=\"ok\"/></svg>")
+        out = render.sanitize_svg(evil)
+        for bad in ("a()", "b()", "c()", "d()", "e()", "f()", "g()", "h()", "i()", "j()", "onload", "onerror", "javascript", "<script", "<iframe", "<set"):
+            self.assertNotIn(bad, out.lower() if bad.startswith("<") else out)
+        self.assertIn('<rect fill="#e33" data-x="ok"/>', out)
+        self.assertIn("<image/>", out, "a relative href would fetch on load")
+
+    def test_diagram_sanitizer_keeps_css_and_raster_data(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        out = render.sanitize_svg('<svg><style>/* a<b */ .n > rect{}</style><style><img onerror="x()"></style>'
+                                  '<![CDATA[<img onerror="y()">]]><image href="data:image/png,abc"/></svg>')
+        self.assertIn("/* a&lt;b */ .n &gt; rect{}</style>", out, "a < in CSS must not eat </style>")
+        self.assertNotIn("<img", out)
+        self.assertIn('<image href="data:image/png,abc"/>', out)
+
+    def test_diagram_sanitizer_blocks_css_fetches(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        out = render.sanitize_svg('<svg><style>@import url(http://e/a.css); .a{fill:url(#g);background:url("http://e/b")}</style>'
+                                  '<style>.b{background:u\\72l(http://e/c)}</style><style>@&#105;mport "d.css";</style>'
+                                  '<rect style="fill:red;background:url(//e/f)"/></svg>')
+        self.assertNotRegex(out, r"e/[a-f]")
+        self.assertIn("fill:url(#g)", out, "in-figure references stay")
+        self.assertIn('style="fill:red;background:none"', out)
+
+    def test_diagram_sanitizer_blocks_resource_fetches(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        out = render.sanitize_svg('<svg><image href="https://e/a.png"/><feImage xlink:href="http://127.0.0.1/b"/><use href="c.svg#n"/>'
+                                  '<rect filter="url(http://e/d)"/><rect filter="u\\72l(http://e/d2)"/><rect mask="&#117;rl(http://e/d3)"/><foreignObject><img src="http://e/f"/></foreignObject>'
+                                  '<use href="#n"/><rect fill="url(#g)"/><image href="data:image/png;base64,AA"/>'
+                                  '<a href="https://ok.example/" ping="https://e/g">a link</a><animate attributeName="fill" values="red;blue"/>'
+                                  '<foreignObject><img srcset="data:image/png;base64,AA 1x, https://e/h 2x"/></foreignObject></svg>')
+        self.assertNotRegex(out, r"e/[a-h]|127\.0\.0\.1|c\.svg|srcset|ping")
+        for kept in ('<use href="#n"/>', '<rect fill="url(#g)"/>', 'data:image/png;base64,AA', 'href="https://ok.example/"', 'values="red;blue"'):
+            self.assertIn(kept, out)
+
+    def test_diagram_sanitizer_escapes_markup_in_values(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        # Inside <foreignObject> an HTML <title> ends at the first </title>, quotes or not.
+        out = render.sanitize_svg('<svg><foreignObject><title><p title="</title><img src=x onerror=alert(1)>"></p></title>'
+                                  '<noscript><b>x</b></noscript><xmp>y</xmp><plaintext></foreignObject></svg>')
+        self.assertNotIn("<img", out)
+        self.assertEqual(out.count("</title>"), 1, "the only </title> is the real end tag")
+        self.assertNotRegex(out, r"(?i)<(noscript|xmp|plaintext)")
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg not installed")

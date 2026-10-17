@@ -103,8 +103,30 @@ def git_files(root: Path, rel: str) -> list[str] | None:
     return sorted(f for f in out.split("\0") if f and (root / f).is_file() and not (root / f).is_symlink())
 
 
+def git_dirty(root: Path, rel: str) -> bool:
+    """True when rel in a git source differs from HEAD: uncommitted, untracked or ignored.
+
+    The manifest attributes the copy to HEAD, so the bytes copied must be HEAD's.
+    """
+    if git_head(root) is None:
+        return False
+    out = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain", "--untracked-files=all", "--", rel], text=True)
+    if out.strip():
+        return True
+    # An ignored file shows up in neither status nor HEAD, so require it to be tracked.
+    return not subprocess.check_output(["git", "-C", str(root), "ls-files", "--", rel], text=True).strip()
+
+
 def sync(sources: dict[str, Path], only: list[str] | None) -> int:
     manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"skills": {}}
+    # Check every source before touching any copy, so a failure can't leave a
+    # copy replaced while VENDOR.json still records its old hash.
+    picked = [(n, k, r) for n, (k, r, *_) in ENTRIES.items() if (not only or n in only) and k in sources]
+    picked += [(d, k, r) for d, (k, r, *_) in FILES.items() if k in sources]
+    for label, key, rel in picked:
+        if git_dirty(sources[key], rel):
+            print(f"FAIL {label}: {sources[key] / rel} differs from HEAD (uncommitted, untracked or ignored); commit it first", file=sys.stderr)
+            return 1
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
         if only and name not in only:
             continue

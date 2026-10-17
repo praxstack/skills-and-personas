@@ -42,7 +42,7 @@ def main() -> int:
         if not lesson["file"].endswith(".lesson.js"):
             continue
         mp4 = out_dir / f"{lesson['id']}.mp4"
-        if mp4.exists() and not a.force:
+        if mp4.exists() and not (a.force or a.remux):
             print(f"skip {lesson['id']}: already made")
             continue
         with tempfile.TemporaryDirectory() as tmp:
