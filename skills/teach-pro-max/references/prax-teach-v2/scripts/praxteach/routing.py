@@ -40,7 +40,10 @@ DEMOTION_PATTERNS = (
     r"\bin\s+(?:one|two|three|five|\d+)\s+minutes?\b",
 )
 REQUEST_PREFIX = (
-    r"^(?:(?:can|could|would|will)\s+you\s+)?"
+    r"^(?:(?:please|quickly|briefly|kindly|just)\s+)*"
+    r"(?:(?:can|could|would|will)\s+you\s+|i\s+(?:need|want)\s+you\s+to\s+)?"
+    r"(?:(?:please|quickly|briefly|kindly|just)\s+)*"
+    r"(?:help\s+me\s+(?:to\s+)?)?"
     r"(?:(?:please|quickly|briefly|kindly|just)\s+)*"
 )
 ARTIFACT_CREATION_PATTERN = (
