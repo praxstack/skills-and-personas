@@ -3,10 +3,10 @@
   "source": {
     "repository_path": "skills/teach-pro-max/references/prax-teach-v2",
     "base_git_head": "930c112",
-    "git_head": "869bfd19cb881d9357d09036e7d5f7038a428708",
-    "git_tree": "b181d918e484ed1024d0245387ab7d04bbcfc850",
+    "git_head": "f312ff6bb7364ab1652f67faab08ae7210640303",
+    "git_tree": "e92190b33fe041710e397447ea4b4380c823bcbb",
     "tracked_file_count": 772,
-    "review_status": "2026-10-17 completion-v5 candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v5/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
+    "review_status": "2026-10-17 completion-v6 candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v6/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
   },
   "files": [
     {
@@ -61,27 +61,27 @@
     },
     {
       "path": "SKILL.html",
-      "sha256": "df3f26b10d336e19b63eb1f2ca5381f6ebf6c3aa73848911be23269c4df3f45f",
-      "bytes": 23761
+      "sha256": "db23a3a389f9851e49cc4f795177a4bbd53cb108da2b44c68d560b8f7894e912",
+      "bytes": 24137
     },
     {
       "path": "SKILL.md",
-      "sha256": "65e65b3173e7477957e951064d14e8b011206e540c4dd8a6910ac2e181f3cab6",
-      "bytes": 17281
+      "sha256": "41f373f0b019b8170a349015753dfa8507a396f7b11c31c2a77f8ff8b1d9198f",
+      "bytes": 17657
     },
     {
       "path": "STATUS.html",
-      "sha256": "1e70dfa00adcb2c7a8eea9c1ca26ea84cabed9870c64f2b6af11ce1bc943d073",
+      "sha256": "6feea641b646a7be7cbc827a1f2bd15ab3537b8abe1cf5940d1f83ce0c3f0cbd",
       "bytes": 22263
     },
     {
       "path": "STATUS.json",
-      "sha256": "802e3600024ee68dab1dddf537f6b3b9e73eb3de3b52ebab239460af9fb133b1",
+      "sha256": "c38e72a2a05ba06c891597a7b1ccf54a34cb05178573614619d688e9b8197d29",
       "bytes": 24740
     },
     {
       "path": "STATUS.md",
-      "sha256": "0c69cd568c8ca69f941dd58463c97a0995bedcbc5c6fa6117d56d9b6c2ab611f",
+      "sha256": "776085c0029f1b34e9f6a884b4cc2c620e1b20e9c08a8a87388bf61222eb6305",
       "bytes": 13156
     },
     {
@@ -3311,13 +3311,13 @@
     },
     {
       "path": "references/TEACHING-PROTOCOL.html",
-      "sha256": "97020e05a16f5dd5b1e138311f71801d7f46f9174972ad35942de39308efeb1c",
-      "bytes": 22200
+      "sha256": "6cc44ab47cf06899406ecd900862fccc8daf37ecdbc3eb3747850584436864c9",
+      "bytes": 23016
     },
     {
       "path": "references/TEACHING-PROTOCOL.md",
-      "sha256": "a3cfaffca3a777c316223a41110d41d31ea6653dbef5dd6a74643b0c6cc25501",
-      "bytes": 14032
+      "sha256": "dba54a7834825f324877f9ce9eb05a6046a9c321e7c62e4ec3536f68d5381c2b",
+      "bytes": 14842
     },
     {
       "path": "references/VISUAL-RUNTIME.html",
