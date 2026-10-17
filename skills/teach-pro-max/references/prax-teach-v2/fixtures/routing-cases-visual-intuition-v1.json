@@ -47,6 +47,51 @@
       "expected": {
         "mode": "lesson"
       }
+    },
+    {
+      "id": "edit-lesson-ordinary",
+      "request": "Please quickly edit this lesson",
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      }
+    },
+    {
+      "id": "course-scheduler-object",
+      "request": "Build me a course scheduler in Python",
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      }
+    },
+    {
+      "id": "nested-course-object",
+      "request": "Create a Python function that builds a course for beginners",
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false
+      }
+    },
+    {
+      "id": "course-topic-not-sequence",
+      "request": "Explain the word course",
+      "expected": {
+        "action": "teach",
+        "mode": "lesson",
+        "persistence": false
+      }
+    },
+    {
+      "id": "resume-learning",
+      "request": "Resume my networking course",
+      "expected": {
+        "action": "teach",
+        "mode": "course",
+        "persistence": "consent_required"
+      }
     }
   ]
 }

@@ -563,6 +563,23 @@ class TestRouting(CliTestCase):
         )
         self.assertEqual(quick["mode"], "quick")
 
+    def test_intent_precedence_contract(self) -> None:
+        for request, action, mode, persistence in (
+            ("Please quickly edit this lesson", "ordinary_task", None, False),
+            ("Build me a course scheduler in Python", "ordinary_task", None, False),
+            ("Create a Python function that builds a course for beginners", "ordinary_task", None, False),
+            ("Create a lesson on Python debugging", "teach", "lesson", False),
+            ("Explain the word course", "teach", "lesson", False),
+            ("Resume my networking course", "teach", "course", "consent_required"),
+            ("Delete this course; answer now", "answer_now", "quick", False),
+        ):
+            with self.subTest(request=request):
+                result = json.loads(self.run_cli("route", "--request", request).stdout)
+                self.assertEqual(result["action"], action)
+                self.assertEqual(result["mode"], mode)
+                self.assertEqual(result["persistence"], persistence)
+                self.assertTrue(result["reason"].strip())
+
     def test_route_uses_lightest_mode_and_honors_overrides(self) -> None:
         quick = json.loads(
             self.run_cli(

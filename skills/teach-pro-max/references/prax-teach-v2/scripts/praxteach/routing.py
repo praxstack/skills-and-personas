@@ -39,14 +39,29 @@ DEMOTION_PATTERNS = (
     r"\bin\s+(?:one|a|1)\s+sentence\b",
     r"\bin\s+(?:one|two|three|five|\d+)\s+minutes?\b",
 )
+REQUEST_PREFIX = (
+    r"^(?:(?:can|could|would|will)\s+you\s+)?"
+    r"(?:(?:please|quickly|briefly|kindly)\s+)*"
+)
+ARTIFACT_CREATION_PATTERN = (
+    REQUEST_PREFIX
+    + r"(?:create|build|make)\s+(?:me\s+)?(?:(?:a|an|the)\s+)?"
+    # A bounded noun phrase: do not cross a relative clause or preposition to
+    # find a teaching noun inside an engineering object's purpose.
+    + r"(?:(?!(?:a|an|the|that|which|who|to|for|on|about|with|in|and|or)\b)[\w-]+\s+){0,3}"
+    + r"(?P<artifact>course|curriculum|syllabus|lesson|tutorial)"
+    + r"(?=\s+(?:on|about|for|with|and)\b|[.?!,:;]|$)"
+)
 COURSE_PATTERNS = (
-    r"\bcourse\b",
-    r"\bcurriculum\b",
-    r"\bsyllabus\b",
+    REQUEST_PREFIX + r"continue\s+where\s+we\s+(?:left|stopped)\b",
+    REQUEST_PREFIX
+    + r"(?:resume|continue|start|begin|take)\s+(?:(?:my|our|a|an|the|this|that)\s+)?"
+    + r"(?:[\w-]+\s+){0,3}(?:course|curriculum|lesson|tutorial|learning|studies)\b",
+    r"^i\s+am\s+resuming(?:[:.!?]|$|\s+(?:my|our|the)\b)",
+)
+SEQUENCE_PATTERNS = (
     r"\b(?:multi|cross)[ -]?session\b",
     r"\bacross\s+sessions\b",
-    r"\bresum(?:e|ing)\b",
-    r"\bcontinue\s+where\s+we\s+(?:left|stopped)\b",
     r"\b(?:two|three|four|five|six|seven|eight|nine|ten|\d+)[ -]weeks?\b",
     r"\bover\s+(?:the\s+next\s+)?(?:week|weeks|month|months)\b",
 )
@@ -61,30 +76,21 @@ LESSON_PATTERNS = (
     r"\bwalk\s+me\s+through\b",
 )
 CONTENT_TASK_PATTERNS = (
-    r"^(?:(?:please|quickly)\s+)*(?:summarize|translate|proofread)\b",
-    r"^(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:quickly\s+)?(?:summarize|translate|proofread)\b",
+    REQUEST_PREFIX + r"(?:summarize|translate|proofread)\b",
     r"^what\s+version\b.*\binstalled\b",
 )
 ORDINARY_TASK_PATTERNS = (
     *CONTENT_TASK_PATTERNS,
-    r"^(?:(?:please|quickly)\s+)*(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
-    r"^(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:quickly\s+)?(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
+    REQUEST_PREFIX
+    + r"(?:add|apply|build|change|create|delete|deploy|edit|fix|implement|install|make|migrate|patch|refactor|remove|rename|run|ship|update|write)\b",
     r"\b(?:do|complete|perform)\s+(?:this|the)\s+(?:task|change|work)\b",
 )
-ENGINEERING_CONTEXT_PATTERNS = (
-    r"\b(?:api|bug|cli|code|codebase|command|component|database|file|function|implementation|library|method|migration|module|package|parser|pipeline|renderer|repository|repo|router|routing|scheduler|schema|script|sdk|server|test|tests|tool|type)\b",
-    r"\b(?:python|typescript|javascript|swift|rust|go|java|json|yaml|sql)\b",
-)
 EXPLICIT_TEACHING_INTENT_PATTERNS = (
-    r"\b(?:create|build|make)\b.*\b(?:lesson|tutorial)(?:\s+(?:on|about|for|with|and)\b|$)",
-    r"\b(?:create|build|make)\b.*\bcourse(?:\s+(?:on|about|for|with|and)\b|$)",
-    r"\b(?:create|build|make)\s+me\b.*\b(?:lesson|tutorial)\b",
     r"\bteach\s+me\b",
     r"\bhelp\s+me\s+(?:learn|understand|practice)\b",
     r"\bquiz\s+me\b",
     r"\btutor\s+me\b",
     r"\bi\s+want\s+to\s+learn\b",
-    r"\b(?:build|create|make)\s+me\s+(?:(?:a|an|the)\s+)?(?:[\w-]+\s+){0,3}course\b",
 )
 INTERACTIVE_VISUAL_PATTERNS = (
     r"\bmanipulat(?:e|ion)\b",
@@ -105,6 +111,13 @@ STATIC_VISUAL_PATTERNS = (
 
 def _matches(patterns: tuple[str, ...], request: str) -> bool:
     return any(re.search(pattern, request, flags=re.IGNORECASE) for pattern in patterns)
+
+
+def _teaching_artifact(request: str) -> str | None:
+    """Recognize the requested object of a teaching-artifact imperative."""
+
+    match = re.search(ARTIFACT_CREATION_PATTERN, request, flags=re.IGNORECASE)
+    return match.group("artifact").lower() if match else None
 
 
 def _runtime_lesson_binding(job: str) -> str | None:
@@ -483,13 +496,12 @@ def route_request(
             "persistence": persistence,
             "reason": f"Explicit {explicit_mode} mode request.",
         }
+    artifact = _teaching_artifact(normalized)
+    explicit_teaching = _matches(EXPLICIT_TEACHING_INTENT_PATTERNS, normalized)
     if (
         _matches(ORDINARY_TASK_PATTERNS, normalized)
-        and (
-            _matches(CONTENT_TASK_PATTERNS, normalized)
-            or _matches(ENGINEERING_CONTEXT_PATTERNS, normalized)
-        )
-        and not _matches(EXPLICIT_TEACHING_INTENT_PATTERNS, normalized)
+        and artifact is None
+        and not explicit_teaching
     ):
         return {
             "action": "ordinary_task",
@@ -504,7 +516,14 @@ def route_request(
             "persistence": False,
             "reason": "A short time or cognitive-load budget fits one direct explanation.",
         }
-    if _matches(COURSE_PATTERNS, normalized):
+    if (
+        artifact in {"course", "curriculum", "syllabus"}
+        or _matches(COURSE_PATTERNS, normalized)
+        or (
+            (explicit_teaching or artifact is not None)
+            and _matches(SEQUENCE_PATTERNS, normalized)
+        )
+    ):
         return {
             "action": "teach",
             "mode": "course",
@@ -517,15 +536,6 @@ def route_request(
             "mode": "lesson",
             "persistence": False,
             "reason": "Guided practice or transfer needs a bounded lesson sequence.",
-        }
-    if _matches(ORDINARY_TASK_PATTERNS, normalized) and not _matches(
-        EXPLICIT_TEACHING_INTENT_PATTERNS, normalized
-    ):
-        return {
-            "action": "ordinary_task",
-            "mode": None,
-            "persistence": False,
-            "reason": "The request asks for task completion rather than teaching.",
         }
     return {
         "action": "teach",
