@@ -3,10 +3,10 @@
   "source": {
     "repository_path": "skills/teach-pro-max/references/prax-teach-v2",
     "base_git_head": "930c112",
-    "git_head": "d29dd2cf3daa8b1d52457410e4e92203ae0edf73",
-    "git_tree": "26f89a0d33d8d5cc560be44d327e99bd48af03be",
-    "tracked_file_count": 771,
-    "review_status": "2026-10-17 completion candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v4/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
+    "git_head": "7e54ccc1ef49bf5469171e37288bb48c02826ce7",
+    "git_tree": "4b8ba79f2e0d310d5d60fbf2bb20ad63d128e462",
+    "tracked_file_count": 772,
+    "review_status": "2026-10-17 completion-v5 candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v5/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
   },
   "files": [
     {
@@ -61,13 +61,13 @@
     },
     {
       "path": "SKILL.html",
-      "sha256": "2679f82d7d78a379a1122616fb3988440d422c581b7cfa86a7001f50c12f754e",
-      "bytes": 23355
+      "sha256": "df3f26b10d336e19b63eb1f2ca5381f6ebf6c3aa73848911be23269c4df3f45f",
+      "bytes": 23761
     },
     {
       "path": "SKILL.md",
-      "sha256": "d7d2c067f2173fdb06ca8ac054c32e1cc5f92ad1638fb0dc821eac6fb7a38dd7",
-      "bytes": 16881
+      "sha256": "65e65b3173e7477957e951064d14e8b011206e540c4dd8a6910ac2e181f3cab6",
+      "bytes": 17281
     },
     {
       "path": "STATUS.html",
@@ -76,7 +76,7 @@
     },
     {
       "path": "STATUS.json",
-      "sha256": "0f6f5232b3b62492f2e1f9788c58d9200e079e9a172dcf9af11ba5fe168250d4",
+      "sha256": "3b350a8a33d6f7f4b625ab5c879ff37b340285bc6c411d02d669e22a4d65ffc2",
       "bytes": 24740
     },
     {
@@ -3311,13 +3311,13 @@
     },
     {
       "path": "references/TEACHING-PROTOCOL.html",
-      "sha256": "1208254da606185156e8ffc859b88ac058a7c829391091361991714aedaec5f0",
-      "bytes": 21607
+      "sha256": "97020e05a16f5dd5b1e138311f71801d7f46f9174972ad35942de39308efeb1c",
+      "bytes": 22200
     },
     {
       "path": "references/TEACHING-PROTOCOL.md",
-      "sha256": "d02f00783b13b93bfae933f4a2e976d9bdfb4e1c523b3f4688106c1752bd3930",
-      "bytes": 13445
+      "sha256": "a3cfaffca3a777c316223a41110d41d31ea6653dbef5dd6a74643b0c6cc25501",
+      "bytes": 14032
     },
     {
       "path": "references/VISUAL-RUNTIME.html",
@@ -3621,8 +3621,8 @@
     },
     {
       "path": "scripts/praxteach/routing.py",
-      "sha256": "dd447242ddf96f2bef789341fe700cbc2c10c53dafae2eb6e92caa052c32209f",
-      "bytes": 25345
+      "sha256": "bf0957dd1dba238ca0bc200561af3670b38ba2500eb5996583eddc98676270a8",
+      "bytes": 25335
     },
     {
       "path": "scripts/praxteach/scheduler.py",
@@ -3671,13 +3671,13 @@
     },
     {
       "path": "scripts/validate_workspace.py",
-      "sha256": "aafa0865008dfb77876d8cf0f9ca57d05aa2bbfa01f1de5beb7c63365a8d01c9",
-      "bytes": 166353
+      "sha256": "b8fd7b4988ff4ab6b1ddd6c8e5bb2d26607aeae1f4aebfa33c2fe0f0e309e6df",
+      "bytes": 166644
     },
     {
       "path": "scripts/verify.py",
-      "sha256": "97d73b719f00d55c1c7b402364aaf2716446c3591e4fb53a589120e390bd107f",
-      "bytes": 17471
+      "sha256": "b0178a2ad489e867ecf50797869e52c3ee067a33b1694c91dd7cf510c5af098c",
+      "bytes": 17487
     },
     {
       "path": "scripts/verify_visual_runtime.py",
@@ -3706,8 +3706,8 @@
     },
     {
       "path": "tests/test_continuity_cli.py",
-      "sha256": "96169223e2df0370fd12041fe58063946e004460bd57d1ef262025163ee775c4",
-      "bytes": 8612
+      "sha256": "8d40d0c79f5061b7ad395bfc2acd955eda225fb68de2a22d524afec413f70127",
+      "bytes": 8648
     },
     {
       "path": "tests/test_continuity_security.py",
@@ -3716,13 +3716,13 @@
     },
     {
       "path": "tests/test_core_cli.py",
-      "sha256": "9011dc2d1d6450bed3952eecf6f9e6352c1a2bec03fe8d50859b527fce684a50",
-      "bytes": 24602
+      "sha256": "02b959ed7e9de914bf3a19e958f85689943e403a93076115461babf4868c1573",
+      "bytes": 24839
     },
     {
       "path": "tests/test_current_evidence.py",
-      "sha256": "96989ec073c1e488329223255de72ea817582a7a4ea0acba5ee48c7c1627dafe",
-      "bytes": 13789
+      "sha256": "e962ff270371ba632da08fc0e7113540cee1352d73643cc24bdf20808540f5e9",
+      "bytes": 18650
     },
     {
       "path": "tests/test_evaluation_harness.py",
@@ -3766,8 +3766,8 @@
     },
     {
       "path": "tests/test_review_receipts.py",
-      "sha256": "6ac9618655b0be4c3dd0c86851a1fb3e0596ac0e62ae26b02da52420171a52dd",
-      "bytes": 10186
+      "sha256": "1778d60123649ee10a66358a64c4d707d97444ffea32e9553ecb727df3dc8efc",
+      "bytes": 10232
     },
     {
       "path": "tests/test_scheduler_cli.py",
@@ -3825,14 +3825,19 @@
       "bytes": 32878
     },
     {
+      "path": "tests/test_verify_environment.py",
+      "sha256": "f129ad5b4caec70663b710cfbb9e99673b299072b73b2f1889eaff4ed6bd32e8",
+      "bytes": 2370
+    },
+    {
       "path": "tests/test_visual_fixture_matrix.py",
       "sha256": "fb66f0d743a379a5643741b9ea83bc3e36cf82acd8619c1841b7aefd5bc8c412",
       "bytes": 4034
     },
     {
       "path": "tests/test_visual_intuition_policy_v1.py",
-      "sha256": "4f57b9c10ac56752ced6833c435b6f43da8a415fd7c769d3b2a3c98cb15ae354",
-      "bytes": 11019
+      "sha256": "1a120a555f80ce52a38ee5bfc6f36e7706fee6bcad9babf95626740e4a121f7a",
+      "bytes": 11342
     },
     {
       "path": "tests/test_visual_lab_pilot.py",
