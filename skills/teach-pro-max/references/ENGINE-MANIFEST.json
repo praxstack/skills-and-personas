@@ -3,10 +3,10 @@
   "source": {
     "repository_path": "skills/teach-pro-max/references/prax-teach-v2",
     "base_git_head": "930c112",
-    "git_head": "c5bad99ed666dcaee2e3b4b42f9780b731463fac",
-    "git_tree": "2ec2ae9cfaef6911518fa0d13c8cba2ab3d44b29",
-    "tracked_file_count": 772,
-    "review_status": "2026-10-17 completion candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v3/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
+    "git_head": "f1da1effb63f1c376431f9bb7278e7d78fe21eb8",
+    "git_tree": "9877c880a8b383d18722b0404c7398fd615daa64",
+    "tracked_file_count": 771,
+    "review_status": "2026-10-17 completion candidate; current acceptance and installation pending. Final decision belongs outside source at external completion-v4/ACCEPTANCE.json when established; retained historical receipts do not certify this candidate."
   },
   "files": [
     {
@@ -71,28 +71,23 @@
     },
     {
       "path": "STATUS.html",
-      "sha256": "ed2a163714a840f1f67c9c6227d32ef3da0dfe88fbf0f1ecf596cce7885968d0",
+      "sha256": "58616c17d348a0df374b51b6df4e40f62bbfb92ab1617479b2ac72994b9a4668",
       "bytes": 22263
     },
     {
       "path": "STATUS.json",
-      "sha256": "1e04a0a619d57a16231c20b4b88bfba1cdeffbbd9a0f7489245c1cc8fcab76cc",
+      "sha256": "6591e3c2b1db4da1efd32bf8659d673db1e300a73f2b41d337dad3529e1879db",
       "bytes": 24740
     },
     {
       "path": "STATUS.md",
-      "sha256": "78b661b48533ca9abb5e973ee0be7cc2800421f6e4a8ed4a31418b20bd389173",
+      "sha256": "e11653190f93d1048f98c58b903a9b3488a1ca9834390e11d51697f98a7d9363",
       "bytes": 13156
     },
     {
       "path": "agents/openai.yaml",
       "sha256": "bcddac32c64ad654baa0cbeaee47c1335f2330f81a57a212bacdb3a7f2bf20c0",
       "bytes": 206
-    },
-    {
-      "path": "assets/askthemove-teaching.css",
-      "sha256": "f7673d0d7da7396446955dcb087de0e23be6793d681731a5c3ef75bdbb45f241",
-      "bytes": 4391
     },
     {
       "path": "assets/visualization-router.png",
@@ -3166,23 +3161,23 @@
     },
     {
       "path": "references/ARTIFACT-CONTRACT.html",
-      "sha256": "eb502cd951089ab5ee79b25b08e7c190ced7e0ca22ee227e3fb2c6a0b070509e",
-      "bytes": 28197
+      "sha256": "b03648b9bba505afb1d0cbe7e61992b8079fdc5c5809e35d793d6d4977487ebe",
+      "bytes": 28228
     },
     {
       "path": "references/ARTIFACT-CONTRACT.md",
-      "sha256": "880025f5e70078560026e21d117891b2caea00f6f976e2984a0bb58d809dbf22",
-      "bytes": 19682
+      "sha256": "79d69b171fe8aae116f90ec152f407dfe33c004e89f61e8bfc9e8f3ec58363dd",
+      "bytes": 19713
     },
     {
       "path": "references/ASKTHEMOVE-PRESENTATION.html",
-      "sha256": "6f3da1d02ba1eefb9c38a5ed7ec9de9c9b4e7cd843f09007e15841aa9bcf2f17",
-      "bytes": 8921
+      "sha256": "2b46df2af77639910a32d2cccf5e7f7b10ab0d31b45880d09825a1f35bc6689e",
+      "bytes": 8976
     },
     {
       "path": "references/ASKTHEMOVE-PRESENTATION.md",
-      "sha256": "0f11aca83054051dd4560030bfab52d36e290ad2284545c6faa106ffed8166db",
-      "bytes": 2604
+      "sha256": "cd568d580c37f91422ca70e5a4279d0746f829bbe2eb57183a0b861167de8a38",
+      "bytes": 2648
     },
     {
       "path": "references/CAPABILITY-ADAPTIVE-EXECUTION.html",
@@ -3651,8 +3646,8 @@
     },
     {
       "path": "scripts/render_markdown.mjs",
-      "sha256": "c6b00bf2b08711b5b870f78ab4aba603b0ca06c5688d86fd269e20c04e453dd3",
-      "bytes": 24444
+      "sha256": "cf9dea2ac4b576496603ea34c40f25a6645795091887fb0dc4f11ed8017274ea",
+      "bytes": 28795
     },
     {
       "path": "scripts/review_payload.py",
@@ -3701,8 +3696,8 @@
     },
     {
       "path": "tests/render_markdown.test.mjs",
-      "sha256": "3ed21966a2d911415c710efc7bd4c271d9e3fe0f5c7498be15972d6b20b32a12",
-      "bytes": 17432
+      "sha256": "c023b62ca5b8418c25040072f6c93e78af638582880ab6ebef1cccea068b065e",
+      "bytes": 18796
     },
     {
       "path": "tests/test_build_package.py",
@@ -3771,8 +3766,8 @@
     },
     {
       "path": "tests/test_review_receipts.py",
-      "sha256": "a3f2cec50db52add5de86f6eaddda7bc8f463b76a3c68362ec67ddfef23ed7ee",
-      "bytes": 9250
+      "sha256": "6ac9618655b0be4c3dd0c86851a1fb3e0596ac0e62ae26b02da52420171a52dd",
+      "bytes": 10186
     },
     {
       "path": "tests/test_scheduler_cli.py",
