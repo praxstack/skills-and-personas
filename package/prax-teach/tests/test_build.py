@@ -96,3 +96,16 @@ def test_internal_crash_leaves_failed_report():
     finally:
         values.check_expectations = original
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_hyperframes_check_missing_count_fails():
+    """Review P2-8: a missing section or count is not zero."""
+    full = {"ok": True, **{k: {"errorCount": 0, "warningCount": 0} for k in build.HF_SECTIONS}}
+    assert build.hf_check_clean(full)[0]
+    no_section = {k: v for k, v in full.items() if k != "motion"}
+    renamed = {**full, "lint": {"errors": 0, "warningCount": 0}}
+    empty = {"ok": True}
+    for bad in (no_section, renamed, empty):
+        clean, _counts, why = build.hf_check_clean(bad)
+        assert not clean and "missing" in why, bad
+    assert not build.hf_check_clean({**full, "layout": {"errorCount": 0, "warningCount": 2}})[0]

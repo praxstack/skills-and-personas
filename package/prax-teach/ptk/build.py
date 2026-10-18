@@ -160,9 +160,32 @@ def build(lesson_path, only=None):
     return rep
 
 
+HF_SECTIONS = ("lint", "runtime", "layout", "contrast", "motion")
+
+
+def hf_check_clean(hf):
+    """AC-5.1: all five sections present, each with integer error and warning counts of 0 (review P2-8).
+    A missing section or count is a failure, never a zero."""
+    counts, missing = {}, []
+    for k in HF_SECTIONS:
+        sec = hf.get(k)
+        if not isinstance(sec, dict):
+            missing.append(k)
+            continue
+        counts[k] = {"errors": sec.get("errorCount"), "warnings": sec.get("warningCount")}
+        if not all(isinstance(v, int) and not isinstance(v, bool) for v in counts[k].values()):
+            missing.append(f"{k} counts")
+    nonzero = [k for k, c in counts.items() if c["errors"] or c["warnings"]]
+    clean = hf.get("ok") is True and not missing and not nonzero
+    why = "" if clean else "; ".join(filter(None, [f"missing: {missing}" if missing else "",
+                                                   f"errors or warnings in {nonzero}" if nonzero else "",
+                                                   "" if hf.get("ok") is True else "check not ok"]))
+    return clean, counts, why
+
+
 def _project_and_verify(lesson, build_dir, media, rep, go):
     from .project import ive, still, video
-    from .verify import isolation, visual
+    from .verify import frames, isolation, visual
     from .verify import media as media_gates
     gates, degraded = [], False
     timing = None
@@ -198,12 +221,10 @@ def _project_and_verify(lesson, build_dir, media, rep, go):
             hf = json.loads(chk.stdout)
         except json.JSONDecodeError:
             hf = {"ok": False, "raw": (chk.stdout or chk.stderr)[-2000:]}
-        counts = {k: {"errors": hf.get(k, {}).get("errorCount"), "warnings": hf.get(k, {}).get("warningCount")}
-                  for k in ("lint", "runtime", "layout", "contrast", "motion") if isinstance(hf.get(k), dict)}
-        clean = hf.get("ok") and all((c["errors"] or 0) == 0 and (c["warnings"] or 0) == 0 for c in counts.values())
+        clean, counts, why = hf_check_clean(hf)
         gates.append({"id": "video.hyperframes-check", "medium": "video", "status": "passed" if clean else "failed",
-                      "measured": {"exit": chk.code, "counts": counts, "sandboxed": True}, "reason": "" if clean else
-                      "hyperframes check reported errors or warnings"})
+                      "measured": {"exit": chk.code, "counts": counts, "sandboxed": True}, "reason": why})
+        gates.append(frames.scene_layout_gate(lesson, out, timing, lesson.sha256()))
         render_ok, log = True, ""
         try:
             mp4, log = video.finish(lesson, out, v["composition"])

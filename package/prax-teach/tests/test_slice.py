@@ -11,6 +11,7 @@ from ptk.verify import claims
 
 REQUIRED_GATES = {"values.expect", "values.still", "visual.still.layout", "visual.still.contrast", "visual.still.ocr",
                   "visual.still.fonts", "visual.still.alt-source", "visual.still.network", "video.hyperframes-check",
+                  "video.scene-layout",
                   "video.render-isolation", "values.video", "video.media", "video.sync", "video.no-answer-leak",
                   "values.ive", "ive.pause-state", "ive.no-answer-leak", "ive.controls", "ive.layout", "ive.fonts",
                   "ive.network", "claims.mapping", "claims.review", "claims.sensitivity"}
