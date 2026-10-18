@@ -50,10 +50,7 @@ class ContinuitySecurityTest(unittest.TestCase):
                     ("export", (str(self.directory / "unsafe.zip"),)),
                     ("delete", ("--all", "--dry-run")),
                 ):
-                    # v2.1 (plan/PROTECTED-MAP.md): a same-owner hard link is accepted with a warning, so the
-                    # linked "{}" is refused as an invalid record (6) instead of as a hard link (5). Nothing
-                    # is written through the link either way (checked below).
-                    self.call(command, *arguments, expected=6 if attack == "hardlink" else 5)
+                    self.call(command, *arguments, expected=5)
                 target.unlink()
                 self.assertEqual(outside.read_text(), "{}")
 

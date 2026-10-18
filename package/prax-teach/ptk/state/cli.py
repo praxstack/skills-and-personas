@@ -281,6 +281,13 @@ def build_parser() -> argparse.ArgumentParser:
     navigate.add_argument("--action", required=True)
     navigate.add_argument("--position", type=float)
     _add_timestamp(navigate)
+    rebind = subparsers.add_parser(
+        "rebind",
+        help="list state files written before learner bindings that have extra hard links; "
+        "with --confirm, copy each onto a fresh inode bound to this workspace",
+    )
+    rebind.add_argument("workspace")
+    rebind.add_argument("--confirm", action="store_true")
     ev = subparsers.add_parser("evidence", help="record independent evidence: what was seen, the gap, one next action")
     ev.add_argument("workspace")
     ev.add_argument("--session", required=True)
@@ -322,6 +329,10 @@ SCHEMA2_COMMANDS = {"snapshot", "migrate", "rollback", "grant-navigation", "revo
 def dispatch(args: argparse.Namespace) -> Any:
     if args.command in SCHEMA2_COMMANDS:
         return _dispatch_schema2(args)
+    if args.command == "rebind":
+        from .rebind import rebind_workspace
+
+        return rebind_workspace(args.workspace, confirm=args.confirm)
     if args.command == "init":
         if not args.consent:
             raise ConsentRequired(
@@ -538,7 +549,7 @@ def dispatch(args: argparse.Namespace) -> Any:
 
 
 def _format_link_warning(message, category, filename, lineno, line=None):
-    """One plain stderr line per accepted hard link (see io.link_count_ok); other warnings keep Python's format."""
+    """One plain stderr line per accepted hard link (see io.link_problem); other warnings keep Python's format."""
     if issubclass(category, HardlinkAccepted):
         return f"warning: {message}\n"
     return _python_formatwarning(message, category, filename, lineno, line)

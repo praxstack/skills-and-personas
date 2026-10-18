@@ -57,8 +57,8 @@ def golden(ws):
 
 @contextlib.contextmanager
 def hardlink_guard():
-    """Kept for callers: hard links made by macOS backup/versioning are accepted with a warning now
-    (PROTECTED-MAP, integration pass), so a hard-link refusal is a real failure and is not masked."""
+    """Kept for callers: a hard link macOS backup/versioning adds to a learner's own state file is accepted with a
+    warning (PROTECTED-MAP, D22.3), so a hard-link refusal is a real failure and is not masked."""
     yield
 
 
@@ -213,33 +213,200 @@ def test_ported_v2_suite():
     return {"ran": count}
 
 
-# ---------------------------------------------------------------- hard links (integration pass, PROTECTED-MAP)
+# ---------------------------------------------------------------- hard links (D22.3, PROTECTED-MAP)
+# Learner state binds content, not link counts. Each state file's inode carries its learner workspace binding
+# (an extended attribute stamped when the engine writes it), and the state directory carries the workspace's own.
+# A same-owner extra link is read, with a warning, only when the two match. Writes always replace onto a fresh inode.
 
-def test_hardlinked_state_file_accepted():
-    """macOS (backupd/revisiond) gives new files under ~/Developer and the C study workspace a second link within
-    seconds. A regular state file owned by this user with st_nlink > 1 is now read, with a warning, instead of
-    refused: `show` succeeds and prints the same projection as with one link."""
-    parent, ws = materialize("link-")
+
+def _need_bindings(path):
+    from ptk.state import io as sio
+    supported = getattr(sio, "bindings_supported", None)
+    if supported is not None and not supported(path):
+        raise NotRun("this filesystem has no extended attributes: hard-linked state is refused outright (v2 rule)")
+
+
+def _learners_parent(prefix):
+    root = host.state_path("learners")
+    root.mkdir(exist_ok=True)
+    os.chmod(root, 0o700)
+    return Path(tempfile.mkdtemp(prefix=prefix, dir=root)).resolve()
+
+
+def _init(ws, learner="kai"):
+    res = state_cli("init", str(ws), "--learner-id", learner, "--goal", "Trace a switch statement", "--consent",
+                    "--timestamp", "2026-08-07T08:00:00Z")
+    assert res.code == 0, res.stderr
+
+
+def _evidence(ws, observed, minute):
+    res = state_cli("evidence", str(ws), "--session", "s1", "--concept", "switch-fallthrough", "--observed",
+                    observed, "--gap", "default placement", "--next-action", "trace a switch with default first",
+                    "--timestamp", f"2026-08-07T09:{minute:02d}:00Z")
+    assert res.code == 0, res.stderr
+
+
+def test_cross_learner_hardlink_refused():
+    """Learner B's sessions.jsonl hard-linked into learner A's workspace (both learners even share a learner id):
+    show and export refuse with exit 5, no export file is written, and B's file is unchanged."""
+    parent = _learners_parent("xlink-")
     try:
+        _need_bindings(parent)
+        a, b = parent / "a", parent / "b"
+        _init(a)
+        _init(b)
+        _evidence(b, "B traced case 2 alone: a secret only B's workspace holds", 1)
+        before = (b / "state" / "sessions.jsonl").read_bytes()
+        (a / "state" / "sessions.jsonl").unlink()
+        os.link(b / "state" / "sessions.jsonl", a / "state" / "sessions.jsonl")
+        shown = state_cli("show", str(a))
+        assert shown.code == 5, (shown.code, shown.stdout[:300], shown.stderr)
+        assert "hardlink" in shown.stderr.lower() and "another learner" in shown.stderr, shown.stderr
+        assert "secret" not in shown.stdout
+        leak = parent / "leak.zip"
+        exported = state_cli("export", str(a), str(leak), "--timestamp", "2026-08-07T10:00:00Z")
+        assert exported.code == 5, (exported.code, exported.stderr)
+        assert not leak.exists(), "learner B's state was exported from learner A's workspace"
+        assert (b / "state" / "sessions.jsonl").read_bytes() == before
+        # the same holds for the workspace lock: B's lock linked into A is refused before A opens it
+        (a / "state" / "sessions.jsonl").unlink()
+        shutil.copyfile(b / "state" / "sessions.jsonl", a / "state" / "sessions.jsonl")
+        os.chmod(a / "state" / "sessions.jsonl", 0o600)
+        (a / ".prax-teach.lock").unlink(missing_ok=True)
+        os.link(b / ".prax-teach.lock", a / ".prax-teach.lock")
+        locked = state_cli("show", str(a))
+        assert locked.code == 5 and "hardlink" in locked.stderr.lower(), (locked.code, locked.stderr)
+        return {"show": shown.stderr.strip()[:160], "lock": locked.stderr.strip()[:160]}
+    finally:
+        shutil.rmtree(parent)
+
+
+def test_backup_link_to_own_file_reads_with_warning():
+    """A backup-style extra link (what macOS backupd/revisiond add) to a learner's own state file and lock is read:
+    show succeeds and prints one warning naming the file."""
+    parent = _learners_parent("blink-")
+    try:
+        _need_bindings(parent)
+        ws = parent / "learner"
+        _init(ws)
+        _evidence(ws, "traced case 2 to the end unaided", 1)
+        clean = state_cli("show", str(ws))
+        assert clean.code == 0, clean.stderr
+        os.link(ws / "state" / "sessions.jsonl", parent / "backup-sessions.jsonl")
+        os.link(ws / ".prax-teach.lock", parent / "backup-lock")
+        shown = state_cli("show", str(ws))
+        assert shown.code == 0, shown.stderr
+        assert json.loads(shown.stdout) == json.loads(clean.stdout)
+        assert "hard link" in shown.stderr.lower() and "sessions.jsonl" in shown.stderr, shown.stderr
+        return {"warning": shown.stderr.strip()[:200]}
+    finally:
+        shutil.rmtree(parent)
+
+
+def test_write_never_goes_through_an_alias():
+    """After a write, an outside alias of the old file still holds the old bytes, and the workspace file is a new
+    inode: writes replace onto a fresh inode and never write through a link."""
+    parent = _learners_parent("wlink-")
+    try:
+        _need_bindings(parent)
+        ws = parent / "learner"
+        _init(ws)
+        _evidence(ws, "traced case 2 to the end unaided", 1)
+        live = ws / "state" / "sessions.jsonl"
+        alias = parent / "alias-sessions.jsonl"
+        os.link(live, alias)
+        old_bytes, old_inode = alias.read_bytes(), alias.stat().st_ino
+        _evidence(ws, "traced case 3 to the end unaided", 2)
+        assert alias.read_bytes() == old_bytes, "a state write went through an outside alias"
+        assert live.stat().st_ino != old_inode, "the state write reused the aliased inode"
+        assert len(live.read_bytes()) > len(old_bytes)
+        return {"old_inode": old_inode, "new_inode": live.stat().st_ino}
+    finally:
+        shutil.rmtree(parent)
+
+
+
+def test_backup_link_to_delete_journal_recovers():
+    """The full-deletion journal sits beside the workspace, outside every state directory. Its content names the
+    exact workspace it deletes, so a backup link to it is read when the engine stamped it: a confirmed deletion
+    that was interrupted still finishes when the name is reused."""
+    from unittest import mock
+    from ptk.state import state as state_module
+    parent = _learners_parent("jlink-")
+    try:
+        _need_bindings(parent)
+        ws = parent / "course"
+        _init(ws)
+        _evidence(ws, "traced case 2 to the end unaided", 1)
+
+        def partially_remove(descriptor):
+            os.unlink("state/sessions.jsonl", dir_fd=descriptor)
+            raise OSError("injected partial recursive deletion")
+
+        with mock.patch.object(state_module, "_remove_directory_contents", side_effect=partially_remove):
+            try:
+                state_module.delete_workspace(str(ws), dry_run=False, confirm=True)
+            except OSError as e:
+                assert "partial recursive deletion" in str(e)
+            else:
+                raise AssertionError("the injected partial deletion did not fail")
+        journal = next(parent.glob(".course*transaction*"))
+        os.link(journal, parent / "backup-journal")
+        again = state_cli("init", str(ws), "--learner-id", "kai", "--goal", "Trace a switch statement", "--consent",
+                          "--timestamp", "2026-08-07T11:00:00Z")
+        assert again.code == 0, again.stderr
+        assert not journal.exists() and not (parent / ".course.prax-teach-deleting").exists()
+        return {"journal": journal.name}
+    finally:
+        shutil.rmtree(parent)
+
+def test_legacy_unbound_state_migrates():
+    """Files written by older code carry no binding. With one link they are read and stamped (adopted) on the first
+    command; an unbound file with an extra link is refused until `rebind --confirm` copies it onto a fresh,
+    bound inode."""
+    parent, ws = materialize("legacy-")
+    try:
+        _need_bindings(parent)
         g = golden(ws)
-        extra = parent / "backup-link-sessions.jsonl"
-        os.link(ws / "state" / "sessions.jsonl", extra)
-        lock = ws / ".prax-teach.lock"
-        if lock.exists():
-            os.link(lock, parent / "backup-link-lock")
-        assert (ws / "state" / "sessions.jsonl").stat().st_nlink >= 2
-        show = state_cli("show", str(ws))
-        assert show.code == 0, show.stderr
-        assert json.loads(show.stdout) == g["show"]
-        assert "hard link" in show.stderr.lower() and "sessions.jsonl" in show.stderr, show.stderr
-        return {"nlink": (ws / "state" / "sessions.jsonl").stat().st_nlink, "warning": show.stderr.strip()[:200]}
+        before = digests(ws)
+        # (1) adoption: one link, read normally, bytes unchanged; an extra link afterwards is a backup link
+        first = state_cli("show", str(ws))
+        assert first.code == 0, first.stderr
+        assert digests(ws) == before, "adopting legacy state changed its bytes"
+        os.link(ws / "state" / "sessions.jsonl", parent / "backup-link-sessions.jsonl")
+        shown = state_cli("show", str(ws))
+        assert shown.code == 0, shown.stderr
+        assert json.loads(shown.stdout) == g["show"]
+        assert "hard link" in shown.stderr.lower() and "sessions.jsonl" in shown.stderr, shown.stderr
+        # (2) an unbound file that already has an extra link is refused, and rebind is the explicit way out
+        from ptk.state import io as sio
+        concepts = ws / "state" / "concepts.json"
+        fresh = concepts.with_name("concepts.fresh")
+        shutil.copyfile(concepts, fresh)
+        os.chmod(fresh, 0o600)
+        os.replace(fresh, concepts)
+        assert sio.read_binding(concepts) is None
+        os.link(concepts, parent / "old-link-concepts.json")
+        refused = state_cli("show", str(ws))
+        assert refused.code == 5 and "rebind" in refused.stderr, (refused.code, refused.stderr)
+        dry = state_cli("rebind", str(ws))
+        assert dry.code == 4 and "state/concepts.json" in dry.stderr, (dry.code, dry.stderr)
+        done = state_cli("rebind", str(ws), "--confirm")
+        assert done.code == 0, done.stderr
+        # MISSION.md and RESOURCES.md are listed too when macOS backup has linked them already
+        assert "state/concepts.json" in json.loads(done.stdout)["rebound"], done.stdout
+        assert (parent / "old-link-concepts.json").stat().st_nlink == 1, "rebind wrote through the old link"
+        assert digests(ws) == before, "rebind changed state bytes"
+        again = state_cli("show", str(ws))
+        assert again.code == 0 and json.loads(again.stdout) == g["show"], again.stderr
+        return {"refused": refused.stderr.strip()[:200]}
     finally:
         shutil.rmtree(parent)
 
 
 def test_symlinked_and_foreign_state_refused():
     """Still refused: a symlinked state file, a hard-linked state file owned by someone else (simulated with a
-    patched os.geteuid), and a non-regular file."""
+    patched os.geteuid), and a non-regular file. A bound extra link owned by this user is accepted with a warning."""
     import warnings
     from unittest import mock
     from ptk.state import io as sio
@@ -247,6 +414,8 @@ def test_symlinked_and_foreign_state_refused():
     out = {}
     parent, ws = materialize("link-neg-")
     try:
+        _need_bindings(parent)
+        assert sio.secure_workspace(ws) == ws.resolve()  # adopts the one-link legacy files
         target = ws / "state" / "learner.json"
         os.link(target, parent / "other-link")
         real_uid = target.stat().st_uid

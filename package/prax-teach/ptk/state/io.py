@@ -8,14 +8,17 @@ platform exposes ``O_NOFOLLOW``, and replaced atomically after an fsync.
 from __future__ import annotations
 
 import contextlib
+import ctypes
 import errno
+import functools
 import hashlib
 import json
 import os
 import stat
+import sys
 import uuid
 import warnings
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextvars import ContextVar
 from dataclasses import dataclass
 from pathlib import Path, PurePath
@@ -38,39 +41,269 @@ REQUIRED_STATE_FILES = (
 
 
 class HardlinkAccepted(UserWarning):
-    """A state file had more than one hard link and was accepted (see link_count_ok)."""
+    """A state file had more than one hard link and was read because it carries this workspace's binding."""
 
 
-def link_count_ok(entry: os.stat_result, label: str) -> bool:
-    """Changed protected behaviour (v2.1 integration pass, plan/PROTECTED-MAP.md).
-
-    v2 refused any state file with st_nlink != 1. On macOS, backupd/revisiond give new files under
-    ~/Developer and the C study workspace a second link within seconds, so learner-state writes failed
-    intermittently. A file with more than one link is now accepted only when it is a regular file
-    (never a symlink, device, FIFO or directory) owned by the effective user; every open still uses
-    O_NOFOLLOW and the private-mode checks still apply. Each acceptance raises a HardlinkAccepted warning.
-    """
-    if entry.st_nlink == 1:
-        return True
-    if stat.S_ISLNK(entry.st_mode) or not stat.S_ISREG(entry.st_mode):
-        return False
-    geteuid = getattr(os, "geteuid", None)
-    if geteuid is None or entry.st_uid != geteuid():
-        return False
-    warnings.warn(
-        f"prax-teach state: {label} has {entry.st_nlink} hard links (macOS backup or "
-        "versioning adds them); accepted because it is a regular file you own",
-        HardlinkAccepted,
-        stacklevel=2,
+# Learner binding (D22.3, plan/PROTECTED-MAP.md): learner state binds content, not link counts.
+#
+# v2 refused any state file with st_nlink != 1. On macOS, backupd/revisiond give new files under ~/Developer
+# and the C study workspace a second link within seconds, so that rule made learner-state writes fail at
+# random. Accepting any same-owner link instead (the round-15 integration pass) let learner B's state,
+# hard-linked into learner A's workspace, be read and exported as A's.
+#
+# Now each workspace's state directory carries a random learner binding ("lw-" + 32 hex), and every state
+# file the engine writes carries the same binding on its inode, stamped on the fresh temporary file before
+# it is renamed into place. Both live in the extended attribute below. A hard link shares its inode, so it
+# shares the binding: a backup link to this learner's own file carries this workspace's binding and is read
+# with a warning; a link to another learner's file carries the other binding and is refused. Directories
+# cannot be hard-linked, so the state directory's binding cannot be aliased the same way.
+#
+# Migration for files written by older code (no binding): a file with one link is read and stamped on the
+# first command that touches it (it has no other name, so it is this workspace's). An unbound file that
+# already has an extra link is refused; `python -m ptk.state rebind <workspace> --confirm` copies it onto a
+# fresh, bound inode after the learner has seen the list. Where the filesystem has no extended attributes
+# (some Linux tmpfs, Windows), nothing is bound and v2's rule applies: any extra link is refused.
+BINDING_ATTRIBUTE = "user.praxteach.learner"
+_BINDING_PREFIX = "lw-"
+_XATTR_NOFOLLOW = 0x0001  # macOS <sys/xattr.h>
+_XATTR_CREATE = 0x0002
+_XATTR_UNSUPPORTED = {
+    code
+    for code in (
+        getattr(errno, "ENOTSUP", None),
+        getattr(errno, "EOPNOTSUPP", None),
+        getattr(errno, "ENOSYS", None),
     )
+    if code is not None
+}
+_XATTR_ABSENT = {
+    code
+    for code in (getattr(errno, "ENODATA", None), getattr(errno, "ENOATTR", None))
+    if code is not None
+}
+_STAMP_DENIED = {errno.EACCES, errno.EPERM, errno.EROFS}
+ANY_BINDING = "*"
+
+
+class _NoExtendedAttributes(Exception):
+    """This platform or filesystem cannot store a learner binding."""
+
+
+@functools.lru_cache(maxsize=1)
+def _darwin_libc() -> Any:
+    library = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
+    for name, result in (
+        ("getxattr", ctypes.c_ssize_t),
+        ("fgetxattr", ctypes.c_ssize_t),
+        ("setxattr", ctypes.c_int),
+        ("fsetxattr", ctypes.c_int),
+    ):
+        function = getattr(library, name)
+        function.restype = result
+        first = ctypes.c_int if name.startswith("f") else ctypes.c_char_p
+        function.argtypes = [
+            first,
+            ctypes.c_char_p,
+            ctypes.c_void_p,
+            ctypes.c_size_t,
+            ctypes.c_uint32,
+            ctypes.c_int,
+        ]
+    return library
+
+
+def _xattr_error(exc: OSError) -> None:
+    if exc.errno in _XATTR_UNSUPPORTED:
+        raise _NoExtendedAttributes(str(exc)) from exc
+    raise exc
+
+
+def _xattr_read(target: int | Path) -> bytes | None:
+    """Read the binding attribute of an open descriptor or a no-follow path; None when absent."""
+
+    name = BINDING_ATTRIBUTE.encode()
+    try:
+        if hasattr(os, "getxattr"):
+            if isinstance(target, int):
+                return os.getxattr(target, BINDING_ATTRIBUTE)
+            return os.getxattr(os.fspath(target), BINDING_ATTRIBUTE, follow_symlinks=False)
+        if sys.platform != "darwin":
+            raise _NoExtendedAttributes("no extended-attribute interface on this platform")
+        library = _darwin_libc()
+        buffer = ctypes.create_string_buffer(256)
+        if isinstance(target, int):
+            size = library.fgetxattr(target, name, buffer, len(buffer), 0, 0)
+        else:
+            size = library.getxattr(
+                os.fsencode(target), name, buffer, len(buffer), 0, _XATTR_NOFOLLOW
+            )
+        if size < 0:
+            code = ctypes.get_errno()
+            raise OSError(code, os.strerror(code))
+        return buffer.raw[:size]
+    except OSError as exc:
+        if exc.errno in _XATTR_ABSENT:
+            return None
+        if exc.errno == errno.ERANGE:
+            return b""  # longer than any binding the engine writes: treated as foreign
+        _xattr_error(exc)
+        raise AssertionError("unreachable") from exc
+
+
+def _xattr_write(target: int | Path, value: bytes, *, create_only: bool) -> None:
+    try:
+        if hasattr(os, "setxattr"):
+            flags = os.XATTR_CREATE if create_only else 0
+            if isinstance(target, int):
+                os.setxattr(target, BINDING_ATTRIBUTE, value, flags)
+            else:
+                os.setxattr(
+                    os.fspath(target), BINDING_ATTRIBUTE, value, flags, follow_symlinks=False
+                )
+            return
+        if sys.platform != "darwin":
+            raise _NoExtendedAttributes("no extended-attribute interface on this platform")
+        library = _darwin_libc()
+        name = BINDING_ATTRIBUTE.encode()
+        options = _XATTR_CREATE if create_only else 0
+        if isinstance(target, int):
+            result = library.fsetxattr(target, name, value, len(value), 0, options)
+        else:
+            result = library.setxattr(
+                os.fsencode(target), name, value, len(value), 0, options | _XATTR_NOFOLLOW
+            )
+        if result != 0:
+            code = ctypes.get_errno()
+            raise OSError(code, os.strerror(code))
+    except OSError as exc:
+        _xattr_error(exc)
+
+
+def read_binding(target: int | str | os.PathLike[str]) -> str | None:
+    """The learner binding an inode carries (descriptor, or path without following a symlink)."""
+
+    try:
+        raw = _xattr_read(target if isinstance(target, int) else Path(target))
+    except _NoExtendedAttributes:
+        return None
+    if raw is None:
+        return None
+    try:
+        text = raw.decode("ascii")
+    except UnicodeDecodeError:
+        return "foreign"
+    return text if text else "foreign"
+
+
+def bindings_supported(path: str | os.PathLike[str]) -> bool:
+    """Whether the filesystem holding ``path`` can carry learner bindings."""
+
+    try:
+        _xattr_read(Path(path))
+    except _NoExtendedAttributes:
+        return False
     return True
 
 
-def link_refusal(entry: os.stat_result) -> str:
-    """Why link_count_ok refused, for error messages that still say 'hardlink'."""
+def ensure_binding(state_directory: int | Path) -> str | None:
+    """Return the state directory's learner binding, creating it once (race-safe) when absent.
+
+    None means the filesystem cannot carry one (or refuses the write), so only single-link files are read.
+    """
+
+    current = read_binding(state_directory)
+    if current is not None:
+        return current
+    try:
+        _xattr_write(
+            state_directory,
+            (_BINDING_PREFIX + uuid.uuid4().hex).encode("ascii"),
+            create_only=True,
+        )
+    except _NoExtendedAttributes:
+        return None
+    except OSError as exc:
+        if exc.errno == errno.EEXIST:
+            return read_binding(state_directory)
+        if exc.errno in _STAMP_DENIED:
+            return None
+        raise
+    return read_binding(state_directory)
+
+
+def stamp_binding(descriptor: int, binding: str | None) -> None:
+    """Stamp a freshly created (or single-link) file with this workspace's learner binding."""
+
+    if binding is None or binding == ANY_BINDING:
+        return
+    try:
+        _xattr_write(descriptor, binding.encode("ascii"), create_only=False)
+    except _NoExtendedAttributes:
+        return
+    except OSError as exc:
+        if exc.errno not in _STAMP_DENIED:
+            raise
+
+
+def adopt_single_link(descriptor: int, binding: str | None) -> None:
+    """Stamp an unbound file written by older code, but only while it has exactly one link."""
+
+    if binding is None or binding == ANY_BINDING:
+        return
+    opened = os.fstat(descriptor)
+    if opened.st_nlink == 1 and stat.S_ISREG(opened.st_mode) and read_binding(descriptor) is None:
+        stamp_binding(descriptor, binding)
+
+
+def link_problem(
+    entry: os.stat_result,
+    label: str,
+    *,
+    carried: Callable[[], str | None],
+    expected: str | None,
+) -> str | None:
+    """Why ``entry`` must be refused, or None (D22.3; see the comment above BINDING_ATTRIBUTE).
+
+    ``carried`` reads the inode's binding lazily. ``expected`` is the state directory's binding, or
+    ANY_BINDING where the content itself names the workspace (the full-deletion journal).
+    A single-link file is refused only when it carries another workspace's binding. A file with more
+    than one link must be a regular file this user owns that carries this workspace's binding; it is
+    then accepted with a HardlinkAccepted warning.
+    """
+
+    if entry.st_nlink == 1:
+        if not stat.S_ISREG(entry.st_mode) or expected is None or expected == ANY_BINDING:
+            return None
+        binding = carried()
+        if binding is not None and binding != expected:
+            return "is bound to another learner workspace"
+        return None
     if stat.S_ISLNK(entry.st_mode) or not stat.S_ISREG(entry.st_mode):
         return "is a hardlink and not a regular file"
-    return "is a hardlink owned by another user"
+    geteuid = getattr(os, "geteuid", None)
+    if geteuid is None or entry.st_uid != geteuid():
+        return "is a hardlink owned by another user"
+    if expected is None:
+        return (
+            "is a hardlink, and this workspace has no learner binding to check it against "
+            "(the filesystem cannot store one)"
+        )
+    binding = carried()
+    if binding is None:
+        return (
+            "is a hardlink that carries no learner binding (written by older code or not by prax-teach); "
+            "if it is this learner's own file, run `python -m ptk.state rebind <workspace>` to review and "
+            "copy it onto a fresh inode"
+        )
+    if expected != ANY_BINDING and binding != expected:
+        return "is a hardlink bound to another learner workspace"
+    warnings.warn(
+        f"prax-teach state: {label} has {entry.st_nlink} hard links (macOS backup or versioning adds "
+        "them); read because it carries this learner workspace's binding",
+        HardlinkAccepted,
+        stacklevel=2,
+    )
+    return None
 
 
 def canonical_json_bytes(value: Any) -> bytes:
@@ -405,12 +638,80 @@ class WorkspaceIoAnchor:
     state_descriptor: int
     state_device: int
     state_inode: int
+    binding: str | None = None
 
 
 _ACTIVE_WORKSPACE_IO: ContextVar[WorkspaceIoAnchor | None] = ContextVar(
     "prax_teach_active_workspace_io",
     default=None,
 )
+
+
+def _active_binding() -> str | None:
+    """The learner binding of the lock-held workspace, if any."""
+
+    anchor = _ACTIVE_WORKSPACE_IO.get()
+    return None if anchor is None else anchor.binding
+
+
+def _binding_for_parent(target: AnchoredFileTarget) -> str | None:
+    """Writes into the lock-held workspace or its state directory carry that workspace's binding."""
+
+    anchor = _ACTIVE_WORKSPACE_IO.get()
+    if anchor is None or target.parent_descriptor is None:
+        return None
+    if target.parent_descriptor in (anchor.workspace_descriptor, anchor.state_descriptor):
+        return anchor.binding
+    return None
+
+
+def _binding_for_path(path: Path) -> str | None:
+    """Binding for a write outside a lock scope: the state directory's, for a file in it or beside it."""
+
+    anchor = _ACTIVE_WORKSPACE_IO.get()
+    if anchor is not None:
+        try:
+            relative = path.relative_to(anchor.workspace)
+        except ValueError:
+            relative = None
+        if relative is not None and len(relative.parts) in (1, 2):
+            return anchor.binding
+    for candidate in (path.parent, path.parent / "state"):
+        if candidate.name != "state":
+            continue
+        try:
+            candidate_stat = candidate.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISDIR(candidate_stat.st_mode):
+            return read_binding(candidate)
+    return None
+
+
+def workspace_binding(workspace: Path) -> str | None:
+    """The learner binding of ``workspace``'s state directory (the held one when its lock is active)."""
+
+    anchor = _ACTIVE_WORKSPACE_IO.get()
+    if anchor is not None and anchor.workspace == workspace:
+        return anchor.binding
+    return read_binding(workspace / "state")
+
+
+def binding_at(directory_descriptor: int, name: str, entry: os.stat_result) -> str | None:
+    """Read the binding of the regular file ``name`` in a held directory, checking it is the inode in ``entry``."""
+
+    descriptor = os.open(
+        name,
+        _open_flags(os.O_RDONLY | getattr(os, "O_NONBLOCK", 0)),
+        dir_fd=directory_descriptor,
+    )
+    try:
+        opened = os.fstat(descriptor)
+        if (opened.st_dev, opened.st_ino) != (entry.st_dev, entry.st_ino):
+            raise SafetyError(f"{name} changed while its learner binding was read")
+        return read_binding(descriptor)
+    finally:
+        os.close(descriptor)
 
 
 def _active_target_for_path(path: str | os.PathLike[str]) -> AnchoredFileTarget | None:
@@ -526,8 +827,28 @@ def prepare_new_workspace(path: str | os.PathLike[str]) -> Path:
     raise ValidationError("workspace already exists; refusing to overwrite it")
 
 
-def secure_workspace(path: str | os.PathLike[str]) -> Path:
-    """Resolve and validate an initialized learner workspace."""
+def _adopt_by_path(path: Path, entry: os.stat_result, binding: str | None) -> None:
+    """Stamp a single-link, unbound regular file found by path (legacy migration; see BINDING_ATTRIBUTE)."""
+
+    if binding is None or entry.st_nlink != 1 or not stat.S_ISREG(entry.st_mode):
+        return
+    try:
+        descriptor = os.open(path, _open_flags(os.O_RDONLY | getattr(os, "O_NONBLOCK", 0)))
+    except FileNotFoundError:
+        return
+    try:
+        opened = os.fstat(descriptor)
+        if (opened.st_dev, opened.st_ino) == (entry.st_dev, entry.st_ino):
+            adopt_single_link(descriptor, binding)
+    finally:
+        os.close(descriptor)
+
+
+def secure_workspace(path: str | os.PathLike[str], *, check_bindings: bool = True) -> Path:
+    """Resolve and validate an initialized learner workspace.
+
+    ``check_bindings=False`` is only for ``rebind``, which reviews every binding problem itself under the lock.
+    """
 
     # Reuse the no-follow ancestor walk used for creation and export. Resolving
     # the whole caller-provided path here would silently accept a user-owned
@@ -557,6 +878,7 @@ def secure_workspace(path: str | os.PathLike[str]) -> Path:
         raise SafetyError("state directory must have a private permission mode")
     if state.resolve(strict=True).parent != workspace:
         raise SafetyError("state directory escapes the learner workspace")
+    binding = ensure_binding(state)
     for name in REQUIRED_STATE_FILES:
         required = state / name
         try:
@@ -571,15 +893,21 @@ def secure_workspace(path: str | os.PathLike[str]) -> Path:
             raise SafetyError(
                 f"required state path is not a regular file: state/{name}"
             )
-        if not link_count_ok(required_stat, f"state/{name}"):
-            raise SafetyError(
-                f"required state file must not be a hardlink: state/{name} "
-                f"{link_refusal(required_stat)}"
+        if check_bindings:
+            problem = link_problem(
+                required_stat,
+                f"state/{name}",
+                carried=lambda required=required: read_binding(required),
+                expected=binding,
             )
+            if problem is not None:
+                raise SafetyError(f"refusing required state file state/{name}: it {problem}")
         if stat.S_IMODE(required_stat.st_mode) & 0o077:
             raise SafetyError(
                 f"required state file must have a private permission mode: state/{name}"
             )
+        if check_bindings:
+            _adopt_by_path(required, required_stat, binding)
     return workspace
 
 
@@ -641,11 +969,7 @@ def read_bytes(workspace: Path, relative: str | Path) -> bytes:
             raise StateNotFound(
                 f"required state path is missing: {Path(relative).as_posix()}"
             )
-        if not link_count_ok(expected, Path(relative).as_posix()):
-            raise SafetyError(
-                f"state file must not be a hardlink: {Path(relative).as_posix()} "
-                f"{link_refusal(expected)}"
-            )
+        label = Path(relative).as_posix()
         descriptor = os.open(
             anchored.path.name,
             _open_flags(os.O_RDONLY),
@@ -658,6 +982,16 @@ def read_bytes(workspace: Path, relative: str | Path) -> bytes:
                 expected.st_ino,
             ):
                 raise SafetyError("state file changed during descriptor-relative open")
+            binding = _active_binding()
+            problem = link_problem(
+                opened,
+                label,
+                carried=lambda: read_binding(descriptor),
+                expected=binding,
+            )
+            if problem is not None:
+                raise SafetyError(f"refusing state file {label}: it {problem}")
+            adopt_single_link(descriptor, binding)
             with os.fdopen(descriptor, "rb", closefd=False) as handle:
                 data = handle.read()
         finally:
@@ -719,13 +1053,25 @@ def fsync_directory(directory: Path) -> None:
         os.close(descriptor)
 
 
-def atomic_write(path: Path, data: bytes, *, mode: int = PRIVATE_FILE_MODE) -> None:
-    """Atomically replace ``path`` with fully flushed bytes."""
+def atomic_write(
+    path: Path,
+    data: bytes,
+    *,
+    mode: int = PRIVATE_FILE_MODE,
+    binding: str | None = None,
+) -> None:
+    """Atomically replace ``path`` with fully flushed bytes.
+
+    Every write lands on a fresh inode (exclusive temporary file, fsync, rename over the name), so it never
+    goes through a hard link, and the new inode carries the workspace's learner binding before it is published.
+    """
 
     anchored = _active_target_for_path(path)
     if anchored is not None:
-        atomic_write_anchored(anchored, data, mode=mode)
+        atomic_write_anchored(anchored, data, mode=mode, binding=binding)
         return
+    if binding is None:
+        binding = _binding_for_path(path)
     parent = path.parent
     if path.is_symlink():
         raise SafetyError(f"refusing to replace symlink: {path.name}")
@@ -743,6 +1089,7 @@ def atomic_write(path: Path, data: bytes, *, mode: int = PRIVATE_FILE_MODE) -> N
             if written <= 0:
                 raise OSError("short write while persisting state")
             view = view[written:]
+        stamp_binding(descriptor, binding)
         os.fsync(descriptor)
         os.close(descriptor)
         descriptor = None
@@ -807,14 +1154,17 @@ def atomic_write_anchored(
     data: bytes,
     *,
     mode: int = PRIVATE_FILE_MODE,
+    binding: str | None = None,
 ) -> None:
-    """Atomically replace a file without reopening its POSIX parent by name."""
+    """Atomically replace a file without reopening its POSIX parent by name (fresh inode, bound; see atomic_write)."""
 
     _validate_anchored_parent(target)
     _validate_anchored_destination(target)
+    if binding is None:
+        binding = _binding_for_parent(target)
     if target.parent_descriptor is None:
         # Guarded native-Windows compatibility path; see ``anchored_file_target``.
-        atomic_write(target.path, data, mode=mode)
+        atomic_write(target.path, data, mode=mode, binding=binding)
         _validate_anchored_parent(target)
         return
 
@@ -834,6 +1184,7 @@ def atomic_write_anchored(
                 raise OSError("short write while persisting output")
             view = view[written:]
         os.fchmod(descriptor, mode)
+        stamp_binding(descriptor, binding)
         os.fsync(descriptor)
 
         # Detect a pathname-generation swap before publishing. The replacement
@@ -869,8 +1220,8 @@ def atomic_write_anchored(
             pass
 
 
-def atomic_write_json(path: Path, value: Any) -> None:
-    atomic_write(path, canonical_json_bytes(value))
+def atomic_write_json(path: Path, value: Any, *, binding: str | None = None) -> None:
+    atomic_write(path, canonical_json_bytes(value), binding=binding)
 
 
 def append_jsonl(workspace: Path, relative: str | Path, value: Any) -> None:
@@ -956,52 +1307,74 @@ def workspace_generation_lock(workspace: Path) -> Iterator[None]:
         os.close(descriptor)
 
 
+def _lock_problem(entry: os.stat_result, *, carried: Callable[[], str | None], binding: str | None) -> None:
+    if stat.S_ISLNK(entry.st_mode) or not stat.S_ISREG(entry.st_mode):
+        raise SafetyError("workspace lock must be a regular non-symlink file")
+    problem = link_problem(entry, "workspace lock", carried=carried, expected=binding)
+    if problem is not None:
+        raise SafetyError(f"refusing workspace lock: it {problem}")
+    if stat.S_IMODE(entry.st_mode) & 0o077:
+        raise SafetyError("workspace lock must have a private permission mode")
+
+
 @contextlib.contextmanager
 def _workspace_inode_lock(
     workspace: Path,
     *,
     expected_workspace: os.stat_result,
     expected_state: os.stat_result,
+    binding: str | None = None,
 ) -> Iterator[None]:
-    """Lock and revalidate one already generation-locked workspace."""
+    """Lock and revalidate one already generation-locked workspace.
+
+    A missing lock is created exclusively (a fresh inode carrying the learner binding). An existing lock is
+    checked by path before it is opened, so a lock hard-linked from elsewhere is never opened, and again on
+    the opened descriptor. The lock's bytes are never written on POSIX (flock only).
+    """
 
     lock_path = contained_path(workspace, LOCK_NAME)
+    descriptor: int | None = None
     try:
-        lock_stat = lock_path.lstat()
-    except FileNotFoundError:
-        lock_stat = None
-    if lock_stat is not None:
-        if stat.S_ISLNK(lock_stat.st_mode) or not stat.S_ISREG(lock_stat.st_mode):
-            raise SafetyError("workspace lock must be a regular non-symlink file")
-        if not link_count_ok(lock_stat, "workspace lock"):
-            raise SafetyError("workspace lock must not be a hardlink " + link_refusal(lock_stat))
-        if stat.S_IMODE(lock_stat.st_mode) & 0o077:
+        descriptor = os.open(
+            lock_path,
+            _open_flags(os.O_RDWR | os.O_CREAT | os.O_EXCL),
+            PRIVATE_FILE_MODE,
+        )
+    except FileExistsError:
+        descriptor = None
+    if descriptor is not None:
+        try:
+            stamp_binding(descriptor, binding)
+        except OSError:
+            os.close(descriptor)
+            raise
+    else:
+        try:
+            lock_stat = lock_path.lstat()
+        except FileNotFoundError as exc:
+            raise SafetyError("workspace lock disappeared during validation") from exc
+        if stat.S_IMODE(lock_stat.st_mode) & 0o077 and lock_stat.st_nlink != 1:
             raise SafetyError(
-                "workspace lock must have a private permission mode"
-                + (" (it is also a hardlink)" if lock_stat.st_nlink != 1 else "")
+                "workspace lock must have a private permission mode (it is also a hardlink)"
             )
-    descriptor = os.open(
-        lock_path,
-        _open_flags(os.O_RDWR | os.O_CREAT),
-        PRIVATE_FILE_MODE,
-    )
+        _lock_problem(lock_stat, carried=lambda: read_binding(lock_path), binding=binding)
+        try:
+            descriptor = os.open(lock_path, _open_flags(os.O_RDWR | getattr(os, "O_NONBLOCK", 0)))
+        except FileNotFoundError as exc:
+            raise SafetyError("workspace lock disappeared during validation") from exc
     _ok3 = False
     try:
         opened_stat = os.fstat(descriptor)
         entry_stat = lock_path.lstat()
         if not stat.S_ISREG(opened_stat.st_mode) or stat.S_ISLNK(entry_stat.st_mode):
             raise SafetyError("workspace lock must be a regular non-symlink file")
-        if not link_count_ok(opened_stat, "workspace lock") or not link_count_ok(
-            entry_stat, "workspace lock"
-        ):
-            raise SafetyError("workspace lock must not be a hardlink " + link_refusal(entry_stat))
         if (opened_stat.st_dev, opened_stat.st_ino) != (
             entry_stat.st_dev,
             entry_stat.st_ino,
         ):
             raise SafetyError("workspace lock changed during validation")
-        if stat.S_IMODE(opened_stat.st_mode) & 0o077:
-            raise SafetyError("workspace lock must have a private permission mode")
+        _lock_problem(opened_stat, carried=lambda: read_binding(descriptor), binding=binding)
+        adopt_single_link(descriptor, binding)
         _ok3 = True
     finally:
         if not _ok3:
@@ -1088,10 +1461,12 @@ def workspace_lock(workspace: Path) -> Iterator[None]:
             raise SafetyError(
                 "learner workspace generation changed while acquiring its lock"
             )
+        binding = ensure_binding(workspace / "state")
         with _workspace_inode_lock(
             workspace,
             expected_workspace=expected_workspace,
             expected_state=expected_state,
+            binding=binding,
         ):
             if os.name != "posix" or not _supports_secure_directory_fds():
                 yield
@@ -1124,6 +1499,7 @@ def workspace_lock(workspace: Path) -> Iterator[None]:
                         state_descriptor=state_descriptor,
                         state_device=opened_state.st_dev,
                         state_inode=opened_state.st_ino,
+                        binding=read_binding(state_descriptor),
                     )
                 )
                 yield
@@ -1140,7 +1516,11 @@ def make_private_directory(path: Path) -> None:
     os.chmod(path, PRIVATE_DIR_MODE)
 
 
-def make_private_file(path: Path, data: bytes = b"") -> None:
+def make_private_file(path: Path, data: bytes = b"", *, binding: str | None = None) -> None:
+    """Create a new private file exclusively (fresh inode) carrying the workspace's learner binding."""
+
+    if binding is None:
+        binding = _binding_for_path(path)
     descriptor = os.open(
         path,
         _open_flags(os.O_WRONLY | os.O_CREAT | os.O_EXCL),
@@ -1152,6 +1532,7 @@ def make_private_file(path: Path, data: bytes = b"") -> None:
             while view:
                 written = os.write(descriptor, view)
                 view = view[written:]
+        stamp_binding(descriptor, binding)
         os.fsync(descriptor)
     finally:
         os.close(descriptor)

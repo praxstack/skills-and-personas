@@ -19,7 +19,10 @@ from .errors import (
     ValidationError,
 )
 from .io import (
-    link_count_ok,
+    binding_at,
+    link_problem,
+    read_binding,
+    workspace_binding,
     _active_target_for_workspace_relative,
     _validate_anchored_destination,
     _validate_anchored_parent,
@@ -117,14 +120,22 @@ def load_continuity(workspace: Path) -> dict[str, Any] | None:
             ).lstat()
         except StateNotFound:
             return None
-    if (
-        not stat.S_ISREG(entry.st_mode)
-        or not link_count_ok(entry, "state/continuity.json")
-        or stat.S_IMODE(entry.st_mode) & 0o077
-    ):
+    if target is not None and target.parent_descriptor is not None:
+        carried = lambda: binding_at(target.parent_descriptor, "continuity.json", entry)  # noqa: E731
+    else:
+        carried = lambda: read_binding(workspace / "state/continuity.json")  # noqa: E731
+    if not stat.S_ISREG(entry.st_mode) or stat.S_IMODE(entry.st_mode) & 0o077:
         raise SafetyError(
             "continuity record must be a private regular file with one link"
         )
+    problem = link_problem(
+        entry,
+        "state/continuity.json",
+        carried=carried,
+        expected=workspace_binding(workspace),
+    )
+    if problem is not None:
+        raise SafetyError(f"refusing continuity record: it {problem}")
     try:
         value = read_json(workspace, "state/continuity.json")
     except StateNotFound as exc:

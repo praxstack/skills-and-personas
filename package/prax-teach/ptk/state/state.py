@@ -27,8 +27,14 @@ from . import (
 )
 from .errors import ConsentRequired, SafetyError, ValidationError
 from .io import (
-    link_count_ok,
+    ANY_BINDING,
     _ACTIVE_WORKSPACE_IO,
+    _active_binding,
+    binding_at,
+    ensure_binding,
+    link_problem,
+    read_binding,
+    workspace_binding,
     PRIVATE_DIR_MODE,
     atomic_write,
     atomic_write_json,
@@ -238,6 +244,9 @@ def _create_workspace_locked(
         os.chmod(workspace, PRIVATE_DIR_MODE)
         state = workspace / "state"
         make_private_directory(state)
+        # D22.3: the state directory carries this workspace's learner binding; every file below is stamped
+        # with it when it is created (io.make_private_file), so links from other learners are detectable.
+        ensure_binding(state)
         # Keep the documented course workspace stable from the first consented
         # write. These directories are intentionally empty until reviewed
         # lesson, reference, or asset material is added.
@@ -1430,7 +1439,13 @@ def _load_state_transaction(workspace: Path) -> dict[str, Any] | None:
     if (
         stat.S_ISLNK(path_stat.st_mode)
         or not stat.S_ISREG(path_stat.st_mode)
-        or not link_count_ok(path_stat, path.name)
+        or link_problem(
+            path_stat,
+            path.name,
+            carried=lambda: read_binding(path),
+            expected=workspace_binding(workspace),
+        )
+        is not None
         or stat.S_IMODE(path_stat.st_mode) & 0o077
     ):
         raise SafetyError("state transaction journal is unsafe")
@@ -1464,7 +1479,7 @@ def _validate_held_workspace_generation(workspace: Path) -> Any:
 
 
 def _validate_journal_entry(
-    directory_descriptor: int, name: str, *, label: str
+    directory_descriptor: int, name: str, *, label: str, any_binding: bool = False
 ) -> os.stat_result:
     try:
         entry = os.stat(name, dir_fd=directory_descriptor, follow_symlinks=False)
@@ -1473,7 +1488,13 @@ def _validate_journal_entry(
     if (
         stat.S_ISLNK(entry.st_mode)
         or not stat.S_ISREG(entry.st_mode)
-        or not link_count_ok(entry, label)
+        or link_problem(
+            entry,
+            label,
+            carried=lambda: binding_at(directory_descriptor, name, entry),
+            expected=ANY_BINDING if any_binding else _active_binding(),
+        )
+        is not None
         or stat.S_IMODE(entry.st_mode) & 0o077
     ):
         raise SafetyError(f"{label} is unsafe")
@@ -2298,7 +2319,13 @@ def _load_deletion_transaction(workspace: Path) -> dict[str, Any] | None:
     if (
         stat.S_ISLNK(path_stat.st_mode)
         or not stat.S_ISREG(path_stat.st_mode)
-        or not link_count_ok(path_stat, path.name)
+        or link_problem(
+            path_stat,
+            path.name,
+            carried=lambda: read_binding(path),
+            expected=workspace_binding(workspace),
+        )
+        is not None
         or stat.S_IMODE(path_stat.st_mode) & 0o077
     ):
         raise SafetyError("deletion transaction journal is unsafe")
@@ -2607,6 +2634,7 @@ def _unlink_parent_journal(workspace: Path, journal: Path, descriptor: int) -> N
         descriptor,
         journal.name,
         label="full deletion transaction journal",
+        any_binding=True,  # outside every workspace; its content names the workspace (see _read_parent_delete_journal)
     )
     try:
         os.unlink(journal.name, dir_fd=descriptor)
@@ -2635,7 +2663,17 @@ def _read_parent_delete_journal(
     if (
         stat.S_ISLNK(journal_stat.st_mode)
         or not stat.S_ISREG(journal_stat.st_mode)
-        or not link_count_ok(journal_stat, "full deletion journal")
+        or link_problem(
+            journal_stat,
+            "full deletion journal",
+            carried=lambda: read_binding(journal)
+            if parent_descriptor is None
+            else binding_at(parent_descriptor, journal.name, journal_stat),
+            # The journal's content names the exact workspace path and inode it deletes, so an extra
+            # link is read only when an engine write stamped the inode (any learner binding).
+            expected=ANY_BINDING,
+        )
+        is not None
         or stat.S_IMODE(journal_stat.st_mode) & 0o077
     ):
         raise SafetyError("full deletion transaction journal is unsafe")
@@ -2913,7 +2951,7 @@ def delete_workspace(path: str, *, dry_run: bool, confirm: bool) -> dict[str, An
         if quarantine.exists() or quarantine.is_symlink():
             raise SafetyError("workspace deletion quarantine path unexpectedly exists")
         transaction = _full_delete_transaction(workspace, plan)
-        atomic_write_json(journal, transaction)
+        atomic_write_json(journal, transaction, binding=workspace_binding(workspace))
         recovered = _recover_quarantined_workspace_deletion(workspace)
         if recovered is None:
             raise SafetyError("confirmed full deletion did not complete")

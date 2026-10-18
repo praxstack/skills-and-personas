@@ -238,17 +238,10 @@ class TestStateSecurity(unittest.TestCase):
             first_log.unlink()
             os.link(second / "state" / "sessions.jsonl", first_log)
 
-            # v2.1 changed protected behaviour (plan/PROTECTED-MAP.md, integration pass): a same-owner regular
-            # file with more than one link is accepted, because macOS backupd/revisiond add links to new files
-            # under ~/Developer and the C study workspace and v2's refusal broke learner-state writes. The
-            # residual risk is exactly this case: a deliberate same-user link between two learners' state is
-            # read. What remains: every command prints a warning naming the linked file, writes replace the
-            # file (rename) instead of writing through the link, and the second learner's file is unchanged.
-            before = (second / "state" / "sessions.jsonl").read_bytes()
             shown = run_cli("show", str(first))
-            self.assertIn("hard link", shown.stderr.lower())
-            self.assertIn("sessions.jsonl", shown.stderr)
-            export_path = base / "linked-export.zip"
+            self.assertEqual(shown.returncode, 5)
+            self.assertIn("hardlink", shown.stderr.lower())
+            export_path = base / "must-not-exist.zip"
             exported = run_cli(
                 "export",
                 str(first),
@@ -256,8 +249,8 @@ class TestStateSecurity(unittest.TestCase):
                 "--timestamp",
                 "2026-08-04T11:00:00Z",
             )
-            self.assertIn("hard link", exported.stderr.lower())
-            self.assertEqual((second / "state" / "sessions.jsonl").read_bytes(), before)
+            self.assertEqual(exported.returncode, 5)
+            self.assertFalse(export_path.exists())
 
     @unittest.skipUnless(hasattr(os, "link"), "hardlinks unavailable")
     def test_workspace_lock_rejects_hardlinks_without_chmodding_the_source(
