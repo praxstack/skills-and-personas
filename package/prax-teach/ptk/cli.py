@@ -1,0 +1,126 @@
+"""ptk command line (spec §5.4). Exit codes come from ptk/errors.py (D19.5).
+
+WP0 implements: validate, capture, build [--only], claims check, report, host probe,
+host setup, selftest, agent-tests. Later packages add route, new and package.
+"""
+import argparse
+import json
+import sys
+from pathlib import Path
+
+from . import errors
+
+
+def _emit(obj, as_json=True):
+    print(json.dumps(obj, indent=2) if as_json else obj)
+
+
+def cmd_validate(a):
+    from . import model
+    lesson = model.load(a.lesson)
+    model.validate(lesson)
+    _emit({"valid": True, "lesson": lesson.id, "path": str(lesson.path)})
+    return errors.EXIT_OK
+
+
+def cmd_capture(a):
+    from . import model
+    from .capture import c_runner
+    lesson = model.load(a.lesson)
+    model.validate(lesson)
+    out = c_runner.capture_lesson(lesson)
+    _emit(out)
+    return errors.EXIT_OK
+
+
+def cmd_build(a):
+    from . import build
+    only = [m.strip() for m in a.only.split(",")] if a.only else None
+    report = build.build(a.lesson, only=only)
+    _emit(build.summary(report))
+    return build.exit_code(report)
+
+
+def cmd_claims(a):
+    from . import build
+    report = build.claims_check(a.lesson)
+    _emit(build.summary(report))
+    return build.exit_code(report)
+
+
+def cmd_report(a):
+    from . import build
+    report = build.load_report(a.lesson)
+    if a.json:
+        _emit(report)
+    else:
+        print(build.render_text(report))
+    return build.exit_code(report)
+
+
+def cmd_host(a):
+    from . import host
+    if a.host_cmd == "probe":
+        _emit(host.probe())
+        return errors.EXIT_OK
+    res = host.setup(yes=a.yes, log=lambda m: print(m, file=sys.stderr))
+    if not res["fetched"]:
+        print("ptk host setup would fetch (run again with --yes to fetch):", file=sys.stderr)
+    _emit(res)
+    return errors.EXIT_OK
+
+
+def cmd_selftest(a):
+    from . import selftest
+    return selftest.run(suite="auto", pattern=a.k)
+
+
+def cmd_agent_tests(a):
+    from . import selftest
+    return selftest.run(suite="agent", pattern=a.k)
+
+
+def parser():
+    p = argparse.ArgumentParser(prog="ptk", description="Prax Teach lesson compiler")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    for name, fn in (("validate", cmd_validate), ("capture", cmd_capture)):
+        s = sub.add_parser(name)
+        s.add_argument("lesson")
+        s.set_defaults(fn=fn)
+    s = sub.add_parser("build")
+    s.add_argument("lesson")
+    s.add_argument("--only", help="comma list of media: still,video,ive")
+    s.set_defaults(fn=cmd_build)
+    s = sub.add_parser("claims")
+    cs = s.add_subparsers(dest="claims_cmd", required=True)
+    c = cs.add_parser("check")
+    c.add_argument("lesson")
+    c.set_defaults(fn=cmd_claims)
+    s = sub.add_parser("report")
+    s.add_argument("lesson")
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(fn=cmd_report)
+    s = sub.add_parser("host")
+    hs = s.add_subparsers(dest="host_cmd", required=True)
+    hs.add_parser("probe").set_defaults(fn=cmd_host)
+    h = hs.add_parser("setup")
+    h.add_argument("--yes", action="store_true")
+    h.set_defaults(fn=cmd_host)
+    for name, fn in (("selftest", cmd_selftest), ("agent-tests", cmd_agent_tests)):
+        s = sub.add_parser(name)
+        s.add_argument("-k", help="only tests whose name contains this")
+        s.set_defaults(fn=fn)
+    return p
+
+
+def main(argv=None):
+    a = parser().parse_args(argv)
+    try:
+        return a.fn(a)
+    except errors.PtkError as e:
+        print(json.dumps(e.as_dict(), indent=2, default=str), file=sys.stderr)
+        return e.exit_code
+
+
+if __name__ == "__main__":
+    sys.exit(main())

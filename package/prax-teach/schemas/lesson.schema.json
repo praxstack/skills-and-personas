@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prax-teach.local/schemas/lesson.schema.json",
+  "title": "Prax Teach lesson model",
+  "description": "The one file an author writes. Every value comes from facts, every sentence from claims or narration (which cites claims) or templates/chrome.json. Capture fills facts[].value, facts[].source and platform.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "title", "topic", "language", "programs", "facts", "claims", "misconceptions", "trace", "storyboard", "requested_media"],
+  "properties": {
+    "schema": {"const": "prax-teach/lesson@1"},
+    "id": {"$ref": "#/$defs/slug"},
+    "title": {"type": "string", "minLength": 1, "maxLength": 80},
+    "topic": {"type": "string", "minLength": 1},
+    "language": {"enum": ["c"]},
+    "request": {"type": "string", "description": "The learner request this lesson answers."},
+    "platform": {"$ref": "#/$defs/platform"},
+    "programs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/program"}},
+    "facts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fact"}},
+    "claims": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/claim"}},
+    "misconceptions": {"type": "array", "items": {"$ref": "#/$defs/misconception"}},
+    "trace": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/state"}},
+    "storyboard": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/scene"}},
+    "figure": {"$ref": "#/$defs/figure"},
+    "requested_media": {"type": "array", "minItems": 1, "uniqueItems": true,
+                        "items": {"enum": ["still", "explorer", "qa", "cards", "video", "ive"]}}
+  },
+  "$defs": {
+    "slug": {"type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*$"},
+    "ref": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["captured"],
+      "properties": {
+        "captured": {"type": "boolean"},
+        "os": {"type": "string"},
+        "arch": {"type": "string"},
+        "sizeof": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "char_signed": {"type": "boolean"},
+        "endianness": {"enum": ["little", "big"]},
+        "libc": {"type": "string"},
+        "compilers": {"type": "object", "additionalProperties": {"type": "string"}},
+        "sandbox": {"type": "string"}
+      }
+    },
+    "program": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "std", "ub", "run"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ref"},
+        "path": {"type": "string", "pattern": "^programs/[A-Za-z0-9_.-]+\\.c$"},
+        "std": {"enum": ["c17"]},
+        "ub": {"type": "boolean"},
+        "run": {"type": "boolean"},
+        "args": {"type": "array", "items": {"type": "string"}},
+        "diagnostics": {"type": "object", "description": "Written by capture: per-compiler diagnostics (gcc-16 is diagnostics-only).",
+                        "additionalProperties": {"type": "string"}},
+        "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "program", "kind", "select", "expect"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ref"},
+        "program": {"$ref": "#/$defs/ref"},
+        "kind": {"enum": ["stdout-line", "value", "derived"]},
+        "select": {
+          "type": "object", "additionalProperties": false, "required": ["stream"],
+          "properties": {"stream": {"enum": ["stdout", "platform"]},
+                         "line": {"type": "integer", "minimum": 1},
+                         "key": {"type": "string"}}
+        },
+        "value": {"type": "string"},
+        "expect": {
+          "oneOf": [
+            {"type": "object", "additionalProperties": false, "required": ["fn", "args"],
+             "properties": {"fn": {"type": "string", "pattern": "^[a-z_][a-z0-9_]*$"}, "args": {"type": "array"}}},
+            {"type": "object", "additionalProperties": false, "required": ["value", "reviewed"],
+             "properties": {"value": {"type": "string"}, "reviewed": {"const": true}}}
+          ]
+        },
+        "source": {
+          "type": "object", "additionalProperties": false, "required": ["compiler", "cmd", "stdout_sha256"],
+          "properties": {"compiler": {"type": "string"}, "cmd": {"type": "string"},
+                         "stdout_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                         "runs": {"type": "integer"}, "sandbox": {"type": "string"}}
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "kind", "justification", "sources"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ref"},
+        "text": {"type": "string", "minLength": 3, "maxLength": 240},
+        "kind": {"enum": ["definition", "mechanism", "rule", "caveat", "undefined-behaviour", "implementation-defined", "framing"]},
+        "justification": {"type": "string", "minLength": 10},
+        "sources": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "additionalProperties": false, "required": ["title", "clause"],
+          "properties": {"title": {"type": "string"}, "url": {"type": "string"}, "clause": {"type": "string"},
+                         "quote": {"type": "string", "maxLength": 400}}}},
+        "facts": {"type": "array", "items": {"$ref": "#/$defs/ref"}}
+      }
+    },
+    "misconception": {
+      "type": "object", "additionalProperties": false, "required": ["id", "statement", "correction"],
+      "properties": {"id": {"$ref": "#/$defs/ref"}, "statement": {"type": "string"}, "correction": {"$ref": "#/$defs/ref"}}
+    },
+    "state": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "state", "reveals"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ref"},
+        "label": {"type": "string"},
+        "state": {"type": "object", "additionalProperties": false, "required": ["program", "line", "output"],
+                  "properties": {"program": {"$ref": "#/$defs/ref"},
+                                 "line": {"type": "integer", "minimum": 1},
+                                 "path": {"type": "array", "items": {"type": "integer", "minimum": 1}},
+                                 "output": {"type": "array", "items": {"$ref": "#/$defs/ref"}},
+                                 "vars": {"type": "object", "additionalProperties": {"type": "string"}}}},
+        "reveals": {"type": "array", "items": {"$ref": "#/$defs/ref"}}
+      }
+    },
+    "scene": {
+      "type": "object", "additionalProperties": false, "required": ["id", "title", "state", "narration"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ref"},
+        "title": {"type": "string", "maxLength": 48},
+        "state": {"$ref": "#/$defs/ref"},
+        "narration": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "additionalProperties": false, "required": ["text", "claims"],
+          "properties": {"text": {"type": "string", "minLength": 1}, "claims": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/ref"}},
+                         "spoken": {"type": "string"}}}},
+        "question": {"type": "object", "additionalProperties": false, "required": ["prompt", "answer_fact"],
+                     "properties": {"prompt": {"type": "string"}, "answer_fact": {"$ref": "#/$defs/ref"}}}
+      }
+    },
+    "figure": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "program", "states"],
+      "description": "Still layout hints. kind=code-trace: a program listing with the execution path of the given trace states, the output, and an optional comparison program.",
+      "properties": {
+        "kind": {"enum": ["code-trace"]},
+        "title_claim": {"$ref": "#/$defs/ref"},
+        "program": {"$ref": "#/$defs/ref"},
+        "states": {"type": "array", "items": {"$ref": "#/$defs/ref"}},
+        "notes": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["line", "claim"],
+                  "properties": {"line": {"type": "integer"}, "claim": {"$ref": "#/$defs/ref"}}}},
+        "compare": {"type": "object", "additionalProperties": false, "required": ["program", "state", "claim"],
+                    "properties": {"program": {"$ref": "#/$defs/ref"}, "state": {"$ref": "#/$defs/ref"}, "claim": {"$ref": "#/$defs/ref"}}},
+        "caption_claims": {"type": "array", "items": {"$ref": "#/$defs/ref"}}
+      }
+    }
+  }
+}

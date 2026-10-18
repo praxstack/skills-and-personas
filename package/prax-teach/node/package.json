@@ -1,0 +1,12 @@
+{
+  "name": "prax-teach-node",
+  "private": true,
+  "version": "2.1.0",
+  "type": "module",
+  "description": "Pinned Node tools for ptk: Playwright (screenshots, visual gate) and HyperFrames (video render). Installed by `ptk host setup` into $PTK_STATE/tools/node.",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "hyperframes": "0.8.169",
+    "playwright": "1.63.0"
+  }
+}

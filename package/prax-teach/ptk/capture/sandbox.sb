@@ -1,0 +1,49 @@
+;; ptk sandbox profile for macOS sandbox-exec.
+;;
+;; One file, three modes, picked with -D MODE=...:
+;;   compile  clang/gcc-16 compile a lesson program. Forks allowed (driver -> cc1 -> ld).
+;;   run      the compiled program runs. No fork, no network, writes only in TMP.
+;;   render   hyperframes check/render. Loopback only, writes only in TMP, PROJ and STATE.
+;;
+;; Parameters (all absolute, already realpath'd by ptk/host.py):
+;;   TMP    the per-call temp dir
+;;   PROJ   the project dir (render) or the lesson build dir (compile); may equal TMP
+;;   STATE  $PTK_STATE (render only needs it; compile/run never write there)
+;;
+;; Network: every mode denies all network. Render re-allows loopback only, because
+;; hyperframes drives Chrome over a local DevTools socket.
+
+(version 1)
+(allow default)
+
+;; ---------- network ----------
+(deny network*)
+(if (string=? (param "MODE") "render")
+    (begin
+      (allow network* (remote ip "localhost:*"))
+      (allow network* (local ip "localhost:*"))
+      (allow network-bind (local ip "localhost:*"))))
+
+;; ---------- file writes ----------
+(deny file-write*)
+(allow file-write* (subpath (param "TMP")))
+(allow file-write*
+       (literal "/dev/null")
+       (literal "/dev/zero")
+       (literal "/dev/tty")
+       (literal "/dev/dtracehelper")
+       (regex #"^/dev/fd/")
+       (regex #"^/dev/ttys"))
+(if (not (string=? (param "MODE") "run"))
+    (begin
+      (allow file-write* (subpath (param "PROJ")))
+      ;; compiler and Chrome scratch: per-user OS temp (the DARWIN_USER_TEMP_DIR tree)
+      (allow file-write* (subpath "/private/var/folders"))))
+(if (string=? (param "MODE") "render")
+    (allow file-write* (subpath (param "STATE"))))
+
+;; ---------- processes ----------
+;; The program itself may not create children (E24). sandbox-exec execs it directly,
+;; so the deny applies to the program, not to the runner.
+(if (string=? (param "MODE") "run")
+    (deny process-fork))

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>render canary</title>
+<style>
+html,body{margin:0;width:1920px;height:1080px;background:#fbfaf4;color:#171d29;font:700 120px/1.2 Menlo,monospace}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden}
+.clip{position:absolute;inset:0;display:grid;place-items:center}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="render-canary" data-start="0" data-width="1920" data-height="1080" data-duration="2" data-fps="30">
+  <section id="s1" class="clip" data-start="0" data-duration="2" data-track-index="0"><p id="msg">offline</p></section>
+</div>
+<script>
+  // In-page canary: a remote fetch must fail inside the isolated render.
+  window.__canary = "pending";
+  fetch("https://example.com/ptk-canary").then(function () { window.__canary = "reached"; document.getElementById("msg").textContent = "NETWORK"; })
+    .catch(function () { window.__canary = "blocked"; });
+</script>
+</body>
+</html>

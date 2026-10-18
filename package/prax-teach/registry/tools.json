@@ -1,0 +1,93 @@
+{
+  "schema": "prax-teach/tools@1",
+  "note": "WP0 thin registry: the tools the switch-fallthrough slice needs, the pinned downloads for `ptk host setup`, and one ranked list per slice medium. WP8 widens `artifacts` to report 05's ranked alternatives.",
+  "tools": {
+    "clang": {"probe": "binary", "role": "capture compiler (runs facts)", "version_args": ["--version"]},
+    "gcc-16": {"probe": "binary", "role": "diagnostics-only compiler", "version_args": ["--version"]},
+    "sandbox-exec": {"probe": "sandbox", "role": "capture and render isolation"},
+    "node": {"probe": "binary", "role": "Playwright and HyperFrames runtime (>= 22)", "version_args": ["--version"]},
+    "npm": {"probe": "binary", "role": "installs the pinned node tools"},
+    "ffmpeg": {"probe": "binary", "role": "audio assembly, loudness, mux", "version_args": ["-version"]},
+    "ffprobe": {"probe": "binary", "role": "media gate", "version_args": ["-version"]},
+    "whisper-cli": {"probe": "binary", "role": "caption sync gate", "version_args": ["--help"]},
+    "tesseract": {"probe": "binary", "role": "OCR digit gate", "version_args": ["--version"]},
+    "say": {"probe": "binary", "role": "TTS fallback (degraded)"},
+    "hyperframes": {"probe": "state", "path": "tools/node/node_modules/.bin/hyperframes", "role": "video render, pinned 0.8.169"},
+    "playwright": {"probe": "state", "path": "tools/node/node_modules/.bin/playwright", "role": "screenshots, visual gate"},
+    "playwright-chromium": {"probe": "state", "path": "browsers", "role": "Playwright browser"},
+    "hyperframes-chrome": {"probe": "state", "path": "browsers/hyperframes/mac_arm-152.0.7977.30/chrome-headless-shell-mac-arm64/chrome-headless-shell", "role": "HyperFrames render browser"},
+    "kokoro": {"probe": "state", "path": "venvs/kokoro/bin/python", "role": "batched local TTS"},
+    "kokoro-model": {"probe": "state", "path": "models/kokoro/kokoro-v1.0.onnx", "role": "Kokoro-82M model"},
+    "whisper-model": {"probe": "state", "path": "models/whisper/ggml-base.en.bin", "role": "whisper base.en"},
+    "core-venv": {"probe": "state", "path": "venvs/core/bin/python", "role": "jsonschema, fontTools"}
+  },
+  "artifacts": {
+    "still": [
+      {"id": "ptk-svg+playwright-png", "rank": 1, "needs": ["node", "playwright", "playwright-chromium"]}
+    ],
+    "video": [
+      {"id": "hyperframes+kokoro", "rank": 1, "needs": ["hyperframes", "hyperframes-chrome", "kokoro", "kokoro-model", "ffmpeg"]},
+      {"id": "hyperframes+hyperframes-tts", "rank": 2, "needs": ["hyperframes", "hyperframes-chrome", "ffmpeg"]},
+      {"id": "hyperframes+say", "rank": 3, "needs": ["hyperframes", "hyperframes-chrome", "say", "ffmpeg"]}
+    ],
+    "ive": [
+      {"id": "mp4+webvtt-metadata", "rank": 1, "needs": ["hyperframes", "ffmpeg", "playwright"]}
+    ]
+  },
+  "install_hints": {
+    "clang": "xcode-select --install (needs Prax's OK)",
+    "gcc-16": "brew install gcc (needs Prax's OK)",
+    "node": "mise use -g node@lts",
+    "ffmpeg": "brew install ffmpeg (needs Prax's OK)",
+    "ffprobe": "brew install ffmpeg (needs Prax's OK)",
+    "whisper-cli": "brew install whisper-cpp (needs Prax's OK)",
+    "tesseract": "brew install tesseract (needs Prax's OK)",
+    "python3": "mise use -g python@3.13"
+  },
+  "hyperframes_chrome": {
+    "version": "152.0.7977.30",
+    "dir": "mac_arm-152.0.7977.30",
+    "binary": "chrome-headless-shell-mac-arm64/chrome-headless-shell"
+  },
+  "downloads": [
+    {"id": "core-venv", "kind": "venv", "venv": "core", "python": "python3.13", "requirements": "registry/requirements-core.txt",
+     "url": "https://pypi.org/simple/", "dest": "venvs/core", "note": "jsonschema, fontTools, brotli (hash-pinned wheels)"},
+    {"id": "kokoro-venv", "kind": "venv", "venv": "kokoro", "python": "python3.13", "requirements": "registry/requirements-kokoro.txt",
+     "post": "espeak_short_path", "url": "https://pypi.org/simple/", "dest": "venvs/kokoro", "note": "kokoro-onnx 0.6.1 + soundfile (hash-pinned wheels); espeak data moved to a short path"},
+    {"id": "node-tools", "kind": "npm", "url": "https://registry.npmjs.org/", "dest": "tools/node",
+     "note": "hyperframes 0.8.169 + playwright 1.63.0 from node/package-lock.json (npm ci)"},
+    {"id": "playwright-chromium", "kind": "playwright", "url": "https://cdn.playwright.dev/chrome-for-testing-public/153.0.8010.12/mac-arm64/chrome-headless-shell-mac-arm64.zip",
+     "dest": "browsers/chromium_headless_shell-1243", "note": "Playwright 1.63.0 chromium headless shell, revision 1243"},
+    {"id": "hyperframes-chrome", "kind": "hyperframes_chrome", "url": "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.30/mac-arm64/chrome-headless-shell-mac-arm64.zip",
+     "sha256": "ed7c5c6aff7cc4dd88ee7746c0df97f08a454180b62b7063fc961ba42e10b6a1", "dest": "browsers/hyperframes/mac_arm-152.0.7977.30",
+     "note": "sha256 is of the chrome-headless-shell binary; copied from ~/.cache/hyperframes when identical, else `hyperframes browser ensure` with HOME=$PTK_STATE/home"},
+    {"id": "kokoro-model", "kind": "file", "url": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx",
+     "size": 325532387, "sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5", "dest": "models/kokoro/kokoro-v1.0.onnx",
+     "copy_from": ["~/.cache/hyperframes/tts/models/kokoro-v1.0.onnx"]},
+    {"id": "kokoro-voices", "kind": "file", "url": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin",
+     "size": 28214398, "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d", "dest": "models/kokoro/voices-v1.0.bin",
+     "copy_from": ["~/.cache/hyperframes/tts/voices/voices-v1.0.bin"]},
+    {"id": "whisper-base-en", "kind": "file", "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin",
+     "size": 147964211, "sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002", "dest": "models/whisper/ggml-base.en.bin"},
+    {"id": "font-source-serif-4-roman", "kind": "font", "dest_root": "fonts", "dest": "SourceSerif4-Roman.woff2",
+     "url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/VAR/SourceSerif4Variable-Roman.ttf",
+     "size": 1204208, "sha256": "14d360ee1b76655da9276628b229e11671bc1f5d1083636144db6677d452cf55",
+     "license_url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/LICENSE.md", "license_dest": "LICENSE-SourceSerif4.md",
+     "license_sha256": "75784a295293a8992f5a8d99210566e0064a012e6dab6731305e3787f15896c7"},
+    {"id": "font-source-serif-4-italic", "kind": "font", "dest_root": "fonts", "dest": "SourceSerif4-Italic.woff2",
+     "url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/VAR/SourceSerif4Variable-Italic.ttf",
+     "size": 850036, "sha256": "6a059a64838978d54e8fab71ed86b0d82e948c0e12b2664d0c15166326dcff82",
+     "license_url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/LICENSE.md", "license_dest": "LICENSE-SourceSerif4.md",
+     "license_sha256": "75784a295293a8992f5a8d99210566e0064a012e6dab6731305e3787f15896c7"},
+    {"id": "font-jetbrains-mono", "kind": "font", "dest_root": "fonts", "dest": "JetBrainsMono.woff2",
+     "url": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/fonts/variable/JetBrainsMono%5Bwght%5D.ttf",
+     "size": 303144, "sha256": "662a196d58f1183bf2d77428b6d5283fe3f45161ab021bea4036bc98e5cac016",
+     "license_url": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/OFL.txt", "license_dest": "LICENSE-JetBrainsMono.txt",
+     "license_sha256": "30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad"},
+    {"id": "font-caveat", "kind": "font", "dest_root": "fonts", "dest": "Caveat.woff2",
+     "url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/caveat/Caveat%5Bwght%5D.ttf",
+     "size": 403648, "sha256": "0bdb6b660482d31531b3945849fba5916b3ef8695da7024a9e6b9ee3c4157988",
+     "license_url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/caveat/OFL.txt", "license_dest": "LICENSE-Caveat.txt",
+     "license_sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"}
+  ]
+}

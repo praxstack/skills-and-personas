@@ -1,0 +1,15 @@
+#!/bin/sh
+# ptk shim: runs `python -m ptk` from this package, with the core venv when setup has made one.
+set -e
+self=$0
+while [ -L "$self" ]; do
+  link=$(readlink "$self")
+  case $link in /*) self=$link ;; *) self=$(dirname "$self")/$link ;; esac
+done
+PKG=$(cd "$(dirname "$self")/.." && pwd -P)
+if [ -n "${PTK_STATE:-}" ]; then STATE=$PTK_STATE
+elif [ -d "$PKG/../../.state" ]; then STATE=$(cd "$PKG/../../.state" && pwd -P)
+else STATE="$HOME/.local/share/prax-teach"; fi
+PY=python3
+[ -x "$STATE/venvs/core/bin/python" ] && PY="$STATE/venvs/core/bin/python"
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$PKG${PYTHONPATH:+:$PYTHONPATH}" exec "$PY" -m ptk "$@"
