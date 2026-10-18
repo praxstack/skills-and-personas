@@ -461,7 +461,7 @@
       "id": "c.add",
       "kind": "mechanism",
       "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6. That sum is z.",
-      "justification": "Line 12 computes z = t1 + t2 + b, left to right in double: 1.2000000000000002 + -0.4 + -0.2 = 0.6000000000000002, which %g prints as 0.6 (third line of the run, after z =).",
+      "justification": "Line 12 computes z = t1 + t2 + b, left to right in double: 1.2000000000000002 + -0.4 = 0.8000000000000002, then + -0.2 = 0.6000000000000001, which %g prints as 0.6 (third line of the run, after z =).",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -501,7 +501,7 @@
       "id": "c.out",
       "kind": "mechanism",
       "text": "Here z is 0.6, which is positive, so the output a is 0.6.",
-      "justification": "fmax(0.0, 0.6000000000000002) is 0.6000000000000002, printed with %g as 0.6 on the last line of the run.",
+      "justification": "fmax(0.0, 0.6000000000000001) is 0.6000000000000001, printed with %g as 0.6 on the last line of the run.",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -520,7 +520,7 @@
     {
       "id": "c.toy",
       "kind": "framing",
-      "text": "The numbers are toy values with no units. A C program computes them in double and prints them with %g.",
+      "text": "The numbers are toy values with no units. A C program computes them in double and prints them with %g or %+g.",
       "justification": "neuron.c uses literal doubles chosen for the lesson (lines 5-7) and prints every value with %g or %+g (lines 9, 11, 13, 15).",
       "sources": [
         {

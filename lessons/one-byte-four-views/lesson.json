@@ -416,36 +416,6 @@
           "clause": "line 13"
         }
       ]
-    },
-    {
-      "id": "c.recap",
-      "kind": "mechanism",
-      "text": "%d and %c get the int a, and %u gets the unsigned int 66, which has the same bits. %f gets a new value, the double 66.0, whose bits differ.",
-      "justification": "Line 11 passes a to %d and line 14 passes a to %c (which converts it to unsigned char inside printf, 7.21.6.1p8). Line 12 passes (unsigned)a: 66 is representable in unsigned int, so the value is unchanged (6.3.1.3p1), and a nonnegative value has the same representation in a signed type and its unsigned type (6.2.5p9). Line 13 passes (double)a, the double 66.0 (6.3.1.4p2), whose bits on this binary64 machine are 0x4050800000000000 (run line 7), not 0x42.",
-      "sources": [
-        {
-          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
-          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.2.5 ¶9",
-          "quote": "The range of nonnegative values of a signed integer type is a subrange of the corresponding unsigned integer type, and the representation of the same value in each type is the same."
-        },
-        {
-          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
-          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.3.1.4 ¶2"
-        },
-        {
-          "title": "captured run of programs/views.c",
-          "clause": "stdout lines 3-7"
-        }
-      ],
-      "facts": [
-        "f.d",
-        "f.u",
-        "f.c",
-        "f.f",
-        "f.dbits"
-      ]
     }
   ],
   "misconceptions": [
@@ -791,32 +761,12 @@
           ]
         }
       ]
-    },
-    {
-      "id": "sc8",
-      "title": "Recap",
-      "state": "s4",
-      "view": "summary",
-      "mechanism": "s2",
-      "key_nodes": [
-        "code",
-        "output",
-        "panel"
-      ],
-      "narration": [
-        {
-          "text": "Percent d and percent c get the int a, and percent u gets the unsigned int 66, which has the same bits. Percent f gets a new value, the double 66.0, whose bits differ.",
-          "claims": [
-            "c.recap"
-          ]
-        }
-      ]
     }
   ],
   "figure": {
     "misconception": "m.samebits",
     "kind": "code-trace",
-    "title_claim": "c.recap",
+    "title_claim": "c.cast",
     "program": "p1",
     "states": [
       "s0",
