@@ -203,3 +203,15 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
   5. Narration: about 170 wpm, no hedging.
   6. The three router misses (implied still, course/resume, video request in the predict-first workspace).
 - **Decisions for Prax:** the acceptance proposal §1 to §9 (including canary-only, §9); the learner-state hard-link change; the WP9 evaluator changes; the predict-first checker rule; a live 5-minute session; whether to install v2.1 (the `prax-teach-v2` link still points to v2).
+
+## v2.2 repair run (FREEZE-v2, SPEC v1.4)
+
+- **2026-10-19.** Prax approved the repair plan ("implement it then") and said to leave the Google Drive and backup data alone.
+- **Preserved:** tag `v2.1-rc1` at `1a1eb96`; rc1 lesson builds archived with checksums at `../archive/v2.1-rc1/`.
+- **Evaluator series** (`eval/freeze-v2`, tag `freeze-v2`, commit `a32698d`): FREEZE-v2.md, holdout v2 (H19 and H20 relabelled), SPEC v1.4. No candidate code in it.
+- **Implementation** runs on `candidate/v2.2`. Each worker has its own worktree under `.state/wt/` and branch `v22/<name>`, merged after review.
+- **Round A1 (Track A 1/5):** A1 + A2, lesson wording and the three restored claims (`v22/a12`).
+- **Round A3 (Track A 2/5), started early because it touches no lesson text:** A4, explanation-first rule and IVE default (`v22/a4`).
+- **Round A4 (Track A 3/5), started early for the same reason:** A5 + A6, checks and learner-state privacy (`v22/a56`).
+- **Round B0 (Track B 1/5):** the WP10 measurement checks, written before any visual change (`v22/b0`).
+- A3 (reviewer consistency) waits for A1 + A2, because it binds source excerpts to the restored claims.
