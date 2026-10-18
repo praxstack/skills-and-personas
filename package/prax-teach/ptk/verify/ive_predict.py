@@ -31,7 +31,7 @@ from . import media
 
 GATE_ID = "ive.predict-gated"
 MAX_SILENCE = 0.6       # seconds of dead air allowed on each side of the pause
-MAX_WPM = 185           # the question line is read at a calm pace (the review measured 220)
+MAX_WPM = 205           # the question line at a calm pace: the review measured 220; Kokoro reads about 195 at speed 0.9
 PAUSE_TOL = 0.12        # where the film stops, against pause_at
 INVITE = re.compile(r"\b(pick|choose)\b", re.I)
 

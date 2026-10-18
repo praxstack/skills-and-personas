@@ -198,6 +198,27 @@ def mispronounced(said, heard_words):
     return out
 
 
+def derived_speech_problems(cues):
+    """Round 18: captions show the written form and the voice reads lexicon(text). A cue whose said form is not
+    its text, or whose spoken form is not the current lexicon's transform of its text, was respelled by hand and
+    could say something the caption does not: [{"cue", "text", "said", "spoken", "expected"}]."""
+    out = []
+    for c in cues:
+        want = tts.apply_lexicon(c["text"])
+        if c.get("said", c["text"]) != c["text"] or c.get("spoken") != want:
+            out.append({"cue": c["id"], "text": c["text"], "said": c.get("said"), "spoken": c.get("spoken"),
+                        "expected": want})
+    return out
+
+
+def speech_wer(cues, words):
+    """Non-code WER of what whisper heard against what the voice was given (the lexicon's spoken form)."""
+    code = tts.code_words()
+    ref = [w for c in cues for w in text.norm_words(c.get("spoken") or tts.apply_lexicon(c["text"])) if w not in code]
+    hyp = [w for x in words for w in text.norm_words(x["text"]) if w not in code]
+    return wer(ref, hyp), len(ref), len(hyp)
+
+
 def sync_gate(mp4, out_dir, timing, work):
     words, info = whisper_words(mp4, work)
     sil_starts, sil_ends = silences(work / "speech-16k.wav")
@@ -230,11 +251,9 @@ def sync_gate(mp4, out_dir, timing, work):
         rows.append(row)
         if abs(ds) > SYNC_TOL or abs(de) > SYNC_TOL:
             bad.append(c["id"])
-    code = tts.code_words()
-    ref = [w for c in cues for w in text.norm_words(c["text"]) if w not in code]
-    hyp = [w for x in words for w in text.norm_words(x["text"]) if w not in code]
-    rate = wer(ref, hyp)
-    ok = not bad and rate <= WER_MAX and not bad_tokens
+    rate, n_ref, n_hyp = speech_wer(cues, words)
+    hand = derived_speech_problems(cues)
+    ok = not bad and rate <= WER_MAX and not bad_tokens and not hand
     reason = []
     if bad_tokens:
         reason.append("code tokens not heard as their lexicon forms: " +
@@ -243,12 +262,15 @@ def sync_gate(mp4, out_dir, timing, work):
         reason.append(f"cues out of sync by more than {SYNC_TOL}s: {', '.join(bad)}")
     if rate > WER_MAX:
         reason.append(f"non-code WER {rate:.3f} > {WER_MAX}")
+    if hand:
+        reason.append(f"spoken form is not lexicon(text) for {', '.join(h['cue'] for h in hand)}")
     max_s = max((abs(r.get("start_delta", 99)) for r in rows), default=None)
     max_e = max((abs(r.get("end_delta", 99)) for r in rows), default=None)
     (work / "sync-words.json").write_text(json.dumps(words, indent=1))
     return {"id": "video.sync", "medium": "video", "status": "passed" if ok else "failed",
             "measured": {"cues": rows, "mispronounced": bad_tokens, "max_abs_start_delta": max_s, "max_abs_end_delta": max_e, "non_code_wer": round(rate, 4),
-                         "ref_words": len(ref), "hyp_words": len(hyp), "whisper": info, "heard": " ".join(x["text"] for x in words)},
+                         "wer_reference": "lexicon(text), the form the voice was given (round 18)",
+                         "hand_respelled": hand, "ref_words": n_ref, "hyp_words": n_hyp, "whisper": info, "heard": " ".join(x["text"] for x in words)},
             "reason": "; ".join(reason)}
 
 

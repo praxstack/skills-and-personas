@@ -533,7 +533,7 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the four before the answer plays.",
+      "text": "Which answer do you predict? Pick one of the four. Then the answer plays.",
       "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
       "sources": [
         {
@@ -793,8 +793,7 @@
           "text": "The program sets n to 2 and switches on n. Case 2 has no break.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "The program sets n to two, and switches on n. Case two has no break."
+          ]
         }
       ],
       "key_nodes": [
@@ -832,7 +831,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the four before the answer plays.",
+          "text": "Which answer do you predict? Pick one of the four. Then the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -858,8 +857,7 @@
           "text": "With n = 2, that is case 2, which prints two.",
           "claims": [
             "c.fall"
-          ],
-          "spoken": "With n equal to two, that is case two, which prints two."
+          ]
         }
       ],
       "key_nodes": [
@@ -886,8 +884,7 @@
           "text": "So the switch falls through into case 3, and prints three.",
           "claims": [
             "c.fall"
-          ],
-          "spoken": "So the switch falls through into case three, and prints three."
+          ]
         }
       ],
       "key_nodes": [
@@ -939,22 +936,19 @@
           "text": "with_break.c adds a break after case 1 and after case 2, so no case runs on into the next case.",
           "claims": [
             "c.fix"
-          ],
-          "spoken": "with-break dot c adds a break after case one and after case two, so no case runs on into the next case."
+          ]
         },
         {
           "text": "With n = 2, with_break.c prints only two from the switch, and then done.",
           "claims": [
             "c.withbreak"
-          ],
-          "spoken": "With n equal to two, with-break dot c prints only two from the switch, and then done."
+          ]
         },
         {
           "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra.",
           "claims": [
             "c.warn"
-          ],
-          "spoken": "gcc warns about a case that can run on into the next one when the implicit fallthrough warning is on, as it is under W extra."
+          ]
         }
       ],
       "key_nodes": [
@@ -981,8 +975,7 @@
           "text": "In fallthrough.c, the break on line 12 is what ends the switch.",
           "claims": [
             "c.recap"
-          ],
-          "spoken": "In fallthrough dot c, the break on line twelve is what ends the switch."
+          ]
         }
       ],
       "key_nodes": [

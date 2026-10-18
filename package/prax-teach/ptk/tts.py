@@ -15,7 +15,7 @@ from . import errors, host, node, text
 
 LEXICON = host.PKG / "lexicon" / "c.json"
 VOICE = "af_heart"
-SPEED = 0.82  # round 18: about 170 spoken words per minute (the review measured up to 236 at 1.0)
+SPEED = 0.9  # round 18: slower than 1.0 (the review measured up to 236 wpm there); 0.82 made whisper timings drift
 SAY_VOICE = "Samantha"
 
 
@@ -24,11 +24,16 @@ def lexicon():
 
 
 def apply_lexicon(text, lex=None):
+    """The spoken form of a written narration line: token respellings, then the regex `patterns` in order
+    (factorial(3) -> factorial of 3, 66.000000 -> 66 followed by a point and six zeros). The voice only
+    ever reads this, so captions (the written form) and audio cannot drift in meaning (round 18)."""
     lex = lex or lexicon()
     out = text
     for e in lex["entries"]:
-        out = re.sub(r"(?<![\w\\])" + re.escape(e["token"]) + r"(?![\w])", e["spoken"], out)
-    return out
+        out = re.sub(r"(?<![\w\\])" + re.escape(e["token"]) + r"(?![\w])", lambda m, s=e["spoken"]: s, out)
+    for e in lex.get("patterns", []):
+        out = re.sub(e["pattern"], e["spoken"], out)
+    return re.sub(r"\s+", " ", out).strip()
 
 
 def code_tokens(said, lex=None):

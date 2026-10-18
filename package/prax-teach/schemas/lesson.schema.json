@@ -711,11 +711,12 @@
                 }
               },
               "spoken": {
-                "type": "string"
+                "type": "string",
+                "description": "Retired (round 18): ptk validate refuses it. The voice reads lexicon/c.json applied to `text`."
               }
             }
           },
-          "description": "Spoken lines. Each cites the claims it states; `spoken` is an optional respelling for TTS."
+          "description": "Spoken lines in their written form (%f, factorial(2)). Each cites the claims it states; the voice reads the lexicon's spoken form of the text."
         },
         "question": {
           "type": "object",

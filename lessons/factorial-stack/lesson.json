@@ -700,7 +700,7 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+      "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
       "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
       "sources": [
         {
@@ -1188,8 +1188,7 @@
           "text": "main calls factorial(3), and factorial calls itself with n - 1 until n is 1.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "main calls factorial of 3, and factorial calls itself with n minus 1 until n is 1."
+          ]
         },
         {
           "text": "Each call to factorial gets its own n and its own r. This lesson draws each call to factorial as a frame on the call stack.",
@@ -1210,18 +1209,16 @@
       ],
       "narration": [
         {
-          "text": "Here, factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+          "text": "So factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
           "claims": [
             "c.waits"
-          ],
-          "spoken": "Here, factorial of 3 cannot finish line 7 until factorial of 2 returns a value, so its frame waits under the new one."
+          ]
         },
         {
           "text": "In this lesson's drawing, the empty box after r = 3 * stands for the value factorial(2) has not returned yet.",
           "claims": [
             "c.slot"
-          ],
-          "spoken": "In this lesson's drawing, the empty box after r equals 3 times stands for the value factorial of 2 has not returned yet."
+          ]
         }
       ]
     },
@@ -1236,11 +1233,10 @@
       ],
       "narration": [
         {
-          "text": "Here, factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
+          "text": "Then factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
           "claims": [
             "c.depth"
-          ],
-          "spoken": "Here, factorial of 2 calls factorial of 1, so three factorial frames now sit on top of main."
+          ]
         }
       ]
     },
@@ -1274,7 +1270,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+          "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -1295,8 +1291,7 @@
           "text": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1.",
           "claims": [
             "c.base"
-          ],
-          "spoken": "In factorial of 1, n greater than 1 is false, so r stays 1 and it returns 1."
+          ]
         }
       ],
       "title_claims": [
@@ -1318,8 +1313,7 @@
           "text": "Each factorial return hands its value to the call that made it, one frame down. factorial(2) gets 1 and returns 2 × 1 = 2.",
           "claims": [
             "c.unwind"
-          ],
-          "spoken": "Each factorial return hands its value to the call that made it, one frame down. factorial of 2 gets 1 and returns 2 times 1, which is 2."
+          ]
         }
       ],
       "title_claims": [
@@ -1338,11 +1332,10 @@
       ],
       "narration": [
         {
-          "text": "Here, factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
+          "text": "Then factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
           "claims": [
             "c.ret3"
-          ],
-          "spoken": "Here, factorial of 3 gets 2 and returns 3 times 2, which is 6, to main."
+          ]
         }
       ],
       "title_claims": [
@@ -1392,7 +1385,13 @@
       ],
       "narration": [
         {
-          "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return. Each factorial return value flows to the frame below.",
+          "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return.",
+          "claims": [
+            "c.recap"
+          ]
+        },
+        {
+          "text": "Each factorial return value flows to the frame below.",
           "claims": [
             "c.recap"
           ]

@@ -300,6 +300,10 @@ def _storyboard_errors(data, ids, need):
         for j, n in enumerate(sc["narration"]):
             for k, cid in enumerate(n["claims"]):
                 need("claims", cid, f"/storyboard/{i}/narration/{j}/claims/{k}")
+            if "spoken" in n:
+                errs.append({"pointer": f"/storyboard/{i}/narration/{j}/spoken", "message": "a lesson never authors a "
+                             "spoken form: the voice reads lexicon/c.json applied to `text`, so captions and audio say "
+                             "the same thing; add a lexicon token or pattern instead"})
         for j, key in enumerate(sc.get("key_nodes", [])):
             if key not in elements:
                 errs.append({"pointer": f"/storyboard/{i}/key_nodes/{j}", "message": f"unknown figure element {key!r}"

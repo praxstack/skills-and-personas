@@ -135,7 +135,7 @@ def test_lexicon_applied():
     assert tts.apply_lexicon("a \\n b") == "a newline b"
     lesson = model.load(SLICE)
     segs = {s["id"]: s for s in video.segments_of(lesson)}
-    assert segs["sc1.0"]["said"].startswith("The program sets n to two"), segs["sc1.0"]
+    assert segs["sc1.0"]["said"] == segs["sc1.0"]["text"], segs["sc1.0"]  # round 18: never hand-respelled
     assert " en " in segs["sc1.0"]["spoken"] and " n " not in segs["sc1.0"]["spoken"], segs["sc1.0"]["spoken"]
     if not tts.kokoro_available():
         return {"kokoro_job": "not checked (no Kokoro)"}

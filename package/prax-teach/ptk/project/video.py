@@ -47,7 +47,7 @@ def segments_of(lesson):
     segs = []
     for sc in lesson.data["storyboard"]:
         for i, n in enumerate(sc["narration"]):
-            said = n.get("spoken") or n["text"]
+            said = n["text"]  # round 18: never hand-respelled; the lexicon makes the spoken form
             spoken = tts.apply_lexicon(said)
             segs.append({"id": f"{sc['id']}.{i}", "scene": sc["id"], "text": n["text"], "said": said, "spoken": spoken,
                          "claims": n["claims"]})

@@ -893,7 +893,7 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+      "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
       "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
       "sources": [
         {
@@ -1318,15 +1318,13 @@
           "text": "The program stores 66 in the int a.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "The program stores 66 in the integer variable a."
+          ]
         },
         {
-          "text": "a is an int, 4 bytes on this machine. 66 fits in its low byte: 01000010, which is 0x42 in hex.",
+          "text": "a is an int, 4 bytes on this machine. 66 fits in its low byte: 01000010, which is 0x42.",
           "claims": [
             "c.byte"
-          ],
-          "spoken": "a is an int, four bytes on this machine. 66 fits in its low byte: 0 1 0 0 0 0 1 0, which is hex 42."
+          ]
         }
       ]
     },
@@ -1351,8 +1349,7 @@
           "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u gives 66.",
           "claims": [
             "c.u"
-          ],
-          "spoken": "The cast to unsigned converts 66 to an unsigned int. 66 fits there, so the value stays 66, and percent u gives 66."
+          ]
         }
       ]
     },
@@ -1386,7 +1383,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+          "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -1411,15 +1408,13 @@
           "text": "(double)a converts the value 66 to the double 66.0. On this machine, that double's bits are not the bits of a.",
           "claims": [
             "c.cast"
-          ],
-          "spoken": "The cast to double converts the value 66 to the double 66.0. On this machine, that double's bits are not the bits of a."
+          ]
         },
         {
           "text": "%f prints a double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
           "claims": [
             "c.fprint"
-          ],
-          "spoken": "Percent f prints a double with six digits after the decimal point when no precision is given, so it prints 66 followed by a point and six zeros."
+          ]
         }
       ]
     },
@@ -1441,8 +1436,7 @@
           "text": "%c converts the int 66 to unsigned char and writes that character. In ASCII, code 66 is B.",
           "claims": [
             "c.char"
-          ],
-          "spoken": "Percent c converts the int 66 to an unsigned char, and writes that character. In ASCII, code 66 is B."
+          ]
         }
       ]
     },
@@ -1464,15 +1458,13 @@
           "text": "printf does not reinterpret the bits of a for %f. It receives the double that (double)a made.",
           "claims": [
             "c.samebits"
-          ],
-          "spoken": "printf does not reinterpret the bits of a for percent f. It receives the double that the cast made."
+          ]
         },
         {
-          "text": "The last line prints that double's own bits: 0x4050800000000000. They are not the bits of a.",
+          "text": "The last line prints that double's own bits, in hex. They are not the bits of a.",
           "claims": [
             "c.dbits"
-          ],
-          "spoken": "The last line prints that double's own bits, in hex. They are not the bits of a."
+          ]
         }
       ]
     },
@@ -1489,11 +1481,10 @@
       ],
       "narration": [
         {
-          "text": "Without the cast, printf(\"%f\\n\", a) passes an int where %f needs a double, and the behaviour is undefined.",
+          "text": "Without the cast, printf gets the int a where %f needs a double, and the behaviour is undefined.",
           "claims": [
             "c.ub"
-          ],
-          "spoken": "Without the cast, passing a to percent f gives printf an int where it needs a double, and the behaviour is undefined."
+          ]
         },
         {
           "text": "So ub.c is compiled for its warning and never run.",

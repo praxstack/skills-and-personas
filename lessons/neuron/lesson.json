@@ -14,7 +14,7 @@
       "ub": false,
       "run": true,
       "show": {
-        "from": 5,
+        "from": 4,
         "to": 15
       },
       "diagnostics": {
@@ -913,7 +913,7 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+      "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
       "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
       "sources": [
         {
@@ -1127,8 +1127,7 @@
           "text": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and -1, and a bias of -0.2.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and minus 1, and a bias of minus 0.2."
+          ]
         }
       ]
     },
@@ -1146,15 +1145,13 @@
           "text": "Each input is multiplied by its weight: 0.8 × 1.5 = +1.2 and 0.4 × -1 = -0.4.",
           "claims": [
             "c.mul"
-          ],
-          "spoken": "Each input is multiplied by its weight. 0.8 times 1.5 is plus 1.2, and 0.4 times minus 1 is minus 0.4."
+          ]
         },
         {
           "text": "Here the negative weight -1 turns the positive input 0.4 into a negative term, -0.4.",
           "claims": [
             "c.sign"
-          ],
-          "spoken": "Here the negative weight, minus 1, turns the positive input 0.4 into a negative term, minus 0.4."
+          ]
         }
       ],
       "ask": "What signed term does each input give?"
@@ -1189,7 +1186,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+          "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -1210,8 +1207,7 @@
           "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6. That sum is z.",
           "claims": [
             "c.add"
-          ],
-          "spoken": "The neuron adds the two terms and the bias. 1.2 minus 0.4 minus 0.2 is 0.6. That sum is z."
+          ]
         }
       ],
       "title_claims": [
@@ -1233,8 +1229,7 @@
           "text": "ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0.",
           "claims": [
             "c.relu"
-          ],
-          "spoken": "ReLU outputs the larger of 0 and z. A positive z passes through unchanged, and a z of 0 or less gives 0."
+          ]
         },
         {
           "text": "Here z is 0.6, which is positive, so the output a is 0.6.",
@@ -1270,8 +1265,7 @@
           "text": "In double, z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
           "claims": [
             "c.round"
-          ],
-          "spoken": "In double, z here is not exactly 0.6, but percent g rounds it to six significant digits, and prints 0.6."
+          ]
         }
       ],
       "title_claims": [
