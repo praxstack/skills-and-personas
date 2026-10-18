@@ -1,8 +1,11 @@
 """Independent expectations: pure functions that compute what a fact should be.
 
-This module never imports capture code (AC-2.8). A fact's `expect` is either
+This module imports nothing from ptk, so capture code can never feed it (AC-2.8, D17.5;
+tests/test_lint.py::test_expect_independent). A fact's `expect` is either
 {"fn": name, "args": [...]} naming a function here, or {"value": ..., "reviewed": true}.
-Every function returns a str, because facts store displayed text.
+Every function returns a str, because facts store displayed text. Each computes the answer
+from the C rules directly (two's complement widths, printf conversions, switch semantics),
+never by running or parsing a program.
 """
 
 
@@ -21,6 +24,11 @@ def printf_d(value):
 
 def printf_u(value, width_bits=32):
     return str(int(value) & ((1 << int(width_bits)) - 1))
+
+
+def printf_x(value, width_bits=32):
+    """%x of an unsigned value of the given width: lower-case hex, no prefix."""
+    return format(int(value) & ((1 << int(width_bits)) - 1), "x")
 
 
 def printf_f(value, precision=6):
@@ -44,6 +52,13 @@ def sizeof_from_platform(platform, ctype):
 
 def sum_(values):
     return str(sum(int(v) for v in values))
+
+
+def factorial(n):
+    out = 1
+    for k in range(2, int(n) + 1):
+        out *= k
+    return str(out)
 
 
 def factorial_frames(n):
@@ -82,9 +97,12 @@ def switch_stdout(cases, n, tail):
 
 FUNCTIONS = {
     "bits": bits, "hex": hex_, "printf_d": printf_d, "printf_u": printf_u, "printf_f": printf_f,
-    "printf_c": printf_c, "ascii": ascii_, "sizeof_from_platform": sizeof_from_platform, "sum": sum_,
-    "factorial_frames": factorial_frames, "switch_line": switch_line, "switch_stdout": switch_stdout,
+    "printf_x": printf_x, "printf_c": printf_c, "ascii": ascii_, "sizeof_from_platform": sizeof_from_platform,
+    "sum": sum_, "factorial": factorial, "factorial_frames": factorial_frames, "switch_line": switch_line,
+    "switch_stdout": switch_stdout,
 }
+# Functions that take the captured platform as their first argument; `args` omits it.
+PLATFORM_FUNCTIONS = {"sizeof_from_platform"}
 
 
 def evaluate(expect, platform=None):
@@ -95,6 +113,6 @@ def evaluate(expect, platform=None):
     if fn is None:
         raise KeyError(f"unknown expect function {expect['fn']!r}")
     args = list(expect["args"])
-    if expect["fn"] == "sizeof_from_platform":
+    if expect["fn"] in PLATFORM_FUNCTIONS:
         args = [platform or {}, *args]
     return fn(*args)

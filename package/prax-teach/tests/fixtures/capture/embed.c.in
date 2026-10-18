@@ -1,0 +1,14 @@
+/* Rereview P2-A fixture: tries to #embed a file outside the program's dirs and print it.
+ * The test replaces @SECRET@ with an absolute path. clang's C23-extension warning is silenced
+ * on purpose, so only the sandbox stands between the file and the captured facts. */
+#include <stdio.h>
+#pragma clang diagnostic ignored "-Wc23-extensions"
+
+static const unsigned char data[] = {
+#embed "@SECRET@"
+    , 0};
+
+int main(void) {
+    fputs((const char *)data, stdout);
+    return 0;
+}

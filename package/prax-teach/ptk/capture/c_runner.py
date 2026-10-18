@@ -3,13 +3,17 @@
 For each program:
   1. refuse unless sandbox-exec exists (SandboxUnavailable, exit 2, nothing runs);
   2. clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address under the
-     sandbox `compile` profile; any warning blocks unless an undefined-behaviour claim covers it;
+     sandbox `compile` profile (file contents readable only from the temp dir and the toolchain,
+     so `#embed "~/secret"` fails); any warning blocks unless an undefined-behaviour claim that
+     lists the program in `programs` covers it (and such a program is `ub: true`);
   3. gcc-16 -c (object discarded) with the same warnings: diagnostics only, recorded, never run;
   4. ub:true programs compile but never run;
   5. run twice under the `run` profile (no network, no fork, writes only in its temp dir),
      1 MB output cap, RSS watchdog over the process group, 5 s timeout;
   6. both runs must match byte for byte; stdout sha256 and the selected lines become facts.
 Platform facts come from a probe program run the same way.
+
+A clean run is recorded as "no finding", never as "no UB" (E19): sanitizers see one execution.
 """
 import hashlib
 import platform as pyplatform
@@ -45,16 +49,41 @@ def _sha(s):
     return hashlib.sha256(s.encode() if isinstance(s, str) else s).hexdigest()
 
 
-def _ub_covered(lesson, program):
-    ub_claims = [c for c in lesson.data["claims"] if c["kind"] == "undefined-behaviour"]
-    return bool(program.get("ub")) and bool(ub_claims)
+def ub_covered(lesson, program):
+    """True when the program is ub:true and an undefined-behaviour claim lists it in `programs`."""
+    return bool(program.get("ub")) and any(
+        c["kind"] == "undefined-behaviour" and program["id"] in c.get("programs", []) for c in lesson.data["claims"])
+
+
+_TOOLCHAIN = {}
+
+
+def toolchain_params():
+    """DEVDIR and GCCROOT for the compile profile's read allowlist, realpath'd and cached."""
+    if not _TOOLCHAIN:
+        dev = Path(host.run(["/usr/bin/xcode-select", "-p"], timeout=30, check=True).stdout.strip()).resolve()
+        if dev.parent.name == "Contents" and dev.parent.parent.suffix == ".app":
+            dev = dev.parent.parent
+        gcc = Path(host.which("gcc-16")).resolve().parent.parent  # <prefix>/bin/gcc-16 -> <prefix>
+        if gcc.parent.parent.name == "Cellar":  # Homebrew: cc1 links gmp/mpfr/isl from sibling kegs
+            gcc = gcc.parent.parent
+        _TOOLCHAIN.update(DEVDIR=str(dev), GCCROOT=str(gcc))
+    return dict(_TOOLCHAIN)
+
+
+def compile_sandboxed(cmd, tmp, timeout=120):
+    """Run a compiler under MODE=compile. Its scratch files go to the per-call temp dir."""
+    sb = host.sandboxed(cmd, "compile", tmp=tmp, proj=tmp)
+    extra = [x for k, v in toolchain_params().items() for x in ("-D", f"{k}={v}")]
+    sb[1:1] = extra
+    return host.run(sb, cwd=tmp, timeout=timeout, env=host.child_env({"TMPDIR": f"{Path(tmp).resolve()}/"}))
 
 
 def compile_program(src_path, tmp, name="prog"):
     clang = host.which("clang")
     exe = tmp / name
     cmd = [clang, *CLANG_FLAGS, "-o", exe.name, Path(src_path).name]
-    res = host.run(host.sandboxed(cmd, "compile", tmp=tmp, proj=tmp), cwd=tmp, timeout=120)
+    res = compile_sandboxed(cmd, tmp)
     if res.code != 0:
         raise errors.CompileError(f"clang failed on {Path(src_path).name}", stderr=res.stderr[-4000:])
     return exe, res.stderr, " ".join(["clang", *CLANG_FLAGS, Path(src_path).name])
@@ -63,8 +92,7 @@ def compile_program(src_path, tmp, name="prog"):
 def gcc_diagnostics(src_path, tmp):
     gcc = host.which("gcc-16")
     obj = tmp / (Path(src_path).stem + ".gcc.o")
-    res = host.run(host.sandboxed([gcc, *GCC_FLAGS, "-o", obj.name, Path(src_path).name], "compile", tmp=tmp, proj=tmp), cwd=tmp,
-                   timeout=120)
+    res = compile_sandboxed([gcc, *GCC_FLAGS, "-o", obj.name, Path(src_path).name], tmp)
     if res.code != 0:  # review P3-1: a gcc error is a compile error, not a diagnostic string
         raise errors.CompileError(f"gcc-16 failed on {Path(src_path).name}", stderr=res.stderr[-4000:])
     return res.stderr.strip()
@@ -93,18 +121,21 @@ def capture_program(lesson, program, tmp):
     exe, warnings, cmd = compile_program(src, tmp, program["id"])
     diags = {"clang": warnings.strip()}
     diags["gcc-16"] = gcc_diagnostics(src, tmp)
-    if "warning:" in warnings and not _ub_covered(lesson, program):
+    if "warning:" in warnings and not ub_covered(lesson, program):
         raise errors.SanitizerFinding(f"clang warning in {program['path']} and no undefined-behaviour claim covers it",
-                                      stderr=warnings[-4000:])
+                                      stderr=warnings[-4000:], program=program["id"])
     out = {"program": program["id"], "diagnostics": diags, "source_sha256": _sha(src.read_bytes()), "ran": False}
-    if program.get("ub") or not program.get("run", True):
-        return out  # compiled, never run
+    if program.get("ub"):
+        return {**out, "sanitizers": "not run (ub)"}  # compiled, never run
+    if not program.get("run", True):
+        return {**out, "sanitizers": "not run"}
     first = run_program(exe, tmp, program.get("args", []))
     second = run_program(exe, tmp, program.get("args", []))
     if first.stdout != second.stdout:
         raise errors.NondeterministicOutput(f"{program['id']}: the two runs differ", run1=first.stdout[:4000],
                                             run2=second.stdout[:4000])
     out.update(ran=True, stdout=first.stdout, stdout_sha256=_sha(first.stdout), runs=2,
+               sanitizers="no finding",
                cmd=f"{cmd} && ./{program['id']} (sandbox-exec MODE=run, run twice)")
     return out
 
@@ -180,5 +211,6 @@ def capture_lesson(lesson):
         if c["ran"]:
             (out_dir / f"{pid}.stdout").write_text(c["stdout"])
     return {"captured": True, "programs": {pid: {"ran": c["ran"], "stdout_sha256": c.get("stdout_sha256"),
-                                                 "diagnostics": c["diagnostics"]} for pid, c in caps.items()},
+                                                 "sanitizers": c["sanitizers"], "diagnostics": c["diagnostics"]}
+                                           for pid, c in caps.items()},
             "facts": {f["id"]: f["value"] for f in lesson.data["facts"]}, "platform": platform}

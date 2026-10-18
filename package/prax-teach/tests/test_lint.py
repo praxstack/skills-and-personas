@@ -1,6 +1,8 @@
 """AC-2.8, AC-8.7 (subprocess boundary), AC-8.8 (no broad except)."""
 import ast
+import json
 import re
+import sys
 
 from ptk import host
 
@@ -12,14 +14,46 @@ def _py():
     return [p for p in PTK.rglob("*.py") if "__pycache__" not in p.parts]
 
 
-def test_expect_independent():
-    tree = ast.parse((PTK / "expect.py").read_text())
-    for node in ast.walk(tree):
+# expect.py may use these standard-library modules and nothing else: no ptk module at all,
+# so neither capture code nor anything that imports it can reach the expectations (D17.5).
+EXPECT_ALLOWED_IMPORTS = {"math", "fractions", "decimal", "struct", "inspect", "itertools", "functools", "re"}
+DYNAMIC_IMPORTS = {"__import__", "import_module", "exec", "eval", "reload"}
+
+
+def _expect_import_problems(src):
+    problems = []
+    for node in ast.walk(ast.parse(src)):
         if isinstance(node, ast.ImportFrom):
-            assert "capture" not in (node.module or ""), "expect.py imports capture code"
-            assert node.level == 0 or node.module not in ("capture",), node.module
-        if isinstance(node, ast.Import):
-            assert not any("capture" in a.name for a in node.names)
+            if node.level or (node.module or "").split(".")[0] not in EXPECT_ALLOWED_IMPORTS:
+                problems.append(f"line {node.lineno}: from {'.' * node.level}{node.module or ''} import ...")
+        elif isinstance(node, ast.Import):
+            problems += [f"line {node.lineno}: import {a.name}" for a in node.names
+                         if a.name.split(".")[0] not in EXPECT_ALLOWED_IMPORTS]
+        elif isinstance(node, ast.Call):
+            name = getattr(node.func, "id", None) or getattr(node.func, "attr", None)
+            if name in DYNAMIC_IMPORTS:
+                problems.append(f"line {node.lineno}: dynamic {name}()")
+    return problems
+
+
+def test_expect_independent():
+    """AC-2.8: ptk/expect.py imports nothing from ptk.capture, directly, dynamically or transitively."""
+    # the checker itself catches each way of reaching capture code
+    for planted in ("from .capture import c_runner", "from ptk.capture.c_runner import select",
+                    "import ptk.capture", "from . import host", "import os, subprocess",
+                    "import importlib\nm = importlib.import_module('ptk.capture')", "m = __import__('ptk')"):
+        assert _expect_import_problems(planted), f"the lint missed: {planted!r}"
+    problems = _expect_import_problems((PTK / "expect.py").read_text())
+    assert not problems, f"expect.py imports outside its allowlist: {problems}"
+    # and at run time, in a fresh interpreter: importing ptk.expect loads no other ptk module
+    probe = "import sys, json, ptk.expect; print(json.dumps(sorted(m for m in sys.modules if m.startswith('ptk'))))"
+    env = host.child_env({"PYTHONPATH": str(host.PKG), "PYTHONDONTWRITEBYTECODE": "1"})
+    res = host.run([sys.executable, "-I", "-c", f"import sys; sys.path.insert(0, {str(host.PKG)!r}); {probe}"],
+                   env=env, timeout=60)
+    assert res.code == 0, res.stderr[-800:]
+    loaded = json.loads(res.stdout)
+    assert loaded == ["ptk", "ptk.expect"], f"importing ptk.expect loaded {loaded}"
+    return {"loaded": loaded}
 
 
 def test_no_broad_except():

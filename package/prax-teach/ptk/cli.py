@@ -16,10 +16,23 @@ def _emit(obj, as_json=True):
 
 
 def cmd_validate(a):
+    """Schema plus reference checks. Every problem is printed as {pointer, message}; exit 3 (AC-2.1)."""
     from . import model
-    lesson = model.load(a.lesson)
-    model.validate(lesson)
+    try:
+        lesson = model.load(a.lesson)
+        model.validate(lesson)
+    except errors.ModelError as e:
+        listed = e.detail.get("errors") or [{"pointer": e.detail.get("pointer", ""), "message": e.message}]
+        _emit({"valid": False, "error": e.kind, "lesson": str(a.lesson), "errors": listed})
+        return e.exit_code
     _emit({"valid": True, "lesson": lesson.id, "path": str(lesson.path)})
+    return errors.EXIT_OK
+
+
+def cmd_new(a):
+    """Scaffold <dir>/<slug>/lesson.json and programs/main.c with TODO: placeholders."""
+    from . import model
+    _emit(model.scaffold(a.slug, a.dir))
     return errors.EXIT_OK
 
 
@@ -87,6 +100,10 @@ def parser():
         s = sub.add_parser(name)
         s.add_argument("lesson")
         s.set_defaults(fn=fn)
+    s = sub.add_parser("new", help="scaffold a lesson: lesson.json and programs/ with TODO: placeholders")
+    s.add_argument("slug")
+    s.add_argument("--dir", default="lessons", help="parent directory (default: lessons)")
+    s.set_defaults(fn=cmd_new)
     s = sub.add_parser("build")
     s.add_argument("lesson")
     s.add_argument("--only", help="comma list of media: still,video,ive")

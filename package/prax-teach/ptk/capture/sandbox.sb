@@ -2,6 +2,7 @@
 ;;
 ;; One file, three modes, picked with -D MODE=...:
 ;;   compile  clang/gcc-16 compile a lesson program. Forks allowed (driver -> cc1 -> ld).
+;;            File contents readable only from TMP, PROJ and the toolchain (no #embed of ~).
 ;;   run      the compiled program runs. Deny-default (see the end of this file): it may exec
 ;;            itself, read TMP, /usr/lib, /System and the clang sanitizer runtime, write TMP,
 ;;            read sysctls and signal itself. No mach-lookup, so no LaunchServices, Apple
@@ -48,6 +49,36 @@
       (allow file-write* (subpath "/private/var/folders"))))
 (if (string=? (param "MODE") "render")
     (allow file-write* (subpath (param "STATE"))))
+
+;; ---------- compile: file reads (rereview P2-A) ----------
+;; A lesson program could `#embed` (or #include) any readable file and print it into the
+;; captured facts. Compile mode may read file contents only from the program's own dirs and
+;; the toolchain. Metadata (stat) stays allowed: path lookups need it and it leaks no bytes.
+;; Extra parameters, compile only (set by ptk/capture/c_runner.py):
+;;   DEVDIR  the active developer root, realpath'd: the Xcode.app bundle when xcode-select -p
+;;           points inside one (xcrun loads its SharedFrameworks), else the xcode-select dir
+;;   GCCROOT the gcc-16 install root (Homebrew's Cellar, which also holds gmp/mpfr/isl), realpath'd
+(if (string=? (param "MODE") "compile")
+    (begin
+      (deny file-read-data)
+      (allow file-read-data
+             (literal "/")
+             (subpath (param "TMP"))
+             (subpath (param "PROJ"))
+             (subpath (param "DEVDIR"))
+             (subpath (param "GCCROOT"))
+             (subpath "/usr/bin")
+             (subpath "/usr/lib")
+             (subpath "/usr/include")
+             (subpath "/usr/share")
+             (subpath "/System/Library")
+             (subpath "/System/Volumes/Preboot/Cryptexes/OS/System/Library")
+             (subpath "/Library/Developer/CommandLineTools")
+             (subpath "/dev")
+             ;; xcodebuild's license check
+             (literal "/Library/Preferences/com.apple.dt.Xcode.plist")
+             ;; xcrun's lookup cache in the per-user temp dir (DARWIN_USER_TEMP_DIR, not $TMPDIR)
+             (regex #"^/private/var/folders/[^/]+/[^/]+/T/xcrun_db"))))
 
 ;; ---------- processes ----------
 ;; The program itself may not create children (E24). sandbox-exec execs it directly,

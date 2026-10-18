@@ -102,7 +102,9 @@ def load(path):
 
 
 def _pointer(path_items):
-    return "/" + "/".join(str(x).replace("~", "~0").replace("/", "~1") for x in path_items)
+    """RFC 6901 JSON pointer; the whole document is the empty string."""
+    items = list(path_items)
+    return "/" + "/".join(str(x).replace("~", "~0").replace("/", "~1") for x in items) if items else ""
 
 
 def schema_errors(data):
@@ -112,12 +114,62 @@ def schema_errors(data):
             for e in sorted(validator.iter_errors(data), key=lambda e: list(map(str, e.absolute_path)))]
 
 
+# Elements each figure kind always draws (data-key in the artifacts). Storyboard key_nodes may
+# name these or the figure's own `elements`.
+FIGURE_ELEMENTS = {"code-trace": ("code", "output", "question", "note", "compare")}
+PLATFORM_KEYS = ("captured", "os", "arch", "sizeof", "char_signed", "endianness", "libc", "compilers", "sandbox")
+PLACEHOLDER = "TODO:"
+SECTIONS = ("programs", "facts", "claims", "misconceptions", "trace", "storyboard")
+
+
+def _expect_problem(exp):
+    """Why an {fn, args} expectation cannot be evaluated, or None. Platform-dependent fns are
+    checked for arity only, because the platform is unknown before capture."""
+    import inspect
+    from . import expect
+    fn = expect.FUNCTIONS.get(exp["fn"])
+    if fn is None:
+        return f"unknown expect function {exp['fn']!r}; known: {sorted(expect.FUNCTIONS)}"
+    args = list(exp["args"])
+    if exp["fn"] in expect.PLATFORM_FUNCTIONS:
+        args = [{}, *args]
+    try:
+        inspect.signature(fn).bind(*args)
+    except TypeError as e:
+        return f"expect {exp['fn']}{tuple(exp['args'])!r} does not fit {exp['fn']}{inspect.signature(fn)}: {e}"
+    if exp["fn"] in expect.PLATFORM_FUNCTIONS:
+        return None
+    try:
+        fn(*args)
+    except (TypeError, ValueError, KeyError, IndexError, AttributeError) as e:
+        return f"expect {exp['fn']} fails on its args: {type(e).__name__}: {e}"
+    return None
+
+
+def _placeholders(obj, path, errs):
+    if isinstance(obj, str):
+        if PLACEHOLDER in obj:
+            errs.append({"pointer": _pointer(path), "message": f"placeholder {PLACEHOLDER!r} left in; write the real text"})
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            _placeholders(v, [*path, k], errs)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            _placeholders(v, [*path, i], errs)
+
+
 def reference_errors(data, base_dir=None):
-    """Dangling ids: fact->program, claim->fact, misconception->claim, trace->fact/program,
-    storyboard->state/claim/fact, figure->program/state/claim; duplicate ids; missing program files."""
+    """Everything the schema cannot say. Each error is {pointer, message}.
+
+    Dangling ids: fact->program, claim->fact/program, misconception->claim, trace->program/fact,
+    storyboard->state/claim/fact/misconception, key node->figure element, figure->program/state/claim.
+    Also: duplicate ids, missing program files, unusable expectations, stdout facts of programs that
+    never run, ub programs without a covering undefined-behaviour claim, a question whose own scene
+    already reveals the answer, summary scenes whose mechanism is never shown (D20.5), placeholders.
+    """
     errs = []
     ids = {}
-    for section in ("programs", "facts", "claims", "misconceptions", "trace", "storyboard"):
+    for section in SECTIONS:
         seen = {}
         for i, item in enumerate(data.get(section, [])):
             if item.get("id") in seen:
@@ -128,50 +180,115 @@ def reference_errors(data, base_dir=None):
     def need(kind, ref, pointer):
         if ref not in ids[kind]:
             errs.append({"pointer": pointer, "message": f"unknown {kind[:-1]} {ref!r}"})
+            return False
+        return True
 
-    for i, p in enumerate(data.get("programs", [])):
+    programs = data.get("programs", [])
+    for i, p in enumerate(programs):
         if base_dir and not (Path(base_dir) / p["path"]).exists():
             errs.append({"pointer": f"/programs/{i}/path", "message": f"program file {p['path']} missing"})
-    from .expect import FUNCTIONS
+        if p["ub"] and p["run"]:
+            errs.append({"pointer": f"/programs/{i}/run", "message": "a ub:true program never runs; set run:false"})
+        if p["ub"] and not any(c["kind"] == "undefined-behaviour" and p["id"] in c.get("programs", [])
+                               for c in data.get("claims", [])):
+            errs.append({"pointer": f"/programs/{i}/ub", "message": f"program {p['id']!r} is ub:true but no claim of "
+                         "kind undefined-behaviour lists it in `programs`"})
     for i, f in enumerate(data.get("facts", [])):
-        need("programs", f["program"], f"/facts/{i}/program")
-        fn = f.get("expect", {}).get("fn")
-        if fn is not None and fn not in FUNCTIONS:
-            errs.append({"pointer": f"/facts/{i}/expect/fn", "message": f"unknown expect function {fn!r}"})
+        if need("programs", f["program"], f"/facts/{i}/program"):
+            prog = programs[ids["programs"][f["program"]]]
+            if f["select"]["stream"] == "stdout" and (prog["ub"] or not prog["run"]):
+                errs.append({"pointer": f"/facts/{i}/select/stream", "message": f"fact reads the stdout of "
+                             f"{f['program']!r}, which never runs"})
+        if f["select"]["stream"] == "platform" and f["select"]["key"].split(".")[0] not in PLATFORM_KEYS:
+            errs.append({"pointer": f"/facts/{i}/select/key", "message": f"unknown platform key "
+                         f"{f['select']['key']!r}; starts with one of {list(PLATFORM_KEYS)}"})
+        if "fn" in f["expect"]:
+            why = _expect_problem(f["expect"])
+            if why:
+                ptr = "fn" if why.startswith("unknown expect function") else "args"
+                errs.append({"pointer": f"/facts/{i}/expect/{ptr}", "message": why})
     for i, c in enumerate(data.get("claims", [])):
         for j, fid in enumerate(c.get("facts", [])):
             need("facts", fid, f"/claims/{i}/facts/{j}")
+        for j, pid in enumerate(c.get("programs", [])):
+            need("programs", pid, f"/claims/{i}/programs/{j}")
     for i, m in enumerate(data.get("misconceptions", [])):
         need("claims", m["correction"], f"/misconceptions/{i}/correction")
-    for i, s in enumerate(data.get("trace", [])):
+    trace = data.get("trace", [])
+    for i, s in enumerate(trace):
         need("programs", s["state"]["program"], f"/trace/{i}/state/program")
         for j, fid in enumerate(s["state"].get("output", [])):
             need("facts", fid, f"/trace/{i}/state/output/{j}")
         for j, fid in enumerate(s.get("reveals", [])):
             need("facts", fid, f"/trace/{i}/reveals/{j}")
+    errs += _storyboard_errors(data, ids, need)
+    errs += _figure_errors(data, need)
+    _placeholders(data, [], errs)
+    return errs
+
+
+def _shown_facts(state):
+    return set(state["state"].get("output", [])) | set(state.get("reveals", []))
+
+
+def _storyboard_errors(data, ids, need):
+    errs = []
+    fig = data.get("figure")
+    elements = set(FIGURE_ELEMENTS.get(fig["kind"], ())) | set(fig.get("elements", [])) if fig else set()
+    trace = data.get("trace", [])
+    shown_states = set()
     for i, sc in enumerate(data.get("storyboard", [])):
-        need("trace", sc["state"], f"/storyboard/{i}/state")
+        has_state = need("trace", sc["state"], f"/storyboard/{i}/state")
+        if has_state:
+            shown_states.add(sc["state"])
         for j, n in enumerate(sc["narration"]):
             for k, cid in enumerate(n["claims"]):
                 need("claims", cid, f"/storyboard/{i}/narration/{j}/claims/{k}")
-        if "question" in sc:
-            need("facts", sc["question"]["answer_fact"], f"/storyboard/{i}/question/answer_fact")
-    fig = data.get("figure")
-    if fig:
-        need("programs", fig["program"], "/figure/program")
-        for j, sid in enumerate(fig.get("states", [])):
-            need("trace", sid, f"/figure/states/{j}")
-        for j, n in enumerate(fig.get("notes", [])):
-            need("claims", n["claim"], f"/figure/notes/{j}/claim")
-        for j, cid in enumerate(fig.get("caption_claims", [])):
-            need("claims", cid, f"/figure/caption_claims/{j}")
-        if fig.get("title_claim"):
-            need("claims", fig["title_claim"], "/figure/title_claim")
-        if "compare" in fig:
-            need("programs", fig["compare"]["program"], "/figure/compare/program")
-            need("trace", fig["compare"]["state"], "/figure/compare/state")
-            need("claims", fig["compare"]["claim"], "/figure/compare/claim")
+        for j, key in enumerate(sc.get("key_nodes", [])):
+            if key not in elements:
+                errs.append({"pointer": f"/storyboard/{i}/key_nodes/{j}", "message": f"unknown figure element {key!r}"
+                             + (f"; the figure has {sorted(elements)}" if fig else "; the lesson has no figure")})
+        if sc.get("view") == "summary" and need("trace", sc["mechanism"], f"/storyboard/{i}/mechanism") \
+                and sc["mechanism"] not in shown_states:
+            errs.append({"pointer": f"/storyboard/{i}/mechanism", "message": f"summary scene {sc['id']!r} pairs with "
+                         f"state {sc['mechanism']!r}, which no earlier or same scene shows (D20.5)"})
+        q = sc.get("question")
+        if not q:
+            continue
+        if need("facts", q["answer_fact"], f"/storyboard/{i}/question/answer_fact") and has_state \
+                and q["answer_fact"] in _shown_facts(trace[ids["trace"][sc["state"]]]):
+            errs.append({"pointer": f"/storyboard/{i}/question/answer_fact", "message": f"the scene's own state "
+                         f"{sc['state']!r} already shows the answer {q['answer_fact']!r}"})
+        opts = q.get("options", [])
+        if opts and sum(o["correct"] for o in opts) != 1:
+            errs.append({"pointer": f"/storyboard/{i}/question/options", "message": "exactly one option must be correct"})
+        for j, o in enumerate(opts):
+            if not o["correct"] and "misconception" not in o:
+                errs.append({"pointer": f"/storyboard/{i}/question/options/{j}", "message": "a wrong option must name "
+                             "the misconception it reveals"})
+            elif "misconception" in o:
+                need("misconceptions", o["misconception"], f"/storyboard/{i}/question/options/{j}/misconception")
     return errs
+
+
+def _figure_errors(data, need):
+    fig = data.get("figure")
+    if not fig:
+        return []
+    need("programs", fig["program"], "/figure/program")
+    for j, sid in enumerate(fig.get("states", [])):
+        need("trace", sid, f"/figure/states/{j}")
+    for j, n in enumerate(fig.get("notes", [])):
+        need("claims", n["claim"], f"/figure/notes/{j}/claim")
+    for j, cid in enumerate(fig.get("caption_claims", [])):
+        need("claims", cid, f"/figure/caption_claims/{j}")
+    if fig.get("title_claim"):
+        need("claims", fig["title_claim"], "/figure/title_claim")
+    if "compare" in fig:
+        need("programs", fig["compare"]["program"], "/figure/compare/program")
+        need("trace", fig["compare"]["state"], "/figure/compare/state")
+        need("claims", fig["compare"]["claim"], "/figure/compare/claim")
+    return []
 
 
 def captured_errors(data):
@@ -193,10 +310,69 @@ def validate(lesson, stage="draft"):
                                       f"{errs[0]['message']}", errors=errs)
     errs = reference_errors(data, base)
     if errs:
-        raise errors.ModelReferenceError(f"{len(errs)} reference error(s); first at {errs[0]['pointer']}: "
+        raise errors.ModelReferenceError(f"{len(errs)} model error(s); first at {errs[0]['pointer']}: "
                                          f"{errs[0]['message']}", errors=errs)
     if stage == "captured":
         errs = captured_errors(data)
         if errs:
             raise errors.ModelReferenceError(f"lesson not captured; first at {errs[0]['pointer']}", errors=errs)
     return True
+
+
+# ---------------------------------------------------------------- ptk new
+
+SCAFFOLD_PROGRAM = """#include <stdio.h>
+
+int main(void) {
+    puts("hello");
+    return 0;
+}
+"""
+
+
+def scaffold_data(slug):
+    """A schema-valid lesson whose prose is all `TODO:` placeholders. `ptk validate` lists each
+    placeholder by JSON pointer until the author replaces it (references/LESSON-MODEL.md)."""
+    todo = PLACEHOLDER
+    return {
+        "schema": "prax-teach/lesson@1", "id": slug, "title": f"{todo} lesson title", "topic": f"{todo} topic",
+        "language": "c", "request": f"{todo} the learner's request, verbatim",
+        "programs": [{"id": "p1", "path": "programs/main.c", "std": "c17", "ub": False, "run": True}],
+        "facts": [{"id": "f.p1.l1", "program": "p1", "kind": "stdout-line", "select": {"stream": "stdout", "line": 1},
+                   "expect": {"value": "hello", "reviewed": True}}],
+        "claims": [{"id": "c.one", "text": f"{todo} one teaching sentence.", "kind": "mechanism",
+                    "justification": f"{todo} why this sentence is true, citing the clause or the run.",
+                    "sources": [{"title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+                                 "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+                                 "clause": f"{todo} clause"}],
+                    "facts": ["f.p1.l1"]}],
+        "misconceptions": [],
+        "trace": [{"id": "s0", "label": f"{todo} what this state shows",
+                   "state": {"program": "p1", "line": 4, "path": [4], "output": ["f.p1.l1"], "vars": {}},
+                   "reveals": ["f.p1.l1"]}],
+        "storyboard": [{"id": "sc1", "title": f"{todo} scene title", "state": "s0", "key_nodes": ["code", "output"],
+                        "narration": [{"text": f"{todo} one teaching sentence.", "claims": ["c.one"]}]}],
+        "figure": {"kind": "code-trace", "program": "p1", "states": ["s0"]},
+        "requested_media": ["still"],
+    }
+
+
+def scaffold(slug, parent):
+    """`ptk new <slug> [--dir lessons]`: write <parent>/<slug>/lesson.json and programs/main.c."""
+    import re
+    if not re.fullmatch(json.loads(SCHEMA.read_text())["$defs"]["slug"]["pattern"], slug):
+        raise errors.ModelSchemaError(f"bad lesson slug {slug!r}: lower-case letters, digits, '.' and '-'",
+                                      pointer="/id")
+    root = Path(parent).resolve() / slug
+    if root.exists():
+        raise errors.ModelSchemaError(f"{root} already exists; ptk new never overwrites a lesson", pointer="",
+                                      path=str(root))
+    (root / "programs").mkdir(parents=True)
+    (root / "programs" / "main.c").write_text(SCAFFOLD_PROGRAM)
+    lesson = Lesson(root / "lesson.json", scaffold_data(slug))
+    lesson.save()
+    todo = []
+    _placeholders(lesson.data, [], todo)
+    return {"created": str(root), "files": [str(lesson.path), str(root / "programs" / "main.c")],
+            "placeholders": [e["pointer"] for e in todo],
+            "next": "replace every TODO: (see references/LESSON-MODEL.md), then `ptk validate " + str(root) + "`"}
