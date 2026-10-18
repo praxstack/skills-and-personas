@@ -174,3 +174,32 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
   - A: a clean-worktree full selftest, the holdout routing evaluator v2 vs v2.1, the protected checks, and a numeric claims audit;
   - B1 and B2: the full claims suite on all four lessons;
   - C: an independent five-lens review.
+
+## Final result (2026-10-18, budget 18/18 spent, stopped per FREEZE)
+- **Frozen evaluator (holdout, 32 prompts):** v2.1 beats v2 on every field. Mode 84.4% vs 62.5%, visual route 78.1% vs 46.9%, medium 71.9% vs 18.8%.
+- **Protected checks hold:** one entry per host on 4 hosts, the tamper test (44/44), no network at teach time, and v2 tests (16 JS on Node 22 and 24; 106 Python, asserts identical).
+- **Numeric audit:** no false statement. The Annex F citation is weak.
+- **Tests:** selftest 216/217 with built lessons; the only not-run is Anki. `test_predict_first_flow` fails because the checker and TEACHING.md disagree. That is Prax's call, since it touches the evaluator.
+- **Full claims suite: no lesson is `verified`.**
+  - Mutations caught 38/38.
+  - Controls: switch 8/11, one-byte 8/10, factorial 8/10, neuron 9/9.
+  - Lesson job rejected: factorial (t.213 "before the answer plays" in the transcript) and neuron (c.mul quote cut, and the trailing-zero rule missing).
+  - Real defects found: "Three frames deep" against four frames shown; c.samebits too broad; reviewer drift on identical text.
+- **Five-lens final scores** (old → new):
+
+  | Lesson | Truth | Explanation | Looks | Interaction | Media |
+  |---|---|---|---|---|---|
+  | switch | 8→9 | 7→8 | 6→7 | 7→9 | 6→7 |
+  | one-byte | 7→8 | 5→7 | 4→6 | 4→8 | 5→7 |
+  | factorial | 8→9 | 5→8 | 6→7 | 4→8 | 6→7 |
+  | neuron | 7→9 | 6→7 | 6→8 | 3→8 | 6→8 |
+
+  Verdict: not world-class yet. Neuron reaches the Atlas look; switch and one-byte look plain.
+- **Stall report (no further rounds without Prax):** the fixes are listed in `reviews/final-five-lens.md` and `reviews/final-claims/`.
+  1. Make the lesson text fixes the claims reviewer found.
+  2. Reduce reviewer variance: give reviewers the cited source text so they don't quote from memory, then rerun the full suite.
+  3. Make wide stills true landscape, and give switch a figure.
+  4. Do a video type and layout pass.
+  5. Narration: about 170 wpm, no hedging.
+  6. The three router misses (implied still, course/resume, video request in the predict-first workspace).
+- **Decisions for Prax:** the acceptance proposal §1 to §9 (including canary-only, §9); the learner-state hard-link change; the WP9 evaluator changes; the predict-first checker rule; a live 5-minute session; whether to install v2.1 (the `prax-teach-v2` link still points to v2).
