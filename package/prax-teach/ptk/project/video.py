@@ -762,7 +762,7 @@ def scene_html(lesson, scene, index, count, timing):
                      f"font-family:{ty['value']['family']}; font-weight:700; line-height:1.25; color:{t['ground']}; background:{t['value']}; }}\n"
                      f".outcard {{ left:{ox}px; top:{oy}px; width:{ow}px; height:{ohh}px; }}\n"
                      f".panel.pbox {{ left:{L['side_x']}px; top:{L['side_top']}px; width:{L['side_w']}px; height:{L['side_h']}px; bottom:auto; padding:22px 28px; }}\n"
-                     f".pbox .qtext {{ font-size:{round(32 * bt['scale'])}px; }}\n")
+                     f".pbox .qtext {{ font-size:{round(32 * ty['body']['scale'])}px; }}\n")
         side = side.replace('class="panel qcard"', 'class="panel qcard pbox"')
     font = L["font"]
     kt, dt, bt, lt, vt, ct = ty["kicker"], ty["display"], ty["body"], ty["label"], ty["value"], ty["code"]

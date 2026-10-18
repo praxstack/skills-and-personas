@@ -4,8 +4,10 @@ Source of truth: `ptk/templates/tokens.json`. Projectors ask for a colour by rol
 
 ## Two themes, one set of roles
 
-- **Light** is the paper theme from WP0. Serif display and body (Source Serif 4), mono labels and code (JetBrains Mono), handwritten notes (Caveat), bordered cards.
-- **Dark** is taken from the Neuron Atlas still Prax accepted (D20.1). Navy ground, a sans display and body, mono numbers. Lavender for the path and notes, coral for the correction, mint for output values. Panels sit on the ground with no fill or border, split by thin rules, the way Atlas splits its three panels.
+One type system in both themes (round 18, review X5): the Atlas sans for display, body, labels and notes, mono for code, values and tags. Only the colour tokens change between light and dark, and both themes set panels on the ground split by thin rules, the way Atlas splits its three panels. Source Serif 4 and Caveat stay bundled for old artifacts but no role uses them.
+
+- **Light**: paper ground, ink text, blue for the path and notes, red for corrections.
+- **Dark**: taken from the Neuron Atlas still Prax accepted (D20.1). Navy ground, lavender for the path and notes, coral for the correction, mint for output values.
 
 | Role | Used for | Light | Dark | Atlas source |
 |---|---|---|---|---|
@@ -33,16 +35,17 @@ Light keeps its WP0 look. Its note and correction were only 5.7 L* apart, so the
 
 ## Type roles
 
-| Role | Light | Dark |
-|---|---|---|
-| kicker | mono 600, caps, tracked | sans 700, caps, tracked |
-| display | serif 600 | sans 800, ×0.86 |
-| body | serif 400 | sans 400, ×0.95 |
-| caption | serif italic | sans 400, ×0.95 |
-| label | mono 600, caps | sans 600, caps (Atlas's "MULTIPLY / SIGNED TERMS") |
-| note | Caveat 600 | sans 600, ×0.8 |
-| tag, code, foot | mono | mono |
-| value | mono 600 | mono 500 (Atlas's big mono numbers) |
+Both themes:
+
+| Role | Type |
+|---|---|
+| kicker | sans 700, caps, tracked |
+| display | sans 800, ×0.86 |
+| body, caption | sans 400, ×0.95 |
+| label | sans 600, caps (Atlas's "MULTIPLY / SIGNED TERMS") |
+| note | sans 600, ×0.8 |
+| tag, code, foot | mono |
+| value | mono 500 (Atlas's big mono numbers) |
 
 Sizes come from the layout (`LAYOUTS` in `still.py`); a role's `scale` adjusts them per theme.
 

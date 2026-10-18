@@ -53,6 +53,10 @@ Exit codes: 0 done, 1 a gate failed, 2 host problem (for example, no `sandbox-ex
 - `state` is the trace state on screen.
 - `narration[]` lines each cite the claims they state, and may carry a `spoken` respelling for TTS.
 - `question` asks for a prediction. `answer_fact` names the answer. The scene's own state must not already show the answer, and no narration, caption or chapter title before the answer cue may state it. Optional `options` must have exactly one correct choice, and each wrong option names the misconception it reveals.
+- `title_claims` tags a scene title with the claims it states or implies (`[]` for a neutral title). Every scene after a question needs it. A title that states the question's answer (it cites a claim about the answer fact or a part of it, or a claim the answer scene narrates) stays sealed in the IVE chapter list and the Q&A until the learner answers. A title at or before the question may not cite such a claim, and neither may the lesson's top-level `title_claims`.
+- `ask` (optional): one bounded question the Q&A asks before it reveals the scene, in written forms (`%f`, `factorial(2)`), at most 60 characters before its one question mark. Without it the layer is a walkthrough step.
+- Write `text` in written forms (`%f`, `ub.c`, `factorial(2)`) and put the spoken form in `spoken`; captions, the transcript and the Q&A show `text`, only TTS reads `spoken`. `lexicon/c.json` already speaks `%d`, `%u`, `%f`, `%c`, `%g` and the lessons' file names.
+- A question scene's narration invites the pick ("Which answer do you predict? Pick one of the three before the answer plays."). The IVE stops there until the learner picks; the plain video gives 8 s under a bar.
 - `key_nodes` names the figure elements that carry the mechanism in that scene. They must stay fully visible, with no inner scroll, at 390 px and 1440 px. A `code-trace` figure has `code`, `output`, `question`, `note` and `compare`, and `figure.elements` can add more.
 
 **figure**: the still's layout. `kind: code-trace` takes the program, its trace states, notes pinned to lines (each a claim), an optional comparison program and state, and caption claims.
@@ -62,6 +66,11 @@ Exit codes: 0 done, 1 a gate failed, 2 host problem (for example, no `sandbox-ex
   - `stack`: the call stack of each state's `frames`. The still draws every figure state side by side; pages and the film draw one state.
   - `neuron`: multiply, add and gate panels. `terms [{x, w, t}]`, `bias`, `sum`, `out`, `gate {line}`.
   - `place`: `side` (beside the program) or `hero` (full width above it).
+  - `vars` (stack): `{"param": "n", "result": "r"}`. Every frame then shows its own n (the argument in its `call` fact) and r: `r = ?` before its declaration, `r = 3 * ▢` while it waits on its call line, the received value once a frame names it in `got`, and its `ret` when it returns. Give each frame its `line`.
+- `explore`: the explorer's knob, one input the learner changes.
+  - `values`: one captured run per value of `var` (`values[]: {value, program, facts: {role: fact}, claims}`), shown as a table; roles `bits`, `hex`, `d`, `u`, `f`, and `char` or `byte`.
+  - `calls`: one captured run per argument, its whole stdout one fact (`facts: {out}`); the explorer replays it call by call with every frame's n and r.
+  - `neuron`: `sliders [{var, min, max, step}]` over w2 and b, every point from `ptk/expect_neuron.py`; `checks [{program, at, facts}]` name variant programs captured at a few points, which must print exactly the grid's lines.
 - `subject` (top level): the kicker's first part, default `C`.
 
 **requested_media**: the media to build, from `still`, `explorer`, `qa`, `cards`, `video` and `ive`.

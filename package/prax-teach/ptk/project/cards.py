@@ -7,7 +7,11 @@ r"""Flash card projector (WP4: AC-4.4, AC-4.5, D4.5, E23): Markdown plus an Anki
     every misconception                      ─▶ wrong-on-purpose card
                                                                front: "True or false? <statement>"
                                                                back:  "False." + its correction claim
-    each back also gives the claims that cite the answer's facts ("Why")
+    up to 3 rule claims (undefined-behaviour, rule, caveat, definition)
+                                             ─▶ rule card       front: "True or false? <claim>"
+                                                               back:  "True." (round 18: the answers mix)
+    each back gives at most two claims that state the answer ("Why"): the ones citing the answer fact, else
+    the ones citing a part of it (a line of a whole-stdout answer)
 
 Answers are the facts' captured text (text.display), never retyped. Each note's GUID is
 genanki.guid_for(lesson id, card id), and the model and deck ids come from the lesson id, so a
@@ -37,6 +41,18 @@ def _why(lesson, fact_ids):
     return [{"id": c["id"], "text": c["text"]} for c in lesson.data["claims"] if fs & set(c.get("facts", []))]
 
 
+RULE_KINDS = ("undefined-behaviour", "rule", "caveat", "definition")
+
+
+def _answer_why(lesson, fid):
+    from . import seal
+    exact = _why(lesson, [fid])
+    if exact:
+        return exact[:2]
+    qi = next(i for i, sc in enumerate(lesson.data["storyboard"]) if (sc.get("question") or {}).get("answer_fact") == fid)
+    return _why(lesson, sorted(seal.answer_facts(lesson.data, qi)))[:2]
+
+
 def build_cards(lesson):
     facts = lesson.by_id("facts")
     cards, covered = [], set()
@@ -49,7 +65,7 @@ def build_cards(lesson):
         lines = _stdout_facts(lesson, f["program"])
         cards.append({"id": f"q:{sc['id']}", "kind": "predict", "front": q["prompt"], "front_source": f"question:{sc['id']}",
                       "program": st["program"], "answer": text.display(f).split("\n"), "facts": [f["id"]],
-                      "why": _why(lesson, [f["id"]] + [x["id"] for x in lines])})
+                      "why": _answer_why(lesson, f["id"])})
         covered.add(f["program"])
     for p in lesson.data["programs"]:
         lines = _stdout_facts(lesson, p["id"])
@@ -58,12 +74,20 @@ def build_cards(lesson):
         cards.append({"id": f"out:{p['id']}", "kind": "output",
                       "front": text.ui("card_print", file=p["path"].split("/")[-1]), "front_source": "chrome:card_print",
                       "program": p["id"], "answer": [text.display(x) for x in lines], "facts": [x["id"] for x in lines],
-                      "why": _why(lesson, [x["id"] for x in lines])})
+                      "why": _why(lesson, [x["id"] for x in lines])[:2]})
+    falses = []
     for m in lesson.data["misconceptions"]:
         c = lesson.claim(m["correction"])
-        cards.append({"id": f"m:{m['id']}", "kind": "misconception", "misconception": m["id"],
-                      "front": text.ui("card_true_false", statement=m["statement"]), "front_source": "chrome:card_true_false",
-                      "answer": [text.ui("card_false")], "facts": [], "why": [{"id": c["id"], "text": c["text"]}]})
+        falses.append({"id": f"m:{m['id']}", "kind": "misconception", "misconception": m["id"],
+                       "front": text.ui("card_true_false", statement=m["statement"]), "front_source": "chrome:card_true_false",
+                       "answer": [text.ui("card_false")], "facts": [], "why": [{"id": c["id"], "text": c["text"]}]})
+    rules = sorted((c for c in lesson.data["claims"] if c["kind"] in RULE_KINDS),
+                   key=lambda c: RULE_KINDS.index(c["kind"]))[:3]
+    trues = [{"id": f"r:{c['id']}", "kind": "rule", "claim": c["id"],
+              "front": text.ui("card_true_false", statement=c["text"]), "front_source": "chrome:card_true_false",
+              "answer": [text.ui("card_true")], "facts": [], "why": []} for c in rules]
+    for k in range(max(len(falses), len(trues))):  # true and false statements alternate
+        cards += falses[k:k + 1] + trues[k:k + 1]
     if not cards:
         raise errors.ModelReferenceError("no question, output or misconception to make cards from", pointer="/storyboard")
     return cards
@@ -101,6 +125,8 @@ def _card_css():
             f".ans{{font-family:ui-monospace,Menlo,monospace;font-size:22px;font-weight:700;color:{L['note']}}}"
             f".nightMode .ans,.night_mode .ans{{color:{D['value']}}}"
             f".false{{font-size:22px;font-weight:700;color:{L['correction']}}}"
+            f".true{{font-size:22px;font-weight:700;color:{L['note']}}}"
+            f".nightMode .true,.night_mode .true{{color:{D['note']}}}"
             f".nightMode .false,.night_mode .false{{color:{D['correction']}}}"
             f".why{{color:{L['ink_soft']}}}.nightMode .why,.night_mode .why{{color:{D['ink_soft']}}}"
             f".lbl{{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:{L['label']}}}"
@@ -117,7 +143,7 @@ def anki_fields(lesson, c):
     if c["facts"]:
         back = '<p class="ans">' + "<br>".join(f'<span class="v">{e(a)}</span>' for a in c["answer"]) + "</p>"
     else:
-        back = f'<p class="false">{e(c["answer"][0])}</p>'
+        back = f'<p class="{"true" if c["kind"] == "rule" else "false"}">{e(c["answer"][0])}</p>'
     if c["why"]:
         back += f'<p class="lbl">{e(text.ui("card_why"))}</p>' + "".join(f'<p class="why">{e(w["text"])}</p>' for w in c["why"])
     return [front, back, c["id"], ",".join(c["facts"])]
@@ -156,12 +182,13 @@ def _texts(lesson, cards):
         items.append({"text": text.ui(key), "claims": [], "source": f"chrome:{key}", "where": "cards"})
     for c in cards:
         w = f"cards {c['id']}"
-        items.append({"text": c["front"], "claims": [], "source": c["front_source"], "where": w,
+        items.append({"text": c["front"], "claims": [c["claim"]] if c.get("claim") else [], "source": c["front_source"], "where": w,
                       **({"misconception": c["misconception"]} if c.get("misconception") else {})})
         if c["facts"]:
             items.append({"text": "\n".join(c["answer"]), "claims": [], "source": "facts:" + ",".join(c["facts"]), "where": w})
         else:
-            items.append({"text": c["answer"][0], "claims": [], "source": "chrome:card_false", "where": w})
+            key = "card_true" if c["kind"] == "rule" else "card_false"
+            items.append({"text": c["answer"][0], "claims": [], "source": f"chrome:{key}", "where": w})
         for x in c["why"]:
             items.append({"text": x["text"], "claims": [x["id"]], "source": f"claim:{x['id']}", "where": w})
     return items
@@ -222,6 +249,9 @@ def check_apkg(lesson, path):
             m = lesson.by_id("misconceptions")[c["misconception"]]
             if html.escape(m["statement"]) not in front or html.escape(lesson.claim(m["correction"])["text"]) not in back:
                 probs.append(f"{c['id']}: misconception card lacks its statement or correction claim")
+        elif c["kind"] == "rule":
+            if html.escape(lesson.claim(c["claim"])["text"]) not in front or html.escape(text.ui("card_true")) not in back:
+                probs.append(f"{c['id']}: rule card lacks its claim or the True answer")
     return probs
 
 

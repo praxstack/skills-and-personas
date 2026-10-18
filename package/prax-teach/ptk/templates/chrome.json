@@ -138,6 +138,7 @@
   "k_computed": "Computed with the program's formula in double, in the program's order. Captured runs agree at {count} points.",
   "qa_ask": "{ask}?",
   "qa_walk": "A walkthrough step: read it when you are ready.",
-  "qa_sealed": "Opens after you answer"
+  "qa_sealed": "Opens after you answer",
+  "card_true": "True."
  }
 }
