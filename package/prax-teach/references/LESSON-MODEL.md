@@ -24,8 +24,8 @@ Exit codes: 0 done, 1 a gate failed, 2 host problem (for example, no `sandbox-ex
 - gcc-16 compiles every program for diagnostics only. Its warnings are recorded and never block.
 
 **facts[]**: one per displayed value.
-- `select` says where capture reads the value. Use `{"stream": "stdout", "line": N}` for one line, `{"stream": "stdout"}` for the whole output, or `{"stream": "platform", "key": "sizeof.int"}`. Platform keys are `sizeof.<char|short|int|long|long long|float|double|void*>`, `char_signed`, `endianness`, `libc`, `os`, `arch` and `compilers.<clang|gcc-16>`. Any other key is a model error at `/facts/i/select/key`.
-- `expect` is required, and it must be independent of the run. Use `{"fn": name, "args": [...]}` to name a pure function in `ptk/expect.py`: `bits`, `hex`, `printf_d`, `printf_u`, `printf_x`, `printf_f`, `printf_c`, `ascii`, `sizeof_abi`, `sum`, `factorial`, `factorial_frames`, `switch_line` or `switch_stdout`. Only when no function fits, use `{"value": "...", "reviewed": true}`, a literal that the claims reviewer checks.
+- `select` says where capture reads the value. Use `{"stream": "stdout", "line": N}` for one line, `{"stream": "stdout", "line": N, "field": K}` for the K-th whitespace-separated token of that line (kind `derived`), `{"stream": "stdout"}` for the whole output, or `{"stream": "platform", "key": "sizeof.int"}`. Platform keys are `sizeof.<char|short|int|long|long long|float|double|void*>`, `char_signed`, `endianness`, `libc`, `os`, `arch` and `compilers.<clang|gcc-16>`. Any other key is a model error at `/facts/i/select/key`.
+- `expect` is required, and it must be independent of the run. Use `{"fn": name, "args": [...]}` to name a pure function in `ptk/expect.py`: `bits`, `hex`, `printf_d`, `printf_u`, `printf_x`, `printf_f`, `printf_g`, `printf_c`, `ascii`, `sizeof_abi`, `sum`, `factorial`, `factorial_frames`, `factorial_event`, `factorial_stdout`, `call_label`, `double_bits_hex`, `neuron_term`, `neuron_sum`, `neuron_relu` (and their `_line` forms), `switch_line` or `switch_stdout`. Only when no function fits, use `{"value": "...", "reviewed": true}`, a literal that the claims reviewer checks.
 - For a `sizeof` fact use `{"fn": "sizeof_abi", "args": ["int"]}` (data model LP64 by default, or `"LLP64"`, `"ILP32"`). It comes from a table in `ptk/expect.py`, never from the capture.
 - If the capture differs from `expect`, the build fails with `ExpectationMismatch` and shows both values. A fact that selects a line the program never printed fails the same way, with the line count as the reason. Fix the program or the expectation. Never copy the captured value into `expect`.
 
@@ -43,8 +43,10 @@ Exit codes: 0 done, 1 a gate failed, 2 host problem (for example, no `sandbox-ex
 
 **misconceptions[]**: a wrong belief in the learner's words, and the claim that corrects it. Quizzes, Q&A and cards route wrong answers here.
 
+**programs[].show**: `{"from": a, "to": b}`, the lines every listing shows. Set it when the program has a function before `main` (default: main's body).
+
 **trace[]**: the states an explorer can show.
-- Each state has `program`, `line`, the executed `path`, the `output` facts so far, `vars`, and optionally `frames` (the call stack, outermost first).
+- Each state has `program`, `line`, the executed `path` (in order, repeats kept: a recursive call jumps back up), the `output` facts so far, `vars`, and optionally `frames` (the call stack, outermost first). A frame has `fn`, optional `call` (a fact that labels it, such as `factorial(2)`), `status` (`running`, `waiting`, `returning`) and, while returning, `ret` (the fact it returns).
 - `reveals` lists the facts that this state shows for the first time.
 
 **storyboard[]**: the video's scenes, in order.
@@ -54,6 +56,13 @@ Exit codes: 0 done, 1 a gate failed, 2 host problem (for example, no `sandbox-ex
 - `key_nodes` names the figure elements that carry the mechanism in that scene. They must stay fully visible, with no inner scroll, at 390 px and 1440 px. A `code-trace` figure has `code`, `output`, `question`, `note` and `compare`, and `figure.elements` can add more.
 
 **figure**: the still's layout. `kind: code-trace` takes the program, its trace states, notes pinned to lines (each a claim), an optional comparison program and state, and caption claims.
+- `misconception`: one misconception the still shows as a labelled wrong belief with its correcting claim.
+- `panel`: a mechanism diagram, drawn from facts in every medium; its element id is `panel`. Each element appears in a state once its fact is shown (the state's output, a reveal, or a token of a printed line).
+  - `views`: one value through several printf conversions. `value {var, line, bits, hex}`, `lanes [{line, fact, via?, claim?}]` (a `via` fact is the converted value, such as the double's bits), `ub {program, line, claim, after}`.
+  - `stack`: the call stack of each state's `frames`. The still draws every figure state side by side; pages and the film draw one state.
+  - `neuron`: multiply, add and gate panels. `terms [{x, w, t}]`, `bias`, `sum`, `out`, `gate {line}`.
+  - `place`: `side` (beside the program) or `hero` (full width above it).
+- `subject` (top level): the kicker's first part, default `C`.
 
 **requested_media**: the media to build, from `still`, `explorer`, `qa`, `cards`, `video` and `ive`.
 

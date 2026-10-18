@@ -31,6 +31,7 @@ Status: development candidate. It is loaded by direct path (`SKILL.md` in this f
 | `ptk build <lesson> [--only a,b] [--calibrate]` | validate, capture, project, run the automatic gates, write the claims jobs |
 | `ptk claims check <lesson>` | check the reviews against their manifests and finish the status |
 | `ptk report <lesson> [--json]` | print the build report |
+| `ptk design record <lesson> --verdicts F` | record the six screenshot-reviewed aesthetics verdicts in the build report, bound to the lesson and every cited screenshot (AC-9.3) |
 | `ptk host probe` / `ptk host setup [--yes]` | see above |
 | `ptk package [--dry-run]` | build the install tree (5 MB limit) and run the host discovery check |
 | `ptk install --candidate [--dry-run]` | install the tree side by side as `~/.agents/skill-library/prax-teach-v2.1`. `--flip` also snapshots learners and repoints the v2 link. The real HOME needs `--real-home` |
@@ -67,7 +68,7 @@ A gate that did not run is reported as `not-run`, never as passed.
 Everything goes under `lessons/<slug>/build/`:
 
 - `still/`: wide and portrait SVG plus 2x PNG, light and dark.
-- `explorer/index.html`, `qa/index.html`: single HTML files that work from `file://`.
+- `explorer/index.html`, `qa/index.html`: single HTML files that work from `file://`. A lesson with a mechanism panel gets a step-through explorer over its captured run; the switch lesson keeps its live explorer, with a control-path diagram.
 - `cards/`: Markdown and `.apkg`.
 - `video/lesson.mp4` with `captions.vtt`, `chapters.vtt` and `transcript.txt`.
 - `ive/index.html`: the interactive video explorer, with `states.vtt`.
@@ -81,6 +82,10 @@ The job roles (lesson, canary, mutation, control) are kept in `$PTK_STATE/claims
 
 `python -m ptk.state` is v2's consent-first state engine, ported, with schema 2 adding `navigation` and `evidence` events. One change from v2: macOS backup and versioning give new files under `~/Developer` and the C study workspace a second hard link. So a state file with more than one link is now accepted if it is a regular file owned by you, with a warning on stderr. Symlinks, files owned by someone else and non-regular files are still refused. `plan/PROTECTED-MAP.md` in the dev tree records this, including the risk it leaves.
 
+## Exemplars
+
+`lessons/one-byte-four-views`, `lessons/factorial-stack` and `lessons/neuron` build all six media and finish `verified`, each with its design review in the build report. `tests/test_exemplars.py` checks them.
+
 ## Honest limits
 
 - **Anki import is not run.** Anki isn't installed here, so `test_cards.py::test_anki_import` reports `not-run`. The `.apkg` contents and stable GUIDs are tested. Re-import into a real Anki is not.
@@ -89,4 +94,5 @@ The job roles (lesson, canary, mutation, control) are kept in `$PTK_STATE/claims
 - **No LaTeX.** BasicTeX or Typst would be a system install that needs Prax's OK, so Manim `MathTex` is out. Math in stills uses MathJax `tex2svg`.
 - **Claims reviews are LLM findings, not proofs.** The canary shows that this reviewer caught one planted error on this build. It does not prove that every claim is true.
 - **macOS only.** Capture needs `sandbox-exec`. There is no Linux sandbox yet.
+- **The sync gate reads whisper's word times.** Whisper stretches the last word before a pause over the silence; the gate now reads such a word from its start. This is an evaluator change made in WP9 and needs Prax's approval like D21.1.
 - **Taste is Prax's call.** The gates check contrast, overflow, fonts, numerals and the network. Whether it looks world-class is for Prax to judge against the Neuron Atlas reference.

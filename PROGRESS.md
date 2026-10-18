@@ -97,3 +97,52 @@ Use /deep-research where it helps. Run it all without stopping to ask.
   - Wide still: an empty area top right, and its notes are not numbered or anchored like the portrait's.
   - The explorer footnote wraps "n = 2." badly, and the explorer still has no diagram beyond the code path.
 - **Budget: 15 of 18 rounds used.**
+
+## WP9: exemplars (round 16), done
+
+Commits `d56e4e2`..HEAD, all `wp9:`.
+
+**Part A, the projector polish.** Each fix has a gate or test that fails on the old output.
+- Video diff (38 s): only the changed rows animate now. A moving row cross-fades its number. An added row fills its slot as it opens. The file name cross-fades at the end. The output and its badges stay full until the diff is done, and a "the change" card fills the note column. New gate `video.morph-stable` samples the diff every 0.1 s. `test_morph_keeps_frame_steady` shows it fails with the old output fade.
+- IVE captions are drawn in a reserved band under the film, with the browser track hidden. The IVE layout check fails captions over the film or drawn by the browser (`test_caption_band_clear_of_film`).
+- Wide still: notes are numbered like the portrait (a badge on the line and in the list). The column beside the code starts at the card top and holds the output (`test_wide_notes_numbered_and_column_filled`).
+- Explorer: name = value pairs never wrap (`.nobr`), and layoutProbe fails a split pair. A control-path diagram (blocks per case, jump arcs from the still's path segments, fall-through runs, break on the right) is checked at every control step.
+
+**Part B.** All three exemplars are verified, with 38 gates each, no not-run and no fallback.
+
+| Lesson | Claims rounds | Canary |
+|---|---|---|
+| one-byte-four-views ("One value, four printf conversions") | lesson job rejected 3 times, accepted on round 4 | caught every round |
+| factorial-stack | rejected twice (scope, trace paths), accepted on round 3 | caught every round |
+| neuron | rejected 4 times, accepted on round 5 | caught 4 of 5; the miss was a generator bug (below) |
+
+switch-fallthrough was rebuilt with Part A and verified, 38 gates.
+- The design review (AC-9.3) is recorded with `ptk design record` in each exemplar report: 6 items, bound to the Atlas baseline and the cited screenshots.
+- `ptk selftest`: 167 passed, 1 not-run (Anki). Agent tests: test_one_byte, test_factorial_stack, test_neuron_unrelated_subject and the slice all pass.
+
+**New in the package:**
+- `ptk/project/mech.py`: panels `views`, `stack`, `neuron`, drawn from facts in every medium.
+- `ptk/project/stepper.py`: a step-through explorer for panel lessons.
+- `ptk/design.py`.
+- Schema: figure.panel, figure.misconception, select.field, frame call/ret/status, programs[].show, subject.
+- Expect functions: double bits, factorial events, neuron %g.
+- Print-line matching for repeated calls.
+
+**Deviations, for Prax:**
+- The task named the title "One byte, four views". The reviewer rejected it twice because it frames %f as a view of a's byte (the misconception the lesson corrects). The slug is unchanged; the title is now "One value, four printf conversions".
+- one-byte's recap claim failed three reviews. Two repair rounds is the budget, so the recap claim and scene were dropped. The dek uses the accepted c.cast.
+- **Evaluator changes made in a candidate round** (FREEZE stop rule: these need Prax's approval, like D21.1):
+  1. The sync gate reads a whisper token longer than 0.75 s at a cue end from its start, and its end as the last silence inside it.
+  2. Automatic value swaps never use a value that still contains the original. The neuron canary had swapped "+1.2" for "0.8 * 1.5 = +1.2", which planted nothing.
+  3. The claims collector joins an inline SVG text's lines, and reports the still's wrong-belief callout as labelled.
+  4. The frame probe matches paths as sets, and reads the panel's state.
+  5. The IVE caption check reads the band, not the track mode.
+  6. The IVE explore check steps back through the film when a lesson has no live model.
+  7. The outgoing panel layer may overlap during its 0.3 s cross-fade (HyperFrames layout).
+- **Design verdicts:** 15 pass and 3 pass-with-notes.
+  - one-byte, film: the panel text is small.
+  - one-byte: an empty band beside the panel in early scenes.
+  - factorial, IVE at 1440: output lines wrap.
+  - neuron, film: the program card is small.
+
+**Budget: 16 of 18 rounds used.** Left: the round-17 fix after the five-lens review (it also owns the protocol-checker vs TEACHING.md mismatch), and one spare.
