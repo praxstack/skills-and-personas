@@ -57,6 +57,7 @@ DATA_WORDS = set("""mark marks s sec secs second seconds min mins minute minutes
 FILLER = set("only just it prints print printed output outputs is would will first then finally and the we get you see "
              "lines line shows should be program".split())
 SEP = re.compile(r"\s*(?:\n|,|;|->|\u2192|\bthen\b|\band\b|\bfollowed by\b)\s*", re.I)
+NEW_NAME = 32  # longest new misconception name, in characters
 CAP = {"weakest item": 18, "next action": 25, "another-round offer": 15}
 
 
@@ -164,10 +165,12 @@ def check_common(t, lesson=None, truth=None):
     v += [f"turn {i}: feedback needs a classification (correct, partial or misconception:<id>)"
           for i, x in _tutor(t) if "feedback" in x.get("acts", []) and not CLASSES.match(str(x.get("classification")))]
     v += _feedback_turns(t)
+    # TEACHING: an id from the lesson's misconceptions, or a short new name if none fits. Whether one
+    # fits is graded against the attempt's ground truth (check_classification), not guessed here.
     known = {m["id"] for m in (lesson or {}).get("misconceptions", [])}
-    v += [f"turn {i}: unknown misconception {x['classification']!r} (lesson has {sorted(known)})"
+    v += [f"turn {i}: unknown misconception {x['classification']!r} is not a short new name (lesson has {sorted(known)})"
           for i, x in _tutor(t) if lesson and str(x.get("classification", "")).startswith("misconception:")
-          and x["classification"].split(":", 1)[1] not in known]
+          and x["classification"].split(":", 1)[1] not in known and len(x["classification"].split(":", 1)[1]) > NEW_NAME]
     return v + check_classification(t, truth) + check_evidence(t) + check_stop(t)
 
 

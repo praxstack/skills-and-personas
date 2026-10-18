@@ -367,6 +367,15 @@ def test_mode_feedback_rules():
         assert protocol.is_mark(good_mark), good_mark
     for bad_mark in ("2/3 of 2", "one", True, None, "1/0"):
         assert not protocol.is_mark(bad_mark), bad_mark
+    # a misconception the lesson does not list may get a short new name (TEACHING), never a sentence
+    lesson = _lesson()
+    renamed = _break(PREDICT_GOOD, lambda t: t["turns"][2].update(classification="misconception:m.default-ignored"))
+    assert protocol.check_transcript(renamed, lesson, truth=["misconception:*"]) == []
+    assert protocol.check_transcript(renamed, lesson), "the scripted truth names m.stops, so a new name is wrong here"
+    long_name = "misconception:thinks-the-next-case-label-stops-the-switch-early"
+    v = protocol.check_transcript(_break(PREDICT_GOOD, lambda t: t["turns"][2].update(classification=long_name)),
+                                  lesson, truth=["misconception:*"])
+    assert any("not a short new name" in x for x in v), v
     # predict-first stays strict: the quiz and exam allowances do not apply to it
     strict = {
         "marks line": f"Not quite. {FIX} +1 mark, 50 s of your 90. Here is the still. Can I note this attempt as evidence?",
@@ -445,7 +454,7 @@ Tutor turn fields (JSON, all at the top level of the turn object):
 - role "tutor"; acts: any of "question", "feedback", "artifact", "consent", "answer", "layer", "close";
 - text: exactly what you say to the learner;
 - classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback (the
-  one hint or correction, one sentence, copied verbatim from text) on any turn with "feedback". The
+  one hint or correction, one sentence of at most 40 words, copied verbatim from text) on any turn with "feedback". The
   rest of a feedback turn's text may hold only a short verdict, the artifact, a consent question or
   the next question, plus the short lines the mode's protocol in TEACHING.md names;
 - artifacts (file paths you show) and states_shown (trace state ids you show);
@@ -454,7 +463,8 @@ Tutor turn fields (JSON, all at the top level of the turn object):
 - exam-drill: format ("mcq", "msq", "nat"), marks, time_limit_s on the first turn; options (4) and
   answer_key on each question; marks_awarded and elapsed_s on each feedback; total_marks on close (marks
   as a number or a fraction string like "-1/3");
-- qa-expand: layer (1 for the first answer) and layers_offered on the first turn; layer and layer_name on each layer;
+- qa-expand: the first turn has acts exactly ["answer"], layer 1 and layers_offered; each deeper layer opened on
+  request has the act "layer", its layer number and layer_name;
 - close: reason "satisfied" or "learner-stop".
 """
 

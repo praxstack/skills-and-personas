@@ -25,8 +25,8 @@ protocol. Follow the one the route names; don't blend them.
   later state of the same program. `ptk route` says `artifact: after-attempt` when this applies.
 - **Classify every attempt** as exactly one of: `correct`, `partial`, or `misconception:<id>`
   (an id from the lesson's `misconceptions[]`, or a short new name if none fits).
-- **One feedback item per attempt.** One hint or one correction, not a list: one sentence, also
-  written to the turn's `feedback` field. Besides it, a feedback turn holds only a short verdict
+- **One feedback item per attempt.** One hint or one correction, not a list: one sentence of at
+  most 40 words, also written to the turn's `feedback` field. Besides it, a feedback turn holds only a short verdict
   ("Not quite."), the artifact, a consent question or the next question. Quiz and exam-drill
   feedback also carries the lines its protocol below names (score, the weakest item, one next
   action, marks, time, the key after the attempt): each a short line, never a second explanation.
