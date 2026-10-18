@@ -534,7 +534,7 @@ class Builds(unittest.TestCase):
             (root / "two/videos").mkdir(parents=True)
             (root / "two/videos/two-a.mp4").write_bytes(b"x" * 1000)
             (root / "two/videos/stray.mp4").write_bytes(b"x")
-            env = {k: v for k, v in os.environ.items() if k != "KAI_MORI_VIDEOS_BLOB_TOKEN"}
+            env = {k: v for k, v in os.environ.items() if k not in ("VIDEOS_BLOB_TOKEN", "KAI_MORI_VIDEOS_BLOB_TOKEN")}
             script = str(SKILLS / "course/scripts/publish_videos.mjs")
             r = subprocess.run(["node", script, str(root), "--courses", str(courses), "--dry-run"], capture_output=True, text=True, env=env)
             self.assertEqual(r.returncode, 0, r.stderr)
@@ -888,6 +888,7 @@ console.log(plainText(process.argv[2]));
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertEqual(r.stdout.strip(), "the set of points with w1x1 + b = 0. That is a line. Next")
 
+    @unittest.skipUnless((ROOT.parent / "courses").is_dir(), "needs a site's courses/ (kai-mori-fanout-sh)")
     def test_shipped_captions_are_escaped(self):
         for f in sorted((ROOT.parent / "courses").glob("*/videos/*.vtt")):
             for block in f.read_text().split("\n\n")[1:]:

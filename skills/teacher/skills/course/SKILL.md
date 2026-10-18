@@ -41,8 +41,10 @@ Publish the MP4s and write their URLs into the manifest:
 
 ```sh
 node scripts/publish_videos.mjs [videos-root] --dry-run                        # list what would be uploaded, no token needed
-KAI_MORI_VIDEOS_BLOB_TOKEN=... node scripts/publish_videos.mjs [videos-root]   # upload, then commit courses/videos.json
+VIDEOS_BLOB_TOKEN=... node scripts/publish_videos.mjs [videos-root]            # upload, then commit courses/videos.json
 ```
+
+The token is the Blob store's read-write token. `KAI_MORI_VIDEOS_BLOB_TOKEN` also works, for sites that already use that name.
 
 `videos-root` is a folder laid out like `courses/` (`<course>/videos/<lesson-id>.mp4`), `courses/` by default. Each lesson listed in a `course.json` goes to `courses/<course-id>/<lesson-id>.<sha8>.mp4`, where `<sha8>` is the start of the file's sha256: public, `video/mp4`, cached for a year. The name is content-addressed, so a re-rendered video gets a new URL (no stale copies in browsers or CDNs) and the long cache is safe. A video is skipped only when its manifest URL already carries the same digest, and the manifest is saved after each upload. `narrate_course.py` skips lessons that already have a manifest URL unless `--force`. `test_course.py` reports each lesson as `video local`, `video on Blob` or `no video`, and the course page check fails if a lesson offers a video button without a video.
 

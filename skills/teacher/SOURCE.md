@@ -1,32 +1,45 @@
 # Where the teacher engine lives
 
-This folder, `skills/teacher/` in praxstack/skills-and-personas, is the main copy
-of the teacher engine. Make every change here first.
+The main copy of this engine is `skills/teacher/` in praxstack/skills-and-personas.
+Make every change there first. If you're reading this file anywhere else, you're
+in a copy: change the main copy, then sync.
 
-Other repos carry a copy and take it from here:
+## Copies
 
-- praxstack/kai-mori-fanout-sh keeps it at `teacher/`. To bring it up to date,
-  copy this folder over that one in a fanout-sh checkout and commit the result
-  there:
+- praxstack/kai-mori-fanout-sh keeps a copy at `teacher/`. Don't edit it
+  directly. A fix found there gets made in the main copy first, then synced.
 
-  ```sh
-  rm -rf kai-mori-fanout-sh/teacher
-  cp -R skills-and-personas/skills/teacher kai-mori-fanout-sh/teacher
-  ```
+To sync, run this from the folder that holds both checkouts. It copies the
+committed engine, so local edits and untracked files in skills-and-personas
+don't come along:
 
-  Then run fanout-sh's own checks (`npm test`, `npm run test:teacher`,
-  `npm run build:courses`) before committing.
+```sh
+git -C skills-and-personas status --porcelain skills/teacher   # should print nothing
+rm -rf kai-mori-fanout-sh/teacher && mkdir kai-mori-fanout-sh/teacher
+git -C skills-and-personas archive HEAD skills/teacher | tar -x --strip-components=2 -C kai-mori-fanout-sh/teacher
+```
 
-  Don't edit fanout-sh's `teacher/` directly. A fix found there gets made here
-  first, then copied across, so the two never drift apart again.
+Then run fanout-sh's own checks before committing there: `npm test`,
+`npm run test:teacher`, `npm run build:courses`, `npm run test:browser` and
+`npm run test:courses`.
 
-Site-specific settings stay out of the engine. The course catalog's brand
-defaults to Kai Mori, and `build_course.py --brand` changes it. The narration
-cache folder is `NARRATE_CACHE`. Tests that read a site's own files (its
-`courses/` or `public/favicon.ico`) run only when the engine sits inside that
-site, and skip otherwise.
+## Site settings
 
-The vendored skills under `skills/` (the video skills, teach-pro-max and the
-rest) have their own upstreams, listed in `VENDOR.json`. Change those upstream
-and run `scripts/vendor.py sync`. A change made here is recorded with
-`scripts/vendor.py record`.
+Nothing site-specific is fixed in the engine:
+
+- The course catalog's brand defaults to Kai Mori. `build_course.py --brand`
+  changes it, and `--brand ""` drops it.
+- `publish_videos.mjs` reads the Blob token from `VIDEOS_BLOB_TOKEN`, or from
+  `KAI_MORI_VIDEOS_BLOB_TOKEN` when that isn't set.
+- Narration clips are cached in `~/.cache/kai-mori-voice`. Set `NARRATE_CACHE`
+  to use another folder, and `KOKORO_DIR` for the voice model files.
+- The few tests that read a site's own files (its `courses/` or
+  `public/favicon.ico`) run only when the engine sits inside that site.
+
+## Vendored skills
+
+The skills listed in `VENDOR.json` (the video skills, teach-pro-max and the
+rest) have their own upstreams. Change them upstream and run
+`scripts/vendor.py sync`. If one has to change here, record it with
+`scripts/vendor.py record NAME --note ...`. `eli` carries one recorded local
+change, because its upstream is a local snapshot.

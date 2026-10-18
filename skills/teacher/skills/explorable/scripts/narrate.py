@@ -27,8 +27,9 @@
 
 Needs: kokoro-onnx, soundfile and numpy in the Python running this script
 (pip install kokoro-onnx==0.6.1 soundfile==0.14.0), the Kokoro model files
-(downloaded and SHA-256 checked into ~/.cache/kokoro on first use), Node with
-Playwright, and ffmpeg. The bundled explainer-video skill documents the full
+(downloaded and SHA-256 checked into ~/.cache/kokoro on first use; KOKORO_DIR
+moves them), Node with Playwright, and ffmpeg. Spoken clips are cached in
+~/.cache/kai-mori-voice; NARRATE_CACHE moves the cache. The bundled explainer-video skill documents the full
 voice ladder (Kokoro, then edge-tts, then Piper) if Kokoro can't run.
 """
 

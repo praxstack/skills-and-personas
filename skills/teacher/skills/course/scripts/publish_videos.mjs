@@ -2,7 +2,10 @@
 // Upload the courses' narrated videos to Vercel Blob and record their URLs in
 // courses/videos.json, which build_course.py reads when an MP4 isn't on disk.
 //
-//   KAI_MORI_VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]
+//   VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]
+//
+// The token is the Blob store's read-write token. KAI_MORI_VIDEOS_BLOB_TOKEN
+// (the name kai-mori-fanout-sh uses) is read when VIDEOS_BLOB_TOKEN isn't set.
 //
 // videos-root is laid out like courses/ (<course>/videos/<lesson-id>.mp4) and
 // defaults to the courses folder itself. Only lessons listed in a course.json
@@ -80,9 +83,9 @@ async function main() {
     console.error(`no lesson videos under ${a.root} (expected <course>/videos/<lesson-id>.mp4)`);
     return 1;
   }
-  const token = process.env.KAI_MORI_VIDEOS_BLOB_TOKEN;
+  const token = process.env.VIDEOS_BLOB_TOKEN || process.env.KAI_MORI_VIDEOS_BLOB_TOKEN;
   if (!a.dryRun && !token) {
-    console.error("set KAI_MORI_VIDEOS_BLOB_TOKEN (the Blob store's read-write token), or pass --dry-run");
+    console.error("set VIDEOS_BLOB_TOKEN or KAI_MORI_VIDEOS_BLOB_TOKEN (the Blob store's read-write token), or pass --dry-run");
     return 1;
   }
   const put = a.dryRun ? null : (await import("@vercel/blob")).put;
@@ -131,7 +134,7 @@ async function main() {
 }
 
 function usage() {
-  return "usage: KAI_MORI_VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]";
+  return "usage: VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]";
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

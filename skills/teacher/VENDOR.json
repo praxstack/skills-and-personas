@@ -64,10 +64,7 @@
     "concept-cartographer": {
       "files": 2,
       "license": "MIT (repo)",
-      "local_changes": [
-        "SKILL.md: restored the Timeline / Sequence section and the Before/After Mental Model type (diagram type 9), each with a short inline example. Ported from the skills workspace (66b1dcc)."
-      ],
-      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
+      "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
       "source_path": "new-skills/concept-cartographer",
       "tree_sha256": "3a0b953ad4f6fe1238825cffaf88ba15250effc85a3a3808336ab3d1c647869f",
       "upstream": "https://github.com/praxstack/skills-and-personas"
@@ -118,10 +115,7 @@
     "lecture-alchemist": {
       "files": 6,
       "license": "MIT (repo)",
-      "local_changes": [
-        "Added references/output-template.md and references/example-output.md, linked from SKILL.md, and restored the Special Cases list (2+ hour transcripts, heavy Q&A, live coding, multiple instructors, Topic Inventory 100% coverage). Ported from the skills workspace (66b1dcc)."
-      ],
-      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
+      "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
       "source_path": "new-skills/lecture-alchemist",
       "tree_sha256": "360553d72f3140b50ddfa56492c65614990da2ab9a9a421cfd006c31d93edf67",
       "upstream": "https://github.com/praxstack/skills-and-personas"
@@ -169,11 +163,7 @@
     "teach-pro-max": {
       "files": 804,
       "license": "MIT (repo)",
-      "local_changes": [
-        "SKILL.md: added the 'Choose the teaching style' section (visual-explain, practice-first, quick; route picks a mode only; honest fallback when an animation can't be made; pins go in CLAUDE.md or notes, never state/learner.json), reworded the two attempt-first invariants, and noted that visual-explain overrides the engine's first live-lesson gate. scripts/verify_distribution.py: the PASS line says only what it checked. Ported from the skills workspace (66b1dcc).",
-        "references/prax-teach-v2.zip: removed the 395 __MACOSX/ resource-fork entries (macOS archive debris); the 395 real files are unchanged and verify_distribution.py still passes."
-      ],
-      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
+      "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
       "source_path": "skills/teach-pro-max",
       "tree_sha256": "246229d64faf6fba7bcc5cdee8aa937d87d92cf16c6cdbd6ef50f1410c3c2dd4",
       "upstream": "https://github.com/praxstack/skills-and-personas"
@@ -181,10 +171,7 @@
     "techtutor": {
       "files": 8,
       "license": "MIT (repo)",
-      "local_changes": [
-        "Added agents/openai.yaml (display name, short description, default prompt), as the skills workspace had it (66b1dcc)."
-      ],
-      "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
+      "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
       "source_path": "new-skills/techtutor",
       "tree_sha256": "8b78906700ce05105b5f9b5f83188153c5e6019955607663d9211e14749f1d2e",
       "upstream": "https://github.com/praxstack/skills-and-personas"
