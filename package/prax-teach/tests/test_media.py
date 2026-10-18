@@ -157,4 +157,7 @@ def test_refine_ignores_stretched_last_token():
     # one second of stretch before a scene gap (one-byte sc7.2: "run." 79.74 to 80.72, silence from 79.89)
     run = [{"text": "never", "start": 79.48, "end": 80.03}, {"text": "run.", "start": 79.74, "end": 80.72}]
     assert media.refine(run, starts=[78.85, 79.89, 81.36], ends=[79.19])[1] == 79.89
+    # a pause inside the stretched token is not its end (neuron sc5.1: "is" ... pause ... "0.6.", silence at 60.28)
+    six = [{"text": "is", "start": 58.7, "end": 59.37}, {"text": "0.6.", "start": 59.02, "end": 61.0}]
+    assert media.refine(six, starts=[57.87, 59.34, 60.28, 63.76], ends=[55.28])[1] == 60.28
     return {"stretched_offset": off}

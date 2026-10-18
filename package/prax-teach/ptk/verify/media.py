@@ -160,9 +160,13 @@ def refine(words_in_cue, starts, ends):
     # start stays put): a last "word" longer than 0.75 s is that stretch (measured: "B." 1.00 s, "run." 0.98 s,
     # "on." 3.76 s before a pause), so its end says nothing about where the speech stops
     stretched = w1["end"] - w1["start"] > 0.75
-    anchor = w1["start"] if stretched else max(w1["start"], w1["end"] - 0.6)
-    last = w1["start"] + 1.0 if stretched else w1["end"] + 1.0
-    offset = min((s for s in starts if anchor - 0.2 <= s <= last), default=w1["end"])
+    if stretched:
+        # the stretched end is the next speech's onset, so the speech stopped at the last silence that starts
+        # inside the token (a pause before the word's last syllable is not the end: neuron "is ... 0.6.")
+        offset = max((s for s in starts if w1["start"] - 0.2 <= s <= w1["end"]), default=w1["end"])
+        return round(onset, 3), round(offset, 3)
+    anchor = max(w1["start"], w1["end"] - 0.6)
+    offset = min((s for s in starts if anchor - 0.2 <= s <= w1["end"] + 1.0), default=w1["end"])
     return round(onset, 3), round(offset, 3)
 
 

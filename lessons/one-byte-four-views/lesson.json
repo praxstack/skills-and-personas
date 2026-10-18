@@ -1,7 +1,7 @@
 {
   "schema": "prax-teach/lesson@1",
   "id": "one-byte-four-views",
-  "title": "One int, four views",
+  "title": "One value, four printf conversions",
   "topic": "printf conversions",
   "language": "c",
   "request": "Teach me how printf shows the same int with %d, %u, %f and %c, as all six media.",
@@ -420,24 +420,31 @@
     {
       "id": "c.recap",
       "kind": "mechanism",
-      "text": "%d, %u and %c all work from the int value 66. %f works from a new value, the double that (double)a made.",
-      "justification": "Line 11 passes a to %d, line 12 passes (unsigned)a, which is still 66 (6.3.1.3p1), and line 14 passes a to %c, which converts it to unsigned char 66 (7.21.6.1p8); the run printed 66, 66 and B. Line 13 passes (double)a, a new double 66.0 (6.3.1.4p2), whose bits are 0x4050800000000000 on this binary64 machine (run line 7), and %f prints it as 66.000000.",
+      "text": "%d and %c get the int a, and %u gets the unsigned int 66, which has the same bits. %f gets a new value, the double 66.0, whose bits differ.",
+      "justification": "Line 11 passes a to %d and line 14 passes a to %c (which converts it to unsigned char inside printf, 7.21.6.1p8). Line 12 passes (unsigned)a: 66 is representable in unsigned int, so the value is unchanged (6.3.1.3p1), and a nonnegative value has the same representation in a signed type and its unsigned type (6.2.5p9). Line 13 passes (double)a, the double 66.0 (6.3.1.4p2), whose bits on this binary64 machine are 0x4050800000000000 (run line 7), not 0x42.",
       "sources": [
         {
-          "title": "captured run of programs/views.c",
-          "clause": "stdout lines 3-7"
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.5 ¶9",
+          "quote": "The range of nonnegative values of a signed integer type is a subrange of the corresponding unsigned integer type, and the representation of the same value in each type is the same."
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.3.1.3 ¶1"
+          "clause": "§6.3.1.4 ¶2"
+        },
+        {
+          "title": "captured run of programs/views.c",
+          "clause": "stdout lines 3-7"
         }
       ],
       "facts": [
         "f.d",
         "f.u",
         "f.c",
-        "f.f"
+        "f.f",
+        "f.dbits"
       ]
     }
   ],
@@ -620,7 +627,7 @@
   "storyboard": [
     {
       "id": "sc1",
-      "title": "One int, one byte",
+      "title": "The int and its low byte",
       "state": "s0",
       "key_nodes": [
         "code",
@@ -798,7 +805,7 @@
       ],
       "narration": [
         {
-          "text": "Percent d, percent u and percent c all work from the int value 66. Percent f works from a new value, the double that the cast made.",
+          "text": "Percent d and percent c get the int a, and percent u gets the unsigned int 66, which has the same bits. Percent f gets a new value, the double 66.0, whose bits differ.",
           "claims": [
             "c.recap"
           ]
