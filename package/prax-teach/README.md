@@ -41,7 +41,7 @@ Status: development candidate. It is loaded by direct path (`SKILL.md` in this f
 
 ### Build modes
 
-- **`--only a,b`** rebuilds only those media and keeps the others on disk. `--only video` or `--only ive` rebuilds both, because the IVE plays the video. If the lesson is unchanged, the report keeps the other media's gates from the last finished build. If the lesson changed, they are listed under `uncovered_media` instead.
+- **`--only a,b`** rebuilds only those media and keeps the others on disk. `--only video` or `--only ive` rebuilds both, because the IVE plays the video. The report keeps another medium's gates from the last finished build only when the lesson, every one of that medium's artifact hashes, the ptk code fingerprint and the tool versions all match the recorded inventory (D22.2). Otherwise the medium is listed under `uncovered_media` with the reason in `carry_refused`, and a `carry.<medium>` gate is `not-run`, so the build is `incomplete` until it is rebuilt.
 - **Claims jobs.** A normal build writes the full suite: the lesson job plus up to 12 mutation jobs, each with a clean control (AC-7.1). `verified` needs the lesson job accepted, 100% of value mutations caught, at least 90% of claim mutations caught and at least 95% of controls accepted.
 - **`--canary`** is the explicit cheaper mode: the lesson job plus one planted error, picked from the lesson's mutations by its hash. Its best status is `canary-verified` (exit 6), never `verified`. Making it the default is a proposal waiting for Prax (D21.1 was withdrawn by D22.1).
 

@@ -152,27 +152,33 @@ def test_only_keeps_other_media():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def _rep(media, sha, gates, artifacts=(), fallbacks=()):
+def _rep(media, sha, gates, artifacts=(), fallbacks=(), code="P1", tools=None):
     return {"schema": "prax-teach/build-report@1", "lesson": "x", "lesson_sha256": sha, "status": "claims-pending",
-            "started": "t", "media": list(media), "gates": list(gates), "fallbacks": list(fallbacks), "tools": {},
-            "artifacts": list(artifacts), "transitions": ["draft"], "error": None}
+            "started": "t", "media": list(media), "gates": list(gates), "fallbacks": list(fallbacks),
+            "tools": dict(tools or {"ffmpeg": "8"}), "artifacts": list(artifacts), "transitions": ["draft"],
+            "error": None, "ptk": {"version": "v", "code_sha256": code}}
+
+
+def _art(path, sha="h"):
+    return {"path": path, "bytes": 1, "sha256": sha}
 
 
 def test_only_merges_previous_report():
     """Integration pass: `--only x` keeps the other media's gates, artifacts and fallbacks from the previous report
     when the lesson is unchanged, so the report always describes every medium on disk. A changed lesson carries
-    nothing (those outputs are stale) and lists them as uncovered; a full build replaces everything."""
+    nothing (those outputs are stale) and marks them not-run; a full build replaces everything."""
+    arts = [_art("video/lesson.mp4"), _art("ive/index.html")]
     prev = _rep(["video", "ive"], "s1",
                 [_g("values.expect", "passed"), {"id": "video.media", "medium": "video", "status": "passed",
                                                  "measured": {}}, {"id": "ive.layout", "medium": "ive",
                                                                    "status": "passed", "measured": {}},
                  {"id": "claims.review", "medium": "all", "status": "passed", "measured": {}}],
-                artifacts=[{"path": "video/lesson.mp4"}, {"path": "ive/index.html"}],
-                fallbacks=[{"what": "tts", "engine": "say"}])
+                artifacts=arts, fallbacks=[{"what": "tts", "engine": "say"}])
     prev["video"], prev["tts"] = {"theme": "dark"}, {"engine": "say"}
     new = _rep(["still"], "s1", [{"id": "values.still", "medium": "still", "status": "passed", "measured": {}}],
-               artifacts=[{"path": "still/a.svg"}])
-    out = build.merge_previous(prev, new, rebuilt=["still"], on_disk=["still", "video", "ive"])
+               artifacts=[_art("still/a.svg")])
+    now = [_art("still/a.svg")] + arts
+    out = build.merge_previous(prev, new, rebuilt=["still"], on_disk=["still", "video", "ive"], current_artifacts=now)
     assert out["media"] == ["still", "video", "ive"], out["media"]
     ids = [g["id"] for g in out["gates"]]
     assert "video.media" in ids and "ive.layout" in ids and "values.still" in ids, ids
@@ -180,23 +186,133 @@ def test_only_merges_previous_report():
     assert {a["path"] for a in out["artifacts"]} == {"still/a.svg", "video/lesson.mp4", "ive/index.html"}
     assert out["fallbacks"] == [{"what": "tts", "engine": "say"}] and out["video"] == {"theme": "dark"}
     assert out["merged_from_previous"] == ["video", "ive"]
-    # the lesson changed: nothing carried, the stale media are named
+    # the lesson changed: nothing carried, the stale media are named and their gates are not-run
     new2 = _rep(["still"], "s2", [{"id": "values.still", "medium": "still", "status": "passed", "measured": {}}])
-    out2 = build.merge_previous(prev, new2, rebuilt=["still"], on_disk=["still", "video", "ive"])
+    out2 = build.merge_previous(prev, new2, rebuilt=["still"], on_disk=["still", "video", "ive"], current_artifacts=now)
     assert out2["media"] == ["still"] and out2["uncovered_media"] == ["ive", "video"], out2
     assert not out2["fallbacks"] and "video.media" not in [g["id"] for g in out2["gates"]]
+    assert {g["medium"]: g["status"] for g in out2["gates"] if g["id"].startswith("carry.")} == \
+        {"video": "not-run", "ive": "not-run"}, out2["gates"]
     # no previous report (or a failed one): nothing carried
-    out3 = build.merge_previous(None, _rep(["still"], "s1", []), rebuilt=["still"], on_disk=["still"])
+    out3 = build.merge_previous(None, _rep(["still"], "s1", []), rebuilt=["still"], on_disk=["still"],
+                                current_artifacts=[_art("still/a.svg")])
     assert out3["media"] == ["still"] and not out3.get("uncovered_media")
     failed = dict(prev, status="failed")
-    out4 = build.merge_previous(failed, _rep(["still"], "s1", []), rebuilt=["still"], on_disk=["still", "video"])
+    out4 = build.merge_previous(failed, _rep(["still"], "s1", []), rebuilt=["still"], on_disk=["still", "video"],
+                                current_artifacts=now)
     assert out4["media"] == ["still"] and out4["uncovered_media"] == ["video"], out4
     return {"merged": out["media"], "stale": out2["uncovered_media"]}
 
 
+def test_only_carries_nothing_over_changed_artifacts_or_ptk():
+    """D22.2 (round-17 P1-1): a carried medium needs every recorded artifact on disk with the recorded sha256, no
+    new file under it, and the same ptk code fingerprint and tool versions. Otherwise its old gates are dropped
+    and the medium is marked not-run, so a tampered still can never ride along as `passed`."""
+    still_gates = [{"id": "visual.still.contrast", "medium": "still", "status": "passed", "measured": {}},
+                   {"id": "values.still", "medium": "still", "status": "passed", "measured": {}}]
+    prev = _rep(["still", "qa"], "s1", still_gates, artifacts=[_art("still/a.svg", "orig"), _art("still/a.png", "p")])
+    new = _rep(["qa"], "s1", [{"id": "qa.layout", "medium": "qa", "status": "passed", "measured": {}}],
+               artifacts=[_art("qa/index.html")])
+    good = [_art("qa/index.html"), _art("still/a.svg", "orig"), _art("still/a.png", "p")]
+    cases = {
+        "tampered svg": (prev, new, [_art("qa/index.html"), _art("still/a.svg", "TAMPERED"), _art("still/a.png", "p")]),
+        "file gone": (prev, new, [_art("qa/index.html"), _art("still/a.svg", "orig")]),
+        "new file": (prev, new, good + [_art("still/b.svg", "x")]),
+        "ptk changed": (prev, _rep(["qa"], "s1", new["gates"], code="P2"), good),
+        "tools changed": (prev, _rep(["qa"], "s1", new["gates"], tools={"ffmpeg": "9"}), good),
+        "old report without fingerprint": ({k: v for k, v in prev.items() if k != "ptk"}, new, good),
+        "no inventory given": (prev, new, None),
+    }
+    out = {}
+    for name, (p, n, now) in cases.items():
+        r = build.merge_previous(p, n, rebuilt=["qa"], on_disk=["still", "qa"], current_artifacts=now)
+        still = [g for g in r["gates"] if g["medium"] == "still"]
+        assert not any(g["status"] == "passed" for g in still), (name, still)
+        assert [g["status"] for g in still] == ["not-run"], (name, still)
+        assert "still" not in r["merged_from_previous"] and r["uncovered_media"] == ["still"], (name, r)
+        assert build.final_status(r["gates"], False) == "incomplete", name
+        out[name] = r["carry_refused"]["still"]
+    ok = build.merge_previous(prev, new, rebuilt=["qa"], on_disk=["still", "qa"], current_artifacts=good)
+    assert ok["merged_from_previous"] == ["still"] and not ok["uncovered_media"], ok
+    assert {g["id"] for g in ok["gates"]} == {"qa.layout", "visual.still.contrast", "values.still"}
+    assert [a for a in ok["artifacts"] if a["path"].startswith("still/")] == prev["artifacts"], \
+        "carried artifacts come from the verified previous inventory"
+    return out
+
+
+def test_only_qa_after_tampered_still_is_not_passed():
+    """D22.2 end to end, the auditor's counterexample: copy the slice with its build, paint the output value `three`
+    in the page colour in both light SVGs, run `ptk build --only qa`. No still gate may be `passed`."""
+    from selftest_support import NotRun
+    if not (SLICE / "build" / "still" / "switch-fallthrough-wide-light.svg").exists():
+        raise NotRun("the slice has no still build to tamper with")
+    tmp = host.make_tmp("only-tamper-")
+    dst = tmp / "switch-fallthrough"
+    try:
+        shutil.copytree(SLICE, dst, ignore=shutil.ignore_patterns("work", "renders", "snapshots", ".hyperframes"))
+        hit = 0
+        for name in ("switch-fallthrough-wide-light.svg", "switch-fallthrough-portrait-light.svg"):
+            svg = dst / "build" / "still" / name
+            s = svg.read_text()
+            import re
+            t, n = re.subn(r'(<text[^>]*data-fact="f\.p1\.l2"[^>]*fill=")[^"]*(")', r"\g<1>#fbfaf6\g<2>", s)
+            if n == 0:
+                t, n = re.subn(r'(<text[^>]*fill=")[^"]*("[^>]*data-fact="f\.p1\.l2")', r"\g<1>#fbfaf6\g<2>", s)
+            hit += n
+            svg.write_text(t)
+        assert hit, "the tamper found no f.p1.l2 text to repaint"
+        res = host.run([*ptk_cmd(), "build", str(dst), "--only", "qa"], timeout=1800)
+        rep = json.loads((dst / "build" / "build-report.json").read_text())
+        still = {g["id"]: g["status"] for g in rep["gates"] if g["medium"] == "still"}
+        assert still and "passed" not in still.values(), still
+        assert "still" not in rep.get("merged_from_previous", []) and "still" in rep.get("uncovered_media", []), rep
+        assert rep["status"] not in ("verified", "canary-verified", "claims-pending"), rep["status"]
+        return {"exit": res.code, "status": rep["status"], "still": still, "tampered_texts": hit,
+                "why": rep["carry_refused"]["still"]}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_only_carry_refused_for_a_tampered_still_from_the_same_ptk():
+    """D22.2 end to end with the same ptk on both builds, so only the artifact hashes can refuse the carry:
+    `--only still`, then `--only qa` carries the still (control), then paint `three` invisible in the light SVGs and
+    `--only qa` again: the still is refused because its artifacts differ, and no still gate is passed."""
+    from selftest_support import NotRun
+    import re
+    if not (SLICE / "build" / "still").exists():
+        raise NotRun("the slice has no build to start from")
+    tmp = host.make_tmp("only-tamper2-")
+    dst = tmp / "switch-fallthrough"
+    try:
+        shutil.copytree(SLICE, dst, ignore=shutil.ignore_patterns("work", "renders", "snapshots", ".hyperframes"))
+        first = host.run([*ptk_cmd(), "build", str(dst), "--only", "still"], timeout=1800)
+        assert first.code in (errors.EXIT_CLAIMS_PENDING, errors.EXIT_INCOMPLETE), (first.code, first.stdout[-800:])
+        control = host.run([*ptk_cmd(), "build", str(dst), "--only", "qa"], timeout=1800)
+        rep = json.loads((dst / "build" / "build-report.json").read_text())
+        assert "still" in rep["merged_from_previous"], ("control: an untouched still is carried", control.code,
+                                                         rep.get("carry_refused"))
+        hit = 0
+        for svg in (dst / "build" / "still").glob("*-light.svg"):
+            t, n = re.subn(r'(<text[^>]*data-fact="f\.p1\.l2"[^>]*fill=")[^"]*(")', r"\g<1>#fbfaf6\g<2>", svg.read_text())
+            if n == 0:
+                t, n = re.subn(r'(<text[^>]*fill=")[^"]*("[^>]*data-fact="f\.p1\.l2")', r"\g<1>#fbfaf6\g<2>",
+                               svg.read_text())
+            hit += n
+            svg.write_text(t)
+        assert hit, "the tamper found no f.p1.l2 text"
+        host.run([*ptk_cmd(), "build", str(dst), "--only", "qa"], timeout=1800)
+        rep = json.loads((dst / "build" / "build-report.json").read_text())
+        still = {g["id"]: g["status"] for g in rep["gates"] if g["medium"] == "still"}
+        assert still == {"carry.still": "not-run"}, still
+        assert rep["carry_refused"]["still"].startswith("artifacts differ"), rep["carry_refused"]
+        return {"control_carried": True, "refused": rep["carry_refused"]["still"][:120], "status": rep["status"]}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def test_only_still_after_video_keeps_video_and_ive():
     """End to end on a copy of the slice with its real video build: `ptk build --only still` leaves build/video and
-    build/ive in place and the report lists still, video and ive with their gates."""
+    build/ive in place, and the report accounts for them: carried with their gates, or marked not-run (D22.2)."""
     from selftest_support import NotRun
     prev = json.loads((SLICE / "build" / "build-report.json").read_text()) \
         if (SLICE / "build" / "build-report.json").exists() else None
@@ -213,10 +329,16 @@ def test_only_still_after_video_keeps_video_and_ive():
             assert (dst / "build" / p).exists(), f"--only still deleted {p}"
         assert any((dst / "build" / "still").glob("*.png")), "no still PNGs"
         rep = json.loads((dst / "build" / "build-report.json").read_text())
-        assert {"still", "video", "ive"} <= set(rep["media"]), rep["media"]
-        ids = {g["id"] for g in rep["gates"]}
-        assert {"values.still", "video.media", "video.sync", "ive.layout"} <= ids, ids
-        assert any(a["path"] == "video/lesson.mp4" for a in rep["artifacts"])
-        return {"exit": res.code, "media": rep["media"], "gates": len(ids)}
+        ids = {g["id"]: g["status"] for g in rep["gates"]}
+        assert "values.still" in ids, ids
+        # D22.2: video and ive keep their gates only when the previous report's inventory, ptk code and tools match;
+        # otherwise they are named and marked not-run, never silently dropped or carried
+        for m, gid in (("video", "video.media"), ("ive", "ive.layout")):
+            if m in rep["merged_from_previous"]:
+                assert gid in ids and m in rep["media"], (m, ids)
+            else:
+                assert ids.get(f"carry.{m}") == "not-run" and m in rep["uncovered_media"], (m, rep["carry_refused"])
+        return {"exit": res.code, "media": rep["media"], "carried": rep["merged_from_previous"],
+                "refused": rep["carry_refused"]}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

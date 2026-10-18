@@ -6,6 +6,7 @@ build:  validate → capture → expect check → project (--only media) → aut
 claims check: reviews vs manifests → verified (0) | canary-verified (6, --canary only) | failed | incomplete | degraded
 The report (build/build-report.json) records every gate, measurement, artifact hash and tool version.
 """
+import hashlib
 import json
 import os
 import shutil
@@ -128,21 +129,79 @@ def _read_previous(lesson):
         return None
 
 
-def merge_previous(prev, rep, rebuilt, on_disk):
-    """`--only` keeps the other media's results (integration pass). From a previous finished report for the same
-    lesson sha256, carry the gates, artifacts and fallbacks of every medium that this build did not rebuild and
-    whose outputs are still on disk. Gates with medium "all" (values.expect, claims.*) are always recomputed.
-    A changed lesson or a failed previous build carries nothing; media left on disk are listed as uncovered."""
+CODE_DIRS = ("ptk", "templates", "schemas", "assets", "node")  # everything a gate's verdict can depend on
+CODE_SKIP = ("__pycache__", "node_modules", ".pyc")
+
+
+def ptk_identity():
+    """The package version plus a sha256 over every ptk source, template, schema and asset file (D22.2).
+    A previous report's gates are carried only when this matches: a changed checker never vouches for old output."""
+    from . import __version__
+    h = hashlib.sha256()
+    for d in CODE_DIRS:
+        root = host.PKG / d
+        if not root.is_dir():
+            continue
+        for p in sorted(root.rglob("*")):
+            rel = p.relative_to(host.PKG).as_posix()
+            if p.is_file() and not any(x in rel for x in CODE_SKIP):
+                h.update(rel.encode() + b"\0" + host.sha256_file(p).encode() + b"\n")
+    return {"version": __version__, "code_sha256": h.hexdigest()}
+
+
+def _carry_problem(prev, rep, medium, current_artifacts):
+    """Why `medium`'s previous gates may not be carried, or None (D22.2, round-17 P1-1)."""
+    if current_artifacts is None:
+        return "no current artifact inventory to compare"
+    pid, cid = prev.get("ptk") or {}, rep.get("ptk") or {}
+    if not pid.get("code_sha256") or pid.get("code_sha256") != cid.get("code_sha256") \
+            or pid.get("version") != cid.get("version"):
+        return "ptk version or code changed since the previous build"
+    if prev.get("tools") != rep.get("tools"):
+        return "tool versions changed since the previous build"
+    then = {a["path"]: a.get("sha256") for a in prev.get("artifacts", []) if a["path"].split("/", 1)[0] == medium}
+    now = {a["path"]: a.get("sha256") for a in current_artifacts if a["path"].split("/", 1)[0] == medium}
+    if not then:
+        return "the previous report recorded no artifacts for it"
+    changed = sorted(p for p in then if now.get(p) != then[p])
+    added = sorted(p for p in now if p not in then)
+    if changed or added:
+        return f"artifacts differ from the previous inventory: changed or missing {changed[:5]}, new {added[:5]}"
+    return None
+
+
+def merge_previous(prev, rep, rebuilt, on_disk, current_artifacts=None):
+    """`--only` keeps the other media's results (integration pass), but only over unchanged output (D22.2).
+    From a previous finished report for the same lesson sha256, carry the gates, artifacts and fallbacks of every
+    medium that this build did not rebuild, whose outputs are on disk with exactly the recorded sha256s (no file
+    missing, changed or added), built by the same ptk code and tool versions. Gates with medium "all"
+    (values.expect, claims.*) are always recomputed. Every other medium left on disk is listed as uncovered and
+    gets a `carry.<medium>` gate that is not-run, so the build cannot reach verified over unchecked output."""
     out = dict(rep)
-    keep = []
-    if prev and prev.get("status") in CARRY_FROM and prev.get("lesson_sha256") \
-            and prev.get("lesson_sha256") == rep.get("lesson_sha256"):
-        keep = [m for m in SUPPORTED if m in prev.get("media", []) and m not in rebuilt and m in on_disk]
+    keep, refused = [], {}
+    same_lesson = bool(prev and prev.get("status") in CARRY_FROM and prev.get("lesson_sha256")
+                       and prev.get("lesson_sha256") == rep.get("lesson_sha256"))
+    for m in SUPPORTED:
+        if m in rebuilt or m not in on_disk:
+            continue
+        if not same_lesson:
+            refused[m] = "no finished previous build of this exact lesson"
+        elif m not in prev.get("media", []):
+            refused[m] = "the previous build did not cover it"
+        else:
+            why = _carry_problem(prev, rep, m, current_artifacts)
+            if why:
+                refused[m] = why
+            else:
+                keep.append(m)
     out["media"] = [m for m in SUPPORTED if m in rebuilt or m in keep]
-    out["gates"] = list(rep["gates"]) + [g for g in prev["gates"] if g.get("medium") in keep] if keep else list(rep["gates"])
+    out["gates"] = list(rep["gates"]) + [g for g in (prev or {}).get("gates", []) if g.get("medium") in keep]
+    out["gates"] += [{"id": f"carry.{m}", "medium": m, "status": "not-run", "measured": {"reason": why},
+                      "reason": f"{m} output is on disk but was not rebuilt or re-gated: {why}"}
+                     for m, why in refused.items()]
     have = {a["path"] for a in rep.get("artifacts", [])}
     out["artifacts"] = list(rep.get("artifacts", [])) + [
-        a for a in (prev or {}).get("artifacts", []) if keep and a["path"].split("/", 1)[0] in keep and a["path"] not in have]
+        a for a in (prev or {}).get("artifacts", []) if a["path"].split("/", 1)[0] in keep and a["path"] not in have]
     out["fallbacks"] = list(rep.get("fallbacks", [])) + [
         f for f in (prev or {}).get("fallbacks", []) if FALLBACK_MEDIUM.get(f.get("what")) in keep]
     if "video" in keep:
@@ -150,6 +209,7 @@ def merge_previous(prev, rep, rebuilt, on_disk):
             if k in prev and k not in out:
                 out[k] = prev[k]
     out["merged_from_previous"] = keep
+    out["carry_refused"] = refused
     out["uncovered_media"] = sorted(m for m in on_disk if m not in out["media"])
     return out
 
@@ -203,12 +263,14 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cana
         rep["capture"] = {"programs": cap["programs"], "platform": cap["platform"]}
         go("captured")
         rep["tools"] = tool_versions()
+        rep["ptk"] = ptk_identity()
         rep["gates"].append({"id": "values.expect", "medium": "all", "status": "passed",
                              "measured": values.check_expectations(lesson), "reason": ""})
         gates, degraded = _project_and_verify(lesson, build_dir, media, rep, go, video_theme, renderer)
         rep["gates"] += gates
         if only:
-            rep.update(merge_previous(previous, rep, rebuilt=media, on_disk=media_on_disk(build_dir)))
+            rep.update(merge_previous(previous, rep, rebuilt=media, on_disk=media_on_disk(build_dir),
+                                      current_artifacts=_artifact_list(build_dir)))
             degraded = degraded or bool(rep["fallbacks"])
         items = claims_gate.collect_texts(lesson, build_dir)
         rep["gates"].append(claims_gate.mapping_gate(lesson, items))
@@ -229,7 +291,10 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cana
                                  "reason": "waiting for reviewer subagents"})
         st = final_status(rep["gates"], degraded, mode)
         go("claims-pending" if st in ("claims-pending", "verified", "canary-verified") else st)
-        rep["artifacts"] = _artifact_list(build_dir)
+        # rebuilt media from disk; carried media from the inventory they were just checked against (D22.2)
+        carried = set(rep.get("merged_from_previous", []))
+        rep["artifacts"] = [a for a in _artifact_list(build_dir) if a["path"].split("/", 1)[0] not in carried] + \
+            [a for a in rep.get("artifacts", []) if a["path"].split("/", 1)[0] in carried]
         rep["finished"] = _now()
         rep["seconds"] = round(time.monotonic() - t0, 1)
         save(lesson, rep)
