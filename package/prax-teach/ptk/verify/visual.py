@@ -457,6 +457,53 @@ def _js(expr):
     return {"eval": f"(async () => {{ const D = window.__iveDrive; {expr} }})()"}
 
 
+# The caption text as drawn: shown only if it and every ancestor are displayed, it is visibility:visible, no
+# ancestor has opacity 0, its colour is not transparent, and its box has area (round-17 P3-2, Codex 7).
+CAPTION_SEEN_JS = (
+    "const seen = () => { const el = document.getElementById('captext'), band = document.getElementById('capband'); "
+    "if (!el) return {shown: false, why: 'no #captext'}; const cs = getComputedStyle(el), r = el.getBoundingClientRect(); "
+    "let shown = cs.visibility === 'visible' && r.width >= 1 && r.height >= 1 && !/rgba\\([^)]*,\\s*0\\)$/.test(cs.color) "
+    "&& cs.color !== 'transparent'; for (let e = el; e; e = e.parentElement) { const s = getComputedStyle(e); "
+    "if (s.display === 'none' || parseFloat(s.opacity) === 0) shown = false; } "
+    "return {shown, text: el.textContent.trim(), visibility: cs.visibility, w: r.width, h: r.height, color: cs.color, "
+    "data_on: band && band.dataset.on}; }; ")
+
+
+def ive_controls_step(timing):
+    """The controls script: transcript jump, captions on/off/on measured as drawn, the text at a second cue."""
+    mid = timing["cues"][len(timing["cues"]) // 2]
+    return {**_js(CAPTION_SEEN_JS +
+                  "const v = D.v(); await D.seek(v.duration - 0.05); const n = document.querySelectorAll('#tx li').length; "
+                  "const p = D.once(v, 'seeked'); document.querySelector('#tx li button').click(); await p; "
+                  "await D.sleep(150); const cb = document.getElementById('caps'); "
+                  "const s0 = seen(); cb.click(); await D.frame(); const s1 = seen(); cb.click(); await D.frame(); const s2 = seen(); "
+                  "const seekAfter = v.currentTime; "
+                  f"await D.seek({mid['start'] + 0.3:.3f}); await D.sleep(200); const s3 = seen(); "
+                  "const caps = [...v.textTracks].find((t) => t.kind === 'captions'); "
+                  "return {transcript_items_at_end: n, seek_after_click: seekAfter, caption_states: [s0, s1, s2], "
+                  "caption_second_cue: s3, caption_track_mode: caps.mode, "
+                  "chapters: document.querySelectorAll('#chapters li').length, readyState: v.readyState, "
+                  "error: v.error && v.error.code, nav: window.__ptkNav};"), "as": "controls"}
+
+
+def captions_ok(ctl, timing):
+    """(ok, reason): drawn on, off, on after the two clicks; the first cue's text while on; the second cue's text
+    when seeked there; the browser's own caption track hidden (the band draws them)."""
+    st = ctl.get("caption_states") or []
+    mid = timing["cues"][len(timing["cues"]) // 2]
+    second = ctl.get("caption_second_cue") or {}
+    problems = []
+    if [x.get("shown") for x in st] != [True, False, True]:
+        problems.append(f"caption text drawn {[x.get('shown') for x in st]} after on/off/on, want [True, False, True]")
+    if not st or st[0].get("text") != timing["cues"][0]["text"]:
+        problems.append("first cue's caption text differs")
+    if not second.get("shown") or second.get("text") != mid["text"]:
+        problems.append("the second cue's caption is not drawn with its text")
+    if ctl.get("caption_track_mode") != "hidden":
+        problems.append("the browser's caption track is not hidden, so captions may be drawn twice")
+    return not problems, "; ".join(problems)
+
+
 def explore_mode(lesson):
     """("step" | "live", live-model error or None), from what lesson.json declares (round-17 P2-2).
     A lesson with a `figure.panel` declares a step-through IVE with no live editing. Any other lesson must have a
@@ -528,15 +575,7 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     steps.append({**_js("const out = []; for (const b of document.querySelectorAll('#chapters button')) { "
                         "const p = D.once(D.v(), 'seeked'); b.click(); await p; await D.sleep(60); "
                         "out.push({...D.state(), current: b.getAttribute('aria-current')}); } return out;"), "as": "chapters"})
-    steps.append({**_js("const v = D.v(); await D.seek(v.duration - 0.05); const n = document.querySelectorAll('#tx li').length; "
-                        "const p = D.once(v, 'seeked'); document.querySelector('#tx li button').click(); await p; "
-                        "await D.sleep(150); const band = document.getElementById('capband'); const cb = document.getElementById('caps'); "
-                        "const m0 = band.dataset.on; cb.click(); const m1 = band.dataset.on; cb.click(); const m2 = band.dataset.on; "
-                        "const caps = [...v.textTracks].find((t) => t.kind === 'captions'); "
-                        "return {transcript_items_at_end: n, seek_after_click: v.currentTime, caption_modes: [m0, m1, m2], "
-                        "caption_track_mode: caps.mode, caption_text: document.getElementById('captext').textContent, "
-                        "chapters: document.querySelectorAll('#chapters li').length, readyState: v.readyState, "
-                        "error: v.error && v.error.code, nav: window.__ptkNav};"), "as": "controls"})
+    steps.append(ive_controls_step(timing))
     jobs = [{"id": "ive-behaviour", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": steps}]
     # the no-answer leak: paused (EXPLORE) 0.1 s before each answer cue
     for c in answer_cues:
@@ -643,12 +682,13 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     nav_bad = [e for e in nav if e.get("event_type") != "navigation" or e.get("action") not in NAV_ACTIONS
                or set(e) != NAV_KEYS]
     imgs_ok = all(n.get("images") and all(i["ok"] for i in n["images"]) for n in nojs.values())
-    ok_ctl = (ctl.get("chapters") == len(timing["scenes"]) and ctl.get("caption_modes") == ["true", "false", "true"]
-              and ctl.get("caption_track_mode") == "hidden" and ctl.get("caption_text") == timing["cues"][0]["text"]
+    caps_ok, caps_why = captions_ok(ctl, timing)
+    ok_ctl = (ctl.get("chapters") == len(timing["scenes"]) and caps_ok
               and ctl.get("transcript_items_at_end") == len(timing["cues"]) and ctl.get("seek_after_click") is not None
               and abs(ctl["seek_after_click"] - timing["cues"][0]["start"]) < 0.01 and bool(nav) and not nav_bad)
     gates.append(g("ive.controls", "ive", ok_ctl and imgs_ok and all(R[f"ive-nojs:{w}"].get("ok") for w in WIDTHS),
-                   {"controls": {k: v for k, v in ctl.items() if k != "nav"}, "nav_events": len(nav),
+                   {"controls": {k: v for k, v in ctl.items() if k != "nav"}, "captions": caps_why or "ok",
+                    "nav_events": len(nav),
                     "nav_actions": sorted({e.get("action") for e in nav}), "nav_not_navigation": nav_bad[:5],
                     "nojs": nojs, "nojs_shots": [f"shots/ive-nojs-{w}.png" for w in WIDTHS]}))
     ex = R["ive-explore"].get("values") or {}

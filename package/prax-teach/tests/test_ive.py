@@ -253,3 +253,39 @@ def test_explore_mode_is_declared_not_inferred():
     pbad, _ = visual.explore_checks(panel, pcues, _explore_values("film", pcues))
     assert not all(pbad.values()), "a step-through lesson must still mark the step as off the film"
     return {"switch": m["mode"], "broken_switch": bm["live_model_error"][:120], "neuron": pm["mode"]}
+
+
+def test_caption_toggle_measures_rendered_text():
+    """Round-17 P3-2 / Codex 7: the caption control is judged by what is drawn, not by a data attribute. On the built
+    slice IVE: captions on, off, on, measured from the caption text's computed style and box after each click, and
+    the text at a second cue. Counterexample: a page slip that leaves the caption drawn while the control says off
+    (`data-on="false"`); the attributes still toggle and the first cue's text matches, so the old check passed.
+    Now it fails."""
+    timing, _cues = _built()
+    work = host.make_tmp("ive-captoggle-")
+    try:
+        ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
+        drive = {"eval": visual.IVE_DRIVE.read_text(), "as": "drive"}
+        # the slip: the off state neither hides nor clears the caption text, while data-on still toggles
+        slip = {"eval": "(() => { const el = document.getElementById('captext'); "
+                        "el.style.setProperty('visibility', 'visible', 'important'); "
+                        "const d = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent'); "
+                        "Object.defineProperty(el, 'textContent', {configurable: true, get() { return d.get.call(this); }, "
+                        "set(x) { if (x !== '') d.set.call(this, x); }}); return 1; })()"}
+        url = (IVE / "index.html").resolve().as_uri()
+        jobs = [{"id": "ok", "type": "script", "url": url, "width": 1440, "height": 900,
+                 "steps": [ready, drive, visual.ive_controls_step(timing)]},
+                {"id": "slip", "type": "script", "url": url, "width": 1440, "height": 900,
+                 "steps": [ready, drive, slip, visual.ive_controls_step(timing)]}]
+        res = {r["id"]: r for r in visual.shoot(jobs, work / "w")["results"]}
+        good = (res["ok"].get("values") or {}).get("controls") or {}
+        slipped = (res["slip"].get("values") or {}).get("controls") or {}
+        assert res["ok"].get("ok") and res["slip"].get("ok"), (res["ok"].get("error"), res["slip"].get("error"))
+        ok, why = visual.captions_ok(good, timing)
+        assert ok, (why, good)
+        bad, why_bad = visual.captions_ok(slipped, timing)
+        assert not bad and [m.get("data_on") for m in slipped["caption_states"]] == ["true", "false", "true"], slipped
+        assert [m["shown"] for m in slipped["caption_states"]] == [True, True, True], slipped["caption_states"]
+        return {"ok": [m["shown"] for m in good["caption_states"]], "slip_caught": why_bad}
+    finally:
+        shutil.rmtree(work, ignore_errors=True)

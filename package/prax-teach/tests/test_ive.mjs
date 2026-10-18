@@ -96,8 +96,11 @@ await check('controls_and_noscript', async () => {
     const c = await run(page, `const v = D.v(); await D.seek(v.duration - 0.05); const n = document.querySelectorAll('#tx li').length;
       const p = D.once(v, 'seeked'); document.querySelector('#tx li button').click(); await p;
       const caps = [...v.textTracks].find((t) => t.kind === 'captions'); const cb = document.getElementById('caps');
-      const band = document.getElementById('capband');
-      const m0 = band.dataset.on; cb.click(); const m1 = band.dataset.on; cb.click(); const m2 = band.dataset.on;
+      const el = document.getElementById('captext');
+      const seen = () => { const cs = getComputedStyle(el), r = el.getBoundingClientRect(); let on = cs.visibility === 'visible'
+        && r.width >= 1 && r.height >= 1 && el.textContent.trim() !== ''; for (let e = el; e; e = e.parentElement) {
+        const s = getComputedStyle(e); if (s.display === 'none' || parseFloat(s.opacity) === 0) on = false; } return String(on); };
+      await D.sleep(150); const m0 = seen(); cb.click(); await D.frame(); const m1 = seen(); cb.click(); await D.frame(); const m2 = seen();
       return { transcript_at_end: n, transcript_after_seek: document.querySelectorAll('#tx li').length, seek_to: v.currentTime,
                caption_modes: [m0, m1, m2], track_mode: caps.mode, chapters: document.querySelectorAll('#chapters li').length };`);
     await ctx.close();
