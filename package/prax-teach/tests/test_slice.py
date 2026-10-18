@@ -19,6 +19,7 @@ REQUIRED_GATES = {"values.expect", "values.still", "visual.still.layout", "visua
 def _reviews_current(rep):
     lesson = model.load(SLICE)
     items = claims.collect_texts(lesson, SLICE / "build")
+    claims.mapping_gate(lesson, items)  # sets maps_to, which the manifest covers
     _m, cur = claims.manifest_for(claims._job_body(lesson, items))
     g = gate(rep, "claims.review")
     return g and g["status"] == "passed" and g["measured"].get("current_manifest_sha256") == cur

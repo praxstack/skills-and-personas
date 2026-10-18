@@ -263,8 +263,8 @@ def write_jobs(lesson, items, build):
     jobs_dir, rev_dir = build / "claims-jobs", build / "claims-review"
     for d in (jobs_dir, rev_dir):
         d.mkdir(exist_ok=True)
-        for f in d.glob("*.json"):
-            f.unlink()
+    for f in jobs_dir.glob("*.json"):
+        f.unlink()
     private = {}
     variants = [("lesson", None, None)] + [("mutation", m, {m["claim"]: m["text"]}) for m in load_mutations(lesson)]
     written = []
@@ -284,6 +284,11 @@ def write_jobs(lesson, items, build):
         private[job_id] = {"kind": kind, **({"planted_claim": mut["claim"], "expect": "reject"} if mut else
                                             {"expect": "accept"})}
         written.append(job_id)
+    # A job id is its manifest hash, so a review for an unchanged job id is still bound to
+    # identical inputs and is kept; every other review is removed.
+    for f in rev_dir.glob("*.json"):
+        if f.stem not in private:
+            f.unlink()
     (build / "claims-private.json").write_text(json.dumps(private, indent=1))
     return written
 

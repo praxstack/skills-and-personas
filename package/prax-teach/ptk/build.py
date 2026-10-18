@@ -97,7 +97,7 @@ def build(lesson_path, only=None):
         model.validate(lesson)
         rep["lesson"] = lesson.id
         go("valid")
-        for sub in ("still", "ive", "shots", "work", "claims-jobs", "claims-review"):
+        for sub in ("still", "ive", "shots", "work", "claims-jobs"):
             shutil.rmtree(build_dir / sub, ignore_errors=True)
         cap = c_runner.capture_lesson(lesson)
         model.validate(lesson, stage="captured")
