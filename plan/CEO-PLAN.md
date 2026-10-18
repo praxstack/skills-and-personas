@@ -757,19 +757,245 @@ Open items that need Prax, not more review:
 - **Approve the acceptance additions** (§1 to §6).
 - **Hold the live predict-first session** (D18.6).
 
+## Eng Review (plan-eng-review, 2026-10-18)
+
+The target is this plan. The scope gate's question, what to review, is answered: B, the plan document. The complexity check trips, with more than 8 files and more than 2 new services, but the CEO review already chose full scope on Prax's standing preference. So **E0: proceed as-is**, recorded rather than re-argued.
+
+Prior learning applied: **value-checks-miss-claims** (confidence 9/10, from today).
+
+**Host facts checked for this review:**
+- `whisper-cli` is installed, but there's no `ggml-*.bin` model anywhere under `~`, and it reads only flac, mp3, ogg and wav.
+- A `sandbox-exec` profile with `(deny network*)` blocks `curl` (DNS fails, exit 6).
+- npm `hyperframes` latest is 0.8.169.
+- Proof venvs exist at `proof/video/.venv-kokoro` and `proof/still-interactive/.venv`. They can't be relocated, so they get rebuilt in `$PTK_STATE`.
+
+### Step 0: Scope challenge
+
+- **What already exists:** see CEO §0B. Everything reusable is reused, and nothing gets rebuilt that already works:
+  - the proof generators;
+  - the v2 renderer and state engine;
+  - HyperFrames for video;
+  - genanki for cards.
+- **Minimum change set:** WP0 is the minimum that proves the architecture. WP1–WP9 widen it.
+- **Search check:**
+  - HyperFrames has `tts` and `transcribe` built in. **[Layer 1]** Use them before building our own.
+  - Calling `hyperframes tts` once per segment reloads Kokoro every time, so the batch path calls `kokoro-onnx` directly in one process. **[Layer 3]**
+  - Anki already schedules cards with FSRS **[Layer 1]**, so the plan builds no card scheduler of its own.
+- **Distribution:**
+  - `bin/ptk` is a shell shim into `ptk/` (Python).
+  - `ptk host setup` builds the venv and fetches models with a yes (D19.2).
+  - There's no PyPI or CI. `ptk selftest` is the single local test entry, and the acceptance step runs it on a clean `HOME`.
+  - Targets: macOS arm64 is primary, and Linux is best effort. `sandbox-exec` is macOS-only, so on Linux capture refuses (D17.10), or uses `bwrap` later (TODO).
+
+### 1. Architecture
+
+| ID | Finding | Decision |
+|---|---|---|
+| **A1** | [P1] (confidence: 8/10) CEO D18.3, "run under a `sandbox-exec` profile that denies all network except loopback". `hyperframes render` drives Chrome, and Chrome applies its own seatbelt sandbox. Nesting Chrome under `sandbox-exec` often fails to start. | **E1:** T0 spike order. (a) Render under the `sandbox-exec` profile. (b) If Chrome won't start, HyperFrames' Docker render with `--network none` (Docker is installed but not running; starting it is user-scope). (c) If both fail, the offline-render gate is `not-run` and the build is `incomplete`. Completeness: A (spike with fallbacks) = 10, B (assume it works) = 4. |
+| **A2** | [P1] (confidence: 9/10) D17.8, "with a local ggml model under `$PTK_STATE/models`". No model exists on this Mac, and `whisper-cli` won't read MP4 or AAC. | **E2:** `ptk host setup` fetches `ggml-base.en.bin` (about 142 MB, sha256 recorded). The sync gate extracts 16 kHz mono WAV with ffmpeg first. Code tokens are excluded from WER through the pronunciation lexicon's spoken forms. |
+| **A3** | [P2] (confidence: 7/10) Python core calls Node in three places: the renderer, Playwright and HyperFrames. Without one boundary, versions and environments drift. | **E3:** one module, `ptk/node.py`. It resolves Node ≥22 (the `mise` shim or PATH), and it injects `HYPERFRAMES_SKIP_SKILLS=1`, telemetry off, `PLAYWRIGHT_BROWSERS_PATH=$PTK_STATE/browsers` and `SOURCE_DATE_EPOCH`. It records versions in the build report. No other module calls `subprocess` for Node, and a test checks this with grep. |
+| **A4** | [P2] (confidence: 7/10) Templates need fixed UI strings ("Set the value"), while D17.7 requires every sentence to carry a claim ID. | **E4:** fixed UI strings live in one `ptk/templates/chrome.json`, which is exempt from the claims gate but spell-checked and unslop-checked. Every teaching sentence comes from the model, and a test fails if a template contains a literal sentence that isn't in `chrome.json`. |
+| **A5** | [P3] (confidence: 6/10) Linux capture: `sandbox-exec` doesn't exist there. Medium confidence, since Linux isn't a stated target. | **E5:** macOS-only for capture in v2.1. TODO: a `bwrap` profile for Linux. |
+
+```
+  ptk/ (Python)                                   external
+  ├── cli.py ── route.py ── workspace.py          clang, gcc-16  ◀── capture/c_runner.py (sandbox-exec)
+  ├── model.py (schema, refs, expect)             node≥22 ◀── node.py ──▶ render_markdown.mjs, playwright, hyperframes(pinned)
+  ├── capture/c_runner.py                         kokoro-onnx (venv) ◀── tts.py ──fallback──▶ say
+  ├── project/{still,explorer,qa,cards,video,ive}.py
+  ├── verify/{values,mutation,visual,media,claims}.py ──▶ whisper-cli, ffprobe, ffmpeg, tesseract
+  ├── state/ (ported v2 consent engine, schema v2)
+  ├── text.py (format + escape)  errors.py (classes → exit codes)  host.py (probe, setup)
+  └── templates/ (chrome.json, svg/html templates)
+```
+
+### 2. Code quality
+
+| ID | Finding | Decision |
+|---|---|---|
+| **Q1** | [P2] (confidence: 8/10) Six projectors would each format numbers and escape HTML: a DRY hotspot, and the same fact could render two ways. | **E6:** `ptk/text.py` holds the only value formatter and the only HTML/SVG escaper. A lint test bans f-string HTML and `.replace('<'` outside it. |
+| **Q2** | [P2] (confidence: 8/10) The error classes in CEO §2 and D18.4 need one home and one exit-code map (D19.5). | **E7:** `ptk/errors.py` holds every class and its exit code. A test bans `except Exception` and bare `except:`. |
+| **Q3** | [P3] (confidence: 6/10) Porting v2's whole FSRS scheduler duplicates Anki's scheduler for cards. | **E8:** port the consent and state engine and FSRS unchanged, because v2's protected tests cover them (D17.17). New card scheduling is left to Anki, and no new scheduler code is written. |
+| **Q4** | [P2] (confidence: 7/10) The router is the only file likely to grow branches. | **E9:** a rule table in `route_rules.json` (pattern, intent, medium, mode) with ordered precedence: workspace contract, then explicit medium words, then intent. The function stays under 5 branches, and the dev set has at least 60 prompts. |
+
+Inline ASCII diagrams are required in `route.py` (precedence), `model.py` (build state machine, D18.1), `project/ive.py` (the cue-to-state rule, D18.2) and `verify/media.py` (the gate pipeline).
+
+### 3. Tests
+
+No code exists yet, so the diagram lists the planned paths and their tests. Every path is a GAP until it is written. The plan requires the tests to land together with the code.
+
+```
+CODE PATHS                                         TEST (file :: what)                                        TYPE
+[+] route.py
+  ├── workspace contract precedence                tests/test_route.py :: AGENTS.md says predict-first wins   unit ★★★
+  ├── explicit medium words (video, narrated...)   tests/test_route.py :: 60+ dev prompts incl. M1/M2 cases    unit ★★★
+  └── ordinary task / quick answer                 tests/test_route.py :: "fix my loop" -> ordinary           unit ★★★
+[+] capture/c_runner.py
+  ├── happy (clang, sanitizers, run twice)         tests/test_capture.py :: %d %u %f %c facts + expect         integ ★★★
+  ├── CompileError / RunTimeout / RunCrashed       tests/test_capture.py :: bad source, while(1), abort()      integ ★★★
+  ├── SanitizerFinding (no UB claim)               tests/test_capture.py :: printf("%f", a) blocked            integ ★★★
+  ├── sandbox denies network + outside writes      tests/test_security.py :: connect(), fopen("/Users/..")     integ ★★★
+  └── SandboxUnavailable / MemoryLimitExceeded     tests/test_capture.py :: PATH without sandbox-exec; malloc loop  integ ★★★
+[+] model.py   schema, refs, expect, state machine  tests/test_model.py :: JSON pointers, illegal transitions    unit ★★★
+[+] project/still.py   4 variants, overflow        tests/test_still.py (+ playwright) :: 390/1440 x light/dark  [→E2E]
+[+] project/explorer.py  full domain 0..255         tests/test_explorer.mjs :: all values vs independent fn     [→E2E]
+[+] project/qa.py, cards.py (.md + .apkg)           tests/test_qa.py, test_cards.py :: genanki round-trip      unit ★★★
+[+] project/video.py  per-scene comps, TTS, VTT     tests/test_video.py :: 10 s fixture render + gates (slow)   [→E2E]
+[+] project/ive.py   question/answer cues, pause    tests/test_ive.mjs :: pause 0.1 s before answer: no leak    [→E2E]
+[+] verify/values.py + mutation.py                  tests/test_mutation.py :: 100% value, >=90% claim mutations  [→EVAL]
+[+] verify/claims.py  jobs, schema, malformed       tests/test_claims.py :: fixtures + real-subagent integration [→EVAL]
+[+] verify/media.py   LUFS, dBTP, sync, ffprobe     tests/test_media.py :: out-of-range fixtures fail           integ ★★★
+[+] verify/visual.py  contrast, OCR digits, net     tests/test_visual.py :: old-style-numeral fixture fails OCR integ ★★★
+[+] state/ (schema v2 + migration)                  tests/test_state.py + ported v2 tests (PROTECTED-MAP)       unit ★★★
+[+] packaging + hosts                               tests/test_packaging.py, test_hosts.py :: one entry/host    [→E2E]
+[+] teaching protocol                               tests/test_protocol_transcripts.py :: predict-first turns   [→EVAL]
+REGRESSION (CRITICAL)                              tests/test_regression_f_cast.py :: "same bits" claim fails  [→EVAL]
+
+USER FLOWS: explorer keyboard/mouse/no-JS; IVE play/pause/seek/chapter/no-JS; video captions on/off; Q&A expand/print
+COVERAGE TARGET: every path above has a test before its WP closes. GAPS now: all (no code yet).
+```
+
+**E10** (revised by E25): the test plan artifact lives only in `plan/TEST-PLAN.md`.
+
+**Eval scope** (prompt and LLM paths):
+- **Claims reviewer rubric:** the mutation set from D17.5 and the `%f` regression.
+- **Teaching protocol:** scripted transcripts.
+- **Baseline:** v2's 8 eval cases, run against v2.1 for comparison.
+
+### 4. Performance
+
+| ID | Finding | Decision |
+|---|---|---|
+| **P1** | [P2] (confidence: 7/10) `hyperframes tts` per segment starts Python and loads Kokoro each time: about 2–4 s × 15 segments. | **E11:** `tts.py` synthesises all segments in one `kokoro-onnx` process. `hyperframes tts` is the fallback, then `say` (`degraded`). |
+| **P2** | [P3] (confidence: 7/10) Playwright per screenshot is slow. | **E12:** one browser per lesson verify run, with all shots in that one session. |
+| **P3** | [P3] (confidence: 6/10) Memory: Chrome plus Kokoro at once is about 2 GB. | **E13:** stages run in order, so no two heavy stages overlap. |
+
+### Outside voice
+
+Codex ran on the full plan including this section. Its findings are in `plan/outside-voice-codex-eng.md` and are dispositioned below.
+
+Codex raised 12 findings. All are accepted, as autonomous decisions E14–E25. There's no tension left, because each finding adds a missing check rather than contradicting a decision.
+
+**E14. Complete offline inventory.** `ptk host setup` pins and fetches each of these:
+- the Playwright Chromium revision into `$PTK_STATE/browsers`;
+- HyperFrames' Chrome into its pinned cache, through `hyperframes browser` with the cache dir set inside `$PTK_STATE`;
+- the Kokoro `.onnx` model and voices file, with sha256;
+- the whisper model;
+- the HyperFrames Docker image, only if the E1 fallback is used.
+
+The test is a first build run with an empty `HOME` and no network that ends `verified`.
+
+**E15. Update checks off.** The env always sets `HYPERFRAMES_NO_UPDATE_CHECK=1`. A test runs the pinned 0.8.169 offline and checks that its install dir hash doesn't change.
+
+**E16. Proving network isolation.** ET1 needs canaries that fail where we can see them: a DNS lookup, an HTTPS fetch, and a child process that tries to connect. All three must fail inside the render environment. The Docker fallback is exactly `docker run --rm --network none -v <proj>:/w <pinned image> hyperframes render ...`, plus the same canaries.
+
+**E17. Caption timing against the actual audio.**
+- Measure each synthesised segment's duration first, and schedule cues from those measurements.
+- The sync gate compares speech start *and end* timestamps from whisper run on the final MP4 against the VTT cue starts and ends, within 0.5 s.
+- Fixtures: shifted audio, truncated speech, and a mispronounced code token. Each must fail.
+
+**E18. Claims reviews bound to their inputs.**
+- Each claims job carries a manifest: sha256 of the lesson model, every artifact text, the sources and the rubric version.
+- Each review must echo that manifest hash, and any edit invalidates the reviews it affects.
+- Test: replay an old passing review against changed content, and it must be rejected.
+
+**E19. Separate sanitizer fixtures.** Four separate fixtures:
+- a format-warning one (`printf("%f", a)` caught by `-Wformat`);
+- runtime ASan (heap overflow);
+- runtime UBSan (signed overflow);
+- a gcc-16 diagnostics-only command.
+
+Clean sanitizer output is recorded as "no finding", never "no UB". The UB claim kind is still required for any UB topic.
+
+**E20. CSP that actually works.** Every self-contained HTML file gets `default-src 'none'; script-src 'sha256-…'; style-src 'sha256-…'; img-src data:; media-src 'self'; font-src data:; track-src 'self'`. That is, `media-src`, also covering track loading, with hashes computed at build time. The Playwright tests run with this CSP enforced, on the packaged files.
+
+**E21. Who runs the subagents.** `ptk selftest` covers every automatic check. The agent-mediated tests (real claims reviews, teaching transcripts) form a separate suite, `ptk agent-tests`, which writes jobs, stops at `claims-pending` (exit 4), and resumes with `ptk claims check`. `references/HOST-ADAPTERS.md` describes the subagent invocation for each host (Claude Code: Agent tool; Codex: `codex exec`; Hermes and OpenCode: their subagent commands). Both suites are run on each supported host.
+
+**E22. Mutation controls.**
+- Every mutation is paired with an unchanged control.
+- At least 95% of controls must be accepted, alongside the mutation catch rates.
+- A schema rejection is counted separately from detecting the intended error.
+
+**E23. Real Anki import test.** Open the `.apkg` (zip plus SQLite), check the note fields, stable GUIDs and media. Then import into an isolated Anki profile with the Anki CLI or `anki` package if present, or else mark that step `not-run`. Re-importing must not create duplicates.
+
+**E24. Capture resource limits.**
+- Capture programs may not create child processes: the sandbox denies `process-fork` except for the runner itself.
+- stdout and stderr are capped at 1 MB, with truncation turning into a failure.
+- Memory is capped across the whole process group.
+- A test checks cleanup after a timeout and after a watchdog kill.
+
+**E25. Write boundary.** E10 is revised. The test plan lives only in `plan/TEST-PLAN.md`, and the earlier copies under `~/.gstack/projects/v2.1/` were deleted. The gstack review logs and the decision log still write to `~/.gstack`, because the review skills require them. They are workflow metadata, not candidate files, and are disclosed here.
+
+### NOT in scope (eng)
+
+- Linux capture sandbox: TODO.
+- A CI service: local `ptk selftest` only.
+- PyPI distribution.
+- Parallel renders.
+
+### Failure modes (eng)
+
+These are the new modes not already in CEO §2:
+- **Chrome fails to start under the sandbox:** spike E1, then the Docker fallback, then `not-run`, which the user sees.
+- **Whisper model missing:** sync gate `not-run`, build `incomplete`, visible.
+- **Node below 22:** `HostToolMissing`, visible.
+- **The Kokoro process crashes mid-batch:** resynthesise the failed segment once, then fall back to `degraded`, visible.
+
+There are no critical gaps, since every mode is visible and tested.
+
+### Worktree parallelization
+
+| Step | Modules touched | Depends on |
+|---|---|---|
+| WP0 slice | everything, thinly | — |
+| WP1 router and protocol | `ptk/route*`, `ptk/workspace.py`, `references/TEACHING.md`, `tests/test_route*` | WP0 |
+| WP2 model and capture | `ptk/model.py`, `ptk/capture/`, `schemas/` | WP0 |
+| WP3 still | `ptk/project/still.py`, `templates/svg/`, `verify/visual.py` | WP2 |
+| WP4 explorer, Q&A, cards | `ptk/project/{explorer,qa,cards}.py`, `templates/html/` | WP2 |
+| WP5 video | `ptk/project/video.py`, `ptk/tts.py`, `verify/media.py` | WP2 |
+| WP6 IVE | `ptk/project/ive.py`, `templates/ive/` | WP5 |
+| WP7 claims | `ptk/verify/{claims,mutation}.py` | WP2 |
+| WP8 packaging | `bin/`, `ptk/host.py`, `state/`, `tests/test_packaging*` | WP1, WP3, WP4, WP7 |
+
+**Lanes:**
+- **Lane A:** WP1.
+- **Lane B:** WP2, then WP3.
+- **Lane C:** WP4, after WP2.
+- **Lane D:** WP5, then WP6, after WP2.
+- **Lane E:** WP7, after WP2.
+
+**Execution order:**
+1. WP0 runs alone.
+2. Lanes A and B run in parallel.
+3. Once WP2 merges, lanes C, D and E run in parallel.
+4. WP8, then WP9.
+
+**Conflict flag:** lanes B and C both touch `templates/`. Split it into `templates/svg/` (lane B) and `templates/html/` (lane C) to avoid merge conflicts.
+
+### Eng implementation tasks (additions to CEO T0–T9)
+
+- [ ] **ET1 (P1, human ~4h / CC ~20min):** T0 spike. Render under the sandbox, with Docker `--network none` as the fallback (E1). *Verify:* the render log has 0 denied requests and the MP4 is produced.
+- [ ] **ET2 (P1, ~2h / ~10min):** `ptk host setup` fetches the whisper base.en model with a sha256 check, plus WAV extraction (E2). *Verify:* the sync gate runs on the proof MP4.
+- [ ] **ET3 (P2, ~3h / ~15min):** `ptk/node.py`, the single Node boundary, plus a grep test (E3).
+- [ ] **ET4 (P2, ~2h / ~10min):** `chrome.json` UI-string exemption, plus a literal-sentence test (E4).
+- [ ] **ET5 (P2, ~2h / ~10min):** `text.py` and `errors.py`, plus lint tests (E6, E7).
+- [ ] **ET6 (P2, ~3h / ~15min):** a rule-table router and at least 60 dev prompts (E9).
+- [ ] **ET7 (P2, ~3h / ~15min):** batched Kokoro TTS with fallbacks (E11).
+- [ ] **ET8 (P1, ~1h / ~5min):** `tests/test_regression_f_cast.py`. **CRITICAL** regression from today's proofs.
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
-| CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | issues_open | 16 proposals, 13 accepted (2 scoped), 3 deferred; 3 spec-review rounds; 0 critical gaps |
-| Codex Review | `/codex review` | Independent 2nd opinion | 1 | issues_found | 13 findings, all accepted into D17 |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 0 | — | — |
+| CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | issues_open | 16 proposals, 13 accepted (2 scoped), 3 deferred |
+| Codex Review | `/codex review` | Independent 2nd opinion | 2 | issues_found | 13 (CEO) + 12 (eng) findings, all accepted |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 1 | clean (PLAN) | 24 issues (12 own + 12 Codex), 0 critical gaps, all decided as E0–E25 |
 | Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-- **CROSS-MODEL:** Codex and the Claude spec reviewer agreed on the claims reviewer contract, the missing undefined-behaviour guard, the interactive video design and the weak acceptance rules. Every Codex point was accepted. No tension was left unresolved.
-- **VERDICT:** the CEO review is complete, and the eng review is required next.
+- **CROSS-MODEL:** Claude and Codex agreed on direction both times. Codex added missing checks: offline inventory, timing oracle, review-input binding, CSP, mutation controls, the write boundary. Nothing it raised conflicted with a decision already made.
+- **VERDICT:** CEO and eng reviews are cleared, ready for write-spec and implementation. Prax's approvals below gate acceptance only, not implementation.
 
 **UNRESOLVED DECISIONS:**
-- Prax: approve or edit ACCEPTANCE-PROPOSAL §1 to §8 (acceptance additions, install-path amendment, stop-rule interpretation).
+- Prax: approve or edit ACCEPTANCE-PROPOSAL §1–§8 (acceptance additions, install-path amendment, stop-rule interpretation).
 - Prax: the live predict-first session after WP0 and WP1 (D18.6).
