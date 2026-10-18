@@ -55,3 +55,7 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - WP5 round 1 running: video quality (no hard cut at the program change, no empty panels, an Atlas palette option), a renderer-neutral interface, sync failure fixtures, the `--only` deletion bug.
 - **Budget: 12 of 18 rounds used.** Left: WP6, WP8, WP9, the integration pass, and one consolidated five-lens review of WP3, WP4, WP5 and WP7.
 - **For WP8:** add genanki to `ptk host setup` (currently only in `registry/requirements-cards.txt`).
+- WP7 closed at round 1. AC-7.1 to AC-7.6 pass. Real reviewer subagents caught value mutations 6/6 and claim mutations 15/15, and accepted 21/21 controls. The %f regression was rejected twice and the corrected claim accepted. Jobs are about 5.9k tokens, but each reviewer run costs about 90k.
+- **D21.1 (orchestrator, cost):** the full mutation suite (up to 12 mutations plus controls) becomes a calibration run. It runs on a rubric or reviewer-model change and at acceptance. A normal build writes the lesson job plus one canary mutation, so each build still proves the reviewer catches a planted error, at about 2 reviews instead of 23. This is a spec v1.2 change to AC-7.1, made in the integration pass (build.py and claims.py).
+- WP8 round 1 running: packaging, hosts, renderer port, state engine port, registry, protected map.
+- **Budget: 13 of 18 rounds used.**
