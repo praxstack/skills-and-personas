@@ -16,7 +16,8 @@ The checker does not take the tutor's word for the two judgement items of AC-1.6
   another explanation. Only a short verdict, an artifact pointer, a logistics line or a question
   may sit beside it. Quiz and exam-drill turns may also hold what their own protocol requires
   (the next question block; score, weakest item, one next action, another-round offer; marks,
-  time and the attempted question's key), each in a form too small to carry a second correction.
+  time and the attempted question's key; a line introducing the artifact), each in a form too
+  small to carry a second correction.
 The opening question may hold neither a hint marker nor a correction claim from the lesson.
 
 Transcript shape (written by a tutor agent, or scripted in tests):
@@ -57,6 +58,9 @@ DATA_WORDS = set("""mark marks s sec secs second seconds min mins minute minutes
 FILLER = set("only just it prints print printed output outputs is would will first then finally and the we get you see "
              "lines line shows should be program".split())
 SEP = re.compile(r"\s*(?:\n|,|;|->|\u2192|\bthen\b|\band\b|\bfollowed by\b)\s*", re.I)
+KEYLINE = re.compile(r"^(?:the\s+)?(?:correct\s+|right\s+)?(?:answer|key|output)(?:\s+(?:is|was))?\s*[:\-]?\s*(.+?)[.!]?$", re.I)
+ARTIFACT = re.compile(r"\b(?:still|stills|trace|image|picture|figure|video|diagram|animation|cards|explorer|png)\b", re.I)
+CAUSAL = re.compile(r"\b(?:because|since|so|therefore|which means|that means)\b", re.I)
 NEW_NAME = 32  # longest new misconception name, in characters
 CAP = {"weakest item": 18, "next action": 25, "another-round offer": 15}
 
@@ -258,8 +262,8 @@ def _is_data(s):
 
 
 def _reveal(s, prev):
-    """'key' when s reveals the attempted question's option key and nothing else, 'other' when it names
-    another letter as the key, None when it reveals no option key."""
+    """'key' when s reveals the attempted question's option key and nothing else, 'extra' when it adds
+    more than that option's text, 'other' when it names another letter, None when it reveals no option key."""
     m = REVEAL.search(s)
     if not m:
         return None
@@ -268,14 +272,18 @@ def _reveal(s, prev):
         return "other"
     allowed = {t.lower() for t in TOKEN.findall(_option_text(prev, letter))} | {"the", "answer", "key", "is", "was", "correct", "option"}
     rest = [t.lower() for t in TOKEN.findall(s[:m.start()] + " " + s[m.end():])]
-    return "key" if all(t in allowed for t in rest) else None
+    return "key" if all(t in allowed for t in rest) else "extra"
 
 
 def _mode_extra(s, mode, asks, prev):
     """What kind of allowed sentence s is beside a quiz or exam-drill feedback item, or None."""
     words = s.split()
     if mode == "exam-drill" and (kind := _reveal(s, prev)):
-        return "attempted key" if kind == "key" else "other key"
+        return {"key": "attempted key", "other": "other key"}.get(kind)
+    m = KEYLINE.match(s)
+    if m and (prev or {}).get("answer_key") is not None:  # a key line states the attempted key and nothing else
+        return "attempted key" if answer_matches(m.group(1), prev["answer_key"], prev.get("options") or []) \
+            else "other key"
     if s.rstrip().endswith("?"):
         return "question"
     if len(words) <= 4:
@@ -289,6 +297,12 @@ def _mode_extra(s, mode, asks, prev):
     return "verdict" if VERDICT.match(s.strip()) else None
 
 
+def _artifact_line(s, x):
+    """A short line that introduces the artifact the turn shows, with no reasoning in it."""
+    return "artifact" in x.get("acts", []) and bool(x.get("artifacts")) and len(s.split()) <= 12 \
+        and bool(ARTIFACT.search(s)) and not CAUSAL.search(s)
+
+
 def _mode_extras(x, mode, prev):
     body, block = _split_turn(x)
     asks = "question" in x.get("acts", [])
@@ -296,7 +310,7 @@ def _mode_extras(x, mode, prev):
     v += [f"a hint inside the next question: {s[:60]!r}" for s in block if HINT.search(_prose(s))]
     kinds = []
     for s in body:
-        kind = _mode_extra(_prose(s), mode, asks, prev)
+        kind = "artifact" if _artifact_line(_prose(s), x) else _mode_extra(_prose(s), mode, asks, prev)
         kinds.append(kind)
         if kind is None:
             v.append(f"a second correction or explanation besides the one feedback item: {s[:60]!r}")

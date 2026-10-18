@@ -306,6 +306,14 @@ LIVE_BREAKS = {
             "second correction"),
         "a correction on its own line, merged into the consent question": (_set_text(6, f"Not quite. {QF3}\n"
             "Also only a break ends a case early\nCan I note these three attempts as evidence?"), "second correction"),
+        "a key line that is not the attempted key": (_set_text(4, f"Correct. {QF2} Key: two, three, done.\n\n"
+            "Question 3 of 3: set n to 7. What does it print now?"), "key other than"),
+        "a key line carrying an explanation": (_set_text(4, f"Correct. {QF2} The answer is two then done, because "
+            "the break ends it.\n\nQuestion 3 of 3: set n to 7. What does it print now?"), "key other than"),
+        "an artifact line carrying a reason": (lambda t: t["turns"][6].update(
+            acts=["feedback", "artifact", "consent"], artifacts=["build/still/x.png"],
+            text=f"Not quite. {QF3} The still shows it, because no label matches. Can I note these three attempts as evidence?"),
+            "second correction"),
         "an extra output line called correct": (lambda t: t["turns"][3].update(text="two, three, done"),
             "does not match the answer key"),
         "a missing output line called correct": (lambda t: t["turns"][3].update(text="done"), "does not match the answer key"),
@@ -344,6 +352,14 @@ def test_mode_feedback_rules():
             v = protocol.check_transcript(_break(good, fn))
             assert v, f"{mode}: the checker missed '{name}'"
             assert why in " | ".join(v), f"{mode}: '{name}' caught for the wrong reason: {v}"
+    # the attempted question's key, and a short line introducing the artifact, may sit beside the item
+    keyed = _break(QUIZ_LIVE, _set_text(4, f"Correct. {QF2} Key: two, done.\n\nQuestion 3 of 3: go back to the "
+        "original program and set n to 7. There is no default label. What does it print now?"))
+    assert protocol.check_transcript(keyed) == [], protocol.check_transcript(keyed)
+    shown = _break(QUIZ_LIVE, lambda t: t["turns"][6].update(acts=["feedback", "artifact", "consent"],
+        artifacts=["build/still/x.png"], text=f"Not quite. {QF3} Score: 2/3. The lesson still shows the same rule on "
+        "the first program:\nbuild/still/x.png\nCan I note these three attempts as evidence?"))
+    assert protocol.check_transcript(shown) == [], protocol.check_transcript(shown)
     # a summary written as a list passes line by line
     listed = _break(EXAM_LIVE, _set_text(4, f"Not quite. The answer is C (two, done). {EF2}\n\nDrill result:\n"
         "- Marks: 2/3 out of 2 (+1, then -1/3)\n- Accuracy: 1 of 2\n- Time: 50 s on Q1, 30 s on Q2, both under 90 s\n"
