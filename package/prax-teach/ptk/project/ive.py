@@ -41,7 +41,7 @@ import re
 import shutil
 
 from .. import errors, host, text
-from . import explorer, mech
+from . import explorer, mech, seal
 from . import path as rail
 from ..text import esc
 
@@ -131,7 +131,45 @@ IVE_DIR = host.PKG / "ptk" / "templates" / "ive"
 JS_UI = ("chapters", "code_label", "output_label", "vars_label", "question_label", "captions_on", "captions_off", "ive_step_back",
          "ive_from_film", "ive_yours", "ive_mode_label_explore", "ive_mode_label_film", "ive_mode_explore",
          "ive_mode_film", "x_on", "x_off", "x_captured", "x_computed", "x_tag_changed", "x_tag_nomatch", "enter_label",
-         "x_tag_fall", "exit_label", "x_tag_end")
+         "x_tag_fall", "exit_label", "x_tag_end", "ive_ask_hint", "ive_mode_label_ask", "ive_mode_ask", "qa_correct",
+         "qa_wrong", "qa_correction", "ive_your_pick", "ive_chapter_sealed", "qa_choose")
+PAUSE_AFTER = 0.25  # the film stops this long after the question's last spoken word (no dead air before the pause)
+
+
+def question_plan(lesson, timing, cue_list):
+    """Where the film waits for a prediction (round 18, review X1). Per question scene with options:
+
+        q narration ─────────┤ pause_at ── waits for a pick ──▶ resume_at (answer scene start) ─▶ answer_at
+                               (q end + PAUSE_AFTER)              the film jumps here, so the think gap
+                                                                  of the plain MP4 is never heard
+    `sealed` lists the chapter indices whose titles state the answer (seal.py); the page shows a neutral
+    placeholder for them until the question is answered or the film has passed `answer_at`."""
+    out = []
+    sealed = seal.sealed(lesson.data)
+    mis = lesson.by_id("misconceptions")
+    scenes = timing["scenes"]
+    for k, sc in enumerate(scenes):
+        q = sc.get("question")
+        if not q or not q.get("options"):
+            continue
+        q_end = max(c["end"] for c in timing["cues"] if c["scene"] == sc["id"])
+        nxt = scenes[k + 1] if k + 1 < len(scenes) else None
+        ans = next((c for c in cue_list if c["kind"] == "answer" and c.get("answer_for") == sc["id"]), None)
+        answer_at = ans["start"] if ans else (nxt["reveal"] if nxt else timing["duration"])
+        resume_at = nxt["start"] if nxt else timing["duration"]
+        opts = []
+        for o in q["options"]:
+            row = {"text": o["text"], "correct": bool(o["correct"])}
+            if not o["correct"]:
+                m = mis[o["misconception"]]
+                row.update(misconception=m["statement"], correction=lesson.claim(m["correction"])["text"])
+            opts.append(row)
+        out.append({"scene": sc["id"], "prompt": q["prompt"], "options": opts,
+                    "pause_at": round(min(q_end + PAUSE_AFTER, resume_at - 0.05), 3), "q_end": q_end,
+                    "resume_at": round(resume_at, 3), "answer_at": round(answer_at, 3),
+                    "verdict_until": round(nxt["end"] if nxt else timing["duration"], 3),
+                    "sealed": [i for i, s in enumerate(scenes) if sealed.get(s["id"]) == sc["id"]]})
+    return out
 DECL_VAR = re.compile(r"^\s*int\s+(\w+)\s*=")
 
 
@@ -169,6 +207,7 @@ def page_data(lesson, timing, cue_list, ive_dir, live):
             "artifact_id": f"{lesson.id}:ive", "session_id": "local",
             "tracks": {k: (ive_dir / f"{k}.vtt").read_text() for k in ("captions", "chapters", "states")},
             "unlock_cue": answers[-1]["cue"] if answers else None, "live": live, "panels": panels(lesson),
+            "questions": question_plan(lesson, timing, cue_list),
             "panel_place": mech.page_place(lesson) if (lesson.data.get("figure") or {}).get("panel") else None}
 
 
@@ -199,6 +238,8 @@ def page(lesson, timing, cue_list, posters, live=None):
                      *[c["text"] for c in timing["cues"]], *[s["title"] for s in timing["scenes"]],
                      *[json.dumps(c, ensure_ascii=False) for c in cue_list],
                      *[ln for P in (live or {}).get("programs", {}).values() for _, ln in P["lines"]],
+                     *[x for q in question_plan(lesson, timing, cue_list) for o in q["options"]
+                       for x in (o["text"], o.get("misconception", ""), o.get("correction", ""))],
                      "0123456789:—·=; English"])
     css = explorer.page_css(used, "base.css") + (IVE_DIR / "ive.css").read_text()
     src = lesson.program(lesson.data["figure"]["program"]) if lesson.data.get("figure") else lesson.data["programs"][0]

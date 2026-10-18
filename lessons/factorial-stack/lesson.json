@@ -1023,6 +1023,9 @@
             "c.base"
           ]
         }
+      ],
+      "title_claims": [
+        "c.base"
       ]
     },
     {
@@ -1041,6 +1044,9 @@
             "c.unwind"
           ]
         }
+      ],
+      "title_claims": [
+        "c.unwind"
       ]
     },
     {
@@ -1059,6 +1065,9 @@
             "c.ret3"
           ]
         }
+      ],
+      "title_claims": [
+        "c.ret3"
       ]
     },
     {
@@ -1083,6 +1092,10 @@
             "c.order"
           ]
         }
+      ],
+      "title_claims": [
+        "c.main",
+        "c.order"
       ]
     },
     {
@@ -1103,6 +1116,9 @@
             "c.recap"
           ]
         }
+      ],
+      "title_claims": [
+        "c.recap"
       ]
     }
   ],

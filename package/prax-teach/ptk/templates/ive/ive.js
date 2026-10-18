@@ -6,6 +6,12 @@
   //    ▲  the panel follows the film's cue    │ seeded at the film's state; edits marked as yours │
   //    └──────────────────────────────────────┴── a seek while exploring re-seeds at the new time ┘
   //
+  // ASK (round 18): playing into a question's pause point (its last spoken word + 0.25 s) stops the film
+  // and shows the same options as the Q&A. Play holds until the learner picks; a pick shows the verdict
+  // and jumps to the answer scene, so the think gap of the plain MP4 is never heard. A chapter title
+  // that states the answer (D.questions[].sealed) shows a placeholder until the question is answered or
+  // the film has passed the answer.
+  //
   // Cue windows are half-open [start, next start). A time less than one frame before a boundary
   // belongs to the later window, because browsers round seek targets (to the frame or to the
   // microsecond) and a chapter seek must not land in the previous chapter.
@@ -82,6 +88,58 @@
 
   var meta = [], chaps = [], caps = [], booted = false, unlockIdx = -1;
   var mode = 'film', returnTime = 0, edit = null, step = null, seed = null, quiet = false, lastKey = '';
+  var Q = D.questions || [], picked = {}, passed = {}, asking = null;
+
+  // ---- predictions (ASK)
+  function now() { return mode === 'film' || mode === 'ask' ? v.currentTime : returnTime; }
+  function askAt(t) {
+    for (var i = 0; i < Q.length; i++) {
+      var q = Q[i];
+      if (!picked[q.scene] && t >= q.pause_at - 0.03 && t < q.resume_at) return q;
+    }
+    return null;
+  }
+  function qFor(scene) { for (var i = 0; i < Q.length; i++) if (Q[i].scene === scene) return Q[i]; return null; }
+  function notePassed(t) { Q.forEach(function (q) { if (t >= q.answer_at - FRAME_US / 1e6) passed[q.scene] = true; }); }
+  function sealedChapter(k) {
+    return Q.some(function (q) { return q.sealed.indexOf(k) >= 0 && !picked[q.scene] && !passed[q.scene]; });
+  }
+  function startAsk(q) {
+    asking = q; mode = 'ask';
+    if (!v.paused) v.pause();
+    if (Math.abs(v.currentTime - q.pause_at) > 0.04) { quiet = true; v.currentTime = q.pause_at; }
+    paint();
+    var first = document.querySelector('#state .opt');
+    if (first) first.focus({ preventScroll: true });
+  }
+  function pick(q, i) {
+    if (picked[q.scene]) return;
+    picked[q.scene] = { i: i };
+    var wasAsking = mode === 'ask' && asking === q;
+    emit('reveal');
+    asking = null;
+    if (mode === 'ask') mode = 'film';
+    if (wasAsking || (mode === 'film' && v.currentTime >= q.pause_at - 0.05 && v.currentTime < q.resume_at)) {
+      quiet = true; v.currentTime = q.resume_at;
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    }
+    lastKey = '';
+    paint();
+  }
+  // a frame clock while playing: the pause point is met within one display frame, not one timeupdate (250 ms)
+  function tick() {
+    if (v.paused || !booted) return;
+    if (mode === 'film') {
+      var t = v.currentTime, q = askAt(t);
+      notePassed(t);
+      if (q) { startAsk(q); return; }
+      for (var i = 0; i < Q.length; i++) {
+        var a = Q[i];
+        if (picked[a.scene] && t >= a.pause_at && t < a.resume_at - 0.1) { quiet = true; v.currentTime = a.resume_at; break; }
+      }
+    }
+    window.requestAnimationFrame(tick);
+  }
 
   function boot() {
     if (booted || !trackEls.every(function (t) { return t.readyState === 2; })) return;
@@ -197,14 +255,43 @@
       var q = el('div', 'q'); q.setAttribute('data-key', 'question');
       q.appendChild(el('p', 'lbl', U.question_label));
       var qt = el('p', 'qt', V.question.prompt); qt.setAttribute('data-question', V.question.scene); q.appendChild(qt);
+      var QQ = qFor(V.question.scene), got = QQ && picked[QQ.scene];
+      if (QQ && !got && (mode === 'ask' || mode === 'film') && V.origin === 'film') {
+        // the options, as in the Q&A; in EXPLORE the learner has left the question, so only the prompt shows
+        var fs = el('div', 'opts ask'); fs.setAttribute('role', 'group'); fs.setAttribute('aria-label', U.qa_choose);
+        QQ.options.forEach(function (o, k) {
+          var b = el('button', 'opt', o.text); b.type = 'button'; b.setAttribute('data-option', QQ.scene + '.' + k);
+          b.addEventListener('click', function () { pick(QQ, k); });
+          fs.appendChild(b);
+        });
+        q.appendChild(fs);
+        if (mode === 'ask') { var h = el('p', 'askhint', U.ive_ask_hint); h.setAttribute('data-chrome', 'ive_ask_hint'); q.appendChild(h); }
+      }
+      if (QQ && got) q.appendChild(verdict(QQ, got.i));
       side.appendChild(q);
+    } else if (V.origin === 'film') {
+      // the verdict stays beside the answer while it plays
+      var A = Q.filter(function (x) { return picked[x.scene] && v.currentTime >= x.resume_at - 0.05 && v.currentTime < x.verdict_until; })[0];
+      if (A) { var vq = el('div', 'q done'); vq.appendChild(verdict(A, picked[A.scene].i)); side.appendChild(vq); }
     }
     if (V.origin === 'yours') { var pv = el('p', 'prov', V.prov); pv.setAttribute('data-chrome', V.provKey); side.appendChild(pv); }
     var stage = el('div', 'xstage'); stage.appendChild(fig); stage.appendChild(side);
     box.appendChild(stage);
   }
 
-  function shownIdx() { return Math.max(0, windowAt(meta, mode === 'film' ? v.currentTime : returnTime)); }
+  function verdict(q, i) {
+    var o = q.options[i], box = el('div', 'verdict'); box.setAttribute('data-verdict', o.correct ? 'correct' : 'wrong');
+    box.appendChild(el('p', 'pick', fmt(U.ive_your_pick, { pick: o.text })));
+    box.appendChild(el('p', 'vd', o.correct ? U.qa_correct : U.qa_wrong));
+    if (!o.correct) {
+      box.appendChild(el('p', 'belief', o.misconception));
+      box.appendChild(el('p', 'lbl', U.qa_correction));
+      box.appendChild(el('p', 'fix', o.correction));
+    }
+    return box;
+  }
+
+  function shownIdx() { return Math.max(0, windowAt(meta, now())); }
   function seedFromFilm() {
     if (!D.live) return null;
     var s = meta[shownIdx()].p.state, n = Number((s.vars || {})[D.live.var]);
@@ -217,14 +304,17 @@
     var i = shownIdx(), V;
     if (mode === 'explore' && edit) V = liveView(edit.n, edit.brk);
     else if (mode === 'explore' && step !== null) { V = filmView(step); V.origin = 'step'; }
-    else { V = filmView(i); V.at = mode === 'film' ? v.currentTime : returnTime; }
-    var key = [mode, V.origin, V.cue, V.state_id, V.program, edit && edit.n, edit && edit.brk, clock(V.at || 0)].join('|');
+    else { V = filmView(i); V.at = now(); }
+    var vkey = Q.map(function (q) { return (picked[q.scene] ? 'p' + picked[q.scene].i : '-') + (v.currentTime >= q.resume_at - 0.05 && v.currentTime < q.verdict_until ? 'v' : ''); }).join('');
+    var key = [mode, V.origin, V.cue, V.state_id, V.program, edit && edit.n, edit && edit.brk, clock(V.at || 0), vkey].join('|');
     if (key !== lastKey) { render(V); lastKey = key; }
     var xp = $('xp'), exploring = mode === 'explore';
     xp.setAttribute('data-mode', mode);
     document.documentElement.setAttribute('data-ive-mode', mode);
-    $('mode-label').textContent = exploring ? U.ive_mode_label_explore : U.ive_mode_label_film;
-    $('mode-text').textContent = exploring ? fmt(U.ive_mode_explore, { time: clock(returnTime) }) : U.ive_mode_film;
+    document.documentElement.setAttribute('data-ive-ask', mode === 'ask' ? asking.scene : '');
+    $('mode-label').textContent = exploring ? U.ive_mode_label_explore : (mode === 'ask' ? U.ive_mode_label_ask : U.ive_mode_label_film);
+    $('mode-text').textContent = exploring ? fmt(U.ive_mode_explore, { time: clock(returnTime) })
+      : (mode === 'ask' ? fmt(U.ive_mode_ask, { time: clock(v.currentTime) }) : U.ive_mode_film);
     $('explore').hidden = exploring; $('return').hidden = !exploring;
     $('tools').hidden = !exploring;
     var cur = step !== null ? step : i;
@@ -240,13 +330,20 @@
       $('live-reset').disabled = lk || edit === null;
     }
     transcript();
-    var ci = windowAt(chaps, mode === 'film' ? v.currentTime : returnTime);
-    document.querySelectorAll('#chapters button').forEach(function (b, k) { b.setAttribute('aria-current', String(k === ci)); });
+    var ci = windowAt(chaps, now());
+    document.querySelectorAll('#chapters button').forEach(function (b, k) {
+      b.setAttribute('aria-current', String(k === ci));
+      var s = sealedChapter(k), ttl = b.querySelector('.ttl');
+      if (b.getAttribute('data-sealed') !== String(s)) {
+        b.setAttribute('data-sealed', String(s));
+        ttl.textContent = s ? U.ive_chapter_sealed : chaps[k].text;
+      }
+    });
   }
 
   // ---- the state machine
   function enterExplore() {
-    if (!booted || mode === 'explore') return;
+    if (!booted || mode === 'explore' || mode === 'ask') return;
     mode = 'explore'; returnTime = v.currentTime; edit = null; step = null; seed = seedFromFilm();
     if (!v.paused) v.pause();
     emit('explore');
@@ -268,17 +365,25 @@
     if (mode === 'explore' && edit === null && step === null) { returnTime = v.currentTime; paint(); }  // the settled pause position
     else if (!v.ended && mode === 'film' && v.readyState >= 1) enterExplore();
   });
-  v.addEventListener('play', function () { if (mode === 'explore') returnToFilm(); });
-  v.addEventListener('playing', function () { if (mode === 'return') { mode = 'film'; paint(); } });
+  v.addEventListener('play', function () {
+    if (mode === 'ask') { v.pause(); return; }  // the film holds until the learner picks
+    if (mode === 'explore') { returnToFilm(); return; }
+    var q = askAt(v.currentTime);
+    if (q && mode === 'film' && v.currentTime >= q.pause_at - 0.03) { startAsk(q); return; }
+    window.requestAnimationFrame(tick);
+  });
+  v.addEventListener('playing', function () { if (mode === 'return') { mode = 'film'; paint(); } window.requestAnimationFrame(tick); });
   v.addEventListener('seeked', function () {
+    if (mode === 'ask' && (v.currentTime < asking.pause_at - 0.05 || v.currentTime >= asking.resume_at)) { mode = 'film'; asking = null; }
+    if (mode !== 'explore') notePassed(v.currentTime);
     if (mode === 'explore') { returnTime = v.currentTime; edit = null; step = null; seed = seedFromFilm(); }
     if (quiet) quiet = false; else if (booted) emit('seek');
     paint();
   });
-  v.addEventListener('timeupdate', function () { paint(); showCaption(); });
+  v.addEventListener('timeupdate', function () { if (mode === 'film') notePassed(v.currentTime); paint(); showCaption(); });
   v.addEventListener('seeked', showCaption);
   v.addEventListener('ended', function () { mode = 'film'; paint(); });
-  $('explore').addEventListener('click', enterExplore);
+  $('explore').addEventListener('click', function () { if (mode === 'ask') { mode = 'film'; asking = null; } enterExplore(); });
   $('return').addEventListener('click', returnToFilm);
   function seekTo(t, action) { quiet = true; v.currentTime = t; emit(action); }
 
@@ -318,7 +423,7 @@
     });
   }
   function transcript() {
-    var list = $('tx'), t = mode === 'film' ? v.currentTime : returnTime, n = windowAt(caps, t) + 1;
+    var list = $('tx'), t = now(), n = windowAt(caps, t) + 1;
     while (list.childNodes.length > n) list.removeChild(list.lastChild);
     for (var j = list.childNodes.length; j < n; j++) (function (c) {
       var li = el('li'), b = el('button'); b.type = 'button';
@@ -332,12 +437,21 @@
     }
   }
 
+  document.addEventListener('keydown', function (e) {
+    var t = e.target, tag = t && t.tagName;
+    if (e.key !== ' ' || e.altKey || e.ctrlKey || e.metaKey || (tag && tag !== 'BODY' && tag !== 'HTML')) return;
+    e.preventDefault();
+    if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause();
+  });
   document.documentElement.classList.add('js');
   window.__ptkReady = function () { return booted && v.readyState >= 1; };
   window.__ptkIve = {
     resolve: function (t) { var i = windowAt(meta, t); return i < 0 ? null : meta[i].p.cue; },
     chapterAt: function (t) { return windowAt(chaps, t); },
     mode: function () { return mode; },
+    asking: function () { return asking ? asking.scene : null; },
+    picked: function () { return JSON.parse(JSON.stringify(picked)); },
+    questions: function () { return Q; },
     returnTime: function () { return returnTime; },
     live: function (n, brk) { var w = liveView(n, brk); return { program: w.program, path: w.path, output: w.output.map(function (o) { return o.text; }), exit: w.exit, ran: w.ran }; },
     frameUs: FRAME_US

@@ -324,6 +324,10 @@
             "c.promote"
           ]
         }
+      ],
+      "title_claims": [
+        "c.ascii",
+        "c.promote"
       ]
     },
     {
@@ -337,6 +341,9 @@
             "c.cast"
           ]
         }
+      ],
+      "title_claims": [
+        "c.cast"
       ]
     },
     {
@@ -350,6 +357,9 @@
             "c.mismatch"
           ]
         }
+      ],
+      "title_claims": [
+        "c.mismatch"
       ]
     }
   ],

@@ -671,6 +671,9 @@
             "c.cast"
           ]
         }
+      ],
+      "title_claims": [
+        "c.cast"
       ]
     },
     {
@@ -689,6 +692,9 @@
             "c.fprint"
           ]
         }
+      ],
+      "title_claims": [
+        "c.fprint"
       ]
     },
     {
@@ -713,6 +719,10 @@
             "c.u"
           ]
         }
+      ],
+      "title_claims": [
+        "c.d",
+        "c.u"
       ]
     },
     {
@@ -731,6 +741,9 @@
             "c.char"
           ]
         }
+      ],
+      "title_claims": [
+        "c.char"
       ]
     },
     {
@@ -760,6 +773,11 @@
             "c.ubnorun"
           ]
         }
+      ],
+      "title_claims": [
+        "c.samebits",
+        "c.ub",
+        "c.ubnorun"
       ]
     }
   ],

@@ -814,6 +814,10 @@
       "key_nodes": [
         "code",
         "output"
+      ],
+      "title_claims": [
+        "c.fall",
+        "c.match"
       ]
     },
     {
@@ -839,6 +843,10 @@
         "code",
         "output",
         "note"
+      ],
+      "title_claims": [
+        "c.fall",
+        "c.labels"
       ]
     },
     {
@@ -863,6 +871,10 @@
         "code",
         "output",
         "note"
+      ],
+      "title_claims": [
+        "c.break",
+        "c.done"
       ]
     },
     {
@@ -881,6 +893,9 @@
       "key_nodes": [
         "code",
         "output"
+      ],
+      "title_claims": [
+        "c.withbreak"
       ]
     },
     {
@@ -906,6 +921,9 @@
         "code",
         "output",
         "note"
+      ],
+      "title_claims": [
+        "c.recap"
       ]
     }
   ],

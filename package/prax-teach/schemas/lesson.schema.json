@@ -113,6 +113,14 @@
         ]
       },
       "description": "The media to build, in the order the learner asked for them."
+    },
+    "title_claims": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/ref"
+      },
+      "description": "The claims the lesson title states or implies. Every page shows the title, so it may not state a question's answer."
     }
   },
   "$defs": {
@@ -639,6 +647,10 @@
                       "returning"
                     ],
                     "description": "running: the top frame executing; waiting: blocked in a call; returning: popped, its value flowing to the caller."
+                  },
+                  "got": {
+                    "$ref": "#/$defs/ref",
+                    "description": "A fact: the value this frame received from the call it was waiting for (it fills the frame's slot)."
                   }
                 }
               }
@@ -767,6 +779,20 @@
         "mechanism": {
           "$ref": "#/$defs/ref",
           "description": "For view=summary: the trace state whose mechanism produced this summary. An earlier or the same scene must show it."
+        },
+        "title_claims": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "The claims the title states or implies ([] for a neutral title). Required for every scene after a question: a title that states a question's answer stays hidden in the IVE chapter list and the Q&A until the question is answered (ptk/project/seal.py)."
+        },
+        "ask": {
+          "type": "string",
+          "minLength": 3,
+          "pattern": "\\?$",
+          "description": "Optional: one bounded question the Q&A asks before revealing this scene (written forms, such as %f or factorial(2)). Without it the layer is a walkthrough step, not a prediction."
         }
       },
       "description": "One video scene. view=summary scenes (totals, outputs, results) must name the mechanism state that produced them (D20.5, mechanism not metrics).",
@@ -1016,6 +1042,21 @@
                 "$ref": "#/$defs/ref"
               },
               "description": "Claims the panel prints as its caption lines."
+            },
+            "vars": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "param": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_]\\w*$"
+                },
+                "result": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_]\\w*$"
+                }
+              },
+              "description": "stack: every frame shows its own parameter (the argument in its call fact) and result variable (unset, a slot waiting for the call on its call line, or the value it received), derived from facts and the program source."
             }
           }
         },

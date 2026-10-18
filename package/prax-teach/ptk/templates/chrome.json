@@ -114,6 +114,14 @@
   "morph_files": "{program} → {file}",
   "arrow": "→",
   "ive_step_back": "An earlier step of the film, not the paused frame",
-  "wrong_belief": "a common wrong belief"
+  "wrong_belief": "a common wrong belief",
+  "ive_ask_hint": "The film waits here until you pick.",
+  "ive_mode_label_ask": "Predict",
+  "ive_mode_ask": "The film is waiting at {time} for your prediction.",
+  "ive_your_pick": "Your pick: {pick}",
+  "ive_chapter_sealed": "Opens after you answer",
+  "frame_var": "{name} = {expr}",
+  "frame_var_eq": "{name} =",
+  "frame_var_unset": "{name} = ?"
  }
 }

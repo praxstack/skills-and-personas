@@ -67,6 +67,24 @@ html[data-ive-mode="explore"] .mode .tagm{color:var(--surface);background:var(--
 .q{padding:.75rem .875rem;border:2px solid var(--note);border-radius:.625rem;background:var(--note_tint)}
 .q .qt{margin-block-start:.25rem;font-size:calc(1.0625rem * var(--body-scale));line-height:1.45;color:var(--ink)}
 .prov{padding-inline:0}
+/* ASK: the film waits for a pick (round 18) */
+.q .opts.ask{display:grid;gap:.5rem;margin-block-start:.75rem}
+.q .opt{display:block;width:100%;min-height:2.75rem;padding:.5rem .875rem;text-align:start;cursor:pointer;
+  font-family:var(--value-font);font-weight:var(--value-weight);font-size:1.0625rem;line-height:1.35;color:var(--ink);
+  background:var(--surface);border:1px solid var(--rule);border-radius:.5rem}
+.q .opt:hover{background:var(--highlight);border-color:var(--note)}
+.q .opt:focus-visible{outline:3px solid var(--note);outline-offset:2px}
+.q .askhint{margin-block-start:.625rem;font-size:.875rem;color:var(--ink_soft)}
+html[data-ive-ask]:not([data-ive-ask=""]) .q{box-shadow:0 0 0 3px var(--note_tint)}
+html[data-ive-ask]:not([data-ive-ask=""]) .mode .tagm{color:var(--surface);background:var(--note)}
+.verdict{display:grid;gap:.25rem;margin-block-start:.75rem;padding-block-start:.625rem;border-block-start:1px solid var(--rule);font-size:.9375rem;line-height:1.45}
+.verdict .pick{font-family:var(--value-font);color:var(--ink)}
+.verdict .vd{font-weight:700;color:var(--note)}
+.verdict[data-verdict="wrong"] .vd{color:var(--correction)}
+.verdict .belief{color:var(--correction)}
+.verdict .fix{color:var(--ink)}
+.q.done{border-style:solid}
+.q.done .verdict{margin:0;padding:0;border:0}
 
 /* explore tools: steps, then the live edit */
 .tools{display:grid;gap:.875rem;padding-block-start:.875rem;border-block-start:1px solid var(--rule)}

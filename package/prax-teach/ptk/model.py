@@ -268,7 +268,7 @@ def reference_errors(data, base_dir=None):
     for i, s in enumerate(trace):
         need("programs", s["state"]["program"], f"/trace/{i}/state/program")
         for j, fr in enumerate(s["state"].get("frames", [])):
-            for k in ("call", "ret"):
+            for k in ("call", "ret", "got"):
                 if k in fr:
                     need("facts", fr[k], f"/trace/{i}/state/frames/{j}/{k}")
         for j, fid in enumerate(s["state"].get("output", [])):
@@ -277,6 +277,8 @@ def reference_errors(data, base_dir=None):
             need("facts", fid, f"/trace/{i}/reveals/{j}")
     errs += _storyboard_errors(data, ids, need)
     errs += _figure_errors(data, need)
+    from .project import seal  # question-aware titles (round 18); seal imports nothing from ptk
+    errs += seal.problems(data)
     _placeholders(data, [], errs)
     return errs
 

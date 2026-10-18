@@ -766,6 +766,9 @@
             "c.add"
           ]
         }
+      ],
+      "title_claims": [
+        "c.add"
       ]
     },
     {
@@ -790,6 +793,10 @@
             "c.out"
           ]
         }
+      ],
+      "title_claims": [
+        "c.out",
+        "c.relu"
       ]
     },
     {
@@ -809,6 +816,9 @@
             "c.formula"
           ]
         }
+      ],
+      "title_claims": [
+        "c.formula"
       ]
     }
   ],
