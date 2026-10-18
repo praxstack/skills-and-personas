@@ -956,7 +956,7 @@
     {
       "id": "c.kformula",
       "kind": "mechanism",
-      "text": "The sliders change w2 and b. z = 0.8 × 1.5 + 0.4 × w2 + b, computed in double as the program does, and a = max(0, z).",
+      "text": "For any w2 and b, the program computes z = 0.8 × 1.5 + 0.4 × w2 + b in double, left to right, and a = max(0, z).",
       "justification": "programs/neuron.c computes t1 = x1 * w1, t2 = x2 * w2, z = t1 + t2 + b left to right in double and a = fmax(0.0, z). The explorer's values are computed by ptk/expect_neuron.py with the same binary64 operations in the same order and printed in %g / %+g form; three variant programs (neuron_k1.c to neuron_k3.c) were compiled and run and their output matches the table at those points.",
       "sources": [
         {
