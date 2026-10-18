@@ -614,6 +614,35 @@ class Builds(unittest.TestCase):
             self.assertEqual(r.returncode, 1)
             self.assertIn("KAI_MORI_VIDEOS_BLOB_TOKEN", r.stderr)
 
+    def test_code_check_passes_a_lesson_that_only_shows_other_languages(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            lesson = Path(tmp) / "x.lesson.js"
+            lesson.write_text('window.LESSON = { title: "X", code: { js: "console.log(1)", expect: () => "1" } };\n')
+            r = subprocess.run(["node", str(SKILLS / "explorable/scripts/check_code.mjs"), str(lesson)], capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+            self.assertIn("shown, not checked", r.stdout)
+
+    def test_python_worker_runs_one_job_at_a_time(self):
+        # Two runs posted together share one Pyodide: the second must wait for the first.
+        js = r"""
+const s = require("fs").readFileSync(process.argv[1], "utf8");
+const src = s.match(/const WORKER_SRC = `([\s\S]*?)\n`;/)[1].replace(/\\\\n/g, "\\n");
+const log = [];
+const py = { setStdout() {}, setStderr() {}, globals: { get: () => () => ({ set() {}, destroy() {} }) },
+  async runPythonAsync(c) { if (!c.startsWith("import sys")) { log.push("run " + c); await new Promise((r) => setTimeout(r, 20)); } } };
+const self = {};
+new Function("self", "postMessage", "fetch", "importScripts", "loadPyodide", "URL", "Blob", src)(
+  self, (m) => log.push(m.type + " " + m.id), async () => ({ ok: true, text: async () => "" }), () => {}, async () => py,
+  { createObjectURL: () => "" }, class {});
+self.onmessage({ data: { id: 1, src: "A", stdin: "", limit: 100 } });
+self.onmessage({ data: { id: 2, src: "B", stdin: "", limit: 100 } });
+setTimeout(() => console.log(log.join("|")), 150);
+"""
+        r = subprocess.run(["node", "-e", js, str(SKILLS / "explorable/assets/engine/code.js")], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        log = r.stdout.strip().split("|")
+        self.assertLess(log.index("done 1"), log.index("started 2"), log)
+
     @unittest.skipUnless((ROOT.parent / "courses/ai-math").is_dir(), "needs a site's courses/ (kai-mori-fanout-sh)")
     def test_code_check_fails_when_nothing_can_run(self):
         node = shutil.which("node")

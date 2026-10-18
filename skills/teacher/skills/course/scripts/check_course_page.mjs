@@ -39,9 +39,11 @@ const nodeButton = page.getByRole("group", { name: /^Map of/ }).getByRole("butto
 check("a map node is a button by its lesson's name", (await nodeButton.count()) >= 1, firstTitle);
 check("the open lesson's node is marked current", (await page.evaluate(() => document.querySelector('.cs-node[aria-current="true"]')?.getAttribute("data-id"))) === nodeIds[0]);
 check("Enter on a node keeps focus on its node", kb.node && kb.selected && kb.id === nodeIds[0], JSON.stringify(kb));
-await page.keyboard.press("Tab");
-await page.keyboard.press("Enter");
-check("Tab then Enter opens the next lesson", (await page.evaluate(() => document.activeElement && document.activeElement.getAttribute("data-id"))) === nodeIds[1]);
+if (nodeIds.length > 1) {
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Enter");
+  check("Tab then Enter opens the next lesson", (await page.evaluate(() => document.activeElement && document.activeElement.getAttribute("data-id"))) === nodeIds[1]);
+}
 // Keyboard on a status button: the drawer is rebuilt, focus stays on the new button.
 await page.locator(".cs-drawer .cs-chip").first().focus();
 const chipLabel = await page.locator(".cs-drawer .cs-chip").first().textContent();
@@ -94,7 +96,7 @@ for (const l of videos) {
 await page.getByRole("tab", { name: "Outline" }).click();
 check("outline lists every lesson", (await page.locator(".cs-outline li").count()) === ids.length);
 const unlinked = await page.evaluate(() =>
-  window.COURSE.lessons.filter((l) => ![...document.querySelectorAll(".cs-outline a")].some((a) => a.getAttribute("href") === l.page)).map((l) => l.id),
+  window.COURSE.lessons.filter((l) => ![...document.querySelectorAll(".cs-outline a")].some((a) => a.getAttribute("href") === (window.COURSE.base || "") + l.page)).map((l) => l.id),
 );
 check("every lesson links to its page", unlinked.length === 0, unlinked.join(", "));
 await page.getByRole("tab", { name: "Notes" }).click();

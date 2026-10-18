@@ -22,11 +22,14 @@ import { createHash } from "node:crypto";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
+// The site's courses/: the one in the folder this runs from (a site's root, as
+// npm runs it), else the one beside the engine when it sits at <site>/teacher/.
+const SITE = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
+const DEFAULT_COURSES = existsSync(resolve("courses")) ? resolve("courses") : join(SITE, "courses");
 const YEAR = 365 * 24 * 60 * 60;
 
 export function parseArgs(argv) {
-  const a = { dryRun: false, courses: join(REPO, "courses"), root: null };
+  const a = { dryRun: false, courses: DEFAULT_COURSES, root: null };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--dry-run") a.dryRun = true;
     else if (argv[i] === "--courses") a.courses = resolve(argv[++i]);

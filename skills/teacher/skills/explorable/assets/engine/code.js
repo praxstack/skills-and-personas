@@ -82,7 +82,13 @@ const WORKER_SRC = `
       return loadPyodide({ indexURL: index });
     })();
   }
-  self.onmessage = async ({ data }) => {
+  // One run at a time: runs share one Pyodide and its sys.stdin, stdout and
+  // stderr, so a second run waits for the first instead of mixing with it.
+  let queue = Promise.resolve();
+  self.onmessage = (e) => {
+    queue = queue.then(() => run(e)).catch(() => {});
+  };
+  async function run({ data }) {
     const { id, url, sri, index, src, stdin, limit } = data;
     let py;
     try {
@@ -121,7 +127,7 @@ const WORKER_SRC = `
     } finally {
       scope.destroy();
     }
-  };
+  }
 `;
 
 let pyWorker = null;

@@ -34,6 +34,11 @@ if (!L?.code) {
   process.exit(0);
 }
 const code = L.code;
+if (!code.cpp && !code.python) {
+  // Other languages (js, java, go, rust) are shown to read, not run here.
+  console.log(`${L.title}: no C++ or Python to run; the other languages are shown, not checked`);
+  process.exit(0);
+}
 const strip = (src) => String(src).replace(/^\n/, "").split("\n").map((l) => l.replace(/\s*(?:\/\/|#)@[\w-]+\s*$/, "")).join("\n");
 const have = (bin) => spawnSync(bin, ["--version"]).status === 0;
 const dir = mkdtempSync(join(tmpdir(), "code-"));
