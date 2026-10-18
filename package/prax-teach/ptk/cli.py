@@ -161,6 +161,13 @@ def cmd_agent_tests(a):
     return selftest.run(suite="agent", pattern=a.k)
 
 
+def cmd_design(a):
+    """AC-9.3: record the six screenshot-reviewed aesthetics verdicts in the build report."""
+    from . import design
+    _emit(design.record(a.lesson, a.verdicts))
+    return errors.EXIT_OK
+
+
 def parser():
     p = argparse.ArgumentParser(prog="ptk", description="Prax Teach lesson compiler")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -184,6 +191,12 @@ def parser():
     c = cs.add_parser("check")
     c.add_argument("lesson")
     c.set_defaults(fn=cmd_claims)
+    s = sub.add_parser("design", help="record the screenshot design review in the build report (AC-9.3)")
+    ds = s.add_subparsers(dest="design_cmd", required=True)
+    d = ds.add_parser("record")
+    d.add_argument("lesson")
+    d.add_argument("--verdicts", required=True, help="JSON: reviewer, reference, items {id: verdict, note, shots}")
+    d.set_defaults(fn=cmd_design)
     s = sub.add_parser("report")
     s.add_argument("lesson")
     s.add_argument("--json", action="store_true")

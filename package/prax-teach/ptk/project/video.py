@@ -495,7 +495,9 @@ def scene_html(lesson, scene, index, count, timing):
         # the morph, on the drawing timeline (offsets from the reveal)
         O = "[data-set=\"old\"]"
         morph_js += [
-            f"d.to(q('.rail{O}, .tag{O}, .badge{O}, .ostep{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
+            # the old path's lines and tags go; its dots and output-step badges stay with their rows (they pair the
+            # output, which stays on screen through the diff, with the lines that printed it) until the diff ends
+            f"d.to(q('.seg{O}, .head{O}, .tag{O}, .badge{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
             f"d.to(q('.hl'), {{ opacity: 0, duration: 0.25 }}, 0);",
             # the output, the gutter and the file name stay on screen through the diff (WP9 Part A)
             f"d.fromTo(q('.band.minus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.05);",
@@ -509,7 +511,8 @@ def scene_html(lesson, scene, index, count, timing):
         for n_old, n_new in keep.items():
             dy = gc["top"][n_new] - go["top"][n_old]
             if abs(dy) > 0.01:
-                morph_js.append(f"d.to(q('.ln{O}[data-line=\"{n_old}\"]'), {{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
+                morph_js.append(f"d.to(q('.ln{O}[data-line=\"{n_old}\"], .dot{O}[data-line=\"{n_old}\"], "
+                                f".ostep{O}[data-line=\"{n_old}\"]'), {{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
         morph_js += [
             # a moving row's number cross-fades while it slides; an added row fills its slot as the slot opens
             f"d.fromTo(q('.ln{O} .no2'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.45);",
@@ -518,6 +521,9 @@ def scene_html(lesson, scene, index, count, timing):
             f"d.to(q('.file[data-set=\"old\"]'), {{ opacity: 0, duration: 0.2 }}, 0.85);",
             f"d.fromTo(q('.file[data-set=\"cur\"]'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.85);",
             f"d.fromTo(q('.band.plus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.45 }}, 0.45);",
+            # the diff is done: the old output no longer matches the code on screen, so it dims with its markers
+            f"d.to(q('.dot{O}, .ostep{O}'), {{ opacity: 0, duration: 0.3 }}, {MORPH - 0.05});",
+            f"d.to(q('.out{O}'), {{ opacity: 0.32, duration: 0.3 }}, {MORPH - 0.05});",
             f"d.set(q('.hl'), {{ y: {gc['cy'][plan['first']] - LH / 2 if plan['first'] else 0:.1f} }}, {MORPH - 0.05});",
             f"d.to(q('.hl'), {{ opacity: 1, duration: 0.2 }}, {MORPH - 0.05});",
         ]
@@ -593,7 +599,7 @@ def scene_html(lesson, scene, index, count, timing):
                             for k, ns, src_, pid in (("minus", removed, go["src"], before["program"]), ("plus", added, gc["src"], cur["program"]))
                             for n in ns)
         side += (f'<div class="panel changecard"><p class="qlabel" data-chrome="morph_label">{esc(text.ui("morph_label"))}</p>'
-                 f'<p class="files" data-chrome="morph_files">{esc(text.ui("morph_files", old=fo, new=fn))}</p>{diff_rows}</div>')
+                 f'<p class="files" data-chrome="morph_files">{esc(text.ui("morph_files", program=fo, file=fn))}</p>{diff_rows}</div>')
     # --- the mechanism panel: the state before this scene, with this scene's state faded in over it
     mech_html = ""
     if mode:

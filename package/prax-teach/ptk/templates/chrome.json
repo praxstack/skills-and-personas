@@ -111,7 +111,7 @@
   "x_captured_run": "Captured run of {file} · stdout sha256 {sha}",
   "x_flow_label": "the path through the switch",
   "morph_label": "the change",
-  "morph_files": "{old} → {new}",
+  "morph_files": "{program} → {file}",
   "arrow": "→",
   "ive_step_back": "An earlier step of the film, not the paused frame",
   "wrong_belief": "a common wrong belief"

@@ -324,7 +324,7 @@ MORPH_JS = r"""(t) => {
 def morph_gate(lesson, video_dir, timing, lesson_sha=None):
     """A program change keeps the frame steady (WP9 Part A): through the diff every visible code row keeps a line
     number, the file name stays readable, no gap opens in the code, the output values stay fully shown until the
-    new output arrives, and the note column is never empty once the title is in. Sampled every 0.1 s from the
+    diff is done, and the note column is never empty once the title is in. Sampled every 0.1 s from the
     scene start to `shown`."""
     scenes = [s for s in timing["scenes"] if s.get("morph")]
     if not scenes:
@@ -340,7 +340,7 @@ def morph_gate(lesson, video_dir, timing, lesson_sha=None):
         for sc in scenes:
             plan = vproj.draw_plan(lesson, sc["before"], sc["state"], budget=vproj.DRAW_BUDGET * (sc["end"] - sc["reveal"]))
             reveal = sc["reveal"] - sc["start"]
-            outputs_at = reveal + plan["outputs_at"] * plan["k"]
+            outputs_at = reveal + min(plan["outputs_at"], vproj.MORPH - 0.05) * plan["k"]  # the diff itself
             end = sc["shown"] - sc["start"]
             ts = [round(x / 10, 2) for x in range(0, int(end * 10) + 1)]
             plans[sc["id"]] = {"outputs_at": round(outputs_at, 3), "times": ts}
