@@ -9,7 +9,7 @@
     "no_break": "no break",
     "exit_label": "leaves the switch",
     "skipped_label": "skipped",
-    "provenance": "Outputs captured from {compiler}, sandboxed, run twice · stdout sha256 {sha}",
+    "provenance": "Captured from {compiler}, sandboxed, run twice · stdout sha256 {shas}",
     "provenance_short": "captured: {compiler}",
     "source_link": "Source: {path}",
     "alt_output": "Output of {program}: {lines}.",

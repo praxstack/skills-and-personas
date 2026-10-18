@@ -796,7 +796,7 @@
     {
       "id": "sc7",
       "title": "Recap",
-      "state": "s4",
+      "state": "s3",
       "narration": [
         {
           "text": "A case label only marks where execution enters a switch; it never ends a case.",

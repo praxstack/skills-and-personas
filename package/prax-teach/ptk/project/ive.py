@@ -231,8 +231,7 @@ def page(lesson, timing, cue_list, posters):
     facts = lesson.by_id("facts")
     src = lesson.program(lesson.data["figure"]["program"]) if lesson.data.get("figure") else lesson.data["programs"][0]
     f0 = next(f for f in lesson.data["facts"] if f["program"] == src["id"] and f["select"]["stream"] == "stdout")
-    prov = text.ui("provenance", compiler=facts[f0["id"]]["source"]["compiler"].split(" (")[0],
-                   sha=facts[f0["id"]]["source"]["stdout_sha256"][:12])
+    prov = text.provenance(lesson)
     tx_full = "".join(f'<li data-narration="{esc(c["id"])}"><span class="time" data-label="time">'
                       f'{esc(text.vtt_time(c["start"])[3:8])}</span>{esc(c["text"])}</li>' for c in timing["cues"])
     poster_html = "".join(f'<figure><img src="{esc(p["file"])}" alt="{esc(p["alt"])}" width="960" height="540">'

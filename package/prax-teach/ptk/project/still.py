@@ -334,9 +334,7 @@ def build_svg(lesson, layout, theme, tokens):
         y += 6
     y += 10
     svg.line(X0, y - 16, X1, y - 16, t["rule"], 1)
-    f0 = facts[final[0]]
-    compiler = f0["source"]["compiler"].split(" (")[0]
-    prov = text.ui("provenance", compiler=compiler, sha=f0["source"]["stdout_sha256"][:12])
+    prov = text.provenance(lesson)
     m0 = svg.mark()
     for ln in fonts.wrap("mono", g["foot"], prov, X1 - X0):
         svg.text(X0, y + 4, ln, "mono", g["foot"], t["muted"], ("chrome", "provenance"))

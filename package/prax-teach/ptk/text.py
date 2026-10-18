@@ -41,6 +41,21 @@ def ui(key, **kw):
     return s.format(**kw) if kw else s
 
 
+def provenance(lesson):
+    """One provenance line naming every program's stdout hash (a single hash for several
+    programs' outputs was rejected by the claims reviewer as misleading)."""
+    facts = [f for f in lesson.data["facts"] if f.get("source") and f["select"]["stream"] == "stdout"]
+    compiler = facts[0]["source"]["compiler"].split(" (")[0]
+    seen, parts = set(), []
+    for f in facts:
+        prog = lesson.program(f["program"])
+        if prog["id"] in seen:
+            continue
+        seen.add(prog["id"])
+        parts.append(f"{prog['path'].split('/')[-1]} {f['source']['stdout_sha256'][:12]}")
+    return ui("provenance", compiler=compiler, shas=", ".join(parts))
+
+
 SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'(])")
 
 
