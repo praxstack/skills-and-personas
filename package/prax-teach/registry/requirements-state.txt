@@ -1,0 +1,4 @@
+# Learner-state scheduler (ptk/state, AC-8.4). Installed into the core venv with --require-hashes --no-deps.
+# Same pins as v2's .engine/uv.lock.
+fsrs==6.3.1 --hash=sha256:ac1bf9939573592d8c9bc1e11a00bd17e04146dc9f2c913127e2bcc431b9040b
+typing_extensions==4.16.0 --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8

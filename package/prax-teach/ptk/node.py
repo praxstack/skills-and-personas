@@ -79,3 +79,35 @@ def hyperframes(args, cwd, timeout=1800, lesson_sha256=None, sandbox_tmp=None, c
 
 def hyperframes_version():
     return host.run([bin_path("hyperframes"), "--version"], env=env(), timeout=60).stdout.strip()
+
+
+def node_for_major(major):
+    """A node binary of this major version: $PTK_NODE<major>, then `mise where node@<major>`, then the
+    node on PATH if it matches. None when there is none (the caller decides between not-run and failure)."""
+    env_path = os.environ.get(f"PTK_NODE{major}")
+    candidates = [Path(env_path)] if env_path else []
+    mise = shutil.which("mise")
+    if mise:
+        res = host.run([mise, "where", f"node@{major}"], timeout=60)
+        if res.code == 0 and res.stdout.strip():
+            candidates.append(Path(res.stdout.strip()) / "bin" / "node")
+    on_path = shutil.which("node")
+    if on_path:
+        candidates.append(Path(on_path))
+    for c in candidates:
+        if c.is_file() and os.access(c, os.X_OK):
+            v = host.run([c, "--version"], timeout=30).stdout.strip()
+            if v.lstrip("v").split(".")[0] == str(major):
+                return {"path": str(c), "version": v}
+    return None
+
+
+def render_markdown(source, output=None, trusted_root=None, check=False, node_path=None):
+    """Render a Markdown lesson note to its HTML companion with node/render_markdown.mjs (AC-8.3).
+    SOURCE_DATE_EPOCH comes from the source's sha256, so the same bytes always give the same page."""
+    source = Path(source).resolve()
+    digest = host.sha256_file(source)
+    args = (["--check"] if check else []) + ["--trusted-root", str(Path(trusted_root or source.parent).resolve()),
+                                             str(source)] + ([str(output)] if output else [])
+    cmd = [node_path or node_bin(), str(NODE_DIR / "render_markdown.mjs"), *args]
+    return host.run(cmd, cwd=NODE_DIR, env=env(lesson_sha256=digest), timeout=300)

@@ -1,0 +1,66 @@
+{
+ "$id": "https://prax.local/prax-teach-v2.1/schemas/state-navigation.schema.json",
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "additionalProperties": false,
+ "properties": {
+  "action": {
+   "enum": [
+    "open",
+    "seek",
+    "chapter",
+    "replay",
+    "reveal",
+    "flip",
+    "explore",
+    "return",
+    "close"
+   ]
+  },
+  "artifact_id": {
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+   "type": "string"
+  },
+  "event_id": {
+   "pattern": "^evt-[0-9a-f]{32}$",
+   "type": "string"
+  },
+  "event_type": {
+   "const": "navigation"
+  },
+  "position": {
+   "anyOf": [
+    {
+     "type": "null"
+    },
+    {
+     "maximum": 86400,
+     "minimum": 0,
+     "type": "number"
+    }
+   ]
+  },
+  "schema_version": {
+   "const": "2"
+  },
+  "session_id": {
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+   "type": "string"
+  },
+  "timestamp": {
+   "format": "date-time",
+   "type": "string"
+  }
+ },
+ "required": [
+  "action",
+  "artifact_id",
+  "event_id",
+  "event_type",
+  "position",
+  "schema_version",
+  "session_id",
+  "timestamp"
+ ],
+ "title": "Prax Teach navigation record (state/navigation.jsonl, schema 2). Never mixed with attempts.",
+ "type": "object"
+}

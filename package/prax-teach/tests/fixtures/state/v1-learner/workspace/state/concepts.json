@@ -1,0 +1,66 @@
+{
+  "algorithm": {
+    "name": "transparent-evidence-projection",
+    "version": "1.0.0"
+  },
+  "concepts": [
+    {
+      "concept_id": "switch-fallthrough",
+      "confidence": 0.75316,
+      "contradictions": [
+        {
+          "dimension": "application",
+          "evidence_id": "evt-07ebb5856cb9e6289026ea5a7c24dd7b",
+          "hint_level": 2,
+          "score": 0.4
+        }
+      ],
+      "dimensions": {
+        "application": {
+          "estimate": 0.4,
+          "evidence_ids": [
+            "evt-07ebb5856cb9e6289026ea5a7c24dd7b"
+          ]
+        },
+        "discrimination": {
+          "estimate": null,
+          "evidence_ids": []
+        },
+        "explanation": {
+          "estimate": 0.85,
+          "evidence_ids": [
+            "evt-96c09e0cc704d79a832b7aa39c7bac0b"
+          ]
+        },
+        "recall": {
+          "estimate": 0.9,
+          "evidence_ids": [
+            "evt-9ef01e368e7ca90ead4a0efb81b26e4b"
+          ]
+        },
+        "recognition": {
+          "estimate": null,
+          "evidence_ids": []
+        },
+        "transfer": {
+          "estimate": null,
+          "evidence_ids": []
+        }
+      },
+      "evidence_ids": [
+        "evt-9ef01e368e7ca90ead4a0efb81b26e4b",
+        "evt-07ebb5856cb9e6289026ea5a7c24dd7b",
+        "evt-96c09e0cc704d79a832b7aa39c7bac0b"
+      ],
+      "higher_order_evidence_ids": [],
+      "last_updated": "2026-08-05T09:00:00.000000Z",
+      "status": "developing",
+      "status_reason": "Contradictory evidence remains visible and blocks a durable claim.",
+      "unassisted_dimensions": [
+        "explanation",
+        "recall"
+      ]
+    }
+  ],
+  "schema_version": "1"
+}

@@ -74,7 +74,7 @@ def cmd_report(a):
 def cmd_host(a):
     from . import host
     if a.host_cmd == "probe":
-        _emit(host.probe())
+        _emit(host.probe(artifact=a.artifact))
         return errors.EXIT_OK
     res = host.setup(yes=a.yes, log=lambda m: print(m, file=sys.stderr))
     if not res["fetched"]:
@@ -93,6 +93,16 @@ def cmd_route(a):
               f"build_needed={res['build_needed']} confidence={res['confidence']}"
               f"{' (' + '; '.join(res['reasons']) + ')' if res['reasons'] else ''}"
               f"\nfirst turn: {res['first_turn']['instruction']}")
+    return errors.EXIT_OK
+
+
+def cmd_package(a):
+    """Build the install tree (AC-8.1) and run the host discovery check (AC-8.2). Exit 1 on any problem."""
+    from . import package
+    res = package.build(out=a.out, dry_run=a.dry_run)
+    _emit(res)
+    if res["problems"] or (not a.dry_run and not res["packaged"]):
+        return errors.EXIT_GATE
     return errors.EXIT_OK
 
 
@@ -132,7 +142,9 @@ def parser():
     s.set_defaults(fn=cmd_report)
     s = sub.add_parser("host")
     hs = s.add_subparsers(dest="host_cmd", required=True)
-    hs.add_parser("probe").set_defaults(fn=cmd_host)
+    hp = hs.add_parser("probe", help="which tools and ranked alternatives run here now (AC-8.5)")
+    hp.add_argument("--artifact", help="only this artifact type: still, explorer, qa, cards, video, ive, tts")
+    hp.set_defaults(fn=cmd_host)
     h = hs.add_parser("setup")
     h.add_argument("--yes", action="store_true")
     h.set_defaults(fn=cmd_host)
@@ -141,6 +153,10 @@ def parser():
     s.add_argument("--workspace", help="learner workspace dir (default: current dir)")
     s.add_argument("--json", action="store_true")
     s.set_defaults(fn=cmd_route)
+    s = sub.add_parser("package", help="build the install tree and check it, plus host discovery (AC-8.1, AC-8.2)")
+    s.add_argument("--dry-run", action="store_true", help="list and check the files without writing anything")
+    s.add_argument("--out", help="install tree directory (default: $PTK_STATE/package/prax-teach)")
+    s.set_defaults(fn=cmd_package)
     for name, fn in (("selftest", cmd_selftest), ("agent-tests", cmd_agent_tests)):
         s = sub.add_parser(name)
         s.add_argument("-k", help="only tests whose name contains this")

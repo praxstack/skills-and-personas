@@ -1,0 +1,484 @@
+{
+ "$defs": {
+  "card": {
+   "additionalProperties": false,
+   "properties": {
+    "card_id": {
+     "minimum": 1,
+     "type": "integer"
+    },
+    "difficulty": {
+     "maximum": 10,
+     "minimum": 1,
+     "type": "number"
+    },
+    "due": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "last_review": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "stability": {
+     "exclusiveMinimum": 0,
+     "type": "number"
+    },
+    "state": {
+     "maximum": 3,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "step": {
+     "minimum": 0,
+     "type": [
+      "integer",
+      "null"
+     ]
+    }
+   },
+   "required": [
+    "card_id",
+    "difficulty",
+    "due",
+    "last_review",
+    "stability",
+    "state",
+    "step"
+   ],
+   "type": "object"
+  },
+  "identifier": {
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+   "type": "string"
+  },
+  "reason": {
+   "maxLength": 1000,
+   "minLength": 1,
+   "type": "string"
+  },
+  "review_log": {
+   "additionalProperties": false,
+   "properties": {
+    "card_id": {
+     "minimum": 1,
+     "type": "integer"
+    },
+    "rating": {
+     "maximum": 4,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "review_datetime": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "review_duration": {
+     "minimum": 0,
+     "type": [
+      "integer",
+      "null"
+     ]
+    }
+   },
+   "required": [
+    "card_id",
+    "rating",
+    "review_datetime",
+    "review_duration"
+   ],
+   "type": "object"
+  }
+ },
+ "$id": "https://prax.local/prax-teach-v2.1/schemas/state-reviews.schema.json",
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "additionalProperties": false,
+ "oneOf": [
+  {
+   "additionalProperties": false,
+   "properties": {
+    "algorithm": {
+     "$ref": "#/properties/algorithm"
+    },
+    "algorithm_version": {
+     "$ref": "#/properties/algorithm_version"
+    },
+    "concept_id": {
+     "$ref": "#/properties/concept_id"
+    },
+    "dimension": {
+     "$ref": "#/properties/dimension"
+    },
+    "event_id": {
+     "$ref": "#/properties/event_id"
+    },
+    "event_type": {
+     "const": "review"
+    },
+    "explanation": {
+     "$ref": "#/properties/explanation"
+    },
+    "input": {
+     "$ref": "#/properties/input"
+    },
+    "item_id": {
+     "$ref": "#/properties/item_id"
+    },
+    "output": {
+     "$ref": "#/properties/output"
+    },
+    "rating": {
+     "$ref": "#/properties/rating"
+    },
+    "reason": {
+     "$ref": "#/properties/reason"
+    },
+    "scheduler_config": {
+     "$ref": "#/properties/scheduler_config"
+    },
+    "scheduler_event_version": {
+     "$ref": "#/properties/scheduler_event_version"
+    },
+    "schema_version": {
+     "$ref": "#/properties/schema_version"
+    },
+    "timestamp": {
+     "$ref": "#/properties/timestamp"
+    }
+   },
+   "required": [
+    "event_id",
+    "event_type",
+    "scheduler_event_version",
+    "schema_version",
+    "timestamp",
+    "algorithm",
+    "algorithm_version",
+    "concept_id",
+    "dimension",
+    "explanation",
+    "input",
+    "item_id",
+    "output",
+    "rating",
+    "reason",
+    "scheduler_config"
+   ],
+   "type": "object"
+  },
+  {
+   "additionalProperties": false,
+   "properties": {
+    "due": {
+     "$ref": "#/properties/due"
+    },
+    "event_id": {
+     "$ref": "#/properties/event_id"
+    },
+    "event_type": {
+     "enum": [
+      "snooze",
+      "reschedule"
+     ]
+    },
+    "item_id": {
+     "$ref": "#/properties/item_id"
+    },
+    "reason": {
+     "$ref": "#/properties/reason"
+    },
+    "scheduler_event_version": {
+     "$ref": "#/properties/scheduler_event_version"
+    },
+    "schema_version": {
+     "$ref": "#/properties/schema_version"
+    },
+    "timestamp": {
+     "$ref": "#/properties/timestamp"
+    }
+   },
+   "required": [
+    "event_id",
+    "event_type",
+    "scheduler_event_version",
+    "schema_version",
+    "timestamp",
+    "due",
+    "item_id",
+    "reason"
+   ],
+   "type": "object"
+  },
+  {
+   "additionalProperties": false,
+   "properties": {
+    "event_id": {
+     "$ref": "#/properties/event_id"
+    },
+    "event_type": {
+     "const": "review_controls"
+    },
+    "reason": {
+     "$ref": "#/properties/reason"
+    },
+    "scheduler_event_version": {
+     "$ref": "#/properties/scheduler_event_version"
+    },
+    "schema_version": {
+     "$ref": "#/properties/schema_version"
+    },
+    "status": {
+     "$ref": "#/properties/status"
+    },
+    "timestamp": {
+     "$ref": "#/properties/timestamp"
+    }
+   },
+   "required": [
+    "event_id",
+    "event_type",
+    "scheduler_event_version",
+    "schema_version",
+    "timestamp",
+    "reason",
+    "status"
+   ],
+   "type": "object"
+  }
+ ],
+ "properties": {
+  "algorithm": {
+   "const": "fsrs"
+  },
+  "algorithm_version": {
+   "const": "6.3.1"
+  },
+  "concept_id": {
+   "$ref": "#/$defs/identifier"
+  },
+  "dimension": {
+   "enum": [
+    "recognition",
+    "recall",
+    "explanation",
+    "application",
+    "discrimination",
+    "transfer"
+   ]
+  },
+  "due": {
+   "format": "date-time",
+   "type": "string"
+  },
+  "event_id": {
+   "pattern": "^review-[0-9a-f]{32}$",
+   "type": "string"
+  },
+  "event_type": {
+   "enum": [
+    "review",
+    "snooze",
+    "reschedule",
+    "review_controls"
+   ]
+  },
+  "explanation": {
+   "$ref": "#/$defs/reason"
+  },
+  "input": {
+   "additionalProperties": false,
+   "properties": {
+    "concept_id": {
+     "$ref": "#/$defs/identifier"
+    },
+    "content_id": {
+     "$ref": "#/$defs/identifier"
+    },
+    "content_version": {
+     "pattern": "^sha256:[0-9a-f]{64}$",
+     "type": "string"
+    },
+    "dimension": {
+     "enum": [
+      "recognition",
+      "recall",
+      "explanation",
+      "application",
+      "discrimination",
+      "transfer"
+     ]
+    },
+    "hint_level": {
+     "maximum": 4,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "item_id": {
+     "$ref": "#/$defs/identifier"
+    },
+    "item_version": {
+     "$ref": "#/$defs/identifier"
+    },
+    "model_and_prompt_version": {
+     "maxLength": 2000,
+     "minLength": 1,
+     "pattern": "\\S",
+     "type": "string"
+    },
+    "objective_id": {
+     "$ref": "#/$defs/identifier"
+    },
+    "observation_event_id": {
+     "pattern": "^evt-[0-9a-f]{32}$",
+     "type": "string"
+    },
+    "score": {
+     "maximum": 1,
+     "minimum": 0,
+     "type": "number"
+    },
+    "session_id": {
+     "$ref": "#/$defs/identifier"
+    },
+    "source_provenance": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "source_id": {
+        "$ref": "#/$defs/identifier"
+       },
+       "version_or_date": {
+        "maxLength": 256,
+        "minLength": 1,
+        "pattern": "\\S",
+        "type": "string"
+       }
+      },
+      "required": [
+       "source_id",
+       "version_or_date"
+      ],
+      "type": "object"
+     },
+     "minItems": 1,
+     "type": "array",
+     "uniqueItems": true
+    },
+    "timestamp": {
+     "format": "date-time",
+     "type": "string"
+    }
+   },
+   "required": [
+    "concept_id",
+    "content_id",
+    "content_version",
+    "dimension",
+    "hint_level",
+    "item_id",
+    "item_version",
+    "model_and_prompt_version",
+    "objective_id",
+    "observation_event_id",
+    "score",
+    "session_id",
+    "source_provenance",
+    "timestamp"
+   ],
+   "type": "object"
+  },
+  "item_id": {
+   "$ref": "#/$defs/identifier"
+  },
+  "output": {
+   "additionalProperties": false,
+   "properties": {
+    "card": {
+     "$ref": "#/$defs/card"
+    },
+    "review_log": {
+     "$ref": "#/$defs/review_log"
+    }
+   },
+   "required": [
+    "card",
+    "review_log"
+   ],
+   "type": "object"
+  },
+  "rating": {
+   "enum": [
+    "Again",
+    "Hard",
+    "Good",
+    "Easy"
+   ]
+  },
+  "reason": {
+   "$ref": "#/$defs/reason"
+  },
+  "scheduler_config": {
+   "additionalProperties": false,
+   "properties": {
+    "desired_retention": {
+     "enum": [
+      0.85,
+      0.88,
+      0.9,
+      0.92,
+      0.95
+     ]
+    },
+    "enable_fuzzing": {
+     "const": false
+    },
+    "horizon_days": {
+     "maximum": 3650,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "horizon_policy_version": {
+     "const": "1"
+    },
+    "maximum_interval": {
+     "maximum": 3650,
+     "minimum": 1,
+     "type": "integer"
+    }
+   },
+   "required": [
+    "desired_retention",
+    "enable_fuzzing",
+    "horizon_days",
+    "horizon_policy_version",
+    "maximum_interval"
+   ],
+   "type": "object"
+  },
+  "scheduler_event_version": {
+   "const": "2"
+  },
+  "schema_version": {
+   "const": "1"
+  },
+  "status": {
+   "enum": [
+    "enabled",
+    "disabled"
+   ]
+  },
+  "timestamp": {
+   "format": "date-time",
+   "type": "string"
+  }
+ },
+ "required": [
+  "event_id",
+  "event_type",
+  "scheduler_event_version",
+  "schema_version",
+  "timestamp"
+ ],
+ "title": "Prax Teach replayable review event",
+ "type": "object"
+}

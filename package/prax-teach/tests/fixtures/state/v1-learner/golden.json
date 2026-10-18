@@ -1,0 +1,138 @@
+{
+ "due": {
+  "at": "2026-09-01T00:00:00.000000Z",
+  "items": [
+   {
+    "card": {
+     "card_id": 157410213592349108,
+     "difficulty": 2.118103970459016,
+     "due": "2026-08-04T10:15:00.000000Z",
+     "last_review": "2026-08-04T10:05:00.000000Z",
+     "stability": 2.3065,
+     "state": 1,
+     "step": 1
+    },
+    "due": "2026-08-04T10:15:00.000000Z",
+    "item_id": "item-ft-1"
+   },
+   {
+    "card": {
+     "card_id": 785747617477309636,
+     "difficulty": 2.118103970459016,
+     "due": "2026-08-05T09:10:00.000000Z",
+     "last_review": "2026-08-05T09:00:00.000000Z",
+     "stability": 2.3065,
+     "state": 1,
+     "step": 1
+    },
+    "due": "2026-08-05T09:10:00.000000Z",
+    "item_id": "item-ft-3"
+   }
+  ],
+  "status": "enabled"
+ },
+ "generated_by": "prax-teach-v2 .engine/scripts/prax_teach.py (v2 accepted bytes)",
+ "show": {
+  "concepts": {
+   "algorithm": {
+    "name": "transparent-evidence-projection",
+    "version": "1.0.0"
+   },
+   "concepts": [
+    {
+     "concept_id": "switch-fallthrough",
+     "confidence": 0.75316,
+     "contradictions": [
+      {
+       "dimension": "application",
+       "evidence_id": "evt-07ebb5856cb9e6289026ea5a7c24dd7b",
+       "hint_level": 2,
+       "score": 0.4
+      }
+     ],
+     "dimensions": {
+      "application": {
+       "estimate": 0.4,
+       "evidence_ids": [
+        "evt-07ebb5856cb9e6289026ea5a7c24dd7b"
+       ]
+      },
+      "discrimination": {
+       "estimate": null,
+       "evidence_ids": []
+      },
+      "explanation": {
+       "estimate": 0.85,
+       "evidence_ids": [
+        "evt-96c09e0cc704d79a832b7aa39c7bac0b"
+       ]
+      },
+      "recall": {
+       "estimate": 0.9,
+       "evidence_ids": [
+        "evt-9ef01e368e7ca90ead4a0efb81b26e4b"
+       ]
+      },
+      "recognition": {
+       "estimate": null,
+       "evidence_ids": []
+      },
+      "transfer": {
+       "estimate": null,
+       "evidence_ids": []
+      }
+     },
+     "evidence_ids": [
+      "evt-9ef01e368e7ca90ead4a0efb81b26e4b",
+      "evt-07ebb5856cb9e6289026ea5a7c24dd7b",
+      "evt-96c09e0cc704d79a832b7aa39c7bac0b"
+     ],
+     "higher_order_evidence_ids": [],
+     "last_updated": "2026-08-05T09:00:00.000000Z",
+     "status": "developing",
+     "status_reason": "Contradictory evidence remains visible and blocks a durable claim.",
+     "unassisted_dimensions": [
+      "explanation",
+      "recall"
+     ]
+    }
+   ],
+   "schema_version": "1"
+  },
+  "consent": {
+   "controls": [
+    "inspect",
+    "correct",
+    "export",
+    "delete"
+   ],
+   "granted_at": "2026-08-04T10:00:00.000000Z",
+   "location": "@WORKSPACE@",
+   "persistent_state": true,
+   "purpose": "Adapt future teaching from the approved goal, practice evidence, and reviews.",
+   "scope": [
+    "goal",
+    "practice_evidence",
+    "reviews"
+   ]
+  },
+  "continuity": null,
+  "evidence_event_count": 8,
+  "goal": {
+   "retention_horizon_days": 60,
+   "statement": "Trace switch fall-through in C",
+   "target_performance": "Trace switch fall-through in C"
+  },
+  "learner_id": "learner-fixture-1",
+  "misconceptions": {
+   "algorithm": {
+    "name": "learner-reasoning-misconception-projection",
+    "version": "1.0.0"
+   },
+   "misconceptions": [],
+   "schema_version": "1"
+  },
+  "schema_version": "1"
+ },
+ "workspace_placeholder": "@WORKSPACE@"
+}

@@ -1,0 +1,8 @@
+{
+  "algorithm": {
+    "name": "learner-reasoning-misconception-projection",
+    "version": "1.0.0"
+  },
+  "misconceptions": [],
+  "schema_version": "1"
+}

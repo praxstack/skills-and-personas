@@ -6,15 +6,19 @@ reported as not-run (exit 5), never as passed.
 """
 import importlib.util
 import json
+import os
+import secrets
 import sys
 import time
 import traceback
 
 from . import errors, host
+from .state.errors import PraxTeachError
 
 TESTS = host.PKG / "tests"
 EXPECTED_FAILURES = (AssertionError, errors.PtkError, OSError, KeyError, ValueError, TypeError, IndexError,
-                     AttributeError, LookupError, RuntimeError, json.JSONDecodeError)
+                     AttributeError, LookupError, RuntimeError, json.JSONDecodeError,
+                     PraxTeachError)
 
 
 class NotRun(Exception):
@@ -30,6 +34,21 @@ def _load(path):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+def report_path(suite):
+    """A fresh report file per run (WP8 bug fix): runs in parallel never share or overwrite a report.
+    $PTK_STATE/selftest/<suite>-<UTC time>-<pid>-<random>.json, created exclusively."""
+    root = host.state_path("selftest")
+    root.mkdir(exist_ok=True)
+    stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    while True:
+        p = root / f"{suite}-{stamp}-{os.getpid()}-{secrets.token_hex(4)}.json"
+        try:
+            with open(p, "x"):
+                return p
+        except FileExistsError:
+            continue
 
 
 def run(suite="auto", pattern=None):
@@ -60,8 +79,11 @@ def run(suite="auto", pattern=None):
             results.append({"test": tid, "status": status, "seconds": round(time.monotonic() - t0, 1),
                             "detail": detail})
             print(f"{status:<14} {tid}  ({results[-1]['seconds']} s)", file=sys.stderr)
-    out = host.state_path(f"selftest-{suite}.json")
-    out.write_text(json.dumps(results, indent=1, default=str))
+    out = report_path(suite)
+    tmp = out.with_name(out.name + ".part")
+    tmp.write_text(json.dumps({"suite": suite, "pattern": pattern, "pid": os.getpid(), "results": results},
+                              indent=1, default=str))
+    tmp.replace(out)
     print(json.dumps({"suite": suite, "results": [{k: r[k] for k in ("test", "status")} for r in results],
                       "report": str(out)}, indent=1))
     st = {r["status"] for r in results}

@@ -134,11 +134,24 @@ def which(tool, required=True):
     return path
 
 
+def contract_env(env=None):
+    """The spec 5.5 contract on top of any env a caller built (AC-8.7). An allowlist env such as
+    compile_env() or program_env() keeps its allowlist: only the fixed contract keys are added, and
+    PLAYWRIGHT_BROWSERS_PATH and SOURCE_DATE_EPOCH when the caller left them out."""
+    if env is None:
+        return child_env()
+    out = dict(env)
+    out.update(CONTRACT)
+    out.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(state_dir() / "browsers"))
+    out.setdefault("SOURCE_DATE_EPOCH", source_date_epoch("0" * 64))
+    return out
+
+
 def run(cmd, cwd=None, env=None, timeout=600, input_text=None, check=False):
     """Run a tool to completion with a timeout; kill its whole process group on timeout."""
     cmd = [str(c) for c in cmd]
     t0 = time.monotonic()
-    proc = subprocess.Popen(cmd, cwd=cwd, env=env or child_env(), stdout=subprocess.PIPE,
+    proc = subprocess.Popen(cmd, cwd=cwd, env=contract_env(env), stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, stdin=subprocess.PIPE if input_text else subprocess.DEVNULL,
                             text=True, start_new_session=True)
     try:
@@ -153,6 +166,49 @@ def run(cmd, cwd=None, env=None, timeout=600, input_text=None, check=False):
         raise errors.ToolFailed(f"{Path(cmd[0]).name} exited {res.code}", cmd=cmd,
                                 stderr=(err or "")[-4000:], stdout=(out or "")[-2000:])
     return res
+
+
+def run_jsonrpc(cmd, messages, cwd=None, env=None, timeout=90):
+    """Drive a JSON-lines RPC child (for example `codex app-server --stdio`): send each message in order
+    and, for a message with an id, wait for the reply with that id before sending the next. Returns
+    {id: reply}. The child is terminated afterwards; its whole group is killed on timeout."""
+    import select
+    cmd = [str(c) for c in cmd]
+    proc = subprocess.Popen(cmd, cwd=cwd, env=contract_env(env), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL, text=True, bufsize=1, start_new_session=True)
+    replies = {}
+    deadline = time.monotonic() + timeout
+    try:
+        for msg in messages:
+            proc.stdin.write(json.dumps(msg) + "\n")
+            proc.stdin.flush()
+            if "id" not in msg:
+                continue
+            while msg["id"] not in replies:
+                left = deadline - time.monotonic()
+                if left <= 0:
+                    raise errors.ToolFailed(f"{Path(cmd[0]).name} gave no reply to {msg.get('method')}", cmd=cmd)
+                if not select.select([proc.stdout], [], [], min(left, 2))[0]:
+                    if proc.poll() is not None:
+                        raise errors.ToolFailed(f"{Path(cmd[0]).name} exited {proc.returncode}", cmd=cmd)
+                    continue
+                line = proc.stdout.readline()
+                if not line:
+                    raise errors.ToolFailed(f"{Path(cmd[0]).name} closed its output", cmd=cmd)
+                try:
+                    reply = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(reply, dict) and "id" in reply:
+                    replies[reply["id"]] = reply
+    finally:
+        proc.stdin.close()
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            _kill_group(proc)
+            proc.wait()
+    return replies
 
 
 def _kill_group(proc):
@@ -170,7 +226,8 @@ def _kill_group(proc):
 
 def _group_rss_kb(pgid):
     """Resident size of every process in the group, in KB (macOS has no RLIMIT_AS)."""
-    out = subprocess.run(["/bin/ps", "-A", "-o", "pgid=,rss="], capture_output=True, text=True).stdout
+    out = subprocess.run(["/bin/ps", "-A", "-o", "pgid=,rss="], capture_output=True, text=True,
+                         env=contract_env({"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"})).stdout
     total = 0
     for line in out.splitlines():
         parts = line.split()
@@ -194,7 +251,7 @@ def run_limited(cmd, cwd, timeout, max_output, max_rss_kb, env=None):
 
     cmd = [str(c) for c in cmd]
     t0 = time.monotonic()
-    proc = subprocess.Popen(cmd, cwd=cwd, env=env or child_env(), stdout=subprocess.PIPE,
+    proc = subprocess.Popen(cmd, cwd=cwd, env=contract_env(env), stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, stdin=subprocess.DEVNULL, start_new_session=True,
                             preexec_fn=limits)
     bufs = {"out": bytearray(), "err": bytearray()}
@@ -302,7 +359,21 @@ def sha256_file(path):
     return h.hexdigest()
 
 
-def _probe_one(name, spec):
+def _python_modules(venv, modules):
+    """Which of `modules` import in $PTK_STATE/venvs/<venv> (find_spec only: nothing is executed)."""
+    py = state_path("venvs", venv, "bin", "python")
+    if not py.exists() or not modules:
+        return {m: False for m in modules}
+    code = ("import importlib.util, json, sys; "
+            "print(json.dumps({m: importlib.util.find_spec(m) is not None for m in sys.argv[1:]}))")
+    res = run([py, "-I", "-c", code, *modules], timeout=60)
+    if res.code != 0:
+        return {m: False for m in modules}
+    return json.loads(res.stdout)
+
+
+def _probe_one(name, spec, modules=None):
+    """One yes/no probe per tool (AC-8.5). Never fetches, never starts a service."""
     kind = spec.get("probe", "binary")
     if kind == "binary":
         path = shutil.which(spec.get("binary", name))
@@ -315,21 +386,50 @@ def _probe_one(name, spec):
             return {"runnable": True, "path": sandbox_exec()}
         except errors.SandboxUnavailable:
             return {"runnable": False, "path": None}
+    if kind == "app":
+        p = Path(spec["path"])
+        return {"runnable": p.is_dir(), "path": str(p)}
+    if kind == "python-module":
+        ok = (modules or {}).get(spec.get("venv", "core"), {}).get(spec["module"], False)
+        return {"runnable": bool(ok), "path": str(state_path("venvs", spec.get("venv", "core")))}
+    if kind == "node-module":
+        p = state_path("tools", "node", "node_modules", *spec["module"].split("/"), "package.json")
+        return {"runnable": p.is_file(), "path": str(p.parent)}
+    if kind == "builtin":
+        return {"runnable": True, "path": str(PKG)}
+    if kind == "cloud":
+        return {"runnable": False, "path": None, "note": "cloud service: needs Prax's permission"}
+    if kind == "unsupported-platform":
+        return {"runnable": False, "path": None, "note": f"only on {spec.get('platform')}"}
     return {"runnable": False, "path": None, "note": f"unknown probe {kind}"}
 
 
-def probe():
+def probe(artifact=None):
+    """What this machine can run now: every tool's probe, then each artifact type's ranked alternatives
+    with the first runnable one ptk can build (`selected`) and the first runnable one overall."""
     reg = registry()
+    wanted = {}
+    for spec in reg["tools"].values():
+        if spec.get("probe") == "python-module":
+            wanted.setdefault(spec.get("venv", "core"), []).append(spec["module"])
+    modules = {venv: _python_modules(venv, mods) for venv, mods in wanted.items()}
     out = {"state": str(state_dir()), "tools": {}, "artifacts": {}}
     for name, spec in reg["tools"].items():
-        out["tools"][name] = {**_probe_one(name, spec), "role": spec.get("role", "")}
+        out["tools"][name] = {**_probe_one(name, spec, modules), "role": spec.get("role", ""), "probe": spec.get("probe")}
     for art, alts in reg.get("artifacts", {}).items():
+        if artifact and art != artifact:
+            continue
         ranked = []
-        for alt in alts:
+        for alt in sorted(alts, key=lambda a: a["rank"]):
             needs = alt.get("needs", [])
-            ok = all(out["tools"].get(n, {}).get("runnable") for n in needs)
-            ranked.append({"id": alt["id"], "runnable": ok, "needs": needs, "fallback_rank": alt["rank"]})
-        out["artifacts"][art] = ranked
+            missing = [n for n in needs if not out["tools"].get(n, {}).get("runnable")]
+            ranked.append({"id": alt["id"], "rank": alt["rank"], "runnable": not missing, "missing": missing,
+                           "local": alt.get("local", True), "ptk_projector": alt.get("ptk_projector")})
+        built = [a for a in ranked if a["runnable"] and a["ptk_projector"]]
+        anyr = [a for a in ranked if a["runnable"]]
+        out["artifacts"][art] = {"selected": built[0]["id"] if built else None,
+                                 "best_runnable": anyr[0]["id"] if anyr else None,
+                                 "runnable": len(anyr), "alternatives": ranked}
     return out
 
 
@@ -409,11 +509,13 @@ def _setup_venv(item):
     base = which(item.get("python", "python3"))
     if not py.exists():
         run([base, "-m", "venv", str(venv)], check=True)
-    req = PKG / item["requirements"]
+    reqs = item["requirements"] if isinstance(item["requirements"], list) else [item["requirements"]]
+    req_paths = [PKG / r for r in reqs]
     report = state_path("downloads", f"pip-{item['venv']}-report.json")
     report.parent.mkdir(parents=True, exist_ok=True)
+    req_args = [a for r in req_paths for a in ("-r", str(r))]
     run([py, "-m", "pip", "install", "--quiet", "--require-hashes", "--no-deps", "--only-binary=:all:",
-         "--report", str(report), "-r", str(req)], check=True, timeout=1800)
+         "--report", str(report), *req_args], check=True, timeout=1800)
     rep = json.loads(report.read_text()) if report.exists() else {"install": []}
     pkgs = [{"name": i["metadata"]["name"], "version": i["metadata"]["version"],
              "url": i["download_info"]["url"],
@@ -421,9 +523,10 @@ def _setup_venv(item):
             for i in rep.get("install", [])]
     if item.get("post") == "espeak_short_path":
         _espeak_short_path(venv)
+    combined = hashlib.sha256(b"".join(r.read_bytes() for r in req_paths)).hexdigest()
     return {"url": "https://pypi.org/simple/", "path": str(venv), "size": _du(venv),
-            "sha256": sha256_file(req), "requirements": str(req), "packages_installed_now": pkgs,
-            "source": "pip --require-hashes"}
+            "sha256": combined, "requirements": [str(r.relative_to(PKG)) for r in req_paths],
+            "packages_installed_now": pkgs, "source": "pip --require-hashes"}
 
 
 def _espeak_short_path(venv):

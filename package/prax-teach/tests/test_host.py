@@ -51,3 +51,81 @@ def test_env_contract():
     assert under(env["HOME"], host.state_dir()), "HyperFrames HOME must live inside $PTK_STATE"
     for secret in host.SECRET_VARS:
         assert secret not in env
+
+
+def test_env_contract_reaches_children():
+    """AC-8.7: the contract is applied by host.run itself, so even a caller's allowlist env (the compiler's,
+    the untrusted program's) carries it, and node.env() carries it to every Node child."""
+    from ptk import node
+    from ptk.capture import c_runner
+    envs = {"default": None, "compile": c_runner.compile_env(host.state_path("tmp")), "program": host.program_env(),
+            "node": node.env(lesson_sha256="cd" * 32)}
+    seen = {}
+    for label, env in envs.items():
+        res = host.run(["/usr/bin/env"], env=env, timeout=30)
+        assert res.code == 0, res.stderr
+        got = dict(ln.split("=", 1) for ln in res.stdout.splitlines() if "=" in ln)
+        for k, v in host.CONTRACT.items():
+            assert got.get(k) == v, f"{label}: {k}={got.get(k)!r}"
+        assert got.get("PLAYWRIGHT_BROWSERS_PATH"), label
+        assert got.get("SOURCE_DATE_EPOCH", "").isdigit(), label
+        for secret in host.SECRET_VARS:
+            assert secret not in got, f"{label}: {secret} leaked"
+        seen[label] = len(got)
+    # an allowlist stays an allowlist: only the contract keys were added
+    res = host.run(["/usr/bin/env"], env=host.program_env(), timeout=30)
+    keys = {ln.split("=", 1)[0] for ln in res.stdout.splitlines() if "=" in ln}
+    allowed = set(host.program_env()) | set(host.CONTRACT) | {"PLAYWRIGHT_BROWSERS_PATH", "SOURCE_DATE_EPOCH"}
+    assert keys <= allowed, sorted(keys - allowed)
+    assert node.env(lesson_sha256="cd" * 32)["SOURCE_DATE_EPOCH"] == host.source_date_epoch("cd" * 32)
+    return seen
+
+
+def test_selftest_reports_unique():
+    """WP8 bug: two `ptk selftest` runs at once used to write the same .state/selftest-auto.json.
+    Each run now writes its own report file, created exclusively."""
+    import threading
+    results = []
+
+    def one():
+        results.append(host.run([*ptk_cmd(), "selftest", "-k", "test_host.py::test_env_contract"],
+                                env=host.child_env(), timeout=300))
+
+    threads = [threading.Thread(target=one) for _ in range(3)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    paths = []
+    for res in results:
+        assert res.code == 0, res.stderr[-800:]
+        out = json.loads(res.stdout)
+        paths.append(out["report"])
+        rep = json.loads(open(out["report"]).read())
+        assert {r["test"] for r in rep["results"]} == {"tests/test_host.py::test_env_contract",
+                                                       "tests/test_host.py::test_env_contract_reaches_children"}
+    assert len(set(paths)) == 3, paths
+    assert all(under(p, host.state_path("selftest")) for p in paths)
+    return {"reports": len(set(paths))}
+
+
+def test_setup_core_venv_has_genanki_and_fsrs():
+    """WP8: `ptk host setup` installs genanki (cards) and fsrs (learner state) into the core venv, with
+    hashes, in the same pip run as jsonschema. Checks the plan, the pinned files, and the installed venv."""
+    item = next(d for d in host.registry()["downloads"] if d["id"] == "core-venv")
+    reqs = item["requirements"]
+    text = "".join((host.PKG / r).read_text() for r in reqs)
+    for pin in ("genanki==0.13.1", "fsrs==6.3.1", "jsonschema=="):
+        assert pin in text, pin
+    for ln in text.splitlines():
+        if ln.strip() and not ln.startswith("#"):
+            assert "--hash=sha256:" in ln, ln
+    py = host.state_path("venvs", "core", "bin", "python")
+    if not py.exists():
+        from selftest_support import NotRun
+        raise NotRun("core venv missing: run `ptk host setup --yes`")
+    res = host.run([py, "-I", "-c", "import genanki, fsrs, jsonschema, importlib.metadata as m; "
+                    "print(m.version('genanki'), m.version('fsrs'))"], timeout=60)
+    assert res.code == 0, f"core venv lacks genanki or fsrs (run `ptk host setup --yes`): {res.stderr[-400:]}"
+    assert res.stdout.split() == ["0.13.1", "6.3.1"], res.stdout
+    return {"versions": res.stdout.split()}
