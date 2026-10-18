@@ -919,7 +919,7 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "What do you predict? Choose your answer before the answer plays.",
+      "text": "What do you predict? Commit to an answer before the answer comes.",
       "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
       "sources": [
         {
@@ -1192,7 +1192,7 @@
       },
       "narration": [
         {
-          "text": "What do you predict? Choose your answer before the answer plays.",
+          "text": "What do you predict? Commit to an answer before the answer comes.",
           "claims": [
             "c.pause"
           ]
