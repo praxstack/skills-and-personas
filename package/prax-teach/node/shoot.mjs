@@ -176,7 +176,7 @@ for (const job of jobs) {
       for (const u of units) {
         const b = u.box;
         const path = `${job.outDir}/crop-${String(k++).padStart(3, '0')}.png`;
-        await page.screenshot({ path, fullPage: true, clip: { x: Math.max(0, b.x - 8), y: Math.max(0, b.y - 8), width: b.w + 16, height: b.h + 16 } });
+        await page.screenshot({ path, clip: { x: Math.max(0, b.x - 8), y: Math.max(0, b.y - 8), width: b.w + 16, height: b.h + 16 } });
         res.crops.push({ path, expected: u.expected, multi: u.multi, group: u.group || null });
       }
     } else if (job.type === 'script') {

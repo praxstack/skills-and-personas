@@ -1,0 +1,7 @@
+{
+  "note": "Planted claim errors for the claims-sensitivity gate (E22). Each must be rejected by the real reviewer; the unmodified lesson job is the clean control. ptk keeps which job is which out of the job files.",
+  "mutations": [
+    {"claim": "c.labels", "kind": "false-mechanism",
+     "text": "Each case label acts as an implicit break, so the switch stops before it runs the statements under the next label."}
+  ]
+}

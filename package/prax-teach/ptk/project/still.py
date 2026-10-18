@@ -93,6 +93,25 @@ class Svg:
             attrs.append(f'letter-spacing="{spacing}"')
         self.els.append(f'<text {" ".join(attrs)}>{raw if raw is not None else esc(s)}</text>')
 
+    def mark(self):
+        return len(self.els)
+
+    def merge(self, i0):
+        """Fold the <text> lines written since mark() into one <text> of <tspan> lines, so a wrapped
+        sentence stays one element (one claim mapping, one overflow box)."""
+        parts = self.els[i0:]
+        if len(parts) < 2 or not all(p.startswith("<text ") for p in parts):
+            return
+        rx = re.compile(r'<text (.*?)>(.*)</text>$', re.S)
+        first_attrs = rx.match(parts[0]).group(1)
+        spans = []
+        for p in parts:
+            a, inner = rx.match(p).groups()
+            x = re.search(r'\bx="([^"]+)"', a).group(1)
+            y = re.search(r'\by="([^"]+)"', a).group(1)
+            spans.append(f'<tspan x="{x}" y="{y}">{inner}</tspan>')
+        self.els[i0:] = [f'<text {first_attrs}>{"".join(spans)}</text>']
+
 
 def _code_spans(line_text, t):
     """Escape a code line into tspans: keywords bold, string literals soft. Returns (raw svg, plain)."""
@@ -122,14 +141,18 @@ def build_svg(lesson, layout, theme, tokens):
     svg.text(X0, y, text.ui("kicker", topic=lesson.data["topic"]).upper(), "mono", g["kicker"], t["blue"],
              ("chrome", "kicker"), weight=600, spacing=2)
     y += 50 if wide else 38
+    m0 = svg.mark()
     for ln in fonts.wrap("serif", g["title"], lesson.data["title"], X1 - X0, bold=True):
         svg.text(X0, y, ln, "serif", g["title"], t["ink"], ("label", "title"), weight=600)
         y += g["title"] * 1.34
+    svg.merge(m0)
     y += 2
     dek = claims[fig["title_claim"]]["text"]
+    m0 = svg.mark()
     for ln in fonts.wrap("serif", g["dek"], dek, X1 - X0):
         svg.text(X0, y, ln, "serif", g["dek"], t["soft"], ("claim", fig["title_claim"]))
         y += g["dek_lh"]
+    svg.merge(m0)
     y += 10
     svg.line(X0, y, X1, y, t["rule"], 1)
     y += 34 if wide else 28
@@ -227,9 +250,11 @@ def build_svg(lesson, layout, theme, tokens):
             lines = fonts.wrap("hand", g["note"], claims[note["claim"]]["text"], nw)
             ny = max(ys.get(note["line"], floor) + 2, floor + g["note"])
             svg.line(nx - 24, ny - g["note"] * 0.3, nx - 8, ny - g["note"] * 0.3, t["blue"], 1.5, role="rule")
+            m0 = svg.mark()
             for ln in lines:
                 svg.text(nx, ny, ln, "hand", g["note"], t["blue"], ("claim", note["claim"]), weight=600)
                 ny += g["note_lh"]
+            svg.merge(m0)
             floor = ny + 6
         y = max(card_bottom, floor) + 40
     else:
@@ -244,9 +269,11 @@ def build_svg(lesson, layout, theme, tokens):
             svg.rect(X0, y - 16, 20, 20, t["blue"], rx=10, rid=f"badge-n{k}")
             svg.text(X0 + 10, y - 1.5, str(k), "mono", 12, t["paper"], ("label", "note-badge"), weight=700,
                      anchor="middle", inside=f"badge-n{k}")
+            m0 = svg.mark()
             for ln in fonts.wrap("hand", g["note"], claims[note["claim"]]["text"], X1 - X0 - 28):
                 svg.text(X0 + 28, y, ln, "hand", g["note"], t["blue"], ("claim", note["claim"]), weight=600)
                 y += g["note_lh"]
+            svg.merge(m0)
             y += 8
         y += 22
 
@@ -266,6 +293,7 @@ def build_svg(lesson, layout, theme, tokens):
         h = 40 + len(lines) * (g["dek_lh"] if header_font == "serif" else 18) + len(fids) * (g["out"] + 16) + 8
         svg.rect(bx, by, bw, h, t["card"], rx=12, rid=rid, stroke=t["rule"], sw=1)
         yy = by + 32
+        m0 = svg.mark()
         for ln in lines:
             if header_font == "mono":
                 svg.text(bx + 20, yy, ln.upper(), "mono", g["label"], t["muted"], header_src, weight=600,
@@ -274,6 +302,7 @@ def build_svg(lesson, layout, theme, tokens):
             else:
                 svg.text(bx + 20, yy, ln, "serif", g["dek"], t["soft"], header_src, inside=rid)
                 yy += g["dek_lh"]
+        svg.merge(m0)
         yy += g["out"] * 0.6
         for k, fid in enumerate(fids, 1):
             val = text.display(facts[fid])
@@ -297,23 +326,29 @@ def build_svg(lesson, layout, theme, tokens):
 
     # ---------- caption + provenance ----------
     for cid in fig.get("caption_claims", []):
+        m0 = svg.mark()
         for ln in fonts.wrap("serif", g["caption"], claims[cid]["text"], X1 - X0):
             svg.text(X0, y, ln, "serif", g["caption"], t["ink"], ("claim", cid), italic=True)
             y += g["caption"] * 1.35
+        svg.merge(m0)
         y += 6
     y += 10
     svg.line(X0, y - 16, X1, y - 16, t["rule"], 1)
     f0 = facts[final[0]]
     compiler = f0["source"]["compiler"].split(" (")[0]
     prov = text.ui("provenance", compiler=compiler, sha=f0["source"]["stdout_sha256"][:12])
+    m0 = svg.mark()
     for ln in fonts.wrap("mono", g["foot"], prov, X1 - X0):
         svg.text(X0, y + 4, ln, "mono", g["foot"], t["muted"], ("chrome", "provenance"))
         y += g["foot"] * 1.5
+    svg.merge(m0)
     src_path = f"lessons/{lesson.id}/{lesson.program(fig['program'])['path']}"
     svg.els.append(f'<a href="../../{esc(lesson.program(fig["program"])["path"])}" data-role="source">')
+    m0 = svg.mark()
     for ln in fonts.wrap_at("mono", g["foot"], text.ui("source_link", path=src_path), X1 - X0, "/"):
         svg.text(X0, y + 4, ln, "mono", g["foot"], t["blue"], ("chrome", "source_link"))
         y += g["foot"] * 1.5
+    svg.merge(m0)
     svg.els.append("</a>")
     height = y + (20 if wide else 14)
     return svg, height

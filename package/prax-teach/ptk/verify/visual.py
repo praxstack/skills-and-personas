@@ -68,12 +68,17 @@ class _RangeHandler(http.server.SimpleHTTPRequestHandler):
         self._range_left = None
 
 
+class _QuietServer(http.server.ThreadingHTTPServer):
+    def handle_error(self, request, client_address):
+        return  # the browser drops range connections on seek; that is not an error
+
+
 class LocalServer:
     def __init__(self, root):
         handler = functools.partial(_RangeHandler, directory=str(root))
         handler.extensions_map = {**_RangeHandler.extensions_map, ".vtt": "text/vtt", ".mp4": "video/mp4",
                                   ".svg": "image/svg+xml", ".mjs": "text/javascript"}
-        self.httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        self.httpd = _QuietServer(("127.0.0.1", 0), handler)
         self.url = f"http://127.0.0.1:{self.httpd.server_address[1]}"
 
     def __enter__(self):
@@ -172,7 +177,7 @@ def still_gates(lesson, out_dir, svgs):
         jobs.append({"id": f"measure:{s}", "type": "svg-measure", "url": (out_dir / s).resolve().as_uri(),
                      "width": 1200 if wide else 400, "displayWidth": 1440 if wide else 390, "minPx": 11})
         jobs.append({"id": f"ocr:{s}", "type": "ocr-crops", "url": (out_dir / s).resolve().as_uri(),
-                     "width": 1200 if wide else 400, "height": 1000, "scale": 3,
+                     "width": 1200 if wide else 400, "height": 3000, "scale": 3,
                      "outDir": str(work / "ocr" / s.replace(".svg", ""))})
     for w in WIDTHS:
         for sc in SCHEMES:
@@ -229,4 +234,133 @@ def still_gates(lesson, out_dir, svgs):
     alt_ok = all(a["title"] and a["desc_chars"] > 40 and a["source_link"] for a in alt) and len(alt) == len(svgs)
     gates.append(g("visual.still.alt-source", "still", alt_ok, {"svgs": alt}))
     gates.append(g("visual.still.network", "still", not res["outbound"], {"outbound_requests": res["outbound"]}))
+    return gates
+
+
+# ---------------------------------------------------------------- IVE (AC-6.1..6.4 subset for WP0)
+
+LEAK_JS = r"""(answerWords) => {
+  const root = document.body.cloneNode(true);
+  root.querySelectorAll('noscript, script, [data-code], video, track').forEach((e) => e.remove());
+  const texts = [root.textContent];
+  document.querySelectorAll('[alt], [aria-label], [title]').forEach((e) => {
+    if (e.closest('noscript')) return;
+    ['alt', 'aria-label', 'title'].forEach((a) => e.getAttribute(a) && texts.push(e.getAttribute(a)));
+  });
+  const words = new Set(texts.join(' ').toLowerCase().match(/[a-z']+/g) || []);
+  return { hits: answerWords.filter((w) => words.has(w)), transcript_items: document.querySelectorAll('#tx li').length,
+           state: document.getElementById('state').dataset.state || null, cue: document.getElementById('state').dataset.cue || null };
+}"""
+
+
+def ive_gates(lesson, ive_dir, cue_list, timing):
+    sha = lesson.sha256()
+    work = ive_dir.parent / "work" / "ive"
+    gates = []
+    answer_cues = [c for c in cue_list if c["kind"] == "answer"]
+    with LocalServer(ive_dir) as srv:
+        url = srv.url + "/index.html"
+        ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
+        steps = [ready]
+        # pause/seek: every cue, a point inside it
+        for c in cue_list:
+            t = c["start"] + min(0.2, (c["end"] - c["start"]) / 2)
+            steps += [{"eval": f"(async () => {{ const v = document.getElementById('v'); v.pause(); v.currentTime = {t:.3f}; "
+                               f"await new Promise(r => v.addEventListener('seeked', r, {{once: true}})); "
+                               f"await new Promise(r => setTimeout(r, 150)); "
+                               f"const s = document.getElementById('state'); return {{t: {t:.3f}, state: s.dataset.state, cue: s.dataset.cue}}; }})()",
+                       "as": f"seek:{c['cue']}"}]
+        # leak: 0.1 s before each answer cue
+        for c in answer_cues:
+            q = next(x for x in cue_list if x.get("question") and x["question"]["scene"] == c["answer_for"])
+            sc = next(s for s in timing["scenes"] if s["id"] == c["answer_for"])
+            words = [w.strip().lower() for w in lesson.fact(sc["question"]["answer_fact"])["value"].split("\n") if w.strip()]
+            t = c["start"] - 0.1
+            steps += [{"eval": f"(async () => {{ const v = document.getElementById('v'); v.pause(); v.currentTime = {t:.3f}; "
+                               f"await new Promise(r => v.addEventListener('seeked', r, {{once: true}})); "
+                               f"await new Promise(r => setTimeout(r, 200)); return ({LEAK_JS})({json.dumps(words)}); }})()",
+                       "as": f"leak:{c['cue']}"},
+                      {"shot": str(ive_dir.parent / "shots" / f"ive-before-answer-{c['cue']}.png"), "full": True}]
+        # chapters: click each, read state
+        steps += [{"eval": "(async () => { const out = []; const bs = [...document.querySelectorAll('#chapters button')]; "
+                           "const v = document.getElementById('v'); "
+                           "for (const b of bs) { b.click(); await new Promise(r => v.addEventListener('seeked', r, {once: true})); "
+                           "await new Promise(r => setTimeout(r, 150)); out.push({t: v.currentTime, paused: v.paused, "
+                           "state: document.getElementById('state').dataset.state}); } return out; })()", "as": "chapters"},
+                  {"eval": "(async () => { const v = document.getElementById('v'); v.currentTime = v.duration - 0.05; "
+                           "await new Promise(r => v.addEventListener('seeked', r, {once: true})); await new Promise(r => setTimeout(r, 150)); "
+                           "const b = document.querySelector('#tx li button'); const n = document.querySelectorAll('#tx li').length; b.click(); "
+                           "await new Promise(r => v.addEventListener('seeked', r, {once: true})); "
+                           "const caps = [...v.textTracks].find(t => t.kind === 'captions'); const cb = document.getElementById('caps'); "
+                           "const m0 = caps.mode; cb.click(); const m1 = caps.mode; cb.click(); const m2 = caps.mode; "
+                           "return {transcript_items_at_end: n, seek_after_click: v.currentTime, caption_modes: [m0, m1, m2], "
+                           "chapters: document.querySelectorAll('#chapters li').length, can_play_h264: v.canPlayType('video/mp4; codecs=\"avc1.640028\"'), "
+                           "readyState: v.readyState, error: v.error && v.error.code, "
+                           "nav_kinds: [...new Set(window.__ptkNav.map(e => e.kind))], nav_events: window.__ptkNav.length}; })()",
+                   "as": "controls"}]
+        jobs = [{"id": "ive-behaviour", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": steps}]
+        for w in WIDTHS:
+            for scn in SCHEMES:
+                jobs.append({"id": f"ive-shot:{w}:{scn}", "type": "script", "url": url, "width": w, "height": 900, "scheme": scn,
+                             "steps": [ready, {"eval": f"(async () => {{ const v = document.getElementById('v'); v.currentTime = {cue_list[-2]['start'] + 0.3:.3f}; "
+                                                       "await new Promise(r => v.addEventListener('seeked', r, {once: true})); "
+                                                       "await new Promise(r => setTimeout(r, 300)); return 1; })()", "as": "seek"},
+                                       {"shot": str(ive_dir.parent / "shots" / f"ive-{w}-{scn}.png"), "full": True}]})
+                jobs.append({"id": f"ive-measure:{w}:{scn}", "type": "shot", "url": url, "width": w, "height": 900, "scheme": scn})
+        jobs.append({"id": "ive-nojs", "type": "shot", "url": url, "width": 1440, "height": 900, "js": False,
+                     "shot": str(ive_dir.parent / "shots" / "ive-nojs-1440.png")})
+        jobs.append({"id": "ive-nojs-dom", "type": "script", "url": url, "width": 390, "height": 900, "js": False,
+                     "steps": [{"shot": str(ive_dir.parent / "shots" / "ive-nojs-390.png"), "full": True}]})
+        res = shoot(jobs, work, sha)
+    R = {r["id"]: r for r in res["results"]}
+    beh = R["ive-behaviour"]
+    vals = beh.get("values", {})
+    seek_rows, bad_seek = [], []
+    for c in cue_list:
+        got = vals.get(f"seek:{c['cue']}") or {}
+        row = {"cue": c["cue"], "kind": c["kind"], "t": got.get("t"), "expected_state": c["state"]["state_id"],
+               "shown_state": got.get("state"), "shown_cue": got.get("cue")}
+        seek_rows.append(row)
+        if row["shown_state"] != row["expected_state"]:
+            bad_seek.append(row)
+    chap = vals.get("chapters") or []
+    exp_chap = []
+    for s in timing["scenes"]:
+        k = max((i for i, c in enumerate(cue_list) if c["start"] <= s["start"] + 1e-3), default=0)
+        exp_chap.append(cue_list[k]["state"]["state_id"])
+    chap_bad = [{"chapter": i, "expected": e, "shown": (chap[i] if i < len(chap) else {}).get("state")}
+                for i, e in enumerate(exp_chap) if i >= len(chap) or chap[i].get("state") != e]
+    gates.append(g("ive.pause-state", "ive", beh.get("ok") and not bad_seek and not chap_bad and len(seek_rows) == len(cue_list),
+                   {"cues_checked": len(seek_rows), "mismatches": bad_seek, "chapter_jumps": chap, "chapter_mismatches": chap_bad,
+                    "error": beh.get("error", "")[:500]}))
+    leaks = {k: v for k, v in vals.items() if k.startswith("leak:")}
+    leak_bad = [{"cue": k, **v} for k, v in leaks.items() if v.get("hits")]
+    gates.append(g("ive.no-answer-leak", "ive", beh.get("ok") and bool(leaks) and not leak_bad,
+                   {"checked_before": {k: v for k, v in leaks.items()}, "leaks": leak_bad},
+                   "" if leaks else "no answer cue found"))
+    ctl = vals.get("controls") or {}
+    nojs = R.get("ive-nojs", {})
+    ok_ctl = (ctl.get("chapters") == len(timing["scenes"]) and ctl.get("caption_modes") == ["showing", "hidden", "showing"]
+              and ctl.get("transcript_items_at_end") == len(timing["cues"]) and ctl.get("seek_after_click") is not None
+              and abs(ctl["seek_after_click"] - timing["cues"][0]["start"]) < 0.25 and ctl.get("nav_kinds") == ["navigation"])
+    gates.append(g("ive.controls", "ive", ok_ctl and nojs.get("ok") and nojs.get("imagesLoaded"),
+                   {"controls": ctl, "nojs_images_loaded": nojs.get("imagesLoaded"), "nojs_shot": "shots/ive-nojs-1440.png"}))
+    pages, errs = [], []
+    for w in WIDTHS:
+        for scn in SCHEMES:
+            m = R[f"ive-measure:{w}:{scn}"]
+            pages.append({"width": w, "scheme": scn, "problems": (m.get("measure") or {}).get("problems", ["job failed"]),
+                          "console": [c for c in m.get("console", []) if "error" in c.lower() or "violat" in c.lower()],
+                          "shot": f"shots/ive-{w}-{scn}.png"})
+            if not R[f"ive-shot:{w}:{scn}"].get("ok"):
+                errs.append(R[f"ive-shot:{w}:{scn}"].get("error", "")[:300])
+    bad_pages = [p for p in pages if p["problems"] or p["console"]]
+    gates.append(g("ive.layout", "ive", not bad_pages and not errs, {"pages": pages, "errors": errs}))
+    fams = set()
+    for w in WIDTHS:
+        for scn in SCHEMES:
+            fams |= _families((R[f"ive-measure:{w}:{scn}"].get("measure") or {}).get("fonts", []))
+    fams -= {"monospace", "serif", "cursive", "Georgia"}
+    gates.append(g("ive.fonts", "ive", fams <= ALLOWED_FAMILIES and fams, {"families_used": sorted(fams)}))
+    gates.append(g("ive.network", "ive", not res["outbound"], {"outbound_requests": res["outbound"]}))
     return gates
