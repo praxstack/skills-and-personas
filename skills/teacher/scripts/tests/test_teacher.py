@@ -280,6 +280,11 @@ class Scripts(unittest.TestCase):
                     self.assertEqual(vendor.sync({"up": root / "up"}, None), 1, "a copied file edited here stops the sync too")
                     self.assertEqual((skills / "n/f.txt").read_text(), "edited here\n")
                     self.assertEqual(vendor.sync({"up": root / "up"}, None, discard_local=True), 0)
+                    before = manifest.read_text()
+                    shutil.rmtree(skills / "s")
+                    self.assertEqual(vendor.record("s", "deleted by mistake"), 1, "a missing skill can't be recorded")
+                    self.assertEqual(manifest.read_text(), before)
+                    self.assertEqual(vendor.sync({"up": root / "up"}, None), 0, "so sync still restores it")
                 self.assertEqual((skills / "s/SKILL.md").read_text(), "a\n")
                 self.assertEqual((skills / "n/f.txt").read_text(), "a\n")
             finally:

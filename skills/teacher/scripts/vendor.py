@@ -229,6 +229,10 @@ def record(name: str, note: str) -> int:
     if not note.strip():
         print("FAIL: say what changed with --note", file=sys.stderr)
         return 1
+    if not (SKILLS / name / "SKILL.md").is_file():
+        # A missing folder hashes as an empty tree; recording that would make sync skip restoring it.
+        print(f"FAIL {name}: skills/{name}/SKILL.md is missing; restore it first (vendor.py sync --source KEY=PATH --only {name})", file=sys.stderr)
+        return 1
     digest, count = tree_hash(SKILLS / name)
     if digest == entry["tree_sha256"]:
         print(f"ok   {name}: nothing changed since VENDOR.json")
