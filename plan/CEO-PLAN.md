@@ -174,11 +174,11 @@ HOUR 1 (foundations): languages and layout.  D5.1: Python 3.10-3.13 stdlib core 
                       for the Markdown renderer, Playwright checks and HyperFrames. No new framework.
 HOUR 2-3 (core):      lesson.json shape.      D5.2: JSON Schema 2020-12; facts are typed values with a
                       `source` (compiler, command, stdout sha256); claims have id, text, kind
-                      (definition|mechanism|rule|caveat), justification, source; trace is a list of
+                      (definition|mechanism|rule|caveat|undefined-behaviour|implementation-defined|framing), justification, source; `framing` covers headings and transitions and still gets a claim id; trace is a list of
                       states; storyboard is a list of scenes with narration segments and claim ids.
 HOUR 4-5 (integration): HyperFrames contract. D5.3: generate one sub-composition per scene (fixes the
                       lint warnings seen in the proof); env always sets HYPERFRAMES_SKIP_SKILLS=1 and
-                      telemetry off; pin CLI version in lesson build report; fonts bundled as local
+                      telemetry off; HyperFrames is a pinned local npm install (D17.9), never the global CLI; fonts bundled as local
                       files and Google Fonts fetch blocked by a check.
 HOUR 6+ (polish):     D5.4: TTS cache keyed by sha256(text+voice+speed+lexicon version); D5.5: every gate
                       returns passed | failed | not-run(reason), and "not-run" never counts as passed;
@@ -294,6 +294,79 @@ Cross-model tension was resolved autonomously, as Prax asked. Each D17 item reco
 - **M20** is covered by D17.5.
 - **T2** is covered by D17.6.
 
+## Round 2 revisions (binding)
+
+Round 2 scored the plan 7/10 with 11 issues. All 11 are accepted.
+
+**D18.1 Claims handoff state.** The build gains a `claims-pending` state.
+1. `ptk verify` runs every automatic gate.
+2. It writes `build/<lesson>/claims-jobs/*.json`: one job for the lesson, plus one per mutation. Mutations are capped at 12 per lesson.
+3. The host agent runs each job in a separate subagent and writes `claims-review/*.json`.
+4. `ptk claims check` validates the reviews and finishes the build.
+
+The mutation suite uses this same path.
+
+```
+  draft ─capture─▶ captured ─project─▶ projected ─verify─▶ claims-pending ─claims check─▶ verified ─package─▶ packaged
+                                                                  │                          │
+                                                                  └── reviews missing ──▶ incomplete    any gate failed ──▶ failed
+  Final statuses: verified | degraded (all gates passed but a fallback was used, e.g. `say` TTS; not verified) | incomplete (a gate not-run) | failed
+```
+
+**D18.2 No answer leaks on pause.**
+- A cue's state is the last state already shown on screen, never the settled end of a transition that is still running.
+- Every reveal becomes two cues: a question cue, with the state before the answer, and an answer cue.
+- Pausing on a question cue shows the question state only.
+- A test pauses at 0.1 s before each answer cue and checks that no answer text appears in the DOM, the alt text or the transcript shown so far.
+
+**D18.3 Render network block.**
+- `hyperframes render` and `check` run under a `sandbox-exec` profile that denies all network except loopback. They have no request hook of their own.
+- Any denied request appears in the render log, and the build then fails.
+- Moved into the T0 spikes.
+
+**D18.4 New error classes** (Section 2 additions):
+
+| Error class | Raised when | What happens |
+|---|---|---|
+| `SandboxUnavailable` | `sandbox-exec` missing | exit 2 and stop |
+| `SanitizerFinding` | warning or UBSan/ASan report without an `undefined-behaviour` claim | the fact is blocked; findings shown |
+| `ExpectationMismatch` | capture ≠ independent `expect` | fail, showing both values |
+| `OutboundRequest` | a request was denied during render or capture | fail, with the URL |
+| `MemoryLimitExceeded` | the watchdog kills a process | fail, with peak RSS |
+| `ClaimsNotRun` | no review files present | status `incomplete` |
+| `StateMigrationError` | v1 state can't be read | exit 3; state left untouched |
+
+**D18.5 Dependency graph and T0 scope.**
+
+```
+  WP0 (slice: still + narrated video + IVE for one lesson; spikes)
+   ├──▶ WP1 router + teaching protocol ─────────────────────────────┐
+   └──▶ WP2 model + capture ──┬──▶ WP3 still ──┐                    │
+                              ├──▶ WP4 explorer, Q&A, cards ─┐      │
+                              ├──▶ WP5 video ──▶ WP6 IVE     │      │
+                              └──▶ WP7 claims gate ──────────┤      │
+                                                   WP8 packaging ◀─┘ (needs WP1, WP3, WP4, WP7; WP5/WP6 optional for packaging)
+                                                   WP9 exemplars ◀── all
+```
+
+- A stall in WP6 blocks only WP9's IVE item. It doesn't block packaging or the claims gate.
+- T0 is re-estimated at about 3 h with CC, and it covers the still, the narrated video and the IVE only.
+
+**D18.6 Live session checkpoint.**
+- After WP0 and WP1, the run stops to ask Prax for one 5-minute predict-first session.
+- The tooling packages continue meanwhile, because they don't depend on it.
+- Acceptance and any topic-pack work wait for that session.
+
+**D18.7 Hidden test sets.**
+- The six end-to-end requests written during this run are moved to `plan/proposed/e2e-requests.jsonl`, and `holdout/SHA256` goes back to its frozen single line.
+- They take effect only if Prax approves the acceptance proposal, and he can rewrite them. Until then the frozen routing holdout is the only hidden evaluator.
+- They are not candidate tests.
+
+**D18.8 Traceability for round 1 issues 7, 12 and 15:**
+- issue 7 (`say` fallback) is covered by the `degraded` status in D18.1;
+- issue 12 (KaTeX) by the MathJax `tex2svg` fix in 0B and D4.14;
+- issue 15 (process) by the fact that the reviews ran and are recorded here and in `plan/outside-voice-codex.md`.
+
 ## Section 1: Architecture
 
 ```
@@ -316,7 +389,7 @@ Cross-model tension was resolved autonomously, as Prax asked. Each D17 item reco
 ```
 
 **Data flow and shadow paths (capture → model):**
-- **Happy path:** compile with both compilers, run twice, the outputs match, and they're stored as facts with sha256 hashes.
+- **Happy path:** compile with clang under the sandbox with warnings and sanitizers on (D17.4), run twice, the outputs match, and they're stored as facts with sha256 hashes next to the independent `expect` values. gcc-16 compiles the same source for diagnostics only.
 - **Missing input** (no source or program for a fact): `ModelError("fact X has no source")`. The build stops.
 - **Empty stdout:** stored as an empty-string fact. Allowed, but a value gate that expects text fails loudly.
 - **Upstream error:**
@@ -346,13 +419,13 @@ Cross-model tension was resolved autonomously, as Prax asked. Each D17 item reco
 - The Kokoro venv: falls back to macOS `say`, disclosed in the report.
 - Playwright: if it's missing, the visual gate reports `not-run`.
 
-**Security architecture.** No network endpoints. The capture runner executes C that the agent wrote, so it gets a temp dir, rlimits, a timeout, process-group kill and no network (`sandbox-exec` profile where available, with the absence disclosed). Explorer and IVE HTML are self-contained, with a CSP meta tag that blocks all remote fetches.
+**Security architecture.** No network endpoints. The capture runner executes C that the agent wrote, so it gets a temp dir, rlimits, a timeout, process-group kill, a resident-size watchdog and a tested `sandbox-exec` profile (no network, no writes outside the temp dir). If `sandbox-exec` is missing, capture refuses to run (D17.10). Explorer and IVE HTML are self-contained, with a CSP meta tag that blocks all remote fetches.
 
 **Production failures per integration.**
 
 | Integration | Failure | Handled by |
 |---|---|---|
-| HyperFrames | Upgrades mid-build and changes lint rules | Version pin warning |
+| HyperFrames | Global CLI upgrades itself mid-build (seen today) | Pinned local install (D17.9); the global CLI is never used |
 | Kokoro | Long-path bug in its pronunciation data (seen today) | Venv setup applies the proven fix |
 | Playwright | Browser cache purged by an outside cleaner (seen on 2026-10-08) | `PLAYWRIGHT_BROWSERS_PATH` set to the package's own state dir |
 
@@ -420,7 +493,7 @@ No catch-all handlers: every error class is distinct, and `ptk` exits 1 for a ga
 
 | Threat | Likelihood | Impact | Mitigation in plan |
 |---|---|---|---|
-| Captured C program does something harmful (agent-written code; future: learner code) | Low | High | temp dir, rlimits (CPU, memory, file size), timeout, process-group kill, no network via sandbox-exec where available; D4.12 deferred |
+| Captured C program does something harmful (agent-written code; future: learner code) | Low | High | temp dir, rlimits (CPU, memory, file size), timeout, process-group kill, tested sandbox-exec profile (no network, no writes outside temp), RSS watchdog, refuse if unavailable; D4.12 deferred |
 | HTML artifact fetches remote content or runs injected text | Med | Med | self-contained output, CSP `default-src 'self' data:`, all model text HTML-escaped, a test injects `<script>` into a claim |
 | HyperFrames telemetry and skill auto-update change `~/.agents` | High (seen today) | Med | ptk always sets `HYPERFRAMES_SKIP_SKILLS=1` and telemetry off; a test asserts the env |
 | Prompt injection from web sources quoted in lessons | Med | Med | sources are data; the claims reviewer gets them as quoted data with a fixed rubric |
@@ -510,12 +583,12 @@ Every shadow path has an error class from Section 2. Two more: a stale cache is 
 ## Section 9: Deployment and rollout
 
 1. Build and test in the candidate repo.
-2. Install side by side into `~/.agents/skill-library/prax-teach-v2.1/` and link it under `prax-teach-v2.1-candidate` with `disable-model-invocation: true`, so it is reachable by direct call only.
+2. Install side by side into `~/.agents/skill-library/prax-teach-v2.1/`. It is not linked into any host skill dir (D17.12), so each host keeps one entry. It is reachable through `ptk` and its direct path only. Snapshot `.prax-teach` learner state first.
 3. Run the acceptance step: the holdout, both exemplar builds and the protected checks.
-4. Once accepted, point `~/.agents/skills/prax-teach-v2` at v2.1 and remove the candidate link.
-5. Rollback is to point the link back at the clean v2 install.
+4. Once accepted, point `~/.agents/skills/prax-teach-v2` at v2.1. Install and rollback are tested on each host first.
+5. Rollback is to point the link back at the clean v2 install and restore the learner-state snapshot. Evidence recorded after the snapshot is lost; the rollback command prints how many events that is.
 
-There is no migration of learner state, because v2.1 reads v2's `.prax-teach` format unchanged. The ported engine is the same code.
+Learner state moves to schema v2 (D17.12): navigation events are separated from attempts, and an `evidence` kind is added. A migration reads v1 unchanged and has a test. v2 cannot read schema v2, which is why rollback restores the snapshot.
 
 **D14.1** *Accepted.* The infrastructure that makes this routine: `ptk package --install` performs steps 2 and 4 with a dry-run diff first.
 
@@ -524,7 +597,7 @@ There is no migration of learner state, because v2.1 reads v2's `.prax-teach` fo
 - **Reversibility: 5/5.** It's side by side, with a symlink flip.
 - **Debt introduced.**
   - Two languages: Python for the core, Node for rendering and checks.
-  - Dependence on HyperFrames releases. The version-drift warning keeps it visible.
+  - Dependence on HyperFrames releases. The pinned local install controls it; upgrading is a deliberate, tested change.
 - **Phase 2.** Topic packs, the D4.12 compile-and-trace server, and cpx integration (cards and drills land in his attempt log).
 - **Phase 3.** Manim math track once LaTeX or Typst is approved.
 - **The 1-year question.** A new engineer reads `lesson.schema.json`, `ptk --help` and one exemplar lesson, and understands the system.
@@ -558,7 +631,7 @@ There is no migration of learner state, because v2.1 reads v2's `.prax-teach` fo
 
 - Learner-code compile server (D4.12). Untrusted code from the browser needs its own threat model.
 - C++, DSA and GATE topic packs (D4.16). Phase 2.
-- Manim `MathTex`, BasicTeX, Typst and whisper-cpp installs (D4.14, D4.15). These are software installs that need Prax's OK.
+- Manim `MathTex`, BasicTeX and Typst installs (D4.14, D4.15). These are system-wide installs that need Prax's OK. whisper-cli is already installed and is used.
 - Cloud TTS, cloud rendering and HyperFrames `publish`. Cloud and paid services need permission.
 - Claims about human learning outcomes. Not measurable here.
 
@@ -585,7 +658,7 @@ Section 2 is the complete registry: 22 failure modes, all named; 21 rescued; one
   claims gate     | reviewer itself wrong   | N (known limit) | Y (mutation set) | report labels review as LLM-reviewed, not proven | Y
   visual gate     | Playwright missing      | Y        | Y     | not-run, incomplete   | Y
   tts             | Kokoro missing          | Y        | Y     | fallback disclosed    | Y
-  video           | HyperFrames upgraded    | Y        | Y     | version drift warning | Y
+  video           | HyperFrames upgraded    | Y        | Y     | cannot happen: pinned local install | Y
 ```
 
 The claims reviewer is itself an LLM, so its verdict is a reviewed finding, not a proof. The report labels it that way. That is a known limit, not a silent gap.
