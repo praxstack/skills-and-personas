@@ -37,3 +37,11 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - Approve or edit `plan/ACCEPTANCE-PROPOSAL.md`. That would make it FREEZE v2 and adopt the drafted end-to-end set in `plan/proposed/`.
 - The live predict-first session (D18.6).
 - Any system-wide installs: BasicTeX or Typst for Manim math (D4.15).
+
+## Integration notes (orchestrator)
+- WP3 closed at round 1 (`e7b67e5`): AC-3.1 to AC-3.7 pass. Dark theme follows Atlas. Coral replaces Atlas salmon (it was 0.4 L* from lavender); the rule is raised to 3.35:1; Nunito Sans stands in for Avenir. Claims verify is waiting on integration.
+- WP2 closed after 2 rounds (`d107345`, `2f89d7d`). Rerun myself: 21 bypass, 31 capture and 14 security tests pass.
+- **Integration pass** (after WP4 and WP7 land): rebuild every medium of the switch lesson, run every claims job once, then `ptk claims check`. Builders do not rerun full lesson reviews mid-flight, because changing inputs make them stale.
+- **Open bugs for WP8:**
+  - `ptk build --only <x>` deletes the outputs of other media (seen with `--only still` deleting `build/ive`).
+  - `.state/selftest-*.json` is shared between runs that happen in parallel.
