@@ -78,7 +78,7 @@ def wrap_at(key, size, s, max_w, sep):
 def subset_woff2(key, text):
     from fontTools import subset
     from fontTools.ttLib import TTFont
-    f = TTFont(str(host.FONTS_DIR / tokens()["fonts"][key]["file"]))
+    f = TTFont(str(host.FONTS_DIR / tokens()["fonts"][key]["file"]), recalcTimestamp=False)  # reproducible bytes
     opts = subset.Options()
     opts.flavor = "woff2"
     opts.layout_features = ["*"]

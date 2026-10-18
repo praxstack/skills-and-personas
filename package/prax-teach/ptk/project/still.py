@@ -30,6 +30,7 @@ templates/chrome.json (data-chrome); code text is data-code. Nothing is typed in
 import re
 
 from .. import fonts, text
+from . import path as rail
 from ..text import esc
 
 KEYWORDS = {"int", "switch", "case", "break", "return", "void", "char", "default", "if", "else", "while", "for"}
@@ -159,11 +160,7 @@ def build_svg(lesson, layout, theme, tokens):
 
     # ---------- code card ----------
     states = [lesson.state(s) for s in fig["states"]]
-    executed = []
-    for s in states:
-        for ln in s["state"].get("path", []):
-            if ln not in executed:
-                executed.append(ln)
+    executed = rail.executed(s["state"].get("path", []) for s in states)
     src_lines = lesson.program_source(fig["program"]).split("\n")
     first = 3 if wide else 4
     last = max(executed) + (1 if wide else 0)
@@ -199,8 +196,8 @@ def build_svg(lesson, layout, theme, tokens):
     # executed path rail: dots on executed lines, straight runs, arcs for jumps
     run = [n for n in executed if n in ys]
     cy = lambda n: ys[n] - g["code"] * 0.33
-    for a, b in zip(run, run[1:]):
-        if b == a + 1:
+    for a, b, kind in rail.segments(run):
+        if kind == "run":
             svg.line(rail_x, cy(a), rail_x, cy(b), t["blue"], 2.5, role="path")
         else:
             bulge = rail_x - (20 if wide else 14)
@@ -211,25 +208,11 @@ def build_svg(lesson, layout, theme, tokens):
 
     # tags inside the card, right-aligned
     tag_x = card_x + card_w - (16 if wide else 34)
-    enter = next((s["state"]["line"] - 1 for s in states[1:2]), None)
-    nobreak_after = None
-    for a, b in zip(run, run[1:]):
-        if src_lines[b - 1].strip().startswith("case") and b == a + 1:
-            nobreak_after = a
-            break
-    brk = next((n for n in run if src_lines[n - 1].strip() == "break;"), None)
-    tags = []
-    if wide and enter:
-        tags.append((enter, "enter_label", t["blue"]))
-    if wide and brk:
-        tags.append((brk, "exit_label", t["blue"]))
-    if wide:
-        for n in shown:
-            if n not in executed and min(executed) < n < max(executed) and src_lines[n - 1].strip().startswith("case"):
-                tags.append((n, "skipped_label", t["muted"]))
-    for n, key, color in tags:
-        svg.text(tag_x, ys[n], text.ui(key), "mono", g["tag"], color, ("chrome", key), anchor="end",
-                 inside="code-card", italic=False)
+    nobreak_after = rail.nobreak_after(src_lines, run)
+    tags = rail.tags(src_lines, run, shown) if wide else []
+    for n, key, tone in tags:
+        svg.text(tag_x, ys[n], text.ui(key), "mono", g["tag"], t["blue"] if tone == "path" else t["muted"],
+                 ("chrome", key), anchor="end", inside="code-card", italic=False)
     if nobreak_after:
         label = text.ui("no_break")
         tw = fonts.width("mono", g["tag"], label, bold=True) + 16
