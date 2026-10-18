@@ -61,8 +61,11 @@ def check(a: argparse.Namespace, out: Path) -> int:
         if lesson["hasCode"]:
             code, text = run(["node", str(EXP / "check_code.mjs"), src, *inc])
             m = re.search(r"(\d+) runs match the model, (\d+) problems", text)
-            parts.append(f"code {m.group(1)} runs ok" if code == 0 and m and int(m.group(1)) else "code FAIL")
-            code = code or not (m and int(m.group(1)))  # code shown but none of it ran: not checked
+            if code == 0 and "no C++ or Python to run" in text:
+                parts.append("code shown, not checked")
+            else:
+                parts.append(f"code {m.group(1)} runs ok" if code == 0 and m and int(m.group(1)) else "code FAIL")
+                code = code or not (m and int(m.group(1)))  # C++ or Python shown but none of it ran
             ok &= code == 0
             if code:
                 print(text)

@@ -67,7 +67,7 @@ def norm_base(base: str) -> str:
 
 def load_manifest(course_dir: Path) -> dict:
     """courses/videos.json: {"<course-id>/<lesson-id>.mp4": "https://...", ...}; empty values allowed."""
-    f = course_dir.parent / "videos.json"
+    f = course_dir.resolve().parent / "videos.json"  # resolved, so "." finds the parent
     return json.loads(f.read_text()) if f.exists() else {}
 
 

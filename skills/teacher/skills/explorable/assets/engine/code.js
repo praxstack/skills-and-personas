@@ -334,7 +334,7 @@ export function createCodePanel(code, { h, getParams = () => ({}) }) {
             : "Stopped. Python starts fresh on the next run."
         : e.load
           ? "Python can't start on this page (some hosts block it). Copy the code and run it with python3, or open the lesson as a file in your browser."
-          : `Error:\n${e.message || e}`;
+          : `${e.out?.trim() ? `${e.out.trim()}\n\n` : ""}Error:\n${e.message || e}`; // what it printed before failing, then why
     } finally {
       running = null;
       runBtn.disabled = false;

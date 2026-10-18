@@ -385,6 +385,19 @@ class Scripts(unittest.TestCase):
             self.assertEqual(run(s, "--dir", ".", "forget", "--yes", cwd=d).returncode, 0)
             self.assertEqual((d / "JOURNAL.md").read_text(), "# My own notes\n")
 
+    def test_forget_stops_when_journal_md_cannot_be_read(self):
+        # A JOURNAL.md that is there but unreadable (here a symlink loop) stops
+        # the forget before anything is deleted, rather than half doing it.
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            (d / "journal.json").write_text("{}")
+            (d / "JOURNAL.md").symlink_to("JOURNAL.md")
+            r = run(s, "--dir", ".", "forget", "--yes", cwd=d)
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("nothing deleted", r.stderr)
+            self.assertTrue((d / "journal.json").exists())
+
     def test_forget_deletes_a_corrupt_journal(self):
         s = str(ROOT / "scripts/series.py")
         with tempfile.TemporaryDirectory() as tmp:
@@ -526,6 +539,8 @@ class Builds(unittest.TestCase):
             (d / "videos/one-b.vtt").write_text("WEBVTT\n")
             (src / "videos.json").write_text(json.dumps({"one/one-a.mp4": url, "one/one-c.mp4": ""}))
             manifest = build_course.load_manifest(d)
+            with contextlib.chdir(d):  # run from inside the course folder: "." still finds courses/videos.json
+                self.assertEqual(build_course.load_manifest(Path(".")), manifest)
             self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("url", url))
             self.assertIsNone(build_course.resolve_video(d, "one", "one-b", manifest), "no file, no manifest entry")
             self.assertIsNone(build_course.resolve_video(d, "one", "one-c", manifest), "an empty manifest entry is no video")

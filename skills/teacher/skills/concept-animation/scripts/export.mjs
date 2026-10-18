@@ -10,7 +10,7 @@
 
 import { pathToFileURL } from "node:url";
 import { resolve, dirname, join } from "node:path";
-import { mkdtemp, rm, writeFile, mkdir, rename } from "node:fs/promises";
+import { mkdtemp, rm, writeFile, mkdir, rename, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { loadPlaywright, launch } from "../../visual-qa/scripts/pw.mjs";
@@ -101,6 +101,9 @@ try {
       done.push([partial(g), g]);
     }
     if (poster) done.push([partial(resolve(poster)), resolve(poster)]);
+    // Check every destination first, so a bad one (say --poster names a folder)
+    // fails before any finished file has replaced the old one.
+    for (const [, to] of done) if ((await stat(to).catch(() => null))?.isDirectory()) throw new Error(`${to} is a folder; nothing was replaced`);
     for (const [from, to] of done) await rename(from, to);
   }
 } finally {

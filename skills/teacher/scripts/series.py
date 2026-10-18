@@ -200,8 +200,10 @@ def main() -> int:
         md = a.dir / "JOURNAL.md"
         try:
             ours = md.read_text(errors="replace").startswith("# Learning journal:")
-        except OSError:
+        except (FileNotFoundError, IsADirectoryError):
             ours = False
+        except OSError as e:  # there but unreadable: stop before deleting anything, or the forget is half done
+            raise SystemExit(f"can't read {md} ({e.strerror}); nothing deleted")
         for f in (a.dir / "journal.tmp", *([md] if ours else []), journal):
             f.unlink(missing_ok=True)
         if a.dir.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
