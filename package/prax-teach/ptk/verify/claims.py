@@ -42,7 +42,7 @@ REVIEW_SCHEMA = host.PKG / "schemas" / "claims-review.schema.json"
 RUBRIC_VERSION = "2"
 JOB_SCHEMA = "prax-teach/claims-job@2"
 MAP_ATTRS = ("data-claim", "data-chrome", "data-fact", "data-code", "data-label", "data-question", "data-trace",
-             "data-narration", "data-option")
+             "data-narration", "data-option", "data-misconception")
 SKIP_TAGS = {"style", "script", "title", "head", "video", "track", "source"}
 LABEL_PATTERNS = {"line-number": r"\d+", "output-step": r"\d+", "note-badge": r"\d+", "time": r"[\d:.]+",
                   "axis-tick": "[\u2212-]?\\d+(?:\\.\\d+)?", "diff-mark": "[+\u2212]",
@@ -74,23 +74,41 @@ def _squash(s):
 # ---------------------------------------------------------------- collection
 
 class _Collector(HTMLParser):
+    """Text runs of an HTML page by the mapping attribute that owns them. An inline SVG <text> is one run, as
+    in a still: its wrapped lines (<tspan> with a y) are joined with a space, other tspans with nothing."""
+
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.stack = []
         self.items = []
+        self.svg_text = None  # [depth, kind, ref, parts] while inside a mapped SVG <text>
 
     def handle_starttag(self, tag, attrs):
         if tag in ("meta", "link", "br", "img", "source", "track", "input"):
             return
-        self.stack.append((tag, dict(attrs)))
+        a = dict(attrs)
+        self.stack.append((tag, a))
+        if tag == "text" and self.svg_text is None and any(t == "svg" for t, _ in self.stack):
+            src = next(((m[5:], a[m]) for m in MAP_ATTRS if m in a), ("unmapped", ""))
+            self.svg_text = [len(self.stack), src[0], src[1], []]
+        elif tag == "tspan" and self.svg_text is not None and "y" in a and self.svg_text[3]:
+            self.svg_text[3].append(" ")
 
     def handle_endtag(self, tag):
         for i in range(len(self.stack) - 1, -1, -1):
             if self.stack[i][0] == tag:
+                if self.svg_text is not None and i + 1 <= self.svg_text[0]:
+                    _d, kind, ref, parts = self.svg_text
+                    self.svg_text = None
+                    if "".join(parts).strip():
+                        self.items.append((kind, ref, "".join(parts)))
                 del self.stack[i:]
                 return
 
     def handle_data(self, data):
+        if self.svg_text is not None:
+            self.svg_text[3].append(data)
+            return
         if not data.strip() or any(t in SKIP_TAGS for t, _ in self.stack):
             return
         for tag, attrs in reversed(self.stack):

@@ -6,12 +6,12 @@ int main(void) {
     double x2 = 0.4, w2 = -1.0;
     double b = -0.2;
     double t1 = x1 * w1;
-    printf("%g %g %+g\n", x1, w1, t1);
+    printf("%g * %g = %+g\n", x1, w1, t1);
     double t2 = x2 * w2;
-    printf("%g %g %+g\n", x2, w2, t2);
+    printf("%g * %g = %+g\n", x2, w2, t2);
     double z = t1 + t2 + b;
-    printf("%+g %g\n", b, z);
+    printf("b = %+g  z = %g\n", b, z);
     double a = fmax(0.0, z);
-    printf("%g\n", a);
+    printf("a = %g\n", a);
     return 0;
 }

@@ -113,6 +113,7 @@
   "morph_label": "the change",
   "morph_files": "{old} → {new}",
   "arrow": "→",
-  "ive_step_back": "An earlier step of the film, not the paused frame"
+  "ive_step_back": "An earlier step of the film, not the paused frame",
+  "wrong_belief": "a common wrong belief"
  }
 }

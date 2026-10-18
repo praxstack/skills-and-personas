@@ -98,23 +98,26 @@ class Ctx:
                       extra=extra)
         return len(s) * size * MONO_ADV
 
-    def value(self, x, y, fid, size=None, color=None, anchor="start", weight=None, inside=None, group=None):
+    def value(self, x, y, fid, size=None, color=None, anchor="start", weight=None, inside=None, group=None, ocr=True):
         vfont, vpx, vweight, _c, _s = self.svg.role("value", size or self.S["value"])
         s = self.val(fid)
-        self.svg.text(x, y, s, vfont, vpx, color or self.t["value"], ("fact", fid), weight=weight or vweight,
-                      anchor=anchor, ocr=s, ocr_group=group, inside=inside)
+        col = color or self.t["value"]
+        tone = "note" if col == self.t["note"] else ("correction" if col == self.t["correction"] else None)
+        self.svg.text(x, y, s, vfont, vpx, col, ("fact", fid), weight=weight or vweight, tone=tone,
+                      anchor=anchor, ocr=s if ocr else None, ocr_group=group, inside=inside, raw=text.tight_points(s))
         return fonts.width(vfont, vpx, s, weight=weight or vweight)
 
     def note(self, x, y, cid, w, color=None):
         """A claim, wrapped in the note role. Returns the y after it."""
         nfont, npx, nweight, _c, _s = self.svg.role("note", self.S["note"])
         lh = npx * (1.35 if nfont == "hand" else 1.4)
+        tone = "correction" if color == self.t["correction"] else "note"
         if self.flow is not None:
             return self.flow.emit(x, y, self.claims[cid]["text"], nfont, npx, lh, color or self.t["note"], ("claim", cid),
-                                  w, weight=nweight, tone="note") - lh
+                                  w, weight=nweight, tone=tone) - lh
         m0 = self.svg.mark()
         for ln in fonts.wrap(nfont, npx, self.claims[cid]["text"], w, weight=nweight):
-            self.svg.text(x, y, ln, nfont, npx, color or self.t["note"], ("claim", cid), weight=nweight, tone="note")
+            self.svg.text(x, y, ln, nfont, npx, color or self.t["note"], ("claim", cid), weight=nweight, tone=tone)
             y += lh
         self.svg.merge(m0)
         return y - lh
@@ -153,38 +156,42 @@ def _views(c, x, y, w):
         y += 10
     if c.on(v["bits"]):
         c.group(v["bits"])
-        cell = round(S["value"] * 1.05, 1)
-        bx, by = x, y + 6
-        for i in range(8):
-            svg.rect(bx + i * cell, by, cell - 4, cell * 1.25, t["surface"], rx=4, stroke=t["rule"], sw=1)
-        vfont, vpx, vweight, _c, _s = svg.role("value", S["value"])
+        # the byte as a tape: eight digits, each over a bar (note for a 1, rule for a 0), the bars kept clear of
+        # the digits so OCR reads the digits alone
+        vfont, vpx, vweight, _c, _s = svg.role("value", S["value"] * 1.15)
         adv = fonts.width(vfont, vpx, "0", weight=vweight)
+        gap = round(vpx * 0.22, 1)
         bits = c.val(v["bits"])
+        bx, base = x, y + vpx + 8
         spans = "".join(f'<tspan fill="{t["note"] if b == "1" else t["label"]}">{b}</tspan>' for b in bits)
-        svg.text(bx + (cell - 4) / 2 - adv / 2, by + cell * 0.9, bits, vfont, vpx, t["ink"],
-                 ("fact", v["bits"]), weight=vweight, ocr=bits, raw=spans, extra={"letter-spacing": f"{cell - adv:.2f}"})
+        svg.text(bx, base, bits, vfont, vpx, t["ink"], ("fact", v["bits"]), weight=vweight, ocr=bits, raw=spans,
+                 extra={"letter-spacing": f"{gap:.2f}"})
+        for i, b in enumerate(bits):
+            bar_x = bx + i * (adv + gap)
+            svg.line(bar_x + 1, base + 20, bar_x + adv - 1, base + 20, t["note"] if b == "1" else t["rule"],
+                     4 if b == "1" else 2, role="path")
         svg.close()
-        hx = bx + 8 * cell + 14
+        hx = bx + 8 * (adv + gap) + 24
         if c.on(v["hex"]) and hx + 80 * S["k"] <= x + w:
             c.group(v["hex"])
-            c.value(hx, by + cell * 0.9, v["hex"], color=t["note"])
+            c.value(hx, base, v["hex"], color=t["note"])
             svg.close()
-        y = by + cell * 1.25 + 8
+        y = base + 30
         c.label(x, y + S["label"] + 2, "panel_byte_note")
         y += S["label"] + 10
     # one lane per conversion
     for lane in P["lanes"]:
         if not c.on(lane["fact"]):
             continue
-        y += 22
+        y += 40
         c.group(lane["fact"])
-        svg.line(x, y - 12, x + w, y - 12, t["rule"], 1)
+        svg.line(x, y - 24, x + w, y - 24, t["rule"], 1)
         y += S["code"] * 0.9
         code_w = c.code(x, y, src[lane["line"] - 1].strip(), pid, lane["line"])
         if lane.get("via") and c.on(lane["via"]):
             y += S["value"] * 1.35
             lw = c.label(x + 18, y - 3, "lane_converts")
-            c.value(x + 18 + lw + 12, y, lane["via"], size=S["value"] * 0.8, color=t["note"])
+            c.value(x + 18 + lw + 12, y, lane["via"], size=S["value"] * 0.8, color=t["note"], ocr=False)
             code_w = None
         vfont, vpx, vweight, _c, _s = svg.role("value", S["value"])
         val_w = fonts.width(vfont, vpx, c.val(lane["fact"]), weight=vweight)
@@ -192,20 +199,20 @@ def _views(c, x, y, w):
             # the output fits on the code line: arrow, then the value
             ax = x + code_w + 8
             svg.text(ax, y, "\u2192", "mono", S["code"], t["label"], ("chrome", "arrow"))
-            c.value(x + w, y + 1, lane["fact"], anchor="end")
+            c.value(x + w, y + 1, lane["fact"], anchor="end", ocr=c.layout == "wide")
         else:
             y += S["value"] * 1.35
             lw = c.label(x + 18, y - 3, "lane_prints")
-            c.value(x + 18 + lw + 12, y, lane["fact"])
+            c.value(x + 18 + lw + 12, y, lane["fact"], ocr=c.layout == "wide")
         if lane.get("claim"):
             y = c.note(x + 18, y + S["note"] * 1.5, lane["claim"], w - 18)
         svg.close()
     ub = P.get("ub")
     if ub and _after(lesson, c.sid, ub["after"]):
         usrc = lesson.program_source(ub["program"]).split("\n")
-        y += 26
+        y += 44
         c.group(after=ub["after"])
-        svg.line(x, y - 14, x + w, y - 14, t["correction"], 1.2)
+        svg.line(x, y - 24, x + w, y - 24, t["correction"], 1.2)
         fname = lesson.program(ub["program"])["path"].split("/")[-1]
         ffont, fpx, _w, _c, _s = svg.role("foot", S["label"])
         svg.text(x, y + 2, fname, ffont, fpx, t["label"], ("label", "program-file"))
@@ -253,12 +260,12 @@ def _stack(c, x, y, w):
                 f'fill="{fill}" stroke="{t["note"] if status != "waiting" else t["rule"]}" stroke-width="1.5"{dash}/>')
         ty = fy + fh / 2 + S["value"] * 0.33
         if fr.get("call"):
-            c.value(x + 16, ty, fr["call"], color=t["ink"], size=S["value"] * 0.8, inside=rid)
+            c.value(x + 16, ty, fr["call"], color=t["ink"], size=S["value"] * 0.8, inside=rid, ocr=False)
         else:
             c.code(x + 16, ty, fr["fn"], pid, size=S["value"] * 0.8, inside=rid)
         if returning and fr.get("ret"):
             vw = fonts.width("mono", S["value"], c.val(fr["ret"]))
-            c.value(x + bw - 16, ty, fr["ret"], anchor="end", inside=rid)
+            c.value(x + bw - 16, ty, fr["ret"], anchor="end", inside=rid, ocr=False)
             c.label(x + bw - 16 - vw - 10, ty - 2, "frame_returns", anchor="end", color=t["note"], inside=rid)
             if i + 1 < len(boxes):
                 ny = boxes[i + 1][1] + fh / 2
@@ -346,11 +353,11 @@ def _frame_box(c, x, y, w, h, fr, rid, size, top, pad=9, show_ret=True):
             f'fill="{fill}" stroke="{t["note"] if status != "waiting" else t["rule"]}" stroke-width="1.4"{dash}/>')
     ty = y + h / 2 + size * 0.36
     if fr.get("call"):
-        c.value(x + pad, ty, fr["call"], color=t["ink"], size=size, inside=rid, weight=400)
+        c.value(x + pad, ty, fr["call"], color=t["ink"], size=size, inside=rid, weight=400, ocr=False)
     else:
         c.code(x + pad, ty, fr["fn"], c.lesson.state(c.sid)["state"]["program"], size=size, inside=rid)
     if returning and fr.get("ret") and show_ret:
-        c.value(x + w - pad, ty, fr["ret"], anchor="end", size=size * 1.15, inside=rid)
+        c.value(x + w - pad, ty, fr["ret"], anchor="end", size=size * 1.15, inside=rid, ocr=False)
     svg.close()
 
 
@@ -392,9 +399,10 @@ def _neuron(c, x, y, w):
             c.group(tm["x"])
             c.label(cx, yy, "neuron_input", i=i)
             vy = yy + S["code"] * 1.7
-            xw = c.value(cx, vy, tm["x"], size=S["value"] * 0.85, color=t["ink"])
+            xw = c.value(cx, vy, tm["x"], size=S["value"] * 0.85, color=t["ink"], ocr=False)
             svg.text(cx + xw + 10, vy, text.ui("times"), "mono", S["value"] * 0.85, t["label"], ("chrome", "times"))
-            c.value(cx + xw + 12 + S["value"] * 0.85 * MONO_ADV + 10, vy, tm["w"], size=S["value"] * 0.85, color=t["ink"])
+            c.value(cx + xw + 12 + S["value"] * 0.85 * MONO_ADV + 10, vy, tm["w"], size=S["value"] * 0.85, color=t["ink"],
+                    ocr=False)
             svg.close()
             if c.on(tm["t"]):
                 c.group(tm["t"])
@@ -442,7 +450,7 @@ def _neuron(c, x, y, w):
             label_x, label_y = min(max(X(min(a, b)), cx), cx + cw - total), ry - 14
         svg.text(label_x, label_y, lab, "mono", S["chip"] + 2, col, ("chrome", "neuron_term_bias" if k == len(terms) - 1
                                                                        else "neuron_term"))
-        c.value(label_x + lw + 10, label_y, fid, size=S["chip"] + 4, color=col)
+        c.value(label_x + lw + 10, label_y, fid, size=S["chip"] + 4, color=col, ocr=False)
         if k:
             svg.raw(f'<line data-role="guide" x1="{X(a):.1f}" y1="{ry - row:.1f}" x2="{X(a):.1f}" y2="{ry:.1f}" '
                     f'stroke="{t["label"]}" stroke-width="1" stroke-dasharray="3 4"/>')
@@ -460,7 +468,7 @@ def _neuron(c, x, y, w):
         zx = cx + c.code(cx, yy, "z =", pid, size=S["code"]) + 10
         for f in terms:
             c.group(f)
-            zx += c.value(zx, yy, f, size=S["code"] * 1.05, color=tone(f)) + 10
+            zx += c.value(zx, yy, f, size=S["code"] * 1.05, color=tone(f), ocr=False) + 10
             svg.close()
         yy += 14
     if c.on(P["sum"]):
@@ -479,7 +487,7 @@ def _neuron(c, x, y, w):
     c.label(cx, yy, "panel_gate")
     gx0, gx1 = cx + 14, cx + cw - 24
     gy1 = yy + 40          # top of the plot
-    gy0 = gy1 + (180 if wide else 150)  # the z axis (a = 0)
+    gy0 = gy1 + (180 if wide else 112)  # the z axis (a = 0)
     zlo, zhi = -1.0, 1.5
     GX = lambda z: gx0 + (z - zlo) / (zhi - zlo) * (gx1 - gx0)  # noqa: E731
     GY = lambda a: gy0 - a / zhi * (gy0 - gy1)  # noqa: E731

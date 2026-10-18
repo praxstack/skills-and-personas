@@ -356,7 +356,7 @@ def code_panel(svg, lesson, pid, run, shown, x, y, w, size, lh, gutter, rid, ocr
     a filled panel is inset on the ground colour with no border, so cards never sit inside cards."""
     t = svg.t
     src = lesson.program_source(pid).split("\n")
-    pad = 20 if wide else 14
+    pad = 20 if wide else 18  # keeps the first line number's OCR crop clear of the card's rounded corner
     h = pad * 2 + len(shown) * lh - lh * 0.25
     inset = nested and svg.frame["panel_fill"]
     svg.rect(x, y, w, h, t["ground"] if inset else t["surface"], rx=12 if wide else 10, rid=rid,
@@ -465,10 +465,10 @@ def _output_list(svg, g, x, y, fids, facts, rid, group, max_w=None):
             vsize = round(max(13.0, vsize * (max_w - 30) / widest), 2)
     for k, fid in enumerate(fids, 1):
         val = text.display(facts[fid])
-        svg.text(x, y, str(k), "mono", g["label"], t["faint"], ("label", "output-step"), inside=rid,
+        svg.text(x, y, str(k), "mono", max(14, g["label"]), t["faint"], ("label", "output-step"), inside=rid,
                  ocr=str(k), ocr_group=f"{group}-steps")
         svg.text(x + 28, y, val, vfont, vsize, t["value"], ("fact", fid), weight=vweight, inside=rid, ocr=val,
-                 ocr_group=group)
+                 ocr_group=group, raw=text.tight_points(val))
         y += vsize + g["out_gap"]
     return y
 
@@ -563,6 +563,34 @@ def _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w=None, col_x=None
     return y + cmp_h
 
 
+def _wrong_belief(svg, flow, lesson, g, wide, mid, X0, X1, y):
+    """A callout: the wrong belief in the learner's words, then the claim that corrects it. Returns the y after it."""
+    t = svg.t
+    m = lesson.by_id("misconceptions")[mid]
+    pad = 20 if wide else 14
+    i0 = svg.mark()
+    _label(svg, X0 + pad, y + pad + 10, text.ui("wrong_belief"), g["label"], ("chrome", "wrong_belief"),
+           color=t["correction"], inside="belief-card")
+    svg.els[-1] = svg.els[-1].replace("<text ", '<text data-tone="correction" ', 1)
+    bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"])
+    yy = y + pad + 22 + bpx
+    m0 = svg.mark()
+    for ln in fonts.wrap(bfont, bpx, m["statement"], X1 - X0 - 2 * pad, weight=bweight):
+        svg.text(X0 + pad, yy, ln, bfont, bpx, t["ink"], ("misconception", mid), weight=bweight, inside="belief-card")
+        yy += bpx * 1.42
+    svg.merge(m0)
+    nfont, npx, nweight, _c, _s = svg.role("note", g["note"])
+    yy = flow.emit(X0 + pad, yy + 6, lesson.claim(m["correction"])["text"], nfont, npx, npx * 1.38, t["note"],
+                   ("claim", m["correction"]), X1 - X0 - 2 * pad, weight=nweight, inside="belief-card", tone="note")
+    h = yy - npx * 1.38 + pad + 4 - y
+    mark = svg.mark()
+    svg.rect(X0, y, X1 - X0, h, t["correction_tint"], rx=12, rid="belief-card", stroke=t["correction"], sw=1.2,
+             role="pill")
+    box = svg.els.pop(mark)
+    svg.els.insert(i0, box)
+    return y + h
+
+
 def build_svg(lesson, layout, theme, tokens, math=None):
     g = LAYOUTS[layout]
     wide = layout == "wide"
@@ -648,6 +676,10 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     cmp = fig.get("compare")
     if cmp:
         y = _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w, col_x + (22 if svg.frame["panel_fill"] else 0)) + 40
+    # ---------- a common wrong belief, and the claim that corrects it ----------
+    if fig.get("misconception"):
+        y = _wrong_belief(svg, flow, lesson, g, wide, fig["misconception"], X0, X1, y) + 34
+
     # ---------- caption + provenance ----------
     cfont, cpx, cweight, _c, _s = svg.role("caption", g["caption"])
     for cid in fig.get("caption_claims", []):

@@ -42,8 +42,8 @@ html[data-ive-mode="explore"] .mode .tagm{color:var(--surface);background:var(--
 .codepanel{padding:.5rem 0;border:1px solid var(--rule);border-radius:.625rem;background:var(--surface)}
 .codepanel .lbl{display:block;padding:.125rem .875rem .375rem}
 .codepanel .file{font-family:var(--code-font);text-transform:none;letter-spacing:0}
-.code{font-family:var(--code-font);font-weight:var(--code-weight);font-size:.8125rem;line-height:1.6}
-.ln{display:grid;grid-template-columns:2.25rem minmax(0,1fr);align-items:baseline;column-gap:.5rem;padding:0 .625rem 0 0;color:var(--label)}
+.code{font-family:var(--code-font);font-weight:var(--code-weight);font-size:clamp(11px,2.8vw,.8125rem);line-height:1.6}
+.ln{display:grid;grid-template-columns:2rem minmax(0,1fr);align-items:baseline;column-gap:.375rem;padding:0 .5rem 0 0;color:var(--label)}
 .ln .no{text-align:end;color:var(--faint);font-size:.75rem}
 .ln .body{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .5rem;min-width:0}
 .ln .src{white-space:pre;font-family:inherit}

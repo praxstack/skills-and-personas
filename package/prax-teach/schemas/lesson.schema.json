@@ -1018,6 +1018,10 @@
               "description": "Claims the panel prints as its caption lines."
             }
           }
+        },
+        "misconception": {
+          "$ref": "#/$defs/ref",
+          "description": "A misconception the still shows as a wrong-belief callout, with the claim that corrects it."
         }
       }
     }

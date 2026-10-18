@@ -12,11 +12,15 @@
       "std": "c17",
       "ub": false,
       "run": true,
+      "show": {
+        "from": 4,
+        "to": 19
+      },
       "diagnostics": {
         "clang": "",
         "gcc-16": ""
       },
-      "source_sha256": "c8076f93209e748381bc78ed50930ecf3359ed0b80e451f576a5a81530e01ac8"
+      "source_sha256": "797c7b190d127f1ebe57a78220783f536219f6445da5ce7e24304dc334dfe23e"
     },
     {
       "id": "p2",
@@ -200,8 +204,8 @@
     {
       "id": "c.setup",
       "kind": "framing",
-      "text": "The program stores 66 in the int a and prints it in several ways.",
-      "justification": "views.c line 5 is int a = 66; lines 9-14 and 18 print a, or values made from a, with different conversions.",
+      "text": "The program stores 66 in the int a.",
+      "justification": "views.c line 5 is int a = 66;.",
       "sources": [
         {
           "title": "programs/views.c",
@@ -624,50 +628,25 @@
       ],
       "narration": [
         {
-          "text": "The program stores 66 in the int a and prints it in several ways.",
+          "text": "The program stores 66 in the int a.",
           "claims": [
             "c.setup"
-          ]
+          ],
+          "spoken": "The program stores 66 in the int a."
         },
         {
           "text": "66 fits in the low byte of a. Its bits are 01000010, which is 0x42 in hex.",
           "claims": [
             "c.byte"
           ],
-          "spoken": "Sixty-six fits in the low byte of a. Its bits are zero one zero zero zero zero one zero, which is hex forty-two."
+          "spoken": "66 fits in the low byte of a. Its bits are 0 1 0 0 0 0 1 0, which is hex 42."
         }
       ]
     },
     {
       "id": "sc2",
-      "title": "Two integer views",
-      "state": "s1",
-      "key_nodes": [
-        "code",
-        "output",
-        "panel"
-      ],
-      "narration": [
-        {
-          "text": "%d prints an int as a signed decimal number, so it prints 66.",
-          "claims": [
-            "c.d"
-          ],
-          "spoken": "Percent d prints an int as a signed decimal number, so it prints sixty-six."
-        },
-        {
-          "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u prints 66.",
-          "claims": [
-            "c.u"
-          ],
-          "spoken": "The cast to unsigned converts sixty-six to unsigned int. Sixty-six fits there, so the value stays sixty-six, and percent u prints sixty-six."
-        }
-      ]
-    },
-    {
-      "id": "sc3",
       "title": "Predict",
-      "state": "s1",
+      "state": "s0",
       "key_nodes": [
         "code",
         "question"
@@ -702,7 +681,7 @@
       ]
     },
     {
-      "id": "sc4",
+      "id": "sc3",
       "title": "The cast makes a new double",
       "state": "s2",
       "key_nodes": [
@@ -712,23 +691,61 @@
       ],
       "narration": [
         {
-          "text": "(double)a converts the value 66 to the double 66.0. That double has its own bit pattern, not the bits of a.",
+          "text": "(double)a converts the value 66 to the double 66.0. That double has its own bit pattern, 0x4050800000000000, not the bits of a.",
           "claims": [
             "c.cast"
           ],
-          "spoken": "The cast to double converts the value sixty-six to the double sixty-six point zero. That double has its own bit pattern, not the bits of a."
-        },
+          "spoken": "The cast to double converts the value 66 to the double 66.0. That double has its own bit pattern, not the bits of a."
+        }
+      ]
+    },
+    {
+      "id": "sc4",
+      "title": "Six digits after the point",
+      "state": "s2",
+      "key_nodes": [
+        "code",
+        "output",
+        "panel"
+      ],
+      "narration": [
         {
           "text": "%f prints a double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
           "claims": [
             "c.fprint"
           ],
-          "spoken": "Percent f prints a double with six digits after the decimal point when no precision is given, so it prints sixty-six point zero zero zero zero zero zero."
+          "spoken": "Percent f prints a double with 6 digits after the decimal point, when no precision is given, so it prints 66.000000."
         }
       ]
     },
     {
       "id": "sc5",
+      "title": "Two integer views",
+      "state": "s2",
+      "key_nodes": [
+        "code",
+        "output",
+        "panel"
+      ],
+      "narration": [
+        {
+          "text": "%d prints an int as a signed decimal number, so it prints 66.",
+          "claims": [
+            "c.d"
+          ],
+          "spoken": "Percent d prints an int as a signed decimal number, so it prints 66."
+        },
+        {
+          "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u prints 66.",
+          "claims": [
+            "c.u"
+          ],
+          "spoken": "The cast to unsigned converts 66 to unsigned int. 66 fits there, so the value stays 66, and percent u prints 66."
+        }
+      ]
+    },
+    {
+      "id": "sc6",
       "title": "A character view",
       "state": "s3",
       "key_nodes": [
@@ -742,12 +759,12 @@
           "claims": [
             "c.char"
           ],
-          "spoken": "Percent c converts the int sixty-six to unsigned char, and writes that character. In ASCII, code sixty-six is B."
+          "spoken": "Percent c converts the int 66 to unsigned char, and writes that character. In ASCII, code 66 is B."
         }
       ]
     },
     {
-      "id": "sc6",
+      "id": "sc7",
       "title": "Not the same bits",
       "state": "s4",
       "key_nodes": [
@@ -779,7 +796,7 @@
       ]
     },
     {
-      "id": "sc7",
+      "id": "sc8",
       "title": "Recap",
       "state": "s4",
       "view": "summary",
@@ -795,14 +812,15 @@
           "claims": [
             "c.recap"
           ],
-          "spoken": "Every view here shows the value sixty-six. Only the cast to double gives printf a different bit pattern."
+          "spoken": "Every view here shows the value 66. Only the cast to double gives printf a different bit pattern."
         }
       ]
     }
   ],
   "figure": {
+    "misconception": "m.samebits",
     "kind": "code-trace",
-    "title_claim": "c.samebits",
+    "title_claim": "c.recap",
     "program": "p1",
     "states": [
       "s0",
@@ -857,9 +875,7 @@
         "after": "s4"
       }
     },
-    "caption_claims": [
-      "c.recap"
-    ]
+    "caption_claims": []
   },
   "requested_media": [
     "still",

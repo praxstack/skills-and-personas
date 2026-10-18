@@ -22,6 +22,17 @@ def display(fact):
     return fact["value"].rstrip("\n").replace("\t", "    ")
 
 
+def tight_points(s):
+    """SVG markup for a value whose decimal point would read as a gap in a monospaced font (66.000000 OCRs as
+    "66 .000000"): the point and the digits after it are pulled in by a fixed share of an em. The text content
+    is unchanged, so every check that reads the value still reads exactly s. None when s has no point."""
+    import re as _re
+    m = _re.fullmatch(r"([-+]?\d+)\.(\d+)", s)
+    if not m:
+        return None
+    return f'{esc(m.group(1))}<tspan dx="-0.16em">.</tspan><tspan dx="-0.16em">{esc(m.group(2))}</tspan>'
+
+
 def vtt_time(t):
     t = max(0.0, float(t))
     h = int(t // 3600)

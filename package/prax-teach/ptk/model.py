@@ -335,6 +335,8 @@ def _figure_errors(data, need):
         need("claims", cid, f"/figure/caption_claims/{j}")
     if fig.get("title_claim"):
         need("claims", fig["title_claim"], "/figure/title_claim")
+    if fig.get("misconception"):
+        need("misconceptions", fig["misconception"], "/figure/misconception")
     for k, ref in panel_refs(fig.get("panel") or {}):
         need(*ref, f"/figure/panel/{k}")
     if "compare" in fig:
