@@ -150,3 +150,73 @@ def test_only_keeps_other_media():
         return {"exit": res.code, "kept": sorted(keep), "cleared": rep["cleared"]}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _rep(media, sha, gates, artifacts=(), fallbacks=()):
+    return {"schema": "prax-teach/build-report@1", "lesson": "x", "lesson_sha256": sha, "status": "claims-pending",
+            "started": "t", "media": list(media), "gates": list(gates), "fallbacks": list(fallbacks), "tools": {},
+            "artifacts": list(artifacts), "transitions": ["draft"], "error": None}
+
+
+def test_only_merges_previous_report():
+    """Integration pass: `--only x` keeps the other media's gates, artifacts and fallbacks from the previous report
+    when the lesson is unchanged, so the report always describes every medium on disk. A changed lesson carries
+    nothing (those outputs are stale) and lists them as uncovered; a full build replaces everything."""
+    prev = _rep(["video", "ive"], "s1",
+                [_g("values.expect", "passed"), {"id": "video.media", "medium": "video", "status": "passed",
+                                                 "measured": {}}, {"id": "ive.layout", "medium": "ive",
+                                                                   "status": "passed", "measured": {}},
+                 {"id": "claims.review", "medium": "all", "status": "passed", "measured": {}}],
+                artifacts=[{"path": "video/lesson.mp4"}, {"path": "ive/index.html"}],
+                fallbacks=[{"what": "tts", "engine": "say"}])
+    prev["video"], prev["tts"] = {"theme": "dark"}, {"engine": "say"}
+    new = _rep(["still"], "s1", [{"id": "values.still", "medium": "still", "status": "passed", "measured": {}}],
+               artifacts=[{"path": "still/a.svg"}])
+    out = build.merge_previous(prev, new, rebuilt=["still"], on_disk=["still", "video", "ive"])
+    assert out["media"] == ["still", "video", "ive"], out["media"]
+    ids = [g["id"] for g in out["gates"]]
+    assert "video.media" in ids and "ive.layout" in ids and "values.still" in ids, ids
+    assert "claims.review" not in ids and ids.count("values.expect") == 0, "medium 'all' gates are always recomputed"
+    assert {a["path"] for a in out["artifacts"]} == {"still/a.svg", "video/lesson.mp4", "ive/index.html"}
+    assert out["fallbacks"] == [{"what": "tts", "engine": "say"}] and out["video"] == {"theme": "dark"}
+    assert out["merged_from_previous"] == ["video", "ive"]
+    # the lesson changed: nothing carried, the stale media are named
+    new2 = _rep(["still"], "s2", [{"id": "values.still", "medium": "still", "status": "passed", "measured": {}}])
+    out2 = build.merge_previous(prev, new2, rebuilt=["still"], on_disk=["still", "video", "ive"])
+    assert out2["media"] == ["still"] and out2["uncovered_media"] == ["ive", "video"], out2
+    assert not out2["fallbacks"] and "video.media" not in [g["id"] for g in out2["gates"]]
+    # no previous report (or a failed one): nothing carried
+    out3 = build.merge_previous(None, _rep(["still"], "s1", []), rebuilt=["still"], on_disk=["still"])
+    assert out3["media"] == ["still"] and not out3.get("uncovered_media")
+    failed = dict(prev, status="failed")
+    out4 = build.merge_previous(failed, _rep(["still"], "s1", []), rebuilt=["still"], on_disk=["still", "video"])
+    assert out4["media"] == ["still"] and out4["uncovered_media"] == ["video"], out4
+    return {"merged": out["media"], "stale": out2["uncovered_media"]}
+
+
+def test_only_still_after_video_keeps_video_and_ive():
+    """End to end on a copy of the slice with its real video build: `ptk build --only still` leaves build/video and
+    build/ive in place and the report lists still, video and ive with their gates."""
+    from selftest_support import NotRun
+    prev = json.loads((SLICE / "build" / "build-report.json").read_text()) \
+        if (SLICE / "build" / "build-report.json").exists() else None
+    if not prev or "video" not in prev.get("media", []) or not (SLICE / "build" / "video" / "lesson.mp4").exists() \
+            or prev.get("lesson_sha256") != model.load(SLICE).sha256() or prev.get("status") == "failed":
+        raise NotRun("the slice has no current video build to start from; run `ptk build lessons/switch-fallthrough`")
+    tmp = host.make_tmp("only-merge-")
+    dst = tmp / "switch-fallthrough"
+    try:
+        shutil.copytree(SLICE, dst, ignore=shutil.ignore_patterns("work", "renders", "snapshots", ".hyperframes"))
+        res = host.run([*ptk_cmd(), "build", str(dst), "--only", "still"], timeout=1800)
+        assert res.code in (errors.EXIT_CLAIMS_PENDING, errors.EXIT_INCOMPLETE), (res.code, res.stderr[-1500:])
+        for p in ("video/lesson.mp4", "video/captions.vtt", "ive/index.html", "ive/states.vtt"):
+            assert (dst / "build" / p).exists(), f"--only still deleted {p}"
+        assert any((dst / "build" / "still").glob("*.png")), "no still PNGs"
+        rep = json.loads((dst / "build" / "build-report.json").read_text())
+        assert {"still", "video", "ive"} <= set(rep["media"]), rep["media"]
+        ids = {g["id"] for g in rep["gates"]}
+        assert {"values.still", "video.media", "video.sync", "ive.layout"} <= ids, ids
+        assert any(a["path"] == "video/lesson.mp4" for a in rep["artifacts"])
+        return {"exit": res.code, "media": rep["media"], "gates": len(ids)}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)

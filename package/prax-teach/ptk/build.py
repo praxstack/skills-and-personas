@@ -110,6 +110,49 @@ def clear_outputs(build_dir, media):
     return removed
 
 
+CARRY_FROM = ("claims-pending", "verified", "incomplete", "degraded")  # finished builds only, never failed or crashed
+FALLBACK_MEDIUM = {"tts": "video"}
+
+
+def media_on_disk(build_dir):
+    """The media whose output folder under build/ holds anything."""
+    return [m for m in SUPPORTED if (build_dir / m).is_dir() and any((build_dir / m).iterdir())]
+
+
+def _read_previous(lesson):
+    p = report_path(lesson)
+    try:
+        return json.loads(p.read_text()) if p.exists() else None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def merge_previous(prev, rep, rebuilt, on_disk):
+    """`--only` keeps the other media's results (integration pass). From a previous finished report for the same
+    lesson sha256, carry the gates, artifacts and fallbacks of every medium that this build did not rebuild and
+    whose outputs are still on disk. Gates with medium "all" (values.expect, claims.*) are always recomputed.
+    A changed lesson or a failed previous build carries nothing; media left on disk are listed as uncovered."""
+    out = dict(rep)
+    keep = []
+    if prev and prev.get("status") in CARRY_FROM and prev.get("lesson_sha256") \
+            and prev.get("lesson_sha256") == rep.get("lesson_sha256"):
+        keep = [m for m in SUPPORTED if m in prev.get("media", []) and m not in rebuilt and m in on_disk]
+    out["media"] = [m for m in SUPPORTED if m in rebuilt or m in keep]
+    out["gates"] = list(rep["gates"]) + [g for g in prev["gates"] if g.get("medium") in keep] if keep else list(rep["gates"])
+    have = {a["path"] for a in rep.get("artifacts", [])}
+    out["artifacts"] = list(rep.get("artifacts", [])) + [
+        a for a in (prev or {}).get("artifacts", []) if keep and a["path"].split("/", 1)[0] in keep and a["path"] not in have]
+    out["fallbacks"] = list(rep.get("fallbacks", [])) + [
+        f for f in (prev or {}).get("fallbacks", []) if FALLBACK_MEDIUM.get(f.get("what")) in keep]
+    if "video" in keep:
+        for k in ("video", "tts"):
+            if k in prev and k not in out:
+                out[k] = prev[k]
+    out["merged_from_previous"] = keep
+    out["uncovered_media"] = sorted(m for m in on_disk if m not in out["media"])
+    return out
+
+
 def final_status(gates, degraded):
     st = [g["status"] for g in gates]
     if "failed" in st:
@@ -133,6 +176,7 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cali
            "started": _now(), "finished": None, "media": media, "entry": _entry(), "gates": [], "fallbacks": [],
            "tools": {}, "artifacts": [], "transitions": ["draft"], "error": None}
     build_dir = lesson.dir / "build"
+    previous = _read_previous(lesson) if only else None  # `--only` merges it; a full build replaces it
     # Replace any earlier report now, so a killed or crashed build never leaves a stale "verified" (P1-2).
     save(lesson, rep)
     finished = False
@@ -160,6 +204,9 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cali
                              "measured": values.check_expectations(lesson), "reason": ""})
         gates, degraded = _project_and_verify(lesson, build_dir, media, rep, go, video_theme, renderer)
         rep["gates"] += gates
+        if only:
+            rep.update(merge_previous(previous, rep, rebuilt=media, on_disk=media_on_disk(build_dir)))
+            degraded = degraded or bool(rep["fallbacks"])
         items = claims_gate.collect_texts(lesson, build_dir)
         rep["gates"].append(claims_gate.mapping_gate(lesson, items))
         jobs = claims_gate.write_jobs(lesson, items, build_dir, calibrate=calibrate)
