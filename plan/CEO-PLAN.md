@@ -143,7 +143,7 @@ APPROACH C: Thin router skill that delegates every medium to existing skills (mi
 | D4.12 | Localhost compile-and-trace server that runs the learner's own code inside explorers | L / 2 h | DEFERRED | It runs untrusted code from a browser, so it needs its own threat model. P2 in TODOS. |
 | D4.13 | LLDB execution traces for step-through (recursion, pointers) | M / 1 h | ACCEPTED (scoped) | Use a deterministic instrumented trace (printf-trace harness) for the second exemplar. LLDB scripting is a stretch goal inside the same work package. |
 | D4.14 | Manim projector for math-heavy topics | M / 1 h | ACCEPTED (scoped) | Route and hand-off contract only. `MathTex` needs LaTeX, which isn't installed and isn't approved. Math in stills uses MathJax `tex2svg` (KaTeX cannot emit SVG); math in HTML and video uses MathJax SVG output too, so one renderer covers both. |
-| D4.15 | Host installs: BasicTeX or Typst | S | DEFERRED, needs Prax | One install rule (PLAN-INPUT §7, D17.14): new system-wide software needs his OK; user-scope venvs and model files under `~/.local/share/prax-teach` are allowed with disclosure. whisper-cli is already installed and is used for the sync gate. |
+| D4.15 | Host installs: BasicTeX or Typst | S | DEFERRED, needs Prax | One install rule (PLAN-INPUT §7, D17.14): new system-wide software needs his OK; user-scope venvs and model files under `$PTK_STATE` are allowed with disclosure. whisper-cli is already installed and is used for the sync gate. |
 | D4.16 | Topic packs for C++, DSA and GATE | XL | DEFERRED | Phase 2, built on the compiler once it is accepted. |
 
 ### 0D-POST. Accepted scope
@@ -180,12 +180,12 @@ HOUR 4-5 (integration): HyperFrames contract. D5.3: generate one sub-composition
                       lint warnings seen in the proof); env always sets HYPERFRAMES_SKIP_SKILLS=1 and
                       telemetry off; HyperFrames is a pinned local npm install (D17.9), never the global CLI; fonts bundled as local
                       files and Google Fonts fetch blocked by a check.
-HOUR 6+ (polish):     D5.4: TTS cache keyed by sha256(text+voice+speed+lexicon version); D5.5: every gate
+HOUR 6+ (polish):     D5.4: cache keys are the full effective inputs listed in D17.9; D5.5: every gate
                       returns passed | failed | not-run(reason), and "not-run" never counts as passed;
                       D5.6: build is deterministic given SOURCE_DATE_EPOCH, which ptk sets itself.
 ```
 
-Kokoro venv location, **D5.7**: `~/.local/share/prax-teach/venvs/kokoro`. It is created by `ptk host setup-tts` the first time it's needed, and the command says first that it downloads about 330 MB of model files from the kokoro-onnx GitHub release. This is local-first: after setup, synthesis runs offline.
+Kokoro venv location, **D5.7** (revised by D19.1): `$PTK_STATE/venvs/kokoro`. During development `$PTK_STATE` is `v2.1/.state/` (git-ignored, inside the FREEZE mutable path). It is created only by an explicit `ptk host setup`, never at teach time. Setup prints every download (Kokoro model about 330 MB, whisper ggml model, pinned HyperFrames npm tarball) and needs a yes. After setup, synthesis runs offline.
 
 ### 0F. Mode
 
@@ -208,7 +208,7 @@ Cross-model tension was resolved autonomously, as Prax asked. Each D17 item reco
 
 **D17.2 Interactive video design** (Codex 2, reviewer 6). The IVE is the narrated MP4 plus a WebVTT `metadata` cue track.
 - Each cue carries `{scene_id, state_id}`.
-- On pause, seek or chapter jump, the page loads the explorer at that cue's *settled* state.
+- On pause, seek or chapter jump, the page loads the explorer at that cue's state, which is the last state already shown (D18.2).
 - It works for any video source, HyperFrames or Manim. No in-page composition runtime is needed.
 
 **D17.3 Authoring contract** (Codex 3; reviewer 9).
@@ -252,14 +252,14 @@ Cross-model tension was resolved autonomously, as Prax asked. Each D17 item reco
 - **Not run is not passed:** if no subagent facility exists in the host, the gate is `not-run` and the build is `incomplete`. It is never `passed`.
 
 **D17.8 Offline caption sync** (Codex 8; reviewer 4).
-- The sync gate uses `whisper-cli`, which is already installed, with a local ggml model under `~/.local/share/prax-teach/models`. `hyperframes transcribe` is the second choice.
+- The sync gate uses `whisper-cli`, which is already installed, with a local ggml model under `$PTK_STATE/models`. `hyperframes transcribe` is the second choice.
 - **Pass rule:** every cue start within 0.5 s of its planned time, and word error rate on non-code words of 10% or less.
 
 **D17.9 Pinned and reproducible builds** (Codex 9; reviewer 10, 13).
-- **Pinned HyperFrames:** a local npm install inside `~/.local/share/prax-teach/tools` at a pinned version, never the global auto-upgrading CLI.
+- **Pinned HyperFrames:** a local npm install inside `$PTK_STATE/tools` at a pinned version, never the global auto-upgrading CLI.
 - **Cache keys:** the full effective inputs (source bytes, includes, flags, compiler version, TTS engine, model file sha256, voice, speed, lexicon version and fallback engine).
 - **What reproducibility means:** "reproducible" applies to the lesson data and the HTML/SVG bytes. Media bytes are checked against tolerances instead.
-- **No silent fetches:** outbound network during render is blocked through a Chrome flag and request interception, and any attempted request fails the build.
+- **No silent fetches:** outbound network during render is blocked by the sandbox profile in D18.3, and any denied request fails the build.
 
 **D17.10 Sandbox** (Codex 10; reviewer 14).
 - **The profile:** capture runs under a tested `sandbox-exec` profile that denies network and denies file writes outside its temp dir. A test proves both denials.
@@ -280,7 +280,7 @@ Cross-model tension was resolved autonomously, as Prax asked. Each D17 item reco
 - Each alternative has a binary probe and a fallback order.
 - `ptk host probe` reports which alternatives this machine can run right now.
 
-**D17.14 One install rule** (reviewer 4). New system-wide software needs Prax's OK. User-scope venvs and models under `~/.local/share/prax-teach` are allowed, with the download size disclosed before fetching.
+**D17.14 One install rule** (reviewer 4). New system-wide software needs Prax's OK. User-scope venvs and models under `$PTK_STATE` are allowed, with the download size disclosed before fetching.
 
 **D17.15 Dependencies** (reviewer 13). The core gets a venv with pinned `jsonschema`, `genanki` and `fsrs==6.3.1`, created by `ptk host setup`. "stdlib-only" is dropped.
 
@@ -367,6 +367,50 @@ The mutation suite uses this same path.
 - issue 12 (KaTeX) by the MathJax `tex2svg` fix in 0B and D4.14;
 - issue 15 (process) by the fact that the reviews ran and are recorded here and in `plan/outside-voice-codex.md`.
 
+## Round 3 revisions (binding)
+
+Round 3 scored the plan 7/10 with 6 issues. All 6 are fixed below. Under the loop's three-round limit, these fixes weren't reviewed a fourth time.
+
+**D19.1 Paths.**
+- During development, every write stays inside the FREEZE mutable path. `$PTK_STATE` is `v2.1/.state/` (git-ignored) and holds venvs, models, the pinned HyperFrames install and the throwaway host homes.
+- Learner state for tests lives under `v2.1/.state/learners/`. The C workspace is never written.
+- The install into `~/.agents/skill-library/prax-teach-v2.1`, the user-scope `$PTK_STATE=~/.local/share/prax-teach`, and the `prax-teach-v2` symlink flip are proposed as a FREEZE amendment in `ACCEPTANCE-PROPOSAL.md` §7. They happen only after Prax approves, and the flip is his step.
+
+**D19.2 No fetch at teach time.**
+- Every download happens in `ptk host setup`, which lists each file, its size and its source, and needs an explicit yes.
+- Teach-time paths never touch the network. A missing tool gives `not-run` (status `incomplete`), or the `say` fallback (status `degraded`).
+
+**D19.3 WP0 entry and host tests.**
+- WP0 calls the candidate by loading its `SKILL.md` by direct path, with `ptk` on `PATH` from `v2.1/`.
+- Per-host install and rollback tests run with `HOME` set to throwaway dirs under `v2.1/.state/hosts/<host>/`.
+- WP0's request is fixed now: "Teach me how a switch statement with a missing break falls through, as a still, a narrated video and an interactive video." It is a development request, not a holdout.
+
+**D19.4 Stop rule measurement.**
+- A round counts as progress when a new acceptance criterion from `spec/SPEC.md` (the EARS criteria for that package) starts passing.
+- These are the candidate's own tests. The frozen holdout still runs only at acceptance.
+- This reads "acceptance check" in FREEZE as "spec acceptance criterion". The interpretation is recorded for Prax in `ACCEPTANCE-PROPOSAL.md` §8.
+
+**D19.5 Exit codes for `ptk`:**
+
+| Code | Meaning | What the agent does next |
+|---|---|---|
+| 0 | verified or packaged | deliver |
+| 1 | a gate failed | repair at most twice, then report |
+| 2 | host or environment problem | name the tool and its setup command |
+| 3 | model error | fix `lesson.json` at the JSON pointer |
+| 4 | claims-pending | run every job in `claims-jobs/` as a separate subagent, then `ptk claims check` |
+| 5 | incomplete (a gate not run) | report which gate and why; never call it verified |
+| 6 | degraded (a fallback was used) | deliver with the fallback named |
+
+**D19.6** Fixed inline:
+- "settled state";
+- the §1 state machine;
+- the Chrome flag;
+- the drift wording;
+- the cache keys;
+- the fixture reviewer in §6;
+- T0's estimate.
+
 ## Section 1: Architecture
 
 ```
@@ -401,7 +445,7 @@ The mutation suite uses this same path.
 **State machine (lesson build):**
 
 ```
-  draft ──capture──▶ captured ──project──▶ projected ──verify──▶ verified ──package──▶ packaged
+  draft ──capture──▶ captured ──project──▶ projected ──verify──▶ claims-pending ──claims check──▶ verified ──package──▶ packaged
     ▲                   │ fail                │ fail                │ any gate failed
     └──── edit ◀────────┴─────────────────────┴─────────────────────┘ (stays failed; never "verified")
   Invalid: projected→packaged without verify (ptk refuses); verified with a not-run gate marked passed (schema forbids).
@@ -415,7 +459,7 @@ The mutation suite uses this same path.
 **Scaling.** A build costs one TTS pass per scene (cached) and one HyperFrames render, about 2–4 minutes for 60–90 s of video. Ten lessons in a pack cost about 30 minutes. The first thing to break at 10x is TTS and render time, so a content-hash cache and `--only` flags per projector handle it.
 
 **Single points of failure.**
-- The HyperFrames CLI, which auto-upgrades: the version is recorded in the report, and a `ptk host check` warns on drift.
+- HyperFrames: a pinned local install (D17.9). If it's missing, video gates are `not-run` and the build is `incomplete`.
 - The Kokoro venv: falls back to macOS `say`, disclosed in the report.
 - Playwright: if it's missing, the visual gate reports `not-run`.
 
@@ -518,7 +562,7 @@ Every shadow path has an error class from Section 2. Two more: a stale cache is 
 |---|---|---|---|
 | Explorer value input | non-integer, out of range, empty | Y | clamp and message; tested |
 | Explorer bit toggles | keyboard only | Y | buttons with aria-pressed; tested |
-| IVE pause-to-explore | pause mid-transition | Y | explorer loads the scene's settled state, never a tween value |
+| IVE pause-to-explore | pause mid-transition | Y | explorer loads the last state already shown, never a tween value or a future answer (D18.2) |
 | IVE seek | seek past end / rapid scrubbing | Y | debounce; state = scene at time t |
 | IVE | no JS | Y | static poster sequence + transcript |
 | Video | autoplay with sound | Y | never; play is a user action |
@@ -550,7 +594,7 @@ Every shadow path has an error class from Section 2. Two more: a stale cache is 
 | router | unit (dev set ≥60) + holdout (32, acceptance only) | "narrated video" → motion | "fix my loop" → ordinary | workspace contract present |
 | capture | integration (real compilers) | %d/%u/%f/%c outputs | compile error, timeout | gcc-16 missing → HostToolMissing |
 | values gate | unit + tamper test | all match | 5 corrupted values each caught | locale-sensitive float formatting |
-| claims gate | unit with fixture reviewer outputs | all mapped | unmapped sentence, malformed JSON, refusal | the %f "same bits" sentence must fail |
+| claims gate | unit (schema, fixtures for malformed/refusal) + integration with the real reviewer subagent via claims jobs | all mapped | unmapped sentence, malformed JSON, refusal | the %f "same bits" sentence must fail with the real reviewer |
 | still projector | snapshot + Playwright | 4 variants render | overflow detection fires on long label | 390 px portrait |
 | video | integration (real render of a 10 s fixture) | gates pass | LUFS out of range fixture | Kokoro missing → say + disclosed |
 | IVE | Playwright | pause → explorer at scene state | seek past end | no-JS fallback |
@@ -569,7 +613,7 @@ Every shadow path has an error class from Section 2. Two more: a stale cache is 
 
 - **Slowest paths.** Video render takes about 60–180 s, TTS about 1–2 s per sentence (cached), and Playwright screenshots about 5–10 s per artifact.
 - **Memory.** Kokoro needs about 1 GB resident and HyperFrames' Chrome about 1 GB. With 24 GB RAM that's fine; renders still run one at a time.
-- **Cache.** TTS by content hash, captures by source hash plus compiler version.
+- **Cache.** Keyed by the full effective inputs in D17.9.
 - No issues beyond caching. **D12.1.** Caching *accepted.*
 
 ## Section 8: Observability
@@ -686,7 +730,7 @@ There are no stale diagrams, because the repo is new.
 
 ## Implementation Tasks
 
-- [ ] **T0 (P1, human ~2d / CC ~1.5h)**: vertical slice (D17.1). Spikes first:
+- [ ] **T0 (P1, human ~3d / CC ~3h)**: vertical slice (D17.1, D18.5: still, narrated video and IVE for one lesson). Spikes first:
   - `sandbox-exec` profile;
   - whisper-cli sync on the proof MP4;
   - a pinned local HyperFrames;
@@ -705,4 +749,27 @@ There are no stale diagrams, because the repo is new.
 
 ## Reviewer Concerns
 
-(Filled by the spec review loop if issues remain.)
+The spec review loop ran 3 rounds (6/10, then 7/10, then 7/10) and the Codex outside voice ran once. Round 3's six issues are fixed in D19.x but weren't re-reviewed, because of the three-round limit.
+
+Open items that need Prax, not more review:
+- **Approve the FREEZE amendment for install paths and the symlink flip** (ACCEPTANCE-PROPOSAL §7).
+- **Approve the stop-rule interpretation** (§8).
+- **Approve the acceptance additions** (§1 to §6).
+- **Hold the live predict-first session** (D18.6).
+
+## GSTACK REVIEW REPORT
+
+| Review | Trigger | Why | Runs | Status | Findings |
+|--------|---------|-----|------|--------|----------|
+| CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | issues_open | 16 proposals, 13 accepted (2 scoped), 3 deferred; 3 spec-review rounds; 0 critical gaps |
+| Codex Review | `/codex review` | Independent 2nd opinion | 1 | issues_found | 13 findings, all accepted into D17 |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 0 | — | — |
+| Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
+| DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
+
+- **CROSS-MODEL:** Codex and the Claude spec reviewer agreed on the claims reviewer contract, the missing undefined-behaviour guard, the interactive video design and the weak acceptance rules. Every Codex point was accepted. No tension was left unresolved.
+- **VERDICT:** the CEO review is complete, and the eng review is required next.
+
+**UNRESOLVED DECISIONS:**
+- Prax: approve or edit ACCEPTANCE-PROPOSAL §1 to §8 (acceptance additions, install-path amendment, stop-rule interpretation).
+- Prax: the live predict-first session after WP0 and WP1 (D18.6).

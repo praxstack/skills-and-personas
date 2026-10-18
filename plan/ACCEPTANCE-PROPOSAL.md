@@ -35,6 +35,12 @@ Codex and the spec reviewer both found that the frozen evaluator can pass while 
 5. **Teaching protocol.** The scripted multi-turn transcript tests pass. One live predict-first session with Prax is a human step, recorded but not automated.
 6. **Hosts.** Install and rollback are tested on Claude Code, Codex, Hermes and OpenCode, with exactly one entry each.
 
+7. **FREEZE amendment: install paths.** After acceptance, allow writes to:
+   - `~/.agents/skill-library/prax-teach-v2.1/` (the install);
+   - `~/.local/share/prax-teach/` (user-scope venvs, models and the pinned HyperFrames install, fetched only by `ptk host setup` with a yes);
+   - the `~/.agents/skills/prax-teach-v2` symlink. Prax performs the flip, or approves it at the time.
+8. **Stop-rule interpretation.** "Newly passing acceptance check" in FREEZE means a newly passing EARS criterion in `spec/SPEC.md` for that work package. The hidden holdout runs only at acceptance.
+
 ## Approval
 
 Reply "approve acceptance v2" to adopt this as FREEZE v2, or name the items to drop.
