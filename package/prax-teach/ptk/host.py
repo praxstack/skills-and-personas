@@ -97,6 +97,13 @@ def child_env(extra=None, lesson_sha256=None, node_home=False):
     return env
 
 
+def program_env(extra=None):
+    """Allowlist env for an untrusted lesson program (review P3-3): nothing from the parent leaks in."""
+    env = {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"}
+    env.update(extra or {})
+    return env
+
+
 def hyperframes_chrome():
     reg = registry()["hyperframes_chrome"]
     p = state_path("browsers", "hyperframes", reg["dir"], reg["binary"])
@@ -214,7 +221,7 @@ def run_limited(cmd, cwd, timeout, max_output, max_rss_kb, env=None):
             state["reason"] = state["reason"] or "memory"
             _kill_group(proc)
             break
-        time.sleep(0.02)
+        time.sleep(0.1)
     proc.wait()
     # Cleanup: make sure nothing in the group survives (watchdog or timeout kill).
     _kill_group(proc)
@@ -244,8 +251,22 @@ def sandboxed(cmd, mode, tmp, proj=None, state=None):
     tmp = Path(tmp).resolve()
     proj = Path(proj).resolve() if proj else tmp
     state = Path(state).resolve() if state else tmp
+    extra = []
+    if mode == "run":
+        extra = ["-D", f"EXE={Path(cmd[0]).resolve()}", "-D", f"RT={sanitizer_runtime_dir()}"]
     return [sandbox_exec(), "-f", str(SANDBOX_PROFILE), "-D", f"MODE={mode}", "-D", f"TMP={tmp}",
-            "-D", f"PROJ={proj}", "-D", f"STATE={state}", *[str(c) for c in cmd]]
+            "-D", f"PROJ={proj}", "-D", f"STATE={state}", *extra, *[str(c) for c in cmd]]
+
+
+_RT = []
+
+
+def sanitizer_runtime_dir():
+    """clang's darwin runtime dir (libclang_rt.asan/ubsan dylibs), realpath'd, cached."""
+    if not _RT:
+        res = run([which("clang"), "-print-resource-dir"], timeout=30, check=True)
+        _RT.append(str((Path(res.stdout.strip()) / "lib" / "darwin").resolve()))
+    return _RT[0]
 
 
 def make_tmp(prefix):

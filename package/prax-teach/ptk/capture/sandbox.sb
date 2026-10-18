@@ -2,13 +2,18 @@
 ;;
 ;; One file, three modes, picked with -D MODE=...:
 ;;   compile  clang/gcc-16 compile a lesson program. Forks allowed (driver -> cc1 -> ld).
-;;   run      the compiled program runs. No fork, no network, writes only in TMP.
+;;   run      the compiled program runs. Deny-default (see the end of this file): it may exec
+;;            itself, read TMP, /usr/lib, /System and the clang sanitizer runtime, write TMP,
+;;            read sysctls and signal itself. No mach-lookup, so no LaunchServices, Apple
+;;            Events, pasteboard or nsurlsessiond. No fork, no network.
 ;;   render   hyperframes check/render. Loopback only, writes only in TMP, PROJ and STATE.
 ;;
 ;; Parameters (all absolute, already realpath'd by ptk/host.py):
 ;;   TMP    the per-call temp dir
 ;;   PROJ   the project dir (render) or the lesson build dir (compile); may equal TMP
 ;;   STATE  $PTK_STATE (render only needs it; compile/run never write there)
+;;   EXE    run only: the program binary
+;;   RT     run only: clang's sanitizer runtime dir (<resource-dir>/lib/darwin)
 ;;
 ;; Network: every mode denies all network. Render re-allows loopback only, because
 ;; hyperframes drives Chrome over a local DevTools socket.
@@ -49,3 +54,27 @@
 ;; so the deny applies to the program, not to the runner.
 (if (string=? (param "MODE") "run")
     (deny process-fork))
+
+;; ---------- run: deny-default (review P1-4) ----------
+;; Later rules win, so this block replaces everything above for MODE=run.
+;; Found by bisecting under (deny default) with the ASan+UBSan probe in
+;; tests/fixtures/sandbox-probe: dyld needs the sanitizer runtime and a read of "/" itself;
+;; ASan needs sysctl reads. No mach service is needed, so none is allowed.
+(if (string=? (param "MODE") "run")
+    (begin
+      (deny default)
+      (allow process-exec (literal (param "EXE")))
+      (allow file-read*
+             (literal "/")
+             (subpath (param "TMP"))
+             (subpath (param "RT"))
+             (subpath "/usr/lib")
+             (subpath "/System/Library")
+             (subpath "/System/Volumes/Preboot/Cryptexes/OS/System/Library")
+             (literal "/dev/null")
+             (literal "/dev/random")
+             (literal "/dev/urandom"))
+      (allow file-write* (subpath (param "TMP")) (literal "/dev/null"))
+      (allow sysctl-read)
+      (allow signal (target self))
+      (allow process-info* (target self))))

@@ -70,7 +70,7 @@ def gcc_diagnostics(src_path, tmp):
 
 def run_program(exe, tmp, args=()):
     res = host.run_limited(host.sandboxed([exe, *args], "run", tmp=tmp), cwd=tmp, timeout=RUN_TIMEOUT,
-                           max_output=MAX_OUTPUT, max_rss_kb=MAX_RSS_KB, env=host.child_env(SAN_ENV))
+                           max_output=MAX_OUTPUT, max_rss_kb=MAX_RSS_KB, env=host.program_env(SAN_ENV))
     if res.killed_reason == "timeout":
         raise errors.RunTimeout(f"{exe.name} ran over {RUN_TIMEOUT:g}s; process group killed", seconds=res.seconds)
     if res.killed_reason == "memory":
