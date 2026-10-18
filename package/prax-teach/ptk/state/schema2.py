@@ -292,9 +292,10 @@ def migrate(path: str, *, migrated_at: str, snapshot_dest: str) -> dict[str, Any
             "snapshot_sha256": snap["files_sha256"], "v1_event_count": snap["counts"]["sessions"]}
 
 
-def rollback(path: str, snapshot_dir: str) -> dict[str, Any]:
+def rollback(path: str, snapshot_dir: str, dry_run: bool = False) -> dict[str, Any]:
     """Restore a snapshot byte for byte. Events, reviews and navigation recorded after the snapshot are
-    lost; the result counts them (`lost_events`) so the caller can print the number."""
+    lost; the result counts them (`lost_events`) so the caller can print the number.
+    dry_run: validate and count only; no state file is written."""
     workspace = secure_workspace(path)
     snap = Path(snapshot_dir).resolve()
     manifest = _load_snapshot(snap)
@@ -312,6 +313,9 @@ def rollback(path: str, snapshot_dir: str) -> dict[str, Any]:
         lost = {"sessions": sum(1 for e in now_events if e["event_id"] not in snap_events),
                 "reviews": sum(1 for r in now_reviews if r["event_id"] not in snap_reviews),
                 "navigation": len(now_nav) if "state/navigation.jsonl" not in manifest["files"] else 0}
+        if dry_run:
+            return {"status": "dry_run", "schema_version": manifest["schema_version"],
+                    "would_restore": sorted(manifest["files"]), "lost": lost, "lost_events": sum(lost.values())}
         restored = []
         for rel in manifest["files"]:
             atomic_write(workspace / rel, (snap / rel).read_bytes())

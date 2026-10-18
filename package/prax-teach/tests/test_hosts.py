@@ -186,3 +186,82 @@ def test_install_rollback():
             shutil.rmtree(parent)
     assert _real_fingerprint() == before_real, "a real host skill directory changed"
     return result
+
+
+# ---------------------------------------------------------------- CLI: ptk install --candidate, ptk rollback
+
+def _ptk_json(*args, timeout=600):
+    res = host.run([str(host.PKG / "bin" / "ptk"), *args], timeout=timeout)
+    try:
+        body = json.loads(res.stdout)
+    except json.JSONDecodeError:
+        body = None
+    return res, body
+
+
+def test_install_cli_dry_run_writes_nothing():
+    """`ptk install --candidate --dry-run` (real HOME) prints the plan and changes nothing in the real host dirs."""
+    before = _real_fingerprint()
+    real_dest = Path(os.path.expanduser("~")) / package.CANDIDATE
+    existed = real_dest.exists()
+    res, plan = _ptk_json("install", "--candidate", "--dry-run")
+    assert res.code == 0, res.stderr[-1500:]
+    assert plan["dry_run"] is True and plan["home"] == str(Path(os.path.expanduser("~")).resolve()), plan
+    assert plan["destination"] == str(Path(os.path.expanduser("~")).resolve() / package.CANDIDATE), plan
+    assert plan["writes"] == [] and plan["would"], plan
+    assert real_dest.exists() == existed and _real_fingerprint() == before
+    res, rplan = _ptk_json("rollback", "--dry-run")
+    assert res.code in (0, 2), res.stderr[-800:]
+    assert _real_fingerprint() == before
+    return {"would": plan["would"], "rollback_dry_run_exit": res.code}
+
+
+def test_install_cli_refuses_real_home_without_flag():
+    """A real install needs --real-home (FREEZE amendment pending): without it, exit 2 and install is never called."""
+    from ptk import cli, errors
+    calls = []
+    saved = package.install
+    package.install = lambda *a, **k: calls.append((a, k))
+    try:
+        code = cli.main(["install", "--candidate"])
+    except SystemExit as e:
+        raise AssertionError("ptk has no `install --candidate` command") from e
+    finally:
+        package.install = saved
+    assert code == errors.EXIT_HOST and not calls, (code, calls)
+    return {"exit": code}
+
+
+def test_install_and_rollback_cli_throwaway_home():
+    """Through the CLI in a throwaway HOME: install --flip with a learner, rollback --dry-run changes nothing and
+    counts the events it would lose, rollback restores the v2 link and the learner bytes."""
+    from test_state import digests, materialize
+    before_real = _real_fingerprint()
+    tree = _tree()
+    root = host.state_path("hosts")
+    fake_v2 = package.write_fake_v2(root / "v2-fixture")
+    home = package.make_home(root / "cli" / "home", fake_v2)
+    link = home / package.V2_LINK
+    target_before = os.readlink(link)
+    parent, ws = materialize("cli-")
+    try:
+        learner_before = digests(ws)
+        res, rec = _ptk_json("install", "--candidate", "--home", str(home), "--tree", str(tree), "--flip",
+                             "--learner", str(ws), "--when", "2026-10-18T12:00:00Z")
+        assert res.code == 0, res.stderr[-1500:]
+        assert os.readlink(link) == "../skill-library/prax-teach-v2.1" and Path(rec["record"]).is_file()
+        flipped = digests(ws)
+        res, plan = _ptk_json("rollback", "--record", rec["record"], "--dry-run")
+        assert res.code == 0, res.stderr[-1500:]
+        assert plan["dry_run"] is True and plan["link"]["restore_to"] == target_before, plan
+        assert "lost_events" in plan and os.readlink(link) == "../skill-library/prax-teach-v2.1"
+        assert digests(ws) == flipped, "rollback --dry-run changed the learner workspace"
+        res, out = _ptk_json("rollback", "--record", rec["record"])
+        assert res.code == 0, res.stderr[-1500:]
+        assert out["link_restored"] and os.readlink(link) == target_before
+        assert digests(ws) == learner_before
+        assert "lost" in res.stderr
+        assert _real_fingerprint() == before_real
+        return {"lost_events_planned": plan["lost_events"], "lost_events": out["lost_events"]}
+    finally:
+        shutil.rmtree(parent, ignore_errors=True)

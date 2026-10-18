@@ -33,6 +33,18 @@ flip. Real Codex and Hermes are asked too when installed. The real home is only 
 
 ## Install and rollback (AC-8.6, D17.12)
 
+From the CLI (integration pass):
+
+```
+ptk install --candidate --dry-run                    # the plan, no writes (real HOME)
+ptk install --candidate --home H --flip --learner WS # a throwaway HOME; the real HOME also needs --real-home
+ptk rollback --dry-run                               # newest record: link it would restore, events it would lose
+ptk rollback --record R                              # restore; prints the lost-event count
+```
+
+A real install into `~/.agents` waits for Prax (FREEZE amendment pending), so the CLI refuses the real HOME
+without `--real-home`.
+
 ```python
 from ptk import package
 rec = package.install(tree, home, flip=True, learners=[workspace])   # snapshot, migrate, flip

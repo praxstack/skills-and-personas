@@ -366,3 +366,65 @@ def rollback(record, log=print):
         out["lost_events"] += r["lost_events"]
     log(f"rollback: {out['lost_events']} learner event(s) recorded after the snapshot are lost")
     return out
+
+
+# ---------------------------------------------------------------- dry-run plans for the CLI (integration pass)
+
+def is_real_home(home):
+    return Path(home).resolve() == Path(os.path.expanduser("~")).resolve()
+
+
+def install_plan(tree, home, flip=False, learners=()):
+    """What `install` would do, with no writes (`ptk install --candidate --dry-run`)."""
+    home = Path(home).resolve()
+    tree = Path(tree)
+    dest = home / CANDIDATE
+    link = home / V2_LINK
+    would = []
+    if not tree.is_dir():
+        would.append(f"build the install tree at {tree} (ptk package)")
+    would.append(f"{'replace' if dest.exists() else 'create'} {dest} with a copy of {tree}")
+    for ws in learners:
+        would.append(f"snapshot learner workspace {ws} into $PTK_STATE/snapshots"
+                     + (" and migrate it to schema 2" if flip else ""))
+    if flip:
+        would.append(f"repoint {link} to ../skill-library/{dest.name}"
+                     + ("" if link.is_symlink() else " (refused: it is not a symlink)"))
+    would.append("write a rollback record to $PTK_STATE/rollback/")
+    return {"dry_run": True, "home": str(home), "real_home": is_real_home(home), "tree": str(tree),
+            "tree_exists": tree.is_dir(), "destination": str(dest), "flip": flip,
+            "link": {"path": str(link), "current": os.readlink(link) if link.is_symlink() else None},
+            "learners": [str(w) for w in learners], "would": would, "writes": []}
+
+
+def latest_record():
+    """The newest rollback record in $PTK_STATE/rollback, or None."""
+    d = host.state_path("rollback")
+    recs = sorted(d.glob("*.json"), key=lambda p: p.stat().st_mtime) if d.is_dir() else []
+    return recs[-1] if recs else None
+
+
+def rollback_plan(record_path):
+    """What `rollback` would do, with no writes (`ptk rollback --dry-run`): the link it would restore and, per
+    learner, the events recorded after the snapshot that would be lost."""
+    from .state import schema2
+    from .state.errors import PraxTeachError
+    record = json.loads(Path(record_path).read_text())
+    link = Path(record["link"])
+    learners, lost_total = [], 0
+    for entry in record["learners"]:
+        try:
+            r = schema2.rollback(entry["workspace"], entry["snapshot"], dry_run=True)
+        except PraxTeachError as e:  # a deleted or unsafe workspace: report it, a real rollback would stop here
+            learners.append({"workspace": entry["workspace"], "snapshot": entry["snapshot"],
+                             "error": f"{type(e).__name__}: {e}"})
+            continue
+        learners.append({"workspace": entry["workspace"], "snapshot": entry["snapshot"], "lost": r["lost"],
+                         "lost_events": r["lost_events"], "would_restore": r["would_restore"]})
+        lost_total += r["lost_events"]
+    restore = bool(record.get("flipped") and record.get("previous_target"))
+    return {"dry_run": True, "record": str(record_path), "home": record["home"],
+            "real_home": is_real_home(record["home"]),
+            "link": {"path": str(link), "current": os.readlink(link) if link.is_symlink() else None,
+                     "restore_to": record.get("previous_target") if restore else None, "will_restore": restore},
+            "learners": learners, "lost_events": lost_total, "writes": []}

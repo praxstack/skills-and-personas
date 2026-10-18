@@ -106,6 +106,51 @@ def cmd_package(a):
     return errors.EXIT_OK
 
 
+def _refuse_real_home(home, allowed, what):
+    from . import package
+    if package.is_real_home(home) and not allowed:
+        raise errors.HostError(f"refusing to {what} the real HOME without --real-home: that step is Prax's "
+                               "(D19.1; the FREEZE amendment for real installs is pending). Use --dry-run or --home.")
+
+
+def cmd_install(a):
+    """`ptk install --candidate`: WP8's package.install (side by side; --flip repoints the v2 link)."""
+    from . import package
+    if not a.candidate:
+        raise errors.HostError("only `ptk install --candidate` exists: v2.1 installs side by side as a candidate")
+    home = Path(a.home) if a.home else Path.home()
+    tree = Path(a.tree) if a.tree else package.default_out()
+    learners = a.learner or []
+    if a.dry_run:
+        _emit(package.install_plan(tree, home, flip=a.flip, learners=learners))
+        return errors.EXIT_OK
+    _refuse_real_home(home, a.real_home, "install into")
+    if not tree.is_dir():
+        res = package.build(out=tree)
+        if not res["packaged"]:
+            _emit(res)
+            return errors.EXIT_GATE
+    rec = package.install(tree, home, flip=a.flip, learners=learners, when=a.when,
+                          allow_real_home=package.is_real_home(home))
+    _emit(rec)
+    return errors.EXIT_OK
+
+
+def cmd_rollback(a):
+    """`ptk rollback`: WP8's package.rollback on a record (default: the newest in $PTK_STATE/rollback)."""
+    from . import package
+    record = Path(a.record) if a.record else package.latest_record()
+    if record is None or not Path(record).is_file():
+        raise errors.HostError(f"no rollback record{' at ' + str(record) if record else ''}; "
+                               "`ptk install --candidate` writes one to $PTK_STATE/rollback/")
+    if a.dry_run:
+        _emit(package.rollback_plan(record))
+        return errors.EXIT_OK
+    _refuse_real_home(json.loads(Path(record).read_text())["home"], a.real_home, "roll back")
+    _emit(package.rollback(record, log=lambda m: print(m, file=sys.stderr)))
+    return errors.EXIT_OK
+
+
 def cmd_selftest(a):
     from . import selftest
     return selftest.run(suite="auto", pattern=a.k)
@@ -160,6 +205,21 @@ def parser():
     s.add_argument("--dry-run", action="store_true", help="list and check the files without writing anything")
     s.add_argument("--out", help="install tree directory (default: $PTK_STATE/package/prax-teach)")
     s.set_defaults(fn=cmd_package)
+    s = sub.add_parser("install", help="install the packaged v2.1 candidate side by side (AC-8.6)")
+    s.add_argument("--candidate", action="store_true", help="required: install as the side-by-side candidate")
+    s.add_argument("--home", help="HOME to install into (default: the real HOME, which also needs --real-home)")
+    s.add_argument("--tree", help="install tree (default: $PTK_STATE/package/prax-teach, built if missing)")
+    s.add_argument("--flip", action="store_true", help="also snapshot and migrate learners and repoint the v2 link")
+    s.add_argument("--learner", action="append", help="learner workspace to snapshot (repeatable)")
+    s.add_argument("--when", help="timestamp for the record (default: now, UTC)")
+    s.add_argument("--dry-run", action="store_true", help="print what would happen; write nothing")
+    s.add_argument("--real-home", action="store_true", help="allow the real HOME (Prax only)")
+    s.set_defaults(fn=cmd_install)
+    s = sub.add_parser("rollback", help="undo an install: restore the v2 link and learner snapshots (AC-8.6)")
+    s.add_argument("--record", help="rollback record (default: the newest in $PTK_STATE/rollback)")
+    s.add_argument("--dry-run", action="store_true", help="print what would be restored and lost; write nothing")
+    s.add_argument("--real-home", action="store_true", help="allow a record for the real HOME (Prax only)")
+    s.set_defaults(fn=cmd_rollback)
     for name, fn in (("selftest", cmd_selftest), ("agent-tests", cmd_agent_tests)):
         s = sub.add_parser(name)
         s.add_argument("-k", help="only tests whose name contains this")
