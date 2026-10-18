@@ -16,9 +16,9 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - [x] CEO review: `plan/CEO-PLAN.md`. Scope expansion with approach B, the lesson compiler. Decisions D1–D18 are recorded. The outside voice is `plan/outside-voice-codex.md`. Spec review rounds: 6/10, then 7/10, then round 3 is pending.
 
 ## Next
-- [ ] Round 3 review result → fill in "Reviewer Concerns", then the GSTACK REVIEW REPORT, then the review log.
-- [ ] /plan-eng-review on CEO-PLAN.md.
-- [ ] /product-management:write-spec, producing `spec/SPEC.md` with EARS acceptance criteria for each work package.
+- [x] CEO review complete: 3 spec-review rounds, the Codex outside voice and the review report.
+- [x] Eng review complete: E0–E25, `plan/TEST-PLAN.md`, Codex eng outside voice.
+- [x] `spec/SPEC.md` written: EARS criteria AC-0.x to AC-9.x, each with a named test.
 - [ ] /implement-from-spec, WP0 first (vertical slice and spikes), in the dependency order of D18.5. Budget: 18 implement-and-review rounds in total.
 - [ ] After WP0 and WP1, ask Prax for one 5-minute predict-first session (D18.6). This doesn't block the tooling packages.
 - [ ] Acceptance: run the holdout, the protected map and both exemplars. Prax approves `plan/ACCEPTANCE-PROPOSAL.md` (pending).
