@@ -240,25 +240,42 @@ def test_refuse_without_sandbox():
         kit.cleanup(tmp)
 
 
-def test_compile_cannot_embed_outside_files():
-    """Rereview P2-A: compile mode reads file contents only from the program's temp dir and the toolchain.
+def _secret(prefix="security-secret-", text=None):
+    """A secret file outside every dir the compile profile may read (the capture temp dir, the
+    toolchain). It lives in its own $PTK_STATE/tmp dir, never inside the lesson or the capture dir."""
+    secret_dir = host.make_tmp(prefix)
+    token = f"SECRET-{secrets.token_hex(8)}"
+    secret = secret_dir / "secret.txt"
+    secret.write_text(text.replace("@TOKEN@", token) if text else token + "\n")
+    return secret_dir, secret.resolve(), token
 
-    The fixture `#embed`s a secret file under $HOME (in $PTK_STATE, outside the capture temp dir) with
-    the C23-extension warning silenced, then prints it. Under the sandbox it must fail to compile.
-    The same source compiled outside the sandbox does embed and print the secret, so the denial is
-    the sandbox's doing.
-    """
-    secret_dir = host.make_tmp("security-secret-")
-    work = host.make_tmp("security-embed-src-")
+
+def _unsandboxed_control(src, token):
+    """The same source compiled and run outside the sandbox does read the secret."""
+    control_dir = host.make_tmp("security-embed-control-")
     try:
-        secret = secret_dir / "secret.txt"
-        token = f"SECRET-{secrets.token_hex(8)}"
-        secret.write_text(token + "\n")
-        assert secret.resolve().is_relative_to(Path.home().resolve()), "the secret must live under $HOME"
-        src = work / "embed.c"
-        src.write_text((kit.HERE / "embed.c.in").read_text().replace("@SECRET@", str(secret.resolve())))
+        shutil.copyfile(src, control_dir / "c.c")
+        built = host.run(["/usr/bin/clang", "-std=c17", "-Wno-c23-extensions", "-o", "c", "c.c"], cwd=control_dir,
+                         timeout=120, env=c_runner.compile_env(control_dir))
+        assert built.code == 0, f"control compile failed, so the denial proves nothing: {built.stderr[-400:]}"
+        ran = host.run([str(control_dir / "c")], cwd=control_dir, timeout=30, env=host.program_env())
+        assert token in ran.stdout, f"control did not read the secret: {ran.stdout[:200]!r}"
+        return "read"
+    finally:
+        shutil.rmtree(control_dir, ignore_errors=True)
 
-        tmp = kit.make_lesson("sec-embed-", [kit.program("p1", src)], [kit.fact("f.x", "p1", 1)])
+
+def test_compile_cannot_include_outside_files():
+    """Rereview P2-A, through capture: compile mode reads file contents only from the program's temp dir
+    and the toolchain. The program `#include`s a secret that is a valid C string literal (no warning,
+    no pragma, plain C17). Under the sandbox it fails to compile and the token appears nowhere."""
+    secret_dir, secret, token = _secret(text='"@TOKEN@"\n')
+    work = host.make_tmp("security-include-src-")
+    try:
+        src = work / "inc.c"
+        src.write_text('#include <stdio.h>\nstatic const char s[] =\n#include "' + str(secret) + '"\n;\n'
+                       'int main(void) {\n    puts(s);\n    return 0;\n}\n')
+        tmp = kit.make_lesson("sec-include-", [kit.program("p1", src)], [kit.fact("f.x", "p1", 1)])
         try:
             e = _expect(tmp, errors.CompileError)
             assert "not permitted" in e.detail["stderr"] or "not found" in e.detail["stderr"], e.detail
@@ -266,18 +283,186 @@ def test_compile_cannot_embed_outside_files():
             assert not (tmp / "build" / "capture" / "p1.stdout").exists()
         finally:
             kit.cleanup(tmp)
-
-        control_dir = host.make_tmp("security-embed-control-")
-        try:
-            clang = host.which("clang")
-            shutil.copyfile(src, control_dir / "embed.c")
-            built = host.run([clang, "-std=c17", "-o", "embed", "embed.c"], cwd=control_dir, timeout=120)
-            assert built.code == 0, f"control compile failed, so the denial proves nothing: {built.stderr[-400:]}"
-            ran = host.run([str(control_dir / "embed")], cwd=control_dir, timeout=30)
-            assert ran.stdout.strip() == token, f"control did not embed the secret: {ran.stdout[:200]!r}"
-        finally:
-            shutil.rmtree(control_dir, ignore_errors=True)
-        return {"sandboxed": e.kind, "control": "embedded"}
+        return {"sandboxed": e.kind, "control": _unsandboxed_control(src, token)}
     finally:
         shutil.rmtree(secret_dir, ignore_errors=True)
         shutil.rmtree(work, ignore_errors=True)
+
+
+def test_compile_cannot_embed_outside_files():
+    """The sandbox layer under the source guard: capture refuses `#embed` by name before compiling
+    (test_capture.py::test_bypass_embed), so this drives the compile step directly with no pragma.
+    clang's C23-extension warning is just recorded there; the sandboxed read must still fail."""
+    secret_dir, secret, token = _secret()
+    tmp = host.make_tmp("security-embed-")
+    try:
+        src = tmp / "embed.c"
+        src.write_text((kit.HERE / "embed.c.in").read_text().replace("@SECRET@", str(secret)))
+        assert "#pragma" not in src.read_text(), "the embed fixture must not silence anything"
+        try:
+            c_runner.compile_program(src, tmp, "embed")
+        except errors.CompileError as e:
+            assert "not permitted" in e.detail["stderr"] or "not found" in e.detail["stderr"], e.detail
+            assert token not in json.dumps(e.as_dict(), default=str), "the secret leaked into the error"
+        else:
+            raise AssertionError("the sandboxed compile embedded a file outside its dirs")
+        return {"sandboxed": "CompileError", "control": _unsandboxed_control(src, token)}
+    finally:
+        shutil.rmtree(secret_dir, ignore_errors=True)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+# ---------------------------------------------------------------- review WP2 P1-2: symlinks and stderr
+
+def test_symlinked_program_refused():
+    """P1-2: programs/p1.c as a symlink to a secret, and programs/ itself as a symlink to a dir holding
+    one, are refused by validate (pointer) and by capture (no symlink is ever followed). The secret's
+    bytes appear in no error, no stdout/stderr of `ptk build`, and not in build/build-report.json."""
+    secret_dir, secret, token = _secret(text="@TOKEN@ is not C at all\nline two of the secret\n")
+    seen = {}
+    try:
+        for variant in ("file", "dir"):
+            tmp = kit.make_lesson(f"sec-symlink-{variant}-", [kit.program("p1", "hello.c")],
+                                  [kit.fact("f.x", "p1", 1, {"value": "hello", "reviewed": True})])
+            try:
+                if variant == "file":
+                    (tmp / "programs" / "hello.c").unlink()
+                    (tmp / "programs" / "hello.c").symlink_to(secret)
+                else:
+                    shutil.rmtree(tmp / "programs")
+                    (secret.parent / "hello.c").symlink_to(secret)
+                    (tmp / "programs").symlink_to(secret.parent)
+                try:
+                    model.validate(model.load(tmp))
+                except errors.ModelReferenceError as e:
+                    assert "/programs/0/path" in [x["pointer"] for x in e.detail["errors"]], e.detail
+                    assert token not in json.dumps(e.as_dict(), default=str)
+                else:
+                    raise AssertionError(f"validate accepted a symlinked program ({variant})")
+                try:
+                    c_runner.capture_lesson(model.load(tmp))
+                except errors.ModelReferenceError as e:
+                    assert e.detail.get("pointer") == "/programs/0/path", e.detail
+                    assert token not in json.dumps(e.as_dict(), default=str), "the secret leaked into the error"
+                else:
+                    raise AssertionError(f"capture followed a symlinked program ({variant})")
+                res = host.run([*ptk_cmd(), "build", str(tmp), "--only", "still"], timeout=300)
+                assert res.code == errors.EXIT_MODEL, f"build exited {res.code}: {res.stderr[-400:]}"
+                assert token not in res.stdout + res.stderr, "the secret leaked into ptk build output"
+                rep = (tmp / "build" / "build-report.json").read_text()
+                assert token not in rep and "line two of the secret" not in rep, "the secret leaked into the report"
+                seen[variant] = json.loads(rep)["error"]["message"][:120]
+            finally:
+                if variant == "dir":
+                    (secret.parent / "hello.c").unlink(missing_ok=True)
+                kit.cleanup(tmp)
+        return seen
+    finally:
+        shutil.rmtree(secret_dir, ignore_errors=True)
+
+
+def test_compile_stderr_keeps_only_lesson_files():
+    """P1-2: compiler stderr that reaches a report keeps diagnostics about the lesson's own file only.
+    A readable system file that is not C (/usr/share/dict/words) quoted by clang is redacted."""
+    words = Path("/usr/share/dict/words")
+    if not words.is_file():
+        from ptk.selftest import NotRun
+        raise NotRun("no /usr/share/dict/words on this host")
+    src = '#include <stdio.h>\nint main(void) {\n    return undeclared_name;\n}\n#include "/usr/share/dict/words"\n'
+    tmp = kit.make_lesson("sec-redact-", [kit.program_text("p1", "p1.c", src)], [kit.fact("f.x", "p1", 1)])
+    try:
+        e = _expect(tmp, errors.CompileError)
+        err = e.detail["stderr"]
+        assert "p1.c:3:" in err and "undeclared_name" in err, f"the lesson's own diagnostic was dropped: {err[:600]}"
+        assert "/usr/share/dict/words:" not in err, f"a diagnostic about another file was kept: {err[:800]}"
+        assert "redacted" in err, err[-400:]
+        return {"kept": [ln for ln in err.splitlines() if ln.startswith("p1.c:")][:3]}
+    finally:
+        kit.cleanup(tmp)
+
+
+# ---------------------------------------------------------------- review WP2 P2-1, P2-2: compile limits and env
+
+def test_compile_memory_cap():
+    """P2-1: the compile runs under the process-group RSS watchdog. A source that makes clang allocate
+    gigabytes is killed at a low cap, nothing of it survives, and the temp dir is gone."""
+    saved = c_runner.COMPILE_MAX_RSS_KB
+    token = f"heavy{secrets.token_hex(4)}"
+    try:
+        c_runner.COMPILE_MAX_RSS_KB = 256 * 1024
+        before = _cap_dirs()
+        tmp = kit.make_lesson("sec-heavy-", [kit.program_text(token, f"{token}.c",
+                                                               (kit.HERE / "heavy_compile.c").read_text())],
+                              [kit.fact("f.x", token, 1)])
+        try:
+            e = _expect(tmp, errors.MemoryLimitExceeded)
+            assert e.detail["peak_rss_kb"] > 256 * 1024, e.detail
+            assert not _survivors(token), f"compiler processes survived: {_survivors(token)}"
+            assert not (_cap_dirs() - before), "capture temp dirs left behind"
+            return {"error": e.kind, "peak_rss_kb": e.detail["peak_rss_kb"]}
+        finally:
+            kit.cleanup(tmp)
+    finally:
+        c_runner.COMPILE_MAX_RSS_KB = saved
+
+
+HOSTILE_ENV = {"CCC_OVERRIDE_OPTIONS": "x-fsanitize=undefined,address +-Wno-format +-w",
+               "CPATH": "/nonexistent-cpath", "C_INCLUDE_PATH": "/nonexistent", "LIBRARY_PATH": "/nonexistent",
+               "MallocNanoZone": "1", "SDKROOT": "/nonexistent-sdk", "CCC_ADD_ARGS": "-w"}
+
+
+def test_compile_env_is_an_allowlist():
+    """P2-2: the compiler gets an allowlist env. With CCC_OVERRIDE_OPTIONS set to strip the sanitizers
+    and silence warnings, the ASan and -Wformat fixtures are still blocked; the driver check itself
+    also catches the override when it is handed a hostile env directly."""
+    saved = {k: os.environ.get(k) for k in HOSTILE_ENV}
+    seen = {}
+    try:
+        os.environ.update(HOSTILE_ENV)
+        env = c_runner.compile_env(host.state_path("tmp"))
+        assert not set(env) & set(HOSTILE_ENV), f"hostile vars reached the compiler: {set(env) & set(HOSTILE_ENV)}"
+        assert set(env) <= {"PATH", "TMPDIR", "LANG", "LC_ALL", "HOME"}, sorted(env)
+        for fixture, needle in (("asan_heap.c", "AddressSanitizer"), ("format_warning.c", "-Wformat")):
+            tmp = kit.make_lesson("sec-env-", [kit.program("p1", fixture)], [kit.fact("f.x", "p1", 1)])
+            try:
+                e = _expect(tmp, errors.SanitizerFinding)
+                assert needle in e.detail["stderr"], e.detail
+                seen[fixture] = e.kind
+            finally:
+                kit.cleanup(tmp)
+        problems = c_runner.driver_problems({**env, "CCC_OVERRIDE_OPTIONS": HOSTILE_ENV["CCC_OVERRIDE_OPTIONS"]})
+        assert problems, "the driver check did not notice CCC_OVERRIDE_OPTIONS stripping the sanitizers"
+        assert not c_runner.driver_problems(env), c_runner.driver_problems(env)
+        seen["driver_check_with_override"] = problems[:3]
+        return seen
+    finally:
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+
+def test_kill_group_eperm_only_ignored_after_reap():
+    """host._kill_group ignores macOS's zombie-group EPERM only once the leader is reaped. With a live
+    leader, EPERM means the kill failed, and it must still raise."""
+    import types
+    real = os.killpg
+
+    def eperm(pid, sig):
+        raise PermissionError(1, "Operation not permitted")
+
+    try:
+        os.killpg = eperm
+        reaped = types.SimpleNamespace(pid=999999, poll=lambda: 0)
+        host._kill_group(reaped)  # leader gone: nothing to kill, no error
+        alive = types.SimpleNamespace(pid=999999, poll=lambda: None)
+        try:
+            host._kill_group(alive)
+        except PermissionError:
+            pass
+        else:
+            raise AssertionError("EPERM with a live leader was swallowed")
+    finally:
+        os.killpg = real
+    return {"reaped": "ignored", "alive": "raised"}

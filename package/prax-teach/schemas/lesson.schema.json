@@ -263,7 +263,7 @@
               "type": "string"
             }
           },
-          "description": "Where capture reads the value: stream stdout with line N (1-based) or no line for the whole stdout; stream platform with key, a dotted path into platform (sizeof.int, char_signed, endianness, libc, compilers.clang).",
+          "description": "Where capture reads the value: stream stdout with line N (1-based) or no line for the whole stdout; stream platform with key naming one platform value: captured, os, arch, char_signed, endianness, libc, sandbox, sizeof.<char|short|int|long|long long|float|double|void*> or compilers.<clang|gcc-16>.",
           "allOf": [
             {
               "if": {
@@ -451,6 +451,13 @@
             "$ref": "#/$defs/ref"
           },
           "description": "Programs this claim is about. An undefined-behaviour claim lists every ub:true program it covers."
+        },
+        "overrides": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {"enum": ["pragma-diagnostic", "pragma-attribute", "pragma-system-header", "pragma-operator", "pragma-other", "line-marker", "line-directive", "embed", "no-sanitize", "sanitizer-hook", "asm", "dynamic-symbol"]},
+          "description": "Source-guard constructs (ptk/capture/guard.py) this claim declares on purpose for the programs in `programs`. Honoured only for programs that never run (ub:true or run:false); the claim goes through claims review like any other. Without it, capture refuses the construct by name."
         }
       }
     },

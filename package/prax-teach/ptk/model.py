@@ -18,6 +18,7 @@ import json
 from pathlib import Path
 
 from . import errors, host
+from .capture import guard
 
 SCHEMA = host.PKG / "schemas" / "lesson.schema.json"
 
@@ -73,7 +74,9 @@ class Lesson:
         return self.by_id("programs")[pid]
 
     def program_source(self, pid):
-        return (self.dir / self.program(pid)["path"]).read_text()
+        """The program text, read with no symlink followed (review WP2 P1-2)."""
+        i = next(i for i, p in enumerate(self.data["programs"]) if p["id"] == pid)
+        return guard.read_program(self.dir, self.program(pid)["path"], f"/programs/{i}/path").decode("utf-8")
 
     def build_dir(self):
         d = self.dir / "build"
@@ -118,6 +121,23 @@ def schema_errors(data):
 # name these or the figure's own `elements`.
 FIGURE_ELEMENTS = {"code-trace": ("code", "output", "question", "note", "compare")}
 PLATFORM_KEYS = ("captured", "os", "arch", "sizeof", "char_signed", "endianness", "libc", "compilers", "sandbox")
+# The full shape of `platform` as the capture probe writes it (ptk/capture/c_runner.py PLATFORM_C).
+# A select key must name one leaf: a scalar key, or sizeof.<type>, or compilers.<name> (review WP2 P2-4).
+PLATFORM_LEAVES = {"sizeof": ("char", "short", "int", "long", "long long", "float", "double", "void*"),
+                   "compilers": ("clang", "gcc-16")}
+
+
+def platform_key_problem(key):
+    """Why `key` names no single platform value, or None."""
+    parts = key.split(".", 1)
+    if parts[0] not in PLATFORM_KEYS:
+        return f"unknown platform key {key!r}; starts with one of {list(PLATFORM_KEYS)}"
+    leaves = PLATFORM_LEAVES.get(parts[0])
+    if leaves is None:
+        return None if len(parts) == 1 else f"platform key {parts[0]!r} is a single value; drop {'.' + parts[1]!r}"
+    if len(parts) == 1 or parts[1] not in leaves:
+        return f"platform key {key!r} must be {parts[0]}.<one of {list(leaves)}>"
+    return None
 PLACEHOLDER = "TODO:"
 SECTIONS = ("programs", "facts", "claims", "misconceptions", "trace", "storyboard")
 
@@ -185,8 +205,16 @@ def reference_errors(data, base_dir=None):
 
     programs = data.get("programs", [])
     for i, p in enumerate(programs):
-        if base_dir and not (Path(base_dir) / p["path"]).exists():
-            errs.append({"pointer": f"/programs/{i}/path", "message": f"program file {p['path']} missing"})
+        if base_dir:  # read with no symlink followed, then the source guard (review WP2 P1-1, P1-2)
+            ptr = f"/programs/{i}/path"
+            try:
+                text = guard.read_program(base_dir, p["path"], ptr).decode("utf-8", "replace")
+            except errors.ModelReferenceError as e:
+                errs.append({"pointer": ptr, "message": e.message})
+            else:
+                bad = guard.refusal(guard.scan_source(text), guard.allowed_constructs(data, p), p["path"], ptr, "source")
+                if bad:
+                    errs.append({"pointer": ptr, "message": bad.message})
         if p["ub"] and p["run"]:
             errs.append({"pointer": f"/programs/{i}/run", "message": "a ub:true program never runs; set run:false"})
         if p["ub"] and not any(c["kind"] == "undefined-behaviour" and p["id"] in c.get("programs", [])
@@ -199,9 +227,9 @@ def reference_errors(data, base_dir=None):
             if f["select"]["stream"] == "stdout" and (prog["ub"] or not prog["run"]):
                 errs.append({"pointer": f"/facts/{i}/select/stream", "message": f"fact reads the stdout of "
                              f"{f['program']!r}, which never runs"})
-        if f["select"]["stream"] == "platform" and f["select"]["key"].split(".")[0] not in PLATFORM_KEYS:
-            errs.append({"pointer": f"/facts/{i}/select/key", "message": f"unknown platform key "
-                         f"{f['select']['key']!r}; starts with one of {list(PLATFORM_KEYS)}"})
+        why = f["select"]["stream"] == "platform" and platform_key_problem(f["select"]["key"])
+        if why:
+            errs.append({"pointer": f"/facts/{i}/select/key", "message": why})
         if "fn" in f["expect"]:
             why = _expect_problem(f["expect"])
             if why:
@@ -212,6 +240,15 @@ def reference_errors(data, base_dir=None):
             need("facts", fid, f"/claims/{i}/facts/{j}")
         for j, pid in enumerate(c.get("programs", [])):
             need("programs", pid, f"/claims/{i}/programs/{j}")
+        if c.get("overrides"):
+            if not c.get("programs"):
+                errs.append({"pointer": f"/claims/{i}/overrides", "message": "a claim with `overrides` lists the "
+                             "programs they apply to in `programs`"})
+            for pid in c.get("programs", []):
+                prog = programs[ids["programs"][pid]] if pid in ids["programs"] else None
+                if prog and prog["run"] and not prog["ub"]:
+                    errs.append({"pointer": f"/claims/{i}/overrides", "message": f"program {pid!r} runs; a running "
+                                 "program never switches its guard off (overrides need ub:true or run:false)"})
     for i, m in enumerate(data.get("misconceptions", [])):
         need("claims", m["correction"], f"/misconceptions/{i}/correction")
     trace = data.get("trace", [])

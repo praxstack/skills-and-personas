@@ -1,8 +1,7 @@
 /* Rereview P2-A fixture: tries to #embed a file outside the program's dirs and print it.
- * The test replaces @SECRET@ with an absolute path. clang's C23-extension warning is silenced
- * on purpose, so only the sandbox stands between the file and the captured facts. */
+ * The test replaces @SECRET@ with an absolute path. Nothing is silenced: the source guard refuses
+ * #embed in capture, so the sandbox test drives the compile step directly. */
 #include <stdio.h>
-#pragma clang diagnostic ignored "-Wc23-extensions"
 
 static const unsigned char data[] = {
 #embed "@SECRET@"

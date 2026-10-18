@@ -76,3 +76,13 @@ def test_subprocess_boundary():
                 or "os.popen(" in src:
             bad.append(str(p.relative_to(host.PKG)))
     assert not bad, f"only ptk/host.py and ptk/node.py may call subprocess: {bad}"
+
+
+def test_guard_constructs_match_schema():
+    """Review WP2 P1-1: the constructs a claim may declare in `overrides` are exactly the ones the
+    source guard refuses, so neither list can drift from the other."""
+    from ptk.capture import guard
+    schema = json.loads((host.PKG / "schemas" / "lesson.schema.json").read_text())
+    enum = schema["$defs"]["claim"]["properties"]["overrides"]["items"]["enum"]
+    assert sorted(enum) == sorted(guard.CONSTRUCTS), (sorted(enum), sorted(guard.CONSTRUCTS))
+    return {"constructs": len(enum)}

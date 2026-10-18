@@ -111,11 +111,15 @@ def _broken_cases():
         d["facts"][0]["select"] = {"stream": "platform", "key": "cpu.cores"}
         return "/facts/0/select/key"
 
+    def bad_platform_subkey(d):  # review WP2 P2-4: the whole dotted path is checked, not its first part
+        d["facts"][0]["select"] = {"stream": "platform", "key": "sizeof.int128"}
+        return "/facts/0/select/key"
+
     return [schema_kind, schema_missing_title, claim_to_fact, storyboard_to_state, narration_to_claim,
             misconception_to_claim, key_node_to_figure, unknown_expect_fn, expect_args_do_not_fit, duplicate_id,
             ub_without_claim, stdout_of_compile_only_program, summary_without_mechanism,
             summary_mechanism_never_shown, question_scene_reveals_answer, wrong_option_without_misconception,
-            placeholder_left, bad_platform_key]
+            placeholder_left, bad_platform_key, bad_platform_subkey]
 
 
 def test_validation_errors():

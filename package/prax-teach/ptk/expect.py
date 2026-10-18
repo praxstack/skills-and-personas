@@ -46,8 +46,19 @@ def ascii_(code):
     return chr(c)
 
 
-def sizeof_from_platform(platform, ctype):
-    return str(platform["sizeof"][ctype])
+# Declared target ABIs (review WP2 P2-5). A sizeof expectation names the data model the lesson's
+# claims assume; capture's probe is compared against this table, never against itself.
+# LP64: macOS and Linux on arm64/x86_64. LLP64: 64-bit Windows. ILP32: 32-bit targets.
+TARGET_ABI = {
+    "LP64": {"char": 1, "short": 2, "int": 4, "long": 8, "long long": 8, "float": 4, "double": 8, "void*": 8},
+    "LLP64": {"char": 1, "short": 2, "int": 4, "long": 4, "long long": 8, "float": 4, "double": 8, "void*": 8},
+    "ILP32": {"char": 1, "short": 2, "int": 4, "long": 4, "long long": 8, "float": 4, "double": 8, "void*": 4},
+}
+
+
+def sizeof_abi(ctype, abi="LP64"):
+    """sizeof(ctype) on the declared data model, as printf("%zu") shows it."""
+    return str(TARGET_ABI[abi][ctype])
 
 
 def sum_(values):
@@ -97,12 +108,13 @@ def switch_stdout(cases, n, tail):
 
 FUNCTIONS = {
     "bits": bits, "hex": hex_, "printf_d": printf_d, "printf_u": printf_u, "printf_f": printf_f,
-    "printf_x": printf_x, "printf_c": printf_c, "ascii": ascii_, "sizeof_from_platform": sizeof_from_platform,
+    "printf_x": printf_x, "printf_c": printf_c, "ascii": ascii_, "sizeof_abi": sizeof_abi,
     "sum": sum_, "factorial": factorial, "factorial_frames": factorial_frames, "switch_line": switch_line,
     "switch_stdout": switch_stdout,
 }
-# Functions that take the captured platform as their first argument; `args` omits it.
-PLATFORM_FUNCTIONS = {"sizeof_from_platform"}
+# Functions that take the captured platform as their first argument; `args` omits it. Empty on
+# purpose: an expectation read from the capture can never disagree with it (review WP2 P2-5).
+PLATFORM_FUNCTIONS = set()
 
 
 def evaluate(expect, platform=None):

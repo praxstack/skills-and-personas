@@ -24,6 +24,12 @@ def program(pid, fixture, ub=False, run=True, args=None):
     return p
 
 
+def program_text(pid, name, text, ub=False, run=True):
+    """A program whose source is given inline (written into programs/<name> by make_lesson)."""
+    p = {"id": pid, "path": f"programs/{name}", "std": "c17", "ub": ub, "run": run, "_text": text}
+    return p
+
+
 def fact(fid, pid, line=None, expect=None, stream="stdout", key=None):
     sel = {"stream": stream}
     if line is not None:
@@ -51,7 +57,10 @@ def make_lesson(prefix, programs, facts, claims=None):
     progs = []
     for p in programs:
         p = dict(p)
-        shutil.copyfile(p.pop("_fixture"), tmp / p["path"])
+        if "_text" in p:
+            (tmp / p["path"]).write_text(p.pop("_text"))
+        else:
+            shutil.copyfile(p.pop("_fixture"), tmp / p["path"])
         progs.append(p)
     claims = claims or [claim("c.x")]
     data = {
