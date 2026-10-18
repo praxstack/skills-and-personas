@@ -195,6 +195,7 @@ def live_model(lesson):
                       "lines": [row for row in P["lines"] if first <= row[0] <= last]}
     var = DECL_VAR.match(progs[m["base"]]["n_prefix"]).group(1)
     return {"base": m["base"], "alt": m["alt"], "n0": m["n0"], "domain": m["domain"], "toggle_label": m["toggle_label"],
+            "toggle": list(explorer.toggle_text(m)),
             "var": var, "programs": progs}
 
 
@@ -220,8 +221,8 @@ def _live_html(lesson, live, unlock):
             f'{esc(text.ui("ive_live_label"))}</p>{lock}<div class="livectl">'
             f'<fieldset class="seg" id="live-n"><legend class="lbl" data-chrome="x_n_label">{esc(text.ui("x_n_label"))}</legend>'
             f'<div class="opts" id="live-opts"></div></fieldset>'
-            f'<button type="button" class="pill" id="live-brk" aria-pressed="false"><span data-chrome="x_toggle">'
-            f'{esc(text.ui("x_toggle", k=live["toggle_label"]))}</span><span class="onoff" id="live-brk-state" '
+            f'<button type="button" class="pill" id="live-brk" aria-pressed="false"><span data-chrome="{live["toggle"][0]}">'
+            f'{esc(live["toggle"][1])}</span><span class="onoff" id="live-brk-state" '
             f'data-chrome="x_off">{esc(text.ui("x_off"))}</span></button>'
             f'<button type="button" class="pill" id="live-reset" disabled data-chrome="ive_live_reset">'
             f'{esc(text.ui("ive_live_reset"))}</button></div></div>')

@@ -15,7 +15,7 @@ from . import errors, host, node, text
 
 LEXICON = host.PKG / "lexicon" / "c.json"
 VOICE = "af_heart"
-SPEED = 1.0
+SPEED = 0.82  # round 18: about 170 spoken words per minute (the review measured up to 236 at 1.0)
 SAY_VOICE = "Samantha"
 
 

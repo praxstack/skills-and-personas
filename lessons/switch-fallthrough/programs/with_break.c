@@ -5,6 +5,7 @@ int main(void) {
     switch (n) {
     case 1:
         puts("one");
+        break;
     case 2:
         puts("two");
         break;

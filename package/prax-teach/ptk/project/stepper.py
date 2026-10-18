@@ -20,7 +20,7 @@ import re
 from .. import errors, text
 from ..text import esc
 from . import explorer as kit
-from . import mech
+from . import knob, mech
 from . import path as rail
 
 UI_KEYS = ("prev_state", "next_state")
@@ -138,6 +138,7 @@ def _body(lesson):
 <div class="toggles"><button type="button" class="pill" id="s-prev" data-chrome="prev_state">{esc(text.ui('prev_state'))}</button>
 <button type="button" class="pill" id="s-next" data-chrome="next_state">{esc(text.ui('next_state'))}</button></div></div>
 <div class="steps" id="s-steps-box">{steps}</div>
+{knob.section(lesson)[0]}
 </main>
 <footer class="foot"><p data-chrome="provenance">{esc(text.provenance(lesson))}</p>
 {src_links}</footer>
@@ -149,12 +150,14 @@ def project(lesson, out):
     if not lesson.data.get("figure", {}).get("panel"):
         raise errors.ModelReferenceError("the step explorer needs figure.panel", pointer="/figure")
     body = _body(lesson)
-    script = (kit.HTML_DIR / "stepper.js").read_text()
+    script = (kit.HTML_DIR / "stepper.js").read_text() + "\n" + (kit.HTML_DIR / "knob.js").read_text()
     chars = " ".join(mech.svg_fragment(lesson, sid, lay, "light")[2] for sid in states(lesson)
                      for lay in ("wide", "portrait"))
-    used = " ".join([body, kit.all_chrome_text(), chars, *[c["text"] for c in lesson.data["claims"]], "0123456789-·×−"])
-    css = kit.page_css(used, "base.css", "explorer.css", "stepper.css")
-    html = kit.page(lesson.data["title"], body, css, script, "ptk-stepper", {"states": states(lesson)})
+    used = " ".join([body, kit.all_chrome_text(), chars, *[c["text"] for c in lesson.data["claims"]], "0123456789-·×−+.e",
+                     knob.page_chars(lesson)])
+    css = kit.page_css(used, "base.css", "explorer.css", "stepper.css", "knob.css")
+    html = kit.page(lesson.data["title"], body, css, script, "ptk-stepper", {"states": states(lesson),
+                                                                            "knob": knob.section(lesson)[1]})
     (out / "index.html").write_text(html)
     (out / "texts.json").write_text(json.dumps(_texts(lesson), indent=1, ensure_ascii=False))
     (out / "domain.json").write_text(json.dumps({"states": [expected_view(lesson, s) for s in states(lesson)]},
@@ -174,6 +177,7 @@ def _texts(lesson):
         items.append({"text": text.ui(key), "claims": [], "source": f"chrome:{key}", "where": where})
     items.append({"text": text.kicker(lesson), "claims": [], "source": "chrome:kicker", "where": where})
     items.append({"text": text.provenance(lesson), "claims": [], "source": "chrome:provenance", "where": where})
+    items += knob.texts(lesson, f"{where} (try another value)")
     for sid in sids:
         v = expected_view(lesson, sid)
         here = f"{where} step {v['step']}"
@@ -187,7 +191,7 @@ def _texts(lesson):
 # ---------------------------------------------------------------- browser checks
 
 def drive(lesson, page_path, shots=None):
-    return kit.drive("stepper", page_path, shots, states=states(lesson))
+    return kit.drive("stepper", page_path, shots, states=states(lesson), knob=knob.driver_job(lesson))
 
 
 def check_step(lesson, snap, sid):
@@ -284,8 +288,12 @@ def gates(lesson, out, shots):
     vp, nsteps = check_steps(lesson, rec, prose=False)
     pp, _ = check_steps(lesson, rec, prose=True)
     lp, nl = kit.check_layout({**rec, "mode": "stepper"})
+    kp, kn = knob.check(lesson, rec)
     return [g("values.explorer", vp, {"control_steps": nsteps, "states": len(states(lesson)),
                                       "against": "stepper.expected_view (facts, mech.shown_facts)"}),
+            *([g("explorer.knob", kp, {"kind": knob.spec(lesson)["kind"], "views_checked": kn,
+                                       "against": "captured facts and expect.py (values, calls); expect_neuron.py and "
+                                                  "the captured check runs (neuron)"})] if knob.spec(lesson) else []),
             g("explorer.prose-follows-state", pp, {"control_steps": nsteps}),
             g("explorer.a11y-csp-noscript", check_a11y(lesson, rec), {"csp": rec["a11y"]["csp"][:120]}),
             g("explorer.layout", lp, {"layouts": nl, "widths": [390, 1440], "schemes": ["light", "dark"]}),

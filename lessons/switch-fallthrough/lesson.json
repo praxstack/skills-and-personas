@@ -1,7 +1,7 @@
 {
   "schema": "prax-teach/lesson@1",
   "id": "switch-fallthrough",
-  "title": "A missing break falls through",
+  "title": "How a switch runs its cases",
   "topic": "switch statement",
   "language": "c",
   "request": "Teach me how a switch statement with a missing break falls through, as a still, a narrated video and an interactive video.",
@@ -49,9 +49,9 @@
       "run": true,
       "diagnostics": {
         "clang": "",
-        "gcc-16": "with_break.c: In function 'main':\nwith_break.c:7:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    7 |         puts(\"one\");\n      |         ^~~~~~~~~~~\nwith_break.c:8:5: note: here\n    8 |     case 2:\n      |     ^~~~"
+        "gcc-16": ""
       },
-      "source_sha256": "c4e904ddec9a1aa33b6b99af7041bfa51047b4dc08a810b0b4e478132bf605f1"
+      "source_sha256": "f5c4984ae2d529c98bef78eb7c0e18fbede404b1faa657222cafd864b44127e1"
     }
   ],
   "facts": [
@@ -298,7 +298,7 @@
               "out": [
                 "one"
               ],
-              "brk": false
+              "brk": true
             },
             {
               "label": 2,
@@ -355,7 +355,7 @@
               "out": [
                 "one"
               ],
-              "brk": false
+              "brk": true
             },
             {
               "label": 2,
@@ -512,8 +512,8 @@
     {
       "id": "c.withbreak",
       "kind": "mechanism",
-      "text": "With a break after case 2, the switch prints only two, and then the program prints done.",
-      "justification": "programs/with_break.c adds break; after puts(\"two\") (line 10). By c.break the switch ends there, so only two comes from the switch; done comes from puts(\"done\") after the switch (line 17). The captured run prints two then done.",
+      "text": "With n = 2, with_break.c prints only two from the switch, and then done.",
+      "justification": "programs/with_break.c: n = 2 jumps to case 2 (line 9), puts(\"two\") runs, and the break on line 11 ends the switch (C17 6.8.6.3p2); puts(\"done\") on line 18 runs next. The captured run prints two then done.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -533,8 +533,8 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Pause here and predict the output before you go on.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it states no fact about C.",
+      "text": "Which answer do you predict? Pick one of the four before the answer plays.",
+      "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
       "sources": [
         {
           "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
@@ -598,6 +598,47 @@
           "clause": "lines 13-16"
         }
       ]
+    },
+    {
+      "id": "c.fix",
+      "kind": "framing",
+      "text": "with_break.c adds a break after case 1 and after case 2, so no case runs on into the next case.",
+      "justification": "Compared with programs/fallthrough.c, programs/with_break.c adds break; on line 8 (after case 1) and line 11 (after case 2). Case 3 already ends with break (line 14) and case 4 is the last case, whose statements end at the closing brace of the switch body (line 17), so no case's statements are followed by another case's statements. gcc-16 with -Wextra (which enables -Wimplicit-fallthrough) reports nothing for with_break.c, while it warns twice for fallthrough.c.",
+      "sources": [
+        {
+          "title": "programs/with_break.c and programs/fallthrough.c",
+          "clause": "lines 6-17"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.3 ¶2"
+        },
+        {
+          "title": "GCC manual, Warning Options",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
+          "clause": "-Wimplicit-fallthrough",
+          "quote": "-Wimplicit-fallthrough=3 is enabled by -Wextra."
+        }
+      ]
+    },
+    {
+      "id": "c.warn",
+      "kind": "caveat",
+      "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra.",
+      "justification": "GCC documents -Wimplicit-fallthrough (warn when a switch case falls through) and enables -Wimplicit-fallthrough=3 with -Wextra. The capture compiles every program with gcc-16 -Wall -Wextra and records its diagnostics: fallthrough.c gets 'this statement may fall through' at lines 7 and 9.",
+      "sources": [
+        {
+          "title": "GCC manual, Warning Options",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
+          "clause": "-Wimplicit-fallthrough",
+          "quote": "Warn when a switch case falls through."
+        },
+        {
+          "title": "gcc-16 diagnostics recorded by capture for programs/fallthrough.c",
+          "clause": "programs[0].diagnostics"
+        }
+      ]
     }
   ],
   "misconceptions": [
@@ -610,6 +651,11 @@
       "id": "m.fromtop",
       "statement": "A switch runs every case from the top, so the program prints one, two, three and done.",
       "correction": "c.match"
+    },
+    {
+      "id": "m.toend",
+      "statement": "Fallthrough keeps going to the last case, giving two, three, four and done.",
+      "correction": "c.break"
     }
   ],
   "trace": [
@@ -711,17 +757,17 @@
     },
     {
       "id": "s4",
-      "label": "With a break after case 2",
+      "label": "with_break.c: a break after every case that runs",
       "state": {
         "program": "p2",
-        "line": 17,
+        "line": 18,
         "path": [
           4,
           5,
-          8,
           9,
           10,
-          17
+          11,
+          18
         ],
         "output": [
           "f.p2.l1",
@@ -773,6 +819,11 @@
             "correct": true
           },
           {
+            "text": "two, three, four, done",
+            "correct": false,
+            "misconception": "m.toend"
+          },
+          {
             "text": "one, two, three, done",
             "correct": false,
             "misconception": "m.fromtop"
@@ -781,7 +832,7 @@
       },
       "narration": [
         {
-          "text": "Pause here and predict the output before you go on.",
+          "text": "Which answer do you predict? Pick one of the four before the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -816,13 +867,13 @@
         "output"
       ],
       "title_claims": [
-        "c.fall",
         "c.match"
-      ]
+      ],
+      "ask": "Which case label does n = 2 jump to?"
     },
     {
       "id": "sc4",
-      "title": "Fall through",
+      "title": "Past a label",
       "state": "s2",
       "narration": [
         {
@@ -845,13 +896,14 @@
         "note"
       ],
       "title_claims": [
-        "c.fall",
-        "c.labels"
-      ]
+        "c.labels",
+        "c.fall"
+      ],
+      "ask": "Case 2 has no break: what runs after puts(\"two\")?"
     },
     {
       "id": "sc5",
-      "title": "Break ends the switch",
+      "title": "What ends the switch",
       "state": "s3",
       "narration": [
         {
@@ -875,19 +927,34 @@
       "title_claims": [
         "c.break",
         "c.done"
-      ]
+      ],
+      "ask": "Which statement ends the switch, and what prints next?"
     },
     {
       "id": "sc6",
-      "title": "Add the missing break",
+      "title": "Add the missing breaks",
       "state": "s4",
       "narration": [
         {
-          "text": "With a break after case 2, the switch prints only two, and then the program prints done.",
+          "text": "with_break.c adds a break after case 1 and after case 2, so no case runs on into the next case.",
+          "claims": [
+            "c.fix"
+          ],
+          "spoken": "with-break dot c adds a break after case one and after case two, so no case runs on into the next case."
+        },
+        {
+          "text": "With n = 2, with_break.c prints only two from the switch, and then done.",
           "claims": [
             "c.withbreak"
           ],
-          "spoken": "With a break after case two, the switch prints only two, and then the program prints done."
+          "spoken": "With n equal to two, with-break dot c prints only two from the switch, and then done."
+        },
+        {
+          "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra.",
+          "claims": [
+            "c.warn"
+          ],
+          "spoken": "gcc warns about a case that can run on into the next one when the implicit fallthrough warning is on, as it is under W extra."
         }
       ],
       "key_nodes": [
@@ -895,8 +962,9 @@
         "output"
       ],
       "title_claims": [
-        "c.withbreak"
-      ]
+        "c.fix"
+      ],
+      "ask": "With breaks after case 1 and case 2, what prints for n = 2?"
     },
     {
       "id": "sc7",
@@ -967,5 +1035,6 @@
     "explorer",
     "qa",
     "cards"
-  ]
+  ],
+  "title_claims": []
 }

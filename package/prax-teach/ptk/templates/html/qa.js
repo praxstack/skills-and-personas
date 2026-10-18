@@ -23,6 +23,7 @@
     var c = chosen();
     if (!c) return;
     answered = true;
+    document.querySelectorAll('[data-sealed]').forEach(function (h) { h.setAttribute('data-sealed', 'false'); });
     var key = $('qa-feedback');
     key.querySelectorAll('li[data-opt]').forEach(function (li) {
       li.setAttribute('data-shown', String(li.getAttribute('data-opt') === c.value));

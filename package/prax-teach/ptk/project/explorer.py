@@ -235,14 +235,23 @@ def switch_model(lesson):
     if [c["label"] for c in a["cases"]] != [c["label"] for c in b["cases"]] or a["n0"] != b["n0"]:
         raise errors.ModelReferenceError("the two programs need the same case labels and the same n", pointer="/figure")
     diff = [x["label"] for x, y in zip(a["cases"], b["cases"]) if x["brk"] != y["brk"]]
-    if len(diff) != 1 or a["cases"][[c["label"] for c in a["cases"]].index(diff[0])]["brk"]:
-        raise errors.ModelReferenceError("figure.compare.program must add exactly one break to figure.program",
-                                         pointer="/figure/compare")
+    labels = [c["label"] for c in a["cases"]]
+    if not 1 <= len(diff) <= 2 or any(a["cases"][labels.index(k)]["brk"] for k in diff):
+        raise errors.ModelReferenceError("figure.compare.program must add one or two breaks to figure.program "
+                                         "and remove none", pointer="/figure/compare")
     ints = sorted(c["label"] for c in a["cases"] if c["label"] != "default")
     domain = sorted(set([ints[0] - 1, *ints, ints[-1] + 1]))
     roles = {r: _role_claim(lesson, r) for r in ROLE_RULES}
-    return {"base": base, "alt": alt, "toggle_label": diff[0], "domain": domain, "n0": a["n0"], "programs": progs,
+    return {"base": base, "alt": alt, "toggle_label": diff[0], "toggle_labels": diff, "domain": domain, "n0": a["n0"], "programs": progs,
             "roles": roles, "tail_claim": _tail_claim(lesson, base, a["expect_tail"])}
+
+
+def toggle_text(model):
+    """(chrome key, text) of the break toggle: one added break, or two (round 18: with_break.c also breaks case 1)."""
+    ks = model.get("toggle_labels") or [model["toggle_label"]]
+    if len(ks) == 1:
+        return "x_toggle", text.ui("x_toggle", k=ks[0])
+    return "x_toggle_two", text.ui("x_toggle_two", a=ks[0], b=ks[1])
 
 
 # ---------------------------------------------------------------- independent expected view
@@ -450,7 +459,7 @@ def _body(lesson, model, v):
 <fieldset class="seg" id="x-n"><legend class="lbl" data-chrome="x_n_label">{esc(text.ui('x_n_label'))}</legend>
 <div class="opts">{radios}</div></fieldset>
 <div class="toggles">
-<button type="button" class="pill" id="x-brk" aria-pressed="false"><span data-chrome="x_toggle">{esc(text.ui('x_toggle', k=model['toggle_label']))}</span><span class="onoff" id="x-brk-state" data-chrome="x_off">{esc(text.ui('x_off'))}</span></button>
+<button type="button" class="pill" id="x-brk" aria-pressed="false"><span data-chrome="{toggle_text(model)[0]}">{esc(toggle_text(model)[1])}</span><span class="onoff" id="x-brk-state" data-chrome="x_off">{esc(text.ui('x_off'))}</span></button>
 <button type="button" class="pill" id="x-reset" disabled data-chrome="x_reset">{esc(text.ui('x_reset'))}</button>
 </div></div>
 <div class="stage" id="x-state" data-n="{v['n']}" data-brk="false" data-program="{v['program']}" data-enter="{v['enter'] if v['enter'] is not None else ''}" data-exit="{v['exit']}" data-ran="{','.join(map(str, v['ran']))}">
@@ -517,7 +526,7 @@ def _texts(lesson, model):
     for p in (model["base"], model["alt"]):
         items.append({"text": text.ui("source_link", path=f"lessons/{lesson.id}/{model['programs'][p]['path']}"),
                       "claims": [], "source": "chrome:source_link", "where": where})
-    items.append({"text": text.ui("x_toggle", k=model["toggle_label"]), "claims": [], "source": "chrome:x_toggle",
+    items.append({"text": toggle_text(model)[1], "claims": [], "source": f"chrome:{toggle_text(model)[0]}",
                   "where": where})
     items.append({"text": text.ui("x_noscript", n0=model["n0"]), "claims": [], "source": "chrome:x_noscript",
                   "where": where + " <noscript>"})

@@ -59,3 +59,16 @@ def test_layers_misconceptions_print():
     bad = qa.check_layers(lesson, m, noprint)
     assert any(p.startswith("print:") for p in bad), f"print without expanded layers passed: {bad[:3]}"
     return {"layers": len(m["layers"]) + 1, "options": len(m["options"]), "wrong_routed": [o["misconception"]["id"] for o in wrong]}
+
+
+def test_sealed_titles_wait_for_the_answer():
+    """Round 18, review X2: a layer title that states the open question's answer is hidden until the learner
+    answers, checked in the rendered DOM, and a page that shows it fails."""
+    lesson, m, page = _built()
+    sealed = [L["title"] for L in m["layers"] if L["sealed"]]
+    assert sealed, "the switch lesson should seal at least one title"
+    rec = kit.drive("qa", page)
+    assert not [p for p in qa.check_layers(lesson, m, rec) if "sealed" in p or "states the open" in p]
+    leaky = _variant(lambda s: s.replace('html.js .layer h3[data-sealed="true"]{display:none}', ""))
+    bad = qa.check_layers(lesson, m, leaky)
+    assert any("states the open question's answer" in p for p in bad), bad[:3]

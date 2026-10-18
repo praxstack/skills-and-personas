@@ -8,7 +8,8 @@ Every scene after a question tags its title with the claims the title states or 
 [] for a neutral title). From the tags:
 
     question at scene q, answer fact F
-    answer claims A(q) = claims whose `facts` include F
+    answer claims A(q) = claims whose `facts` include F or a part of it (a line of a whole-stdout answer,
+                         a token of a line answer)
                        ∪ claims narrated in the answer scene (the first scene after q whose state shows F)
     scene j < q or j == q   title_claims ∩ A(q) must be empty   (the title is on screen while q is open)
     scene j > q             title_claims ∩ A(q) non-empty  →  sealed by q: the IVE and the Q&A show a neutral
@@ -40,9 +41,27 @@ def answer_scene(data, qi):
     return None
 
 
-def answer_claims(data, qi):
+def answer_facts(data, qi):
+    """The answer fact and every fact that is part of it: a whole-stdout answer contains each stdout line (and
+    each token of a line) of its program; a line answer contains the tokens read from that line."""
     fid = data["storyboard"][qi]["question"]["answer_fact"]
-    out = {c["id"] for c in data.get("claims", []) if fid in c.get("facts", [])}
+    facts = {f["id"]: f for f in data.get("facts", [])}
+    a = facts.get(fid)
+    out = {fid}
+    if not a or a["select"].get("stream") != "stdout":
+        return out
+    for f in data.get("facts", []):
+        sel = f["select"]
+        if f["program"] != a["program"] or sel.get("stream") != "stdout":
+            continue
+        if "line" not in a["select"] or (sel.get("line") == a["select"]["line"]):
+            out.add(f["id"])
+    return out
+
+
+def answer_claims(data, qi):
+    parts = answer_facts(data, qi)
+    out = {c["id"] for c in data.get("claims", []) if parts & set(c.get("facts", []))}
     j = answer_scene(data, qi)
     if j is not None:
         out |= {cid for n in data["storyboard"][j]["narration"] for cid in n["claims"]}

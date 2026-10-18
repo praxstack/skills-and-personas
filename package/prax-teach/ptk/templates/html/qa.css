@@ -44,3 +44,8 @@ html:not(.js) .reveal,html:not(.js) #qa-check,html:not(.js) .hint{display:none}
   .reveal,#qa-check,.hint,.opts input{display:none!important}
   .layer{break-inside:avoid}
 }
+.layer .ask{font-family:var(--body-font);font-weight:600;color:var(--note);font-size:1rem}
+html.js .layer h3[data-sealed="true"]{display:none}
+html.js .layer h3[data-sealed="false"]+.sealed-ph{display:none}
+html:not(.js) .sealed-ph{display:none}
+.sealed-ph{color:var(--label)}

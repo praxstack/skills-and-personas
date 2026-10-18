@@ -777,3 +777,34 @@ def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="",
               f'height="{h + 8:.0f}" role="img" '
               f'data-panel-state="{sid}" data-theme="{theme}" data-layout="{layout}" {attrs}>{defs}{body}</svg>')
     return markup, facts, chars
+
+
+# ---------------------------------------------------------------- the return flow (round 18)
+
+def stack_anchors(lesson, sid, layout="wide", width=None):
+    """{"rets": {frame idx: (x, y)}, "slots": {frame idx: (x, y)}} of a stack panel at `sid`, in the
+    coordinates svg_fragment draws (the panel at 4, 4)."""
+    from . import still
+    svg = still.Svg("light", fonts.tokens())
+    svg.tight = False
+    c = Ctx(svg, lesson, sid, layout, still.Flow(svg, {}), notes=False)
+    _stack(c, 4, 4, width or WIDTHS[(layout, page_place(lesson))])
+    return c.anchors
+
+
+def flows(lesson, before, sid):
+    """The returned values that land between two states: [(frame idx in before, frame idx in sid, fact)] for every
+    frame of `sid` that received (`got`) the value a frame of `before` was returning."""
+    P = (lesson.data.get("figure") or {}).get("panel") or {}
+    if P.get("kind") != "stack" or not before or before == sid:
+        return []
+    bf = lesson.state(before)["state"].get("frames", [])
+    cf = lesson.state(sid)["state"].get("frames", [])
+    out = []
+    for j, fr in enumerate(cf):
+        if not fr.get("got"):
+            continue
+        i = next((k for k, b in enumerate(bf) if b.get("status") == "returning" and b.get("ret") == fr["got"]), None)
+        if i is not None:
+            out.append((i, j, fr["got"]))
+    return out

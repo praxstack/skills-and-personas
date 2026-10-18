@@ -344,6 +344,19 @@ def _figure_errors(data, need):
         need("misconceptions", fig["misconception"], "/figure/misconception")
     for k, ref in panel_refs(fig.get("panel") or {}):
         need(*ref, f"/figure/panel/{k}")
+    ex = fig.get("explore") or {}
+    for i, v in enumerate(ex.get("values", [])):
+        need("programs", v["program"], f"/figure/explore/values/{i}/program")
+        for role, fid in v["facts"].items():
+            need("facts", fid, f"/figure/explore/values/{i}/facts/{role}")
+        for j, cid in enumerate(v.get("claims", [])):
+            need("claims", cid, f"/figure/explore/values/{i}/claims/{j}")
+    for j, cid in enumerate(ex.get("claims", [])):
+        need("claims", cid, f"/figure/explore/claims/{j}")
+    for i, c in enumerate(ex.get("checks", [])):
+        need("programs", c["program"], f"/figure/explore/checks/{i}/program")
+        for role, fid in c["facts"].items():
+            need("facts", fid, f"/figure/explore/checks/{i}/facts/{role}")
     if "compare" in fig:
         need("programs", fig["compare"]["program"], "/figure/compare/program")
         need("trace", fig["compare"]["state"], "/figure/compare/state")

@@ -790,9 +790,8 @@
         },
         "ask": {
           "type": "string",
-          "minLength": 3,
-          "pattern": "\\?$",
-          "description": "Optional: one bounded question the Q&A asks before revealing this scene (written forms, such as %f or factorial(2)). Without it the layer is a walkthrough step, not a prediction."
+          "pattern": "^[^.!?]{3,60}\\?$",
+          "description": "Optional: one bounded question the Q&A asks before revealing this scene, in written forms (%f, factorial(2)). At most 60 characters before its one question mark, with no other sentence mark. Without it the layer is a walkthrough step, not a prediction."
         }
       },
       "description": "One video scene. view=summary scenes (totals, outputs, results) must name the mechanism state that produced them (D20.5, mechanism not metrics).",
@@ -1063,6 +1062,122 @@
         "misconception": {
           "$ref": "#/$defs/ref",
           "description": "A misconception the still shows as a wrong-belief callout, with the claim that corrects it."
+        },
+        "explore": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "description": "The explorer's knob (round 18): the learner changes one input and sees the captured or computed result. values: one captured run per value of `var` (roles name its facts). calls: one captured run per argument, its stdout one fact (the explorer steps through its calls). neuron: sliders over the neuron's inputs, every point computed by ptk/expect_neuron.py and spot-checked against captured runs (`checks`).",
+          "properties": {
+            "kind": {
+              "enum": [
+                "values",
+                "calls",
+                "neuron"
+              ]
+            },
+            "var": {
+              "type": "string"
+            },
+            "values": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "program",
+                  "facts"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "string"
+                  },
+                  "program": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "facts": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/$defs/ref"
+                    }
+                  },
+                  "claims": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/ref"
+                    }
+                  }
+                }
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ref"
+              }
+            },
+            "sliders": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "var",
+                  "min",
+                  "max",
+                  "step"
+                ],
+                "properties": {
+                  "var": {
+                    "type": "string"
+                  },
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  },
+                  "step": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "program",
+                  "at",
+                  "facts"
+                ],
+                "properties": {
+                  "program": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "at": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "number"
+                    }
+                  },
+                  "facts": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/$defs/ref"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

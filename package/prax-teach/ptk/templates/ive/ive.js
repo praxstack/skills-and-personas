@@ -251,6 +251,7 @@
       mb.innerHTML = P.wl + P.wd + P.pl + P.pd;
       side.insertBefore(mb, os);
     }
+    var qFirst = null;
     if (V.question) {
       var q = el('div', 'q'); q.setAttribute('data-key', 'question');
       q.appendChild(el('p', 'lbl', U.question_label));
@@ -266,6 +267,7 @@
         });
         q.appendChild(fs);
         if (mode === 'ask') { var h = el('p', 'askhint', U.ive_ask_hint); h.setAttribute('data-chrome', 'ive_ask_hint'); q.appendChild(h); }
+        qFirst = q;  // an open question leads the panel, so its options are in view when the film stops
       }
       if (QQ && got) q.appendChild(verdict(QQ, got.i));
       side.appendChild(q);
@@ -276,6 +278,7 @@
     }
     if (V.origin === 'yours') { var pv = el('p', 'prov', V.prov); pv.setAttribute('data-chrome', V.provKey); side.appendChild(pv); }
     var stage = el('div', 'xstage'); stage.appendChild(fig); stage.appendChild(side);
+    if (qFirst) { box.insertBefore(qFirst, box.firstChild.nextSibling); }
     box.appendChild(stage);
   }
 
@@ -366,7 +369,9 @@
     else if (!v.ended && mode === 'film' && v.readyState >= 1) enterExplore();
   });
   v.addEventListener('play', function () {
-    if (mode === 'ask') { v.pause(); return; }  // the film holds until the learner picks
+    if (mode === 'ask') {  // the film holds until the learner picks, at the pause point exactly
+      v.pause(); quiet = true; v.currentTime = asking.pause_at; return;
+    }
     if (mode === 'explore') { returnToFilm(); return; }
     var q = askAt(v.currentTime);
     if (q && mode === 'film' && v.currentTime >= q.pause_at - 0.03) { startAsk(q); return; }

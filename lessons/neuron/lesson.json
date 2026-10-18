@@ -16,12 +16,40 @@
       "show": {
         "from": 4,
         "to": 17
-      },
-      "diagnostics": {
-        "clang": "",
-        "gcc-16": ""
-      },
-      "source_sha256": "35a862c47a8aa29655883673f1841310e2631349351f295c640cced1021f0852"
+      }
+    },
+    {
+      "id": "p2",
+      "path": "programs/neuron_k1.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 4,
+        "to": 17
+      }
+    },
+    {
+      "id": "p3",
+      "path": "programs/neuron_k2.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 4,
+        "to": 17
+      }
+    },
+    {
+      "id": "p4",
+      "path": "programs/neuron_k3.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 4,
+        "to": 17
+      }
     }
   ],
   "facts": [
@@ -39,14 +67,6 @@
           0.8,
           1.5
         ]
-      },
-      "value": "0.8 * 1.5 = +1.2",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -63,14 +83,6 @@
           0.4,
           -1.0
         ]
-      },
-      "value": "0.4 * -1 = -0.4",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -94,14 +106,6 @@
           ],
           -0.2
         ]
-      },
-      "value": "b = -0.2  z = 0.6",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -125,14 +129,6 @@
           ],
           -0.2
         ]
-      },
-      "value": "a = 0.6",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -149,14 +145,6 @@
         "args": [
           0.8
         ]
-      },
-      "value": "0.8",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -173,14 +161,6 @@
         "args": [
           1.5
         ]
-      },
-      "value": "1.5",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -198,14 +178,6 @@
           0.8,
           1.5
         ]
-      },
-      "value": "+1.2",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -222,14 +194,6 @@
         "args": [
           0.4
         ]
-      },
-      "value": "0.4",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -246,14 +210,6 @@
         "args": [
           -1.0
         ]
-      },
-      "value": "-1",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -271,14 +227,6 @@
           0.4,
           -1.0
         ]
-      },
-      "value": "-0.4",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -296,14 +244,6 @@
           -0.2,
           true
         ]
-      },
-      "value": "-0.2",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -328,14 +268,6 @@
           ],
           -0.2
         ]
-      },
-      "value": "0.6",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -360,14 +292,240 @@
           ],
           -0.2
         ]
+      }
+    },
+    {
+      "id": "f.k1.t1",
+      "program": "p2",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
       },
-      "value": "0.6",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 neuron.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
+      "expect": {
+        "fn": "neuron_term_line",
+        "args": [
+          0.8,
+          1.5
+        ]
+      }
+    },
+    {
+      "id": "f.k1.t2",
+      "program": "p2",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "neuron_term_line",
+        "args": [
+          0.4,
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "f.k1.z",
+      "program": "p2",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 3
+      },
+      "expect": {
+        "fn": "neuron_sum_line",
+        "args": [
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.5,
+            -1.0
+          ],
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "f.k1.a",
+      "program": "p2",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 4
+      },
+      "expect": {
+        "fn": "neuron_relu_line",
+        "args": [
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.5,
+            -1.0
+          ],
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "f.k2.t1",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "neuron_term_line",
+        "args": [
+          0.8,
+          1.5
+        ]
+      }
+    },
+    {
+      "id": "f.k2.t2",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "neuron_term_line",
+        "args": [
+          0.4,
+          0.5
+        ]
+      }
+    },
+    {
+      "id": "f.k2.z",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 3
+      },
+      "expect": {
+        "fn": "neuron_sum_line",
+        "args": [
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.5,
+            0.5
+          ],
+          0.3
+        ]
+      }
+    },
+    {
+      "id": "f.k2.a",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 4
+      },
+      "expect": {
+        "fn": "neuron_relu_line",
+        "args": [
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.5,
+            0.5
+          ],
+          0.3
+        ]
+      }
+    },
+    {
+      "id": "f.k3.t1",
+      "program": "p4",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "neuron_term_line",
+        "args": [
+          0.8,
+          1.5
+        ]
+      }
+    },
+    {
+      "id": "f.k3.t2",
+      "program": "p4",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "neuron_term_line",
+        "args": [
+          0.4,
+          -2.0
+        ]
+      }
+    },
+    {
+      "id": "f.k3.z",
+      "program": "p4",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 3
+      },
+      "expect": {
+        "fn": "neuron_sum_line",
+        "args": [
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.5,
+            -2.0
+          ],
+          -1.0
+        ]
+      }
+    },
+    {
+      "id": "f.k3.a",
+      "program": "p4",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 4
+      },
+      "expect": {
+        "fn": "neuron_relu_line",
+        "args": [
+          [
+            0.8,
+            0.4
+          ],
+          [
+            1.5,
+            -2.0
+          ],
+          -1.0
+        ]
       }
     }
   ],
@@ -480,20 +638,18 @@
     {
       "id": "c.relu",
       "kind": "definition",
-      "text": "ReLU passes a positive z through unchanged and turns a negative z into 0.",
-      "justification": "ReLU is g(z) = max{0, z} (Deep Learning §6.3.1): for z > 0 the maximum is z, for z < 0 it is 0. Line 14 computes it with fmax(0.0, z), and fmax returns the maximum numeric value of its arguments (C17 7.12.12.2).",
+      "text": "ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0.",
+      "justification": "The rectified linear unit is defined as ReLU(z) = max(0, z). The program computes it with fmax(0.0, z) (line 14); C17 7.12.12.2: fmax returns the larger of its arguments, and for z = 0 both arguments equal 0.",
       "sources": [
-        {
-          "title": "Goodfellow, Bengio and Courville, Deep Learning (MIT Press, 2016)",
-          "url": "https://www.deeplearningbook.org/contents/mlp.html",
-          "clause": "§6.3.1 Rectified Linear Units",
-          "quote": "Rectified linear units use the activation function g(z) = max{0, z}."
-        },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.12.12.2 ¶2",
-          "quote": "The fmax functions determine the maximum numeric value of their arguments."
+          "quote": "The fmax functions return the maximum numeric value of their arguments."
+        },
+        {
+          "title": "programs/neuron.c",
+          "clause": "line 14"
         }
       ]
     },
@@ -520,27 +676,93 @@
     {
       "id": "c.toy",
       "kind": "framing",
-      "text": "The numbers are toy values with no units. A C program computes them in double and prints them with %g or %+g.",
-      "justification": "neuron.c uses literal doubles chosen for the lesson (lines 5-7) and prints every value with %g or %+g (lines 9, 11, 13, 15).",
+      "text": "The numbers are toy values with no units. The program computes them in double and prints them with %g or %+g, which show at most 6 significant digits.",
+      "justification": "programs/neuron.c declares every quantity as double and prints with %g / %+g (lines 9, 11, 13, 15); C17 7.21.6.1p8: for g, the precision is the number of significant digits, 6 when omitted, and trailing zeros are removed.",
       "sources": [
         {
           "title": "programs/neuron.c",
-          "url": "programs/neuron.c",
           "clause": "lines 5-15"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶8"
         }
       ]
     },
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Pause here and predict the output before you go on.",
-      "justification": "An instruction to the learner; it states nothing about the neuron.",
+      "text": "Which answer do you predict? Pick one of the three before the answer plays.",
+      "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
+      "sources": [
+        {
+          "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
+          "clause": "Teaching"
+        }
+      ]
+    },
+    {
+      "id": "c.round",
+      "kind": "caveat",
+      "text": "In double, z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
+      "justification": "0.8, 1.5, 0.4 and 0.2 have no exact binary64 form; 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶8"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§F.2 ¶1"
+        },
+        {
+          "title": "captured run of programs/neuron.c",
+          "clause": "stdout line 3"
+        }
+      ],
+      "facts": [
+        "f.z"
+      ]
+    },
+    {
+      "id": "c.kformula",
+      "kind": "mechanism",
+      "text": "The sliders change w2 and b. z = 0.8 × 1.5 + 0.4 × w2 + b, computed in double as the program does, and a = max(0, z).",
+      "justification": "programs/neuron.c computes t1 = x1 * w1, t2 = x2 * w2, z = t1 + t2 + b left to right in double and a = fmax(0.0, z). The explorer's values are computed by ptk/expect_neuron.py with the same binary64 operations in the same order and printed in %g / %+g form; three variant programs (neuron_k1.c to neuron_k3.c) were compiled and run and their output matches the table at those points.",
       "sources": [
         {
           "title": "programs/neuron.c",
-          "url": "programs/neuron.c",
-          "clause": "line 15"
+          "clause": "lines 8-14"
+        },
+        {
+          "title": "captured run of programs/neuron_k1.c, neuron_k2.c, neuron_k3.c",
+          "clause": "stdout lines 1-4"
         }
+      ],
+      "facts": [
+        "f.k1.z",
+        "f.k2.z",
+        "f.k3.z"
+      ]
+    },
+    {
+      "id": "c.kzero",
+      "kind": "mechanism",
+      "text": "With w2 = -1 and b = -1, z drops to -0.2 and a is 0, even though the first term is still +1.2.",
+      "justification": "Captured run of programs/neuron_k1.c: 0.8 * 1.5 = +1.2, 0.4 * -1 = -0.4, b = -1, z = -0.2, a = fmax(0, -0.2) = 0. ReLU looks only at the sum z, not at each term.",
+      "sources": [
+        {
+          "title": "captured run of programs/neuron_k1.c",
+          "clause": "stdout lines 1-4"
+        }
+      ],
+      "facts": [
+        "f.k1.t1",
+        "f.k1.z",
+        "f.k1.a"
       ]
     }
   ],
@@ -682,10 +904,11 @@
           ]
         },
         {
-          "text": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and minus 1, and a bias of minus 0.2.",
+          "text": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and -1, and a bias of -0.2.",
           "claims": [
             "c.setup"
-          ]
+          ],
+          "spoken": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and minus 1, and a bias of minus 0.2."
         }
       ]
     },
@@ -700,18 +923,21 @@
       ],
       "narration": [
         {
-          "text": "Each input is multiplied by its weight. 0.8 times 1.5 is plus 1.2, and 0.4 times minus 1 is minus 0.4.",
+          "text": "Each input is multiplied by its weight: 0.8 × 1.5 = +1.2 and 0.4 × -1 = -0.4.",
           "claims": [
             "c.mul"
-          ]
+          ],
+          "spoken": "Each input is multiplied by its weight. 0.8 times 1.5 is plus 1.2, and 0.4 times minus 1 is minus 0.4."
         },
         {
           "text": "Here the negative weight -1 turns the positive input 0.4 into a negative term, -0.4.",
           "claims": [
             "c.sign"
-          ]
+          ],
+          "spoken": "Here the negative weight, minus 1, turns the positive input 0.4 into a negative term, minus 0.4."
         }
-      ]
+      ],
+      "ask": "What signed term does each input give?"
     },
     {
       "id": "sc3",
@@ -726,10 +952,6 @@
         "answer_fact": "f.a",
         "options": [
           {
-            "text": "0.6",
-            "correct": true
-          },
-          {
             "text": "0.8",
             "correct": false,
             "misconception": "m.nobias"
@@ -738,12 +960,16 @@
             "text": "0",
             "correct": false,
             "misconception": "m.negterm"
+          },
+          {
+            "text": "0.6",
+            "correct": true
           }
         ]
       },
       "narration": [
         {
-          "text": "Pause here and predict the output before you go on.",
+          "text": "Which answer do you predict? Pick one of the three before the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -761,15 +987,17 @@
       ],
       "narration": [
         {
-          "text": "The neuron adds the two terms and the bias, and that sum is z. 1.2 minus 0.4 minus 0.2 is 0.6.",
+          "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6. That sum is z.",
           "claims": [
             "c.add"
-          ]
+          ],
+          "spoken": "The neuron adds the two terms and the bias. 1.2 minus 0.4 minus 0.2 is 0.6. That sum is z."
         }
       ],
       "title_claims": [
         "c.add"
-      ]
+      ],
+      "ask": "What is z, the two terms plus the bias?"
     },
     {
       "id": "sc5",
@@ -782,10 +1010,11 @@
       ],
       "narration": [
         {
-          "text": "ReLU passes a positive z through unchanged and turns a negative z into 0.",
+          "text": "ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0.",
           "claims": [
             "c.relu"
-          ]
+          ],
+          "spoken": "ReLU outputs the larger of 0 and z. A positive z passes through unchanged, and a z of 0 or less gives 0."
         },
         {
           "text": "Here z is 0.6, which is positive, so the output a is 0.6.",
@@ -795,9 +1024,10 @@
         }
       ],
       "title_claims": [
-        "c.out",
-        "c.relu"
-      ]
+        "c.relu",
+        "c.out"
+      ],
+      "ask": "z is positive here: what does ReLU output?"
     },
     {
       "id": "sc6",
@@ -815,10 +1045,18 @@
           "claims": [
             "c.formula"
           ]
+        },
+        {
+          "text": "In double, z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
+          "claims": [
+            "c.round"
+          ],
+          "spoken": "In double, z here is not exactly 0.6, but percent g rounds it to six significant digits, and prints 0.6."
         }
       ],
       "title_claims": [
-        "c.formula"
+        "c.formula",
+        "c.round"
       ]
     }
   ],
@@ -867,7 +1105,70 @@
     },
     "caption_claims": [
       "c.toy"
-    ]
+    ],
+    "explore": {
+      "kind": "neuron",
+      "sliders": [
+        {
+          "var": "w2",
+          "min": -2.0,
+          "max": 2.0,
+          "step": 0.1
+        },
+        {
+          "var": "b",
+          "min": -1.0,
+          "max": 1.0,
+          "step": 0.1
+        }
+      ],
+      "checks": [
+        {
+          "program": "p2",
+          "at": {
+            "w2": -1.0,
+            "b": -1.0
+          },
+          "facts": {
+            "t1": "f.k1.t1",
+            "t2": "f.k1.t2",
+            "z": "f.k1.z",
+            "a": "f.k1.a"
+          }
+        },
+        {
+          "program": "p3",
+          "at": {
+            "w2": 0.5,
+            "b": 0.3
+          },
+          "facts": {
+            "t1": "f.k2.t1",
+            "t2": "f.k2.t2",
+            "z": "f.k2.z",
+            "a": "f.k2.a"
+          }
+        },
+        {
+          "program": "p4",
+          "at": {
+            "w2": -2.0,
+            "b": -1.0
+          },
+          "facts": {
+            "t1": "f.k3.t1",
+            "t2": "f.k3.t2",
+            "z": "f.k3.z",
+            "a": "f.k3.a"
+          }
+        }
+      ],
+      "claims": [
+        "c.kformula",
+        "c.kzero",
+        "c.relu"
+      ]
+    }
   },
   "requested_media": [
     "still",
@@ -899,5 +1200,6 @@
       "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
     },
     "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
-  }
+  },
+  "title_claims": []
 }

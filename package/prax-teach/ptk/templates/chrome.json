@@ -122,6 +122,22 @@
   "ive_chapter_sealed": "Opens after you answer",
   "frame_var": "{name} = {expr}",
   "frame_var_eq": "{name} =",
-  "frame_var_unset": "{name} = ?"
+  "frame_var_unset": "{name} = ?",
+  "x_toggle_two": "breaks after cases {a} and {b}",
+  "k_var_label": "Value of {var}",
+  "k_col_var": "value",
+  "k_col_bits": "low byte",
+  "k_col_hex": "hex",
+  "k_col_d": "%d",
+  "k_col_u": "%u",
+  "k_col_f": "%f",
+  "k_col_c": "%c",
+  "k_byte": "byte",
+  "k_slot": "empty slot: the call has not returned yet",
+  "k_slider": "{name}",
+  "k_computed": "Computed with the program's formula in double, in the program's order. Captured runs agree at {count} points.",
+  "qa_ask": "{ask}?",
+  "qa_walk": "A walkthrough step: read it when you are ready.",
+  "qa_sealed": "Opens after you answer"
  }
 }

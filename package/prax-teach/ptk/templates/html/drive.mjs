@@ -291,6 +291,34 @@ function snapStepper() {
   };
 }
 
+function snapKnobValues() {
+  const vis = (e) => e && getComputedStyle(e).display !== 'none' && e.getBoundingClientRect().height > 0;
+  return {
+    selected: [...document.querySelectorAll('#k-table thead th.sel')].map((th) => th.dataset.value),
+    row: [...document.querySelectorAll('#k-table td.sel [data-fact]')].map((e) => [e.dataset.fact, e.textContent]),
+    prose: [...document.querySelectorAll('.kprose')].filter(vis).flatMap((d) => [...d.querySelectorAll('[data-claim]')].map((p) => p.dataset.claim)),
+  };
+}
+
+function snapKnobCalls() {
+  const vis = (e) => e && getComputedStyle(e).display !== 'none' && e.getBoundingClientRect().height > 0;
+  const st = [...document.querySelectorAll('.kcalls .kstep')].filter(vis);
+  const s = st[0];
+  return {
+    visible: st.length,
+    frames: s ? [...s.querySelectorAll('li.kframe')].map((li) => ({ label: li.querySelector('code').textContent,
+      status: li.dataset.status, vars: [...li.querySelectorAll('.kvar')].map((e) => e.textContent), slot: !!li.querySelector('.kslot') })) : [],
+    printed: s ? [...s.querySelectorAll('.kout li .val')].map((e) => e.textContent) : [],
+  };
+}
+
+function snapKnobNeuron() {
+  const t = (id) => document.getElementById(id).textContent;
+  const d = document.getElementById('k-dot');
+  return { w2: t('k-w2-v'), b: t('k-b-v'), t1: t('k-t1'), t2: t('k-t2'), bs: t('k-bs'), z: t('k-z'), a: t('k-a'),
+           dot: d ? [+d.getAttribute('cx'), +d.getAttribute('cy')] : null };
+}
+
 async function stepper() {
   const S = job.states;
   let o = await open({ name: 'a11y-1440-light' });
@@ -356,6 +384,39 @@ async function stepper() {
   result.steps = steps;
   await finish(o);
 
+  // the knob (round 18): every value, every call step, the slider check points and corners
+  if (job.knob) {
+    o = await open({ name: 'knob-1440-light' });
+    const q = o.page, rec = [];
+    if (job.knob.kind === 'values') {
+      for (const v of job.knob.values) {
+        await q.click(`#k-vals label:has(input[value="${v}"])`);
+        rec.push({ value: v, ...(await q.evaluate(snapKnobValues)) });
+      }
+    } else if (job.knob.kind === 'calls') {
+      for (const v of job.knob.values) {
+        await q.click(`#k-vals label:has(input[value="${v}"])`);
+        for (let i = 0; i < 40 && !(await q.$eval('#k-prev', (b) => b.disabled)); i++) await q.click('#k-prev');
+        for (let i = 0; i < 40; i++) {
+          rec.push({ value: v, ...(await q.evaluate(snapKnobCalls)) });
+          if (await q.$eval('#k-next', (b) => b.disabled)) break;
+          await q.click('#k-next');
+        }
+      }
+    } else {
+      for (const pt of job.knob.points) {
+        await q.evaluate(([i, j]) => window.__ptkKnob.set(i, j), [pt.w2, pt.b]);
+        rec.push(await q.evaluate(snapKnobNeuron));
+      }
+      // and one real slider move from the keyboard
+      await q.focus('#k-b');
+      await q.keyboard.press('ArrowLeft');
+      rec.push({ ...(await q.evaluate(snapKnobNeuron)), via: 'keyboard' });
+    }
+    result.knob = rec;
+    await finish(o);
+  }
+
   result.layout = [];
   for (const width of [390, 1440]) {
     for (const scheme of ['light', 'dark']) {
@@ -399,6 +460,8 @@ function snapQa() {
           fact: e.dataset.fact || null, option: e.dataset.option || null, text: e.textContent })) })) };
     })(),
     checkDisabled: document.getElementById('qa-check') ? document.getElementById('qa-check').disabled : null,
+    titles: [...document.querySelectorAll('[data-layer] h3[data-label="scene-title"]')].map((h) => ({ text: h.textContent,
+      visible: getComputedStyle(h).display !== 'none' && h.getBoundingClientRect().height > 0 })),
   };
 }
 

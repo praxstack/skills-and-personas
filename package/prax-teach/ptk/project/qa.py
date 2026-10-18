@@ -17,6 +17,7 @@ import json
 from .. import errors, text
 from ..text import esc
 from . import explorer as kit
+from . import seal
 
 HTML_DIR = kit.HTML_DIR
 
@@ -45,9 +46,11 @@ def model(lesson):
                                     "correction": {"id": m["correction"], "text": lesson.claim(m["correction"])["text"]}}
         options.append(row)
     layers = []
+    sealed = seal.sealed(lesson.data)
     for sc2 in lesson.data["storyboard"][i + 1:]:
         st = lesson.state(sc2["state"])["state"]
-        layers.append({"scene": sc2["id"], "title": sc2["title"],
+        layers.append({"scene": sc2["id"], "title": sc2["title"], "sealed": sealed.get(sc2["id"]) == sc["id"],
+                       "ask": sc2.get("ask"),
                        "narration": [{"id": f"{sc2['id']}.{j}", "text": n["text"], "claims": n["claims"]}
                                      for j, n in enumerate(sc2["narration"])],
                        "output": [{"fact": f, "text": text.display(facts[f])} for f in st["output"]],
@@ -82,10 +85,15 @@ def _layers_html(m):
         vals = "".join(f'<span data-fact="{o["fact"]}">{esc(o["text"])}</span>' for o in L["output"])
         out_html = (f'<p class="lbl"><span data-chrome="output_label">{esc(text.ui("output_label"))}</span> · '
                     f'<span data-label="program-file">{esc(L["program"])}</span></p><p class="vals">{vals}</p>') if vals else ""
+        # a title that states the open question's answer stays sealed until the learner answers (seal.py)
+        title = (f'<h3 data-label="scene-title" data-sealed="true">{esc(L["title"])}</h3>'
+                 f'<h3 class="sealed-ph" data-chrome="qa_sealed">{esc(text.ui("qa_sealed"))}</h3>') if L["sealed"] else \
+            f'<h3 data-label="scene-title">{esc(L["title"])}</h3>'
+        hint = (f'<p class="ask" data-chrome="qa_ask">{esc(text.ui("qa_ask", ask=L["ask"][:-1]))}</p>' if L["ask"] else
+                f'<p class="hint" data-chrome="qa_walk">{esc(text.ui("qa_walk"))}</p>')
         out.append(f'<li class="layer" data-layer="{k}" data-open="true" id="qa-l{k}">'
                    f'<div class="layer-head"><p class="lbl" data-chrome="qa_layer">{esc(text.ui("qa_layer", i=k, n=n))}</p></div>'
-                   f'<h3 data-label="scene-title">{esc(L["title"])}</h3>'
-                   f'<p class="hint" data-chrome="qa_next_prompt">{esc(text.ui("qa_next_prompt"))}</p>'
+                   f'{title}{hint}'
                    f'<p><button type="button" class="pill reveal" aria-controls="qa-b{k}" data-chrome="qa_reveal">'
                    f'{esc(text.ui("qa_reveal"))}</button></p>'
                    f'<div class="layer-body" id="qa-b{k}" tabindex="-1">{lines}{out_html}</div></li>')
@@ -143,7 +151,7 @@ def _texts(lesson, m):
              {"text": m["prompt"], "claims": [], "source": f"question:{m['scene']}", "where": w}]
     for key, kw in (("kicker", {"subject": lesson.data.get("subject", "C"), "topic": lesson.data["topic"]}), ("question_label", {}), ("code_label", {}),
                     ("qa_choose", {}), ("qa_check", {}), ("qa_correct", {}), ("qa_wrong", {}), ("qa_correction", {}),
-                    ("answer_label", {}), ("qa_next_prompt", {}), ("qa_reveal", {}), ("output_label", {}),
+                    ("answer_label", {}), ("qa_walk", {}), ("qa_sealed", {}), ("qa_reveal", {}), ("output_label", {}),
                     ("qa_noscript", {})):
         items.append({"text": text.ui(key, **kw), "claims": [], "source": f"chrome:{key}", "where": w})
     items.append({"text": text.provenance(lesson), "claims": [], "source": "chrome:provenance", "where": w})
@@ -161,6 +169,8 @@ def _texts(lesson, m):
                           "source": f"claim:{mc['correction']['id']}", "where": w})
     for L in m["layers"]:
         items.append({"text": L["title"], "claims": [], "source": f"label:scene-title:{L['scene']}", "where": w})
+        if L["ask"]:
+            items.append({"text": text.ui("qa_ask", ask=L["ask"][:-1]), "claims": [], "source": "chrome:qa_ask", "where": w})
         for x in L["narration"]:
             items.append({"text": x["text"], "claims": x["claims"], "source": f"narration:{x['id']}", "where": w})
     seen, out = set(), []
@@ -196,6 +206,16 @@ def check_layers(lesson, m, rec):
         return [L["i"] for L in snap["layers"] if L["open"] and L["bodyVisible"]]
 
     s0 = seq[0]["snap"]
+    sealed = [L["title"] for L in m["layers"] if L["sealed"]]
+    shown0 = [t["text"] for t in s0.get("titles", []) if t["visible"]]
+    for t in sealed:
+        if t in shown0:
+            probs.append(f"the title {t!r} states the open question's answer and is visible before an answer")
+    answered = next((s["snap"] for s in seq if s["action"].startswith("choose")), None)
+    if answered is not None and sealed:
+        shown1 = [t["text"] for t in answered.get("titles", []) if t["visible"]]
+        if not all(t in shown1 for t in sealed):
+            probs.append(f"sealed titles stay hidden after an answer: {[t for t in sealed if t not in shown1]}")
     if opened(s0) != [1]:
         probs.append(f"on load the open layers are {opened(s0)}, expected [1]")
     if _visible_entries(s0):

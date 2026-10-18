@@ -1,0 +1,54 @@
+/* The explorer's knob (round 18): change the one input the lesson is about. */
+.knob{display:grid;gap:1.25rem;margin-block-start:3rem;padding-block-start:2rem;border-block-start:1px solid var(--rule)}
+.knob [hidden]{display:none!important}
+.ktable{border:1px solid var(--rule);border-radius:.75rem;background:var(--surface)}
+.ktable table{margin:0;font-size:.9375rem}
+.ktable th,.ktable td{padding:.5rem .625rem;white-space:nowrap}
+.ktable thead code{font-size:.9375rem;color:var(--ink)}
+.ktable [data-value]{transition:background-color .16s ease}
+html.js .ktable [data-value]:not(.sel){color:var(--label)}
+html.js .ktable td[data-value]:not(.sel){color:var(--ink_soft)}
+.ktable [data-value].sel{background:var(--note_tint)}
+.ktable thead th.sel{box-shadow:inset 0 -3px 0 var(--note)}
+@media (max-width:720px){html.js .ktable [data-value]:not(.sel){display:none}}
+.ktable .kb{font-family:var(--label-font);font-size:.75rem;color:var(--label)}
+.kprose-all{display:grid;gap:.5rem}
+.kprose{display:grid;gap:.5rem}
+.kprose p,.kprose-all p{max-width:60ch}
+.kgrid{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
+.kstep{display:grid;gap:.5rem}
+.kstack{display:grid;gap:.375rem}
+.kframe{display:grid;gap:.25rem;padding:.5rem .75rem;border:1px solid var(--rule);border-radius:.5rem;background:var(--surface)}
+.kframe[data-status="running"]{border-color:var(--note);background:var(--note_tint)}
+.kframe[data-status="returning"]{border-style:dashed;border-color:var(--note);background:transparent}
+.kfl{display:flex;flex-wrap:wrap;gap:.25rem .75rem;justify-content:space-between;align-items:baseline}
+.kfl code{font-size:1rem;color:var(--ink)}
+.kret{font-family:var(--value-font);font-weight:var(--value-weight);color:var(--value);font-size:1.125rem}
+.kfv{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;font-family:var(--code-font);font-size:.9375rem;color:var(--ink_soft)}
+.kvar{display:inline-flex;align-items:center;gap:.375rem;white-space:nowrap}
+.kslot{display:inline-block;width:1.4em;height:1.2em;border:1.5px dashed var(--note);border-radius:.2rem}
+.kout li.now .val{color:var(--note);font-weight:700}
+.ksliders{display:flex;flex-wrap:wrap;gap:1rem 2rem}
+.kslider{display:grid;grid-template-columns:auto minmax(8rem,16rem) 4.5rem;gap:.75rem;align-items:center}
+.kslider .lbl{font-family:var(--code-font);text-transform:none;letter-spacing:0;font-size:1rem;color:var(--ink)}
+.kslider input{accent-color:var(--note);min-height:2.75rem}
+.kslider output{font-family:var(--value-font);font-weight:var(--value-weight);color:var(--value);font-size:1.125rem}
+.kneuron{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr);padding:1rem;border:1px solid var(--rule);border-radius:.75rem;background:var(--surface)}
+.kn-col{display:grid;gap:.375rem;align-content:start}
+.kn-eq{font-family:var(--code-font);font-size:1rem;color:var(--ink_soft)}
+.kn-eq b{font-family:var(--value-font);font-weight:var(--value-weight);color:var(--value);font-size:1.25rem}
+.kn-eq b.neg{color:var(--correction)}
+.kn-col svg{width:100%;max-width:26rem;height:auto;overflow:visible}
+.kax{stroke:var(--rule);stroke-width:1.2}
+.ktick{fill:var(--label);font-family:var(--foot-font);font-size:11px}
+.kbar{stroke-width:8;stroke-linecap:round}
+.kbar.pos{stroke:var(--note)}.kbar.neg{stroke:var(--correction)}
+.kbar.end{stroke:none}.kbar.end.pos{fill:var(--note)}.kbar.end.neg{fill:var(--correction)}
+.kguide{stroke:var(--label);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.kz{stroke:var(--value);stroke-width:2}
+.krelu{stroke:var(--value);stroke-width:3;fill:none}
+.kdot{fill:var(--value)}
+@media (min-width:860px){
+  .kgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  .kneuron{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
