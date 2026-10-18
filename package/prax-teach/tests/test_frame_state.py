@@ -4,6 +4,7 @@ No TTS and no render: fixed 2 s narration segments give a schedule, the projecto
 composition, and frames.probe seeks each scene's own timeline to the frame on screen at every
 pause point, deriving the state from what is drawn (code, highlight, dots, visible outputs).
 """
+import math
 import shutil
 
 from _util import SLICE
@@ -126,3 +127,44 @@ def test_a_program_change_after_a_question_answers_at_its_morph():
     assert scenes[1]["morph"] and scenes[1]["start"] < scenes[1]["reveal"] < scenes[1]["shown"] < scenes[1]["end"]
     assert [(c["kind"], c["state"]["state_id"], c.get("answer_for")) for c in out] == \
         [("question", "s0", None), ("answer", "s0", "a"), ("state", "s4", None)], out
+
+
+def _diff_done(fr):
+    """The diff morph is complete when the frame no longer shows the old program in any form: the
+    old file label is gone, the new one is fully in, no struck-out band is left and every added row
+    is fully drawn (until the swap to the new program's own rows, which hides them with the old set)."""
+    d = fr.get("diff") or {}
+    return ((d.get("file_old") or 0) < 0.01 and (d.get("file_cur") or 0) >= 0.99
+            and all(x < 0.01 for x in d.get("removed", []))
+            and ((d.get("rows_cur") or 0) >= 0.99 or all(x >= 0.99 for x in d.get("added", []))))
+
+
+def test_note_waits_for_the_diff():
+    """WP6 (WP5 open item): at a change of program the side note (which states the new program's
+    behaviour) stays hidden until the diff morph is complete, checked at every frame of each morph
+    scene, and is fully shown before the scene ends."""
+    lesson = model.load(SLICE)
+    timing = _timing(lesson)
+    morphs = [s for s in timing["scenes"] if s.get("morph")]
+    assert morphs, "the slice has no program change"
+    fps = timing["fps"]
+    times = sorted({round((math.floor(s["start"] * fps) + k) / fps + 0.001, 4) for s in morphs
+                    for k in range(1, int((s["end"] - s["start"]) * fps))})
+    tmp = host.make_tmp("frame-note-")
+    try:
+        vdir = _composition(lesson, timing, tmp)
+        frame_at, _sc = frames.probe(lesson, vdir, timing, times, work_name="frames-note")
+        early, shown = [], {}
+        for t in times:
+            fr = frame_at[t]
+            if fr.get("note") is None:
+                continue
+            if fr["note"] > 0.01 and not _diff_done(fr):
+                early.append({"t": t, "scene": fr["scene"], "note": fr["note"], "diff": fr["diff"]})
+            if fr["note"] >= 0.99:
+                shown.setdefault(fr["scene"], t)
+        assert not early, f"the note is on screen before the diff is complete: {early[:3]}"
+        assert set(shown) == {s["id"] for s in morphs}, shown
+        return {"frames_checked": len(times), "note_first_full": shown}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)

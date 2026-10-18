@@ -64,6 +64,20 @@
     "card_true_false": "True or false? {statement}",
     "card_false": "False.",
     "card_why": "Why",
-    "card_md_intro": "{count} cards from the lesson “{title}”. Every printed answer is a captured fact."
+    "card_md_intro": "{count} cards from the lesson “{title}”. Every printed answer is a captured fact.",
+    "ive_mode_film": "Film: the panel shows what the video shows.",
+    "ive_mode_explore": "Exploring at {time}. The film is paused and your changes never alter it.",
+    "ive_mode_label_film": "Film",
+    "ive_mode_label_explore": "Explore",
+    "ive_explore": "Pause and explore",
+    "ive_return": "Return to the film",
+    "ive_from_film": "From the film at {time}",
+    "ive_yours": "Your edit, not in the film",
+    "ive_live_label": "Change the program yourself",
+    "ive_live_reset": "Back to the film's state",
+    "ive_locked": "These controls unlock after the film answers its prediction, at {time}.",
+    "ive_answers": "Full transcript and frames. They contain the answers, so predict first.",
+    "ive_no_data": "The interactive panel could not load. The video and its controls still work.",
+    "ive_steps_label": "Steps already shown"
   }
 }

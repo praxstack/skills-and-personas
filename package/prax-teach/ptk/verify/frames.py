@@ -53,7 +53,12 @@ PROBE_JS = r"""(t) => {
     || dots.some((d) => op(d) > 0.01 && op(d) < 0.99)
     || vals.some((v) => op(v) > 0.01 && op(v) < 0.99);
   const code = rows.map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
-  return { t, code, line,
+  // what the side note and the diff show (WP6: the note waits until the diff is complete)
+  const one = (s) => { const e = root.querySelector(s); return e ? +eop(e).toFixed(3) : null; };
+  const each = (s) => [...root.querySelectorAll(s)].map((e) => +eop(e).toFixed(3));
+  const diff = { file_old: one('.file[data-set="old"]'), file_cur: one('.file[data-set="cur"]'),
+                 removed: each('.band.minus'), added: each('.ln.add'), rows_cur: one('.rows[data-set="cur"]') };
+  return { t, code, line, note: one('.notecard'), diff,
            path: dots.filter((d) => op(d) >= 0.99).map((d) => +d.dataset.line),
            output: vals.filter((v) => op(v) >= 0.99).map((v) => v.dataset.fact),
            moving };

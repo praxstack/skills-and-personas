@@ -7,6 +7,7 @@ One browser run per call (E12). Any request that is not local is aborted and fai
 import functools
 import http.server
 import json
+import math
 import os
 import re
 import threading
@@ -403,20 +404,11 @@ def still_gates_from(lesson, svgs, res, keys):
     return gates
 
 
-# ---------------------------------------------------------------- IVE (AC-6.1..6.4 subset for WP0)
+# ---------------------------------------------------------------- IVE (AC-6.1..6.7)
 
-LEAK_JS = r"""(answerWords) => {
-  const root = document.body.cloneNode(true);
-  root.querySelectorAll('noscript, script, [data-code], video, track').forEach((e) => e.remove());
-  const texts = [root.textContent];
-  document.querySelectorAll('[alt], [aria-label], [title]').forEach((e) => {
-    if (e.closest('noscript')) return;
-    ['alt', 'aria-label', 'title'].forEach((a) => e.getAttribute(a) && texts.push(e.getAttribute(a)));
-  });
-  const words = new Set(texts.join(' ').toLowerCase().match(/[a-z']+/g) || []);
-  return { hits: answerWords.filter((w) => words.has(w)), transcript_items: document.querySelectorAll('#tx li').length,
-           state: document.getElementById('state').dataset.state || null, cue: document.getElementById('state').dataset.cue || null };
-}"""
+IVE_DRIVE = host.PKG / "ptk" / "templates" / "ive" / "drive.js"
+NAV_ACTIONS = {"open", "seek", "chapter", "replay", "reveal", "flip", "explore", "return", "close"}
+NAV_KEYS = {"schema_version", "event_type", "event_id", "action", "artifact_id", "session_id", "position", "timestamp"}
 
 
 def _pause_points(c):
@@ -426,65 +418,134 @@ def _pause_points(c):
     return sorted({round(t, 3) for t in pts})
 
 
+def vtt_start(c):
+    """A cue start as the browser reads it from the .vtt file (millisecond precision)."""
+    return float(f"{c['start']:.3f}")
+
+
+def resolve(starts, t, fps):
+    """The page's clock rule (ive.js windowAt), for expected values: the last window whose start is
+    less than one frame after t, in integer microseconds."""
+    frame_us, T, k = int(1e6 / fps), round(t * 1e6), -1
+    for i, s in enumerate(starts):
+        if round(s * 1e6) - T < frame_us:
+            k = i
+    return k
+
+
+def boundary_seeks(cue_list, fps):
+    """Seek targets around every cue boundary b (D20.6): b - 1 ms, b, b + 1 ms, the browser's
+    microsecond-truncated b - 1 us, b floored to the frame grid, and the edges of the one-frame
+    tolerance itself (b - 1/fps +- 1 ms), with the window each must resolve to."""
+    starts = [vtt_start(c) for c in cue_list]
+    frame = 1 / fps
+    rows = []
+    for i in range(1, len(cue_list)):
+        b, lo, hi = starts[i], starts[i - 1], (starts[i + 1] if i + 1 < len(starts) else cue_list[-1]["end"])
+        cand = [("b-1ms", b - 0.001), ("b", b), ("b+1ms", b + 0.001), ("b-1us", math.floor(b * 1e6) / 1e6 - 1e-6),
+                ("frame-floor", math.floor(b * fps + 1e-9) / fps), ("inside-tolerance", b - frame + 0.001),
+                ("outside-tolerance", b - frame - 0.001)]
+        for name, t in cand:
+            if lo + 0.002 < t < hi - 0.002:
+                rows.append({"boundary": cue_list[i]["cue"], "at": name, "t": round(t, 6),
+                             "expected": cue_list[resolve(starts, t, fps)]["cue"],
+                             "strict_half_open": cue_list[max(k for k, s in enumerate(starts) if s <= t)]["cue"]})
+    return rows
+
+
+def _js(expr):
+    return {"eval": f"(async () => {{ const D = window.__iveDrive; {expr} }})()"}
+
+
 def ive_gates(lesson, ive_dir, cue_list, timing):
+    """Every IVE check runs on the page opened from disk (file://, AC-6.7)."""
     sha = lesson.sha256()
     work = ive_dir.parent / "work" / "ive"
+    shots = ive_dir.parent / "shots"
     gates = []
+    fps = timing["fps"]
+    url = (ive_dir / "index.html").resolve().as_uri()
+    drive = {"eval": IVE_DRIVE.read_text(), "as": "drive"}
+    ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
     answer_cues = [c for c in cue_list if c["kind"] == "answer"]
-    with LocalServer(ive_dir) as srv:
-        url = srv.url + "/index.html"
-        ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
-        steps = [ready]
-        # pause/seek: every cue at three points (just after its start, inside it, just before its end)
-        for c in cue_list:
-            for t in _pause_points(c):
-                steps += [{"eval": f"(async () => {{ const v = document.getElementById('v'); v.pause(); v.currentTime = {t:.3f}; "
-                                   f"await new Promise(r => v.addEventListener('seeked', r, {{once: true}})); "
-                                   f"await new Promise(r => setTimeout(r, 150)); "
-                                   f"const s = document.getElementById('state'); return {{t: {t:.3f}, state: s.dataset.state, cue: s.dataset.cue}}; }})()",
-                           "as": f"seek:{c['cue']}@{t:.3f}"}]
-        # leak: 0.1 s before each answer cue
-        for c in answer_cues:
-            q = next(x for x in cue_list if x.get("question") and x["question"]["scene"] == c["answer_for"])
-            sc = next(s for s in timing["scenes"] if s["id"] == c["answer_for"])
-            words = [w.strip().lower() for w in lesson.fact(sc["question"]["answer_fact"])["value"].split("\n") if w.strip()]
-            t = c["start"] - 0.1
-            steps += [{"eval": f"(async () => {{ const v = document.getElementById('v'); v.pause(); v.currentTime = {t:.3f}; "
-                               f"await new Promise(r => v.addEventListener('seeked', r, {{once: true}})); "
-                               f"await new Promise(r => setTimeout(r, 200)); return ({LEAK_JS})({json.dumps(words)}); }})()",
-                       "as": f"leak:{c['cue']}"},
-                      {"shot": str(ive_dir.parent / "shots" / f"ive-before-answer-{c['cue']}.png"), "full": True}]
-        # chapters: click each, read state
-        steps += [{"eval": "(async () => { const out = []; const bs = [...document.querySelectorAll('#chapters button')]; "
-                           "const v = document.getElementById('v'); "
-                           "for (const b of bs) { b.click(); await new Promise(r => v.addEventListener('seeked', r, {once: true})); "
-                           "await new Promise(r => setTimeout(r, 150)); out.push({t: v.currentTime, paused: v.paused, "
-                           "state: document.getElementById('state').dataset.state}); } return out; })()", "as": "chapters"},
-                  {"eval": "(async () => { const v = document.getElementById('v'); v.currentTime = v.duration - 0.05; "
-                           "await new Promise(r => v.addEventListener('seeked', r, {once: true})); await new Promise(r => setTimeout(r, 150)); "
-                           "const b = document.querySelector('#tx li button'); const n = document.querySelectorAll('#tx li').length; b.click(); "
-                           "await new Promise(r => v.addEventListener('seeked', r, {once: true})); "
-                           "const caps = [...v.textTracks].find(t => t.kind === 'captions'); const cb = document.getElementById('caps'); "
-                           "const m0 = caps.mode; cb.click(); const m1 = caps.mode; cb.click(); const m2 = caps.mode; "
-                           "return {transcript_items_at_end: n, seek_after_click: v.currentTime, caption_modes: [m0, m1, m2], "
-                           "chapters: document.querySelectorAll('#chapters li').length, can_play_h264: v.canPlayType('video/mp4; codecs=\"avc1.640028\"'), "
-                           "readyState: v.readyState, error: v.error && v.error.code, "
-                           "nav_kinds: [...new Set(window.__ptkNav.map(e => e.kind))], nav_events: window.__ptkNav.length}; })()",
-                   "as": "controls"}]
-        jobs = [{"id": "ive-behaviour", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": steps}]
-        for w in WIDTHS:
-            for scn in SCHEMES:
-                jobs.append({"id": f"ive-shot:{w}:{scn}", "type": "script", "url": url, "width": w, "height": 900, "scheme": scn,
-                             "steps": [ready, {"eval": f"(async () => {{ const v = document.getElementById('v'); v.currentTime = {cue_list[-2]['start'] + 0.3:.3f}; "
-                                                       "await new Promise(r => v.addEventListener('seeked', r, {once: true})); "
-                                                       "await new Promise(r => setTimeout(r, 300)); return 1; })()", "as": "seek"},
-                                       {"shot": str(ive_dir.parent / "shots" / f"ive-{w}-{scn}.png"), "full": True}]})
-                jobs.append({"id": f"ive-measure:{w}:{scn}", "type": "shot", "url": url, "width": w, "height": 900, "scheme": scn})
-        jobs.append({"id": "ive-nojs", "type": "shot", "url": url, "width": 1440, "height": 900, "js": False,
-                     "shot": str(ive_dir.parent / "shots" / "ive-nojs-1440.png")})
-        jobs.append({"id": "ive-nojs-dom", "type": "script", "url": url, "width": 390, "height": 900, "js": False,
-                     "steps": [{"shot": str(ive_dir.parent / "shots" / "ive-nojs-390.png"), "full": True}]})
-        res = shoot(jobs, work, sha)
+    # pause / seek: every cue at three points; then the boundary seeks; then each chapter
+    steps = [ready, drive]
+    for c in cue_list:
+        for t in _pause_points(c):
+            steps.append({**_js(f"return D.seek({t:.3f});"), "as": f"seek:{c['cue']}@{t:.3f}"})
+    bseeks = boundary_seeks(cue_list, fps)
+    for i, b in enumerate(bseeks):
+        steps.append({**_js(f"const s = await D.seek({b['t']:.6f}); return {{...s, resolved: window.__ptkIve.resolve(s.t)}};"),
+                      "as": f"boundary:{i}"})
+    steps.append({**_js("const out = []; for (const b of document.querySelectorAll('#chapters button')) { "
+                        "const p = D.once(D.v(), 'seeked'); b.click(); await p; await D.sleep(60); "
+                        "out.push({...D.state(), current: b.getAttribute('aria-current')}); } return out;"), "as": "chapters"})
+    steps.append({**_js("const v = D.v(); await D.seek(v.duration - 0.05); const n = document.querySelectorAll('#tx li').length; "
+                        "const p = D.once(v, 'seeked'); document.querySelector('#tx li button').click(); await p; "
+                        "const caps = [...v.textTracks].find((t) => t.kind === 'captions'); const cb = document.getElementById('caps'); "
+                        "const m0 = caps.mode; cb.click(); const m1 = caps.mode; cb.click(); const m2 = caps.mode; "
+                        "return {transcript_items_at_end: n, seek_after_click: v.currentTime, caption_modes: [m0, m1, m2], "
+                        "chapters: document.querySelectorAll('#chapters li').length, readyState: v.readyState, "
+                        "error: v.error && v.error.code, nav: window.__ptkNav};"), "as": "controls"})
+    jobs = [{"id": "ive-behaviour", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": steps}]
+    # the no-answer leak: paused (EXPLORE) 0.1 s before each answer cue
+    for c in answer_cues:
+        sc = next(s for s in timing["scenes"] if s["id"] == c["answer_for"])
+        words = [w.strip().lower() for w in lesson.fact(sc["question"]["answer_fact"])["value"].split("\n") if w.strip()]
+        jobs.append({"id": f"ive-leak:{c['cue']}", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": [
+            ready, drive, _js(f"await D.seek({c['start'] - 0.1:.3f}); document.getElementById('explore').click(); await D.sleep(80); await D.frame(); return 1;"),
+            {**_js(f"return D.leak({json.dumps(words)});"), "as": "leak"},
+            {"shot": str(shots / f"ive-before-answer-{c['cue']}.png"), "full": True}]})
+    # FILM / EXPLORE / RETURN (AC-6.6), from a moment after every question is answered
+    film_cue = next((c for c in cue_list if c["kind"] == "state" and len(c["state"]["output"]) >= 2), cue_list[-1])
+    t_film = round(min(film_cue["start"] + 0.5, film_cue["end"] - 0.1), 3)
+    flow = [ready, drive,
+            {**_js(f"await D.seek({t_film}); return D.state();"), "as": "film"},
+            {**_js("const v = D.v(); await v.play(); await D.sleep(400); document.getElementById('explore').click(); "
+                   "await D.sleep(80); return {...D.state(), returnTime: window.__ptkIve.returnTime(), "
+                   "expected_cue: window.__ptkIve.resolve(window.__ptkIve.returnTime())};"), "as": "explore"},
+            {**_js("const r = document.querySelector('#live-n input[value=\"3\"]'); if (r) r.click(); "
+                   "const b = document.getElementById('live-brk'); if (b) b.click(); await D.sleep(60); return D.state();"), "as": "edited"},
+            {**_js("const v = D.v(); const p = D.once(v, 'playing'); document.getElementById('return').click(); await p; "
+                   "await D.sleep(150); const r = window.__ptkNav.filter((e) => e.action === 'return').pop(); "
+                   "return {...D.state(), return_position: r && r.position, returnTime: window.__ptkIve.returnTime(), "
+                   "film_cue: window.__ptkIve.resolve(v.currentTime), edits_left: document.querySelectorAll('[data-edit], .nval.changed').length};"),
+             "as": "returned"},
+            {**_js("const v = D.v(); v.pause(); await D.sleep(80); const brk = document.getElementById('live-brk'); "
+                   "const n = document.querySelector('#live-n input:checked'); "
+                   "return {...D.state(), n_checked: n && n.value, brk_pressed: brk && brk.getAttribute('aria-pressed')};"), "as": "repaused"},
+            {**_js("return window.__ptkNav;"), "as": "nav"}]
+    jobs.append({"id": "ive-explore", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": flow})
+    # file:// (AC-6.7): every track loaded, the MP4 decodes
+    jobs.append({"id": "ive-files", "type": "script", "url": url, "width": 1440, "height": 900, "steps": [
+        ready, drive, {**_js("const v = D.v(); await D.seek(1.0); await D.frame(); return {protocol: location.protocol, "
+                             "tracks: D.tracks(), track_src: [...document.querySelectorAll('track')].map((t) => t.src.split(':')[0]), "
+                             "readyState: v.readyState, error: v.error && v.error.code, duration: v.duration, "
+                             "h264: v.canPlayType('video/mp4; codecs=\"avc1.640028\"')};"), "as": "files"}]})
+    # screenshots and layout: FILM and EXPLORE (with an edit) at each width and scheme
+    for w in WIDTHS:
+        for scn in SCHEMES:
+            jobs.append({"id": f"ive-shot:{w}:{scn}", "type": "script", "url": url, "width": w, "height": 900, "scheme": scn,
+                         "steps": [ready, drive, _js(f"await D.seek({t_film}); await D.frame(); return 1;"),
+                                   {**_js("return D.layout();"), "as": "film_layout"},
+                                   {"shot": str(shots / f"ive-{w}-{scn}.png"), "full": True},
+                                   _js("document.getElementById('explore').click(); await D.sleep(60); "
+                                       "const r = document.querySelector('#live-n input[value=\"3\"]'); if (r) r.click(); "
+                                       "await D.sleep(60); await D.frame(); return 1;"),
+                                   {**_js("return D.layout();"), "as": "explore_layout"},
+                                   {"shot": str(shots / f"ive-{w}-{scn}-explore.png"), "full": True}]})
+            jobs.append({"id": f"ive-measure:{w}:{scn}", "type": "shot", "url": url, "width": w, "height": 900, "scheme": scn})
+    # no JavaScript: posters decoded before anything is asserted (the WP5 flake), then the shots
+    nojs_check = {"eval": "(async () => { const imgs = [...document.images]; "
+                          "await Promise.all(imgs.map((i) => i.decode().then(() => true, () => false))); "
+                          "const h = document.getElementById('answers'), tx = document.querySelector('noscript ol.tx'); "
+                          "return {images: imgs.map((i) => ({src: i.getAttribute('src'), ok: i.complete && i.naturalWidth > 0})), "
+                          "answers_heading_before_transcript: !!(h && tx && (h.compareDocumentPosition(tx) & Node.DOCUMENT_POSITION_FOLLOWING)), "
+                          "transcript_items: document.querySelectorAll('ol.tx li').length}; })()", "as": "nojs"}
+    for w in WIDTHS:
+        jobs.append({"id": f"ive-nojs:{w}", "type": "script", "url": url, "width": w, "height": 900, "js": False,
+                     "steps": [nojs_check, {"shot": str(shots / f"ive-nojs-{w}.png"), "full": True}]})
+    res = shoot(jobs, work, sha)
     R = {r["id"]: r for r in res["results"]}
     beh = R["ive-behaviour"]
     vals = beh.get("values", {})
@@ -495,43 +556,93 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     explorer = {(c["cue"], t): (vals.get(f"seek:{c['cue']}@{t:.3f}") or {}).get("state")
                 for c in cue_list for t in _pause_points(c)}
     seek_rows, bad_seek = frames.compare_pauses(cue_list, frame_at, explorer, _pause_points)
+    brows = []
+    for i, b in enumerate(bseeks):
+        got = vals.get(f"boundary:{i}") or {}
+        brows.append({**b, "actual_t": got.get("t"), "shown_cue": got.get("cue"), "resolved": got.get("resolved")})
+    bad_b = [r for r in brows if r["shown_cue"] != r["expected"] or r["resolved"] != r["expected"]]
     chap = vals.get("chapters") or []
-    exp_chap = []
-    for s in timing["scenes"]:
-        k = max((i for i, c in enumerate(cue_list) if c["start"] <= s["start"] + 1e-3), default=0)
-        exp_chap.append(cue_list[k]["state"]["state_id"])
-    chap_bad = [{"chapter": i, "expected": e, "shown": (chap[i] if i < len(chap) else {}).get("state")}
-                for i, e in enumerate(exp_chap) if i >= len(chap) or chap[i].get("state") != e]
-    gates.append(g("ive.pause-state", "ive", beh.get("ok") and not bad_seek and not chap_bad
+    starts = [vtt_start(c) for c in cue_list]
+    exp_chap = [cue_list[resolve(starts, float(f"{s['start']:.3f}"), fps)]["cue"] for s in timing["scenes"]]
+    chap_bad = [{"chapter": i, "expected": e, "shown": (chap[i] if i < len(chap) else {}).get("cue")}
+                for i, e in enumerate(exp_chap) if i >= len(chap) or chap[i].get("cue") != e or chap[i].get("current") != "true"]
+    gates.append(g("ive.pause-state", "ive", beh.get("ok") and not bad_seek and not chap_bad and not bad_b and bool(brows)
                    and len(seek_rows) == len(times) and len(frame_at) == len(set(times)),
                    {"rule": "explorer == cue state, and explorer == state derived from the frame (a transition or "
-                            "answer cue may show a frame in mid-tween of the same program, between its state and the next)", "pauses_checked": len(seek_rows),
-                    "mismatches": bad_seek, "chapter_jumps": chap, "chapter_mismatches": chap_bad,
+                            "answer cue may show a frame in mid-tween of the same program, between its state and the next); "
+                            "windows are half-open and a time under one frame before a boundary resolves to the later window",
+                    "pauses_checked": len(seek_rows), "mismatches": bad_seek, "chapter_jumps": chap, "chapter_mismatches": chap_bad,
+                    "boundary_seeks": len(brows), "boundary_mismatches": bad_b,
+                    "boundary_cases_strict_rule_gets_wrong": sum(1 for r in brows if r["strict_half_open"] != r["expected"]),
                     "frame_states": {f"{r['cue']}@{r['t']}": r["frame_state"] for r in seek_rows},
                     "error": beh.get("error", "")[:500]}))
-    leaks = {k: v for k, v in vals.items() if k.startswith("leak:")}
-    leak_bad = [{"cue": k, **v} for k, v in leaks.items() if v.get("hits")]
-    gates.append(g("ive.no-answer-leak", "ive", beh.get("ok") and bool(leaks) and not leak_bad,
-                   {"checked_before": {k: v for k, v in leaks.items()}, "leaks": leak_bad},
+    leaks = {k: (R[k].get("values") or {}).get("leak") or {"error": R[k].get("error", "")[:300]} for k in R if k.startswith("ive-leak:")}
+    leak_bad = [{"job": k, **v} for k, v in leaks.items() if v.get("hits") or v.get("error") or v.get("mode") != "explore"]
+    nojs = {w: (R[f"ive-nojs:{w}"].get("values") or {}).get("nojs") or {} for w in WIDTHS}
+    order_ok = all(n.get("answers_heading_before_transcript") for n in nojs.values())
+    gates.append(g("ive.no-answer-leak", "ive", bool(leaks) and not leak_bad and order_ok,
+                   {"checked_before": leaks, "leaks": leak_bad, "noscript_answers_heading_first": order_ok,
+                    "rule": "paused 0.1 s before each answer cue: no answer word in the DOM (noscript excluded), alt text, "
+                            "aria-label, title or the transcript so far; the noscript transcript sits after its "
+                            "'contains the answers' heading"},
                    "" if leaks else "no answer cue found"))
     ctl = vals.get("controls") or {}
-    nojs = R.get("ive-nojs", {})
+    nav = (ctl.get("nav") or []) + ((R["ive-explore"].get("values") or {}).get("nav") or [])
+    nav_bad = [e for e in nav if e.get("event_type") != "navigation" or e.get("action") not in NAV_ACTIONS
+               or set(e) != NAV_KEYS]
+    imgs_ok = all(n.get("images") and all(i["ok"] for i in n["images"]) for n in nojs.values())
     ok_ctl = (ctl.get("chapters") == len(timing["scenes"]) and ctl.get("caption_modes") == ["showing", "hidden", "showing"]
               and ctl.get("transcript_items_at_end") == len(timing["cues"]) and ctl.get("seek_after_click") is not None
-              and abs(ctl["seek_after_click"] - timing["cues"][0]["start"]) < 0.25 and ctl.get("nav_kinds") == ["navigation"])
-    gates.append(g("ive.controls", "ive", ok_ctl and nojs.get("ok") and nojs.get("imagesLoaded"),
-                   {"controls": ctl, "nojs_images_loaded": nojs.get("imagesLoaded"), "nojs_shot": "shots/ive-nojs-1440.png"}))
+              and abs(ctl["seek_after_click"] - timing["cues"][0]["start"]) < 0.01 and bool(nav) and not nav_bad)
+    gates.append(g("ive.controls", "ive", ok_ctl and imgs_ok and all(R[f"ive-nojs:{w}"].get("ok") for w in WIDTHS),
+                   {"controls": {k: v for k, v in ctl.items() if k != "nav"}, "nav_events": len(nav),
+                    "nav_actions": sorted({e.get("action") for e in nav}), "nav_not_navigation": nav_bad[:5],
+                    "nojs": nojs, "nojs_shots": [f"shots/ive-nojs-{w}.png" for w in WIDTHS]}))
+    ex = R["ive-explore"].get("values") or {}
+    f0, e1, e2, r3, p4 = (ex.get(k) or {} for k in ("film", "explore", "edited", "returned", "repaused"))
+    rt = e1.get("returnTime")
+    p4_state = next((c["state"] for c in cue_list if c["cue"] == p4.get("cue")), None)
+    alt = ((lesson.data.get("figure") or {}).get("compare") or {}).get("program")
+    checks = {
+        "film_follows_clock": f0.get("mode") == "film" and f0.get("origin") == "film",
+        "explore_on_pause": e1.get("mode") == "explore" and e1.get("paused") is True and e1.get("origin") == "film"
+        and e1.get("cue") == e1.get("expected_cue"),
+        "edit_marked_yours": e2.get("origin") == "yours" and bool(e2.get("edit")) and e2.get("border") == "dashed"
+        and e1.get("border") != "dashed" and e2.get("output") != e1.get("output"),
+        "return_resumes_at_pause": r3.get("mode") == "film" and r3.get("paused") is False and rt is not None
+        and r3.get("return_position") is not None and abs(r3["return_position"] - rt) < 0.002
+        and rt - 0.001 <= r3.get("t", -1) < rt + 1.0,
+        "return_shows_film_state": r3.get("origin") == "film" and r3.get("cue") == r3.get("film_cue") and r3.get("edits_left") == 0,
+        "no_edit_after_return": p4.get("origin") == "film" and p4.get("edit") is None and p4_state is not None
+        and p4.get("n_checked") in (None, p4_state["vars"].get(next(iter(p4_state["vars"]), ""), None))
+        and p4.get("brk_pressed") in (None, "true" if p4_state["program"] == alt else "false"),
+    }
+    gates.append(g("ive.explore-return", "ive", R["ive-explore"].get("ok") and all(checks.values()),
+                   {"checks": checks, "film": f0, "explore": e1, "edited": e2, "returned": r3, "repaused": p4,
+                    "error": R["ive-explore"].get("error", "")[:500]}))
+    fl = (R["ive-files"].get("values") or {}).get("files") or {}
+    want = {"captions": len(timing["cues"]), "chapters": len(timing["scenes"]), "metadata": len(cue_list)}
+    got_tracks = {t["kind"]: t["cues"] for t in fl.get("tracks", [])}
+    file_console = [m for j in R.values() if j.get("type") == "script" and not j["id"].startswith("ive-nojs")
+                    for m in j.get("console", []) if m.startswith(("error", "pageerror"))]
+    gates.append(g("ive.file-protocol", "ive", fl.get("protocol") == "file:" and got_tracks == want
+                   and fl.get("readyState", 0) >= 2 and not fl.get("error") and set(fl.get("track_src", [])) == {"blob"}
+                   and not file_console,
+                   {"files": fl, "expected_cues": want, "console_errors": file_console[:10]}))
     pages, errs = [], []
     for w in WIDTHS:
         for scn in SCHEMES:
             m = R[f"ive-measure:{w}:{scn}"]
+            sv = R[f"ive-shot:{w}:{scn}"].get("values") or {}
             keys = (m.get("measure") or {}).get("keyNodes", [])
             missing = [k for k in ("code", "output") if k not in keys]
             pages.append({"width": w, "scheme": scn, "key_nodes": keys,
                           "problems": (m.get("measure") or {}).get("problems", ["job failed"])
-                          + ([{"kind": "key-node-missing", "keys": missing}] if missing else []),
+                          + ([{"kind": "key-node-missing", "keys": missing}] if missing else [])
+                          + [{**pr, "at": st} for st in ("film_layout", "explore_layout")
+                             for pr in (sv.get(st) or {"problems": [{"kind": "not-measured"}]})["problems"]],
                           "console": [c for c in m.get("console", []) if "error" in c.lower() or "violat" in c.lower()],
-                          "shot": f"shots/ive-{w}-{scn}.png"})
+                          "shots": [f"shots/ive-{w}-{scn}.png", f"shots/ive-{w}-{scn}-explore.png"]})
             if not R[f"ive-shot:{w}:{scn}"].get("ok"):
                 errs.append(R[f"ive-shot:{w}:{scn}"].get("error", "")[:300])
     bad_pages = [p for p in pages if p["problems"] or p["console"]]

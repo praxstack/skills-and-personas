@@ -17,17 +17,31 @@ Cue-to-state rule (D17.2, D18.2):
     * a change of program is a diff morph: its transition cue holds the old program's state
       until `shown`, when the frame's rows become the new program's (video.plan_screen).
 
-The page reads state only from cue payloads (the VTT is fetched by the browser, it is not in
-the DOM), so no future state or answer text sits in the document before its cue.
-Without JS the page shows the poster sequence and the full transcript.
+Clock rule (D20.6): the video's currentTime is the only time source. Cue and chapter windows are
+half-open [start, next start), and a time less than one frame before a boundary resolves to the
+later window, because browsers round seek targets:
+
+    ──── window k-1 ────┤◀ 1 frame ▶│──── window k ────
+                        └─ resolves to k ─┘
+
+FILM / EXPLORE / RETURN (AC-6.6): in FILM the panel follows the cue at currentTime. Pausing or
+"Pause and explore" enters EXPLORE, seeded at the film's state; steps and live edits there are
+marked as the learner's (a dashed panel, "Your edit, not in the film"). RETURN drops every edit,
+seeks back to the paused time and resumes, so the panel shows the film's state again.
+
+file:// (AC-6.7): Chrome refuses <track src="x.vtt"> from a file:// page, so ive-data.js carries the
+exact text of captions.vtt, chapters.vtt and states.vtt and the page loads each as a blob: track.
+That file is a separate script, not part of the document, so no future state or answer text sits
+in the DOM before its cue. Without JS the page shows the poster sequence and the full transcript,
+after a heading that says they contain the answers.
 """
-import base64
-import hashlib
 import json
 import os
+import re
 import shutil
 
-from .. import fonts, host, text
+from .. import errors, host, text
+from . import explorer
 from . import path as rail
 from ..text import esc
 
@@ -96,204 +110,131 @@ def write_metadata_vtt(path, cue_list):
     path.write_text("\n".join(lines))
 
 
-CSS = """
-:root{--paper:%(lp)s;--card:%(lc)s;--ink:%(li)s;--soft:%(ls)s;--muted:%(lm)s;--rule:%(lr)s;--faint:%(lf)s;--blue:%(lb)s;--tint:%(lt)s;--hl:%(lh)s}
-@media (prefers-color-scheme: dark){:root{--paper:%(dp)s;--card:%(dc)s;--ink:%(di)s;--soft:%(ds)s;--muted:%(dm)s;--rule:%(dr)s;--faint:%(df)s;--blue:%(db)s;--tint:%(dt)s;--hl:%(dh)s}}
-*{box-sizing:border-box}
-html{color-scheme:light dark}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.55 'Source Serif 4',Georgia,serif;font-variant-numeric:lining-nums tabular-nums}
-.wrap{max-width:1360px;margin:0 auto;padding:28px 16px 64px}
-.kicker{margin:0;font:600 13px/1.4 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--blue);text-transform:uppercase}
-h1{margin:6px 0 20px;font:600 clamp(28px,4vw,44px)/1.15 'Source Serif 4',serif;letter-spacing:-.01em}
-.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
-@media (max-width: 900px){.grid{grid-template-columns:minmax(0,1fr)}}
-video{display:block;width:100%%;height:auto;background:#000;border-radius:12px}
-.bar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
-button{font:500 14px/1.2 'JetBrains Mono',monospace;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;min-height:44px;cursor:pointer}
-button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-button[aria-pressed="true"]{background:var(--tint);border-color:var(--blue)}
-button:disabled{color:var(--muted);cursor:default}
-.panel{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:18px}
-.plabel{margin:0 0 4px;font:600 12px/1.4 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.slabel{margin:0 0 12px;font:600 22px/1.3 'Caveat',cursive;color:var(--blue)}
-.hint{margin:0 0 10px;font-size:15px;color:var(--soft)}
-.code{margin:0 0 14px;padding:10px 0;border:1px solid var(--rule);border-radius:10px;overflow-x:auto;font:500 14px/1.7 'JetBrains Mono',monospace}
-.ln{display:flex;white-space:pre;padding:0 10px 0 0;color:var(--muted)}
-.ln .no{flex:0 0 44px;text-align:right;padding-right:12px;color:var(--faint)}
-.ln.exec{color:var(--ink)}.ln.exec .no{color:var(--blue);font-weight:700}
-.ln.cur{background:var(--hl);color:var(--ink);box-shadow:inset 4px 0 0 var(--blue)}
-.out{margin:0 0 10px;padding:0;list-style:none;font:600 20px/1.5 'JetBrains Mono',monospace}
-.out li{display:flex;gap:14px}.out .k{color:var(--faint);font-weight:500;font-size:14px;align-self:center;min-width:16px}
-.out .empty{color:var(--muted);font:italic 400 16px/1.5 'Source Serif 4',serif}
-.vars{margin:0;font:500 15px/1.4 'JetBrains Mono',monospace;color:var(--soft)}
-.q{margin:14px 0 0;padding:14px 16px;background:var(--tint);border:2px solid var(--blue);border-radius:12px}
-.q p{margin:0}.q .qt{font:500 19px/1.4 'Source Serif 4',serif}
-.steps{display:flex;gap:8px;margin:12px 0 0}
-section.side{display:grid;gap:18px}
-h2{margin:0 0 8px;font:600 13px/1.4 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-ol.chapters,ol.tx{margin:0;padding:0;list-style:none}
-ol.chapters li,ol.tx li{margin:0 0 6px}
-ol.chapters button,ol.tx button{width:100%%;text-align:left;font:400 16px/1.4 'Source Serif 4',serif}
-ol.tx button[aria-current="true"]{background:var(--tint);border-color:var(--blue)}
-.time{font:500 12px/1 'JetBrains Mono',monospace;color:var(--muted);margin-right:8px}
-.prov{margin:28px 0 0;font:400 13px/1.5 'JetBrains Mono',monospace;color:var(--muted);overflow-wrap:anywhere}
-.posters{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.posters img{width:100%%;height:auto;border-radius:8px;border:1px solid var(--rule)}
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
-"""
-
-JS = r"""
-(function () {
-  var v = document.getElementById('v');
-  var $ = function (id) { return document.getElementById(id); };
-  var S = JSON.parse($('ptk-ui').textContent);
-  var nav = window.__ptkNav = [];
-  function log(kind, extra) { nav.push(Object.assign({ kind: 'navigation', action: kind, t: +v.currentTime.toFixed(3) }, extra || {})); }
-  function track(kind) { for (var i = 0; i < v.textTracks.length; i++) if (v.textTracks[i].kind === kind) return v.textTracks[i]; return null; }
-  var meta = track('metadata'), caps = track('captions'), chaps = track('chapters');
-  meta.mode = 'hidden'; chaps.mode = 'hidden'; caps.mode = 'showing';
-  var cues = [], shownIdx = -1, viewIdx = -1;
-  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
-  function load() {
-    if (!meta.cues || !meta.cues.length) return false;
-    cues = [];
-    for (var i = 0; i < meta.cues.length; i++) { var c = meta.cues[i]; cues.push({ start: c.startTime, end: c.endTime, p: JSON.parse(c.text) }); }
-    return true;
-  }
-  function idxAt(t) { var k = -1; for (var i = 0; i < cues.length; i++) if (cues[i].start <= t + 1e-3) k = i; return k; }
-  function render(i) {
-    var box = $('state'); box.textContent = '';
-    if (i < 0) return;
-    var p = cues[i].p, st = p.state;
-    box.dataset.state = st.state_id; box.dataset.cue = p.cue; box.dataset.kind = p.kind;
-    box.appendChild(el('p', 'slabel', st.label)).setAttribute('data-trace', st.state_id);
-    var code = el('div', 'code'); code.setAttribute('data-code', st.program); code.setAttribute('role', 'group'); code.setAttribute('data-key', 'code');
-    code.setAttribute('aria-label', S.code_label + ': ' + st.program_path);
-    st.code.forEach(function (row) {
-      var ln = el('div', 'ln' + (st.path.indexOf(row[0]) >= 0 ? ' exec' : '') + (row[0] === st.line ? ' cur' : ''));
-      ln.appendChild(el('span', 'no', String(row[0]))); ln.appendChild(el('span', 'src', row[1])); code.appendChild(ln);
-    });
-    box.appendChild(el('p', 'plabel', S.code_label)); box.appendChild(code);
-    box.appendChild(el('p', 'plabel', S.output_label));
-    var out = el('ol', 'out'); out.setAttribute('data-role', 'output'); out.setAttribute('data-key', 'output');
-    if (!st.output.length) out.appendChild(el('li', 'empty', '—'));
-    st.output.forEach(function (o, k) { var li = el('li'); li.appendChild(el('span', 'k', String(k + 1))); var s = el('span', 'val', o.text); s.setAttribute('data-fact', o.fact); li.appendChild(s); out.appendChild(li); });
-    box.appendChild(out);
-    var vars = Object.keys(st.vars).map(function (k) { return k + ' = ' + st.vars[k]; }).join('   ');
-    var vp = el('p', 'vars', S.vars_label + ': ' + vars); vp.setAttribute('data-code', st.program); box.appendChild(vp);
-    if (p.question) { var q = el('div', 'q'); q.setAttribute('data-key', 'question'); q.appendChild(el('p', 'plabel', S.question_label)); var qt = el('p', 'qt', p.question.prompt); qt.setAttribute('data-question', p.question.scene); q.appendChild(qt); box.appendChild(q); }
-    $('prev').disabled = i <= 0; $('next').disabled = i >= shownIdx;
-  }
-  function sync(reason) {
-    if (!cues.length && !load()) return;
-    shownIdx = idxAt(v.currentTime); viewIdx = shownIdx; render(viewIdx); transcript();
-    if (reason) log(reason);
-  }
-  $('prev').addEventListener('click', function () { if (viewIdx > 0) { viewIdx--; render(viewIdx); log('step-back', { state: cues[viewIdx].p.state.state_id }); } });
-  $('next').addEventListener('click', function () { if (viewIdx < shownIdx) { viewIdx++; render(viewIdx); log('step-forward', { state: cues[viewIdx].p.state.state_id }); } });
-  var capBtn = $('caps');
-  capBtn.addEventListener('click', function () { var on = caps.mode !== 'showing'; caps.mode = on ? 'showing' : 'hidden'; capBtn.setAttribute('aria-pressed', String(on)); capBtn.textContent = on ? S.captions_on : S.captions_off; log('captions', { on: on }); });
-  function chapters() {
-    var list = $('chapters'); if (list.childNodes.length || !chaps.cues || !chaps.cues.length) return;
-    for (var i = 0; i < chaps.cues.length; i++) (function (c) {
-      var li = el('li'); var b = el('button'); b.appendChild(el('span', 'time', fmt(c.startTime))); b.appendChild(document.createTextNode(c.text));
-      b.addEventListener('click', function () { v.pause(); v.currentTime = c.startTime; log('chapter', { chapter: c.id }); }); li.appendChild(b); list.appendChild(li);
-    })(chaps.cues[i]);
-  }
-  function fmt(t) { var m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
-  var txBuilt = 0;
-  function transcript() {
-    // Only cues already reached are in the DOM: the transcript never runs ahead of the video.
-    if (!caps.cues) return;
-    var list = $('tx'), t = v.currentTime, n = 0;
-    for (var i = 0; i < caps.cues.length; i++) if (caps.cues[i].startTime <= t + 1e-3) n = i + 1;
-    while (list.childNodes.length > n) list.removeChild(list.lastChild);
-    for (var j = list.childNodes.length; j < n; j++) (function (c) {
-      var li = el('li'); var b = el('button'); b.appendChild(el('span', 'time', fmt(c.startTime))); b.appendChild(document.createTextNode(c.text));
-      b.addEventListener('click', function () { v.currentTime = c.startTime; log('transcript-seek', { cue: c.id }); }); li.appendChild(b); list.appendChild(li);
-    })(caps.cues[j]);
-    for (var k = 0; k < list.childNodes.length; k++) { var c = caps.cues[k]; list.childNodes[k].firstChild.setAttribute('aria-current', String(c.startTime <= t && t < c.endTime)); }
-  }
-  ['pause', 'seeked'].forEach(function (ev) { v.addEventListener(ev, function () { sync(ev); }); });
-  v.addEventListener('timeupdate', function () { var i = idxAt(v.currentTime); if (i !== shownIdx) sync(); else transcript(); });
-  v.addEventListener('play', function () { log('play'); });
-  [meta, chaps, caps].forEach(function (t) { t.addEventListener('cuechange', function () { chapters(); }); });
-  document.querySelectorAll('track').forEach(function (t) { t.addEventListener('load', function () { chapters(); sync(); }); });
-  v.addEventListener('loadedmetadata', function () { chapters(); sync(); });
-  document.documentElement.classList.add('js');
-  window.__ptkReady = function () { return cues.length > 0 && !!(chaps.cues && chaps.cues.length) && $('chapters').childNodes.length > 0; };
-})();
-"""
+IVE_DIR = host.PKG / "ptk" / "templates" / "ive"
+JS_UI = ("chapters", "code_label", "output_label", "vars_label", "question_label", "captions_on", "captions_off",
+         "ive_from_film", "ive_yours", "ive_mode_label_explore", "ive_mode_label_film", "ive_mode_explore",
+         "ive_mode_film", "x_on", "x_off", "x_captured", "x_computed", "x_tag_changed", "x_tag_nomatch", "enter_label",
+         "x_tag_fall", "exit_label", "x_tag_end")
+DECL_VAR = re.compile(r"^\s*int\s+(\w+)\s*=")
 
 
-def _csp_hash(s):
-    return "'sha256-" + base64.b64encode(hashlib.sha256(s.encode()).digest()).decode() + "'"
+def clock(t):
+    """m:ss, the same as the page's clock()."""
+    return f"{int(t // 60)}:{int(t % 60):02d}"
 
 
-def page(lesson, timing, cue_list, posters):
-    tk = fonts.tokens()["themes"]
-    m = {}
-    for p, th in (("l", "light"), ("d", "dark")):
-        for k, key in (("p", "paper"), ("c", "card"), ("i", "ink"), ("s", "soft"), ("m", "muted"), ("r", "rule"),
-                       ("f", "faint"), ("b", "blue"), ("t", "blue_tint"), ("h", "hl")):
-            m[p + k] = tk[th][key]
-    ui = {k: text.ui(k) for k in ("code_label", "output_label", "vars_label", "question_label", "captions_on",
-                                  "captions_off")}
-    used = " ".join([json.dumps(ui), lesson.data["title"], text.ui("kicker", topic=lesson.data["topic"]),
+def live_model(lesson):
+    """The EXPLORE panel's live edit: the WP4 switch model (case tables checked against the program
+    source and the facts' expect args), or None when the lesson is not a two-program switch lesson.
+    The page computes each view with the C17 switch rule; tests/test_ive.py checks every view
+    against explorer.expected_view (expect.py), which never shares code with the page."""
+    try:
+        m = explorer.switch_model(lesson)
+    except errors.ModelReferenceError:
+        return None
+    progs = {}
+    for pid, P in m["programs"].items():
+        first, last = rail.body_range(lesson.program_source(pid).split("\n"))
+        progs[pid] = {**{k: P[k] for k in ("id", "file", "sha", "n0", "n_line", "n_prefix", "n_suffix", "switch_line",
+                                           "close_line", "cases", "tail")},
+                      "lines": [row for row in P["lines"] if first <= row[0] <= last]}
+    var = DECL_VAR.match(progs[m["base"]]["n_prefix"]).group(1)
+    return {"base": m["base"], "alt": m["alt"], "n0": m["n0"], "domain": m["domain"], "toggle_label": m["toggle_label"],
+            "var": var, "programs": progs}
+
+
+def page_data(lesson, timing, cue_list, ive_dir, live):
+    """window.__ptkIveData, written to ive-data.js: the exact text of the three .vtt files (the page
+    turns them into blob: tracks, so they load from file://) plus UI strings and the live model.
+    It is a separate file, so no cue payload or answer is in the document."""
+    answers = [c for c in cue_list if c["kind"] == "answer"]
+    return {"fps": timing["fps"], "ui": {k: text.ui(k) for k in JS_UI}, "captions_label": "English",
+            "artifact_id": f"{lesson.id}:ive", "session_id": "local",
+            "tracks": {k: (ive_dir / f"{k}.vtt").read_text() for k in ("captions", "chapters", "states")},
+            "unlock_cue": answers[-1]["cue"] if answers else None, "live": live}
+
+
+def _live_html(lesson, live, unlock):
+    if not live:
+        return ""
+    lock = (f'<p class="locked" id="locked" hidden data-chrome="ive_locked">{esc(text.ui("ive_locked", time=clock(unlock)))}</p>'
+            if unlock is not None else '<p class="locked" id="locked" hidden></p>')
+    return (f'<div class="live" id="live" data-locked="false"><p class="lbl" data-chrome="ive_live_label">'
+            f'{esc(text.ui("ive_live_label"))}</p>{lock}<div class="livectl">'
+            f'<fieldset class="seg" id="live-n"><legend class="lbl" data-chrome="x_n_label">{esc(text.ui("x_n_label"))}</legend>'
+            f'<div class="opts" id="live-opts"></div></fieldset>'
+            f'<button type="button" class="pill" id="live-brk" aria-pressed="false"><span data-chrome="x_toggle">'
+            f'{esc(text.ui("x_toggle", k=live["toggle_label"]))}</span><span class="onoff" id="live-brk-state" '
+            f'data-chrome="x_off">{esc(text.ui("x_off"))}</span></button>'
+            f'<button type="button" class="pill" id="live-reset" disabled data-chrome="ive_live_reset">'
+            f'{esc(text.ui("ive_live_reset"))}</button></div></div>')
+
+
+def page(lesson, timing, cue_list, posters, live=None):
+    """The IVE page. Static text is chrome.json, the title, or narration in the no-JS block."""
+    script = (IVE_DIR / "ive.js").read_text()
+    answers = [c for c in cue_list if c["kind"] == "answer"]
+    unlock = answers[-1]["start"] if answers else None
+    used = " ".join([lesson.data["title"], text.ui("kicker", topic=lesson.data["topic"]), explorer.all_chrome_text(),
                      *[c["text"] for c in timing["cues"]], *[s["title"] for s in timing["scenes"]],
-                     *[json.dumps(c, ensure_ascii=False) for c in cue_list], *text.chrome()["strings"].values(),
-                     "0123456789:—"])
-    css = fonts.face_css({"serif": used, "serif_italic": used, "mono": used, "hand": used}) + CSS % m
-    ui_json = json.dumps(ui, ensure_ascii=False)
-    facts = lesson.by_id("facts")
+                     *[json.dumps(c, ensure_ascii=False) for c in cue_list],
+                     *[ln for P in (live or {}).get("programs", {}).values() for _, ln in P["lines"]],
+                     "0123456789:—·=; English"])
+    css = explorer.page_css(used, "base.css") + (IVE_DIR / "ive.css").read_text()
     src = lesson.program(lesson.data["figure"]["program"]) if lesson.data.get("figure") else lesson.data["programs"][0]
-    f0 = next(f for f in lesson.data["facts"] if f["program"] == src["id"] and f["select"]["stream"] == "stdout")
-    prov = text.provenance(lesson)
     tx_full = "".join(f'<li data-narration="{esc(c["id"])}"><span class="time" data-label="time">'
-                      f'{esc(text.vtt_time(c["start"])[3:8])}</span>{esc(c["text"])}</li>' for c in timing["cues"])
+                      f'{esc(clock(c["start"]))}</span><span>{esc(c["text"])}</span></li>' for c in timing["cues"])
     poster_html = "".join(f'<figure><img src="{esc(p["file"])}" alt="{esc(p["alt"])}" width="960" height="540">'
                           f'<figcaption data-label="scene-title">{esc(p["title"])}</figcaption></figure>' for p in posters)
-    csp = (f"default-src 'none'; script-src {_csp_hash(JS)}; style-src {_csp_hash(css)}; img-src 'self' data:; "
-           f"media-src 'self'; font-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'")
+    csp = (f"default-src 'none'; script-src 'self' {explorer.csp_hash(script)}; style-src {explorer.csp_hash(css)}; "
+           f"img-src 'self' data:; media-src 'self' blob:; font-src data:; connect-src 'none'; base-uri 'none'; "
+           f"form-action 'none'")
+    ui = text.ui
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <meta http-equiv="Content-Security-Policy" content="{csp}">
 <title>{esc(lesson.data['title'])}</title>
 <style>{css}</style>
 </head><body><div class="wrap">
-<p class="kicker" data-chrome="kicker">{esc(text.ui('kicker', topic=lesson.data['topic']))}</p>
-<h1 data-label="title">{esc(lesson.data['title'])}</h1>
-<noscript><p data-chrome="noscript">{esc(text.ui('noscript'))}</p><div class="posters">{poster_html}</div>
-<h2 data-chrome="transcript">{esc(text.ui('transcript'))}</h2><ol class="tx">{tx_full}</ol></noscript>
-<div class="grid">
-<section>
+<header class="mast"><p class="kicker" data-chrome="kicker">{esc(ui('kicker', topic=lesson.data['topic']))}</p>
+<h1 data-label="title">{esc(lesson.data['title'])}</h1></header>
+<main class="ive">
+<div class="ivegrid">
+<section class="film">
 <video id="v" controls preload="metadata" playsinline poster="{esc(posters[0]['file'])}" aria-label="{esc(lesson.data['title'])}">
 <source src="lesson.mp4" type="video/mp4">
-<track kind="captions" srclang="en" label="English" src="captions.vtt" default>
-<track kind="chapters" srclang="en" label="{esc(text.ui('chapters'))}" src="chapters.vtt">
-<track kind="metadata" srclang="en" label="states" src="states.vtt">
 </video>
-<div class="bar"><button id="caps" type="button" aria-pressed="true" data-chrome="captions_on">{esc(text.ui('captions_on'))}</button></div>
-<section class="panel" aria-live="polite" style-none>
-<p class="plabel" data-chrome="state_label">{esc(text.ui('state_label'))}</p>
-<p class="hint" data-chrome="explore_hint">{esc(text.ui('explore_hint'))}</p>
+<div class="modebar js-only"><p class="mode" id="mode" role="status" data-nodata="{esc(ui('ive_no_data'))}"><span class="tagm" id="mode-label" data-chrome="ive_mode_label_film">{esc(ui('ive_mode_label_film'))}</span><span id="mode-text" data-chrome="ive_mode_film">{esc(ui('ive_mode_film'))}</span></p>
+<div class="acts"><button type="button" class="pill primary" id="explore" data-chrome="ive_explore">{esc(ui('ive_explore'))}</button>
+<button type="button" class="pill primary" id="return" hidden data-chrome="ive_return">{esc(ui('ive_return'))}</button>
+<button type="button" class="pill" id="caps" aria-pressed="true" data-chrome="captions_on">{esc(ui('captions_on'))}</button></div></div>
+</section>
+<section class="xpanel js-only" id="xp" data-origin="film" data-mode="film" aria-labelledby="xp-h">
+<div class="xhead"><h2 class="lbl" id="xp-h" data-chrome="state_label">{esc(ui('state_label'))}</h2><p class="origin" id="origin" aria-live="polite"></p></div>
 <div id="state"></div>
-<div class="steps"><button id="prev" type="button" data-chrome="prev_state">{esc(text.ui('prev_state'))}</button>
-<button id="next" type="button" data-chrome="next_state">{esc(text.ui('next_state'))}</button></div>
-</section>
-</section>
-<section class="side">
-<div><h2 data-chrome="chapters">{esc(text.ui('chapters'))}</h2><ol id="chapters" class="chapters"></ol></div>
-<div><h2 data-chrome="transcript">{esc(text.ui('transcript'))}</h2><ol id="tx" class="tx"></ol></div>
-</section>
+<div class="tools" id="tools" hidden>
+<div class="steps"><p class="lbl" data-chrome="ive_steps_label">{esc(ui('ive_steps_label'))}</p>
+<button type="button" class="pill" id="prev" data-chrome="prev_state">{esc(ui('prev_state'))}</button>
+<button type="button" class="pill" id="next" data-chrome="next_state">{esc(ui('next_state'))}</button></div>
+{_live_html(lesson, live, unlock)}
 </div>
-<p class="prov" data-chrome="provenance">{esc(prov)}</p>
-<p class="prov" data-role="source" data-chrome="source_link">{esc(text.ui('source_link', path=f"lessons/{lesson.id}/{src['path']}"))}</p>
+</section>
+<section class="chap js-only"><h2 class="lbl" data-chrome="chapters">{esc(ui('chapters'))}</h2><ol id="chapters" class="chapters"></ol></section>
+<section class="txw js-only"><h2 class="lbl" data-chrome="transcript">{esc(ui('transcript'))}</h2><ol id="tx" class="tx"></ol></section>
 </div>
-<script type="application/json" id="ptk-ui">{ui_json}</script>
-<script>{JS}</script>
+<noscript><section class="nojs"><p data-chrome="noscript">{esc(ui('noscript'))}</p>
+<h2 class="lbl" id="answers" data-chrome="ive_answers">{esc(ui('ive_answers'))}</h2>
+<div class="posters">{poster_html}</div>
+<ol class="tx">{tx_full}</ol></section></noscript>
+</main>
+<footer class="foot"><p data-chrome="provenance">{esc(text.provenance(lesson))}</p>
+<p data-role="source" data-chrome="source_link">{esc(ui('source_link', path=f"lessons/{lesson.id}/{src['path']}"))}</p></footer>
+</div>
+<script src="ive-data.js"></script>
+<script>{script}</script>
 </body></html>
-""".replace(" style-none", "")
+"""
 
 
 def project(lesson, out, video_dir, timing):
@@ -317,6 +258,9 @@ def project(lesson, out, video_dir, timing):
                   "-q:v", "3", f], check=True, timeout=120)
         posters.append({"file": f"posters/{f.name}", "title": sc["title"],
                         "alt": f"{sc['title']} ({text.vtt_time(t)[3:8]})"})
-    (out / "index.html").write_text(page(lesson, timing, cue_list, posters))
+    live = live_model(lesson)
+    data = page_data(lesson, timing, cue_list, out, live)
+    (out / "ive-data.js").write_text("window.__ptkIveData = " + json.dumps(data, ensure_ascii=False) + ";\n")
+    (out / "index.html").write_text(page(lesson, timing, cue_list, posters, live))
     (out / "cues.json").write_text(json.dumps(cue_list, indent=1, ensure_ascii=False))
     return {"page": out / "index.html", "cues": cue_list, "posters": posters}

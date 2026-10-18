@@ -408,6 +408,9 @@ def scene_html(lesson, scene, index, count, timing):
     note_claim = sb["narration"][0]["claims"][0]
     reveal = round(scene["reveal"] - scene["start"], 3)
     swap = round(scene["shown"] - scene["start"], 4)
+    # the note states the new program's behaviour, so at a change of program it waits until the diff
+    # morph is complete (WP6); otherwise it fades in with the title
+    note_at = reveal + MORPH * plan["k"] if morph else 0.05
 
     # --- code card: one program set, or two for a morph (old rows turn into new rows, then swap)
     morph_html, morph_js = "", []
@@ -663,7 +666,7 @@ def scene_html(lesson, scene, index, count, timing):
     // scene boundary: the title and the note dip through the ground (out over the last 0.3 s, in
     // over the first 0.4 s of the next scene); the code card and output stay, so nothing jumps
     tl.fromTo(q('.title'), {{ opacity: 0, y: 12 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, 0);
-    tl.fromTo(q('.panel'), {{ opacity: 0, y: 10 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, 0.05);
+    tl.fromTo(q('.panel'), {{ opacity: 0, y: 10 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, {note_at:.3f});
     {f"tl.to(q('.title, .panel'), {{ opacity: 0, duration: 0.3, ease: 'power1.in' }}, {scene['duration'] - 0.3:.3f});" if index + 1 < count else ""}
     if (q('.out-new').length) tl.set(q('.out-new'), {{ opacity: 0 }}, 0);
     if (q('.ln.exec-new').length) tl.set(q('.ln.exec-new'), {{ color: '{t['label']}' }}, 0);
