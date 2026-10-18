@@ -146,10 +146,17 @@ def sync(sources: dict[str, Path], only: list[str] | None, discard_local: bool =
             return 1
     # A copy edited here but never recorded would be lost without a word.
     for name, *_ in picked:
-        entry = manifest["skills"].get(name)
-        if entry and (SKILLS / name).exists() and not discard_local and tree_hash(SKILLS / name)[0] != entry["tree_sha256"]:
-            print(f"FAIL {name}: skills/{name} was changed here and not recorded; record it (vendor.py record {name} --note ...) "
-                  "or pass --discard-local", file=sys.stderr)
+        here = SKILLS / name
+        if name in FILES:  # a single copied file, recorded by its sha256
+            entry = manifest.get("files", {}).get(name)
+            changed = entry and here.is_file() and hashlib.sha256(here.read_bytes()).hexdigest() != entry["sha256"]
+            fix = "make the change upstream"
+        else:
+            entry = manifest["skills"].get(name)
+            changed = entry and here.exists() and tree_hash(here)[0] != entry["tree_sha256"]
+            fix = f"record it (vendor.py record {name} --note ...)"
+        if changed and not discard_local:
+            print(f"FAIL {name}: skills/{name} was changed here and not recorded; {fix} or pass --discard-local", file=sys.stderr)
             return 1
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
         if only and name not in only:

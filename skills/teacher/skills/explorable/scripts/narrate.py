@@ -333,6 +333,21 @@ def video_length(path: Path) -> tuple[float, float]:
     return float(st.get("duration") or out.get("format", {}).get("duration") or 0), fps
 
 
+def picture_scene_ends(video: Path) -> list[float] | None:
+    """When each scene ends in an existing video's picture: from its .timing.json,
+    else from its .vtt (each cue ends where its scene ends; videos made before the
+    sidecar only have that). None when neither file is there."""
+    side = video.with_suffix(".timing.json")
+    if side.exists():
+        return [sc["start"] + sc["dur"] for sc in json.loads(side.read_text())["scenes"]]
+    cap = video.with_suffix(".vtt")
+    if cap.exists():
+        # Cue text escapes ">", so "-->" only appears in timing lines.
+        return [int(h) * 3600 + int(m) * 60 + int(s) + int(ms) / 1000
+                for h, m, s, ms in re.findall(r"--> (\d+):(\d\d):(\d\d)\.(\d{3})", cap.read_text())]
+    return None
+
+
 def remux_drift(total: float, length: float, fps: float) -> str | None:
     """Why the old picture can't carry the new sound, or None if it can. The
     picture was rendered as ceil(total * fps) frames, so a length more than a
@@ -412,12 +427,14 @@ def main() -> int:
                 raise SystemExit("--remux can't add the pen: it needs the marks from a fresh render")
             # The picture was drawn against the old scene timings. Refuse when the new narration changes
             # them, or the voice and captions would drift from the picture and -shortest would cut one.
-            old_timing = a.out.with_suffix(".timing.json")
-            if old_timing.exists():
-                before = [sc["start"] for sc in json.loads(old_timing.read_text())["scenes"]]
-                after = [sc["start"] for sc in timing["scenes"]]
-                if len(before) != len(after) or any(abs(x - y) > 0.05 for x, y in zip(before, after)):
-                    raise SystemExit("--remux: the new narration moves the scene timings; render the picture again without --remux")
+            # A matching total alone isn't enough: one scene longer and another shorter would pass it.
+            before = picture_scene_ends(a.out)
+            if before is None:
+                raise SystemExit(f"--remux needs {a.out.with_suffix('.timing.json').name} or {a.out.with_suffix('.vtt').name} "
+                                 "to check the scene timings; render the picture again without --remux")
+            after = [sc["start"] + sc["dur"] for sc in timing["scenes"]]
+            if len(before) != len(after) or any(abs(x - y) > 0.05 for x, y in zip(before, after)):
+                raise SystemExit("--remux: the new narration moves the scene timings; render the picture again without --remux")
             # And the picture's length must still match the new total, to the frame.
             drift = remux_drift(timing["total"], *video_length(a.out))
             if drift:

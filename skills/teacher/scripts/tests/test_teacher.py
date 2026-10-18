@@ -267,7 +267,8 @@ class Scripts(unittest.TestCase):
             subprocess.run(["git", "-C", str(root / "up"), "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x"], check=True)
             skills, manifest = root / "skills", root / "VENDOR.json"
             old = (vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES)
-            vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES = skills, manifest, {"s": ("up", "s", "x", "MIT")}, {}
+            vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES = skills, manifest, {"s": ("up", "s", "x", "MIT")}
+            vendor.FILES = {"n/f.txt": ("up", "s/SKILL.md", "x", "MIT")}
             try:
                 with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                     self.assertEqual(vendor.sync({"up": root / "up"}, None), 0)
@@ -275,7 +276,12 @@ class Scripts(unittest.TestCase):
                     self.assertEqual(vendor.sync({"up": root / "up"}, None), 1, "an unrecorded edit must stop the sync")
                     self.assertEqual((skills / "s/SKILL.md").read_text(), "edited here\n")
                     self.assertEqual(vendor.sync({"up": root / "up"}, None, discard_local=True), 0)
+                    (skills / "n/f.txt").write_text("edited here\n")
+                    self.assertEqual(vendor.sync({"up": root / "up"}, None), 1, "a copied file edited here stops the sync too")
+                    self.assertEqual((skills / "n/f.txt").read_text(), "edited here\n")
+                    self.assertEqual(vendor.sync({"up": root / "up"}, None, discard_local=True), 0)
                 self.assertEqual((skills / "s/SKILL.md").read_text(), "a\n")
+                self.assertEqual((skills / "n/f.txt").read_text(), "a\n")
             finally:
                 vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES = old
 
@@ -557,9 +563,12 @@ class Builds(unittest.TestCase):
             self.assertIsNone(build_course.unpublished_change(d, "one", "one-a", {"one/one-a.mp4": f"https://x.public.blob.vercel-storage.com/courses/one/one-a.{digest}.mp4"}))
             self.assertIn("publish:videos", build_course.unpublished_change(d, "one", "one-a", {"one/one-a.mp4": "https://x.public.blob.vercel-storage.com/courses/one/one-a.0badc0de.mp4"}))
             self.assertIsNone(build_course.unpublished_change(d, "one", "one-b", manifest), "no local file, nothing to compare")
-            (d / "videos/one-a.mp4").unlink()
 
             out = Path(tmp) / "out"
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertTrue((out / "one/videos/one-a.mp4").exists(), "a local MP4 is copied")
+            (d / "videos/one-a.mp4").unlink()  # published, so the local file goes
             r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
             self.assertEqual(r.returncode, 0, r.stderr)
             page = (out / "one/index.html").read_text()
@@ -567,7 +576,7 @@ class Builds(unittest.TestCase):
             self.assertEqual(lessons["one-a"]["video"], url)
             self.assertEqual(lessons["one-a"]["captions"], "/courses/one/videos/one-a.vtt", "captions stay same-origin")
             self.assertTrue((out / "one/videos/one-a.vtt").exists())
-            self.assertFalse((out / "one/videos/one-a.mp4").exists())
+            self.assertFalse((out / "one/videos/one-a.mp4").exists(), "a rebuild drops the copy once the video is on Blob")
             for lid in ("one-b", "one-c"):
                 self.assertNotIn("video", lessons[lid])
                 self.assertNotIn("captions", lessons[lid])
@@ -948,6 +957,7 @@ class Captions(unittest.TestCase):
             (root / "videos").mkdir(parents=True)
             (root / "course.json").write_text(json.dumps({"id": "c", "lessons": [{"id": "l1", "file": "l1.lesson.js"}]}))
             (root / "videos" / "l1.mp4").write_bytes(b"")
+            (root / "videos" / "l1.vtt").write_text("WEBVTT\n")
             (Path(tmp) / "videos.json").write_text(json.dumps({"c/l1.mp4": "https://example.com/l1.abc.mp4"}))
             for flags, runs in [([], 0), (["--remux"], 2), (["--force"], 2)]:
                 ok = subprocess.CompletedProcess([], 0, "", "")
@@ -958,6 +968,15 @@ class Captions(unittest.TestCase):
                 self.assertEqual(run.call_count, runs, flags)
                 if "--remux" in flags:
                     self.assertIn("--remux", run.call_args.args[0])
+            # On Blob with no local MP4 and no captions: an error, not "already made".
+            (root / "videos" / "l1.mp4").unlink()
+            (root / "videos" / "l1.vtt").unlink()
+            out = io.StringIO()
+            with mock.patch.object(sys, "argv", ["narrate_course.py", str(root)]), \
+                    mock.patch.object(course.subprocess, "run") as run, contextlib.redirect_stdout(out):
+                self.assertEqual(course.main(), 1)
+            run.assert_not_called()
+            self.assertIn("FAIL l1: the video is made but l1.vtt is missing", out.getvalue())
 
     def test_narrate_speed_default_leaves_chatterbox_free(self):
         from unittest import mock
@@ -1016,6 +1035,15 @@ class Captions(unittest.TestCase):
         self.assertIsNone(narrate.remux_drift(296.374, 7113 / 24, 24))
         self.assertIsNotNone(narrate.remux_drift(296.374 + 0.5, 7113 / 24, 24))
         self.assertIsNotNone(narrate.remux_drift(296.374 - 0.1, 7113 / 24, 24))
+        # Same total, scenes moved: only the per-scene ends catch it, from the sidecar or (older videos) the captions.
+        timing = {"scenes": [{"start": 0.0, "dur": 4.0, "voiceAt": 0.5}, {"start": 4.0, "dur": 3661.25, "voiceAt": 4.5}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            mp4 = Path(tmp) / "l.mp4"
+            self.assertIsNone(narrate.picture_scene_ends(mp4), "nothing to check against: --remux refuses")
+            mp4.with_suffix(".vtt").write_text(narrate.vtt(timing, ["a --> b", "x > y"]))
+            self.assertEqual(narrate.picture_scene_ends(mp4), [4.0, 3665.25])
+            mp4.with_suffix(".timing.json").write_text(json.dumps({"scenes": [{"start": 0.0, "dur": 5.0}, {"start": 5.0, "dur": 3660.25}]}))
+            self.assertEqual(narrate.picture_scene_ends(mp4), [5.0, 3665.25], "the sidecar wins")
 
     def test_saved_progress_follows_its_step(self):
         js = r"""

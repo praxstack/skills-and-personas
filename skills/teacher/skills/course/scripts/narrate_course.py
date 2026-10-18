@@ -46,6 +46,13 @@ def main() -> int:
         if not lesson["file"].endswith(".lesson.js"):
             continue
         mp4 = out_dir / f"{lesson['id']}.mp4"
+        on_blob = bool(published.get(f"{meta['id']}/{lesson['id']}.mp4"))
+        if (mp4.exists() or on_blob) and not (a.force or a.remux) and not mp4.with_suffix(".vtt").exists():
+            # build_course.py won't offer a video without its captions, so skipping would leave it stuck.
+            print(f"FAIL {lesson['id']}: the video is made but {mp4.with_suffix('.vtt').name} is missing; "
+                  f"--force --only {lesson['id']} makes both again")
+            bad += 1
+            continue
         # --remux works on the videos that exist (it keeps their picture), so it
         # implies --force for them and skips lessons that have no video yet.
         if a.remux and not mp4.exists():
@@ -55,7 +62,7 @@ def main() -> int:
             print(f"skip {lesson['id']}: already made")
             continue
         # A published video is made, but --remux still remakes its sound.
-        if published.get(f"{meta['id']}/{lesson['id']}.mp4") and not (a.force or a.remux):
+        if on_blob and not (a.force or a.remux):
             print(f"skip {lesson['id']}: already on Blob (courses/videos.json); --force makes it again")
             continue
         with tempfile.TemporaryDirectory() as tmp:

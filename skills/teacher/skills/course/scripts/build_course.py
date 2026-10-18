@@ -129,6 +129,11 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
             explorable_build.build(src, out / page, fragment, shared)
         lesson["page"] = page
         found = resolve_video(course_dir, data["id"], lesson["id"], manifest)
+        stale = out / "videos" / f"{lesson['id']}.mp4"
+        if (not found or found[0] != "local") and stale.exists():
+            # An earlier build copied the local MP4 here; it's on Blob now (or gone),
+            # and a left-over copy would still be served beside the page.
+            stale.unlink()
         if found:
             (out / "videos").mkdir(exist_ok=True)
             kind, where = found

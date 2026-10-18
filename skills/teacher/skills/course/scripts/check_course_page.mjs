@@ -66,7 +66,8 @@ if (await quizBtn.count()) {
   check("quiz leaves out questions that need the figure", await page.evaluate(() => window.COURSE.lessons.every((l) => l.quiz.every((q) => !q.needsFigure))));
   // Options are shuffled: the right one is found by its original index, and must still count as right.
   const q = await page.evaluate(() => {
-    const l = window.COURSE.lessons.find((x) => x.title === document.querySelector(".cs-drawer h2").textContent);
+    const id = document.querySelector('.cs-node[aria-current="true"]')?.getAttribute("data-id");
+    const l = window.COURSE.lessons.find((x) => x.id === id);
     return l.quiz[0];
   });
   if (q.kind === "choice") await page.locator(`.cs-quiz .cs-opt[data-k="${q.answer}"]`).click();
