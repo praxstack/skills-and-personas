@@ -50,3 +50,8 @@ Use /deep-research where it helps. Run it all without stopping to ask.
   - The hidden holdout measures routing at acceptance.
 - **Rule for every builder:** no `git stash`, no amend, no history rewrite in the shared tree.
 - **Budget: 10 of 18 rounds used.**
+- Orchestrator hotfix `3b89295`: dropped the capture hard-link check. A macOS background process gives new files under ~/Developer a second link within seconds, so every new lesson was rejected. I reproduced it, then added a test.
+- WP4 closed at round 1. AC-4.1 to AC-4.8 pass, and each test also checks a tampered copy. The real Anki import is not-run because Anki isn't installed. Remaining weak spots: the explorer has no diagram beyond the code path, and the Q&A is a single column at 1440.
+- WP5 round 1 running: video quality (no hard cut at the program change, no empty panels, an Atlas palette option), a renderer-neutral interface, sync failure fixtures, the `--only` deletion bug.
+- **Budget: 12 of 18 rounds used.** Left: WP6, WP8, WP9, the integration pass, and one consolidated five-lens review of WP3, WP4, WP5 and WP7.
+- **For WP8:** add genanki to `ptk host setup` (currently only in `registry/requirements-cards.txt`).
