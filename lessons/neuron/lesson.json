@@ -419,7 +419,7 @@
       "id": "c.mul",
       "kind": "mechanism",
       "text": "Each input is multiplied by its weight: 0.8 × 1.5 = +1.2 and 0.4 × -1 = -0.4.",
-      "justification": "Lines 8 and 10 compute t1 = x1 * w1 and t2 = x2 * w2 in double. In binary64, 0.8 * 1.5 is 1.2000000000000002 and 0.4 * -1.0 is -0.4. %+g with no precision uses P = 6; both values have exponent X = 0, so style f with precision 5 is used and trailing zeros are removed (7.21.6.1p8, conversion g), giving +1.2 and -0.4 as the run printed.",
+      "justification": "Lines 8 and 10 compute t1 = x1 * w1 and t2 = x2 * w2 in double. In binary64, 0.8 * 1.5 is 1.2000000000000002 and 0.4 * -1.0 is -0.4. %+g with no precision uses P = 6. 1.2000000000000002 has exponent X = 0, so style f with precision P - (X + 1) = 5 gives +1.20000; -0.4 has X = -1, so style f with precision 6 gives -0.400000. Trailing zeros are then removed (7.21.6.1p8, conversion g), giving +1.2 and -0.4 as the run printed.",
       "sources": [
         {
           "title": "programs/neuron.c",
