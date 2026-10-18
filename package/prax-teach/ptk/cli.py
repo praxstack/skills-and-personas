@@ -117,7 +117,7 @@ def parser():
     s.set_defaults(fn=cmd_new)
     s = sub.add_parser("build")
     s.add_argument("lesson")
-    s.add_argument("--only", help="comma list of media: still,video,ive")
+    s.add_argument("--only", help="comma list of media: still,video,ive,explorer,qa,cards")
     s.set_defaults(fn=cmd_build)
     s = sub.add_parser("claims")
     cs = s.add_subparsers(dest="claims_cmd", required=True)

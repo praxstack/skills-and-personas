@@ -17,7 +17,7 @@ from .capture import c_runner
 from .verify import claims as claims_gate
 from .verify import values
 
-SUPPORTED = ("still", "video", "ive")
+SUPPORTED = ("still", "video", "ive", "explorer", "qa", "cards")
 REPORT_SCHEMA = host.PKG / "schemas" / "build-report.schema.json"
 
 
@@ -71,7 +71,7 @@ def _fail(lesson, rep, err, code, t0):
 
 def _artifact_list(build):
     out = []
-    for sub in ("still", "video", "ive"):
+    for sub in ("still", "video", "ive", "explorer", "qa", "cards"):
         d = build / sub
         if not d.exists():
             continue
@@ -119,7 +119,7 @@ def build(lesson_path, only=None):
         model.validate(lesson)
         rep["lesson"] = lesson.id
         go("valid")
-        for sub in ("still", "ive", "shots", "work", "claims-jobs"):
+        for sub in ("still", "ive", "shots", "work", "claims-jobs", "explorer", "qa", "cards"):
             shutil.rmtree(build_dir / sub, ignore_errors=True)
         cap = c_runner.capture_lesson(lesson)
         model.validate(lesson, stage="captured")
@@ -214,7 +214,17 @@ def _project_and_verify(lesson, build_dir, media, rep, go):
         chk = node.hyperframes(["check", ".", "--json"], cwd=v["composition"], timeout=900,
                                lesson_sha256=lesson.sha256(), sandbox_tmp=host.make_tmp("check-"), check=False)
         projected["video"] = (out, v, canaries, chk)
+    from .project import cards, explorer, qa  # WP4
+    for name, mod in (("explorer", explorer), ("qa", qa), ("cards", cards)):
+        if name in media:
+            projected[name] = mod.project(lesson, build_dir / name)
     go("projected")
+    if "explorer" in projected:
+        gates += explorer.gates(lesson, build_dir / "explorer", build_dir / "shots")
+    if "qa" in projected:
+        gates += qa.gates(lesson, build_dir / "qa", build_dir / "shots")
+    if "cards" in projected:
+        gates.append(cards.gate(lesson, projected["cards"]))
     if "still" in projected:
         out, svgs = projected["still"]
         gates.append(values.gate(lesson, "still", [("svg", out / s) for s in svgs]))

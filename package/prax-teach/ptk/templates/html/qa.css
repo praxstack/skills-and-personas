@@ -1,0 +1,46 @@
+/* Q&A expander: one prediction, then layers that open in order. Print and no-JS show everything. */
+.qa{padding-block:2rem 0;display:grid;gap:1.5rem;max-width:56rem}
+.qcard{display:grid;gap:1rem}
+.qtext{font-family:var(--display-font);font-weight:var(--display-weight);font-size:calc(1.5rem * var(--display-scale));line-height:1.3;max-width:34ch}
+.code{font-family:var(--code-font);font-weight:var(--code-weight);font-size:.875rem;line-height:1.55;padding:.75rem 0}
+.ln{display:grid;grid-template-columns:2.25rem minmax(0,1fr);column-gap:.5rem;padding:0 .75rem 0 0;color:var(--ink)}
+.ln .no{text-align:end;color:var(--faint);font-size:.8125rem}
+.ln .src{white-space:pre;font-family:inherit}
+.opts{display:grid;gap:.5rem}
+.opts legend{margin-block-end:.5rem}
+.opt{position:relative;display:block}
+.opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.opt span{display:block;padding:.65rem 1rem;min-height:2.75rem;border:1px solid var(--rule);border-radius:.5rem;
+  font-family:var(--value-font);font-weight:var(--value-weight);transition:background-color .16s ease,border-color .16s ease}
+.opt:hover span{background:var(--highlight)}
+.opt input:checked+span{border-color:var(--note);background:var(--note_tint);color:var(--note)}
+.opt input:focus-visible+span{outline:3px solid var(--note);outline-offset:3px}
+.key{display:grid;gap:.75rem}
+.key li{padding:.75rem 1rem;border-inline-start:3px solid var(--rule);display:grid;gap:.35rem}
+.key li[data-verdict="correct"]{border-color:var(--value)}
+.key li[data-verdict="wrong"]{border-color:var(--correction)}
+.key .opttext{font-family:var(--value-font);font-weight:var(--value-weight)}
+.key .verdict{font-weight:700}
+.key li[data-verdict="correct"] .verdict{color:var(--note)}
+.key li[data-verdict="wrong"] .verdict{color:var(--correction)}
+.key .belief{font-style:italic;color:var(--ink_soft)}
+.key .fix{color:var(--ink)}
+.key .ans{font-family:var(--value-font);font-weight:var(--value-weight);color:var(--value);display:flex;flex-wrap:wrap;gap:.25rem .9rem}
+html.js .key li{display:none}
+html.js .key li[data-shown="true"]{display:grid}
+.layers{display:grid;gap:0}
+.layer{padding-block:1rem;border-block-end:1px solid var(--rule);display:grid;gap:.5rem}
+.layer-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;justify-content:space-between}
+.layer h3{font-family:var(--display-font);font-weight:var(--display-weight);font-size:calc(1.2rem * var(--display-scale))}
+.layer .hint{color:var(--ink_soft);font-size:.9375rem}
+.layer-body{display:grid;gap:.5rem}
+.layer-body p{max-width:60ch}
+.layer-body .vals{font-family:var(--value-font);font-weight:var(--value-weight);color:var(--value);display:flex;flex-wrap:wrap;gap:.25rem .9rem}
+html.js .layer[data-open="false"] .layer-body{display:none}
+html.js .layer[data-open="true"] .hint,html.js .layer[data-open="true"] .reveal{display:none}
+html:not(.js) .reveal,html:not(.js) #qa-check,html:not(.js) .hint{display:none}
+@media print{
+  html.js .layer .layer-body,html.js .key li{display:grid!important}
+  .reveal,#qa-check,.hint,.opts input{display:none!important}
+  .layer{break-inside:avoid}
+}

@@ -36,7 +36,7 @@
     "x_off": "off",
     "x_reset": "Back to the captured run",
     "x_live_label": "What happens",
-    "x_match": "n = {n} matches case {k}, so the switch jumps to line {line}.",
+    "x_match": "n = {n} matches case {k}, so control jumps to line {line}, the statement after that label.",
     "x_nomatch": "n = {n} matches no case label and the switch has no default, so the switch body is skipped.",
     "x_fall": "Case {a} has no break, so execution falls through into case {b} on line {line}.",
     "x_break": "The break on line {line} ends the switch.",

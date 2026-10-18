@@ -1,0 +1,40 @@
+/* ptk HTML base (explorer, Q&A). Colours and type come from tokens.json via custom properties
+   that ptk writes above this file; nothing here names a hex value or a font family. */
+*{box-sizing:border-box}
+html{color-scheme:light dark;-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body-font);font-weight:var(--body-weight);
+  font-size:calc(1.0625rem * var(--body-scale));line-height:1.6;font-variant-numeric:lining-nums tabular-nums;overflow-x:clip}
+h1,h2,h3,p,figure,ol,ul,fieldset,legend{margin:0;padding:0}
+ol,ul{list-style:none}
+fieldset{border:0;min-width:0}
+button,input{font:inherit;color:inherit}
+.wrap{width:min(100% - 2rem,1240px);margin-inline:auto;padding-block:2rem 4rem}
+.kicker{font-family:var(--kicker-font);font-weight:var(--kicker-weight);text-transform:var(--kicker-caps);
+  letter-spacing:var(--kicker-track);font-size:calc(.8125rem * var(--kicker-scale));color:var(--note)}
+h1{font-family:var(--display-font);font-weight:var(--display-weight);font-size:calc(clamp(2rem,5.4vw,3.75rem) * var(--display-scale));
+  line-height:1.08;letter-spacing:-.03em;margin-block:.5rem 1rem;max-width:20ch;text-wrap:balance}
+.lede{color:var(--ink_soft);font-size:calc(1.25rem * var(--body-scale));max-width:46ch;text-wrap:pretty}
+.mast{padding-block:1rem 2.5rem;border-block-end:1px solid var(--rule)}
+.sec{font-family:var(--display-font);font-weight:var(--display-weight);font-size:calc(1.6rem * var(--display-scale));
+  letter-spacing:-.02em;line-height:1.2}
+.lbl{font-family:var(--label-font);font-weight:var(--label-weight);text-transform:var(--label-caps);
+  letter-spacing:var(--label-track);font-size:calc(.75rem * var(--label-scale));color:var(--label)}
+.panel{background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:.75rem;padding:1rem}
+.mono,code{font-family:var(--code-font);font-weight:var(--code-weight)}
+.prov,.foot{font-family:var(--foot-font);font-size:.75rem;line-height:1.55;color:var(--label);overflow-wrap:anywhere}
+.foot{margin-block-start:3rem;padding-block-start:1rem;border-block-start:1px solid var(--rule);display:grid;gap:.25rem}
+.pill{min-height:2.75rem;min-width:2.75rem;padding:.5rem .9rem;border:1px solid var(--rule);border-radius:.5rem;
+  background:transparent;color:var(--ink);cursor:pointer;font-family:var(--label-font);font-weight:var(--label-weight);
+  font-size:.9375rem;transition:background-color .16s ease,border-color .16s ease,color .16s ease}
+.pill:hover{background:var(--highlight)}
+.pill[aria-pressed="true"]{border-color:var(--note);color:var(--note);background:var(--note_tint)}
+.pill:disabled{cursor:default;color:var(--label);background:transparent}
+:focus-visible{outline:3px solid var(--note);outline-offset:3px;border-radius:.25rem}
+html:not(.js) .js-only{display:none!important}
+.nojs{margin-block:1.5rem;padding:1rem;border-inline-start:3px solid var(--note);background:var(--note_tint);color:var(--ink)}
+table{border-collapse:collapse;width:100%;margin-block-start:1rem}
+caption{text-align:start;padding-block-end:.5rem;color:var(--ink_soft);font-size:.9375rem}
+th,td{text-align:start;padding:.5rem .5rem;border-block-end:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--label-font);font-weight:var(--label-weight);font-size:.8125rem;color:var(--label)}
+td.v{font-family:var(--value-font);font-weight:var(--value-weight);color:var(--value)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
