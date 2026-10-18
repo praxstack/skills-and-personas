@@ -796,8 +796,8 @@
     {
       "id": "c.mul",
       "kind": "mechanism",
-      "text": "Each input is multiplied by its weight: 0.8 × 1.5 = +1.2 and 0.4 × -1 = -0.4.",
-      "justification": "Lines 8 and 10 compute t1 = x1 * w1 and t2 = x2 * w2 in double. In binary64, 0.8 * 1.5 is 1.2000000000000002 and 0.4 * -1.0 is -0.4. %+g with no precision uses P = 6. 1.2000000000000002 has exponent X = 0, so style f with precision P - (X + 1) = 5 gives +1.20000; -0.4 has X = -1, so style f with precision 6 gives -0.400000. Trailing zeros are then removed (7.21.6.1p8, conversion g), giving +1.2 and -0.4 as the run printed.",
+      "text": "Each input is multiplied by its weight: 0.8 × 1.5 prints as +1.2 and 0.4 × -1 = -0.4.",
+      "justification": "Lines 8 and 10 compute t1 = x1 * w1 and t2 = x2 * w2 in double. 0.8 has no exact binary64 form, so 0.8 * 1.5 is the double 1.2000000000000002, which %+g (six significant digits) prints as +1.2; 0.4 * -1 is exactly the negated double of 0.4, printed -0.4. Captured run lines 1-2.",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -862,6 +862,12 @@
       "justification": "The rectified linear unit is defined as ReLU(z) = max(0, z). The program computes it with fmax(0.0, z) (line 14); C17 7.12.12.2: fmax returns the larger of its arguments, and for z = 0 both arguments equal 0.",
       "sources": [
         {
+          "title": "Goodfellow, Bengio and Courville, Deep Learning (MIT Press, 2016)",
+          "url": "https://www.deeplearningbook.org/contents/mlp.html",
+          "clause": "§6.3.1 Rectified Linear Units",
+          "quote": "Rectified linear units use the activation function g(z) = max{0, z}."
+        },
+        {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.12.12.2 ¶3",
@@ -913,8 +919,8 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
+      "text": "What do you predict? Choose your answer before the answer plays.",
+      "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
       "sources": [
         {
           "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
@@ -925,7 +931,7 @@
     {
       "id": "c.round",
       "kind": "caveat",
-      "text": "In double, z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
+      "text": "0.8 × 1.5 is not exactly 1.2 in double, so z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
       "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
       "sources": [
         {
@@ -971,7 +977,7 @@
     {
       "id": "c.kzero",
       "kind": "mechanism",
-      "text": "With w2 = -1 and b = -1, z prints as -0.2 and a is 0, even though the first term is still +1.2.",
+      "text": "With w2 = -1 and b = -1, z prints as -0.2 and a is 0, even though the first term still prints as +1.2.",
       "justification": "Captured run of programs/neuron_k1.c: 0.8 * 1.5 prints +1.2, 0.4 * -1 prints -0.4, b = -1; z is the double -0.19999999999999984, which %g prints as -0.2; it is negative, so a = fmax(0, z) = 0 exactly. ReLU looks only at the sum z, not at each term.",
       "sources": [
         {
@@ -1142,7 +1148,7 @@
       ],
       "narration": [
         {
-          "text": "Each input is multiplied by its weight. 0.8 × 1.5 = +1.2, and 0.4 × -1 = -0.4.",
+          "text": "Each input is multiplied by its weight. 0.8 × 1.5 prints as +1.2, and 0.4 × -1 = -0.4.",
           "claims": [
             "c.mul"
           ]
@@ -1186,7 +1192,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
+          "text": "What do you predict? Choose your answer before the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -1262,7 +1268,7 @@
           ]
         },
         {
-          "text": "In double, z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
+          "text": "0.8 × 1.5 is not exactly 1.2 in double, so z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
           "claims": [
             "c.round"
           ]

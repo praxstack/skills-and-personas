@@ -700,8 +700,8 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
+      "text": "What do you predict? Choose your answer before the answer plays.",
+      "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
       "sources": [
         {
           "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
@@ -1268,7 +1268,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
+          "text": "What do you predict? Choose your answer before the answer plays.",
           "claims": [
             "c.pause"
           ]

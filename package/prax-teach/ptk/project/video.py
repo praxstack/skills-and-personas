@@ -258,6 +258,8 @@ def write_text_tracks(lesson, timing, out):
     tx = [lesson.data["title"], ""]
     for s in timing["scenes"]:
         tx.append(f"[{text.vtt_time(s['start'])}] {s['title']}")
+        if s.get("question"):
+            tx.append(s["question"]["prompt"])  # the transcript asks the question it then invites an answer to
         tx += [c["text"] for c in timing["cues"] if c["scene"] == s["id"]]
         tx.append("")
     (out / "transcript.txt").write_text("\n".join(tx))

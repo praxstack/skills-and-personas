@@ -21,8 +21,8 @@
    "id": "m3.fprint.digits",
    "kind": "false-mechanism",
    "target": "c.fprint",
-   "find": "%f prints a double with six digits after the decimal point when no precision is given",
-   "replace": "%f prints a double with as many digits as it needs after the decimal point",
+   "find": "%f prints a finite double with six digits after the decimal point when no precision is given",
+   "replace": "%f prints a finite double with as many digits as it needs after the decimal point",
    "why_false": "A missing precision is taken as 6 (7.21.6.1p8)."
   },
   {

@@ -59,7 +59,7 @@ Write exactly one JSON object to the job's `review_path`, with no prose around i
   "schema": "prax-teach/claims-review@1",
   "job_id": "<job_id from the job>",
   "manifest_sha256": "<manifest_sha256 from the job, copied exactly>",
-  "rubric_version": "2",
+  "rubric_version": "3",
   "reviewer": {"host": "<claude-code|codex|hermes|opencode>", "agent": "<short description>"},
   "claims": [{"id": "c.x", "verdict": "accept|reject", "reason": "one or two sentences; name the lens", "evidence": ["C17 §6.8.1 ¶4", "fact f.p1.l1"]}],
   "texts": [{"id": "t.001", "verdict": "accept|reject", "reason": "short"}],

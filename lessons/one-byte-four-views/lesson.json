@@ -800,7 +800,7 @@
     {
       "id": "c.fprint",
       "kind": "rule",
-      "text": "%f prints a double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
+      "text": "%f prints a finite double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
       "justification": "7.21.6.1p8, conversion f: style [−]ddd.ddd with precision digits after the point; a missing precision is taken as 6. The argument is the double 66.0; the run printed 66.000000 on line 5.",
       "sources": [
         {
@@ -899,8 +899,8 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract; it invites the learner to commit to one of the question's options before the answer is shown, and states no fact about C.",
+      "text": "What do you predict? Choose your answer before the answer plays.",
+      "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
       "sources": [
         {
           "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
@@ -1280,7 +1280,7 @@
     },
     {
       "id": "s5",
-      "label": "Without the cast: ub.c, never run",
+      "label": "After the run: the panel adds ub.c, which is never run",
       "state": {
         "program": "p1",
         "line": 18,
@@ -1395,7 +1395,7 @@
       },
       "narration": [
         {
-          "text": "Which answer do you predict? Pick one of the three. Then the answer plays.",
+          "text": "What do you predict? Choose your answer before the answer plays.",
           "claims": [
             "c.pause"
           ]
@@ -1423,7 +1423,7 @@
           ]
         },
         {
-          "text": "%f prints a double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
+          "text": "%f prints a finite double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
           "claims": [
             "c.fprint"
           ]

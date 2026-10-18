@@ -377,6 +377,9 @@ def collect_texts(lesson, build):
                 raw.append(("label", "scene-title", m.group(2), "transcript.txt"))
             elif line == lesson.data["title"]:
                 raw.append(("label", "title", line, "transcript.txt"))
+            elif any((sc.get("question") or {}).get("prompt") == line for sc in lesson.data["storyboard"]):
+                qsc = next(sc for sc in lesson.data["storyboard"] if (sc.get("question") or {}).get("prompt") == line)
+                raw.append(("question", qsc["id"], line, "transcript.txt"))
             else:
                 raw.append(("narration", _narration_id(lesson, line), line, "transcript.txt"))
     idir = build / "ive"
