@@ -23,8 +23,11 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - [x] WP0 code review (`reviews/wp0-review.md`): 0 P0, 4 P1, 9 P2, 12 P3. Verdict: fix first.
 - [x] Three external sessions read and merged as D20.x (`plan/EXTERNAL-INPUTS.md`). Spec is now v1.1.
 - [x] WP0, round 2 (fix): the four P1s, P2-1/4/6(label)/7/8 and P3-1/3/7(part)/8/10/11/12, plus the design fixes (arcs drawn in the video, recap without reset, frame filled, file label). Slice `verified`, 26/26 gates, `ptk selftest` 16/16, `ptk agent-tests` 1/1. Reviews archived in `.state/review-rounds/round6-wp0-fix1/`. Deferred: P2-2, P2-3, P2-5, P2-6 evidence, P2-9, P3-2, P3-4, P3-5, P3-6, P3-9. **Budget used: 3 of 18 rounds.**
-- [ ] Then WP1 ∥ WP2, following D18.5 and the spec v1.1 ACs.
-  - [x] WP0 (2026-10-18): AC-0.1 to AC-0.5 pass. `ptk selftest` 8/8, `ptk agent-tests` 1/1. The slice `lessons/switch-fallthrough` is `verified` with 24/24 gates passed and none not-run. Render isolation uses sandbox-exec, not Docker. The real reviewer subagents ran 5 rounds: rounds 1 to 3 found real defects (3 overbroad or wrong claims, a misleading provenance line, an unbacked alt sentence). Every round rejected the planted false claim. Reviews are archived in `.state/review-rounds/`.
+- [x] WP0 fix round 2 (`34009c9`): the explorer and frame agree at the program change. WP0 is closed after 3 rounds.
+- [x] WP1 round 1 (`7530137`, `03ca5a3`): AC-1.1 to AC-1.9 pass. The loader is 2,947 tokens. The dev set scores 109/109, but it is tuned: 12 of 56 fresh phrasings missed before fixes. A review with 60 new prompts is running.
+- [x] WP2 round 1 (`75a31ad`): AC-2.1 to AC-2.8 pass, selftest 43/43. The review (`reviews/wp2-review.md`) found 2 P1s: pragmas or line markers can disable the program's own checks, and a symlink gets around the read limit. Fix round 2 is running.
+- [ ] Running: WP3 round 1 (stills plus the Atlas dark theme), WP4 round 1 (explorer, Q&A, cards), WP7 round 1 (claims gate, mutations with controls, the %f regression).
+- **Budget: 9 of 18 rounds used**, counting one per implement or fix pass: WP0 ×3, WP1, WP2 ×2, WP3, WP4, WP7. Left: fix rounds for WP1, WP3, WP4 and WP7, then WP5, WP6, WP8 and WP9. If the budget runs out, stop and report per FREEZE. Do not extend it.
 - [ ] After WP0 and WP1, ask Prax for one 5-minute predict-first session (D18.6). This doesn't block the tooling packages.
 - [ ] Acceptance: run the holdout, the protected map and both exemplars. Prax approves `plan/ACCEPTANCE-PROPOSAL.md` (pending).
 
