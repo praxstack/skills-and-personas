@@ -457,6 +457,54 @@ def _js(expr):
     return {"eval": f"(async () => {{ const D = window.__iveDrive; {expr} }})()"}
 
 
+def explore_mode(lesson):
+    """("step" | "live", live-model error or None), from what lesson.json declares (round-17 P2-2).
+    A lesson with a `figure.panel` declares a step-through IVE with no live editing. Any other lesson must have a
+    live model: if it fails to build, that is the lesson's error, never a quiet switch to step mode."""
+    from ..project import explorer as explorer_proj
+    from ..project import ive as ive_proj
+    if "panel" in (lesson.data.get("figure") or {}):
+        return "step", None
+    try:
+        explorer_proj.switch_model(lesson)
+    except errors.ModelReferenceError as e:
+        return "live", str(e)
+    if ive_proj.live_model(lesson) is None:
+        return "live", "the live model did not build"
+    return "live", None
+
+
+def explore_checks(lesson, cue_list, ex):
+    """The FILM / EXPLORE / RETURN checks (AC-6.6) on the values the ive-explore script returned."""
+    f0, e1, e2, r3, p4 = (ex.get(k) or {} for k in ("film", "explore", "edited", "returned", "repaused"))
+    rt = e1.get("returnTime")
+    p4_state = next((c["state"] for c in cue_list if c["cue"] == p4.get("cue")), None)
+    alt = ((lesson.data.get("figure") or {}).get("compare") or {}).get("program")
+    mode, live_error = explore_mode(lesson)
+    marked = e2.get("origin") == ("yours" if mode == "live" else "step") and bool(e2.get("edit")) \
+        and e2.get("border") == "dashed" and e1.get("border") != "dashed" and e2.get("output") != e1.get("output")
+    checks = {
+        "film_follows_clock": f0.get("mode") == "film" and f0.get("origin") == "film",
+        "explore_on_pause": e1.get("mode") == "explore" and e1.get("paused") is True and e1.get("origin") == "film"
+        and e1.get("cue") == e1.get("expected_cue"),
+        ("live_edit_marked_yours" if mode == "live" else "step_back_marked"): marked,
+        "return_resumes_at_pause": r3.get("mode") == "film" and r3.get("paused") is False and rt is not None
+        and r3.get("return_position") is not None and abs(r3["return_position"] - rt) < 0.002
+        and rt - 0.001 <= r3.get("t", -1) < rt + 1.0,
+        "return_shows_film_state": r3.get("origin") == "film" and r3.get("cue") == r3.get("film_cue") and r3.get("edits_left") == 0,
+        "no_edit_after_return": p4.get("origin") == "film" and p4.get("edit") is None and p4_state is not None
+        and p4.get("n_checked") in (None, p4_state["vars"].get(next(iter(p4_state["vars"]), ""), None))
+        and p4.get("brk_pressed") in (None, "true" if p4_state["program"] == alt else "false"),
+    }
+    if mode == "live":
+        checks["live_model_builds"] = live_error is None
+    measured = {"checks": checks, "mode": mode, "live_edit": mode == "live" and live_error is None,
+                "live_model_error": live_error,
+                "declared_by": "figure.panel (step-through, no live edit)" if mode == "step" else "no figure.panel: live edit required",
+                "film": f0, "explore": e1, "edited": e2, "returned": r3, "repaused": p4}
+    return checks, measured
+
+
 def ive_gates(lesson, ive_dir, cue_list, timing):
     """Every IVE check runs on the page opened from disk (file://, AC-6.7)."""
     sha = lesson.sha256()
@@ -604,30 +652,9 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
                     "nav_actions": sorted({e.get("action") for e in nav}), "nav_not_navigation": nav_bad[:5],
                     "nojs": nojs, "nojs_shots": [f"shots/ive-nojs-{w}.png" for w in WIDTHS]}))
     ex = R["ive-explore"].get("values") or {}
-    f0, e1, e2, r3, p4 = (ex.get(k) or {} for k in ("film", "explore", "edited", "returned", "repaused"))
-    rt = e1.get("returnTime")
-    p4_state = next((c["state"] for c in cue_list if c["cue"] == p4.get("cue")), None)
-    alt = ((lesson.data.get("figure") or {}).get("compare") or {}).get("program")
-    from ..project import ive as ive_proj
-    live_edit = ive_proj.live_model(lesson) is not None
-    checks = {
-        "film_follows_clock": f0.get("mode") == "film" and f0.get("origin") == "film",
-        "explore_on_pause": e1.get("mode") == "explore" and e1.get("paused") is True and e1.get("origin") == "film"
-        and e1.get("cue") == e1.get("expected_cue"),
-        "edit_marked_yours": e2.get("origin") == ("yours" if live_edit else "step") and bool(e2.get("edit"))
-        and e2.get("border") == "dashed"
-        and e1.get("border") != "dashed" and e2.get("output") != e1.get("output"),
-        "return_resumes_at_pause": r3.get("mode") == "film" and r3.get("paused") is False and rt is not None
-        and r3.get("return_position") is not None and abs(r3["return_position"] - rt) < 0.002
-        and rt - 0.001 <= r3.get("t", -1) < rt + 1.0,
-        "return_shows_film_state": r3.get("origin") == "film" and r3.get("cue") == r3.get("film_cue") and r3.get("edits_left") == 0,
-        "no_edit_after_return": p4.get("origin") == "film" and p4.get("edit") is None and p4_state is not None
-        and p4.get("n_checked") in (None, p4_state["vars"].get(next(iter(p4_state["vars"]), ""), None))
-        and p4.get("brk_pressed") in (None, "true" if p4_state["program"] == alt else "false"),
-    }
+    checks, measured = explore_checks(lesson, cue_list, ex)
     gates.append(g("ive.explore-return", "ive", R["ive-explore"].get("ok") and all(checks.values()),
-                   {"checks": checks, "film": f0, "explore": e1, "edited": e2, "returned": r3, "repaused": p4,
-                    "error": R["ive-explore"].get("error", "")[:500]}))
+                   {**measured, "error": R["ive-explore"].get("error", "")[:500]}))
     fl = (R["ive-files"].get("values") or {}).get("files") or {}
     want = {"captions": len(timing["cues"]), "chapters": len(timing["scenes"]), "metadata": len(cue_list)}
     got_tracks = {t["kind"]: t["cues"] for t in fl.get("tracks", [])}

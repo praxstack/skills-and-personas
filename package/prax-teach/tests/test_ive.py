@@ -204,3 +204,52 @@ def test_caption_band_clear_of_film():
         return out
     finally:
         shutil.rmtree(work, ignore_errors=True)
+
+
+def _explore_values(origin, cue_list):
+    """What the ive-explore script returns on a page that behaves: FILM, EXPLORE, an edit or step back marked with
+    `origin`, RETURN to the film, a clean re-pause."""
+    c = next(c for c in cue_list if c["kind"] == "state")
+    st = c["state"]
+    var = next(iter(st["vars"]), "")
+    return {"film": {"mode": "film", "origin": "film"},
+            "explore": {"mode": "explore", "paused": True, "origin": "film", "cue": c["cue"], "expected_cue": c["cue"],
+                        "returnTime": 2.0, "border": "solid", "output": ["a"]},
+            "edited": {"origin": origin, "edit": "x", "border": "dashed", "output": ["b"]},
+            "returned": {"mode": "film", "paused": False, "return_position": 2.0, "t": 2.1, "origin": "film",
+                         "cue": c["cue"], "film_cue": c["cue"], "edits_left": 0},
+            "repaused": {"origin": "film", "edit": None, "cue": c["cue"], "n_checked": st["vars"].get(var),
+                         "brk_pressed": None}}
+
+
+def test_explore_mode_is_declared_not_inferred():
+    """Round-17 P2-2: the IVE explore check decides step-through vs live edit from lesson.json (a `figure.panel`
+    declares step-through), never from whether the live model happened to build. The auditor's counterexample:
+    drop figure.compare.program from the switch lesson, so its live model fails; a page that only steps back
+    used to pass `ive.explore-return`. Now it fails with the model error."""
+    import copy
+    def built_cues(d):
+        p = d / "build" / "ive" / "cues.json"
+        if not p.exists():
+            raise NotRun(f"no built IVE cues at {p}")
+        return json.loads(p.read_text())
+    lesson = model.load(SLICE)
+    cues = built_cues(SLICE)
+    assert "panel" not in lesson.data["figure"], "the switch lesson declares a live edit (no figure.panel)"
+    ok, m = visual.explore_checks(lesson, cues, _explore_values("yours", cues))
+    assert all(ok.values()) and m["mode"] == "live" and m["live_edit"], ok
+    _ok, _m = visual.explore_checks(lesson, cues, _explore_values("step", cues))
+    assert not all(_ok.values()), "a live-edit lesson whose page only steps back must fail"
+    broken = copy.deepcopy(lesson)
+    broken.data["figure"]["compare"].pop("program", None)
+    assert ive.live_model(broken) is None, "the counterexample needs a live model that fails"
+    bad, bm = visual.explore_checks(broken, cues, _explore_values("step", cues))
+    assert bm["mode"] == "live" and not bad["live_model_builds"] and not all(bad.values()), bm
+    assert bm["live_model_error"], bm
+    panel = model.load(SLICE.parent / "neuron")
+    pcues = built_cues(SLICE.parent / "neuron")
+    pok, pm = visual.explore_checks(panel, pcues, _explore_values("step", pcues))
+    assert pm["mode"] == "step" and all(pok.values()) and "step_back_marked" in pok, pok
+    pbad, _ = visual.explore_checks(panel, pcues, _explore_values("film", pcues))
+    assert not all(pbad.values()), "a step-through lesson must still mark the step as off the film"
+    return {"switch": m["mode"], "broken_switch": bm["live_model_error"][:120], "neuron": pm["mode"]}
