@@ -45,3 +45,8 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - **Open bugs for WP8:**
   - `ptk build --only <x>` deletes the outputs of other media (seen with `--only still` deleting `build/ive`).
   - `.state/selftest-*.json` is shared between runs that happen in parallel.
+- WP1 closed after 2 rounds (`eb55c96`). It now handles negation and refusal, a rebuild intent, and confidence, and the protocol checker grades against ground truth. The loader is 3,542 tokens. Fresh 60/60; untuned probes written after the fix 17/20.
+  - Known misroutes: "forget the video", "regenerate the flashcards", "can you not ask me to guess".
+  - The hidden holdout measures routing at acceptance.
+- **Rule for every builder:** no `git stash`, no amend, no history rewrite in the shared tree.
+- **Budget: 10 of 18 rounds used.**
