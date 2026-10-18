@@ -81,7 +81,7 @@
   "ive_steps_label": "Steps already shown",
   "panel_value": "the value",
   "panel_byte_note": "low byte · bits and hex",
-  "lane_converts": "converts to",
+  "lane_converts": "the new double's bits",
   "lane_prints": "prints",
   "lane_undefined": "undefined · never run",
   "stack_label": "the call stack",

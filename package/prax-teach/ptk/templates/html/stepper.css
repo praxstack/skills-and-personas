@@ -11,7 +11,9 @@ html.js .step[hidden]{display:none}
 @media (prefers-color-scheme:dark){.mech-p-light{display:none}.mech-p-dark{display:block}}
 .mech text{font-variant-numeric:lining-nums tabular-nums}
 .stepper .code{font-size:clamp(11px,2.9vw,.9375rem)}
-.ln.cur{box-shadow:inset 4px 0 0 var(--note);background:var(--highlight)}
+/* executed lines keep their lit number; only the current line carries the bar, so it stands out (review round 17) */
+.stepper .ln.ran{background:transparent;box-shadow:none}
+.ln.cur,.stepper .ln.ran.cur{box-shadow:inset 4px 0 0 var(--note);background:var(--highlight);font-weight:700}
 .out .empty{color:var(--label);font-family:var(--body-font);font-size:1rem}
 .live p{max-width:52ch}
 .live p+p{margin-block-start:.5rem}

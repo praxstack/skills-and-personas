@@ -46,6 +46,7 @@ html.js .ktable td[data-value]:not(.sel){color:var(--ink_soft)}
 .kbar.end{stroke:none}.kbar.end.pos{fill:var(--note)}.kbar.end.neg{fill:var(--correction)}
 .kguide{stroke:var(--label);stroke-width:1;stroke-dasharray:3 4;fill:none}
 .kz{stroke:var(--value);stroke-width:2}
+.kzmark{fill:var(--value)}
 .krelu{stroke:var(--value);stroke-width:3;fill:none}
 .kdot{fill:var(--value)}
 .klab{font-family:var(--code-font);font-size:11px}.klab.pos{fill:var(--note)}.klab.neg{fill:var(--correction)}

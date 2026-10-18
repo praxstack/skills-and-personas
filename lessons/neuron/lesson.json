@@ -1142,7 +1142,7 @@
       ],
       "narration": [
         {
-          "text": "Each input is multiplied by its weight: 0.8 × 1.5 = +1.2 and 0.4 × -1 = -0.4.",
+          "text": "Each input is multiplied by its weight. 0.8 × 1.5 = +1.2, and 0.4 × -1 = -0.4.",
           "claims": [
             "c.mul"
           ]

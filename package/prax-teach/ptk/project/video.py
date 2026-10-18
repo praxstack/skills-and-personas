@@ -339,7 +339,7 @@ def _layout(lesson):
         top = 736
         L.update(code_top=top, card_w=1000, card_h=H - BOTTOM - top, side_x=1136, side_w=W - MX - 1136, side_top=top,
                  side_h=H - BOTTOM - top, panel_box=(MX, 172, W - 2 * MX, top - 172 - 44),
-                 q_panel_box=(MX, 172, W - 2 * MX, 330), q_box=(MX, 516, W - 2 * MX, top - 516 - 30),
+                 q_panel_box=(MX, 172, W - 2 * MX, 296), q_box=(MX, 484, W - 2 * MX, top - 484 - 58),  # clear of the file label
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=10)
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
@@ -665,8 +665,14 @@ def scene_html(lesson, scene, index, count, timing):
             pw_ = int(min(760, max(mech.WIDTHS[("wide", "side")], pw * h0 / ph)))
         mh = mech.max_height(lesson, "wide", notes=False, width=pw_)
         fit = 'preserveAspectRatio="xMidYMin meet"'
-        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}', height=mh,
-                                            notes=False, width=pw_)
+        recap = sb.get("view") == "summary" and lesson.data["figure"]["panel"]["kind"] == "stack"
+        if recap:
+            # a summary of the stack is the whole run, step by step (the still's strip), not the last state alone
+            cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
+                                                notes=False, states=lesson.data["figure"]["states"])
+        else:
+            cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
+                                                height=mh, notes=False, width=pw_)
         layers = cur_svg
         if replay and scene["before"] != scene["state"]:
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}',

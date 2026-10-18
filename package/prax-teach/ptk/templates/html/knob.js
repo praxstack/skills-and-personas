@@ -78,7 +78,7 @@
       s = b;
     });
     axis(add, G.pad, G.w - G.pad, 120, G.ticks, X);
-    add.appendChild(svgEl('line', { x1: X(row.zf), y1: 12, x2: X(row.zf), y2: 120 }, 'kz'));
+    add.appendChild(svgEl('path', { d: 'M' + X(row.zf) + ',110 l-6,-10 h12 z' }, 'kzmark'));  // z marked on the axis, clear of the labels
     gate.appendChild(svgEl('path', { d: 'M' + GX(G.zlo) + ',' + GY(0) + ' L' + GX(0) + ',' + GY(0) + ' L' + GX(G.zhi) + ',' + GY(G.zhi) }, 'krelu'));
     axis(gate, G.pad, G.w - G.pad, GY(0), G.zticks, GX);
     var dot = svgEl('circle', { cx: GX(row.zf), cy: GY(row.af), r: 7, 'data-z': row.z, 'data-a': row.a }, 'kdot');
@@ -93,6 +93,7 @@
     $('k-t1').textContent = row.t1; $('k-w2s').textContent = w; $('k-t2').textContent = row.t2;
     $('k-bs').textContent = row.b; $('k-z').textContent = row.z; $('k-a').textContent = row.a;
     $('k-t2').className = row.t2f < 0 ? 'neg' : 'pos';
+    $('k-bs').className = +row.b < 0 ? 'neg' : 'pos';
     $('k-a').className = row.af > 0 ? 'pos' : 'zero';
     draw(row);
   }

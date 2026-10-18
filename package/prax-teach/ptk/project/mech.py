@@ -364,7 +364,7 @@ def _stack(c, x, y, w):
     depth = max(len(s["state"].get("frames", [])) for s in lesson.data["trace"])
     base = y + depth * (fh + gap)
     n = len(frames)
-    boxes = [(frames[idx], idx, base - (n - idx) * (fh + gap)) for idx in range(n - 1, -1, -1)]  # top first
+    boxes = [(frames[idx], idx, base - (idx + 1) * (fh + gap)) for idx in range(n - 1, -1, -1)]  # top first, main at the base
     slots, rets = {}, {}
     for i, (fr, idx, fy) in enumerate(boxes):
         status = fr.get("status", "running" if i == 0 else "waiting")

@@ -388,7 +388,9 @@ def code_panel(svg, lesson, pid, run, shown, x, y, w, size, lh, gutter, rid, ocr
     # the path: dots on executed lines, straight runs, arcs with an arrowhead for jumps
     cy = lambda n: ys[n] - size * 0.33
     vis = [n for n in run if n in ys]
-    for a, b, kind in rail.segments(vis):
+    # a recursive run passes the same lines again and again; its jump arcs only tangle (review round 17), so a
+    # path that repeats lines is drawn as dots on the executed lines, and the stack strip carries the order
+    for a, b, kind in (rail.segments(vis) if len(vis) == len(set(vis)) else []):
         if kind == "run":
             svg.line(rail_x, cy(a), rail_x, cy(b), t["note"], 2.5, role="path")
         else:
