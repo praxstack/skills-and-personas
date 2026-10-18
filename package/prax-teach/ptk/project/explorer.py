@@ -302,6 +302,92 @@ def states(model):
     return [(brk, n) for brk in (False, True) for n in model["domain"]]
 
 
+# ---------------------------------------------------------------- mechanism diagram (D20.5)
+
+FLOW_W = 360
+
+
+def flow_svg(lesson, model, v, theme):
+    """The control path of one explorer state as a diagram: the switch head, one block per case and the code
+    after the switch, with the path drawn the way the still draws it (path.segments over the visited blocks:
+    neighbouring blocks are a straight run, anything else a jump arc with an arrowhead). Entered and fallen-into
+    cases are filled, skipped ones are not; the step the break takes out of the switch bulges to the right."""
+    from . import still
+    svg = still.Svg(theme, fonts.tokens())
+    t = svg.t
+    P = model["programs"][v["program"]]
+    src = {no: ln for no, ln in P["lines"]}
+    blocks = [{"kind": "head", "line": P["switch_line"]}] + \
+        [{"kind": "case", "label": c["label"], "line": c["line"], "out": c["stmts"], "brk": c["brk_line"]} for c in P["cases"]] + \
+        [{"kind": "tail", "line": t_["line"]} for t_ in P["tail"]]
+    ran = set(v["ran"])
+    seq = [0] + [i for i, b in enumerate(blocks) if b["kind"] == "case" and b["label"] in ran]
+    seq += [i for i, b in enumerate(blocks) if b["kind"] == "tail"]
+    bh, gap, x0, rail_x = 30, 10, 58, 30
+    bw = FLOW_W - x0 - 46
+    y = {i: 8 + i * (bh + gap) for i in range(len(blocks))}
+    cy = {i: y[i] + bh / 2 for i in y}
+    for i, b in enumerate(blocks):
+        on = i in seq
+        rid = f"fb-{theme}-{v['n']}-{int(v['brk'])}-{i}"
+        fill = t["highlight"] if on else t["ground"]
+        stroke = t["note"] if on else t["rule"]
+        dash = '' if on else ' stroke-dasharray="4 4"'
+        svg.raw(f'<rect id="{rid}" data-block="{b.get("label", b["kind"])}" data-on="{str(on).lower()}" x="{x0}" '
+                f'y="{y[i]}" width="{bw}" height="{bh}" rx="6" fill="{fill}" stroke="{stroke}" stroke-width="1.3"{dash}/>')
+        color = t["ink"] if on else t["label"]
+        size = 13
+        bx = x0 + 10
+        first = src[b["line"]].strip()
+        if b["kind"] == "head":
+            first = f"{first.rstrip('{').strip()}"
+        svg.text(bx, cy[i] + 4.5, first, "mono", size, color, ("code", v["program"]), inside=rid)
+        bx += len(first) * size * 0.6 + 10
+        for no in b.get("out", []):
+            lit = src[no].strip()
+            svg.text(bx, cy[i] + 4.5, lit, "mono", size, color, ("code", v["program"]), inside=rid)
+            bx += len(lit) * size * 0.6 + 8
+        if b.get("brk"):
+            svg.text(x0 + bw - 8, cy[i] + 4.5, "break;", "mono", size, t["note"] if on else t["label"],
+                     ("code", v["program"]), anchor="end", inside=rid)
+    # the path, as in the still: straight runs between neighbours, arcs for jumps
+    from . import path as rail
+    for a, b, kind in rail.segments(seq):
+        if kind == "run":
+            fall = blocks[a]["kind"] == "case" and blocks[b]["kind"] == "case"  # case into case: no break
+            svg.line(rail_x, cy[a], rail_x, cy[b], t["correction"] if fall else t["note"], 2.5, role="path")
+        else:
+            out_of_break = blocks[a]["kind"] == "case" and blocks[a].get("brk")
+            if out_of_break:  # break leaves on the right
+                bx = x0 + bw + 6
+                svg.path(f"M{bx:.1f},{cy[a]:.1f} C{bx + 30:.1f},{cy[a]:.1f} {bx + 30:.1f},{cy[b]:.1f} {bx + 4:.1f},{cy[b]:.1f}",
+                         t["note"], 2.5, marker=True)
+            else:
+                svg.path(f"M{rail_x:.1f},{cy[a]:.1f} C{rail_x - 22:.1f},{cy[a]:.1f} {rail_x - 22:.1f},{cy[b]:.1f} "
+                         f"{x0 - 6:.1f},{cy[b]:.1f}", t["note"], 2.5, marker=True)
+    for i in seq:
+        svg.circle(rail_x, cy[i], 4, t["note"])
+    h = 8 + len(blocks) * (bh + gap)
+    body = "\n".join(svg.els).replace('marker-end="url(#arrow)"', f'marker-end="url(#farrow-{theme})"')
+    key = f"{v['n']}:{str(v['brk']).lower()}"
+    on = " on" if (v["brk"], v["n"]) == (False, model["n0"]) else ""
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" class="flow flow-{theme}{on}" viewBox="0 0 {FLOW_W} {h}" role="img" '
+            f'data-flow="{key}" data-ran="{",".join(map(str, v["ran"]))}" aria-hidden="true">'
+            f'<defs><marker id="farrow-{theme}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" '
+            f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{t["note"]}"/></marker></defs>{body}</svg>')
+
+
+def nobr(s):
+    """Escape s and keep each `name = value` together on one line (no orphaned values)."""
+    out, pos = [], 0
+    for m in re.finditer(r"[A-Za-z_][\w()]* = [-+]?\d[\w.]*", s):
+        out.append(esc(s[pos:m.start()]))
+        out.append(f'<span class="nobr">{esc(m.group(0))}</span>')
+        pos = m.end()
+    out.append(esc(s[pos:]))
+    return "".join(out)
+
+
 # ---------------------------------------------------------------- page
 
 UI_KEYS = ("x_on", "x_off", "x_match", "x_nomatch", "x_fall", "x_break", "x_end", "x_tag_fall", "x_tag_nomatch",
@@ -329,7 +415,7 @@ def _prose_html(v):
     for p in v["prose"]:
         attr = f'data-chrome="{p["key"]}" data-claims="{",".join(p["claims"])}"' if "key" in p \
             else f'data-claim="{p["claim"]}"'
-        out.append(f"<span {attr}>{esc(p['text'])}</span>")
+        out.append(f"<span {attr}>{nobr(p['text'])}</span>")
     return "".join(out)
 
 
@@ -350,6 +436,7 @@ def _body(lesson, model, v):
              f'<thead><tr><th scope="col" data-chrome="x_col_n">{esc(text.ui("x_col_n"))}</th>'
              + "".join(f'<th scope="col" data-label="program-file">{esc(f)}</th>' for f in files)
              + f'</tr></thead><tbody>{"".join(rows)}</tbody></table>')
+    flows = "".join(flow_svg(lesson, model, expected_view(model, b, n), th) for b, n in states(model) for th in ("light", "dark"))
     paths = [f"lessons/{lesson.id}/{model['programs'][p]['path']}" for p in (model["base"], model["alt"])]
     src_links = "".join(f'<p data-role="source" data-chrome="source_link">{esc(text.ui("source_link", path=p))}</p>'
                         for p in paths)
@@ -370,9 +457,10 @@ def _body(lesson, model, v):
 <figure class="panel codepanel" data-key="code"><figcaption class="lbl"><span data-chrome="code_label">{esc(text.ui('code_label'))}</span> · <span id="x-file" data-label="program-file">{esc(v['file'])}</span></figcaption>
 <ol class="code" id="x-code" data-code="{v['program']}">{_code_html(P, v)}</ol></figure>
 <div class="side">
+<section class="panel flowbox" data-key="flow" aria-labelledby="x-flow-h"><h3 class="lbl" id="x-flow-h" data-chrome="x_flow_label">{esc(text.ui('x_flow_label'))}</h3>{flows}</section>
 <section class="panel" data-key="output"><h3 class="lbl" data-chrome="output_label">{esc(text.ui('output_label'))}</h3><ol class="out" id="x-out">{outs}</ol></section>
 <section class="panel" data-key="note"><h3 class="lbl" data-chrome="x_live_label">{esc(text.ui('x_live_label'))}</h3><p class="live" id="x-live" aria-live="polite">{_prose_html(v)}</p></section>
-<p class="prov" id="x-prov" data-chrome="{v['prov']['key']}">{esc(v['prov']['text'])}</p>
+<p class="prov" id="x-prov" data-chrome="{v['prov']['key']}">{nobr(v['prov']['text'])}</p>
 </div></div>
 <noscript><section class="nojs"><p data-chrome="x_noscript">{esc(text.ui('x_noscript', n0=model['n0']))}</p>{table}</section></noscript>
 </main>
@@ -404,7 +492,7 @@ def project(lesson, out):
     script = (HTML_DIR / "explorer.js").read_text()
     used = " ".join([body, all_chrome_text(), *[ln for P in model["programs"].values() for _, ln in P["lines"]],
                      *[c["text"] for c in lesson.data["claims"]], "0123456789-·"])
-    css = page_css(used, "base.css", "explorer.css")
+    css = page_css(used + " break; switch (n) case", "base.css", "explorer.css")
     html = page(lesson.data["title"], body, css, script, "ptk-explorer", page_data(lesson, model))
     (out / "index.html").write_text(html)
     (out / "texts.json").write_text(json.dumps(_texts(lesson, model), indent=1, ensure_ascii=False))
@@ -423,7 +511,7 @@ def _texts(lesson, model):
     items.append({"text": lesson.claim(lede)["text"], "claims": [lede], "source": f"claim:{lede}", "where": where})
     for key in ("kicker", "x_section", "x_n_label", "x_on", "x_off", "x_reset", "code_label", "output_label",
                 "x_live_label", "x_col_n", "provenance"):
-        kw = {"kicker": {"topic": lesson.data["topic"]}}.get(key, {})
+        kw = {"kicker": {"subject": lesson.data.get("subject", "C"), "topic": lesson.data["topic"]}}.get(key, {})
         t = text.provenance(lesson) if key == "provenance" else text.ui(key, **kw)
         items.append({"text": t, "claims": [], "source": f"chrome:{key}", "where": where})
     for p in (model["base"], model["alt"]):
@@ -498,6 +586,8 @@ def check_view(model, snap, brk, n, prose=True):
             "ran": ",".join(map(str, exp["ran"])), "ranLines": sorted(exp["path"]), "nval": str(n),
             "output": exp["output"]}
     probs = [f"{k}: page {snap.get(k)!r}, expected {v!r}" for k, v in want.items() if snap.get(k) != v]
+    fw = {"flow": f"{n}:{_bool(brk)}", "flowRan": ",".join(map(str, exp["ran"]))}
+    probs += [f"diagram {k}: page {snap.get(k)!r}, expected {v!r}" for k, v in fw.items() if snap.get(k) != v]
     src = {no: s for no, s in P["lines"]}
     for row in snap["code"]:
         line_want = f"{P['n_prefix']}{n}{P['n_suffix']}" if row["line"] == P["n_line"] else src.get(row["line"])
@@ -620,7 +710,7 @@ def check_layout(rec, width=None):
             continue
         n += 1
         keys = {k["key"] for k in L["nodes"]}
-        need = {"explorer": {"code", "output", "note"}, "stepper": {"code", "output", "note", "panel"}}.get(
+        need = {"explorer": {"code", "output", "note", "flow"}, "stepper": {"code", "output", "note", "panel"}}.get(
             rec["mode"], {"question", "code", "options"})
         if not need <= keys:
             probs.append(f"{L['width']} {L['scheme']} n={L.get('n')}: key nodes {sorted(keys)} lack {sorted(need - keys)}")

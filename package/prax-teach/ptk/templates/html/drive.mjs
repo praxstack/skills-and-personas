@@ -135,8 +135,10 @@ function snapExplorer() {
       line: +li.dataset.line, text: li.querySelector('code').textContent,
       tags: [...li.querySelectorAll('.tag')].map((t) => ({ key: t.dataset.chrome, text: t.textContent, tone: t.classList[1] })) })),
     nval: (document.querySelector('#x-code [data-n]') || {}).textContent,
+    ...(() => { const f = [...document.querySelectorAll('svg.flow')].find((e) => getComputedStyle(e).display !== 'none');
+                return { flow: f ? f.dataset.flow : null, flowRan: f ? f.dataset.ran : null }; })(),
     output: [...document.querySelectorAll('#x-out .val')].map((e) => e.textContent),
-    prose: [...document.querySelectorAll('#x-live span')].map((e) => ({ key: e.dataset.chrome || null, claim: e.dataset.claim || null, claims: e.dataset.claims || null, text: e.textContent })),
+    prose: [...document.querySelectorAll('#x-live > span')].map((e) => ({ key: e.dataset.chrome || null, claim: e.dataset.claim || null, claims: e.dataset.claims || null, text: e.textContent })),
     prov: { key: document.getElementById('x-prov').dataset.chrome, text: document.getElementById('x-prov').textContent },
     controls: { checked: checked ? checked.value : null, pressed: document.getElementById('x-brk').getAttribute('aria-pressed'),
                 onoff: oo ? oo.textContent : null, resetDisabled: document.getElementById('x-reset').disabled },

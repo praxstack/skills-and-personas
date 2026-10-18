@@ -108,6 +108,7 @@
   "s_step": "Step {k} of {n}",
   "s_noscript": "Without JavaScript every step is shown, in order. Predict each one before you read it.",
   "s_no_output": "Nothing printed yet",
-  "x_captured_run": "Captured run of {file} · stdout sha256 {sha}"
+  "x_captured_run": "Captured run of {file} · stdout sha256 {sha}",
+  "x_flow_label": "the path through the switch"
  }
 }

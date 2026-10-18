@@ -13,6 +13,17 @@
     if (txt != null) e.textContent = txt;
     return e;
   }
+  // keep each "name = value" on one line: the value never wraps away from its name
+  function nobr(node, text) {
+    node.textContent = '';
+    var re = /[A-Za-z_][\w()]* = [-+]?\d[\w.]*/g, pos = 0, m;
+    while ((m = re.exec(text))) {
+      node.appendChild(document.createTextNode(text.slice(pos, m.index)));
+      node.appendChild(el('span', 'nobr', m[0]));
+      pos = m.index + m[0].length;
+    }
+    node.appendChild(document.createTextNode(text.slice(pos)));
+  }
   function program() { return D.programs[st.brk ? D.alt : D.base]; }
 
   // C17 6.8.4.2p5: enter at the matching label, else default, else skip the body.
@@ -121,13 +132,16 @@
     var live = $('x-live');
     live.textContent = '';
     V.prose.forEach(function (p) {
-      var sp = el('span', null, p.text);
+      var sp = el('span');
+      nobr(sp, p.text);
       if (p.key) { sp.setAttribute('data-chrome', p.key); sp.setAttribute('data-claims', p.claims); }
       else sp.setAttribute('data-claim', p.claim);
       live.appendChild(sp);
     });
+    var key = st.n + ':' + st.brk;
+    document.querySelectorAll('svg.flow').forEach(function (f) { f.classList.toggle('on', f.getAttribute('data-flow') === key); });
     var prov = $('x-prov');
-    prov.textContent = V.prov.text;
+    nobr(prov, V.prov.text);
     prov.setAttribute('data-chrome', V.prov.key);
     document.querySelectorAll('#x-n input').forEach(function (i) { i.checked = Number(i.value) === st.n; });
     var t = $('x-brk');

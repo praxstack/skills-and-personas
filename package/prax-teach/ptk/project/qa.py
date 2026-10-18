@@ -141,7 +141,7 @@ def _texts(lesson, m):
     n = len(m["layers"]) + 1
     items = [{"text": lesson.data["title"], "claims": [], "source": "label:title", "where": w},
              {"text": m["prompt"], "claims": [], "source": f"question:{m['scene']}", "where": w}]
-    for key, kw in (("kicker", {"topic": lesson.data["topic"]}), ("question_label", {}), ("code_label", {}),
+    for key, kw in (("kicker", {"subject": lesson.data.get("subject", "C"), "topic": lesson.data["topic"]}), ("question_label", {}), ("code_label", {}),
                     ("qa_choose", {}), ("qa_check", {}), ("qa_correct", {}), ("qa_wrong", {}), ("qa_correction", {}),
                     ("answer_label", {}), ("qa_next_prompt", {}), ("qa_reveal", {}), ("output_label", {}),
                     ("qa_noscript", {})):
