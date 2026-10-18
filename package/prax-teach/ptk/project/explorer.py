@@ -179,27 +179,23 @@ def _switch_expect(lesson, pid):
 
 
 # Claims the explorer's rule sentences rest on, found by the C17 text they quote (so a lesson
-# cannot bind a template to an unrelated claim). bodyend has no single quotable sentence; it is
-# the claim that cites the compound statement clause.
+# cannot bind a template to an unrelated claim).
 ROLE_RULES = {
     "match": ("If a converted value matches", None),
     "nomatch": ("If no converted case constant expression matches", None),
     "labels": ("Labels in themselves do not alter the flow of control", None),
     "brk": ("A break statement terminates execution of the smallest enclosing switch", "rule"),
-    "bodyend": (None, "§6.8.2"),
+    "bodyend": ("Except as indicated, statements are executed in sequence", None),
 }
 
 
 def _role_claim(lesson, role):
     quote, extra = ROLE_RULES[role]
     for c in lesson.data["claims"]:
-        srcs = c.get("sources", [])
-        if quote and any(s.get("quote", "").startswith(quote) for s in srcs) and (extra is None or c["kind"] == extra):
+        if any(s.get("quote", "").startswith(quote) for s in c.get("sources", [])) and extra in (None, c["kind"]):
             return c["id"]
-        if quote is None and any(extra in s.get("clause", "") for s in srcs):
-            return c["id"]
-    raise errors.ModelReferenceError(f"the switch explorer needs a claim for the {role!r} rule "
-                                     f"({quote or extra}); add it with its C17 source", pointer="/claims")
+    raise errors.ModelReferenceError(f"the switch explorer needs a claim for the {role!r} rule, quoting C17: "
+                                     f"{quote!r}", pointer="/claims")
 
 
 def _tail_claim(lesson, base, tail):
