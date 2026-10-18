@@ -392,7 +392,11 @@ def page_data(lesson, model):
 
 
 def project(lesson, out):
-    """Write out/index.html and out/texts.json. Returns {"page", "model"}."""
+    """Write out/index.html and out/texts.json. Returns {"page", "model"}. A lesson with a mechanism panel
+    gets the step-through explorer (stepper.py) instead of the switch explorer."""
+    if (lesson.data.get("figure") or {}).get("panel"):
+        from . import stepper
+        return stepper.project(lesson, out)
     out.mkdir(parents=True, exist_ok=True)
     model = switch_model(lesson)
     v0 = expected_view(model, False, model["n0"])
@@ -616,7 +620,8 @@ def check_layout(rec, width=None):
             continue
         n += 1
         keys = {k["key"] for k in L["nodes"]}
-        need = {"code", "output", "note"} if rec["mode"] == "explorer" else {"question", "code", "options"}
+        need = {"explorer": {"code", "output", "note"}, "stepper": {"code", "output", "note", "panel"}}.get(
+            rec["mode"], {"question", "code", "options"})
         if not need <= keys:
             probs.append(f"{L['width']} {L['scheme']} n={L.get('n')}: key nodes {sorted(keys)} lack {sorted(need - keys)}")
         probs += [f"{L['width']} {L['scheme']} n={L.get('n')} brk={L.get('brk')}: {p}" for p in L["problems"]]
@@ -636,6 +641,9 @@ def check_file(rec):
 
 def gates(lesson, out, shots):
     """Build gates for the explorer (one browser run)."""
+    if (lesson.data.get("figure") or {}).get("panel"):
+        from . import stepper
+        return stepper.gates(lesson, out, shots)
     model = switch_model(lesson)
     rec = drive_explorer(model, out / "index.html", shots)
     (out.parent / "work").mkdir(exist_ok=True)

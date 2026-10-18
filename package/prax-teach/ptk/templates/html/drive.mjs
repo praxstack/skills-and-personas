@@ -104,6 +104,19 @@ function layoutProbe() {
     minPx = Math.min(minPx, px);
     if (px < 11) problems.push({ kind: 'min-size', text: el.textContent.trim().slice(0, 40), px });
   }
+  // no orphaned values: a `name = value` pair never breaks across lines (integration finding, WP9)
+  const pair = /[A-Za-z_][\w()]* = [-+]?\d[\w.]*/g;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let tn = walker.nextNode(); tn; tn = walker.nextNode()) {
+    const el = tn.parentElement;
+    if (!el || el.closest('noscript, script, style, svg') || getComputedStyle(el).display === 'none' || !el.getBoundingClientRect().width) continue;
+    for (const m of tn.textContent.matchAll(pair)) {
+      const r = document.createRange();
+      r.setStart(tn, m.index); r.setEnd(tn, m.index + m[0].length);
+      const tops = new Set([...r.getClientRects()].filter((b) => b.width > 0).map((b) => Math.round(b.top)));
+      if (tops.size > 1) problems.push({ kind: 'value-split-across-lines', text: m[0] });
+    }
+  }
   return { problems, nodes, minPx, width: iw, height: ih };
 }
 
@@ -252,6 +265,118 @@ async function explorer() {
   }
 }
 
+// ---------------------------------------------------------------- step-through explorer (panel lessons)
+
+function snapStepper() {
+  const vis = (e) => e && getComputedStyle(e).display !== 'none' && e.getBoundingClientRect().height > 0;
+  const steps = [...document.querySelectorAll('section.step')];
+  const shown = steps.filter(vis);
+  const s = shown[0];
+  const checked = document.querySelector('#s-steps input:checked');
+  const svg = s ? [...s.querySelectorAll('svg.mech')].find(vis) : null;
+  return {
+    visibleSteps: shown.length, state: s ? s.dataset.state : null, checked: checked ? checked.value : null,
+    label: s ? s.querySelector('.slabel').textContent : null,
+    line: s && s.querySelector('.ln.cur') ? +s.querySelector('.ln.cur').dataset.line : null,
+    ran: s ? [...s.querySelectorAll('.ln.ran')].map((li) => +li.dataset.line) : [],
+    output: s ? [...s.querySelectorAll('.out .val')].map((e) => e.textContent) : [],
+    output_facts: s ? [...s.querySelectorAll('.out .val')].map((e) => e.dataset.fact) : [],
+    prose: s ? [...s.querySelectorAll('.live [data-claim]')].map((e) => ({ claim: e.dataset.claim, text: e.textContent })) : [],
+    panelLayout: svg ? svg.dataset.layout : null, panelState: svg ? svg.dataset.panelState : null,
+    panelTheme: svg ? svg.dataset.theme : null,
+    panelFacts: svg ? [...svg.querySelectorAll('[data-fact]')].map((e) => e.dataset.fact) : [],
+    prevDisabled: document.getElementById('s-prev').disabled, nextDisabled: document.getElementById('s-next').disabled,
+  };
+}
+
+async function stepper() {
+  const S = job.states;
+  let o = await open({ name: 'a11y-1440-light' });
+  result.a11y = await o.page.evaluate(a11yProbe);
+  if (!result.a11y.jsClass) { result.scriptBlocked = true; await finish(o); return; }
+  const tabs = [];
+  await o.page.keyboard.press('Tab');
+  for (let i = 0; i < 3; i++) {
+    tabs.push(await o.page.evaluate(() => {
+      const a = document.activeElement;
+      const ring = a.matches('input') ? a.nextElementSibling : a;
+      const st = getComputedStyle(ring);
+      return { tag: a.tagName, id: a.id, name: a.name || null, value: a.value || null, outline: `${st.outlineStyle} ${st.outlineWidth}`, visible: a.matches(':focus-visible') };
+    }));
+    await o.page.keyboard.press('Tab');
+  }
+  result.tabOrder = tabs;
+  const kb = [];
+  await o.page.focus('#s-steps input:checked');
+  await o.page.keyboard.press('ArrowRight');
+  kb.push({ action: 'ArrowRight on step', snap: await o.page.evaluate(snapStepper) });
+  await o.page.keyboard.press('Tab');
+  kb.push({ action: 'focus after Tab', active: await o.page.evaluate(() => document.activeElement.id) });
+  await o.page.keyboard.press('Tab');
+  kb.push({ action: 'focus after Tab 2', active: await o.page.evaluate(() => document.activeElement.id) });
+  await o.page.keyboard.press('Enter');
+  kb.push({ action: 'Enter on Next', snap: await o.page.evaluate(snapStepper) });
+  await o.page.focus('#s-prev');
+  await o.page.keyboard.press('Space');
+  kb.push({ action: 'Space on Previous', snap: await o.page.evaluate(snapStepper) });
+  result.keyboard = kb;
+  result.transitionsNormal = await o.page.evaluate(() => getComputedStyle(document.querySelector('.pill')).transitionDuration);
+  await finish(o);
+
+  o = await open({ name: 'reduced-motion', reducedMotion: 'reduce' });
+  result.transitionsReduced = await o.page.evaluate(() => [...document.querySelectorAll('.pill, .seg label span')].map((e) => getComputedStyle(e).transitionDuration));
+  await finish(o);
+
+  o = await open({ name: 'no-js', js: false });
+  result.noscript = await o.page.evaluate(() => ({
+    note: [...document.querySelectorAll('.nojs')].map((p) => p.textContent),
+    controlsVisible: [...document.querySelectorAll('.controls')].some((e) => getComputedStyle(e).display !== 'none'),
+    visibleSteps: [...document.querySelectorAll('section.step')].filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.dataset.state),
+  }));
+  await finish(o);
+
+  // every step through every control: radios (click and keys), Next to the end, Previous to the start
+  o = await open({ name: 'steps-1440-light' });
+  const p = o.page;
+  const steps = [{ action: 'load', want: S[0], snap: await p.evaluate(snapStepper) }];
+  for (let i = 1; i < S.length; i++) {
+    await p.click('#s-next');
+    steps.push({ action: `next to ${i + 1}`, want: S[i], snap: await p.evaluate(snapStepper) });
+  }
+  for (let i = S.length - 2; i >= 0; i--) {
+    await p.click('#s-prev');
+    steps.push({ action: `previous to ${i + 1}`, want: S[i], snap: await p.evaluate(snapStepper) });
+  }
+  for (const [i, sid] of S.entries()) {
+    await p.click(`#s-steps label:has(input[value="${sid}"])`);
+    steps.push({ action: `radio ${i + 1}`, want: sid, snap: await p.evaluate(snapStepper) });
+  }
+  result.steps = steps;
+  await finish(o);
+
+  result.layout = [];
+  for (const width of [390, 1440]) {
+    for (const scheme of ['light', 'dark']) {
+      o = await open({ name: `layout-${width}-${scheme}`, width, height: width === 390 ? 844 : 900, scheme });
+      for (const [i, sid] of S.entries()) {
+        await o.page.click(`#s-steps label:has(input[value="${sid}"])`);
+        const snap = await o.page.evaluate(snapStepper);
+        const lay = await o.page.evaluate(layoutProbe);
+        if (snap.panelTheme !== scheme) lay.problems.push({ kind: 'panel-theme', shown: snap.panelTheme, scheme });
+        if (snap.panelLayout !== (width < 860 ? 'portrait' : 'wide')) lay.problems.push({ kind: 'panel-layout', shown: snap.panelLayout });
+        result.layout.push({ width, scheme, n: i + 1, brk: null, ...lay });
+        if (job.shots && (i === S.length - 1 || i === Math.floor(S.length / 2))) {
+          mkdirSync(job.shots, { recursive: true });
+          await o.page.mouse.move(0, 0);
+          await o.page.waitForTimeout(300);
+          await o.page.screenshot({ path: `${job.shots}/explorer-${width}-${scheme}${i === S.length - 1 ? '' : '-mid'}.png`, fullPage: true });
+        }
+      }
+      await finish(o);
+    }
+  }
+}
+
 // ---------------------------------------------------------------- Q&A
 
 function snapQa() {
@@ -337,6 +462,7 @@ async function qa() {
 try {
   if (job.mode === 'explorer') await explorer();
   else if (job.mode === 'qa') await qa();
+  else if (job.mode === 'stepper') await stepper();
   else throw new Error(`unknown mode ${job.mode}`);
   result.ok = true;
 } catch (e) {

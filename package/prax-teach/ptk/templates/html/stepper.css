@@ -1,0 +1,29 @@
+/* Step-through explorer: the mechanism panel leads, then the program, the output and what happens. */
+.stepper .steps{display:grid;gap:2.5rem}
+.step{display:grid;gap:1rem}
+html.js .step[hidden]{display:none}
+.shead{display:flex;flex-wrap:wrap;gap:.25rem .75rem;align-items:baseline}
+.slabel{font-family:var(--note-font);font-weight:var(--note-weight);color:var(--note);font-size:calc(1.375rem * var(--note-scale));line-height:1.25}
+.sgrid{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
+.mechbox{padding:.75rem}
+.mech{display:none;width:100%;height:auto}
+.mech-p-light{display:block}
+@media (prefers-color-scheme:dark){.mech-p-light{display:none}.mech-p-dark{display:block}}
+.mech text{font-variant-numeric:lining-nums tabular-nums}
+.stepper .code{font-size:clamp(11px,2.9vw,.9375rem)}
+.ln.cur{box-shadow:inset 4px 0 0 var(--note);background:var(--highlight)}
+.out .empty{color:var(--label);font-family:var(--body-font);font-size:1rem}
+.live p{max-width:52ch}
+.live p+p{margin-block-start:.5rem}
+.nobr{white-space:nowrap}
+@media (min-width:860px){
+  .mech-p-light,.mech-p-dark{display:none!important}
+  .mech-w-light{display:block}
+  .sgrid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}
+  .place-side .mechbox{grid-column:2;grid-row:1}
+  .place-side .codepanel{grid-column:1;grid-row:1 / span 2}
+  .place-side .side{grid-column:2;grid-row:2}
+  .place-hero .mechbox{grid-column:1 / -1}
+}
+@media (min-width:860px) and (prefers-color-scheme:dark){.mech-w-light{display:none}.mech-w-dark{display:block}}
+@media print{.mech-p-light,.mech-p-dark,.mech-w-dark{display:none!important}.mech-w-light{display:block!important}}

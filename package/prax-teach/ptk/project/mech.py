@@ -53,7 +53,8 @@ def shown_facts(lesson, sid):
         if s["id"] == sid:
             break
     facts = lesson.by_id("facts")
-    lines = {(facts[f]["program"], facts[f]["select"].get("line")) for f in out if f in facts}
+    printed = st["state"].get("output", [])
+    lines = {(facts[f]["program"], facts[f]["select"].get("line")) for f in printed if f in facts}
     for f in lesson.data["facts"]:  # any fact read from a line already printed (a token of it, or the line)
         sel = f["select"]
         if sel.get("line") and (f["program"], sel.get("line")) in lines:
@@ -533,3 +534,34 @@ def measure(svg_factory, lesson, sid, w, layout="wide"):
     """Height of the panel at `sid` without keeping its elements."""
     svg = svg_factory()
     return draw(svg, lesson, sid, 0, 0, w, layout)
+
+
+WIDTHS = {("wide", "side"): 432, ("wide", "hero"): 1072, ("portrait", "side"): 368, ("portrait", "hero"): 368}
+
+
+def page_place(lesson):
+    """Where a page shows the panel of one state: a stack of one state is a column beside the code even when
+    the still draws the whole run full width."""
+    P = lesson.data["figure"]["panel"]
+    return "side" if P["kind"] == "stack" else P["place"]
+
+
+def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs=""):
+    """The panel at `sid` as one standalone <svg> for an HTML page or the video: (markup, fact ids drawn, chars).
+    Colours and type come from `theme` (the page shows a light and a dark copy by colour scheme); fonts are the
+    page's own @font-face families."""
+    from . import still  # still imports this module; the writer class lives there
+    tokens = tokens or fonts.tokens()
+    svg = still.Svg(theme, tokens)
+    flow = still.Flow(svg, {})
+    w = WIDTHS[(layout, page_place(lesson))] if not states else WIDTHS[(layout, lesson.data["figure"]["panel"]["place"])]
+    h = draw(svg, lesson, sid, 4, 4, w, layout, flow, key=False, states=states)
+    body = "\n".join(svg.els)
+    facts = re.findall(r'data-fact="([^"]+)"', body)
+    chars = "".join(svg.chars.values())
+    defs = (f'<defs><marker id="arrow-{theme}-{layout}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" '
+            f'markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{svg.t["note"]}"/></marker></defs>')
+    body = body.replace('marker-end="url(#arrow)"', f'marker-end="url(#arrow-{theme}-{layout})"')
+    markup = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w + 8:.0f} {h + 8:.0f}" role="img" '
+              f'data-panel-state="{sid}" data-theme="{theme}" data-layout="{layout}" {attrs}>{defs}{body}</svg>')
+    return markup, facts, chars
