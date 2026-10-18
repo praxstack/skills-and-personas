@@ -146,3 +146,10 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
   - neuron, film: the program card is small.
 
 **Budget: 16 of 18 rounds used.** Left: the round-17 fix after the five-lens review (it also owns the protocol-checker vs TEACHING.md mismatch), and one spare.
+- Orchestrator check of WP9: the neuron still is a faithful Atlas-style design. "One value, four printf conversions" is now correct. It shows the cast converting to 0x4050800000000000, captured from a real memcpy run, and the misconception card corrects the old proof's error.
+- **Round 17 review running (read-only, three parts):**
+  1. a gates audit for weakening, covering the six WP9 gate changes plus D21.1, hard links and the `--only` merge;
+  2. a five-lens review of the four lessons;
+  3. a Codex outside voice on the gate diffs.
+
+  One fix round follows (17). Round 18 is spare.
