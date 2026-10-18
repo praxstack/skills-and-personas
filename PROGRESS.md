@@ -68,3 +68,6 @@ Use /deep-research where it helps. Run it all without stopping to ask.
   - Fix in the integration pass: accept nlink>1 for regular files the user owns, opened with O_NOFOLLOW, and log a warning.
   - Record it in PROTECTED-MAP.md as a changed protected behaviour, with this reason.
 - **Budget: 14 of 18 rounds used.** WP8 was counted when it started.
+- WP6 closed at round 1 (`b0e6ab8`). AC-6.1 to AC-6.7 pass. 77 boundary seeks give 0 mismatches. FILM/EXPLORE/RETURN never leaks edits into the film. The page now works from file://; before, Chrome refused every `<track src>` there. The note-timing fix is in.
+- **Integration pass (round 15) running:** D21.1 canary mode, the state hard-link fix, `--only` merge, install and rollback CLI (dry-run only), the 3 router misroutes, the IVE spinner, a full six-media rebuild ending verified, full selftest and agent-tests, README.
+- **Budget: 15 of 18 rounds used.** Left: WP9 (16), a fix round after the consolidated five-lens review (17), one spare (18).
