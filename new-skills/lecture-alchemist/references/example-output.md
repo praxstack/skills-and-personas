@@ -82,7 +82,7 @@ This shows how the Neural Networks lecture SHOULD look with clean markdown.
 ### 1. Neural Network Architecture
 
 **What Was Taught:**
-A neural network is composed of layers of neurons (also called parameters):
+A neural network is composed of layers of neurons. Its trainable parameters are the weights and biases that connect them:
 - **Input Layer:** Receives raw data (e.g., house square footage)
 - **Hidden Layers:** Where feature extraction happens
 - **Output Layer:** Delivers the final prediction
@@ -215,7 +215,7 @@ The Learning Rate controls how fast we move down the "loss hill."
 
 ### Code Block 1: Neural Network From Scratch (NumPy)
 
-**Purpose:** Solve XOR problem to prove non-linearity works
+**Purpose:** Show the forward pass and loss of the 2-4-1 network used for XOR (Code Block 2 trains it)
 **Context:** Core implementation shown in lecture
 
 ```python
@@ -313,6 +313,13 @@ model = nn.Sequential(
 
 criterion = nn.MSELoss()                           # Mean Squared Error
 optimizer = optim.SGD(model.parameters(), lr=0.1)  # Stochastic Gradient Descent
+
+# ============================================
+# XOR DATA: the output is 1 when exactly one input is 1
+# ============================================
+
+inputs = torch.tensor([[0., 0.], [0., 1.], [1., 0.], [1., 1.]])
+targets = torch.tensor([[0.], [1.], [1.], [0.]])
 
 # ============================================
 # TRAINING LOOP
