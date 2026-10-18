@@ -162,3 +162,7 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
   - **D22.1:** D21.1 was a spec change made in the same run as code changes, which AGENTS.md forbids. It is reverted to the original AC-7.1 full-suite default. Canary-only builds become `canary-verified`. The cheaper policy goes to Prax as ACCEPTANCE-PROPOSAL §9.
   - **D22.2:** `--only` carries old gate results only when every artifact hash and the ptk version match the recorded inventory; anything else is re-gated.
   - **D22.3:** learner state binds content instead of counting links. Each state file carries its learner id, checked against the directory's id, so aliasing across learners is detected. Writes always atomic-replace onto a fresh inode, so they never go through an alias. Reads tolerate backup links. This is recorded in PROTECTED-MAP as a justified change.
+- **Five-lens review** (`reviews/round17-five-lens.md`) scores. Truth 7-8; explanation 5-7; looks 4-6; interaction 3-7; media 5-6. 5 P1s: the IVE never pauses for the prediction; answers leak through titles; factorial never shows n and r; 3 of 4 explorers are only steppers; the figure is too small in the videos. **The gates pass, but quality is not yet world-class.**
+- **Round 17 (running):** verifier integrity. All weakenings, D22.1 to D22.3, and the protocol aligned to TEACHING.md.
+- **Round 18 (running, LAST):** lesson-quality P1s plus top-10 items as time allows.
+- **Budget: 18 of 18 rounds committed.** After these: one read-only verification and a stall report. No further rounds without Prax's approval (FREEZE).
