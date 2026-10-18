@@ -13,9 +13,18 @@ from . import host
 TOKENS = host.PKG / "ptk" / "templates" / "tokens.json"
 
 
+def load_tokens(path=TOKENS):
+    """tokens.json with each theme's WP0 colour names (paper, blue, ...) filled in from `aliases`."""
+    tk = json.loads(path.read_text())
+    for theme in tk["themes"].values():
+        for old, role in tk.get("aliases", {}).items():
+            theme.setdefault(old, theme[role])
+    return tk
+
+
 @lru_cache(maxsize=1)
 def tokens():
-    return json.loads(TOKENS.read_text())
+    return load_tokens()
 
 
 @lru_cache(maxsize=8)
@@ -25,31 +34,47 @@ def _font(key):
     return TTFont(str(host.FONTS_DIR / spec["file"]))
 
 
-@lru_cache(maxsize=8)
-def _metrics(key):
+@lru_cache(maxsize=64)
+def _metrics(key, wght=None, opsz=None):
+    """cmap, advance widths and units per em. For a variable font, the advances of the instance the
+    browser draws: the given weight, and (auto optical sizing) opsz equal to the font size in px, so a
+    wrapped line fits where the browser wraps it."""
     f = _font(key)
+    pins = {}
+    if "fvar" in f:
+        axes = {a.axisTag: a for a in f["fvar"].axes}
+        for tag, val in (("wght", wght), ("opsz", opsz)):
+            if val is not None and tag in axes:
+                pins[tag] = min(max(float(val), axes[tag].minValue), axes[tag].maxValue)
+    if pins:
+        from fontTools.ttLib import TTFont
+        from fontTools.varLib import instancer
+        f = instancer.instantiateVariableFont(TTFont(str(host.FONTS_DIR / tokens()["fonts"][key]["file"])), pins,
+                                              inplace=False)
     cmap = f.getBestCmap()
     hmtx = f["hmtx"].metrics
     upm = f["head"].unitsPerEm
     return cmap, hmtx, upm
 
 
-def width(key, size, s, bold=False):
-    """Advance width of s at size px (default instance; bold adds 4%, a safe overestimate)."""
-    cmap, hmtx, upm = _metrics(key)
+def width(key, size, s, bold=False, weight=None):
+    """Advance width of s at size px. weight measures that instance of a variable font; bold (no weight)
+    keeps the WP0 rule: default instance plus 4%, a safe overestimate."""
+    opsz = round(float(size)) if weight is not None else None
+    cmap, hmtx, upm = _metrics(key, weight, opsz)
     total = 0
     for ch in s:
         g = cmap.get(ord(ch))
         total += hmtx[g][0] if g in hmtx else upm * 0.6
     w = total * size / upm
-    return w * 1.04 if bold else w
+    return w * 1.04 if bold and weight is None else w
 
 
-def wrap(key, size, s, max_w, bold=False):
+def wrap(key, size, s, max_w, bold=False, weight=None):
     words, lines, cur = s.split(), [], ""
     for w in words:
         trial = f"{cur} {w}".strip()
-        if cur and width(key, size, trial, bold) > max_w:
+        if cur and width(key, size, trial, bold, weight) > max_w:
             lines.append(cur)
             cur = w
         else:
@@ -114,4 +139,5 @@ def full_face_css(keys):
     return "".join(rules)
 
 
-FAMILY = {"serif": "'Source Serif 4'", "mono": "'JetBrains Mono'", "hand": "'Caveat'"}
+FAMILY = {"serif": "'Source Serif 4'", "serif_italic": "'Source Serif 4'", "sans": "'Nunito Sans'",
+          "mono": "'JetBrains Mono'", "hand": "'Caveat'"}

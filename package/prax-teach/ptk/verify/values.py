@@ -63,6 +63,49 @@ def _alt_output(root, lesson, where, bad):
     return len(fids)
 
 
+def _sequences(root, lesson, where, bad):
+    """A container marked data-state="<trace state>" must show exactly that state's output facts, in order:
+    a dropped, duplicated, reordered or unmarked line fails here even when each shown value is right (AC-3.7)."""
+    trace = lesson.by_id("trace")
+    n = 0
+    for el in root.iter():
+        sid = el.get("data-state")
+        if sid is None:
+            continue
+        n += 1
+        shown = [e.get("data-fact") for e in el.iter() if e.get("data-fact") is not None]
+        want = trace[sid]["state"].get("output", []) if sid in trace else None
+        if shown != want:
+            bad.append({"where": f"{where}:[data-state={sid}]", "problem": "output facts differ from the state",
+                        "shown": shown, "state_output": want})
+    return n
+
+
+def _source_lines(root, lesson, where, bad):
+    """Code lines (data-src-line) equal the program's source line; line numbers (data-line) equal their line."""
+    progs = lesson.by_id("programs")
+    n = 0
+    at = {(el.get("data-in"), el.get("y")): el.get("data-src-line") for el in root.iter()
+          if el.get("data-src-line") is not None}
+    for el in root.iter():
+        line, pid = el.get("data-src-line"), el.get("data-code")
+        if line is not None and pid in progs:
+            n += 1
+            src = lesson.program_source(pid).split("\n")
+            want = src[int(line) - 1].strip() if 0 < int(line) <= len(src) else None
+            if "".join(el.itertext()) != want:
+                bad.append({"where": f"{where}:{pid}:{line}", "problem": "code differs from the source line",
+                            "shown": "".join(el.itertext()), "source": want})
+        num = el.get("data-line")
+        if num is not None and el.get("data-label") == "line-number":
+            n += 1
+            beside = at.get((el.get("data-in"), el.get("y")))
+            if "".join(el.itertext()) != num or (beside is not None and beside != num):
+                bad.append({"where": f"{where}:line-number", "problem": "line number differs from its line",
+                            "shown": "".join(el.itertext()), "line": num, "code_line_beside": beside})
+    return n
+
+
 def check_svg(path, lesson):
     root = ET.parse(path).getroot()
     bad, n = [], 0
@@ -72,6 +115,8 @@ def check_svg(path, lesson):
             n += 1
             _compare(fid, "".join(el.itertext()), lesson, path.name, bad)
     n += _alt_output(root, lesson, path.name, bad)
+    _sequences(root, lesson, path.name, bad)
+    _source_lines(root, lesson, path.name, bad)
     return n, bad
 
 

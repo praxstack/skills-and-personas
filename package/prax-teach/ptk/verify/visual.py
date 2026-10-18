@@ -1,5 +1,6 @@
 """Visual gate: Playwright screenshots (390/1440 x light/dark), layout, contrast, fonts, alt text,
-outbound requests and tesseract OCR of every value and number cell (AC-3.2..3.6 subset for WP0).
+outbound requests, tesseract OCR plus a lining-figure geometry check of every value and number cell,
+and key-node visibility (AC-3.2..3.6; D20.3).
 
 One browser run per call (E12). Any request that is not local is aborted and fails the gate.
 """
@@ -11,9 +12,10 @@ import re
 import threading
 from pathlib import Path
 
-from .. import fonts, host, node
+from .. import errors, fonts, host, node
+from ..text import esc
 
-ALLOWED_FAMILIES = {"Source Serif 4", "JetBrains Mono", "Caveat"}
+ALLOWED_FAMILIES = {"Source Serif 4", "Nunito Sans", "JetBrains Mono", "Caveat"}
 WIDTHS = (390, 1440)
 SCHEMES = ("light", "dark")
 
@@ -94,7 +96,8 @@ class LocalServer:
 
 def ocr_crops(crops):
     """Tesseract each crop after grayscale (+ negate for dark themes) and a white margin.
-    Grouped crops (a column) are read as a block and compared token by token."""
+    Grouped crops (a column) are read as a block and compared token by token. Crops whose expected
+    text holds digits also get the lining-figure geometry check (AC-3.2)."""
     tess = host.which("tesseract")
     ffmpeg = host.which("ffmpeg")
     out = []
@@ -105,20 +108,118 @@ def ocr_crops(crops):
         host.run([ffmpeg, "-v", "error", "-y", "-i", c["path"], "-vf", vf, prep], check=True, timeout=60)
         psm = "6" if c.get("multi") else ("10" if len(exp) == 1 else "7")
         got = host.run([tess, prep, "-", "--psm", psm, "-l", "eng"], timeout=60).stdout.strip()
-        ok = re.findall(r"\S+", got.lower()) == re.findall(r"\S+", exp.lower())
-        out.append({"expected": exp.replace("\n", " "), "read": got.replace("\n", " "), "ok": ok,
+        read_ok = re.findall(r"\S+", got.lower()) == re.findall(r"\S+", exp.lower())
+        lining = lining_check(c["path"], exp) if re.search(r"\d", exp) else None
+        out.append({"expected": exp.replace("\n", " "), "read": got.replace("\n", " "), "read_ok": read_ok,
+                    "lining": lining, "ok": read_ok and (lining is None or lining["ok"]),
                     "crop": "/".join(Path(c["path"]).parts[-2:]), "group": c.get("group")})
     return out
 
 
+def _gray(png):
+    """(width, height, bytes) of a PNG as 8-bit gray, through ffmpeg (no imaging library in the core venv)."""
+    raw = png + ".gray"
+    host.run([host.which("ffmpeg"), "-v", "error", "-y", "-i", png, "-pix_fmt", "gray", "-f", "rawvideo", raw],
+             check=True, timeout=60)
+    head = Path(png).read_bytes()[16:24]
+    w, h = int.from_bytes(head[:4], "big"), int.from_bytes(head[4:], "big")
+    data = Path(raw).read_bytes()
+    Path(raw).unlink()
+    return w, h, data
+
+
+def _runs(flags, gap=1):
+    """[(start, end)] of True runs, joining gaps of up to `gap` False entries."""
+    out, start, last = [], None, None
+    for i, f in enumerate(flags):
+        if f:
+            if start is None:
+                start = i
+            elif i - last > gap + 1:
+                out.append((start, last))
+                start = i
+            last = i
+    if start is not None:
+        out.append((start, last))
+    return out
+
+
+def lining_check(png, expected, tol=0.12):
+    """Lining figures share one height and one baseline; old-style figures do not (0 1 2 sit at x-height,
+    3 4 5 7 9 descend). Segments the crop into rows and glyph columns, maps glyphs to the expected
+    characters, then checks every digit's ink height against the tallest digit and every digit's top and
+    bottom against the others on its row. A crop that cannot be segmented fails (it is not evidence)."""
+    w, h, px = _gray(png)
+    border = [px[i] for i in range(w)] + [px[(h - 1) * w + i] for i in range(w)]
+    bg = sorted(border)[len(border) // 2]
+    spread = max(abs(v - bg) for v in px) or 1
+    m = 6  # the crop is padded 8 CSS px (24 px at 3x); ignore its rim, where a card border may show
+    ink = [m <= i % w < w - m and m <= i // w < h - m and abs(v - bg) > spread * 0.45 for i, v in enumerate(px)]
+    rows_exp = [r.replace(" ", "") for r in expected.split("\n") if r.strip()]
+    row_runs = [r for r in _runs([any(ink[y * w:(y + 1) * w]) for y in range(h)], gap=1) if r[1] - r[0] >= 2]
+    if len(row_runs) != len(rows_exp):
+        return {"ok": False, "why": f"{len(row_runs)} ink rows for {len(rows_exp)} expected rows"}
+    glyphs = []
+    for (y0, y1), chars in zip(row_runs, rows_exp):
+        cols = _runs([any(ink[y * w + x] for y in range(y0, y1 + 1)) for x in range(w)], gap=0)
+        cols = [c for c in cols if c[1] - c[0] >= 1]
+        if len(cols) != len(chars):
+            return {"ok": False, "why": f"{len(cols)} glyphs for {chars!r}"}
+        for (x0, x1), ch in zip(cols, chars):
+            ys = [y for y in range(y0, y1 + 1) if any(ink[y * w + x] for x in range(x0, x1 + 1))]
+            glyphs.append({"ch": ch, "row": y0, "top": ys[0], "bottom": ys[-1], "height": ys[-1] - ys[0] + 1})
+    digits = [g for g in glyphs if g["ch"].isdigit()]
+    tallest = max(g["height"] for g in digits)
+    bad = []
+    for g in digits:
+        if g["height"] < tallest * (1 - tol):
+            bad.append({"digit": g["ch"], "problem": "short", "height": g["height"], "tallest": tallest})
+    for row in {g["row"] for g in digits}:
+        on = [g for g in digits if g["row"] == row]
+        for edge in ("top", "bottom"):
+            vals = sorted(g[edge] for g in on)
+            ref = vals[len(vals) // 2]
+            bad += [{"digit": g["ch"], "problem": f"{edge} off the line", "by_px": g[edge] - ref}
+                    for g in on if abs(g[edge] - ref) > tallest * tol]
+    return {"ok": not bad, "digits": len(digits), "tallest_px": tallest, "bad": bad[:10]}
+
+
 # ---------------------------------------------------------------- helpers
 
+def _rgb(h):
+    h = h.lstrip("#")
+    return [int(h[i:i + 2], 16) for i in (0, 2, 4)]
+
+
+def _lum(hexcol):
+    lin = [(v / 255) / 12.92 if v / 255 <= 0.04045 else ((v / 255 + 0.055) / 1.055) ** 2.4 for v in _rgb(hexcol)]
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+
+
 def _lab_l(hexcol):
-    h = hexcol.lstrip("#")
-    lin = [((int(h[i:i + 2], 16) / 255) / 12.92) if int(h[i:i + 2], 16) / 255 <= 0.04045
-           else (((int(h[i:i + 2], 16) / 255) + 0.055) / 1.055) ** 2.4 for i in (0, 2, 4)]
-    y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+    y = _lum(hexcol)
     return 116 * y ** (1 / 3) - 16 if y > 216 / 24389 else 24389 / 27 * y
+
+
+def contrast_ratio(a, b):
+    x, y = _lum(a), _lum(b)
+    return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+
+
+def token_contrast(tokens=None):
+    """The role-pair table for both themes (STYLE.md prints it): WCAG ratios for the declared pairs and
+    the L* separations (note vs correction in dark, V12)."""
+    tk = tokens or fonts.tokens()
+    rows, seps = [], []
+    for theme, t in tk["themes"].items():
+        for fg, bg, mn in tk["contrast_pairs"]:
+            r = contrast_ratio(t[fg], t[bg])
+            rows.append({"theme": theme, "fg": fg, "bg": bg, "fg_hex": t[fg], "bg_hex": t[bg], "ratio": round(r, 2),
+                         "min": mn, "kind": "text" if mn >= 4.5 else "rule", "ok": r >= mn})
+        for a, b, mn in tk.get("separation", {}).get(theme, []):
+            d = abs(_lab_l(t[a]) - _lab_l(t[b]))
+            seps.append({"theme": theme, "a": a, "b": b, "delta_L": round(d, 1), "min": mn, "ok": d >= mn})
+    return rows, seps
 
 
 def _families(lst):
@@ -138,20 +239,27 @@ def g(gid, medium, ok, measured, reason="", not_run=False):
 
 # ---------------------------------------------------------------- still
 
-def still_viewer(out_dir, lesson_id):
-    """A plain viewer page: portrait under 640 px, theme from prefers-color-scheme."""
+MEASURE_JS = host.PKG / "ptk" / "templates" / "svg" / "still-measure.js"
+# where the viewer page shows each layout (still_viewer): portrait under 640 px, wide above
+STILL_VIEWS = {"portrait": (390, 844), "wide": (1440, 900)}
+STILL_DRAWS_NOT = {"question"}  # the still is the settled figure; a prediction question belongs to video / IVE
+
+
+def still_viewer(out_dir, lesson_id, title):
+    """A plain viewer page: portrait under 640 px, theme from prefers-color-scheme, never upscaled."""
     name = lambda lay, th: f"{lesson_id}-{lay}-{th}.svg"
     t = fonts.tokens()["themes"]
     html = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{lesson_id}</title>
-<style>html,body{{margin:0;background:{t['light']['paper']}}}img{{display:block;width:100%;height:auto}}
-@media (prefers-color-scheme: dark){{html,body{{background:{t['dark']['paper']}}}}}</style></head>
+<title>{esc(title)}</title>
+<style>html,body{{margin:0;background:{t['light']['ground']}}}img{{display:block;width:100%;max-width:1200px;height:auto;margin:0 auto}}
+@media (max-width: 640px){{img{{max-width:400px}}}}
+@media (prefers-color-scheme: dark){{html,body{{background:{t['dark']['ground']}}}}}</style></head>
 <body><picture>
 <source media="(max-width: 640px) and (prefers-color-scheme: dark)" srcset="{name('portrait', 'dark')}">
 <source media="(max-width: 640px)" srcset="{name('portrait', 'light')}">
 <source media="(prefers-color-scheme: dark)" srcset="{name('wide', 'dark')}">
-<img src="{name('wide', 'light')}" alt="see the figure's own title and description">
+<img src="{name('wide', 'light')}" alt="{esc(title)}">
 </picture></body></html>
 """
     (out_dir / "index.html").write_text(html)
@@ -159,23 +267,58 @@ def still_viewer(out_dir, lesson_id):
 
 
 def make_pngs(out_dir, svgs, lesson_sha):
+    """2x PNG of each SVG. A request that leaves the machine fails the build here (AC-3.6)."""
     jobs = [{"id": f"png:{s}", "type": "png", "url": (out_dir / s).resolve().as_uri(),
              "out": str((out_dir / s).with_suffix(".png")), "scale": 2,
              "width": 1200 if "-wide-" in s else 400, "height": 1000} for s in svgs]
     res = shoot(jobs, out_dir.parent / "work" / "still-png", lesson_sha)
+    if res["outbound"]:
+        raise errors.OutboundRequest("the still tried to reach the network during PNG export",
+                                     requests=res["outbound"][:20])
     failed = [r for r in res["results"] if not r["ok"]]
     return [s.replace(".svg", ".png") for s in svgs], failed, res["outbound"]
+
+
+def required_keys(lesson):
+    """Key nodes every still variant must show fully (D20.3): the storyboard's key_nodes and the figure's
+    own elements, less what a still never draws."""
+    from .. import model
+    fig = lesson.data.get("figure") or {}
+    keys = {"code", "output"} | ({"note"} if fig.get("notes") else set()) | ({"compare"} if fig.get("compare") else set())
+    keys |= set(fig.get("elements", []))
+    for sc in lesson.data.get("storyboard", []):
+        keys |= set(sc.get("key_nodes", []))
+    known = set(model.FIGURE_ELEMENTS.get(fig.get("kind"), ())) | set(fig.get("elements", []))
+    return sorted(k for k in keys - STILL_DRAWS_NOT if k in known)
+
+
+def measure_jobs(out_dir, svgs, keys):
+    js = MEASURE_JS.read_text().strip().rstrip(";")
+    jobs = []
+    for s in svgs:
+        w, h = STILL_VIEWS["wide" if "-wide-" in s else "portrait"]
+        opts = json.dumps({"minPx": 11, "keys": keys})
+        jobs.append({"id": f"measure:{s}", "type": "script", "url": (out_dir / s).resolve().as_uri(), "width": w,
+                     "height": h, "steps": [{"eval": f"({js})({opts})", "as": "m"}]})
+    return jobs
+
+
+def measure_svgs(out_dir, svgs, keys, lesson_sha=None):
+    """{svg: in-page measurement} at each layout's viewer width, plus the outbound requests seen."""
+    res = shoot(measure_jobs(out_dir, svgs, keys), out_dir / "work-measure", lesson_sha)
+    R = {r["id"]: r for r in res["results"]}
+    return {s: (R[f"measure:{s}"].get("values") or {}).get("m") or {"error": R[f"measure:{s}"].get("error")}
+            for s in svgs}, res["outbound"]
 
 
 def still_gates(lesson, out_dir, svgs):
     sha = lesson.sha256()
     work = out_dir.parent / "work" / "still-visual"
-    viewer = still_viewer(out_dir, lesson.id)
-    jobs = []
+    viewer = still_viewer(out_dir, lesson.id, lesson.data["title"])
+    keys = required_keys(lesson)
+    jobs = measure_jobs(out_dir, svgs, keys)
     for s in svgs:
         wide = "-wide-" in s
-        jobs.append({"id": f"measure:{s}", "type": "svg-measure", "url": (out_dir / s).resolve().as_uri(),
-                     "width": 1200 if wide else 400, "displayWidth": 1440 if wide else 390, "minPx": 11})
         jobs.append({"id": f"ocr:{s}", "type": "ocr-crops", "url": (out_dir / s).resolve().as_uri(),
                      "width": 1200 if wide else 400, "height": 3000, "scale": 3,
                      "outDir": str(work / "ocr" / s.replace(".svg", ""))})
@@ -184,56 +327,79 @@ def still_gates(lesson, out_dir, svgs):
             jobs.append({"id": f"shot:{w}:{sc}", "type": "shot", "url": viewer.resolve().as_uri(), "width": w,
                          "height": 900, "scheme": sc, "shot": str(out_dir.parent / "shots" / f"still-{w}-{sc}.png")})
     res = shoot(jobs, work, sha)
+    return still_gates_from(lesson, svgs, res, keys)
+
+
+def still_gates_from(lesson, svgs, res, keys):
     R = {r["id"]: r for r in res["results"]}
     errs = [{"job": r["id"], "error": r.get("error", "")[:400]} for r in res["results"] if not r["ok"]]
+    M = {s: (R.get(f"measure:{s}", {}).get("values") or {}).get("m") for s in svgs}
     gates = []
 
-    layout, contrast, fams, alt, faces = [], [], set(), [], set()
-    for s in svgs:
-        m = R[f"measure:{s}"].get("measure")
+    layout, keyp, numeric, contrast, fams, faces, alt, tones = [], [], [], [], set(), set(), [], {}
+    for s, m in M.items():
         if not m:
+            layout.append({"svg": s, "kind": "measure-failed"})
             continue
-        layout += [{**p, "svg": s} for p in m["problems"]]
+        for p in m["problems"]:
+            bucket = keyp if p["kind"].startswith("key-node") else numeric if p["kind"] == "numeric" else layout
+            bucket.append({**p, "svg": s})
         contrast += [{**c, "svg": s} for c in m["contrast"]]
         fams |= _families(m["fonts"])
         faces |= set(m["loadedFaces"])
         alt.append({"svg": s, "title": bool(m["title"].strip()), "desc_chars": len(m["desc"].strip()),
                     "source_link": m["source"]})
+        tones[s] = m["tones"]
     pages = []
     for w in WIDTHS:
         for sc in SCHEMES:
-            r = R[f"shot:{w}:{sc}"]
+            r = R.get(f"shot:{w}:{sc}", {})
             pm = r.get("measure", {"problems": [{"kind": "job-failed"}]})
             pages.append({"width": w, "scheme": sc, "problems": pm["problems"], "images_loaded": r.get("imagesLoaded"),
                           "shot": f"shots/still-{w}-{sc}.png"})
-    min_px = min((R[f"measure:{s}"]["measure"]["minPx"] * 1 for s in svgs if R[f"measure:{s}"].get("measure")),
-                 default=0)
     page_bad = [p for p in pages if p["problems"] or not p["images_loaded"]]
+    min_px = min((m["minPx"] for m in M.values() if m), default=0)
     gates.append(g("visual.still.layout", "still", not layout and not page_bad and not errs,
-                   {"svg_problems": layout[:30], "pages": pages, "min_text_px_at_display": round(min_px, 2),
+                   {"views": {s: {"viewport": m["viewport"], "shown_width": m["shown_width"]} for s, m in M.items() if m},
+                    "svg_problems": layout[:30], "pages": pages, "min_text_px_at_display": round(min_px, 2),
                     "job_errors": errs},
-                   "" if not layout and not page_bad else "overflow, overlap or text under 11 px"))
+                   "" if not layout and not page_bad and not errs else "overflow, overlap or text under 11 px"))
+    gates.append(g("visual.still.key-nodes", "still", bool(keys) and not keyp and all(M.values()),
+                   {"required": keys, "problems": keyp[:30],
+                    "nodes": {s: m["keys"] for s, m in M.items() if m}},
+                   "" if not keyp else "a key node is cut off, missing or taller than the screen (D20.3)"))
     low = [c for c in contrast if c["ratio"] < c["min"]]
-    t = fonts.tokens()["themes"]["dark"]
-    dl = abs(_lab_l(t["red"]) - _lab_l(t["blue"]))
+    table, seps = token_contrast()
+    tok_bad = [r for r in table if not r["ok"]] + [s for s in seps if not s["ok"]]
+    tone_dl = {s: min(abs(a - b) for a in tn["note"] for b in tn["correction"]) for s, tn in tones.items()
+               if tn["note"] and tn["correction"]}
+    dark_dl = [d for s, d in tone_dl.items() if "-dark" in s]
+    tone_ok = bool(dark_dl) and len(tone_dl) == len(svgs) and min(tone_dl.values()) >= 15
     text_min = min((c["ratio"] for c in contrast if c["kind"] == "text"), default=0)
     rule_min = min((c["ratio"] for c in contrast if c["kind"] == "rule"), default=0)
-    gates.append(g("visual.still.contrast", "still", not low and dl >= 15 and contrast,
+    gates.append(g("visual.still.contrast", "still", bool(contrast) and not low and not tok_bad and tone_ok,
                    {"pairs_checked": len(contrast), "below_minimum": low[:20], "min_text_ratio": text_min,
-                    "min_rule_ratio": rule_min, "dark_red_blue_delta_L": round(dl, 1)}))
+                    "min_rule_ratio": rule_min, "dark_note_correction_delta_L": round(min(dark_dl), 1) if dark_dl else None,
+                    "note_correction_delta_L": {s: round(d, 1) for s, d in tone_dl.items()},
+                    "token_pairs": len(table), "token_failures": tok_bad},
+                   "" if not low and not tok_bad and tone_ok else "contrast or note/correction lightness below minimum"))
     crops = []
     for s in svgs:
-        crops += [{**c, "svg": s, "dark": "-dark" in s} for c in R[f"ocr:{s}"].get("crops", [])]
-    ocr = ocr_crops(crops)
+        crops += [{**c, "svg": s, "dark": "-dark" in s} for c in R.get(f"ocr:{s}", {}).get("crops", [])]
+    ocr = ocr_crops(crops) if crops else []
     bad_ocr = [o for o in ocr if not o["ok"]]
-    gates.append(g("visual.still.ocr", "still", ocr and not bad_ocr,
-                   {"cells": len(ocr), "misread": bad_ocr[:20], "engine": host.tool_version("tesseract")}))
+    gates.append(g("visual.still.ocr", "still", bool(ocr) and not bad_ocr and not numeric,
+                   {"cells": len(ocr), "digit_cells_lining_checked": sum(1 for o in ocr if o["lining"]),
+                    "misread_or_not_lining": bad_ocr[:20], "numeric_style_problems": numeric[:10],
+                    "engine": host.tool_version("tesseract")},
+                   "" if not bad_ocr and not numeric else "OCR misread, or figures are not lining tabular"))
     extra = fams - ALLOWED_FAMILIES
-    gates.append(g("visual.still.fonts", "still", not extra and faces and faces <= ALLOWED_FAMILIES,
+    gates.append(g("visual.still.fonts", "still", not extra and bool(faces) and faces <= ALLOWED_FAMILIES,
                    {"families_used": sorted(fams), "faces_loaded": sorted(faces), "not_bundled": sorted(extra)}))
     alt_ok = all(a["title"] and a["desc_chars"] > 40 and a["source_link"] for a in alt) and len(alt) == len(svgs)
     gates.append(g("visual.still.alt-source", "still", alt_ok, {"svgs": alt}))
-    gates.append(g("visual.still.network", "still", not res["outbound"], {"outbound_requests": res["outbound"]}))
+    gates.append(g("visual.still.network", "still", not res["outbound"], {"outbound_requests": res["outbound"]},
+                   "OutboundRequest" if res["outbound"] else ""))
     return gates
 
 

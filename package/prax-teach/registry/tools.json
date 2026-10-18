@@ -88,6 +88,12 @@
      "url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/caveat/Caveat%5Bwght%5D.ttf",
      "size": 403648, "sha256": "0bdb6b660482d31531b3945849fba5916b3ef8695da7024a9e6b9ee3c4157988",
      "license_url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/caveat/OFL.txt", "license_dest": "LICENSE-Caveat.txt",
-     "license_sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"}
+     "license_sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"},
+    {"id": "font-nunito-sans", "kind": "font", "dest_root": "fonts", "dest": "NunitoSans.woff2",
+     "url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/nunitosans/NunitoSans%5BYTLC,opsz,wdth,wght%5D.ttf",
+     "size": 571240, "sha256": "f934d7142fb4784bf828da485b7dcbd90c0c80d514e9d49a5da0ed3a1ae2491d",
+     "license_url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/nunitosans/OFL.txt", "license_dest": "LICENSE-NunitoSans.txt",
+     "license_sha256": "efbb0c9e864cef973982d9a17567e6be5c3d1759695574586f3f18c7ecca064b",
+     "note": "Dark-theme display and body sans (D20.1). Instanced wdth=100 opsz=12 YTLC=500, wght 300-900 kept, Latin subset (references/STYLE.md)."}
   ]
 }
