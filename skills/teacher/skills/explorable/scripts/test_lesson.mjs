@@ -81,6 +81,10 @@ for (let i = 0; i < steps.length; i++) {
     check(`step ${i + 1} explaining reveals the teacher's version and opens Next`, (await step.locator(".xp-why").count()) === 1 && !(await next.isDisabled()));
     const boxes = step.locator(".xp-points input[type=checkbox]");
     if (await boxes.count()) await boxes.first().check();
+    // An edit after the reveal is kept for the report.
+    await step.locator(".xp-explain").fill("Stored sums of slices, revised after reading the teacher's version.");
+    await step.locator(".xp-explain").blur();
+    check(`step ${i + 1} an edit after the reveal reaches the report`, (await page.evaluate(() => window.__explorable.report())).includes("revised after reading"));
   } else if (st.ask) {
     check(`step ${i + 1} Next locked before answering`, await next.isDisabled());
     // A wrong answer first.
@@ -89,7 +93,7 @@ for (let i = 0; i < steps.length; i++) {
         const a = window.LESSON.steps[k].ask;
         return typeof a.answer === "function" ? a.answer(window.__explorable.state.params, window.LESSON.model(window.__explorable.state.params)) : a.answer;
       }, i);
-      await step.locator(".xp-option").nth((answer + 1) % st.ask.n).click();
+      await step.locator(`.xp-option[data-k="${(answer + 1) % st.ask.n}"]`).click();
     } else {
       await step.locator(".xp-number input").fill("123456789");
     }

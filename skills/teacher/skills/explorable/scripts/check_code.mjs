@@ -6,7 +6,8 @@
 // For every case in LESSON.code.cases (parameter sets), feeds code.stdin(params)
 // to the C++ (g++ -std=c++17) and Python (python3) sources the learner sees,
 // and compares what they print with code.expect(params), which comes from the
-// lesson's model. Missing compilers are reported as skipped, not passed.
+// lesson's model. A missing compiler is reported as skipped, not passed, and
+// if neither g++ nor python3 is there, nothing ran and the check fails.
 // Exits non-zero on any mismatch, compile error or crash.
 
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
@@ -72,5 +73,8 @@ if (!process.argv.includes("--quiet")) {
   for (const f of fails) console.log(`FAIL ${f}`);
   for (const s of skipped) console.log(`SKIP ${s}`);
 }
-console.log(`${L.title}: ${passes} runs match the model, ${fails.length} problems${skipped.length ? `, skipped ${skipped.join(", ")}` : ""}`);
-process.exit(fails.length ? 1 : 0);
+// Code that never ran was not checked: with no compiler at all that's a failure, not a pass.
+const nothingRan = passes === 0 && fails.length === 0;
+if (nothingRan) console.log(`FAIL nothing ran: ${skipped.join(", ") || "no C++ or Python source"}. Install g++ or python3 to check this lesson's code.`);
+console.log(`${L.title}: ${passes} runs match the model, ${fails.length + (nothingRan ? 1 : 0)} problems${skipped.length ? `, skipped ${skipped.join(", ")}` : ""}`);
+process.exit(fails.length || nothingRan ? 1 : 0);

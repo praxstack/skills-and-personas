@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build a concept animation into one self-contained HTML file.
 
-  python3 build.py path/to/thing.anim.js -o out.html [--fragment]
+  python3 build.py path/to/thing.anim.js -o out.html [--fragment] [--include model.js ...]
 
 The animation file sets window.ANIMATION (see ../SKILL.md). Open the result
 in any browser to scrub it, or turn it into MP4/GIF with scripts/export.mjs.
@@ -21,6 +21,7 @@ import bundle  # noqa: E402
 
 
 def build(source: Path, out: Path, fragment: bool = False, include: list[Path] | None = None) -> Path:
+    """include: shared scripts (a course's models) loaded before the animation."""
     src = source.read_text()
     if "window.ANIMATION" not in src:
         raise SystemExit(f"{source}: expected `window.ANIMATION = {{...}}`")
@@ -43,7 +44,7 @@ def main() -> int:
     ap.add_argument("source", type=Path)
     ap.add_argument("-o", "--out", type=Path)
     ap.add_argument("--fragment", action="store_true")
-    ap.add_argument("--include", action="append", default=[], type=Path, help="shared scripts (a course's model) loaded before the animation")
+    ap.add_argument("--include", type=Path, action="append", default=[], help="a shared script to load first (repeatable)")
     a = ap.parse_args()
     out = build(a.source, a.out or a.source.with_suffix(".html"), a.fragment, a.include)
     print(f"wrote {out} ({out.stat().st_size // 1024} KB)")

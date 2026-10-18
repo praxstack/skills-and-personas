@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+// Upload the courses' narrated videos to Vercel Blob and record their URLs in
+// courses/videos.json, which build_course.py reads when an MP4 isn't on disk.
+//
+//   KAI_MORI_VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]
+//
+// videos-root is laid out like courses/ (<course>/videos/<lesson-id>.mp4) and
+// defaults to the courses folder itself. Only lessons listed in a course.json
+// are uploaded. Uploads are content-addressed: the pathname carries a short
+// sha256 of the file, courses/<course-id>/<lesson-id>.<sha8>.mp4, so a
+// re-rendered video gets a new URL and a year of caching is safe. A video is
+// skipped only when its manifest URL already ends in that same digest. The
+// manifest is rewritten after every upload, so an interrupted run keeps what
+// it finished. --dry-run lists what would be uploaded and needs no token.
+
+import { readFile, writeFile, rename, stat, readdir } from "node:fs/promises";
+import { existsSync, createReadStream } from "node:fs";
+import { createHash } from "node:crypto";
+import { join, resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
+const YEAR = 365 * 24 * 60 * 60;
+
+export function parseArgs(argv) {
+  const a = { dryRun: false, courses: join(REPO, "courses"), root: null };
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--dry-run") a.dryRun = true;
+    else if (argv[i] === "--courses") a.courses = resolve(argv[++i]);
+    else if (argv[i] === "-h" || argv[i] === "--help") a.help = true;
+    else if (!argv[i].startsWith("-") && !a.root) a.root = resolve(argv[i]);
+    else throw new Error(`unknown argument ${argv[i]}`);
+  }
+  a.root ??= a.courses;
+  return a;
+}
+
+export async function sha8(file) {
+  const h = createHash("sha256");
+  for await (const chunk of createReadStream(file)) h.update(chunk);
+  return h.digest("hex").slice(0, 8);
+}
+
+// Is the manifest URL for this video the upload of these exact bytes?
+export function isCurrent(url, v) {
+  try {
+    return new URL(url).pathname.endsWith(`/${v.pathname}`);
+  } catch {
+    return false; // empty or not a URL
+  }
+}
+
+// Every lesson video found under root: { key, pathname, file, size, digest }.
+export async function findVideos(coursesDir, root) {
+  const out = [];
+  for (const dir of (await readdir(coursesDir, { withFileTypes: true })).filter((d) => d.isDirectory()).map((d) => d.name).sort()) {
+    const meta = join(coursesDir, dir, "course.json");
+    if (!existsSync(meta)) continue;
+    const course = JSON.parse(await readFile(meta, "utf8"));
+    for (const lesson of course.lessons) {
+      const file = join(root, dir, "videos", `${lesson.id}.mp4`);
+      if (!existsSync(file)) continue;
+      const digest = await sha8(file);
+      out.push({ key: `${course.id}/${lesson.id}.mp4`, pathname: `courses/${course.id}/${lesson.id}.${digest}.mp4`, file, size: (await stat(file)).size, digest });
+    }
+  }
+  return out;
+}
+
+async function main() {
+  const a = parseArgs(process.argv.slice(2));
+  if (a.help) {
+    console.log(usage());
+    return 0;
+  }
+  const manifestFile = join(a.courses, "videos.json");
+  const manifest = existsSync(manifestFile) ? JSON.parse(await readFile(manifestFile, "utf8")) : {};
+  const videos = await findVideos(a.courses, a.root);
+  if (!videos.length) {
+    console.error(`no lesson videos under ${a.root} (expected <course>/videos/<lesson-id>.mp4)`);
+    return 1;
+  }
+  const token = process.env.KAI_MORI_VIDEOS_BLOB_TOKEN;
+  if (!a.dryRun && !token) {
+    console.error("set KAI_MORI_VIDEOS_BLOB_TOKEN (the Blob store's read-write token), or pass --dry-run");
+    return 1;
+  }
+  const put = a.dryRun ? null : (await import("@vercel/blob")).put;
+  // Written beside it and renamed over it, so a crash mid-write can't leave
+  // half a videos.json (the rename is atomic on one file system).
+  const save = async () => {
+    const tmp = `${manifestFile}.${process.pid}.tmp`;
+    await writeFile(tmp, JSON.stringify(Object.fromEntries(Object.entries(manifest).sort()), null, 2) + "\n");
+    await rename(tmp, manifestFile);
+  };
+  let uploaded = 0;
+  let skipped = 0;
+  let bytes = 0;
+  for (const v of videos) {
+    const mb = (v.size / 1e6).toFixed(1);
+    if (isCurrent(manifest[v.key], v)) {
+      console.log(`skip   ${v.key} (${mb} MB, ${v.digest} already on Blob)`);
+      skipped++;
+      continue;
+    }
+    if (a.dryRun) {
+      console.log(`upload ${v.key} (${mb} MB) -> ${v.pathname}`);
+      uploaded++;
+      bytes += v.size;
+      continue;
+    }
+    const blob = await put(v.pathname, await readFile(v.file), {
+      access: "public",
+      addRandomSuffix: false, // the digest in the pathname already makes it unique
+      allowOverwrite: true, // same pathname means same bytes, so a rerun after a crash is harmless
+      contentType: "video/mp4",
+      cacheControlMaxAge: YEAR,
+      multipart: v.size > 50e6,
+      token,
+    });
+    manifest[v.key] = blob.url;
+    await save();
+    console.log(`ok     ${v.key} (${mb} MB) ${blob.url}`);
+    uploaded++;
+    bytes += v.size;
+  }
+  if (!a.dryRun) await save();
+  const verb = a.dryRun ? "would upload" : "uploaded";
+  console.log(`${verb} ${uploaded} (${(bytes / 1e6).toFixed(1)} MB), skipped ${skipped}${a.dryRun ? "" : `; manifest ${manifestFile}`}`);
+  return 0;
+}
+
+function usage() {
+  return "usage: KAI_MORI_VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]";
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().then(
+    (code) => process.exit(code),
+    (e) => {
+      console.error(e.message || e);
+      process.exit(1);
+    },
+  );
+}

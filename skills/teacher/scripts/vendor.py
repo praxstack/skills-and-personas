@@ -6,6 +6,7 @@ capability skill comes with it. This script is how those copies are made and
 checked, so a bundled skill is never a silent fork.
 
   python3 scripts/vendor.py verify                      # hashes in VENDOR.json match skills/
+  python3 scripts/vendor.py record teach-pro-max --note "added the style section"   # accept a local change
   python3 scripts/vendor.py sync --source video=/path/to/claude-video-skills \
       --source skills=/path/to/skills-and-personas --source snapshot=/path/to/folder \
       --source chesslab=/path/to/ChessLab
@@ -16,6 +17,11 @@ Skills authored here (lesson-notebook, explorable, concept-animation,
 explain-diagram, visual-qa) are not vendored; they live in skills/ and are
 listed as "native". The few files they copy from elsewhere (the notebook's
 ink.js and fonts, from ChessLab) are tracked one by one under "files".
+
+A change made here to a vendored skill is recorded, not hidden: `record`
+re-hashes the skill and appends the note to its "local_changes" in
+VENDOR.json, and `sync` then refuses to overwrite that skill unless
+--discard-local is given (port the change upstream first).
 """
 
 from __future__ import annotations
@@ -117,11 +123,22 @@ def git_dirty(root: Path, rel: str) -> bool:
     return not subprocess.check_output(["git", "-C", str(root), "ls-files", "--", rel], text=True).strip()
 
 
-def sync(sources: dict[str, Path], only: list[str] | None) -> int:
+NOTE = (
+    "Vendored skills are byte copies of their sources. Edit them upstream and re-run "
+    "scripts/vendor.py sync; scripts/vendor.py verify fails if a copy drifts. A change made "
+    "here is recorded with scripts/vendor.py record NAME --note ... and listed under local_changes."
+)
+
+
+def sync(sources: dict[str, Path], only: list[str] | None, discard_local: bool = False) -> int:
     manifest = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {"skills": {}}
+
+    def kept_local(name: str) -> bool:
+        return bool(manifest["skills"].get(name, {}).get("local_changes")) and not discard_local
+
     # Check every source before touching any copy, so a failure can't leave a
     # copy replaced while VENDOR.json still records its old hash.
-    picked = [(n, k, r) for n, (k, r, *_) in ENTRIES.items() if (not only or n in only) and k in sources]
+    picked = [(n, k, r) for n, (k, r, *_) in ENTRIES.items() if (not only or n in only) and k in sources and not kept_local(n)]
     picked += [(d, k, r) for d, (k, r, *_) in FILES.items() if k in sources]
     for label, key, rel in picked:
         if git_dirty(sources[key], rel):
@@ -129,6 +146,9 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
             return 1
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
         if only and name not in only:
+            continue
+        if kept_local(name):
+            print(f"skip {name}: it has local changes ({len(manifest['skills'][name]['local_changes'])} in VENDOR.json); port them upstream, or pass --discard-local")
             continue
         if key not in sources:
             print(f"skip {name}: no --source {key}=...")
@@ -180,11 +200,30 @@ def sync(sources: dict[str, Path], only: list[str] | None) -> int:
         }
         print(f"ok   {dest}")
     manifest["native"] = NATIVE
-    manifest["note"] = (
-        "Vendored skills are byte copies of their sources. Edit them upstream and re-run "
-        "scripts/vendor.py sync; scripts/vendor.py verify fails if a copy drifts."
-    )
+    manifest["note"] = NOTE
     MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    return 0
+
+
+def record(name: str, note: str) -> int:
+    """Accept the current contents of a vendored skill as a deliberate local change."""
+    manifest = json.loads(MANIFEST.read_text())
+    entry = manifest["skills"].get(name)
+    if entry is None:
+        print(f"FAIL {name}: not a vendored skill (known: {', '.join(sorted(manifest['skills']))})", file=sys.stderr)
+        return 1
+    if not note.strip():
+        print("FAIL: say what changed with --note", file=sys.stderr)
+        return 1
+    digest, count = tree_hash(SKILLS / name)
+    if digest == entry["tree_sha256"]:
+        print(f"ok   {name}: nothing changed since VENDOR.json")
+        return 0
+    entry["tree_sha256"], entry["files"] = digest, count
+    entry.setdefault("local_changes", []).append(note.strip())
+    manifest["note"] = NOTE
+    MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    print(f"ok   {name}: recorded ({count} files, {len(entry['local_changes'])} local changes)")
     return 0
 
 
@@ -213,7 +252,9 @@ def verify() -> int:
         if not (SKILLS / name / "SKILL.md").is_file():
             print(f"FAIL native {name}: missing SKILL.md")
             bad += 1
-    print(f"{len(manifest['skills'])} vendored, {len(manifest.get('files', {}))} copied files, {len(manifest.get('native', []))} native, {bad} problems")
+    local = sorted(n for n, e in manifest["skills"].items() if e.get("local_changes"))
+    print(f"{len(manifest['skills'])} vendored{f' ({len(local)} with local changes: ' + ', '.join(local) + ')' if local else ''}, "
+          f"{len(manifest.get('files', {}))} copied files, {len(manifest.get('native', []))} native, {bad} problems")
     return 1 if bad else 0
 
 
@@ -223,15 +264,21 @@ def main() -> int:
     s = sub.add_parser("sync")
     s.add_argument("--source", action="append", default=[], help="key=path (video, skills, snapshot, chesslab)")
     s.add_argument("--only", nargs="*")
+    s.add_argument("--discard-local", action="store_true", help="overwrite skills that have recorded local changes")
     sub.add_parser("verify")
+    r = sub.add_parser("record")
+    r.add_argument("name")
+    r.add_argument("--note", required=True, help="what was changed here, and why")
     args = parser.parse_args()
     if args.cmd == "verify":
         return verify()
+    if args.cmd == "record":
+        return record(args.name, args.note)
     sources = {}
     for pair in args.source:
         key, _, path = pair.partition("=")
         sources[key] = Path(path).expanduser().resolve()
-    return sync(sources, args.only)
+    return sync(sources, args.only, args.discard_local)
 
 
 if __name__ == "__main__":

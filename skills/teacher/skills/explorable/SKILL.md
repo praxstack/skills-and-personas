@@ -38,8 +38,10 @@ window.LESSON = {
     draw(g, s, p, kit) { /* kit.el, kit.mark, kit.hand, kit.ink, kit.seed, kit.group, kit.narrow */ },
   },
   steps: [{
-    title, say /* HTML */, set: { day: 172 }, controls: ["day"], lookFor: "...",
+    id /* optional, stable */, title, say /* HTML */, set: { day: 172 }, controls: ["day"], lookFor: "...",
     ask: { kind: "choice", q, options: [...], answer: 2, hint, why },   // or kind: "number", answer: (p, s) => n, tol, unit
+    // options show in a shuffled order (fixed per question; all-number options stay sorted; keepOrder: true opts out).
+    // Add needsFigure: true when q can't be answered without the figure (a course's "Quiz me" leaves it out).
     note: "the margin note this step earns",
     alts: [{ label: "A torch on a table", say: "...", set: { ... } }],
   }],
@@ -53,7 +55,7 @@ window.LESSON = {
 ### More lesson fields
 
 - `hook`: HTML shown above step 1 under "Why this mattered": the stakes or the story (who needed this, what broke without it). Short.
-- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide) where the host allows it, and every panel shows what the model says the program prints for the current inputs. `node scripts/check_code.mjs lesson.js` compiles and runs both languages on every case and fails if either disagrees with `expect`.
+- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide, in a Web Worker with a Stop button and a 10 s limit, so an endless loop never freezes the lesson) where the host allows it, and every panel shows what the model says the program prints for the current inputs. `node scripts/check_code.mjs lesson.js` compiles and runs both languages on every case and fails if either disagrees with `expect`.
 - `ask: { kind: "explain", q, model, points: [...] }`: the learner writes the idea in their own words first, then sees the teacher's version and ticks the key points they covered. The text goes into the report so the teacher can correct it.
 - Shared course code: put the model in one file that sets `window.Something` and build with `--include course.model.js` (also for `check_code.mjs`).
 - `figure.narrowText`: text scale on narrow screens (default 1). Raise it until `visual-qa` stops flagging figure text under 11px.
@@ -63,7 +65,7 @@ Every page also has: "Or see it as a film / code" under "Still confused?", a "Qu
 
 ## What the page does
 
-- Layout: contents, lesson, margin notes, kept apart, with Film and "Notes and report" as their own tabs. Progress, answers and the learner's notes stay in the browser (and the page works when storage is blocked).
+- Layout: contents, lesson, margin notes, kept apart, with Film and "Notes and report" as their own tabs. Progress, answers and the learner's notes stay in the browser (and the page works when storage is blocked). Saved progress is matched to steps by key (the step's `id`, else its title and question), so a step that is inserted, removed or moved never inherits another step's answers; give steps an `id` if you expect to reword them.
 - Questions: Next stays locked until the step's question is resolved. A miss gets the hint. A second miss, or "Show me", teaches it directly. Every attempt is recorded.
 - "Still confused? Try another way": cycles through `alts`, changing the representation, example or analogy, and records which ones were tried.
 - Film: the same figure, eased between each scene's parameters, with captions, play, pause, scrub, chapters, speed and a transcript (the human-sounding voice is in the narrated video: `scripts/narrate.py`).

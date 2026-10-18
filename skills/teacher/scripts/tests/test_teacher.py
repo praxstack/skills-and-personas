@@ -8,7 +8,11 @@ Browser and video checks live in run_all.sh, which calls this first.
 
 from __future__ import annotations
 
+import contextlib
+import hashlib
+import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -37,6 +41,24 @@ def frontmatter(path: Path) -> dict:
             k, v = line.split(":", 1)
             out[k.strip()] = v.strip().strip("'\"")
     return out
+
+
+def load(path: Path, stub: tuple[str, ...] = ()):
+    """Import a script as a module. Names in stub get empty stand-ins, so a
+    helper can be tested without the heavy packages its script imports."""
+    import importlib
+    import importlib.util
+    import types
+
+    for name in stub:
+        try:
+            importlib.import_module(name)
+        except ImportError:
+            sys.modules[name] = types.ModuleType(name)
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def strip_code(text: str) -> str:
@@ -250,6 +272,104 @@ class Scripts(unittest.TestCase):
             (root / "x.txt").write_text("not in HEAD\n")
             self.assertTrue(vendor.git_dirty(root, "x.txt"), "an ignored file isn't HEAD's")
 
+    @unittest.skipUnless(shutil.which("bash"), "no bash")
+    def test_install_leaves_other_links_alone(self):
+        sh = str(ROOT / "install.sh")
+        with tempfile.TemporaryDirectory() as tmp:
+            d, other = Path(tmp) / "skills", Path(tmp) / "elsewhere"
+            d.mkdir()
+            other.mkdir()
+            (d / "teacher").symlink_to(other)
+            (d / "explorable").symlink_to(ROOT / "skills" / "explorable")  # ours, from this package
+            sub = lambda *x: subprocess.run(["bash", sh, "--dir", str(d), *x], capture_output=True, text=True)
+            r = sub("--with-subskills")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(Path(os.readlink(d / "teacher")), other, "a link to another checkout is not ours")
+            self.assertIn("skip", r.stdout)
+            self.assertEqual(Path(os.readlink(d / "concept-animation")), ROOT / "skills" / "concept-animation")
+            r = sub("--with-subskills", "--uninstall")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertTrue((d / "teacher").is_symlink(), "uninstall must not remove a link that isn't ours")
+            self.assertFalse((d / "explorable").exists() or (d / "explorable").is_symlink())
+            self.assertTrue(other.is_dir())
+
+    def test_recall_due_moves_on_after_an_overdue_ask(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            for args in (["init", "--learner", "L", "--goal", "g"], ["thread", "add", "t", "--title", "T"], ["recall", "add", "t", "p1"],
+                         ["resume"], ["resume"], ["resume"]):
+                self.assertEqual(run(s, *args, cwd=Path(tmp)).returncode, 0)
+            self.assertIn("p1", run(s, "status", cwd=Path(tmp)).stdout, "due 2 and 4 passed unasked: still due (overdue)")
+            run(s, "recall", "result", "t", "0", "--wrong", cwd=Path(tmp))  # in session 4
+            self.assertNotIn("Recall due", run(s, "status", cwd=Path(tmp)).stdout, "asked in session 4: not due again in session 4")
+            self.assertIn("due in sessions 5, 7, 10", (Path(tmp) / ".teacher/JOURNAL.md").read_text())
+            for _ in range(3):
+                run(s, "resume", cwd=Path(tmp))
+            self.assertIn("p1", run(s, "status", cwd=Path(tmp)).stdout, "due 5 passed unasked: still due in session 7")
+            run(s, "recall", "result", "t", "0", "--wrong", cwd=Path(tmp))  # in session 7
+            self.assertNotIn("Recall due", run(s, "status", cwd=Path(tmp)).stdout, "asking settles the overdue sessions")
+            self.assertIn("due in sessions 8, 10, 13", (Path(tmp) / ".teacher/JOURNAL.md").read_text())
+
+    def test_recall_result_refuses_a_negative_index(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            for args in (["init", "--learner", "L", "--goal", "g"], ["thread", "add", "t", "--title", "T"], ["recall", "add", "t", "p1"]):
+                self.assertEqual(run(s, *args, cwd=Path(tmp)).returncode, 0)
+            for bad in ("-1", "1", "x"):
+                r = run(s, "recall", "result", "t", bad, "--wrong", cwd=Path(tmp))
+                self.assertNotEqual(r.returncode, 0, bad)
+                self.assertIn("no recall point", r.stderr, bad)
+            j = json.loads((Path(tmp) / ".teacher/journal.json").read_text())
+            self.assertEqual(j["threads"]["t"]["recall"][0]["results"], [], "nothing recorded")
+
+    def test_recall_stays_due_until_shown_unaided(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            for args in (["init", "--learner", "L", "--goal", "g"], ["thread", "add", "t", "--title", "T"], ["recall", "add", "t", "p1"]):
+                self.assertEqual(run(s, *args, cwd=Path(tmp)).returncode, 0)
+            # Right but aided at every review (sessions 2, 4 and 7, then on): never demonstrated, so never off the list.
+            for session in range(2, 12):
+                run(s, "resume", cwd=Path(tmp))
+                self.assertIn("p1", run(s, "status", cwd=Path(tmp)).stdout, f"due in session {session}")
+                run(s, "recall", "result", "t", "0", "--right", cwd=Path(tmp))
+            j = json.loads((Path(tmp) / ".teacher/journal.json").read_text())
+            self.assertFalse(j["threads"]["t"]["recall"][0]["demonstrated"])
+            run(s, "resume", cwd=Path(tmp))
+            run(s, "recall", "result", "t", "0", "--right", "--unaided", cwd=Path(tmp))
+            run(s, "resume", cwd=Path(tmp))
+            self.assertNotIn("Recall due", run(s, "status", cwd=Path(tmp)).stdout, "shown unaided: done")
+
+    def test_forget_deletes_a_corrupt_journal(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp) / ".teacher"
+            d.mkdir()
+            (d / "journal.json").write_text("{not json")
+            r = run(s, "status", cwd=Path(tmp))
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("forget --yes", r.stderr)
+            self.assertNotIn("Traceback", r.stderr)
+            r = run(s, "forget", "--yes", cwd=Path(tmp))
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertFalse(d.exists())
+
+    def test_forget_keeps_other_files(self):
+        # --dir can point at a folder with other things in it: forget removes only the journal.
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            (d / "notes.txt").write_text("mine")
+            (d / "src").mkdir()
+            (d / "src" / "main.py").write_text("print(1)")
+            self.assertEqual(run(s, "--dir", ".", "init", "--learner", "L", "--goal", "g", cwd=d).returncode, 0)
+            self.assertTrue((d / "JOURNAL.md").exists())
+            r = run(s, "--dir", ".", "forget", "--yes", cwd=d)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertFalse((d / "journal.json").exists())
+            self.assertFalse((d / "JOURNAL.md").exists())
+            self.assertEqual((d / "notes.txt").read_text(), "mine")
+            self.assertTrue((d / "src" / "main.py").exists())
+
 
 class Builds(unittest.TestCase):
     def check_single_file(self, html: str):
@@ -269,6 +389,183 @@ class Builds(unittest.TestCase):
             self.assertTrue(html.startswith("<!doctype html>"))
             r = run(str(SKILLS / "explorable/scripts/build.py"), str(SKILLS / "explorable/assets/examples/seasons.lesson.js"), "-o", str(out), "--fragment")
             self.assertFalse(out.read_text().lstrip().startswith("<!doctype"), "fragment has no document skeleton")
+
+    def test_catalog_brand_is_a_setting(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "src"
+            (src / "one/lessons").mkdir(parents=True)
+            shutil.copy(SKILLS / "explorable/assets/examples/seasons.lesson.js", src / "one/lessons/a.lesson.js")
+            (src / "one/course.json").write_text(json.dumps({"id": "one", "title": "One", "lessons": [{"id": "one-a", "file": "lessons/a.lesson.js", "title": "A", "needs": []}]}))
+            script = str(SKILLS / "course/scripts/build_course.py")
+            for i, (args, label, title) in enumerate((([], '<p class="nb-label">Kai Mori</p>', "<title>Kai Mori Courses</title>"),
+                                       (["--brand", "Ada & Co"], '<p class="nb-label">Ada &amp; Co</p>', "<title>Ada &amp; Co Courses</title>"),
+                                       (["--brand", ""], None, "<title>Courses</title>"))):
+                out = Path(tmp) / f"out{i}"
+                r = run(script, "--catalog", str(src), "-o", str(out), *args)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                page = (out / "index.html").read_text()
+                self.assertIn(title, page, args)
+                if label:
+                    self.assertIn(label, page, args)
+                else:
+                    self.assertNotIn('class="nb-label">', page.split("<h1>Courses</h1>")[0].split('class="cs-head"')[-1], "no brand row")
+
+    def test_course_links_with_and_without_base(self):
+        # Relative links for disk and artifacts; --base makes them root-absolute
+        # for a host with clean URLs and no trailing slash (Vercel).
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "src"
+            for cid, prereqs in (("one", []), ("two", ["one"])):
+                d = src / cid
+                (d / "lessons").mkdir(parents=True)
+                shutil.copy(SKILLS / "explorable/assets/examples/seasons.lesson.js", d / "lessons/a.lesson.js")
+                (d / "videos").mkdir()
+                (d / "videos" / f"{cid}-a.mp4").write_bytes(b"")
+                (d / "videos" / f"{cid}-a.vtt").write_text("WEBVTT\n")  # a video needs its captions
+                (d / "course.json").write_text(json.dumps({"id": cid, "title": cid.title(), "prereqs": prereqs,
+                                                           "lessons": [{"id": f"{cid}-a", "file": "lessons/a.lesson.js", "title": "A", "needs": []}]}))
+            script = str(SKILLS / "course/scripts/build_course.py")
+            rel, absolute = Path(tmp) / "rel", Path(tmp) / "abs"
+            self.assertEqual(run(script, "--catalog", str(src), "-o", str(rel)).returncode, 0)
+            r = run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn('href="two/index.html"', (rel / "index.html").read_text())
+            self.assertIn('"video": "videos/two-a.mp4"', (rel / "two/index.html").read_text())
+            cat = (absolute / "index.html").read_text()
+            self.assertIn('href="/courses/two"', cat)
+            self.assertNotIn("index.html", cat)
+            page = (absolute / "two/index.html").read_text()
+            for frag in ('"base": "/courses/two/"', '"root": "/courses/"', '"video": "/courses/two/videos/two-a.mp4"'):
+                self.assertIn(frag, page)
+            # links.json adds a card for a standalone lesson page, escaped, after the courses
+            (src / "links.json").write_text(json.dumps([{"href": "/lessons/x", "title": "X <b>", "subtitle": "s", "level": "l", "meta": "1 lesson"}]))
+            self.assertEqual(run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses").returncode, 0)
+            cat = (absolute / "index.html").read_text()
+            self.assertIn('<a class="cs-title" href="/lessons/x">X &lt;b&gt;</a>', cat)
+            self.assertLess(cat.index('href="/courses/two"'), cat.index('href="/lessons/x"'))
+            self.assertFalse((absolute / "links.json").exists())
+            for bad in ([{"href": "javascript:alert(1)", "title": "x"}], [{"title": "no href"}], {"href": "/x", "title": "x"}):
+                (src / "links.json").write_text(json.dumps(bad))
+                r = run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses")
+                self.assertNotEqual(r.returncode, 0, bad)
+                self.assertIn("links.json", r.stderr)
+
+    def test_video_comes_from_local_file_then_manifest_then_none(self):
+        # The MP4s live on Vercel Blob (courses/videos.json); a local file wins
+        # for previews, and with neither the lesson offers no video at all.
+        sys.path.insert(0, str(SKILLS / "course/scripts"))
+        import build_course
+
+        url = "https://abc.public.blob.vercel-storage.com/courses/one/one-a.mp4"
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "src"
+            d = src / "one"
+            (d / "lessons").mkdir(parents=True)
+            (d / "videos").mkdir()
+            for lid in ("one-a", "one-b", "one-c"):
+                shutil.copy(SKILLS / "explorable/assets/examples/seasons.lesson.js", d / f"lessons/{lid}.lesson.js")
+            (d / "course.json").write_text(json.dumps({"id": "one", "title": "One", "lessons": [
+                {"id": lid, "file": f"lessons/{lid}.lesson.js", "title": lid, "needs": []} for lid in ("one-a", "one-b", "one-c")]}))
+            (d / "videos/one-a.vtt").write_text("WEBVTT\n")
+            (d / "videos/one-b.vtt").write_text("WEBVTT\n")
+            (src / "videos.json").write_text(json.dumps({"one/one-a.mp4": url, "one/one-c.mp4": ""}))
+            manifest = build_course.load_manifest(d)
+            self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("url", url))
+            self.assertIsNone(build_course.resolve_video(d, "one", "one-b", manifest), "no file, no manifest entry")
+            self.assertIsNone(build_course.resolve_video(d, "one", "one-c", manifest), "an empty manifest entry is no video")
+            self.assertIsNone(build_course.resolve_video(d, "one", "one-a", {"one/one-a.mp4": "http://insecure/x.mp4"}))
+            (d / "videos/one-a.mp4").write_bytes(b"")
+            self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("local", d / "videos/one-a.mp4"), "the local file wins")
+            # A local MP4 that isn't the uploaded one (re-rendered or remuxed, not republished) is flagged.
+            self.assertIn("publish:videos", build_course.unpublished_change(d, "one", "one-a", manifest), "the URL has no digest")
+            digest = hashlib.sha256(b"").hexdigest()[:8]
+            self.assertIsNone(build_course.unpublished_change(d, "one", "one-a", {"one/one-a.mp4": f"https://x.public.blob.vercel-storage.com/courses/one/one-a.{digest}.mp4"}))
+            self.assertIn("publish:videos", build_course.unpublished_change(d, "one", "one-a", {"one/one-a.mp4": "https://x.public.blob.vercel-storage.com/courses/one/one-a.0badc0de.mp4"}))
+            self.assertIsNone(build_course.unpublished_change(d, "one", "one-b", manifest), "no local file, nothing to compare")
+            (d / "videos/one-a.mp4").unlink()
+
+            out = Path(tmp) / "out"
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            page = (out / "one/index.html").read_text()
+            lessons = {l["id"]: l for l in json.loads(re.search(r"window\.COURSE = (.*?);\n", page).group(1))["lessons"]}
+            self.assertEqual(lessons["one-a"]["video"], url)
+            self.assertEqual(lessons["one-a"]["captions"], "/courses/one/videos/one-a.vtt", "captions stay same-origin")
+            self.assertTrue((out / "one/videos/one-a.vtt").exists())
+            self.assertFalse((out / "one/videos/one-a.mp4").exists())
+            for lid in ("one-b", "one-c"):
+                self.assertNotIn("video", lessons[lid])
+                self.assertNotIn("captions", lessons[lid])
+            self.assertFalse((out / "one/videos/one-b.vtt").exists(), "captions without a video are not shipped")
+            self.assertIn("1 narrated videos", (out / "index.html").read_text())
+            # A video without captions fails the build instead of shipping without a track.
+            (d / "videos/one-a.vtt").unlink()
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(Path(tmp) / "out2"))
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("one/one-a: the lesson has a video but no captions", r.stderr)
+
+    def test_course_pages_link_the_site_icon(self):
+        sys.path.insert(0, str(SKILLS / "course/scripts"))
+        import build_course
+
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            (d / "c").mkdir()
+            (d / "index.html").write_text("<!doctype html><html><head><title>x</title></head><body></body></html>")
+            (d / "c/l.html").write_text("<html><head></head><body></head></body></html>")
+            (d / "own.html").write_text('<html><head><link rel="icon" href="/x.svg"></head></html>')
+            (d / "frag.html").write_text("<p>no head</p>")
+            self.assertEqual(build_course.add_icon(d, "/favicon.svg"), 2)
+            for f in ("index.html", "c/l.html"):
+                text = (d / f).read_text()
+                self.assertEqual(text.count('<link rel="icon" href="/favicon.svg" type="image/svg+xml">'), 1, f)
+                self.assertLess(text.index("favicon"), text.index("</head>"), f)
+            self.assertNotIn("favicon", (d / "own.html").read_text() + (d / "frag.html").read_text())
+        site_icon = ROOT.parent / "public/favicon.ico"  # only when the engine sits in a site (kai-mori-fanout-sh)
+        if site_icon.exists():
+            self.assertTrue(site_icon.read_bytes().startswith(b"\0\0\1\0"), "a real .ico for /favicon.ico")
+
+    def test_publish_videos_dry_run_lists_lesson_videos_only(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            courses, root = Path(tmp) / "courses", Path(tmp) / "copies"
+            (courses / "two").mkdir(parents=True)
+            (courses / "two/course.json").write_text(json.dumps({"id": "two", "lessons": [{"id": "two-a"}, {"id": "two-b"}]}))
+            (courses / "videos.json").write_text("{}\n")
+            (root / "two/videos").mkdir(parents=True)
+            (root / "two/videos/two-a.mp4").write_bytes(b"x" * 1000)
+            (root / "two/videos/stray.mp4").write_bytes(b"x")
+            env = {k: v for k, v in os.environ.items() if k != "KAI_MORI_VIDEOS_BLOB_TOKEN"}
+            script = str(SKILLS / "course/scripts/publish_videos.mjs")
+            r = subprocess.run(["node", script, str(root), "--courses", str(courses), "--dry-run"], capture_output=True, text=True, env=env)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            digest = hashlib.sha256(b"x" * 1000).hexdigest()[:8]
+            self.assertIn(f"upload two/two-a.mp4 (0.0 MB) -> courses/two/two-a.{digest}.mp4", r.stdout)
+            self.assertNotIn("stray", r.stdout)
+            self.assertIn("would upload 1", r.stdout)
+            self.assertEqual((courses / "videos.json").read_text(), "{}\n", "a dry run writes nothing")
+            # Skipped only when the manifest URL is the upload of these exact bytes.
+            blob = "https://s.public.blob.vercel-storage.com/courses/two"
+            for url, skipped in [(f"{blob}/two-a.{digest}.mp4", True), (f"{blob}/two-a.00000000.mp4", False), (f"{blob}/two-a.mp4", False), ("", False)]:
+                (courses / "videos.json").write_text(json.dumps({"two/two-a.mp4": url}))
+                r = subprocess.run(["node", script, str(root), "--courses", str(courses), "--dry-run"], capture_output=True, text=True, env=env)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                self.assertIn("skipped 1" if skipped else "would upload 1", r.stdout, url)
+            (courses / "videos.json").write_text("{}\n")
+            r = subprocess.run(["node", script, str(root), "--courses", str(courses)], capture_output=True, text=True, env=env)
+            self.assertEqual(r.returncode, 1)
+            self.assertIn("KAI_MORI_VIDEOS_BLOB_TOKEN", r.stderr)
+
+    @unittest.skipUnless((ROOT.parent / "courses/ai-math").is_dir(), "needs a site's courses/ (kai-mori-fanout-sh)")
+    def test_code_check_fails_when_nothing_can_run(self):
+        node = shutil.which("node")
+        lesson = ROOT.parent / "courses/ai-math/lessons/01-vectors-dot-product.lesson.js"
+        with tempfile.TemporaryDirectory() as tmp:
+            os.symlink(node, Path(tmp) / "node")  # a PATH with node but no g++ or python3
+            r = subprocess.run([node, str(SKILLS / "explorable/scripts/check_code.mjs"), str(lesson), "--include", str(lesson.parent.parent / "aimath.model.js")],
+                               capture_output=True, text=True, env={**os.environ, "PATH": tmp})
+            self.assertEqual(r.returncode, 1, r.stdout)
+            self.assertIn("nothing ran", r.stdout)
+            self.assertIn("no python3", r.stdout)
 
     def test_animation_builds(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -372,6 +669,273 @@ class Builds(unittest.TestCase):
         self.assertNotIn("<img", out)
         self.assertEqual(out.count("</title>"), 1, "the only </title> is the real end tag")
         self.assertNotRegex(out, r"(?i)<(noscript|xmp|plaintext)")
+
+
+class DiagramSanitizer(unittest.TestCase):
+    def test_strips_scripts_handlers_and_bad_links(self):
+        render = load(SKILLS / "explain-diagram/scripts/render.py")
+        bad = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" onload="alert(1)">'
+            "<rect width=10 height=10 onclick=alert(2) ONMOUSEOVER='alert(3)'/>"
+            '<a href="javascript:alert(4)"><text>j</text></a>'
+            '<a xlink:href=" jav&#x61;script:alert(5)"><text>k</text></a>'
+            '<a href="data:text/html,<script>alert(6)</script>"><text>d</text></a>'
+            '<image href="data:image/png;base64,AAAA" width="1" height="1"/>'
+            '<a href="#node1"><text>ok</text></a><a href="https://example.com/x"><text>web</text></a>'
+            '<SCRIPT>alert(7)</SCRIPT><iframe src="x"></iframe><svg/onload=alert(8)>'
+            '<set attributeName="href" to="javascript:alert(9)"/>'
+            '<foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel">Label &amp; more</span></div></foreignObject>'
+            "<style>@import url(evil.css); .n { fill: red; }</style></svg>"
+        )
+        out = render.sanitize_svg(bad)
+        for frag in ("alert(1)", "alert(2)", "alert(3)", "alert(4)", "alert(5)", "alert(6)", "alert(7)", "alert(9)", "<iframe", "@import", "<set"):
+            self.assertNotIn(frag, out)
+        self.assertNotRegex(out.lower(), r"\son\w+\s*=")
+        self.assertNotIn("<svg/onload", out)
+        for frag in ('viewBox="0 0 10 10"', 'href="data:image/png;base64,AAAA"', 'href="#node1"', 'href="https://example.com/x"',
+                     "<foreignObject>", 'class="nodeLabel"', "Label &amp; more", ".n { fill: red; }"):
+            self.assertIn(frag, out)
+
+
+    def test_only_the_root_svg_loses_its_size(self):
+        render = load(SKILLS / "explain-diagram/scripts/render.py")
+        out = render.clean_svg('<svg width="100" height="50" role="x"><svg width="10" height="10"/></svg>', "A box")
+        self.assertEqual(out, '<svg role="img" aria-label="A box"><svg width="10" height="10"/></svg>')
+
+
+class Captions(unittest.TestCase):
+    def test_vtt_escapes_and_reads_back(self):
+        narrate = load(SKILLS / "explorable/scripts/narrate.py", stub=("numpy", "soundfile"))
+        speech = load(SKILLS / "visual-qa/scripts/check_speech.py")
+        said = ["Past that, det < 0: flipped.", "Tom & Jerry --> y > 0.5"]
+        timing = {"scenes": [{"start": 0.4, "dur": 3.0, "voiceAt": 1.1}, {"start": 3.4, "dur": 3.0, "voiceAt": 4.1}]}
+        text = narrate.vtt(timing, said)
+        self.assertIn("det &lt; 0", text)
+        self.assertEqual(text.count("-->"), 2, "an arrow in the text must not look like a timing line")
+        with tempfile.TemporaryDirectory() as tmp:
+            f = Path(tmp) / "c.vtt"
+            f.write_text(text)
+            self.assertEqual([c[2] for c in speech.cues(f)], said)
+
+    def test_speech_counts_each_heard_word_once(self):
+        speech = load(SKILLS / "visual-qa/scripts/check_speech.py")
+        want = [w for w in speech.words("Gradient, gradient, gradient descent at 0.693 with cross-entropy") if speech.keep(w)]
+        heard = speech.words("gradient descent at 0 .693 with cross entropy")
+        hit, missing = speech.match(want, heard)
+        self.assertEqual(missing, ["gradient", "gradient"], "one heard 'gradient' can't cover three")
+        heard = speech.words("gradient gradient gradient descent at 0 .693 with cross entropy")
+        self.assertEqual(speech.match(want, heard)[1], [], "compounds and split decimals still count")
+
+    def test_speech_credits_a_heard_word_to_one_cue(self):
+        speech = load(SKILLS / "visual-qa/scripts/check_speech.py")
+        two = [(0.0, 2.0, "Gradient descent"), (2.0, 4.0, "Gradient descent")]
+        once = [(1.8, 2.0, "gradient"), (2.0, 2.2, "descent")]
+        res = speech.score(two, once, 0.85)
+        self.assertFalse(res["ok"], "gradient descent said once across two cues")
+        self.assertEqual((res["got"], res["total"]), (2, 4), "two heard words, credited once each")
+        twice = [(0.5, 0.8, "gradient"), (0.8, 1.1, "descent"), (2.5, 2.8, "gradient"), (2.8, 3.1, "descent")]
+        self.assertTrue(speech.score(two, twice, 0.85)["ok"])
+        # Both occurrences are near the first cue: it takes its own, leaving the second.
+        apart = [(0.0, 2.0, "Gradient descent"), (3.0, 5.0, "Gradient descent")]
+        heard = [(1.0, 1.3, "gradient"), (1.3, 1.6, "descent"), (4.0, 4.3, "gradient"), (4.3, 4.6, "descent")]
+        self.assertTrue(speech.score(apart, heard, 0.85)["ok"])
+        # A misheard word in one cue doesn't take the next cue's word, said on time.
+        cues = [(0.0, 2.0, "gradient tells direction"), (2.0, 4.0, "gradient steps")]
+        heard = [(0.2, 0.5, "radiant"), (0.5, 0.8, "tells"), (0.8, 1.2, "direction"), (2.2, 2.5, "gradient"), (2.5, 2.8, "steps")]
+        rows = speech.score(cues, heard, 0.85)["rows"]
+        self.assertEqual([(r["recall"], r["missing"]) for r in rows], [(0.67, ["gradient"]), (1.0, [])])
+
+    def test_speech_check_fails_with_nothing_to_check(self):
+        speech = load(SKILLS / "visual-qa/scripts/check_speech.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            for name, text in [("empty", ""), ("malformed", "WEBVTT\n\nnot a cue\njust text\n"), ("tiny", "WEBVTT\n\n1\n00:00:00.000 --> 00:00:01.000\nSo it is.\n")]:
+                f = Path(tmp) / f"{name}.vtt"
+                f.write_text(text)
+                res = speech.score(speech.cues(f), [(0.0, 1.0, "so")], 0.85)
+                self.assertFalse(res["ok"], name)
+                self.assertTrue(res["error"], name)
+                r = subprocess.run([sys.executable, str(SKILLS / "visual-qa/scripts/check_speech.py"), str(Path(tmp) / "clip.mp4"), "--vtt", str(f)], capture_output=True, text=True)
+                self.assertEqual(r.returncode, 1, name)
+                self.assertIn("FAIL speech:", r.stdout, name)
+        good = speech.score([(0.0, 2.0, "Gradient descent")], [(0.1, 0.5, "gradient"), (0.6, 1.0, "descent")], 0.85)
+        self.assertTrue(good["ok"])
+        self.assertIsNone(good["error"])
+
+    def test_narrate_course_remuxes_published_videos(self):
+        from unittest import mock
+
+        course = load(SKILLS / "course/scripts/narrate_course.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "c"
+            (root / "videos").mkdir(parents=True)
+            (root / "course.json").write_text(json.dumps({"id": "c", "lessons": [{"id": "l1", "file": "l1.lesson.js"}]}))
+            (root / "videos" / "l1.mp4").write_bytes(b"")
+            (Path(tmp) / "videos.json").write_text(json.dumps({"c/l1.mp4": "https://example.com/l1.abc.mp4"}))
+            for flags, runs in [([], 0), (["--remux"], 2), (["--force"], 2)]:
+                ok = subprocess.CompletedProcess([], 0, "", "")
+                with mock.patch.object(sys, "argv", ["narrate_course.py", str(root), *flags]), \
+                        mock.patch.object(course.subprocess, "run", return_value=ok) as run, \
+                        contextlib.redirect_stdout(io.StringIO()):
+                    self.assertEqual(course.main(), 0)
+                self.assertEqual(run.call_count, runs, flags)
+                if "--remux" in flags:
+                    self.assertIn("--remux", run.call_args.args[0])
+
+    def test_narrate_speed_default_leaves_chatterbox_free(self):
+        from unittest import mock
+
+        narrate = load(SKILLS / "explorable/scripts/narrate.py", stub=("numpy", "soundfile"))
+        spoke = []
+        tts = mock.Mock()
+        tts.create.side_effect = lambda s, voice, speed, lang: (spoke.append(speed), ([], narrate.SR))[1]
+        model = mock.Mock(sr=narrate.SR)
+        for gpu in (True, False):
+            with mock.patch.object(narrate, "has_gpu_chatterbox", return_value=gpu), mock.patch.object(narrate, "kokoro", return_value=tts), \
+                    mock.patch.object(narrate, "chatterbox", return_value=model):
+                name = lambda engine, speed: narrate.make_voice(engine, "af_heart", speed)[0]
+                self.assertEqual(name("auto", None), "chatterbox" if gpu else "kokoro|af_heart|0.95", "no --speed: auto may pick Chatterbox")
+                self.assertEqual(name("auto", 1.0), "chatterbox" if gpu else "kokoro|af_heart|1.0")
+                self.assertEqual(name("auto", 0.9), "kokoro|af_heart|0.9")
+                self.assertEqual(name("chatterbox", None), "chatterbox", "--engine chatterbox needs no --speed 1.0")
+                self.assertEqual(name("chatterbox", 1.0), "chatterbox")
+                with self.assertRaises(SystemExit):
+                    name("chatterbox", 0.95)
+                self.assertEqual(name("kokoro", None), "kokoro|af_heart|0.95", "same voice cache key as before")
+                if not gpu:
+                    # speak() wraps the audio with np.asarray; NumPy may be a bare stub here (CI has none).
+                    with mock.patch.object(narrate, "np", mock.Mock(asarray=lambda x, dtype=None: x)):
+                        narrate.make_voice("kokoro", "af_heart", None)[1]("Hello.")
+        self.assertEqual(spoke, [0.95], "Kokoro still speaks at 0.95 by default")
+
+    def test_narrate_removes_its_work_folder_when_a_render_fails(self):
+        from unittest import mock
+
+        narrate = load(SKILLS / "explorable/scripts/narrate.py", stub=("numpy", "soundfile"))
+        scenes = json.dumps({"title": "T", "scenes": [{"say": "Hello there."}]})
+
+        def fake_run(cmd):
+            if "--scenes" in cmd:
+                return scenes
+            raise SystemExit("film_export failed")  # the frame render
+
+        with tempfile.TemporaryDirectory() as tmp:
+            for keep, left in ((False, []), (True, ["narrate-x"])):
+                work = Path(tmp) / "narrate-x"
+                argv = ["narrate.py", str(Path(tmp) / "l.html"), "-o", str(Path(tmp) / "o.mp4"), *(["--keep"] if keep else [])]
+                with mock.patch.object(sys, "argv", argv), mock.patch.object(narrate.shutil, "which", return_value="/bin/true"), \
+                        mock.patch.object(narrate, "run", side_effect=fake_run), mock.patch.object(narrate, "make_voice", return_value=("v", None)), \
+                        mock.patch.object(narrate, "voice_scene", return_value=[0.0] * 100), \
+                        mock.patch.object(narrate.tempfile, "mkdtemp", side_effect=lambda prefix: (work.mkdir(), str(work))[1]), \
+                        contextlib.redirect_stdout(io.StringIO()):
+                    with self.assertRaises(SystemExit):
+                        narrate.main()
+                self.assertEqual(sorted(p.name for p in Path(tmp).iterdir()), left, f"--keep={keep}")
+                shutil.rmtree(work, ignore_errors=True)
+
+    def test_remux_refuses_a_changed_timing(self):
+        narrate = load(SKILLS / "explorable/scripts/narrate.py", stub=("numpy", "soundfile"))
+        # aimath-02: 296.374 s of timing rendered as ceil(296.374 * 24) = 7113 frames.
+        self.assertIsNone(narrate.remux_drift(296.374, 7113 / 24, 24))
+        self.assertIsNotNone(narrate.remux_drift(296.374 + 0.5, 7113 / 24, 24))
+        self.assertIsNotNone(narrate.remux_drift(296.374 - 0.1, 7113 / 24, 24))
+
+    def test_saved_progress_follows_its_step(self):
+        js = r"""
+const { stepKeys, restoreProgress } = await import(process.argv[1]);
+const a = { title: "A", ask: { kind: "choice", q: "a?" } }, b = { title: "B" }, c = { id: "c", title: "C" };
+const old = stepKeys([a, b, c]);
+const saved = { steps: old, step: 2, done: [0, 1, 2], attempts: { 0: [{ answer: 1, right: true }], 2: [{ answer: 0, right: false }] }, tried: { 1: ["x"] }, explained: { 0: { text: "t", covered: [] } }, notes: "n", curious: ["q"] };
+// A step inserted first, B removed, C renamed (its id keeps it matched).
+const now = stepKeys([{ title: "New", ask: { kind: "choice", q: "new?" } }, a, { ...c, title: "C2" }]);
+const out = {
+  moved: restoreProgress(saved, now),
+  legacy: restoreProgress({ step: 1, done: [0, 1], attempts: { 0: [] }, notes: "n" }, now),
+  junk: [null, 3, "x", [], { steps: "x", done: "x" }, { steps: old, done: [9, "0"], attempts: { 0: "bad" }, step: "nope" }].map((v) => restoreProgress(v, now)),
+  dupes: stepKeys([b, b]),
+  nested: restoreProgress({ steps: old, attempts: { 0: [null, 3, { answer: 1 }, { answer: 2, right: false }] }, tried: { 0: ["y", null] }, explained: { 0: { text: "saved" }, 2: { covered: [0] } } }, now),
+};
+console.log(JSON.stringify(out));
+"""
+        mod = (SKILLS / "explorable/assets/engine/progress.js").as_uri()
+        r = subprocess.run(["node", "--input-type=module", "-e", js, mod], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        out = json.loads(r.stdout)
+        moved = out["moved"]
+        self.assertEqual(sorted(moved["done"]), [1, 2])  # the new step 0 is not done
+        self.assertEqual(moved["attempts"], {"1": [{"answer": 1, "right": True}], "2": [{"answer": 0, "right": False}]})
+        self.assertEqual(moved["tried"], {})  # B is gone
+        self.assertEqual(list(moved["explained"]), ["1"])
+        self.assertEqual((moved["step"], moved["notes"], moved["curious"]), (2, "n", ["q"]))
+        legacy = out["legacy"]  # saved before keys: can't be matched, so step state is dropped
+        self.assertEqual((legacy["done"], legacy["attempts"], legacy["step"], legacy["notes"]), ([], {}, 0, "n"))
+        for j in out["junk"]:
+            self.assertEqual((j["step"], j["attempts"], j["tried"], j["explained"]), (0, {}, {}, {}))
+        self.assertEqual(out["junk"][-1]["done"], [1])  # "0" (old A) still maps; 9 is out of range
+        self.assertEqual(len(set(out["dupes"])), 2)
+        nested = out["nested"]  # malformed rows inside an entry would crash report()
+        self.assertEqual(nested["attempts"], {"1": [{"answer": 2, "right": False}]})
+        self.assertEqual(nested["tried"], {"1": ["y"]})
+        self.assertEqual(nested["explained"], {"1": {"text": "saved", "covered": []}})
+
+    def test_plain_text_reads_into_a_formula(self):
+        js = r"""
+const src = require("fs").readFileSync(process.argv[1], "utf8");
+eval(src.match(/function plainText\(html\) \{[\s\S]*?\n\}/)[0]);
+console.log(plainText(process.argv[2]));
+"""
+        say = '<p>the set of points with</p><p class="nb-print">w1x1 + b = 0</p><p>That is a <strong>line</strong></p><p>Next</p>'
+        r = subprocess.run(["node", "-e", js, str(SKILLS / "explorable/assets/engine/explorable.js"), say], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(r.stdout.strip(), "the set of points with w1x1 + b = 0. That is a line. Next")
+
+    def test_shipped_captions_are_escaped(self):
+        for f in sorted((ROOT.parent / "courses").glob("*/videos/*.vtt")):
+            for block in f.read_text().split("\n\n")[1:]:
+                for line in block.split("\n")[2:]:
+                    self.assertNotRegex(line, r"<|>|&(?!amp;|lt;|gt;)", f"{f.name}: {line}")
+
+
+class VideoCheckerAudio(unittest.TestCase):
+    def test_unmeasurable_audio_fails(self):
+        from unittest import mock
+
+        chk = load(SKILLS / "visual-qa/scripts/check_video.py")
+        info = {"format": {"duration": "3"}, "streams": [
+            {"codec_type": "video", "width": 1280, "height": 720, "avg_frame_rate": "30/1", "pix_fmt": "yuv420p"},
+            {"codec_type": "audio"}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            clip = Path(tmp) / "c.mp4"
+            clip.with_suffix(".vtt").write_text("WEBVTT\n")
+            for measured, ok in [((-16.0, -2.0), True), ((None, -2.0), False), ((-16.0, None), False)]:
+                out = io.StringIO()
+                with mock.patch.object(sys, "argv", ["check_video.py", str(clip), "--json"]), \
+                        mock.patch.object(chk.shutil, "which", return_value="/bin/true"), \
+                        mock.patch.object(chk, "probe", return_value=info), mock.patch.object(chk, "stretches", return_value=[]), \
+                        mock.patch.object(chk, "loudness", return_value=measured), contextlib.redirect_stdout(out):
+                    code = chk.main()
+                self.assertEqual(code == 0, ok, (measured, out.getvalue()))
+                if not ok:
+                    self.assertIn("couldn't be measured", out.getvalue())
+
+    def test_undecodable_frames_fail(self):
+        from unittest import mock
+
+        chk = load(SKILLS / "visual-qa/scripts/check_video.py")
+        info = {"format": {"duration": "3"}, "streams": [
+            {"codec_type": "video", "width": 1280, "height": 720, "avg_frame_rate": "30/1", "pix_fmt": "yuv420p"}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            clip = Path(tmp) / "c.mp4"
+            clip.with_suffix(".vtt").write_text("WEBVTT\n")
+            for code, ok in ((0, True), (1, False)):
+                done = subprocess.CompletedProcess([], code, "", "" if code == 0 else "Invalid data found when processing input")
+                out = io.StringIO()
+                with mock.patch.object(sys, "argv", ["check_video.py", str(clip), "--json"]), \
+                        mock.patch.object(chk.shutil, "which", return_value="/bin/true"), mock.patch.object(chk, "probe", return_value=info), \
+                        mock.patch.object(chk, "run", return_value=done), contextlib.redirect_stdout(out):
+                    self.assertEqual(chk.main() == 0, ok, out.getvalue())
+                if not ok:
+                    self.assertIn("doesn't decode", out.getvalue())
+                    self.assertIn("Invalid data", out.getvalue())
 
 
 @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg not installed")

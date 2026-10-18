@@ -16,7 +16,7 @@ Ask before keeping anything: "Want me to keep a short learning journal in this f
 ## In each session
 
 1. `resume`. Read it before saying anything.
-2. Due recall first, unaided: "Before we go on, how would you explain why softmax is there?" Record with `recall result ID N --right|--wrong [--unaided]`. A miss brings the point back next session.
+2. Due recall first, unaided: "Before we go on, how would you explain why softmax is there?" Record with `recall result ID N --right|--wrong [--unaided]`. A miss, or a right answer that needed help, brings the point back next session; it stays due until shown unaided.
 3. Continue the open thread, or start the next one on the map. Don't reteach what recall shows they have.
 4. `log` what you did, what's still unclear, and which explanations were tried. Be specific; the next session depends on it.
 5. Add 1 to 3 `recall` points per thread worth keeping: claims they should be able to explain, not trivia.

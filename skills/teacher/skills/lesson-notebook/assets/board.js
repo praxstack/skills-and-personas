@@ -12,14 +12,11 @@ export function getBoard() {
   return b === "paper" || b === "chalk" ? b : "auto";
 }
 
-function applyBoard(mode) {
+export function setBoard(mode, { remember = true } = {}) {
   const root = document.documentElement;
   if (mode === "paper" || mode === "chalk") root.dataset.board = mode;
   else delete root.dataset.board;
-}
-
-export function setBoard(mode) {
-  applyBoard(mode);
+  if (!remember) return;
   try {
     localStorage.setItem(BOARD_KEY, getBoard());
   } catch {
@@ -35,7 +32,9 @@ export function restoreBoard(fallback = "auto") {
   } catch {
     /* storage blocked */
   }
-  applyBoard(MODES.includes(saved) ? saved : fallback);
+  // A page's own fallback isn't the learner's choice, so it isn't stored.
+  if (MODES.includes(saved)) setBoard(saved);
+  else setBoard(fallback, { remember: false });
 }
 
 /** A button that cycles auto, paper, chalk. */

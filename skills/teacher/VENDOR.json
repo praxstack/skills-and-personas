@@ -51,7 +51,7 @@
     "visual-qa",
     "course"
   ],
-  "note": "Vendored skills are byte copies of their sources. Edit them upstream and re-run scripts/vendor.py sync; scripts/vendor.py verify fails if a copy drifts.",
+  "note": "Vendored skills are byte copies of their sources. Edit them upstream and re-run scripts/vendor.py sync; scripts/vendor.py verify fails if a copy drifts. A change made here is recorded with scripts/vendor.py record NAME --note ... and listed under local_changes.",
   "skills": {
     "algo-sensei": {
       "files": 13,
@@ -64,17 +64,23 @@
     "concept-cartographer": {
       "files": 2,
       "license": "MIT (repo)",
+      "local_changes": [
+        "SKILL.md: restored the Timeline / Sequence section and the Before/After Mental Model type (diagram type 9), each with a short inline example. Ported from the skills workspace (66b1dcc)."
+      ],
       "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "new-skills/concept-cartographer",
-      "tree_sha256": "9324e09faff1b2847692e3f95b6ebfd3f44f2c10607ed779d42d65ec08b8158d",
+      "tree_sha256": "3a0b953ad4f6fe1238825cffaf88ba15250effc85a3a3808336ab3d1c647869f",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "eli": {
       "files": 1,
       "license": "Prax's own",
+      "local_changes": [
+        "SKILL.md: a plain-language self-check to use when /unslop isn't installed (it isn't bundled)."
+      ],
       "source_commit": null,
       "source_path": "eli",
-      "tree_sha256": "d42692e42eefead106ab0829f323513a5a1eaa0083fa8ee0f1c1b70ded2fb457",
+      "tree_sha256": "718dccbbf9fb9f995ddcfebf1adb76117d495c19e458b7116e3d5652eea8f527",
       "upstream": "Prax's local skill library (16 Oct 2026 snapshot)"
     },
     "explainer-video": {
@@ -110,11 +116,14 @@
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "lecture-alchemist": {
-      "files": 4,
+      "files": 6,
       "license": "MIT (repo)",
+      "local_changes": [
+        "Added references/output-template.md and references/example-output.md, linked from SKILL.md, and restored the Special Cases list (2+ hour transcripts, heavy Q&A, live coding, multiple instructors, Topic Inventory 100% coverage). Ported from the skills workspace (66b1dcc)."
+      ],
       "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "new-skills/lecture-alchemist",
-      "tree_sha256": "e4a3a4d534f19aee3a25f49b17614449a8ab05665098518b9b7895559749e3b0",
+      "tree_sha256": "360553d72f3140b50ddfa56492c65614990da2ab9a9a421cfd006c31d93edf67",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "manim-video": {
@@ -160,17 +169,24 @@
     "teach-pro-max": {
       "files": 804,
       "license": "MIT (repo)",
+      "local_changes": [
+        "SKILL.md: added the 'Choose the teaching style' section (visual-explain, practice-first, quick; route picks a mode only; honest fallback when an animation can't be made; pins go in CLAUDE.md or notes, never state/learner.json), reworded the two attempt-first invariants, and noted that visual-explain overrides the engine's first live-lesson gate. scripts/verify_distribution.py: the PASS line says only what it checked. Ported from the skills workspace (66b1dcc).",
+        "references/prax-teach-v2.zip: removed the 395 __MACOSX/ resource-fork entries (macOS archive debris); the 395 real files are unchanged and verify_distribution.py still passes."
+      ],
       "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "skills/teach-pro-max",
-      "tree_sha256": "93702fd87ef663bdb3071f287d9fc27bb5098ef84e6dc481d982ab4f22606523",
+      "tree_sha256": "246229d64faf6fba7bcc5cdee8aa937d87d92cf16c6cdbd6ef50f1410c3c2dd4",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "techtutor": {
-      "files": 7,
+      "files": 8,
       "license": "MIT (repo)",
+      "local_changes": [
+        "Added agents/openai.yaml (display name, short description, default prompt), as the skills workspace had it (66b1dcc)."
+      ],
       "source_commit": "027636e170596e8ffeff46eb0a648744600e734c",
       "source_path": "new-skills/techtutor",
-      "tree_sha256": "afe205b107fa6ee1429f56397721cfc9b1f4c41ed0be96b1825a8bfbaf25438f",
+      "tree_sha256": "8b78906700ce05105b5f9b5f83188153c5e6019955607663d9211e14749f1d2e",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "theatrejs-video": {

@@ -1,0 +1,4 @@
+interface:
+  display_name: "TechTutor"
+  short_description: "Explain technical topics through six intuitive layers"
+  default_prompt: "Use $techtutor to explain this technical concept from intuition through implementation."

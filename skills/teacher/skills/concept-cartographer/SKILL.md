@@ -22,6 +22,42 @@ Claude already knows Mermaid syntax. The delta this skill provides is **picking 
 | Comparison (`graph TD` with branches) | Alternatives with trade-offs | 2–4 branches, ≤4 leaves each |
 | Learning-path (`graph LR` with prerequisites) | Educational content with built-up concepts | 5–12 nodes |
 | Quadrant (`quadrantChart`) | Difficulty-vs-importance prioritization | 4–10 points |
+| Before/after mental model (`graph LR`, two subgraphs) | A lecture that changes how a concept should be understood | 2–4 pairs |
+
+### Timeline / Sequence Diagram
+
+Shows the order of events, or data flow over time. Use it when the content describes interactions, API flows, or sequential processes.
+
+```mermaid
+sequenceDiagram
+    participant D as Data
+    participant N as Network
+    participant L as Loss Function
+    participant O as Optimizer
+    D->>N: Forward pass
+    N->>L: Predictions
+    L->>N: Gradients (backprop)
+    N->>O: Weights + gradients
+    O->>N: Updated weights
+```
+
+### Before/After Mental Model
+
+Shows how understanding should shift. Use it when the lecture fundamentally changes how a concept should be understood.
+
+```mermaid
+graph LR
+    subgraph Before
+        B1["Neural network = black box"]
+        B2["Training = magic"]
+    end
+    subgraph After
+        A1["Neural network = layers of math functions"]
+        A2["Training = iterative error minimization"]
+    end
+    B1 -.->|"this lecture"| A1
+    B2 -.->|"this lecture"| A2
+```
 
 ## Domain-Specific Focus
 

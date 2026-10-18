@@ -227,15 +227,17 @@ def sanitize_svg(svg: str) -> str:
 
 
 def clean_svg(svg: str, title: str) -> str:
-    svg = re.sub(r"<\?xml[^>]*>|<!DOCTYPE[^>]*>", "", svg).strip()
+    svg = re.sub(r"<\?xml[^>]*>|<!DOCTYPE[^>]*>", "", svg, flags=re.I).strip()
     svg = sanitize_svg(svg)
-    # Give the figure a text alternative and let it scale with its column.
-    svg = re.sub(r"<svg\b", f'<svg role="img" aria-label="{html.escape(title, quote=True)}"', svg, count=1)
-    root = re.match(r"\s*<svg\b[^>]*>", svg)
-    if root:
-        head = re.sub(r'\s(width|height)="[^"]*"', "", root.group(0))
-        svg = head + svg[root.end():]
-    return svg
+    # Give the figure a text alternative and let it scale with its column. Only
+    # the root <svg> tag changes: a nested <svg> keeps its own size. (After
+    # sanitize_svg every attribute value is double-quoted with < and > escaped.)
+    root = re.search(r"<svg\b[^>]*>", svg)
+    if not root:
+        return svg
+    tag = re.sub(r'\s(width|height|role|aria-label)="[^"]*"', "", root.group(0))
+    tag = tag.replace("<svg", f'<svg role="img" aria-label="{html.escape(title, quote=True)}"', 1)
+    return svg[: root.start()] + tag + svg[root.end():]
 
 
 PAGE_CSS = """
