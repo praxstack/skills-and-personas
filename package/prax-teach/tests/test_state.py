@@ -55,31 +55,17 @@ def golden(ws):
     return json.loads((FIXTURE / "golden.json").read_text().replace("@WORKSPACE@", str(ws)))
 
 
-HARDLINK = "must not be a hardlink"
-HARDLINK_NOTE = ("macOS gave a fresh state file a second hard link (a background process does this to new files "
-                 "under ~/Developer at times, see commit 3b89295). The engine refuses hard-linked state on purpose "
-                 "(v2's protected cross-learner check), so this run proves nothing either way: rerun")
-
-
 @contextlib.contextmanager
 def hardlink_guard():
-    """These tests never plant hard links, so a hard-link refusal is the macOS link flake: not-run, not pass."""
-    from ptk.state.errors import SafetyError
-    try:
-        yield
-    except SafetyError as e:
-        if HARDLINK in str(e):
-            raise NotRun(HARDLINK_NOTE) from e
-        raise
+    """Kept for callers: hard links made by macOS backup/versioning are accepted with a warning now
+    (PROTECTED-MAP, integration pass), so a hard-link refusal is a real failure and is not masked."""
+    yield
 
 
 def state_cli(*args, py=None):
     """Run `python -m ptk.state` in the core venv (fsrs is pinned there)."""
     env = host.child_env({"PYTHONPATH": str(host.PKG), "PYTHONDONTWRITEBYTECODE": "1"})
-    res = host.run([py or _core_python(), "-B", "-m", "ptk.state", *args], env=env, timeout=120)
-    if HARDLINK in res.stderr:
-        raise NotRun(HARDLINK_NOTE)
-    return res
+    return host.run([py or _core_python(), "-B", "-m", "ptk.state", *args], env=env, timeout=120)
 
 
 def v2_cli(*args):
@@ -221,12 +207,77 @@ def test_ported_v2_suite():
                    cwd=PORTED, env=env, timeout=1800)
     tail = res.stderr.strip().splitlines()
     ran = next((ln for ln in tail if ln.startswith("Ran ")), "")
-    if res.code != 0:
-        blocks = res.stderr.split("=" * 70)[1:]
-        failures = [b for b in blocks if b.lstrip().startswith(("FAIL:", "ERROR:"))]
-        if failures and all(HARDLINK in b for b in failures):
-            raise NotRun(f"{len(failures)} failures, all hard-link refusals. " + HARDLINK_NOTE)
     assert res.code == 0 and tail and tail[-1].startswith("OK"), res.stderr[-3000:]
     count = int(ran.split()[1])
     assert count == 106, f"expected the 106 ported v2 tests to run, got {count}"
     return {"ran": count}
+
+
+# ---------------------------------------------------------------- hard links (integration pass, PROTECTED-MAP)
+
+def test_hardlinked_state_file_accepted():
+    """macOS (backupd/revisiond) gives new files under ~/Developer and the C study workspace a second link within
+    seconds. A regular state file owned by this user with st_nlink > 1 is now read, with a warning, instead of
+    refused: `show` succeeds and prints the same projection as with one link."""
+    parent, ws = materialize("link-")
+    try:
+        g = golden(ws)
+        extra = parent / "backup-link-sessions.jsonl"
+        os.link(ws / "state" / "sessions.jsonl", extra)
+        lock = ws / ".prax-teach.lock"
+        if lock.exists():
+            os.link(lock, parent / "backup-link-lock")
+        assert (ws / "state" / "sessions.jsonl").stat().st_nlink >= 2
+        show = state_cli("show", str(ws))
+        assert show.code == 0, show.stderr
+        assert json.loads(show.stdout) == g["show"]
+        assert "hard link" in show.stderr.lower() and "sessions.jsonl" in show.stderr, show.stderr
+        return {"nlink": (ws / "state" / "sessions.jsonl").stat().st_nlink, "warning": show.stderr.strip()[:200]}
+    finally:
+        shutil.rmtree(parent)
+
+
+def test_symlinked_and_foreign_state_refused():
+    """Still refused: a symlinked state file, a hard-linked state file owned by someone else (simulated with a
+    patched os.geteuid), and a non-regular file."""
+    import warnings
+    from unittest import mock
+    from ptk.state import io as sio
+    from ptk.state.errors import SafetyError
+    out = {}
+    parent, ws = materialize("link-neg-")
+    try:
+        target = ws / "state" / "learner.json"
+        os.link(target, parent / "other-link")
+        real_uid = target.stat().st_uid
+        with mock.patch.object(sio.os, "geteuid", return_value=real_uid + 1):
+            try:
+                sio.secure_workspace(ws)
+            except SafetyError as e:
+                out["foreign"] = str(e)
+            else:
+                raise AssertionError("a hard-linked state file owned by another user was accepted")
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            assert sio.secure_workspace(ws) == ws.resolve()
+        assert any(issubclass(w.category, sio.HardlinkAccepted) for w in caught), [str(w.message) for w in caught]
+        moved = parent / "learner.real"
+        os.replace(target, moved)
+        os.symlink(moved, target)
+        try:
+            sio.secure_workspace(ws)
+        except SafetyError as e:
+            out["symlink"] = str(e)
+        else:
+            raise AssertionError("a symlinked state file was accepted")
+        target.unlink()
+        os.mkfifo(target, 0o600)
+        try:
+            sio.secure_workspace(ws)
+        except SafetyError as e:
+            out["fifo"] = str(e)
+        else:
+            raise AssertionError("a non-regular state file was accepted")
+        return out
+    finally:
+        shutil.rmtree(parent)

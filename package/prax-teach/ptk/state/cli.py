@@ -5,12 +5,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import warnings
 from collections.abc import Sequence
 from datetime import datetime, timezone
 from typing import Any
 
 from .errors import ConsentRequired, PraxTeachError, ValidationError
 from .export import export_workspace
+from .io import HardlinkAccepted
 from .scheduler import due_items, move_due_date, review_item, set_review_status
 from .state import (
     DIMENSIONS,
@@ -535,7 +537,18 @@ def dispatch(args: argparse.Namespace) -> Any:
     raise ValidationError(f"unsupported command: {args.command}")
 
 
+def _format_link_warning(message, category, filename, lineno, line=None):
+    """One plain stderr line per accepted hard link (see io.link_count_ok); other warnings keep Python's format."""
+    if issubclass(category, HardlinkAccepted):
+        return f"warning: {message}\n"
+    return _python_formatwarning(message, category, filename, lineno, line)
+
+
+_python_formatwarning = warnings.formatwarning
+
+
 def main(argv: Sequence[str] | None = None) -> int:
+    warnings.formatwarning = _format_link_warning
     parser = build_parser()
     try:
         args = parser.parse_args(argv)

@@ -19,6 +19,7 @@ from .errors import (
     ValidationError,
 )
 from .io import (
+    link_count_ok,
     _active_target_for_workspace_relative,
     _validate_anchored_destination,
     _validate_anchored_parent,
@@ -118,7 +119,7 @@ def load_continuity(workspace: Path) -> dict[str, Any] | None:
             return None
     if (
         not stat.S_ISREG(entry.st_mode)
-        or entry.st_nlink != 1
+        or not link_count_ok(entry, "state/continuity.json")
         or stat.S_IMODE(entry.st_mode) & 0o077
     ):
         raise SafetyError(

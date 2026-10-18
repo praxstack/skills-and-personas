@@ -27,6 +27,7 @@ from . import (
 )
 from .errors import ConsentRequired, SafetyError, ValidationError
 from .io import (
+    link_count_ok,
     _ACTIVE_WORKSPACE_IO,
     PRIVATE_DIR_MODE,
     atomic_write,
@@ -1429,7 +1430,7 @@ def _load_state_transaction(workspace: Path) -> dict[str, Any] | None:
     if (
         stat.S_ISLNK(path_stat.st_mode)
         or not stat.S_ISREG(path_stat.st_mode)
-        or path_stat.st_nlink != 1
+        or not link_count_ok(path_stat, path.name)
         or stat.S_IMODE(path_stat.st_mode) & 0o077
     ):
         raise SafetyError("state transaction journal is unsafe")
@@ -1472,7 +1473,7 @@ def _validate_journal_entry(
     if (
         stat.S_ISLNK(entry.st_mode)
         or not stat.S_ISREG(entry.st_mode)
-        or entry.st_nlink != 1
+        or not link_count_ok(entry, label)
         or stat.S_IMODE(entry.st_mode) & 0o077
     ):
         raise SafetyError(f"{label} is unsafe")
@@ -2297,7 +2298,7 @@ def _load_deletion_transaction(workspace: Path) -> dict[str, Any] | None:
     if (
         stat.S_ISLNK(path_stat.st_mode)
         or not stat.S_ISREG(path_stat.st_mode)
-        or path_stat.st_nlink != 1
+        or not link_count_ok(path_stat, path.name)
         or stat.S_IMODE(path_stat.st_mode) & 0o077
     ):
         raise SafetyError("deletion transaction journal is unsafe")
@@ -2634,7 +2635,7 @@ def _read_parent_delete_journal(
     if (
         stat.S_ISLNK(journal_stat.st_mode)
         or not stat.S_ISREG(journal_stat.st_mode)
-        or journal_stat.st_nlink != 1
+        or not link_count_ok(journal_stat, "full deletion journal")
         or stat.S_IMODE(journal_stat.st_mode) & 0o077
     ):
         raise SafetyError("full deletion transaction journal is unsafe")

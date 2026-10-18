@@ -14,6 +14,7 @@ import json
 import os
 import stat
 import uuid
+import warnings
 from collections.abc import Iterator
 from contextvars import ContextVar
 from dataclasses import dataclass
@@ -33,6 +34,43 @@ REQUIRED_STATE_FILES = (
     "sessions.jsonl",
     "sources.json",
 )
+
+
+
+class HardlinkAccepted(UserWarning):
+    """A state file had more than one hard link and was accepted (see link_count_ok)."""
+
+
+def link_count_ok(entry: os.stat_result, label: str) -> bool:
+    """Changed protected behaviour (v2.1 integration pass, plan/PROTECTED-MAP.md).
+
+    v2 refused any state file with st_nlink != 1. On macOS, backupd/revisiond give new files under
+    ~/Developer and the C study workspace a second link within seconds, so learner-state writes failed
+    intermittently. A file with more than one link is now accepted only when it is a regular file
+    (never a symlink, device, FIFO or directory) owned by the effective user; every open still uses
+    O_NOFOLLOW and the private-mode checks still apply. Each acceptance raises a HardlinkAccepted warning.
+    """
+    if entry.st_nlink == 1:
+        return True
+    if stat.S_ISLNK(entry.st_mode) or not stat.S_ISREG(entry.st_mode):
+        return False
+    geteuid = getattr(os, "geteuid", None)
+    if geteuid is None or entry.st_uid != geteuid():
+        return False
+    warnings.warn(
+        f"prax-teach state: {label} has {entry.st_nlink} hard links (macOS backup or "
+        "versioning adds them); accepted because it is a regular file you own",
+        HardlinkAccepted,
+        stacklevel=2,
+    )
+    return True
+
+
+def link_refusal(entry: os.stat_result) -> str:
+    """Why link_count_ok refused, for error messages that still say 'hardlink'."""
+    if stat.S_ISLNK(entry.st_mode) or not stat.S_ISREG(entry.st_mode):
+        return "is a hardlink and not a regular file"
+    return "is a hardlink owned by another user"
 
 
 def canonical_json_bytes(value: Any) -> bytes:
@@ -533,9 +571,10 @@ def secure_workspace(path: str | os.PathLike[str]) -> Path:
             raise SafetyError(
                 f"required state path is not a regular file: state/{name}"
             )
-        if required_stat.st_nlink != 1:
+        if not link_count_ok(required_stat, f"state/{name}"):
             raise SafetyError(
-                f"required state file must not be a hardlink: state/{name}"
+                f"required state file must not be a hardlink: state/{name} "
+                f"{link_refusal(required_stat)}"
             )
         if stat.S_IMODE(required_stat.st_mode) & 0o077:
             raise SafetyError(
@@ -602,9 +641,10 @@ def read_bytes(workspace: Path, relative: str | Path) -> bytes:
             raise StateNotFound(
                 f"required state path is missing: {Path(relative).as_posix()}"
             )
-        if expected.st_nlink != 1:
+        if not link_count_ok(expected, Path(relative).as_posix()):
             raise SafetyError(
-                f"state file must not be a hardlink: {Path(relative).as_posix()}"
+                f"state file must not be a hardlink: {Path(relative).as_posix()} "
+                f"{link_refusal(expected)}"
             )
         descriptor = os.open(
             anchored.path.name,
@@ -933,10 +973,13 @@ def _workspace_inode_lock(
     if lock_stat is not None:
         if stat.S_ISLNK(lock_stat.st_mode) or not stat.S_ISREG(lock_stat.st_mode):
             raise SafetyError("workspace lock must be a regular non-symlink file")
-        if lock_stat.st_nlink != 1:
-            raise SafetyError("workspace lock must not be a hardlink")
+        if not link_count_ok(lock_stat, "workspace lock"):
+            raise SafetyError("workspace lock must not be a hardlink " + link_refusal(lock_stat))
         if stat.S_IMODE(lock_stat.st_mode) & 0o077:
-            raise SafetyError("workspace lock must have a private permission mode")
+            raise SafetyError(
+                "workspace lock must have a private permission mode"
+                + (" (it is also a hardlink)" if lock_stat.st_nlink != 1 else "")
+            )
     descriptor = os.open(
         lock_path,
         _open_flags(os.O_RDWR | os.O_CREAT),
@@ -948,8 +991,10 @@ def _workspace_inode_lock(
         entry_stat = lock_path.lstat()
         if not stat.S_ISREG(opened_stat.st_mode) or stat.S_ISLNK(entry_stat.st_mode):
             raise SafetyError("workspace lock must be a regular non-symlink file")
-        if opened_stat.st_nlink != 1 or entry_stat.st_nlink != 1:
-            raise SafetyError("workspace lock must not be a hardlink")
+        if not link_count_ok(opened_stat, "workspace lock") or not link_count_ok(
+            entry_stat, "workspace lock"
+        ):
+            raise SafetyError("workspace lock must not be a hardlink " + link_refusal(entry_stat))
         if (opened_stat.st_dev, opened_stat.st_ino) != (
             entry_stat.st_dev,
             entry_stat.st_ino,

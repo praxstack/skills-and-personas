@@ -17,6 +17,19 @@ Changes made while porting the Python tests, and nothing else: paths (`praxteach
 
 Changes made while porting the JS tests: the version strings (renderer 2.3.0, template 3.1.0), and the copied-renderer test copies `tex2svg.mjs` instead of linking `node_modules` (one module path, E28). The AskTheMove CSS hash `f7673d0d...` is unchanged: the presentation bytes are kept and v2.1's media CSS sits in a second style block.
 
+## Changed protected behaviour
+
+### Hard-linked learner-state files (integration pass, round 15, 2026-10-18)
+
+- **What changed.** v2 refused any state file, journal or workspace lock with `st_nlink != 1`. v2.1 accepts more than one link when the entry is a regular file owned by the effective user. Every open still uses `O_NOFOLLOW`, and the private-mode checks still apply. Each acceptance raises a `HardlinkAccepted` warning, printed as one `warning:` line on stderr naming the file (`ptk/state/io.py::link_count_ok`). Still refused: symlinks, files owned by another user, and non-regular files (FIFO, device, directory).
+- **Why.** On this Mac, backupd/revisiond give new files under `~/Developer` and Prax's C study workspace `st_nlink` 2 within about 6 seconds; the home folder root is not affected. WP8 found it and the orchestrator reproduced it, and this pass saw it live: `state/continuity.json` under `$PTK_STATE/tmp` had 2 links during the ported suite. v2's refusal would make learner-state writes in the study workspace fail at random.
+- **Tests changed (2 of the 106 ported):**
+  - `test_state_security::test_required_state_hardlink_cannot_cross_learner_boundaries` now asserts that the warning names the linked file on `show` and `export`, and that the other learner's file is unchanged. It no longer asserts exit 5.
+  - `test_continuity_security::test_unsafe_optional_records_fail_all_controls`, hardlink subcase: exit 6 (the linked record is invalid) instead of 5. The file outside the workspace is still checked unchanged.
+  - `test_workspace_lock_rejects_hardlinks_without_chmodding_the_source` passes unchanged: the linked lock is 0644, so it is refused by the mode check, whose message now adds "(it is also a hardlink)".
+- **New tests:** `tests/test_state.py::test_hardlinked_state_file_accepted` and `::test_symlinked_and_foreign_state_refused` (foreign owner simulated with a patched `os.geteuid`; symlink and FIFO refused).
+- **Residual risk.** A deliberate same-user hard link between two learners' state files is now read. Before, it was refused. Writes replace the file by rename and never write through the link, and the warning makes the link visible. A follow-up could restore the refusal with an inode ledger: record `(dev, ino)` for each file the engine wrote, and accept extra links only for an inode the engine wrote itself. That needs a reviewed design. This change was ordered by the orchestrator in the integration pass; it is not yet approved by Prax.
+
 ## JS tests (22)
 
 | # | v2 test | Status | Where or why |
