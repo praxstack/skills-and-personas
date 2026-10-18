@@ -115,9 +115,9 @@
     "lecture-alchemist": {
       "files": 6,
       "license": "MIT (repo)",
-      "source_commit": "f230416ccc631d073b46e05007d2acffff006db3",
+      "source_commit": "67f94397b1bd984e778715aa40b8f40459ab6daa",
       "source_path": "new-skills/lecture-alchemist",
-      "tree_sha256": "ba451d74f136457d9fdeeebc526ab9d41a188ed2d834dca6eb14de0eba835995",
+      "tree_sha256": "606864c5d0d48bc5879b00c28915fd43b7cfe3fdf1a874e6539e9f5f4a9453a6",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "manim-video": {

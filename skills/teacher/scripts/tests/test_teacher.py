@@ -539,8 +539,12 @@ class Builds(unittest.TestCase):
             (d / "videos/one-b.vtt").write_text("WEBVTT\n")
             (src / "videos.json").write_text(json.dumps({"one/one-a.mp4": url, "one/one-c.mp4": ""}))
             manifest = build_course.load_manifest(d)
-            with contextlib.chdir(d):  # run from inside the course folder: "." still finds courses/videos.json
+            cwd = os.getcwd()  # run from inside the course folder: "." still finds courses/videos.json
+            try:
+                os.chdir(d)
                 self.assertEqual(build_course.load_manifest(Path(".")), manifest)
+            finally:
+                os.chdir(cwd)
             self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("url", url))
             self.assertIsNone(build_course.resolve_video(d, "one", "one-b", manifest), "no file, no manifest entry")
             self.assertIsNone(build_course.resolve_video(d, "one", "one-c", manifest), "an empty manifest entry is no video")
