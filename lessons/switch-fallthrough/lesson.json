@@ -483,8 +483,8 @@
     {
       "id": "c.break",
       "kind": "rule",
-      "text": "A break statement ends the smallest enclosing switch, so execution continues after the switch.",
-      "justification": "C17 6.8.6.3p2: a break statement terminates execution of the smallest enclosing switch or iteration statement. The break on line 12 ends the switch, so case 4 never runs.",
+      "text": "A break statement ends the smallest enclosing switch or loop. Here that is the switch, so execution continues after it.",
+      "justification": "C17 6.8.6.3p2: a break statement terminates execution of the smallest enclosing switch or iteration statement. The break on line 12 is not inside any loop, so it ends the switch and control continues at line 16; case 4 never runs.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -512,8 +512,8 @@
     {
       "id": "c.withbreak",
       "kind": "mechanism",
-      "text": "With a break after case 2, the same switch prints two, then done.",
-      "justification": "programs/with_break.c adds break; after puts(\"two\"). By c.break the switch ends there. Its captured run prints two then done.",
+      "text": "With a break after case 2, the switch prints only two, and then the program prints done.",
+      "justification": "programs/with_break.c adds break; after puts(\"two\") (line 10). By c.break the switch ends there, so only two comes from the switch; done comes from puts(\"done\") after the switch (line 17). The captured run prints two then done.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -545,8 +545,8 @@
     {
       "id": "c.recap",
       "kind": "rule",
-      "text": "A case label marks where execution enters a switch. Only break, or the end of the switch body, makes it leave.",
-      "justification": "Entry: 6.8.4.2p5 (control jumps to the matched label). No exit at labels: 6.8.1p4. Exit: 6.8.6.3p2 (break) or reaching the end of the switch body. A return or goto can also leave, but neither appears in this program, so the sentence is scoped to this switch.",
+      "text": "A case label only marks where execution enters a switch; it never ends a case. In this program, the break on line 12 is what ends the switch.",
+      "justification": "Entry: 6.8.4.2p5 (control jumps to the statement after the matched label). Labels do not alter control flow: 6.8.1p4. The break on line 12 of programs/fallthrough.c ends the switch: 6.8.6.3p2. The sentence does not claim break is the only way out (return, goto and others also leave); it names what ends this switch.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -766,7 +766,7 @@
       "state": "s3",
       "narration": [
         {
-          "text": "A break statement ends the smallest enclosing switch.",
+          "text": "A break statement ends the smallest enclosing switch or loop. Here that is the switch.",
           "claims": [
             "c.break"
           ]
@@ -785,11 +785,11 @@
       "state": "s4",
       "narration": [
         {
-          "text": "With a break after case 2, the same switch prints two, then done.",
+          "text": "With a break after case 2, the switch prints only two, and then the program prints done.",
           "claims": [
             "c.withbreak"
           ],
-          "spoken": "With a break after case two, the same switch prints two, then done."
+          "spoken": "With a break after case two, the switch prints only two, and then the program prints done."
         }
       ]
     },
@@ -799,10 +799,17 @@
       "state": "s4",
       "narration": [
         {
-          "text": "A case label marks where execution enters a switch. Only break, or the end of the switch body, makes it leave.",
+          "text": "A case label only marks where execution enters a switch; it never ends a case.",
           "claims": [
             "c.recap"
           ]
+        },
+        {
+          "text": "In this program, the break on line 12 is what ends the switch.",
+          "claims": [
+            "c.recap"
+          ],
+          "spoken": "In this program, the break on line twelve is what ends the switch."
         }
       ]
     }

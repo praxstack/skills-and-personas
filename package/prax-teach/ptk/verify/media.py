@@ -113,11 +113,11 @@ def whisper_words(media, work):
             dtw = tk.get("t_dtw", -1)
             start = dtw / 100 if dtw is not None and dtw >= 0 else t0
             if tx.startswith(" ") or cur is None:
-                cur = {"text": tx.strip(), "start": round(start, 3), "end": round(t1, 3), "from": round(t0, 3)}
+                cur = {"text": tx.strip(), "start": round(start, 3), "end": round(max(t1, start), 3), "from": round(t0, 3)}
                 words.append(cur)
             else:
                 cur["text"] += tx
-                cur["end"] = round(t1, 3)
+                cur["end"] = round(max(t1, cur["start"]), 3)
     words = [w for w in words if re.search(r"[A-Za-z0-9]", w["text"])]
     return words, {"model": "ggml-base.en.bin", "model_sha256": host.sha256_file(model), "wav": wav.name,
                    "timestamps": "start = DTW token time (fallback segment offset), end = token end offset"}
