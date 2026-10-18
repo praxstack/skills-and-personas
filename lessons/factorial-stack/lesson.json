@@ -15,7 +15,12 @@
       "show": {
         "from": 3,
         "to": 15
-      }
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "8d2dd6acccd4cab2a20614e09dce21dca7fd5a5d7a50616d3657237b66402752"
     },
     {
       "id": "p2",
@@ -26,7 +31,12 @@
       "show": {
         "from": 3,
         "to": 15
-      }
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "49f8fa3ac2fb2ca74e0015e661231e507c7946b69c6123cbec5b1df1cbf36bd2"
     },
     {
       "id": "p3",
@@ -37,7 +47,12 @@
       "show": {
         "from": 3,
         "to": 15
-      }
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "30c3ca577b97e9fcde70f9276105cc3e05fbad15ef0c9de311e1cd729b8507d9"
     },
     {
       "id": "p4",
@@ -48,7 +63,12 @@
       "show": {
         "from": 3,
         "to": 15
-      }
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "7f89660aab96bcb7d64968004b9a41033d1e6c5a6a81e9c910c72d87bf7cc251"
     },
     {
       "id": "p5",
@@ -59,7 +79,12 @@
       "show": {
         "from": 3,
         "to": 15
-      }
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "b61a02178a62addf626f2dd322e6ef00a138787e87c8b3b72a85f29a925e3194"
     }
   ],
   "facts": [
@@ -77,6 +102,14 @@
           3,
           1
         ]
+      },
+      "value": "enter factorial(3)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -93,6 +126,14 @@
           3,
           2
         ]
+      },
+      "value": "enter factorial(2)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -109,6 +150,14 @@
           3,
           3
         ]
+      },
+      "value": "enter factorial(1)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -125,6 +174,14 @@
           3,
           4
         ]
+      },
+      "value": "factorial(1) = 1",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -141,6 +198,14 @@
           3,
           5
         ]
+      },
+      "value": "factorial(2) = 2",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -157,6 +222,14 @@
           3,
           6
         ]
+      },
+      "value": "factorial(3) = 6",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -173,6 +246,14 @@
           3,
           7
         ]
+      },
+      "value": "main got 6",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -190,6 +271,14 @@
           "factorial",
           3
         ]
+      },
+      "value": "factorial(3)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -207,6 +296,14 @@
           "factorial",
           2
         ]
+      },
+      "value": "factorial(2)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -224,6 +321,14 @@
           "factorial",
           1
         ]
+      },
+      "value": "factorial(1)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -240,6 +345,14 @@
         "args": [
           1
         ]
+      },
+      "value": "1",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -256,6 +369,14 @@
         "args": [
           2
         ]
+      },
+      "value": "2",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -272,6 +393,14 @@
         "args": [
           3
         ]
+      },
+      "value": "6",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -286,6 +415,14 @@
         "args": [
           3
         ]
+      },
+      "value": "enter factorial(3)\nenter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nfactorial(3) = 6\nmain got 6\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -300,6 +437,14 @@
         "args": [
           1
         ]
+      },
+      "value": "enter factorial(1)\nfactorial(1) = 1\nmain got 1\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n1.c && ./p2 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "997672c0b23dc844221ac544475c3d35ee15b23bb7d7cd09b3fe26f7f755deb8",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -314,6 +459,14 @@
         "args": [
           2
         ]
+      },
+      "value": "enter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nmain got 2\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n2.c && ./p3 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "0909ee1737b11f711b79e7f2f52b7ebbef37cfc223e03245850835debe9689ac",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -328,6 +481,14 @@
         "args": [
           4
         ]
+      },
+      "value": "enter factorial(4)\nenter factorial(3)\nenter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nfactorial(3) = 6\nfactorial(4) = 24\nmain got 24\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n4.c && ./p4 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7ae780ebf19b9b5c3c2926c16686deaa3a19d260c26eb79366e4a24d9115f02d",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     },
     {
@@ -342,6 +503,14 @@
         "args": [
           5
         ]
+      },
+      "value": "enter factorial(5)\nenter factorial(4)\nenter factorial(3)\nenter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nfactorial(3) = 6\nfactorial(4) = 24\nfactorial(5) = 120\nmain got 120\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n5.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "13aeb7ec0c3fa9af3a4c4fe4bfdd5fc66ed7159f7171023a78e6ce2f76462709",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
       }
     }
   ],
@@ -1041,11 +1210,11 @@
       ],
       "narration": [
         {
-          "text": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+          "text": "Here, factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
           "claims": [
             "c.waits"
           ],
-          "spoken": "factorial of 3 cannot finish line 7 until factorial of 2 returns a value, so its frame waits under the new one."
+          "spoken": "Here, factorial of 3 cannot finish line 7 until factorial of 2 returns a value, so its frame waits under the new one."
         },
         {
           "text": "In this lesson's drawing, the empty box after r = 3 * stands for the value factorial(2) has not returned yet.",
@@ -1067,11 +1236,11 @@
       ],
       "narration": [
         {
-          "text": "factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
+          "text": "Here, factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
           "claims": [
             "c.depth"
           ],
-          "spoken": "factorial of 2 calls factorial of 1, so three factorial frames now sit on top of main."
+          "spoken": "Here, factorial of 2 calls factorial of 1, so three factorial frames now sit on top of main."
         }
       ]
     },
@@ -1169,11 +1338,11 @@
       ],
       "narration": [
         {
-          "text": "factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
+          "text": "Here, factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
           "claims": [
             "c.ret3"
           ],
-          "spoken": "factorial of 3 gets 2 and returns 3 times 2, which is 6, to main."
+          "spoken": "Here, factorial of 3 gets 2 and returns 3 times 2, which is 6, to main."
         }
       ],
       "title_claims": [

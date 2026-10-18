@@ -222,7 +222,7 @@ def test_path_set_matching_refuses_ambiguity():
     """Round-17 P3-1: the frame probe compares visited lines as sets (a dot per line). Two trace states that are the
     same program, line, output and path set would be indistinguishable, and match_state used to return the first.
     Now such a frame is `ambiguous`, never a state. For a lesson with a figure.panel, a frame whose panel is missing
-    (`none`) is unknown, not a match, except in a question scene, which hides the panel by design."""
+    (`none`) is unknown, not a match, in every scene (round 18: question scenes keep the panel too)."""
     import copy
     lesson = model.load(SLICE)
     s0 = lesson.data["trace"][0]
@@ -246,6 +246,7 @@ def test_path_set_matching_refuses_ambiguity():
     assert frames.match_state(panel, {**pp, "panel": "none"}, scene) == "unknown", "a lost panel must not match"
     assert frames.match_state(panel, {**pp, "panel": "none"}) == "unknown", "with no scene known, the panel is expected"
     q = {"id": "q", "state": p0["id"], "question": {"prompt": "?"}}
-    assert frames.match_state(panel, {**pp, "panel": "none"}, q) == p0["id"], "a question scene hides the panel"
-    assert frames.match_state(panel, {**pp, "panel": p0["id"]}, q) == "unknown", "and must not draw it"
+    # round 18: a question scene keeps its panel (answer_on_panel measures that it shows no answer)
+    assert frames.match_state(panel, {**pp, "panel": "none"}, q) == "unknown", "a question scene keeps its panel"
+    assert frames.match_state(panel, {**pp, "panel": p0["id"]}, q) == p0["id"]
     return {"collision": "ambiguous", "lost_panel": "unknown"}

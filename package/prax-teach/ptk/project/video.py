@@ -30,9 +30,10 @@ from ..text import esc
 
 FPS = 30
 W, H = 1920, 1080
-# THINK: the plain MP4 gives 8 s (GAP_SCENE + THINK) to predict, under a bar that empties; the IVE stops at the
+# THINK: the plain MP4 gives 3.8 s (GAP_SCENE + THINK) under a bar that empties (8 s made whisper drop the next
+# lines, round 18); the IVE stops at the
 # question instead and jumps over this gap after a pick (ive.question_plan), so it is never dead air there
-LEAD, GAP_IN, GAP_SCENE, THINK, TAIL, SCENE_LEAD = 0.8, 0.35, 0.8, 7.2, 1.6, 0.35
+LEAD, GAP_IN, GAP_SCENE, THINK, TAIL, SCENE_LEAD = 0.8, 0.35, 0.8, 3.0, 1.6, 0.35
 SETTLE = 0.5
 MINUS = "\u2212"
 KEYWORDS = {"int", "switch", "case", "break", "return", "void", "char", "default"}
@@ -153,9 +154,9 @@ def draw_plan(lesson, before_sid, sid, budget=None):
     if morph:
         ends.append(outputs_at + 0.32)  # the old output's fade (scene_html) ends here
     if (lesson.data.get("figure") or {}).get("panel") and before_sid and before_sid != sid:
-        # the panel's cross-fade (scene_html): 0.45 s in, then 0.3 s out; after a returned value's flight
+        # the panel's cross-fade (scene_html): 0.45 s in, then 0.3 s out (it ends at 0.75); after a returned value's flight
         # into its caller's slot (FLIGHT s) when the stack has one
-        ends.append(0.8 + (FLIGHT if mech.flows(lesson, before_sid, sid) else 0.0))
+        ends.append(0.75 + (FLIGHT if mech.flows(lesson, before_sid, sid) else 0.0))
     total = max(max(ends), SETTLE)
     # a short scene plays the same drawing faster (a nested timeline with timeScale 1/k), never cut off
     k = min(1.0, budget / total) if budget else 1.0
@@ -332,11 +333,13 @@ def _layout(lesson):
     if mode == "side":
         L.update(code_x=1176, card_w=648, card_h=400, side_x=1176, side_w=648, side_top=CODE_TOP + 420,
                  side_h=H - BOTTOM - CODE_TOP - 420, panel_box=(MX, CODE_TOP, 1040, H - BOTTOM - CODE_TOP),
+                 q_panel_box=(MX, CODE_TOP, 1040, H - BOTTOM - CODE_TOP - 300), q_box=(MX, H - BOTTOM - 280, 1040, 280),
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=16)
     elif mode == "hero":
         top = 736
         L.update(code_top=top, card_w=1000, card_h=H - BOTTOM - top, side_x=1136, side_w=W - MX - 1136, side_top=top,
                  side_h=H - BOTTOM - top, panel_box=(MX, 172, W - 2 * MX, top - 172 - 44),
+                 q_panel_box=(MX, 172, W - 2 * MX, 330), q_box=(MX, 516, W - 2 * MX, top - 516 - 30),
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=10)
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
@@ -616,8 +619,8 @@ def scene_html(lesson, scene, index, count, timing):
         outs.append(out_div("out" + ("" if o["fact"] in prev_out else " out-new"), "cur", k, o))
     outcard = (f'<div class="outcard" data-key="output"><p class="outlabel" data-chrome="output_label">'
                f'{esc(text.ui("output_label").upper())}</p>{"".join(outs)}</div>') if has_out else ""
-    if mode and scene.get("question"):
-        outcard = ""  # in a panel lesson the question card takes the output's place; the panel stays on screen
+    # in a panel lesson's question scene the panel steps up to make room for the question card under it; code
+    # and output stay, so the frame still shows the whole state
     vars_html = " ".join(f'<span data-code="{cur["program"]}">{esc(k)} = {esc(v)}</span>' for k, v in cur["vars"].items())
     q = scene.get("question")
     panel_top = shift + 70
@@ -654,7 +657,7 @@ def scene_html(lesson, scene, index, count, timing):
     # --- the mechanism panel: the state before this scene, with this scene's state faded in over it
     mech_html = ""
     if mode:
-        px, py, pw, ph = L["panel_box"]
+        px, py, pw, ph = L["q_panel_box"] if q else L["panel_box"]
         # a side panel is drawn wider when the frame's box is wider than the panel is tall, so it fills the box
         pw_ = None
         if mode == "side":
@@ -754,14 +757,15 @@ def scene_html(lesson, scene, index, count, timing):
               f'{vars_html}</p>') if mode is None else ""
     panel_css = ""
     if mode:
-        bx, by, bw, bh = L["panel_box"]
+        bx, by, bw, bh = L["q_panel_box"] if q else L["panel_box"]
+        qx, qy, qw, qh = L["q_box"]
         ox, oy, ow, ohh = _out_rect(L)
         panel_css = (f".mechbox {{ position:absolute; left:{bx}px; top:{by}px; width:{bw}px; height:{bh}px; }}\n"
                      f".mlayer {{ position:absolute; left:0; top:0; width:100%; height:100%; }}\n"
                      f".chip {{ position:absolute; margin:0; padding:2px 12px; opacity:0; border-radius:10px; white-space:nowrap; "
                      f"font-family:{ty['value']['family']}; font-weight:700; line-height:1.25; color:{t['ground']}; background:{t['value']}; }}\n"
                      f".outcard {{ left:{ox}px; top:{oy}px; width:{ow}px; height:{ohh}px; }}\n"
-                     f".panel.pbox {{ left:{L['side_x']}px; top:{L['side_top']}px; width:{L['side_w']}px; height:{L['side_h']}px; bottom:auto; padding:22px 28px; }}\n"
+                     f".panel.pbox {{ left:{qx}px; top:{qy}px; width:{qw}px; height:{qh}px; bottom:auto; padding:20px 30px; }}\n"
                      f".pbox .qtext {{ font-size:{round(32 * ty['body']['scale'])}px; }}\n")
         side = side.replace('class="panel qcard"', 'class="panel qcard pbox"')
     font = L["font"]

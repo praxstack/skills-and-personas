@@ -241,7 +241,8 @@ def section(lesson):
         html = f'<section class="knob" id="k" data-kind="{kind}" aria-labelledby="k-h">{head}<div class="js-only">{ctl}</div>{body}{common}</section>'
     else:
         T = neuron_table(lesson, sp)
-        data = {"kind": "neuron", "w2": T["w2"], "b": T["b"], "rows": T["rows"], "x1": T["x1"], "x2": T["x2"], "geom": GEOM}
+        data = {"kind": "neuron", "w2": T["w2"], "b": T["b"], "rows": T["rows"], "x1": T["x1"], "x2": T["x2"], "geom": GEOM,
+                "labels": [text.ui("neuron_term", i=1), text.ui("neuron_term", i=2), text.ui("neuron_term_bias")]}
         html = (f'<section class="knob js-only" id="k" data-kind="neuron" aria-labelledby="k-h">{head}'
                 f'{_neuron_html(lesson, sp)}</section>')
     return html, data

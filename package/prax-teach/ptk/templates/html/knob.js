@@ -66,9 +66,12 @@
   function draw(row) {
     var add = $('k-add'), gate = $('k-gate');
     add.textContent = ''; gate.textContent = '';
-    var parts = [['t1', row.t1f], ['t2', row.t2f], ['b', +row.b]], s = 0;
+    var parts = [[row.t1, row.t1f], [row.t2, row.t2f], [row.b, +row.b]], s = 0;
     parts.forEach(function (p, k) {
-      var a = s, b = s + p[1], y = 22 + k * 30, cls = p[1] >= 0 ? 'kbar pos' : 'kbar neg';
+      var a = s, b = s + p[1], y = 26 + k * 30, cls = p[1] >= 0 ? 'kbar pos' : 'kbar neg';
+      var lab = svgEl('text', { x: Math.min(X(a), X(b)), y: y - 8 }, 'klab ' + (p[1] >= 0 ? 'pos' : 'neg'));
+      lab.textContent = K.labels[k] + ' ' + p[0];
+      add.appendChild(lab);
       add.appendChild(svgEl('line', { x1: X(a), y1: y, x2: X(b), y2: y }, cls));
       add.appendChild(svgEl('circle', { cx: X(b), cy: y, r: 4.5 }, cls + ' end'));
       if (k) add.appendChild(svgEl('line', { x1: X(a), y1: y - 30, x2: X(a), y2: y }, 'kguide'));

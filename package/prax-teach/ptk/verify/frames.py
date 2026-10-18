@@ -59,12 +59,16 @@ PROBE_JS = r"""(t) => {
     || dots.some((d) => op(d) > 0.01 && op(d) < 0.99)
     || vals.some((v) => op(v) > 0.01 && op(v) < 0.99);
   const code = rows.map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
+  // every fact the visible panel shows by value (data-m, data-fact) or gives away by geometry (data-implies)
+  const panel_facts = [...new Set([...root.querySelectorAll('.mechbox [data-m], .mechbox [data-fact], .mechbox [data-implies]')]
+    .filter((e) => eop(e) > 0.02).flatMap((e) => [e.dataset.m, e.dataset.fact, ...(e.dataset.implies || '').split(' ')])
+    .filter(Boolean))];
   // what the side note and the diff show (WP6: the note waits until the diff is complete)
   const one = (s) => { const e = root.querySelector(s); return e ? +eop(e).toFixed(3) : null; };
   const each = (s) => [...root.querySelectorAll(s)].map((e) => +eop(e).toFixed(3));
   const diff = { file_old: one('.file[data-set="old"]'), file_cur: one('.file[data-set="cur"]'),
                  removed: each('.band.minus'), added: each('.ln.add'), rows_cur: one('.rows[data-set="cur"]') };
-  return { t, code, line, note: one('.notecard'), diff, panel: panel === undefined ? 'none' : panel,
+  return { t, code, line, note: one('.notecard'), diff, panel: panel === undefined ? 'none' : panel, panel_facts,
            path: dots.filter((d) => op(d) >= 0.99).map((d) => +d.dataset.line),
            output: vals.filter((v) => op(v) >= 0.99).map((v) => v.dataset.fact),
            moving };
@@ -259,9 +263,26 @@ def set_collisions(lesson):
 
 
 def panel_expected(lesson, scene=None):
-    """Whether a frame of `scene` must draw the mechanism panel: the lesson declares a figure.panel and the scene
-    is not a question (a question scene hides the panel, which would show the answer)."""
-    return "panel" in (lesson.data.get("figure") or {}) and not (scene or {}).get("question")
+    """Whether a frame of `scene` must draw the mechanism panel: the lesson declares a figure.panel. A question
+    scene draws it too, at the question's own state (round 18, review neuron P2), and answer_on_panel() measures
+    that no element bound to the answer, by value or by geometry, is visible there."""
+    return "panel" in (lesson.data.get("figure") or {})
+
+
+def answer_parts(lesson, scene):
+    """The facts a question scene must not show anywhere on its panel: the answer and its parts (seal.py)."""
+    from ..project import seal
+    q = (scene or {}).get("question")
+    if not q:
+        return set()
+    qi = next(i for i, sc in enumerate(lesson.data["storyboard"]) if sc["id"] == scene["id"])
+    return seal.answer_facts(lesson.data, qi)
+
+
+def answer_on_panel(lesson, scene, panel_facts):
+    """Answer facts a question frame shows on its panel ([] when none): panel_facts are the data-m, data-fact and
+    data-implies ids of the visible panel elements, read from the drawn frame."""
+    return sorted(answer_parts(lesson, scene) & set(panel_facts or []))
 
 
 def match_state(lesson, probe, scene=None):
@@ -335,7 +356,8 @@ def probe(lesson, video_dir, timing, times, snapshots=None, work_name="frames", 
         for name in ("mid", "settled"):
             if f"p:{name}" in vals:
                 scenes[sid][name] = {"state": match_state(lesson, vals[f"p:{name}"], by_id.get(sid)),
-                                     "layout": vals.get(f"l:{name}")}
+                                     "layout": vals.get(f"l:{name}"),
+                                     "panel_facts": vals[f"p:{name}"].get("panel_facts", [])}
     return frames, scenes
 
 
@@ -365,6 +387,9 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
             drawing = name == "mid" and s["reveal"] - s["start"] <= s["duration"] / 2 < s["shown"] - s["start"]
             if pt.get("state") in (None, "unknown", "ambiguous") or (pt.get("state") == "moving" and not drawing):
                 probs.append({"kind": "no-trace-state", "at": name, "shows": pt.get("state")})
+            leak = answer_on_panel(lesson, s, pt.get("panel_facts"))
+            if leak:
+                probs.append({"kind": "answer-on-panel", "at": name, "facts": leak})
         if s["id"] in layers:
             lay = layers[s["id"]]
             probs += ([] if lay["ok"] else [{"kind": "layer-probe-failed", "error": lay["error"]}])

@@ -725,7 +725,7 @@
     {
       "id": "c.d",
       "kind": "rule",
-      "text": "%d prints an int as a signed decimal number, so it prints 66.",
+      "text": "%d formats an int as a signed decimal number, so for a = 66 it gives 66.",
       "justification": "7.21.6.1p8, conversion d: the int argument is converted to signed decimal. a is 66; the run printed 66 on line 3.",
       "sources": [
         {
@@ -746,7 +746,7 @@
     {
       "id": "c.u",
       "kind": "mechanism",
-      "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u prints 66.",
+      "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u gives 66.",
       "justification": "6.3.1.3p1: a value representable in the new integer type is unchanged; 66 is representable in unsigned int. %u converts an unsigned int to unsigned decimal (7.21.6.1p8). The run printed 66 on line 4.",
       "sources": [
         {
@@ -1342,17 +1342,17 @@
       "ask": "What do %d and %u print for a = 66?",
       "narration": [
         {
-          "text": "%d prints an int as a signed decimal number, so it prints 66.",
+          "text": "%d formats an int as a signed decimal number, so for a = 66 it gives 66.",
           "claims": [
             "c.d"
           ]
         },
         {
-          "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u prints 66.",
+          "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u gives 66.",
           "claims": [
             "c.u"
           ],
-          "spoken": "The cast to unsigned converts 66 to an unsigned int. 66 fits there, so the value stays 66, and percent u prints 66."
+          "spoken": "The cast to unsigned converts 66 to an unsigned int. 66 fits there, so the value stays 66, and percent u gives 66."
         }
       ]
     },
@@ -1419,7 +1419,7 @@
           "claims": [
             "c.fprint"
           ],
-          "spoken": "Percent f prints a double with six digits after the decimal point when no precision is given, so it prints 66, point, six zeros."
+          "spoken": "Percent f prints a double with six digits after the decimal point when no precision is given, so it prints 66 followed by a point and six zeros."
         }
       ]
     },
@@ -1472,7 +1472,7 @@
           "claims": [
             "c.dbits"
           ],
-          "spoken": "The last line prints that double's own bits: hex 4 0 5 0 8, then eleven zeros. They are not the bits of a."
+          "spoken": "The last line prints that double's own bits, in hex. They are not the bits of a."
         }
       ]
     },

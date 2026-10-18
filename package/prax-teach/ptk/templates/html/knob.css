@@ -48,6 +48,7 @@ html.js .ktable td[data-value]:not(.sel){color:var(--ink_soft)}
 .kz{stroke:var(--value);stroke-width:2}
 .krelu{stroke:var(--value);stroke-width:3;fill:none}
 .kdot{fill:var(--value)}
+.klab{font-family:var(--code-font);font-size:11px}.klab.pos{fill:var(--note)}.klab.neg{fill:var(--correction)}
 @media (min-width:860px){
   .kgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
   .kneuron{grid-template-columns:repeat(3,minmax(0,1fr))}

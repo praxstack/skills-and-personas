@@ -90,8 +90,6 @@ def static_check(lesson, data, captions):
         rows.append({"scene": sc["id"], "pause_at": p["pause_at"], "resume_at": p["resume_at"],
                      "answer_at": p["answer_at"], "silence_before_pause": before, "silence_after_jump": after,
                      "question_wpm": wpm, "invite": last["text"], "sealed_chapters": p.get("sealed", [])})
-    if not rows and not probs:
-        probs.append("the storyboard has no question with options")
     return probs, rows
 
 
@@ -109,6 +107,8 @@ const chapters = [...document.querySelectorAll('#chapters .ttl')].map((e) => e.t
 const root = document.body.cloneNode(true);
 root.querySelectorAll('noscript, script, video, track, .opts.ask, [data-code]').forEach((e) => e.remove());
 const page = root.textContent.replace(/\\s+/g, ' ');
+const panel = [...new Set([...document.querySelectorAll('#state .mechbox [data-m], #state .mechbox [data-fact], #state .mechbox [data-implies]')]
+  .filter(vis).flatMap((e) => [e.dataset.m, e.dataset.fact, ...(e.dataset.implies || '').split(' ')]).filter(Boolean))];
 """
 
 
@@ -126,7 +126,7 @@ def browser_jobs(url, q, titles, shots):
                         "for (let i = 0; i < 300 && I.mode() !== 'ask'; i++) await D.sleep(50); "
                         "await D.sleep(150);" + VISIBLE +
                         "return {mode: I.mode(), asking: I.asking(), t: v.currentTime, paused: v.paused, options: opts, "
-                        "chapters, page, plan: p};"), "as": "stopped"},
+                        "chapters, page, panel, plan: p};"), "as": "stopped"},
                  {"shot": str(shots / f"ive-ask-{q['scene']}-{w}.png"), "full": False},
                  {**_js("await D.sleep(2500); const v = D.v(); return {mode: I.mode(), t: v.currentTime, paused: v.paused};"),
                   "as": "held"},
@@ -189,6 +189,11 @@ def browser_check(lesson, data, plan_rows, ive_dir, run=None):
                 probs.append(f"{tag}: chapter {k + 1} shows {ch!r} while the question is open")
             if titles[k] in (s.get("page") or ""):
                 probs.append(f"{tag}: the sealed title {titles[k]!r} is in the page while the question is open")
+        from ..project import seal
+        qi = next(i for i, x in enumerate(lesson.data["storyboard"]) if x["id"] == scene)
+        leak = sorted(seal.answer_facts(lesson.data, qi) & set(s.get("panel") or []))
+        if leak:
+            probs.append(f"{tag}: the panel shows the answer {leak} while the question is open")
         if h.get("mode") != "ask" or not h.get("paused") or abs((h.get("t") or 0) - (s.get("t") or 0)) > 0.02:
             probs.append(f"{tag}: the film did not hold for 2.5 s: {h}")
         if pr.get("mode") != "ask" or not pr.get("paused") or abs((pr.get("t") or 0) - (s.get("t") or 0)) > 0.05:
@@ -215,6 +220,9 @@ def gate(lesson, ive_dir, browser=True, run=None):
     data = page_data(ive_dir)
     caps = media.parse_vtt(ive_dir / "captions.vtt")
     probs, rows = static_check(lesson, data, caps)
+    if not rows and not probs:
+        return {"id": GATE_ID, "medium": "ive", "status": "not-run", "measured": {},
+                "reason": "the storyboard has no question with options"}
     drove = {}
     if browser and not probs:
         bp, drove = browser_check(lesson, data, rows, ive_dir, run)

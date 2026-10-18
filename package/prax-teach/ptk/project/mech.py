@@ -240,12 +240,16 @@ class Ctx:
         lh = npx * (1.35 if nfont == "hand" else 1.4)
         return len(fonts.wrap(nfont, npx, self.claims[cid]["text"], w, weight=nweight)) * lh
 
-    def group(self, fid=None, after=None):
+    def group(self, fid=None, after=None, implies=None):
+        """A fact-bound group. `implies`: facts its geometry gives away even though it prints no value (a bar
+        whose end is the sum); the answer gates treat it like a shown value (round 18)."""
         attrs = {}
         if fid:
             attrs["data_m"] = fid
         if after:
             attrs["data_mstate"] = after
+        if implies:
+            attrs["data_implies"] = " ".join(implies)
         self.svg.open(**attrs)
 
 
@@ -458,7 +462,7 @@ def _stack_timeline(c, x, y, w, states):
         return out
     # one size for every row: the largest (at most fsize) at which the widest row fits the width
     widest = max(sum(widths(st, fsize)) + sep * (len(st["state"].get("frames", [])) - 1) for st in cols)
-    fsize = round(max(11.0, min(fsize, fsize * w / widest)), 2)
+    fsize = round(max(11.6, min(fsize, fsize * w / widest)), 2)  # 11.6 shows as 11.3 px in the 390 view
     for k, st in enumerate(cols):
         new = [f for f in st.get("reveals", []) if f in facts and facts[f]["select"].get("stream") == "stdout"]
         if new:
@@ -535,7 +539,7 @@ def _frame_box(c, x, y, w, h, fr, rid, size, top, pad=9, show_ret=True, sid=None
     if returning and fr.get("ret") and show_ret:
         c.value(x + w - pad, ty, fr["ret"], anchor="end", size=size * 1.15, inside=rid, ocr=False)
     if vars_on:
-        vs = max(11.0, round(size * 0.92, 2))
+        vs = max(11.6, round(size * 0.92, 2))
         _vars_lines(c, x + pad, ty + vs * 1.55, vs * 1.45, sid, idx, vs, rid)
     svg.close()
 
@@ -610,9 +614,11 @@ def _neuron(c, x, y, w):
     row = S["value"] * 2.1
     by = yy + 30
     for k, (fid, (a, b)) in enumerate(zip(terms, ends)):
-        if not all(c.on(f) for f in terms[:k + 1]):  # a bar starts where the one before it ends
+        # a bar starts where the one before it ends, and the bars are the adding step: they appear with the sum
+        # (round 18: during Multiply they gave the sum away by geometry, ahead of the Add scene)
+        if not c.on(P["sum"]) or not all(c.on(f) for f in terms[:k + 1]):
             continue
-        c.group(fid)
+        c.group(fid, implies=[P["sum"], P["out"]] if k == len(terms) - 1 else None)
         ry = by + k * row + S["value"]
         col = tone(fid)
         svg.line(X(a), ry, X(b), ry, col, 9, role="path")
@@ -642,7 +648,7 @@ def _neuron(c, x, y, w):
         lab = f"{v:g}".replace("-", "−")
         svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle")
     yy = ay + 46
-    if all(c.on(f) for f in terms):
+    if all(c.on(f) for f in terms) and c.on(P["sum"]):
         # z = t1 t2 b: the sum written out from the terms it adds
         zx = cx + c.code(cx, yy, "z =", pid, size=S["code"]) + 10
         for f in terms:

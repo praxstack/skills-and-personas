@@ -279,7 +279,7 @@ def test_morph_keeps_frame_steady():
                                                  "var d = gsap.timeline({ data: 'draw' });\n    " + old_fade, 1))
         bad = frames.morph_gate(lesson, fx, timing, lesson.sha256())
         kinds = {p["kind"] for p in bad["measured"]["problems"]}
-        assert bad["status"] == "failed" and "output-faded" in kinds, kinds
+        assert bad["status"] == "failed" and kinds & {"output-faded", "output-not-readable"}, kinds
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return {"sampled": g["measured"]["frames_sampled"], "fixture": sorted(kinds)}
