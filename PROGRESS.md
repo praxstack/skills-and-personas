@@ -139,7 +139,7 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
   5. The IVE caption check reads the band, not the track mode.
   6. The IVE explore check steps back through the film when a lesson has no live model.
   7. The outgoing panel layer may overlap during its 0.3 s cross-fade (HyperFrames layout).
-- **Design verdicts:** 15 pass and 3 pass-with-notes.
+- **Design verdicts:** 14 pass and 4 pass-with-notes, no fail.
   - one-byte, film: the panel text is small.
   - one-byte: an empty band beside the panel in early scenes.
   - factorial, IVE at 1440: output lines wrap.
