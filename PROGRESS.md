@@ -63,3 +63,8 @@ Use /deep-research where it helps. Run it all without stopping to ask.
   - Open: at 37.2 s the note already says "With a break..." while the frame still shows fallthrough.c. Assigned to WP6.
 - WP6 round 1 running: FILM/EXPLORE/RETURN, half-open chapters, one-frame seek tolerance, file://, the poster flake.
 - **Budget: 14 of 18 rounds used.**
+- WP8 closed at round 1 (`2df1ab6`). AC-8.1 to AC-8.8 pass. The package is 2.3 MB and reproducible. Real Codex and Hermes discovery each find one entry. Rollback is tested on 4 hosts. The ported state engine passes 106 v2 tests. The renderer passes on Node 22 and 24. npm audit is clean.
+- **Integration bug (found by WP8, cause confirmed by the orchestrator):** new files under ~/Developer **and Prax's C study workspace** get st_nlink 2 within about 6 s; the home folder root does not. A Time Machine backup (backupd) was running, and revisiond is also active. The ported v2 state engine refuses hard-linked state files, so learner-state writes in the study workspace would fail intermittently.
+  - Fix in the integration pass: accept nlink>1 for regular files the user owns, opened with O_NOFOLLOW, and log a warning.
+  - Record it in PROTECTED-MAP.md as a changed protected behaviour, with this reason.
+- **Budget: 14 of 18 rounds used.** WP8 was counted when it started.
