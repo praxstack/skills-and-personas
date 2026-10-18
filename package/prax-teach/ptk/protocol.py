@@ -21,6 +21,7 @@ import re
 
 CLASSES = re.compile(r"^(?:correct|partial|skipped|timeout|misconception:[\w.\-]+)$")
 EXAM_FORMATS = {"mcq", "msq", "nat"}
+CODE = re.compile(r"```.*?```", re.S)
 
 
 # ---------------------------------------------------------------- reveal plan (AC-1.7)
@@ -64,9 +65,11 @@ def reveal_plan(lesson):
 
 
 def leaks(text, answer_lines):
-    """True when the text states the answer: at least two of its lines in order (or the only line)."""
+    """True when the prose states the answer: at least two of its lines in order (or the only line).
+    Fenced code blocks (the program itself) are skipped; inline code is not."""
     need = min(2, len(answer_lines))
-    low = " ".join(str(text).lower().split())
+    prose = CODE.sub(" ", str(text))  # showing the program is not stating its output
+    low = " ".join(prose.lower().split())
     pos = hits = 0
     for line in answer_lines:
         m = re.compile(r"(?<!\w)" + re.escape(line.lower()) + r"(?!\w)").search(low, pos)
@@ -120,13 +123,16 @@ def check_evidence(t):
 
 
 def check_stop(t):
-    closes = [x for _, x in _tutor(t) if "close" in x.get("acts", [])]
-    attempts = _learner(t, "attempt")
-    reason = closes[-1].get("reason") if closes else None
-    ok = {"satisfied": bool(_learner(t, "satisfied")) and bool(attempts), "learner-stop": bool(_learner(t, "stop"))}
-    return [] if ok.get(reason) else [
-        f"stop rule: the session closed with reason {reason!r}; it needs satisfaction plus an observed attempt, "
-        "or an explicit stop"]
+    """Stop rule: every close needs, before it, satisfaction plus an observed attempt, or an explicit stop;
+    and the session ends on a close."""
+    learner = lambda kind, before: any(i < before for i in _learner(t, kind))
+    ok = {"satisfied": lambda i: learner("satisfied", i) and learner("attempt", i),
+          "learner-stop": lambda i: learner("stop", i)}
+    closes = [(i, x.get("reason")) for i, x in _tutor(t) if "close" in x.get("acts", [])]
+    v = [f"turn {i}: stop rule: closed with reason {r!r} without satisfaction plus an observed attempt, "
+         "or an explicit stop, before it" for i, r in closes if not ok.get(r, lambda _: False)(i)]
+    last = t["turns"][-1] if t["turns"] else {}
+    return v + ([] if "close" in last.get("acts", []) else ["the session must end on the tutor's close turn"])
 
 
 def _before_first_attempt(t):
@@ -218,4 +224,13 @@ def check_transcript(t, lesson=None):
     mode_check = MODE_CHECKS.get(t.get("mode"))
     if mode_check is None:
         return [f"no protocol for mode {t.get('mode')!r}"]
+    t = flatten(t)
     return mode_check(t, lesson) + check_common(t, lesson)
+
+
+def flatten(t):
+    """Mode fields may sit at the top of a turn or in a sub-object named after the mode
+    ({"quiz": {"answer_key": ...}}); the checks read them from the top."""
+    mode = t.get("mode")
+    turns = [{**x, **(x.get(mode) if isinstance(x.get(mode), dict) else {})} for x in t["turns"]]
+    return {**t, "turns": turns}

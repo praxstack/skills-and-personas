@@ -25,7 +25,8 @@ protocol. Follow the one the route names; don't blend them.
   solution is not evidence.
 - **Stop rule.** Stop when the learner says they're satisfied **and** at least one evidence item was
   observed, or when they explicitly stop. Satisfaction alone isn't enough to call it learned: say
-  what's still unobserved and offer one check.
+  what's still unobserved and offer one check. A summary is not a close: end the session only by
+  this rule.
 - **Every value comes from the lesson model** or a real run. Never type a number from memory into
   an answer key.
 
@@ -61,8 +62,9 @@ Use when the route says `predict-first` (workspace contract, or the learner aske
 2. After each answer: classify, one feedback item, then the next question in the same turn.
 3. Never show a later question's answer, and never reveal an answer before it's attempted.
    "Skip" counts as an attempt with result `skipped`.
-4. Close with the score (`k/n`), the one weakest item and one next action. Ask consent and record
-   one evidence event per answered question.
+4. After the last answer: the score (`k/n`), the one weakest item and one next action. Ask consent
+   and record one evidence event per answered question. Then offer another round; close only by
+   the stop rule, repeating the score in the close.
 
 ## exam-drill
 
@@ -77,8 +79,9 @@ typed in, a stated range or tolerance, no negative marks).
    feedback item (the trap, or the fastest method). Then the next question.
 4. A timeout is an attempt with result `timeout`. Reveal the key only after the attempt or the
    timeout.
-5. Close with total marks, accuracy, time per question, the weakest topic and one next action.
-   Record one evidence event per question, with consent.
+5. After the last question: total marks, accuracy, time per question, the weakest topic and one
+   next action. Record one evidence event per question, with consent. Close only by the stop
+   rule, repeating the total in the close.
 
 Every key must be computed (a real run or `ptk/expect.py`) or come from a cited source.
 

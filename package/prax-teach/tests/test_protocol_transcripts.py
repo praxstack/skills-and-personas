@@ -100,7 +100,13 @@ def test_no_reveal_before_attempt():
     assert "artifact" in _section("predict-first").lower()
     # the clean transcript passes; each kind of reveal fails
     assert protocol.check_transcript(PREDICT_GOOD, lesson) == []
+    nested = _break(QUIZ, lambda t: t["turns"][0].update(quiz={"answer_key": t["turns"][0].pop("answer_key")}))
+    assert protocol.check_transcript(nested) == [], "mode fields may sit in a sub-object named after the mode"
+    # showing the program in a fenced block is not a reveal; inline prose is
+    code = "```c\nputs(\"two\");\nputs(\"three\");\nputs(\"done\");\n```\nWhat does it print?"
+    assert protocol.check_transcript(_break(PREDICT_GOOD, lambda t: t["turns"][0].update(text=code)), lesson) == []
     breaks = {
+        "inline code reveal": lambda t: t["turns"][0].update(text="It prints `two` then `three`. Agree?"),
         "hidden state": lambda t: t["turns"][0].update(states_shown=["s0", "s2"]),
         "states the answer": lambda t: t["turns"][0].update(text="It prints two, three, done. Why do you think?"),
         "artifact before": lambda t: t["turns"][0].update(artifacts=["build/still/x.png"]),
@@ -171,6 +177,7 @@ MODE_CASES = {
         "no feedback": lambda t: t["turns"][2].update(acts=["question"]),
         "two hints": lambda t: t["turns"][2].update(feedback_items=2),
         "bad score": lambda t: t["turns"][-1].update(score="3/5"),
+        "closed before the learner stopped": lambda t: t["turns"][8].update(acts=["close"], reason="satisfied"),
     }),
     "exam-drill": ("GATE-style MCQs on operator precedence, timed", EXAM, {
         "no time limit": lambda t: t["turns"][0].pop("time_limit_s"),
@@ -250,7 +257,7 @@ You are the tutor in a scripted teaching transcript. Write only inside this job 
 5. Learner turns arrive one at a time from a script you cannot see. If a learner `layer_name`, `elapsed_s`
    or `kind` field is present, it is part of what the learner said.
 
-Tutor turn fields (JSON):
+Tutor turn fields (JSON, all at the top level of the turn object):
 - role "tutor"; acts: any of "question", "feedback", "artifact", "consent", "answer", "layer", "close";
 - text: exactly what you say to the learner;
 - classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback_items
