@@ -351,7 +351,7 @@ def _code_spans(line_text, t):
 
 
 def code_panel(svg, lesson, pid, run, shown, x, y, w, size, lh, gutter, rid, ocr_group, tags_on, wide,
-               badges=None, nested=False):
+               badges=None, nested=False, arcs=True):
     """A program listing with its executed path. Returns (height, {line: baseline y}). A listing nested in
     a filled panel is inset on the ground colour with no border, so cards never sit inside cards."""
     t = svg.t
@@ -390,7 +390,7 @@ def code_panel(svg, lesson, pid, run, shown, x, y, w, size, lh, gutter, rid, ocr
     vis = [n for n in run if n in ys]
     # a recursive run passes the same lines again and again; its jump arcs only tangle (review round 17), so a
     # path that repeats lines is drawn as dots on the executed lines, and the stack strip carries the order
-    for a, b, kind in (rail.segments(vis) if len(vis) == len(set(vis)) else []):
+    for a, b, kind in (rail.segments(vis) if arcs and len(vis) == len(set(vis)) else []):
         if kind == "run":
             svg.line(rail_x, cy(a), rail_x, cy(b), t["note"], 2.5, role="path")
         else:
@@ -659,9 +659,10 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     y += 14
     notes = fig.get("notes", [])
     svg.open(data_key="code")
+    recursive = any(len(s["state"].get("path", [])) != len(set(s["state"].get("path", []))) for s in states)
     card_h, ys = code_panel(svg, lesson, fig["program"], run, shown, X0, y, code_w, csize, clh,
                             g["gutter"], "code-card", "gutter", True, wide,
-                            badges=[(k, n["line"]) for k, n in enumerate(notes, 1)])
+                            badges=[(k, n["line"]) for k, n in enumerate(notes, 1)], arcs=not recursive)
     svg.close()
     card_top, card_bottom = y, y + card_h
 
