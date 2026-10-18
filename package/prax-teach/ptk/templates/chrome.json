@@ -101,6 +101,7 @@
   "neuron_sum": "sum",
   "neuron_output": "output",
   "axis_z": "z",
-  "axis_a": "a"
+  "axis_a": "a",
+  "stack_steps": "the call stack, step by step"
  }
 }

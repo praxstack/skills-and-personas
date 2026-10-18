@@ -141,6 +141,16 @@ def neuron_term(x, w):
     return printf_g(float(x) * float(w), sign=True)
 
 
+def neuron_term_line(x, w):
+    """printf("%g %g %+g\\n", x, w, x * w) without the newline."""
+    return f"{printf_g(x)} {printf_g(w)} {neuron_term(x, w)}"
+
+
+def neuron_sum_line(xs, ws, b):
+    """printf("%+g %g\\n", b, z) without the newline."""
+    return f"{printf_g(b, sign=True)} {neuron_sum(xs, ws, b)}"
+
+
 def neuron_sum(xs, ws, b):
     """printf("%g", t1 + t2 + ... + b) with t_i = x_i * w_i, added left to right as C does."""
     return printf_g(_neuron_z(xs, ws, b))
@@ -188,6 +198,7 @@ FUNCTIONS = {
     "switch_stdout": switch_stdout, "double_bits_hex": double_bits_hex, "call_label": call_label,
     "factorial_event": factorial_event, "factorial_stdout": factorial_stdout, "printf_g": printf_g,
     "neuron_term": neuron_term, "neuron_sum": neuron_sum, "neuron_relu": neuron_relu,
+    "neuron_term_line": neuron_term_line, "neuron_sum_line": neuron_sum_line,
 }
 # Functions that take the captured platform as their first argument; `args` omits it. Empty on
 # purpose: an expectation read from the capture can never disagree with it (review WP2 P2-5).

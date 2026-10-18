@@ -54,9 +54,9 @@ def shown_facts(lesson, sid):
             break
     facts = lesson.by_id("facts")
     lines = {(facts[f]["program"], facts[f]["select"].get("line")) for f in out if f in facts}
-    for f in lesson.data["facts"]:
+    for f in lesson.data["facts"]:  # any fact read from a line already printed (a token of it, or the line)
         sel = f["select"]
-        if sel.get("field") and (f["program"], sel.get("line")) in lines:
+        if sel.get("line") and (f["program"], sel.get("line")) in lines:
             out.add(f["id"])
     return out
 
@@ -158,8 +158,10 @@ def _views(c, x, y, w):
             svg.rect(bx + i * cell, by, cell - 4, cell * 1.25, t["surface"], rx=4, stroke=t["rule"], sw=1)
         vfont, vpx, vweight, _c, _s = svg.role("value", S["value"])
         adv = fonts.width(vfont, vpx, "0", weight=vweight)
-        svg.text(bx + (cell - 4) / 2 - adv / 2, by + cell * 0.9, c.val(v["bits"]), vfont, vpx, t["ink"],
-                 ("fact", v["bits"]), weight=vweight, ocr=c.val(v["bits"]), extra={"letter-spacing": f"{cell - adv:.2f}"})
+        bits = c.val(v["bits"])
+        spans = "".join(f'<tspan fill="{t["note"] if b == "1" else t["label"]}">{b}</tspan>' for b in bits)
+        svg.text(bx + (cell - 4) / 2 - adv / 2, by + cell * 0.9, bits, vfont, vpx, t["ink"],
+                 ("fact", v["bits"]), weight=vweight, ocr=bits, raw=spans, extra={"letter-spacing": f"{cell - adv:.2f}"})
         svg.close()
         hx = bx + 8 * cell + 14
         if c.on(v["hex"]) and hx + 80 * S["k"] <= x + w:
@@ -261,6 +263,85 @@ def _stack(c, x, y, w):
     return y - y0 + 10
 
 
+def _stack_timeline(c, x, y, w, states):
+    """Every state's stack side by side (wide: one column per state, stacks standing on a shared base;
+    portrait: one row per state, frames left to right from main). Each step is captioned with the line
+    the program printed at that step, so the picture pairs every output with the frames that made it."""
+    svg, t, S, lesson = c.svg, c.t, c.S, c.lesson
+    wide = c.layout == "wide"
+    y0 = y
+    y += S["label"]
+    c.label(x, y, "stack_steps")
+    y += 18
+    facts = c.facts
+    cols = [lesson.state(s) for s in states]
+    vfont, _vpx, vweight, _c, _s = svg.role("value", S["value"])
+    fsize = 13.5 if wide else 12
+    cap = 12.5 if wide else 11.5
+    if wide:
+        gap = 12
+        cw = (w - gap * (len(cols) - 1)) / len(cols)
+        fh, fg = 34, 6
+        depth = max(len(s["state"].get("frames", [])) for s in cols)
+        base = y + 26 + depth * (fh + fg)
+        for k, st in enumerate(cols):
+            cx = x + k * (cw + gap)
+            new = [f for f in st.get("reveals", []) if f in facts and facts[f]["select"].get("stream") == "stdout"]
+            if new:
+                svg.text(cx, y + cap, text.display(facts[new[-1]]), "mono", cap, t["value"], ("fact", new[-1]),
+                         ocr=None)
+            frames = st["state"].get("frames", [])
+            for i, fr in enumerate(frames):
+                fy = base - (i + 1) * (fh + fg) + fg
+                _frame_box(c, cx, fy, cw, fh, fr, f"tl-{c.layout}-{st['id']}-{i}", fsize, i == len(frames) - 1)
+            svg.line(cx, base + 4, cx + cw, base + 4, t["rule"], 1.2)
+        return base + 14 - y0
+    rh, gap, pad, sep = 30, 14, 8, 3
+
+    def widths(st, size):
+        out = []
+        for fr in st["state"].get("frames", []):
+            label = text.display(facts[fr["call"]]) if fr.get("call") else fr["fn"]
+            out.append(fonts.width("mono", size, label) + 2 * pad)  # a returning frame's value is its row caption
+        return out
+    # one size for every row: the largest (at most fsize) at which the widest row fits the width
+    widest = max(sum(widths(st, fsize)) + sep * (len(st["state"].get("frames", [])) - 1) for st in cols)
+    fsize = round(max(11.0, min(fsize, fsize * w / widest)), 2)
+    for k, st in enumerate(cols):
+        new = [f for f in st.get("reveals", []) if f in facts and facts[f]["select"].get("stream") == "stdout"]
+        if new:
+            svg.text(x, y + cap, text.display(facts[new[-1]]), "mono", cap, t["value"], ("fact", new[-1]))
+        fy = y + cap + 8
+        fx = x
+        frames = st["state"].get("frames", [])
+        for i, (fr, bw) in enumerate(zip(frames, widths(st, fsize))):
+            _frame_box(c, fx, fy, bw, rh, fr, f"tl-{c.layout}-{st['id']}-{i}", fsize, i == len(frames) - 1, pad,
+                       show_ret=False)
+            fx += bw + sep
+        y = fy + rh + gap
+    return y - y0
+
+
+def _frame_box(c, x, y, w, h, fr, rid, size, top, pad=9, show_ret=True):
+    """One frame: label (its call fact, or the function name), dashed while returning with its value."""
+    svg, t = c.svg, c.t
+    status = fr.get("status", "running" if top else "waiting")
+    returning = status == "returning"
+    c.group(fr.get("ret") if returning else fr.get("call"))
+    dash = ' stroke-dasharray="5 4"' if returning else ""
+    fill = t["note_tint"] if status == "running" else (t["surface"] if not returning else t["ground"])
+    svg.raw(f'<rect id="{rid}" data-role="frame" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h}" rx="7" '
+            f'fill="{fill}" stroke="{t["note"] if status != "waiting" else t["rule"]}" stroke-width="1.4"{dash}/>')
+    ty = y + h / 2 + size * 0.36
+    if fr.get("call"):
+        c.value(x + pad, ty, fr["call"], color=t["ink"], size=size, inside=rid, weight=400)
+    else:
+        c.code(x + pad, ty, fr["fn"], c.lesson.state(c.sid)["state"]["program"], size=size, inside=rid)
+    if returning and fr.get("ret") and show_ret:
+        c.value(x + w - pad, ty, fr["ret"], anchor="end", size=size * 1.15, inside=rid)
+    svg.close()
+
+
 # ---------------------------------------------------------------- neuron
 
 def _neuron(c, x, y, w):
@@ -300,8 +381,8 @@ def _neuron(c, x, y, w):
             c.label(cx, yy, "neuron_input", i=i)
             vy = yy + S["code"] * 1.7
             xw = c.value(cx, vy, tm["x"], size=S["value"] * 0.85, color=t["ink"])
-            c.label(cx + xw + 12, vy - 2, "times")
-            c.value(cx + xw + 34, vy, tm["w"], size=S["value"] * 0.85, color=t["ink"])
+            svg.text(cx + xw + 10, vy, text.ui("times"), "mono", S["value"] * 0.85, t["label"], ("chrome", "times"))
+            c.value(cx + xw + 12 + S["value"] * 0.85 * MONO_ADV + 10, vy, tm["w"], size=S["value"] * 0.85, color=t["ink"])
             svg.close()
             if c.on(tm["t"]):
                 c.group(tm["t"])
@@ -338,12 +419,18 @@ def _neuron(c, x, y, w):
         svg.line(X(a), ry, X(b), ry, col, 9, role="path")
         svg.circle(X(a), ry, 5.5, col)
         svg.circle(X(b), ry, 5.5, col)
-        label_x = min(max(X(min(a, b)), cx), cx + cw - 150 * S["k"])
         lab = text.ui("neuron_term_bias") if k == len(terms) - 1 else text.ui("neuron_term", i=k + 1)
         lw = fonts.width("mono", S["chip"] + 2, lab)
-        svg.text(label_x, ry - 14, lab, "mono", S["chip"] + 2, col, ("chrome", "neuron_term_bias" if k == len(terms) - 1
-                                                                        else "neuron_term"))
-        c.value(label_x + lw + 10, ry - 14, fid, size=S["chip"] + 4, color=col)
+        vw = fonts.width("mono", S["chip"] + 4, c.val(fid))
+        total = lw + 10 + vw
+        # beside the bar on its left when there is room (clear of the guide from the bar above), else above it
+        if X(min(a, b)) - 16 - total >= cx:
+            label_x, label_y = X(min(a, b)) - 16 - total, ry + 5
+        else:
+            label_x, label_y = min(max(X(min(a, b)), cx), cx + cw - total), ry - 14
+        svg.text(label_x, label_y, lab, "mono", S["chip"] + 2, col, ("chrome", "neuron_term_bias" if k == len(terms) - 1
+                                                                       else "neuron_term"))
+        c.value(label_x + lw + 10, label_y, fid, size=S["chip"] + 4, color=col)
         if k:
             svg.raw(f'<line data-role="guide" x1="{X(a):.1f}" y1="{ry - row:.1f}" x2="{X(a):.1f}" y2="{ry:.1f}" '
                     f'stroke="{t["label"]}" stroke-width="1" stroke-dasharray="3 4"/>')
@@ -356,6 +443,14 @@ def _neuron(c, x, y, w):
         lab = f"{v:g}".replace("-", "−")
         svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle")
     yy = ay + 46
+    if all(c.on(f) for f in terms):
+        # z = t1 t2 b: the sum written out from the terms it adds
+        zx = cx + c.code(cx, yy, "z =", pid, size=S["code"]) + 10
+        for f in terms:
+            c.group(f)
+            zx += c.value(zx, yy, f, size=S["code"] * 1.05, color=tone(f)) + 10
+            svg.close()
+        yy += 14
     if c.on(P["sum"]):
         c.group(P["sum"])
         lw = c.label(cx, yy + S["value"] * 0.9, "neuron_sum")
@@ -412,19 +507,23 @@ def _neuron(c, x, y, w):
             dx = cols[i][0] - gap / 2
             svg.line(dx, y + 4, dx, y + h - 4, t["rule"], 1)
         return h
-    return heights[2] + (cols[0][1] and 0) + (cy - y)
+    return yy - y
 
 
 KINDS = {"views": _views, "stack": _stack, "neuron": _neuron}
 
 
-def draw(svg, lesson, sid, x, y, w, layout="wide", flow=None, key=True):
-    """Draw the lesson's panel at trace state `sid`; returns its height."""
+def draw(svg, lesson, sid, x, y, w, layout="wide", flow=None, key=True, states=None):
+    """Draw the lesson's panel at trace state `sid`; returns its height. With `states` (the still), a stack
+    panel draws every one of those states side by side instead."""
     P = lesson.data["figure"]["panel"]
     c = Ctx(svg, lesson, sid, layout, flow)
     if key:
         svg.open(data_key="panel", data_state_panel=sid)
-    h = KINDS[P["kind"]](c, x, y, w)
+    if states and P["kind"] == "stack":
+        h = _stack_timeline(c, x, y, w, states)
+    else:
+        h = KINDS[P["kind"]](c, x, y, w)
     if key:
         svg.close()
     return h

@@ -491,9 +491,14 @@ def _notes(svg, flow, lesson, notes, x, y, w, g):
     return y - nlh
 
 
+def _out_size(g, n):
+    """Output value size: a long output (six lines or more) uses smaller values so it fits beside the code."""
+    return round(g["out"] * (0.78 if n >= 6 else 1), 2)
+
+
 def _output_height(svg, g, lesson, state_id):
-    _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
     n = len(lesson.state(state_id)["state"]["output"])
+    _vf, vpx, _vw, _c, _s = svg.role("value", _out_size(g, n))
     top = (22 if svg.frame["panel_fill"] else 0) or 6
     return top + 30 + n * (vpx + g["out_gap"]) - g["out_gap"] + vpx * 0.3 + top
 
@@ -504,6 +509,7 @@ def _output_card(svg, g, lesson, state_id, x, y, w):
     final = lesson.state(state_id)["state"]["output"]
     inset = 22 if svg.frame["panel_fill"] else 0
     top = inset or 6
+    g = dict(g, out=_out_size(g, len(final)))
     _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
     svg.open(data_key="output", data_state=state_id)
     i_out = svg.mark()
@@ -593,7 +599,7 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     panel = fig.get("panel")
     final_state = fig["states"][-1]
     if panel and panel["place"] == "hero":
-        y += mech.draw(svg, lesson, final_state, X0, y, X1 - X0, layout, flow) + (34 if wide else 26)
+        y += mech.draw(svg, lesson, final_state, X0, y, X1 - X0, layout, flow, states=fig["states"]) + (34 if wide else 26)
         svg.line(X0, y - 18, X1, y - 18, t["rule"], 1)
         y += 20 if wide else 16
 
@@ -627,7 +633,7 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     col_w = X1 - col_x
     col_y = card_top if wide else card_bottom + 30
     if side:
-        col_y += mech.draw(svg, lesson, final_state, col_x, col_y, col_w, layout, flow) + (30 if wide else 26)
+        col_y += mech.draw(svg, lesson, final_state, col_x, col_y, col_w, layout, flow, states=fig["states"]) + (30 if wide else 26)
     if notes:
         col_y = _notes(svg, flow, lesson, notes, col_x, col_y, col_w, g) + (24 if wide else 22)
     out_h = _output_height(svg, g, lesson, final_state)
