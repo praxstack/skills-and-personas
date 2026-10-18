@@ -1,8 +1,8 @@
 # Host adapters: running claims-review jobs
 
 `ptk build` stops at `claims-pending` (exit 4) after writing `build/claims-jobs/<job>.json`:
-the lesson job plus one canary mutation job (with `--calibrate`: up to 12 mutation jobs, each
-paired with a control). They all look alike on purpose. The build report's `claims.jobs` lists them and `claims.job_tokens` gives their size.
+the lesson job plus up to 12 mutation jobs, each paired with a control (with `--canary`: the
+lesson job plus one canary mutation job, best status `canary-verified`). They all look alike on purpose. The build report's `claims.jobs` lists them and `claims.job_tokens` gives their size.
 
 ## The contract (every host)
 
@@ -16,7 +16,7 @@ paired with a control). They all look alike on purpose. The build report's `clai
 3. **It writes one JSON file** to the job's `review_path`, and nothing else.
 4. **Then run `ptk claims check <lesson>`.** It checks each review's schema, coverage and manifest echo,
    and recomputes each manifest from the current lesson, artifact texts, sources and rubric.
-   - exit 0: verified. Exit 1: a reviewer rejected something, a review is stale, or the catch or
+   - exit 0: verified. Exit 6 after `--canary`: canary-verified, not verified. Exit 1: a reviewer rejected something, a review is stale, or the catch or
      control rates miss the thresholds. Read `ptk report <lesson>`.
    - exit 4 again: some reviews were unusable (empty, a refusal, prose, wrong schema). ptk moved each
      one to `claims-review/invalid/` and added a `retry` block with a schema reminder to its job file.

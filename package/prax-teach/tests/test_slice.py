@@ -14,7 +14,7 @@ REQUIRED_GATES = {"values.expect", "values.still", "visual.still.layout", "visua
                   "video.scene-layout",
                   "video.render-isolation", "values.video", "video.media", "video.sync", "video.no-answer-leak",
                   "values.ive", "ive.pause-state", "ive.no-answer-leak", "ive.controls", "ive.layout", "ive.fonts",
-                  "ive.network", "claims.mapping", "claims.review", "claims.canary"}
+                  "ive.network", "claims.mapping", "claims.review", "claims.sensitivity"}
 
 
 def _reviews_current(rep):
@@ -45,8 +45,8 @@ def test_switch_fallthrough_slice():
     assert abs(m["integrated_lufs"] + 16) <= 1 and m["true_peak_dbtp"] <= -1
     s = gate(rep, "video.sync")["measured"]
     assert s["max_abs_start_delta"] <= 0.5 and s["max_abs_end_delta"] <= 0.5 and s["non_code_wer"] <= 0.10
-    canary = gate(rep, "claims.canary")["measured"]  # D21.1: one planted error, caught
-    assert len(canary["rows"]) == 1 and canary["rows"][0]["caught"] is True, canary
+    sens = gate(rep, "claims.sensitivity")["measured"]  # the full suite (AC-7.1, D22.1)
+    assert sens["caught"] == sens["mutations"] >= 1, sens
     b = SLICE / "build"
     for p in ("still/switch-fallthrough-wide-light.png", "video/lesson.mp4", "video/captions.vtt",
               "video/chapters.vtt", "ive/index.html", "ive/states.vtt"):

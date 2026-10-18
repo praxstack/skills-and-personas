@@ -8,7 +8,7 @@
     "schema": {"const": "prax-teach/build-report@1"},
     "lesson": {"type": ["string", "null"]},
     "lesson_sha256": {"type": ["string", "null"]},
-    "status": {"enum": ["draft", "valid", "captured", "projected", "claims-pending", "verified", "packaged", "failed", "incomplete", "degraded"]},
+    "status": {"enum": ["draft", "valid", "captured", "projected", "claims-pending", "verified", "canary-verified", "packaged", "failed", "incomplete", "degraded"]},
     "media": {"type": "array", "items": {"type": "string"}},
     "gates": {"type": "array", "items": {
       "type": "object", "required": ["id", "medium", "status", "measured"],
@@ -23,6 +23,8 @@
   "allOf": [
     {"if": {"properties": {"status": {"const": "verified"}}},
      "then": {"properties": {"gates": {"items": {"properties": {"status": {"const": "passed"}}}},
-                             "fallbacks": {"maxItems": 0}}}}
+                             "fallbacks": {"maxItems": 0}}}},
+    {"if": {"properties": {"status": {"const": "verified"}}, "required": ["claims"]},
+     "then": {"properties": {"claims": {"properties": {"mode": {"not": {"const": "canary"}}}}}}}
   ]
 }

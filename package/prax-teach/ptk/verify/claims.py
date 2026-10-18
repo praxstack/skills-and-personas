@@ -10,8 +10,8 @@ and `ptk claims check`.
         │  titles, projector sentences); code, chrome and number labels are bound by hash, not sent
     job body ──▶ manifest {model, body, every artifact text, sources, rubric version + sha, slot}
         ▼
-    build/claims-jobs/<job>.json   default: 1 lesson job + 1 canary mutation job (D21.1)
-                                   --calibrate: 1 lesson job + ≤12 mutation jobs + 1 control per mutation
+    build/claims-jobs/<job>.json   default (AC-7.1): 1 lesson job + ≤12 mutation jobs + 1 control per mutation
+                                   --canary (D22.1, cheaper): 1 lesson job + 1 canary mutation job
                                    (roles kept in $PTK_STATE/claims-private/, never in the lesson tree)
         ▼  host agent: one subagent per job, given only the job file + ptk/verify/rubric.md
     build/claims-review/<job>.json
@@ -21,8 +21,9 @@ and `ptk claims check`.
         ▼
     echo == job manifest == manifest recomputed from current inputs? ──no──▶ stale (failed)
         ▼
-    claims.review (lesson job accepted) + claims.canary (planted error caught)
-                                        or, with --calibrate, claims.sensitivity (rates vs E22 thresholds)
+    claims.review (lesson job accepted) + claims.sensitivity (rates vs E22 thresholds)
+                                        or, with --canary, claims.canary (planted error caught; the build
+                                        is at best `canary-verified`, never `verified`)
 """
 import copy
 import hashlib
@@ -596,17 +597,17 @@ def mutation_count(build):
 
 # ---------------------------------------------------------------- jobs
 
-def plan_variants(lesson, mutations=None, calibrate=False):
+def plan_variants(lesson, mutations=None, canary=False):
     """[(role, pair, mutation or None)].
 
-    calibrate (D21.1, `ptk build --calibrate`): the lesson job, then each mutation followed by its control.
-    default (canary): the lesson job plus every candidate mutation, rotated so the deterministic pick
-    (canary_order) comes first; write_jobs keeps the first one that applies and drops the rest.
-    A mutation keeps its calibration pair number, so its job id (a manifest hash over the slot) is the
-    same in both modes and a calibration review also answers the canary."""
+    default (AC-7.1): the lesson job, then each mutation followed by its control.
+    canary (D22.1, `ptk build --canary`): the lesson job plus every candidate mutation, rotated so the
+    deterministic pick (canary_order) comes first; write_jobs keeps the first one that applies and drops the rest.
+    A mutation keeps its full-suite pair number, so its job id (a manifest hash over the slot) is the
+    same in both modes and a full-suite review also answers the canary."""
     muts = (mc.select(lesson) if mutations is None else mutations)[:mc.MAX_MUTATIONS]
     out = [("lesson", 0, None)]
-    if calibrate:
+    if not canary:
         for i, m in enumerate(muts, 1):
             out += [("mutation", i, m), ("control", i, None)]
         return out
@@ -623,22 +624,22 @@ def canary_order(lesson, numbered):
     return numbered[start:] + numbered[:start]
 
 
-def write_jobs(lesson, items, build, mutations=None, calibrate=False):
+def write_jobs(lesson, items, build, mutations=None, canary=False):
     """Write the jobs to build/claims-jobs and the roles to $PTK_STATE (never next to the jobs).
-    Default: the lesson job plus one canary mutation. calibrate=True: the full suite with controls (D21.1)."""
+    Default: the full suite with controls (AC-7.1). canary=True: the lesson job plus one canary mutation (D22.1)."""
     jobs_dir, rev_dir = build / "claims-jobs", build / "claims-review"
     for d in (jobs_dir, rev_dir):
         d.mkdir(parents=True, exist_ok=True)
     for f in jobs_dir.glob("*.json"):
         f.unlink()
     old = load_private(build)
-    priv = {"build": str(build.resolve()), "lesson": lesson.id, "mode": "calibrate" if calibrate else "canary",
+    priv = {"build": str(build.resolve()), "lesson": lesson.id, "mode": "canary" if canary else "full",
             "jobs": {}, "attempts": {}, "skipped": []}
     if items and "maps_to" not in items[0]:
         mapping_gate(lesson, items)
     written = []
-    for role, pair, mut in plan_variants(lesson, mutations, calibrate):
-        if not calibrate and role == "mutation" and any(m["role"] == "mutation" for m in priv["jobs"].values()):
+    for role, pair, mut in plan_variants(lesson, mutations, canary):
+        if canary and role == "mutation" and any(m["role"] == "mutation" for m in priv["jobs"].values()):
             break  # canary mode: one planted error is enough
         try:
             body = _job_body(lesson, items, mut)
@@ -734,7 +735,7 @@ def _retry(job_path, job, rp, problems, attempt_dir):
 
 
 def check(lesson, build, current_items):
-    """Validate reviews against manifests. Returns gate dicts: claims.review, then claims.canary (default) or claims.sensitivity (--calibrate)."""
+    """Validate reviews against manifests. Returns gate dicts: claims.review, then claims.sensitivity (default) or claims.canary (--canary)."""
     jobs_dir, rev_dir = build / "claims-jobs", build / "claims-review"
     priv = load_private(build)
     if current_items and "maps_to" not in current_items[0]:
@@ -803,7 +804,7 @@ def check(lesson, build, current_items):
                            "stale": stale, "missing": missing, "retrying": retrying,
                            "current_manifest_sha256": cur_sha, "rubric_version": RUBRIC_VERSION,
                            "label": "LLM-reviewed finding, not a proof"}}]
-    if priv.get("mode", "calibrate") == "canary":
+    if priv.get("mode", "full") == "canary":
         gates.append(_canary_gate(priv, rows, status))
     elif any(m["role"] == "mutation" for m in priv["jobs"].values()):
         gates.append(_sensitivity_gate(priv, rows, status))
@@ -811,7 +812,8 @@ def check(lesson, build, current_items):
 
 
 def _canary_gate(priv, rows, review_status):
-    """D21.1: the one planted error must be caught, or the lesson job's accept proves nothing about this reviewer."""
+    """`--canary` (D22.1): the one planted error must be caught, or the lesson job's accept proves nothing about this
+    reviewer. Passing it makes the build `canary-verified` at best, never `verified` (build.final_status)."""
     canaries = [r for r in rows if r["role"] == "mutation"]
     n_jobs = sum(1 for m in priv["jobs"].values() if m["role"] == "mutation")
     measured = {"mode": "canary", "skipped": priv.get("skipped", []),

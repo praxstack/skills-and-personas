@@ -1,7 +1,7 @@
 """WP9: the exemplar lessons (AC-9.1 to AC-9.4).
 
-The three exemplar tests are agent tests: each needs a full six-media build and two reviewer subagents (the
-lesson job and the canary). When the report is not a current `verified` build they rebuild, leave the claims
+The three exemplar tests are agent tests: each needs a full six-media build and the full claims suite of reviewer subagents (the
+lesson job, the mutation jobs and their controls, AC-7.1). When the report is not a current `verified` build they rebuild, leave the claims
 jobs and stop at claims-pending (AgentPending), like test_slice. test_design_verdicts_recorded is automatic: it
 checks the recorded screenshot review (ptk design record) against the current build.
 """
@@ -50,8 +50,8 @@ def _verified(slug):
     statuses = {g["id"]: g["status"] for g in rep["gates"]}
     assert all(s == "passed" for s in statuses.values()), {k: v for k, v in statuses.items() if v != "passed"}
     assert not rep["fallbacks"]
-    canary = gate(rep, "claims.canary")["measured"]
-    assert len(canary["rows"]) == 1 and canary["rows"][0]["caught"] is True, canary
+    sens = gate(rep, "claims.sensitivity")["measured"]  # the full suite (AC-7.1, D22.1), not a canary
+    assert sens["mutations"] >= 1 and sens["meets_thresholds"], sens
     for f in lesson.data["facts"]:  # every fact independent of the run that captured it
         assert "fn" in f["expect"] or f["expect"].get("reviewed"), f["id"]
     assert len([f for f in lesson.data["facts"] if "fn" in f["expect"]]) == len(lesson.data["facts"]), \

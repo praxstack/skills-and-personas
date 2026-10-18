@@ -7,6 +7,7 @@ Build state machine (spec §5.3, D18.1):
                                                               claims check ────────┤
                                                                                    ▼
                                                                                verified ─package─▶ packaged
+                                                       (--canary builds stop at canary-verified, exit 6, D22.1)
       any failure ─────────────▶ failed      (exit 1 gate / 2 host / 3 model)
       a gate not-run ──────────▶ incomplete  (exit 5)   never "verified"
       a fallback used ─────────▶ degraded    (exit 6)   e.g. `say` TTS; never "verified"
@@ -27,14 +28,16 @@ TRANSITIONS = {
     "valid": {"captured", "failed"},
     "captured": {"projected", "failed"},
     "projected": {"claims-pending", "incomplete", "degraded", "failed"},
-    "claims-pending": {"verified", "incomplete", "degraded", "failed", "claims-pending"},
+    "claims-pending": {"verified", "canary-verified", "incomplete", "degraded", "failed", "claims-pending"},
+    "canary-verified": {"claims-pending", "canary-verified", "failed", "incomplete", "degraded"},
     "verified": {"packaged", "claims-pending"},
-    "incomplete": {"claims-pending", "failed", "incomplete", "verified", "degraded"},
+    "incomplete": {"claims-pending", "failed", "incomplete", "verified", "canary-verified", "degraded"},
     "degraded": {"claims-pending", "failed", "degraded"},
     "failed": {"draft"},
     "packaged": set(),
 }
 FINAL_EXIT = {"verified": errors.EXIT_OK, "packaged": errors.EXIT_OK, "claims-pending": errors.EXIT_CLAIMS_PENDING,
+              "canary-verified": errors.EXIT_DEGRADED,
               "incomplete": errors.EXIT_INCOMPLETE, "degraded": errors.EXIT_DEGRADED, "failed": errors.EXIT_GATE}
 
 

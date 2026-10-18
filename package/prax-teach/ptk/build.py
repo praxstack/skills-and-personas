@@ -1,8 +1,9 @@
 """`ptk build` and `ptk claims check`: run the state machine in model.py and write the build report.
 
 build:  validate → capture → expect check → project (--only media) → automatic gates
-        → claims jobs (lesson + 1 canary; --calibrate: the full mutation suite with controls, D21.1) → claims-pending (exit 4) | failed (1) | incomplete (5) | degraded (6)
-claims check: reviews vs manifests → verified (0) | failed | incomplete | degraded
+        → claims jobs (lesson + ≤12 mutations + controls, AC-7.1; --canary: lesson + 1 planted error, D22.1)
+        → claims-pending (exit 4) | failed (1) | incomplete (5) | degraded (6)
+claims check: reviews vs manifests → verified (0) | canary-verified (6, --canary only) | failed | incomplete | degraded
 The report (build/build-report.json) records every gate, measurement, artifact hash and tool version.
 """
 import json
@@ -153,7 +154,9 @@ def merge_previous(prev, rep, rebuilt, on_disk):
     return out
 
 
-def final_status(gates, degraded):
+def final_status(gates, degraded, mode="full"):
+    """mode "canary" (D22.1): one caught planted error is weaker evidence than the full suite, so a canary build
+    whose gates all pass is `canary-verified`, never `verified`."""
     st = [g["status"] for g in gates]
     if "failed" in st:
         return "failed"
@@ -163,10 +166,10 @@ def final_status(gates, degraded):
         return "claims-pending"  # unreviewed claims outrank a fallback (review P1-1)
     if degraded:
         return "degraded"
-    return "verified"
+    return "canary-verified" if mode == "canary" else "verified"
 
 
-def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", calibrate=False):
+def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", canary=False):
     lesson = model.load(lesson_path)
     media = only or [m for m in lesson.data.get("requested_media", []) if m in SUPPORTED]
     if only and not [m for m in only if m not in SUPPORTED]:
@@ -209,8 +212,8 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cali
             degraded = degraded or bool(rep["fallbacks"])
         items = claims_gate.collect_texts(lesson, build_dir)
         rep["gates"].append(claims_gate.mapping_gate(lesson, items))
-        jobs = claims_gate.write_jobs(lesson, items, build_dir, calibrate=calibrate)
-        mode = "calibrate" if calibrate else "canary"
+        jobs = claims_gate.write_jobs(lesson, items, build_dir, canary=canary)
+        mode = "canary" if canary else "full"
         rep["claims"] = {"mode": mode, "jobs": [str(build_dir / "claims-jobs" / f"{j}.json") for j in jobs],
                          "reviews_dir": str(build_dir / "claims-review"), "rubric": str(claims_gate.RUBRIC),
                          "job_tokens": claims_gate.job_sizes(build_dir),
@@ -219,12 +222,13 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cali
                              "reason": "waiting for reviewer subagents"})
         if mode == "canary":
             rep["gates"].append({"id": "claims.canary", "medium": "all", "status": "pending", "measured": {},
-                                 "reason": "waiting for reviewer subagents (one planted error must be caught, D21.1)"})
+                                 "reason": "waiting for reviewer subagents (one planted error must be caught; "
+                                           "best status canary-verified, D22.1)"})
         elif claims_gate.mutation_count(build_dir):
             rep["gates"].append({"id": "claims.sensitivity", "medium": "all", "status": "pending", "measured": {},
                                  "reason": "waiting for reviewer subagents"})
-        st = final_status(rep["gates"], degraded)
-        go("claims-pending" if st in ("claims-pending", "verified") else st)
+        st = final_status(rep["gates"], degraded, mode)
+        go("claims-pending" if st in ("claims-pending", "verified", "canary-verified") else st)
         rep["artifacts"] = _artifact_list(build_dir)
         rep["finished"] = _now()
         rep["seconds"] = round(time.monotonic() - t0, 1)
@@ -362,7 +366,7 @@ def load_report(lesson_path):
 def claims_check(lesson_path):
     lesson = model.load(lesson_path)
     rep = load_report(lesson_path)
-    if rep["status"] not in ("claims-pending", "verified", "incomplete", "failed", "degraded"):
+    if rep["status"] not in ("claims-pending", "verified", "canary-verified", "incomplete", "failed", "degraded"):
         raise errors.IllegalTransition(f"claims check needs a built lesson; status is {rep['status']}")
     build_dir = lesson.dir / "build"
     items = claims_gate.collect_texts(lesson, build_dir)
@@ -379,7 +383,7 @@ def claims_check(lesson_path):
     rep["gates"].append({"id": "claims.artifacts-unchanged", "medium": "all", "status": "failed" if changed else "passed",
                          "measured": {"checked": len(rep.get("artifacts", [])), "changed": changed[:20]},
                          "reason": "artifacts changed after the build; rebuild" if changed else ""})  # review P3-12
-    target = final_status(rep["gates"], bool(rep.get("fallbacks")))
+    target = final_status(rep["gates"], bool(rep.get("fallbacks")), claims_mode(rep, build_dir))
     if rep.get("error"):
         target = "failed"  # the build itself stopped; reviews cannot rescue it
     elif rep["status"] == "claims-pending":
@@ -389,6 +393,15 @@ def claims_check(lesson_path):
     rep["claims_checked"] = _now()
     save(lesson, rep)
     return rep
+
+
+def claims_mode(rep, build_dir):
+    """The claims mode this build's jobs were written in. The private role map is the record; the report's
+    field is a fallback. A canary-mode role map always wins, so editing the report cannot upgrade a canary build."""
+    priv = claims_gate.load_private(build_dir).get("mode")
+    if "canary" in (priv, rep.get("claims", {}).get("mode")):
+        return "canary"
+    return "full"
 
 
 def exit_code(rep):

@@ -28,7 +28,7 @@ Status: development candidate. It is loaded by direct path (`SKILL.md` in this f
 | `ptk new <slug> [--dir lessons]` | scaffold `lesson.json` and `programs/` |
 | `ptk validate <lesson>` | schema and reference checks, errors as JSON pointers |
 | `ptk capture <lesson>` | sandboxed compile and run (twice), facts and platform |
-| `ptk build <lesson> [--only a,b] [--calibrate]` | validate, capture, project, run the automatic gates, write the claims jobs |
+| `ptk build <lesson> [--only a,b] [--canary]` | validate, capture, project, run the automatic gates, write the claims jobs |
 | `ptk claims check <lesson>` | check the reviews against their manifests and finish the status |
 | `ptk report <lesson> [--json]` | print the build report |
 | `ptk design record <lesson> --verdicts F` | record the six screenshot-reviewed aesthetics verdicts in the build report, bound to the lesson and every cited screenshot (AC-9.3) |
@@ -42,8 +42,8 @@ Status: development candidate. It is loaded by direct path (`SKILL.md` in this f
 ### Build modes
 
 - **`--only a,b`** rebuilds only those media and keeps the others on disk. `--only video` or `--only ive` rebuilds both, because the IVE plays the video. If the lesson is unchanged, the report keeps the other media's gates from the last finished build. If the lesson changed, they are listed under `uncovered_media` instead.
-- **Claims jobs.** A normal build writes the lesson job plus one canary: a copy of the job with one planted value or claim error, picked from the lesson's mutations by its hash. `verified` needs the lesson job accepted and the canary caught.
-- **`--calibrate`** writes the full suite instead: up to 12 mutation jobs, each with a clean control. Run it when the rubric or the reviewer model changes, and at acceptance. Its thresholds: 100% of value mutations caught, at least 90% of claim mutations caught, at least 95% of controls accepted.
+- **Claims jobs.** A normal build writes the full suite: the lesson job plus up to 12 mutation jobs, each with a clean control (AC-7.1). `verified` needs the lesson job accepted, 100% of value mutations caught, at least 90% of claim mutations caught and at least 95% of controls accepted.
+- **`--canary`** is the explicit cheaper mode: the lesson job plus one planted error, picked from the lesson's mutations by its hash. Its best status is `canary-verified` (exit 6), never `verified`. Making it the default is a proposal waiting for Prax (D21.1 was withdrawn by D22.1).
 
 Run each claims job in its own subagent, given only the job file and `ptk/verify/rubric.md`. `references/HOST-ADAPTERS.md` has the command for each host.
 
@@ -60,6 +60,7 @@ Run each claims job in its own subagent, given only the job file and `ptk/verify
 | 4 | claims-pending | the claims jobs are waiting for reviewer subagents |
 | 5 | incomplete | a gate did not run |
 | 6 | degraded | verified, but a fallback was used (for example `say` instead of Kokoro) |
+| 6 | canary-verified | every gate passed, but claims were checked with `--canary` (one planted error) instead of the full suite |
 
 A gate that did not run is reported as `not-run`, never as passed.
 
@@ -84,7 +85,7 @@ The job roles (lesson, canary, mutation, control) are kept in `$PTK_STATE/claims
 
 ## Exemplars
 
-`lessons/one-byte-four-views`, `lessons/factorial-stack` and `lessons/neuron` build all six media and finish `verified`, each with its design review in the build report. `tests/test_exemplars.py` checks them.
+`lessons/one-byte-four-views`, `lessons/factorial-stack` and `lessons/neuron` build all six media, each with its design review in the build report. Their last builds used the withdrawn canary default, so they count as `canary-verified` until they are rebuilt with the full claims suite. `tests/test_exemplars.py` checks them.
 
 ## Honest limits
 
@@ -92,7 +93,7 @@ The job roles (lesson, canary, mutation, control) are kept in `$PTK_STATE/claims
 - **The router has known limits.** It is table-driven regex, not a language model. It scores 192/192 on its dev set and 20/20 on 20 held-back probes, but both sets were written by the people tuning it. Unusual phrasings can still misroute; a low-confidence route lists its reasons so the agent can decide. The hidden holdout is only run at acceptance.
 - **No Manim backend.** The video projector is renderer-neutral, but only HyperFrames is built. Manim CE is a ranked alternative in the registry, not a working renderer.
 - **No LaTeX.** BasicTeX or Typst would be a system install that needs Prax's OK, so Manim `MathTex` is out. Math in stills uses MathJax `tex2svg`.
-- **Claims reviews are LLM findings, not proofs.** The canary shows that this reviewer caught one planted error on this build. It does not prove that every claim is true.
+- **Claims reviews are LLM findings, not proofs.** The full suite measures this reviewer's catch and control rates on this build. It does not prove that every claim is true.
 - **macOS only.** Capture needs `sandbox-exec`. There is no Linux sandbox yet.
 - **The sync gate reads whisper's word times.** Whisper stretches the last word before a pause over the silence; the gate now reads such a word from its start. This is an evaluator change made in WP9 and needs Prax's approval like D21.1.
 - **Taste is Prax's call.** The gates check contrast, overflow, fonts, numerals and the network. Whether it looks world-class is for Prax to judge against the Neuron Atlas reference.

@@ -44,7 +44,7 @@ def _gate(lesson, items, build, gid="claims.review"):
 # ---------------------------------------------------------------- AC-7.1
 
 def test_jobs_and_manifest():
-    """Calibration mode (`ptk build --calibrate`, D21.1): one lesson job, up to 12 mutation jobs each paired with a
+    """AC-7.1 (spec v1.3, D22.1): by default one lesson job, up to 12 mutation jobs each paired with a
     control; each job carries a manifest of the model,
     every artifact text, the sources and the rubric version; the roles never appear in the job files; only
     teaching sentences are sent, and a job (plus rubric) stays under 30k tokens."""
@@ -54,9 +54,9 @@ def test_jobs_and_manifest():
         sets["switch-fallthrough"] = slice_lesson()
     for name, (lesson, items) in sets.items():
         build = _tmp_build(name)
-        ids = claims.write_jobs(lesson, items, build, calibrate=True)
+        ids = claims.write_jobs(lesson, items, build)
         priv = claims.load_private(build)
-        assert priv["mode"] == "calibrate", priv.get("mode")
+        assert priv["mode"] == "full", priv.get("mode")
         roles = [priv["jobs"][j]["role"] for j in ids]
         n_mut = roles.count("mutation")
         assert roles.count("lesson") == 1 and roles.count("control") == n_mut and 1 <= n_mut <= 12, roles
@@ -99,17 +99,18 @@ def test_jobs_and_manifest():
     return out
 
 
-def test_canary_jobs_by_default():
-    """D21.1 (spec v1.2, AC-7.1): a normal build writes the lesson job plus exactly one canary mutation job and no
+def test_canary_jobs_only_when_asked():
+    """D22.1: `--canary` (explicit, cheaper) writes the lesson job plus exactly one canary mutation job and no
     controls. The canary is picked deterministically from the lesson's own mutations (same lesson, same canary),
-    never names its role, and carries the same manifest fields as every other job."""
+    never names its role, and carries the same manifest fields as every other job. Without it the build writes
+    the full suite (test_jobs_and_manifest)."""
     out = {}
     sets = {"f-cast": fcast_lesson()}
     if slice_lesson():
         sets["switch-fallthrough"] = slice_lesson()
     for name, (lesson, items) in sets.items():
         build = _tmp_build(f"canary-{name}")
-        ids = claims.write_jobs(lesson, items, build)
+        ids = claims.write_jobs(lesson, items, build, canary=True)
         priv = claims.load_private(build)
         assert priv["mode"] == "canary", priv.get("mode")
         roles = sorted(priv["jobs"][j]["role"] for j in ids)
@@ -118,27 +119,27 @@ def test_canary_jobs_by_default():
         candidates = [m["id"] for m in claims.mc.select(lesson)]
         assert canary in candidates, (canary, candidates)
         again = _tmp_build(f"canary2-{name}")
-        ids2 = claims.write_jobs(lesson, items, again)
+        ids2 = claims.write_jobs(lesson, items, again, canary=True)
         assert sorted(ids2) == sorted(ids), "the canary must be the same for the same lesson"
         for jid, job in _jobs(build).items():
             assert set(job) == JOB_KEYS, set(job) ^ JOB_KEYS
             leaks = [h for h in HINTS if h in json.dumps(job)]
             assert not leaks, f"{jid} names its role: {leaks}"
         cal = _tmp_build(f"canary-cal-{name}")
-        cal_ids = claims.write_jobs(lesson, items, cal, calibrate=True)
-        assert set(ids) <= set(cal_ids), "a canary job is the same job as its calibration twin, so reviews carry over"
+        cal_ids = claims.write_jobs(lesson, items, cal)
+        assert set(ids) <= set(cal_ids), "a canary job is the same job as its full-suite twin, so reviews carry over"
         out[name] = {"jobs": len(ids), "canary": canary, "candidates": len(candidates), "calibration_jobs": len(cal_ids)}
     return out
 
 
 def test_canary_gate():
-    """Verified needs the lesson job accepted and the canary rejected (caught). A canary the reviewer accepts fails
-    claims.canary; a missing canary review is not-run; calibration mode reports claims.sensitivity instead."""
+    """Canary mode: the lesson job accepted and the canary rejected (caught) passes claims.canary. A canary the
+    reviewer accepts fails it; a missing canary review is not-run; the full suite reports claims.sensitivity."""
     lesson, items = fcast_lesson()
     out = {}
     for case in ("caught", "accepted", "missing"):
         build = _tmp_build(f"canary-gate-{case}")
-        claims.write_jobs(lesson, items, build)
+        claims.write_jobs(lesson, items, build, canary=True)
         priv = claims.load_private(build)
         for jid, job in _jobs(build).items():
             meta = priv["jobs"][jid]
@@ -166,25 +167,58 @@ def test_canary_gate():
         assert gates["claims.canary"]["status"] == want, (case, gates["claims.canary"])
         out[case] = gates["claims.canary"]["status"]
     build = _tmp_build("canary-gate-cal")
-    claims.write_jobs(lesson, items, build, calibrate=True)
+    claims.write_jobs(lesson, items, build)
     gates = {g["id"] for g in claims.check(lesson, build, items)}
     assert "claims.sensitivity" in gates and "claims.canary" not in gates, gates
     return out
 
 
-def test_build_cli_calibrate_flag():
-    """`ptk build --calibrate` reaches build.build(calibrate=True); without it the build is in canary mode."""
+def test_build_cli_canary_flag():
+    """D22.1: `ptk build` writes the full suite by default; `--canary` is the explicit cheaper mode. `--calibrate`
+    (D21.1, withdrawn) is gone."""
     from ptk import cli
     try:
-        parsed = cli.parser().parse_args(["build", "x", "--calibrate"])
+        parsed = cli.parser().parse_args(["build", "x", "--canary"])
     except SystemExit as e:
-        raise AssertionError("ptk build does not accept --calibrate") from e
-    assert parsed.calibrate is True
-    assert cli.parser().parse_args(["build", "x"]).calibrate is False
+        raise AssertionError("ptk build does not accept --canary") from e
+    assert parsed.canary is True
+    assert cli.parser().parse_args(["build", "x"]).canary is False
     import inspect
     from ptk import build as b
-    assert inspect.signature(b.build).parameters["calibrate"].default is False
-    return {"flag": "--calibrate"}
+    params = inspect.signature(b.build).parameters
+    assert params["canary"].default is False and "calibrate" not in params, list(params)
+    try:
+        cli.parser().parse_args(["build", "x", "--calibrate"])
+    except SystemExit:
+        return {"flag": "--canary"}
+    raise AssertionError("--calibrate (D21.1) must be withdrawn")
+
+
+def test_canary_build_never_verified():
+    """D22.1: with every gate passed, a canary-mode build is at best `canary-verified` (exit 6), never `verified`;
+    a full-suite build with the same gates is `verified`. The report schema refuses a `verified` canary report."""
+    import jsonschema
+    from ptk import build as b
+    from ptk import model as m
+    gates = [{"id": "claims.review", "medium": "all", "status": "passed", "measured": {}},
+             {"id": "claims.canary", "medium": "all", "status": "passed", "measured": {}}]
+    assert b.final_status(gates, False, mode="canary") == "canary-verified"
+    assert b.final_status(gates, False, mode="full") == "verified"
+    assert b.final_status(gates, False) == "verified"
+    assert b.final_status(gates, True, mode="canary") == "degraded"
+    assert m.advance("claims-pending", "canary-verified") == "canary-verified"
+    rep = {"schema": "prax-teach/build-report@1", "status": "canary-verified", "started": "x", "media": [],
+           "gates": gates, "fallbacks": [], "tools": {}, "artifacts": [], "transitions": [],
+           "claims": {"mode": "canary"}}
+    assert b.exit_code(rep) == 6, b.exit_code(rep)
+    schema = json.loads(b.REPORT_SCHEMA.read_text())
+    jsonschema.Draft202012Validator(schema).validate(rep)
+    bad = dict(rep, status="verified")
+    try:
+        jsonschema.Draft202012Validator(schema).validate(bad)
+    except jsonschema.ValidationError:
+        return {"canary": "canary-verified", "full": "verified"}
+    raise AssertionError("the report schema accepted a verified canary-mode report")
 
 
 # ---------------------------------------------------------------- AC-7.2
