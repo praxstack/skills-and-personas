@@ -931,7 +931,7 @@
     {
       "id": "c.round",
       "kind": "caveat",
-      "text": "0.8 × 1.5 is not exactly 1.2 in double, so z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
+      "text": "In double, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
       "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
       "sources": [
         {
@@ -1268,7 +1268,7 @@
           ]
         },
         {
-          "text": "0.8 × 1.5 is not exactly 1.2 in double, so z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
+          "text": "In double, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
           "claims": [
             "c.round"
           ]

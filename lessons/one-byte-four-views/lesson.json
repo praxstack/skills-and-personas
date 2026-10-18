@@ -1077,7 +1077,7 @@
     {
       "id": "c.kf",
       "kind": "mechanism",
-      "text": "For each of these four values, (double)a converts the value exactly, so %f prints it with six digits after the point.",
+      "text": "For each of these four values, (double)a converts the value exactly, and %f prints it with six digits after the point.",
       "justification": "C17 6.3.1.4p2: an integer converted to a real floating type that can represent it exactly is unchanged in value; every int here (66, 200, -1, 321) is exact in double. 7.21.6.1p8 %f: six digits after the decimal point when the precision is missing. Captured runs: 66.000000, 200.000000, -1.000000, 321.000000.",
       "sources": [
         {

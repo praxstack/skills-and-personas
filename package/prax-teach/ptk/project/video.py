@@ -341,7 +341,7 @@ def _layout(lesson):
         top = 736
         L.update(code_top=top, card_w=1000, card_h=H - BOTTOM - top, side_x=1136, side_w=W - MX - 1136, side_top=top,
                  side_h=H - BOTTOM - top, panel_box=(MX, 172, W - 2 * MX, top - 172 - 44),
-                 q_panel_box=(MX, 172, W - 2 * MX, 296), q_box=(MX, 484, W - 2 * MX, top - 484 - 58),  # clear of the file label
+                 q_panel_box=(MX, 172, W - 2 * MX, 268), q_box=(MX, 456, W - 2 * MX, top - 456 - 58),  # clear of the file label
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=10)
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
