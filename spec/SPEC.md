@@ -1,6 +1,8 @@
 # Prax Teach v2.1: the lesson compiler, specification
 
-Version 1, 2026-10-18. Source of truth for /implement-from-spec.
+Version 1.1, 2026-10-18. Source of truth for /implement-from-spec.
+
+Changelog v1.1: adds D20.x from three independent sessions (`../plan/EXTERNAL-INPUTS.md`). Amended: AC-1.3, AC-3.4, AC-4.2, AC-5.6, AC-6.2. New: AC-4.6, AC-4.7, AC-4.8, AC-6.6, AC-6.7, AC-9.4 (P1), and the STYLE dark theme taken from the accepted Neuron Atlas reference.
 
 Derived from:
 - `../plan/CEO-PLAN.md`, decisions D1–D19 and E0–E25 (where they conflict, the later decision wins);
@@ -198,7 +200,7 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 
 - **AC-1.1** When a request names a medium (video, narrated, voice over, animate, interactive video, explorer, cards, Q&A), `ptk route` shall return that medium. *Test:* `tests/test_route.py::test_medium_words` (dev set of 60 or more, including the M1 and M2 cases).
 - **AC-1.2** When the request is an ordinary task (fix, rename, write tests), `ptk route` shall return `intent=ordinary_task` and no teaching. *Test:* `test_route.py::test_ordinary_tasks`.
-- **AC-1.3** When the workspace contains AGENTS.md, MISSION.md or NOTES.md requiring prediction first, `ptk route` shall return `mode=predict-first` and a `first_turn` of one question. This applies even when a medium is requested; the artifact comes after the attempt. *Test:* `test_route.py::test_workspace_contract_wins`.
+- **AC-1.3** When the workspace contains AGENTS.md, MISSION.md or NOTES.md requiring prediction first, `ptk route` shall return `mode=predict-first` and a `first_turn` of one question. This applies even when a medium is requested; the artifact comes after the attempt. **Unless** the request explicitly says answer now, just explain, or build the full course: then the explicit request wins (D20.7). *Tests:* `test_route.py::test_workspace_contract_wins`, `::test_answer_now_overrides_contract`.
 - **AC-1.4** When the request asks for a direct or quick answer, `ptk route` shall return `mode=quick, build_needed=false`. *Test:* `test_route.py::test_quick_no_build`.
 - **AC-1.5** The router shall be table-driven (`route_rules.json`), and no function in `route.py` shall have more than 5 branches. *Test:* `test_route.py::test_rule_table_and_complexity`.
 - **AC-1.6** When predict-first runs, the protocol shall:
@@ -235,7 +237,7 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 - **AC-3.1** When the still projector runs, it shall emit wide and portrait SVG plus 2x PNG in light and dark. Every value comes from facts, and every sentence comes from claims or `chrome.json`. *Test:* `tests/test_still.py::test_variants_and_sources`.
 - **AC-3.2** The style shall use only the bundled OFL fonts, with `font-variant-numeric: lining-nums tabular-nums`. Tesseract OCR of every bit and number cell shall read the expected digits. *Test:* `tests/test_visual.py::test_ocr_lining_digits`. An old-style-numeral fixture shall fail this test.
 - **AC-3.3** Text contrast shall be at least 4.5:1 and rules and borders at least 3:1, in both themes, computed from the rendered tokens. Correction red and note blue shall differ in lightness by at least 15 L* in dark mode (V12). *Test:* `test_visual.py::test_contrast`.
-- **AC-3.4** At 390 and 1440 px in both themes, no element shall overflow its container, and no text shall render under 11 CSS px. *Test:* `test_visual.py::test_no_overflow_min_size`.
+- **AC-3.4** At 390 and 1440 px in both themes, no element shall overflow its container, no text shall render under 11 CSS px, and every storyboard key node shall be fully inside the visible area with no inner scroll (D20.3). *Test:* `test_visual.py::test_no_overflow_min_size`.
 - **AC-3.5** Math shall render through MathJax `tex2svg` into the SVG, with no raw TeX left in the output. *Test:* `test_still.py::test_math_svg`.
 - **AC-3.6** During the visual verify, any outbound request shall fail the build (`OutboundRequest`). *Test:* `test_visual.py::test_no_network`.
 - **AC-3.7** Every value mutation applied to a still (from the mutation suite) shall fail `verify/values.py`. *Test:* `tests/test_mutation.py::test_still_value_mutations`.
@@ -243,10 +245,13 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 ### WP4: Explorer, Q&A expander, flash cards (P0)
 
 - **AC-4.1** The explorer shall be one HTML file with the E20 CSP, keyboard operable with visible focus, respecting `prefers-reduced-motion`, with a complete `<noscript>` explanation. *Test:* `tests/test_explorer.mjs::test_a11y_csp_noscript`.
-- **AC-4.2** For every input in the explorer's declared domain, the displayed values shall equal the `ptk/expect.py` function results. *Test:* `test_explorer.mjs::test_full_domain`.
+- **AC-4.2** For every input in the explorer's declared domain, and after every control step, the displayed values shall equal the `ptk/expect.py` function results. Each control's effect is asserted, not just reached (D20.4). *Test:* `test_explorer.mjs::test_full_domain`.
 - **AC-4.3** The Q&A expander shall open layers in order, route each wrong option to a named misconception with its correction claim, and expand every layer when printed. *Test:* `tests/test_qa.py::test_layers_misconceptions_print`.
 - **AC-4.4** Cards shall be emitted as Markdown and `.apkg`. Answers equal facts, GUIDs are stable across builds, and re-import creates no duplicates. *Tests:* `tests/test_cards.py::test_apkg_contents`, `::test_stable_guids`, `::test_anki_import` (`not-run` if no Anki).
 - **AC-4.5** Card sets shall include misconception cards built from `misconceptions[]`. *Test:* `test_cards.py::test_misconception_cards`.
+- **AC-4.6** When a control changes state, every sentence bound to that state shall be recomputed from the live state, and no sentence shall describe the default after a change (D20.4). *Test:* `test_explorer.mjs::test_prose_follows_state`.
+- **AC-4.7** At 390 px, every key node of the explorer's mechanism shall be fully visible with no inner horizontal scroll (D20.3). *Test:* `test_explorer.mjs::test_key_nodes_visible_390`.
+- **AC-4.8** Every HTML artifact shall work when opened directly from disk (`file://`) in Chrome, with no server (D20.9). *Test:* `test_explorer.mjs::test_file_protocol`.
 
 ### WP5: Narrated video (P0)
 
@@ -261,16 +266,18 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 
   *Test:* `tests/test_media.py::test_media_thresholds`, with out-of-range fixtures failing.
 - **AC-5.5** The sync gate shall compare whisper word timestamps from the final MP4 with each cue's start and end, within 0.5 s, and non-code WER at most 10%. Shifted-audio, truncated-speech and mispronounced-token fixtures shall each fail. *Tests:* `test_media.py::test_sync_gate`, `::test_sync_fixtures_fail`.
-- **AC-5.6** Snapshots at each scene midpoint shall pass the AC-3.4 overflow and size checks. *Test:* `test_video.py::test_scene_snapshots`.
+- **AC-5.6** Snapshots at each scene midpoint shall pass the AC-3.4 overflow, size and key-node visibility checks. Each summary view shall be paired with its mechanism step (D20.5). *Test:* `test_video.py::test_scene_snapshots`.
 - **AC-5.7** Narration, captions, chapter titles and transcript shall not state the answer to an open storyboard question before its answer cue (M20). *Test:* `test_video.py::test_no_answer_leak_text`.
 
 ### WP6: Interactive video explorer (P0)
 
 - **AC-6.1** The IVE page shall play the MP4 with a WebVTT `metadata` track whose cues carry `{scene_id, state_id}`. Each question gets a question cue and an answer cue (D18.2). *Test:* `tests/test_ive.mjs::test_cue_track`.
-- **AC-6.2** When the learner pauses, seeks or jumps to a chapter, the page shall show the explorer at the last state already shown. *Test:* `test_ive.mjs::test_pause_state`.
+- **AC-6.2** When the learner pauses, seeks or jumps to a chapter, the page shall show the explorer at the last state already shown. The video clock is the only source of time. Chapters are half-open windows `[start, end)`, and a seek within one frame of a boundary resolves to the later window (D20.6). *Test:* `test_ive.mjs::test_pause_state`.
 - **AC-6.3** When paused 0.1 s before an answer cue, the DOM, the alt text and the transcript shown so far shall not contain the answer. *Test:* `test_ive.mjs::test_no_leak_before_answer`.
 - **AC-6.4** The page shall offer captions on and off, a chapter list and a synced transcript with click-to-seek. Without JS, it shall show the poster sequence and the full transcript. *Test:* `test_ive.mjs::test_controls_and_noscript`.
 - **AC-6.5** Navigation in the IVE shall never write learner-attempt events, only `navigation` events (schema v2). *Test:* `tests/test_state.py::test_navigation_not_attempt`.
+- **AC-6.6** The IVE shall run a FILM / EXPLORE / RETURN state machine. In EXPLORE, live edits are visibly separate from the recorded film. RETURN resumes the film at the paused time with the film's state, not the edited state (D20.6). *Test:* `test_ive.mjs::test_film_explore_return`.
+- **AC-6.7** The IVE, including the MP4 and every WebVTT track, shall work when opened directly from disk (`file://`) in Chrome (D20.9). *Test:* `test_ive.mjs::test_file_protocol`.
 
 ### WP7: Claims gate (P0)
 
@@ -296,7 +303,8 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 
 - **AC-9.1** "One byte, four views" (with the `%f` cast claim corrected and the `m.samebits` misconception) shall build all six media and finish `verified`. *Test:* `tests/test_exemplars.py::test_one_byte` (agent-tests).
 - **AC-9.2** "factorial(3) on the call stack" shall build all six media from a trace, and finish `verified`. *Test:* `test_exemplars.py::test_factorial_stack` (agent-tests).
-- **AC-9.3** Screenshot review of both exemplars shall record verdicts for the 6 non-automated aesthetics items in the build report. *Test:* `test_exemplars.py::test_design_verdicts_recorded`.
+- **AC-9.3** Screenshot review of both exemplars shall record verdicts for the 6 non-automated aesthetics items in the build report, judged against the accepted Neuron Atlas reference (D20.1). *Test:* `test_exemplars.py::test_design_verdicts_recorded`.
+- **AC-9.4 (P1)** The Neuron Atlas neuron lesson (one weighted sum, bias and ReLU, with toy values) shall build through v2.1 in all six media and finish `verified`, as the unrelated-subject test (D20.10). *Test:* `test_exemplars.py::test_neuron_unrelated_subject`.
 
 ### P1 (after acceptance, D17.16)
 

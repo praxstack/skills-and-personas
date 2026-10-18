@@ -31,7 +31,7 @@ Codex and the spec reviewer both found that the frozen evaluator can pass while 
    - alt text present;
    - figure source linked.
 
-   The other 6 items are reviewed by screenshot, and the verdicts are written into the report.
+   The other 6 items are reviewed by screenshot, and the verdicts are written into the report. Prax judges the final look of both exemplars against the accepted Neuron Atlas reference (D20.2), because gates passed a course he called horrible.
 5. **Teaching protocol.** The scripted multi-turn transcript tests pass. One live predict-first session with Prax is a human step, recorded but not automated.
 6. **Hosts.** Install and rollback are tested on Claude Code, Codex, Hermes and OpenCode, with exactly one entry each.
 
