@@ -163,7 +163,7 @@ def match_state(lesson, probe):
     for st in lesson.data["trace"]:
         s = st["state"]
         if (s["program"] == probe["program"] and s["line"] == probe["line"]
-                and sorted(s.get("path", [])) == sorted(probe["path"]) and s["output"] == probe["output"]
+                and sorted(set(s.get("path", []))) == sorted(set(probe["path"])) and s["output"] == probe["output"]
                 and probe.get("panel", "none") in ("none", st["id"])):
             return st["id"]
     return "unknown"

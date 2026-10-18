@@ -21,8 +21,8 @@
    "id": "m3.unwind.wrong",
    "kind": "false-mechanism",
    "target": "c.unwind",
-   "find": "Each return hands its value to the call that made it, one frame down.",
-   "replace": "Each return hands its value straight to main, skipping the frames in between.",
+   "find": "Each factorial return hands its value to the call that made it, one frame down.",
+   "replace": "Each factorial return hands its value straight to main, skipping the frames in between.",
    "why_false": "A return gives its value to its caller (6.8.6.4p3), which is the frame below."
   },
   {

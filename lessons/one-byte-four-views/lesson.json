@@ -1,7 +1,7 @@
 {
   "schema": "prax-teach/lesson@1",
   "id": "one-byte-four-views",
-  "title": "One byte, four views",
+  "title": "One int, four views",
   "topic": "printf conversions",
   "language": "c",
   "request": "Teach me how printf shows the same int with %d, %u, %f and %c, as all six media.",
@@ -281,7 +281,7 @@
     {
       "id": "c.cast",
       "kind": "mechanism",
-      "text": "(double)a converts the value 66 to the double 66.0. That double has its own bit pattern, 0x4050800000000000, not the bits of a.",
+      "text": "(double)a converts the value 66 to the double 66.0. On this machine, where double is IEC 60559 binary64, that double's bits are 0x4050800000000000, not the bits of a.",
       "justification": "6.3.1.4p2: an integer value exactly representable in the floating type is unchanged, so the result is 66.0. On this platform double is IEC 60559 binary64 (Annex F): 66 = 1.03125 x 2^6, sign 0, biased exponent 1023 + 6 = 1029 = 0x405, fraction 0.03125 = 2^-5, giving 0x4050800000000000. Lines 15-18 copy the double's bytes into an unsigned long long with memcpy and print them; the run printed 0x4050800000000000, while a's own value is 0x42.",
       "sources": [
         {
@@ -420,8 +420,8 @@
     {
       "id": "c.recap",
       "kind": "mechanism",
-      "text": "Every view here shows the value 66. Only (double)a gives printf a different bit pattern.",
-      "justification": "%d, %u and %c print 66, 66 and the character with code 66 (lines 3, 4, 6 of the run); (unsigned)a keeps the bits of 66 in an unsigned int (6.3.1.3p1, and 66 has the same representation there); %c uses the low byte 0x42. The double 66.0 is 0x4050800000000000 (line 7).",
+      "text": "%d, %u and %c all work from the int value 66. %f works from a new value, the double that (double)a made.",
+      "justification": "Line 11 passes a to %d, line 12 passes (unsigned)a, which is still 66 (6.3.1.3p1), and line 14 passes a to %c, which converts it to unsigned char 66 (7.21.6.1p8); the run printed 66, 66 and B. Line 13 passes (double)a, a new double 66.0 (6.3.1.4p2), whose bits are 0x4050800000000000 on this binary64 machine (run line 7), and %f prints it as 66.000000.",
       "sources": [
         {
           "title": "captured run of programs/views.c",
@@ -437,7 +437,7 @@
         "f.d",
         "f.u",
         "f.c",
-        "f.dbits"
+        "f.f"
       ]
     }
   ],
@@ -689,7 +689,7 @@
       ],
       "narration": [
         {
-          "text": "The cast to double converts the value 66 to the double 66.0. That double has its own bit pattern, not the bits of a.",
+          "text": "The cast to double converts the value 66 to the double 66.0. On this machine, that double's bits are not the bits of a.",
           "claims": [
             "c.cast"
           ]
@@ -798,7 +798,7 @@
       ],
       "narration": [
         {
-          "text": "Every view here shows the value 66. Only the cast to double gives printf a different bit pattern.",
+          "text": "Percent d, percent u and percent c all work from the int value 66. Percent f works from a new value, the double that the cast made.",
           "claims": [
             "c.recap"
           ]

@@ -122,13 +122,18 @@ class _Collector(HTMLParser):
 def _svg_texts(lesson, svg):
     raw = []
     root = ET.parse(svg).getroot()
+    # boxes that carry the chrome "wrong belief" label: a misconception stated inside one is presented as wrong
+    labelled = {el.get("data-in") for el in root.iter() if el.get("data-chrome") == "wrong_belief" and el.get("data-in")}
     for el in root.iter():
         tag = el.tag.split("}")[-1]
         if tag == "text":
             src = next(((a[5:], el.get(a)) for a in MAP_ATTRS if el.get(a) is not None), ("unmapped", ""))
             lines = [ts for ts in el if ts.tag.split("}")[-1] == "tspan" and ts.get("y") is not None]
             body = " ".join("".join(ts.itertext()) for ts in lines) if lines else "".join(el.itertext())
-            raw.append((src[0], src[1], body, svg.name))
+            where = svg.name
+            if src[0] == "misconception" and el.get("data-in") and el.get("data-in") in labelled:
+                where = "still (labelled as a wrong belief)"  # the reviewer sees how the still presents it
+            raw.append((src[0], src[1], body, where))
         elif tag == "title":
             raw.append(("label", "title", el.text or "", svg.name))
         elif tag == "desc":

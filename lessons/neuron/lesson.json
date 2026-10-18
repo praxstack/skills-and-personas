@@ -374,9 +374,9 @@
   "claims": [
     {
       "id": "c.formula",
-      "kind": "definition",
-      "text": "A neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
-      "justification": "This is the single-unit form a = g(w·x + b) with g = ReLU (Deep Learning §6.1 and §6.3.1). neuron.c lines 8-14 do exactly this: two products, a sum with b, then fmax(0.0, z).",
+      "kind": "framing",
+      "text": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
+      "justification": "neuron.c lines 8-14 do exactly this for this one neuron: line 8 and 10 multiply each input by its weight, line 12 adds the two terms and b, and line 14 applies fmax(0.0, z), which is ReLU, g(z) = max{0, z} (Deep Learning §6.3.1). Other neurons may use other activations; this lesson's neuron uses ReLU.",
       "sources": [
         {
           "title": "Goodfellow, Bengio and Courville, Deep Learning (MIT Press, 2016)",
@@ -676,7 +676,7 @@
       ],
       "narration": [
         {
-          "text": "A neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
+          "text": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
           "claims": [
             "c.formula"
           ]
@@ -761,7 +761,7 @@
       ],
       "narration": [
         {
-          "text": "The neuron adds the two terms and the bias. 1.2 minus 0.4 minus 0.2 is 0.6. That sum is z.",
+          "text": "The neuron adds the two terms and the bias, and that sum is z. 1.2 minus 0.4 minus 0.2 is 0.6.",
           "claims": [
             "c.add"
           ]
@@ -804,7 +804,7 @@
       ],
       "narration": [
         {
-          "text": "A neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
+          "text": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
           "claims": [
             "c.formula"
           ]

@@ -154,4 +154,7 @@ def test_refine_ignores_stretched_last_token():
     assert media.refine(normal, starts=[31.95, 35.61], ends=[29.2])[1] == 31.95
     late = [{"text": "on.", "start": 33.0, "end": 33.3}]  # a genuinely late word still ends late
     assert media.refine(late, starts=[31.95, 33.4], ends=[32.9])[1] == 33.4
+    # one second of stretch before a scene gap (one-byte sc7.2: "run." 79.74 to 80.72, silence from 79.89)
+    run = [{"text": "never", "start": 79.48, "end": 80.03}, {"text": "run.", "start": 79.74, "end": 80.72}]
+    assert media.refine(run, starts=[78.85, 79.89, 81.36], ends=[79.19])[1] == 79.89
     return {"stretched_offset": off}

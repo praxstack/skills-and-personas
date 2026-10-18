@@ -357,7 +357,7 @@
     {
       "id": "c.frame",
       "kind": "rule",
-      "text": "Each call to factorial gets its own n and its own r. This lesson draws each call as a frame on the call stack.",
+      "text": "Each call to factorial gets its own n and its own r. This lesson draws each call to factorial as a frame on the call stack.",
       "justification": "6.2.4p6: an automatic object's lifetime is from entry into its block until the block ends, and if the block is entered recursively a new instance is created each time; n (a parameter) and r are automatic objects of factorial's body, so every active call has its own. C does not name a stack; the frame picture is this lesson's drawing of those separate instances, kept in call order.",
       "sources": [
         {
@@ -444,7 +444,7 @@
     {
       "id": "c.unwind",
       "kind": "mechanism",
-      "text": "Each return hands its value to the call that made it, one frame down. factorial(2) gets 1 and returns 2 × 1 = 2.",
+      "text": "Each factorial return hands its value to the call that made it, one frame down. factorial(2) gets 1 and returns 2 × 1 = 2.",
       "justification": "6.8.6.4p3: a return with an expression gives its value to the caller as the value of the call expression. factorial(1) was called by factorial(2) in line 7, so factorial(2) computes r = 2 * 1 = 2 and returns it. The run printed factorial(2) = 2 as line 5.",
       "sources": [
         {
@@ -539,7 +539,7 @@
     {
       "id": "c.recap",
       "kind": "mechanism",
-      "text": "The stack grows by one frame for each call and shrinks by one frame for each return. Each return value flows to the frame below.",
+      "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return. Each factorial return value flows to the frame below.",
       "justification": "Each call creates new instances of n and r that live until that call returns (6.2.4p6), so the set of live frames grows by one per call and shrinks by one per return; each return value goes to the caller, the frame below it (6.8.6.4p3). The run shows three enters, then three results, then main's line.",
       "sources": [
         {
@@ -568,7 +568,7 @@
     },
     {
       "id": "m.once",
-      "statement": "factorial(3) multiplies only once, so it returns 3.",
+      "statement": "factorial(3) multiplies 3 by the base case's 1, so it returns 3.",
       "correction": "c.ret3"
     }
   ],
@@ -907,7 +907,7 @@
           ]
         },
         {
-          "text": "Each call to factorial gets its own n and its own r. This lesson draws each call as a frame on the call stack.",
+          "text": "Each call to factorial gets its own n and its own r. This lesson draws each call to factorial as a frame on the call stack.",
           "claims": [
             "c.frame"
           ]
@@ -916,7 +916,7 @@
     },
     {
       "id": "sc2",
-      "title": "One frame per call",
+      "title": "One frame per factorial call",
       "state": "s1",
       "key_nodes": [
         "code",
@@ -1016,7 +1016,7 @@
       ],
       "narration": [
         {
-          "text": "Each return hands its value to the call that made it, one frame down. factorial of 2 gets 1 and returns 2 times 1, which is 2.",
+          "text": "Each factorial return hands its value to the call that made it, one frame down. factorial of 2 gets 1 and returns 2 times 1, which is 2.",
           "claims": [
             "c.unwind"
           ]
@@ -1078,7 +1078,7 @@
       ],
       "narration": [
         {
-          "text": "The stack grows by one frame for each call and shrinks by one frame for each return. Each return value flows to the frame below.",
+          "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return. Each factorial return value flows to the frame below.",
           "claims": [
             "c.recap"
           ]

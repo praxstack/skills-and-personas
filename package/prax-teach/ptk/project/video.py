@@ -115,6 +115,11 @@ def draw_plan(lesson, before_sid, sid, budget=None):
         dur = SEG_JUMP if kind == "jump" else SEG_RUN
         steps.append({"a": a, "b": b, "kind": kind, "t0": round(t, 3), "dur": dur})
         t += dur
+    # the highlight ends on the state's own line, even when the last segment to that line was drawn before
+    end_line = steps[-1]["b"] if steps else (old["line"] if same else first)
+    hl_to = cur["line"] if cur["line"] != end_line else None
+    if hl_to is not None:
+        t += 0.3
     new_out = [f for f in cur["output"] if not same or f not in old["output"]]
     outputs_at = round(t + 0.05, 3)
     # settled = the end of the last tween scene_html schedules (dots/tags +0.06, line colour +0.1,
@@ -130,7 +135,7 @@ def draw_plan(lesson, before_sid, sid, budget=None):
     # a short scene plays the same drawing faster (a nested timeline with timeScale 1/k), never cut off
     k = min(1.0, budget / total) if budget else 1.0
     return {"steps": steps, "first": first, "first_at": first_at, "morph": morph, "outputs_at": outputs_at,
-            "total": round(total * k, 3), "k": round(k, 4)}
+            "total": round(total * k, 3), "k": round(k, 4), "hl_to": hl_to, "hl_at": round(outputs_at - 0.35, 3)}
 
 
 def plan_screen(lesson, scenes):
@@ -402,7 +407,7 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
                          f'd="M{RAIL_X - 24},{cy[b] - 10:.1f} L{RAIL_X - 6},{cy[b]:.1f} L{RAIL_X - 24},{cy[b] + 10:.1f} Z"/>')
         segs.append(f'<path class="seg{"" if drawn else " new"}" {S} data-seg="{a}-{b}" data-kind="{kind}" pathLength="1" d="{d}"/>')
     dots = [f'<circle class="dot{"" if n in drawn_path else " new"}" {S} data-line="{n}" cx="{RAIL_X}" cy="{cy[n]:.1f}" r="8"/>'
-            for n in run]
+            for n in dict.fromkeys(run)]  # one dot per line, however often the path passes it
     svg = (f'<svg class="rail" {S} viewBox="0 0 {L["card_w"] - 4} {L["card_h"] - 4}" aria-hidden="true">'
            f'{"".join(segs)}{"".join(heads)}{"".join(dots)}</svg>')
     tags = []
@@ -604,7 +609,7 @@ def scene_html(lesson, scene, index, count, timing):
                                             notes=False, width=pw_)
         layers = cur_svg
         if replay and scene["before"] != scene["state"]:
-            bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" {fit}',
+            bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}',
                                                 height=mh, notes=False, width=pw_)
             layers = bef_svg + cur_svg
         mech_html = f'<div class="mechbox" data-key="panel">{layers}</div>' if not q else ""
@@ -640,6 +645,8 @@ def scene_html(lesson, scene, index, count, timing):
         js.insert(len(morph_js), f"d.to(q('.dot{S}[data-line=\"{f0}\"], .tag{S}[data-line=\"{f0}\"]'), {{ opacity: 1, duration: 0.12 }}, {fa});"
                                  f"d.to(q('.ln[data-to=\"{f0}\"]'), {{ color: '{t['ink']}', duration: 0.2 }}, {fa});")
     oa = plan["outputs_at"]
+    if plan.get("hl_to") is not None and plan["hl_to"] in gc["cy"]:
+        js.append(f"d.to(q('.hl'), {{ y: {gc['cy'][plan['hl_to']] - LH / 2:.1f}, duration: 0.3, ease: 'power1.inOut' }}, {plan['hl_at']:.3f});")
     if grow:
         js.append(f"d.fromTo(q('.sidebody'), {{ y: {-shift} }}, {{ y: 0, duration: 0.45, ease: 'power2.inOut' }}, {max(0.0, oa - 0.5):.3f});")
         js.append(f"d.fromTo(q('.outcard'), {{ opacity: 0, y: -12 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }}, {max(0.0, oa - 0.15):.3f});")
@@ -654,8 +661,9 @@ def scene_html(lesson, scene, index, count, timing):
         js.append(f"d.fromTo(q('.outcard'), {{ opacity: 0, y: -12 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }}, {max(0.0, oa - 0.15):.3f});")
     if mode and not q and replay and scene["before"] != scene["state"]:
         # the panel: this scene's state fades in over the previous one, which then fades out (removed parts go)
-        js.append("d.fromTo(q('.mcur'), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power1.out' }, 0);")
-        js.append("d.to(q('.mbefore'), { opacity: 0, duration: 0.3, ease: 'power1.in' }, 0.45);")
+        # autoAlpha: a layer at opacity 0 is also visibility:hidden, so only the cross-fade overlaps the two
+        js.append("d.fromTo(q('.mcur'), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45, ease: 'power1.out' }, 0);")
+        js.append("d.to(q('.mbefore'), { autoAlpha: 0, duration: 0.3, ease: 'power1.in' }, 0.45);")
     vars_p = (f'<p class="vars"><span class="varlabel" data-chrome="vars_label">{esc(text.ui("vars_label").upper())}</span>'
               f'{vars_html}</p>') if mode is None else ""
     panel_css = ""
