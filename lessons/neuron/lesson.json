@@ -954,27 +954,6 @@
       ]
     },
     {
-      "id": "c.kformula",
-      "kind": "mechanism",
-      "text": "For w2 and b between -2 and 2, the program computes z = 0.8 × 1.5 + 0.4 × w2 + b in double, left to right, and a = max(0, z).",
-      "justification": "programs/neuron.c computes t1 = x1 * w1, t2 = x2 * w2, z = t1 + t2 + b left to right in double and a = fmax(0.0, z). The explorer's values are computed by ptk/expect_neuron.py with the same binary64 operations in the same order and printed in %g / %+g form; three variant programs (neuron_k1.c to neuron_k3.c) were compiled and run and their output matches the table at those points.",
-      "sources": [
-        {
-          "title": "programs/neuron.c",
-          "clause": "lines 8-14"
-        },
-        {
-          "title": "captured run of programs/neuron_k1.c, neuron_k2.c, neuron_k3.c",
-          "clause": "stdout lines 1-4"
-        }
-      ],
-      "facts": [
-        "f.k1.z",
-        "f.k2.z",
-        "f.k3.z"
-      ]
-    },
-    {
       "id": "c.kzero",
       "kind": "mechanism",
       "text": "With w2 = -1 and b = -1, z prints as -0.2 and a is 0, even though the first term still prints as +1.2.",
@@ -1390,7 +1369,6 @@
         }
       ],
       "claims": [
-        "c.kformula",
         "c.kzero",
         "c.relu"
       ]
