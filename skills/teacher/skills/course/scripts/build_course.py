@@ -66,9 +66,23 @@ def norm_base(base: str) -> str:
     return "/" + base.strip("/") + "/" if base.strip("/") else ("/" if base else "")
 
 
+def logical_path(p: Path) -> Path:
+    """p made absolute without following symlinks. os.getcwd() is always the real
+    folder, so a relative path starts from $PWD (the folder as the shell reached
+    it, links and all) when that is the same folder."""
+    base = os.getcwd()
+    pwd = os.environ.get("PWD", "")
+    try:
+        if os.path.isabs(pwd) and os.path.samefile(pwd, base):
+            base = pwd
+    except OSError:
+        pass
+    return Path(os.path.normpath(os.path.join(base, p)))
+
+
 def load_manifest(course_dir: Path) -> dict:
     """courses/videos.json: {"<course-id>/<lesson-id>.mp4": "https://...", ...}; empty values allowed."""
-    f = Path(os.path.abspath(course_dir)).parent / "videos.json"  # absolute so "." finds the parent; a symlink isn't followed
+    f = logical_path(course_dir).parent / "videos.json"  # so "." finds the parent, and a linked course reads the one beside the link
     return json.loads(f.read_text()) if f.exists() else {}
 
 

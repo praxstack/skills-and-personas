@@ -562,6 +562,16 @@ class Builds(unittest.TestCase):
             (linked / "one").symlink_to(d)
             (linked / "videos.json").write_text(json.dumps({"one/one-a.mp4": "https://beside-the-link"}))
             self.assertEqual(build_course.load_manifest(linked / "one"), {"one/one-a.mp4": "https://beside-the-link"})
+            # Also after cd-ing into the link: os.getcwd() is the real folder, $PWD is the linked one.
+            from unittest import mock
+            try:
+                os.chdir(linked / "one")
+                with mock.patch.dict(os.environ, {"PWD": str(linked / "one")}):
+                    self.assertEqual(build_course.load_manifest(Path(".")), {"one/one-a.mp4": "https://beside-the-link"})
+                with mock.patch.dict(os.environ, {"PWD": str(Path(tmp))}):  # a stale $PWD isn't trusted
+                    self.assertEqual(build_course.load_manifest(Path(".")), manifest)
+            finally:
+                os.chdir(cwd)
             self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("url", url))
             self.assertIsNone(build_course.resolve_video(d, "one", "one-b", manifest), "no file, no manifest entry")
             self.assertIsNone(build_course.resolve_video(d, "one", "one-c", manifest), "an empty manifest entry is no video")
@@ -664,6 +674,11 @@ class Builds(unittest.TestCase):
                                capture_output=True, text=True, env=env, cwd=Path(tmp) / "other")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn("would upload 1", r.stdout, "another courses/ in the current folder isn't used")
+            # Run through a link, as install.sh makes them: it still runs.
+            (Path(tmp) / "pv.mjs").symlink_to(site / "teacher/skills/course/scripts/publish_videos.mjs")
+            r = subprocess.run(["node", str(Path(tmp) / "pv.mjs"), "--dry-run"], capture_output=True, text=True, env=env, cwd=Path(tmp) / "other")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn("would upload 1", r.stdout, "a symlinked script must not silently do nothing")
             # Skipped only when the manifest URL is the upload of these exact bytes.
             blob = "https://s.public.blob.vercel-storage.com/courses/two"
             for url, skipped in [(f"{blob}/two-a.{digest}.mp4", True), (f"{blob}/two-a.00000000.mp4", False), (f"{blob}/two-a.mp4", False), ("", False)]:
