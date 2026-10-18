@@ -316,20 +316,37 @@ MORPH_JS = r"""(t) => {
     const gap = tops[i][0] - tops[i - 1][1];
     if (gap > 0.6 * lh) problems.push({ kind: 'code-gap', px: Math.round(gap) });
   }
-  return { t, problems, out: [...root.querySelectorAll('.out[data-set="old"]')].map((o) => +eop(o).toFixed(3)),
+  const outs = (set) => [...root.querySelectorAll(`.out[data-set="${set}"]`)].map((o) => +eop(o).toFixed(3));
+  return { t, problems, out: outs('old'), cur: outs('cur'),
            notes: max([...root.querySelectorAll('.notecard, .changecard, .qcard')]) };
 }"""
 
 
+NEW_OUTPUT_VISIBLE = 0.5  # a replacement output value at this opacity or more is on screen
+
+
+def morph_output_problems(samples):
+    """Round-17 Codex 8: continuous readable output through a program change, measured on the frames alone (no
+    planner time). `samples`: [{t, out: old output opacities, cur: new output opacities}] in time order. Until
+    the first frame where a new output value is visibly on screen, every old output value must be fully shown."""
+    problems = []
+    for v in sorted(samples, key=lambda x: x["t"]):
+        if any(o >= NEW_OUTPUT_VISIBLE for o in v.get("cur") or []):
+            break
+        if v.get("out") and min(v["out"]) < 0.99:
+            problems.append({"kind": "output-not-readable", "t": v["t"], "opacity": min(v["out"]),
+                             "why": "the old output faded before any new output was on screen"})
+    return problems
+
+
 def morph_gate(lesson, video_dir, timing, lesson_sha=None):
     """A program change keeps the frame steady (WP9 Part A): through the diff every visible code row keeps a line
-    number, the file name stays readable, no gap opens in the code, the output values stay fully shown until the
-    diff is done, and the note column is never empty once the title is in. Sampled every 0.1 s from the
-    scene start to `shown`."""
+    number, the file name stays readable, no gap opens in the code, the old output stays fully shown until new output
+    is on screen (morph_output_problems; no planner time, round-17 Codex 8), and the note column is never empty
+    once the title is in. Sampled every 0.05 s from the scene start to `shown`."""
     scenes = [s for s in timing["scenes"] if s.get("morph")]
     if not scenes:
         return visual.g("video.morph-stable", "video", True, {"morph_scenes": 0, "note": "no program change in this lesson"})
-    from ..project import video as vproj
     comp = video_dir / "composition"
     hdir = video_dir / "work" / "frames-morph"
     if hdir.exists():
@@ -338,12 +355,9 @@ def morph_gate(lesson, video_dir, timing, lesson_sha=None):
     jobs, plans = [], {}
     with visual.LocalServer(video_dir) as srv:
         for sc in scenes:
-            plan = vproj.draw_plan(lesson, sc["before"], sc["state"], budget=vproj.DRAW_BUDGET * (sc["end"] - sc["reveal"]))
-            reveal = sc["reveal"] - sc["start"]
-            outputs_at = reveal + min(plan["outputs_at"], vproj.MORPH - 0.05) * plan["k"]  # the diff itself
             end = sc["shown"] - sc["start"]
-            ts = [round(x / 10, 2) for x in range(0, int(end * 10) + 1)]
-            plans[sc["id"]] = {"outputs_at": round(outputs_at, 3), "times": ts}
+            ts = [round(x / 20, 2) for x in range(0, int(end * 20) + 1)]  # every 0.05 s
+            plans[sc["id"]] = {"times": ts}
             steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
             steps += [{"eval": f"({MORPH_JS})({t})", "as": f"t:{t}"} for t in ts]
             jobs.append({"id": f"morph:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-morph/{pages[sc['id']]}",
@@ -355,16 +369,19 @@ def morph_gate(lesson, video_dir, timing, lesson_sha=None):
         if not r.get("ok"):
             bad.append({"scene": sid, "kind": "job-failed", "error": r.get("error", "")[:300]})
             continue
-        p = plans[sid]
-        for k, v in sorted((r.get("values") or {}).items(), key=lambda kv: float(kv[0][2:])):
-            t = float(k[2:])
+        rows = sorted((r.get("values") or {}).values(), key=lambda v: v["t"])
+        for v in rows:
             sampled += 1
             probs = list(v["problems"])
-            if t < p["outputs_at"] and v["out"] and min(v["out"]) < 0.99:
-                probs.append({"kind": "output-faded", "opacity": min(v["out"])})
-            if t >= 0.45 and v["notes"] < 0.5:
+            if v["t"] >= 0.45 and v["notes"] < 0.5:
                 probs.append({"kind": "note-column-empty", "opacity": v["notes"]})
-            bad += [{"scene": sid, "t": t, **pr} for pr in probs]
+            bad += [{"scene": sid, "t": v["t"], **pr} for pr in probs]
+        out_probs = morph_output_problems(rows)
+        if out_probs:
+            plans[sid]["output_unreadable_from"] = out_probs[0]["t"]
+        bad += [{"scene": sid, **pr} for pr in out_probs]
     return visual.g("video.morph-stable", "video", not bad and sampled > 0,
-                    {"morph_scenes": [s["id"] for s in scenes], "frames_sampled": sampled, "problems": bad[:30]},
+                    {"morph_scenes": [s["id"] for s in scenes], "frames_sampled": sampled, "problems": bad[:30],
+                     "output_rule": "old output fully shown until a new output value is on screen (opacity >= "
+                                    f"{NEW_OUTPUT_VISIBLE}), measured on the frames", "scenes": plans},
                     "" if not bad else "the frame loses its gutter, file name, output or note during the program diff")

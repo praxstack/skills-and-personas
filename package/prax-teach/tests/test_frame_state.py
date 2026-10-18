@@ -168,3 +168,23 @@ def test_note_waits_for_the_diff():
         return {"frames_checked": len(times), "note_first_full": shown}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_morph_output_stays_readable_until_the_new_output_is_on_screen():
+    """Round-17 Codex 8: the morph gate's output obligation is measured on the frames, not taken from the
+    renderer's own planner. Until a replacement output value is visibly on screen (opacity >= 0.5), every old output
+    value stays fully shown. Codex's counterexample: the old output fades at 1.0 s, the new one only arrives at
+    2.0 s. The planner-shortened deadline (the diff's end) accepted that gap; now it fails."""
+    def samples(old_until, old_after, cur_from, end=3.0):
+        return [{"t": t / 10, "out": [1.0 if t / 10 < old_until else old_after] * 2,
+                 "cur": [1.0 if t / 10 >= cur_from else (0.6 if t / 10 >= cur_from - 0.1 else 0.0)]}
+                for t in range(int(end * 10) + 1)]
+    gap = frames.morph_output_problems(samples(old_until=1.0, old_after=0.3, cur_from=2.0))
+    assert gap and gap[0]["kind"] == "output-not-readable" and gap[0]["t"] == 1.0, gap
+    cross = frames.morph_output_problems(samples(old_until=1.9, old_after=0.3, cur_from=2.0))
+    assert cross == [], f"a cross-fade into the new output is fine: {cross}"
+    never = frames.morph_output_problems([{"t": t / 10, "out": [1.0 if t < 25 else 0.2], "cur": []} for t in range(31)])
+    assert [p["t"] for p in never][:1] == [2.5], "with no replacement on screen the old output must stay to the end"
+    none_old = frames.morph_output_problems([{"t": t / 10, "out": [], "cur": [0.0]} for t in range(5)])
+    assert none_old == [], none_old
+    return {"gap_caught_at": gap[0]["t"], "cross_fade_ok": True}
