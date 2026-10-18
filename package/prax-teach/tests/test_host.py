@@ -75,7 +75,8 @@ def test_env_contract_reaches_children():
     # an allowlist stays an allowlist: only the contract keys were added
     res = host.run(["/usr/bin/env"], env=host.program_env(), timeout=30)
     keys = {ln.split("=", 1)[0] for ln in res.stdout.splitlines() if "=" in ln}
-    allowed = set(host.program_env()) | set(host.CONTRACT) | {"PLAYWRIGHT_BROWSERS_PATH", "SOURCE_DATE_EPOCH"}
+    allowed = set(host.program_env()) | set(host.CONTRACT) | {"PLAYWRIGHT_BROWSERS_PATH", "SOURCE_DATE_EPOCH",
+                                                               "DEVELOPER_DIR"}
     assert keys <= allowed, sorted(keys - allowed)
     assert node.env(lesson_sha256="cd" * 32)["SOURCE_DATE_EPOCH"] == host.source_date_epoch("cd" * 32)
     return seen
@@ -129,3 +130,45 @@ def test_setup_core_venv_has_genanki_and_fsrs():
     assert res.code == 0, f"core venv lacks genanki or fsrs (run `ptk host setup --yes`): {res.stderr[-400:]}"
     assert res.stdout.split() == ["0.13.1", "6.3.1"], res.stdout
     return {"versions": res.stdout.split()}
+
+
+def test_developer_dir_pinned_and_no_xcrun_shim_runs():
+    """Round-17 incident (17:44): a ptk run made macOS offer to install the Command Line Tools. An /usr/bin
+    developer shim (clang, git, as, ld, ...) asks xcrun for the active developer dir, and when it cannot find one
+    (a scrubbed env, a sandbox, Xcode mid-update) macOS pops that dialog. So: DEVELOPER_DIR is pinned in every
+    child env, a caller's DEVELOPER_DIR never wins, the compilers run by their absolute path inside that dir,
+    and host.run swaps any /usr/bin shim for the real tool (or refuses when there is none)."""
+    import os
+    from ptk.capture import c_runner
+    dev = host.developer_dir()
+    assert dev and os.path.isdir(dev), dev
+    saved = os.environ.get("DEVELOPER_DIR")
+    try:
+        os.environ["DEVELOPER_DIR"] = "/nonexistent-hostile-devdir"
+        envs = {"default": None, "child": host.child_env(), "program": host.program_env(),
+                "compile": c_runner.compile_env(host.state_path("tmp"))}
+        for label, env in envs.items():
+            res = host.run(["/usr/bin/env"], env=env, timeout=30)
+            got = dict(ln.split("=", 1) for ln in res.stdout.splitlines() if "=" in ln)
+            assert got.get("DEVELOPER_DIR") == dev, (label, got.get("DEVELOPER_DIR"))
+    finally:
+        if saved is None:
+            os.environ.pop("DEVELOPER_DIR", None)
+        else:
+            os.environ["DEVELOPER_DIR"] = saved
+    cenv = c_runner.compile_env(host.state_path("tmp"))
+    assert cenv.get("DEVELOPER_DIR") == dev and cenv.get("SDKROOT", "").startswith(dev), cenv
+    assert cenv["PATH"].split(":")[0].startswith(dev), "the real toolchain comes before the /usr/bin shims"
+    clang = c_runner.clang_path()
+    assert clang.startswith(dev + "/") and os.access(clang, os.X_OK), clang
+    assert host.which("clang") == clang, host.which("clang")
+    for tool in host.XCRUN_SHIMS:
+        real = host.dev_tool(tool)
+        assert real is None or (real.startswith(dev + "/") and real != f"/usr/bin/{tool}"), (tool, real)
+    res = host.run(["/usr/bin/git", "--version"], timeout=30)
+    assert res.cmd[0] != "/usr/bin/git" and res.cmd[0].startswith(dev + "/"), res.cmd
+    v = host.tool_version("clang")
+    assert v and "clang" in v.lower(), v
+    sb = host.SANDBOX_PROFILE.read_text()
+    assert '(subpath (param "DEVDIR"))' in sb, "compile mode must read the developer dir"
+    return {"developer_dir": dev, "clang": clang}

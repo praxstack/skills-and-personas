@@ -75,8 +75,14 @@ def ub_covered(lesson, program):
 # ---------------------------------------------------------------- compiler, env, limits (review WP2 P2-1, P2-2)
 
 def clang_path():
-    """The system clang, never whatever `clang` comes first on the caller's PATH."""
-    return "/usr/bin/clang" if os.access("/usr/bin/clang", os.X_OK) else host.which("clang")
+    """The real clang inside the pinned developer dir, by absolute path: never the /usr/bin/clang xcrun shim
+    (round-17 incident: a shim that cannot find a developer dir makes macOS offer to install the CLT), and never
+    whatever `clang` comes first on the caller's PATH."""
+    path = host.dev_tool("clang")
+    if not path:
+        raise errors.HostToolMissing("clang: no clang in the pinned developer dir "
+                                     f"({host.developer_dir()}); run `xcode-select -p` to check", tool="clang")
+    return path
 
 
 def gcc_path():
@@ -88,8 +94,17 @@ def gcc_path():
 
 def compile_env(tmp):
     """Allowlist env for the compilers: nothing from the caller (CCC_OVERRIDE_OPTIONS, CPATH,
-    C_INCLUDE_PATH, LIBRARY_PATH, SDKROOT, DEVELOPER_DIR, Malloc*) reaches clang or gcc-16."""
-    return {"PATH": "/usr/bin:/bin", "TMPDIR": f"{Path(tmp).resolve()}/", "LANG": "C", "LC_ALL": "C"}
+    C_INCLUDE_PATH, LIBRARY_PATH, SDKROOT, DEVELOPER_DIR, Malloc*) reaches clang or gcc-16.
+    DEVELOPER_DIR and SDKROOT are ptk's own pinned values (the real clang is not run through xcrun, so it is told
+    the SDK the shim would have picked), and the real toolchain comes before /usr/bin so gcc-16 finds the real
+    `as` and `ld`, not their xcrun shims."""
+    env = {"PATH": "/usr/bin:/bin", "TMPDIR": f"{Path(tmp).resolve()}/", "LANG": "C", "LC_ALL": "C",
+           "DEVELOPER_DIR": host.developer_dir() or host.NO_DEVELOPER_DIR}
+    if host.toolchain_bin():
+        env["PATH"] = f"{host.toolchain_bin()}:/usr/bin:/bin"
+    if host.sdk_root():
+        env["SDKROOT"] = host.sdk_root()
+    return env
 
 
 _TOOLCHAIN = {}
@@ -98,8 +113,9 @@ _TOOLCHAIN = {}
 def toolchain_params():
     """DEVDIR and GCCROOT for the compile profile's read allowlist, realpath'd and cached."""
     if not _TOOLCHAIN:
-        res = host.run(["/usr/bin/xcode-select", "-p"], timeout=30, check=True, env=compile_env(host.state_path("tmp")))
-        dev = Path(res.stdout.strip()).resolve()
+        if not host.developer_dir():
+            raise errors.HostToolMissing("no developer dir: `xcode-select -p` gave none", tool="clang")
+        dev = Path(host.developer_dir()).resolve()
         if dev.parent.name == "Contents" and dev.parent.parent.suffix == ".app":
             dev = dev.parent.parent
         gcc = Path(gcc_path()).resolve().parent.parent  # <prefix>/bin/gcc-16 -> <prefix>

@@ -77,6 +77,10 @@
              (subpath "/dev")
              ;; xcodebuild's license check
              (literal "/Library/Preferences/com.apple.dt.Xcode.plist")
+             ;; the active developer dir link: ptk pins DEVELOPER_DIR and runs the real compilers, so nothing
+             ;; should need it, but a tool that still asks xcrun must find the tools, not conclude they are
+             ;; missing and make macOS offer an install (round-17 incident)
+             (literal "/private/var/db/xcode_select_link")
              ;; xcrun's lookup cache in the per-user temp dir (DARWIN_USER_TEMP_DIR, not $TMPDIR)
              (regex #"^/private/var/folders/[^/]+/[^/]+/T/xcrun_db"))))
 

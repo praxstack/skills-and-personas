@@ -420,8 +420,11 @@ def test_compile_env_is_an_allowlist():
     try:
         os.environ.update(HOSTILE_ENV)
         env = c_runner.compile_env(host.state_path("tmp"))
-        assert not set(env) & set(HOSTILE_ENV), f"hostile vars reached the compiler: {set(env) & set(HOSTILE_ENV)}"
-        assert set(env) <= {"PATH", "TMPDIR", "LANG", "LC_ALL", "HOME"}, sorted(env)
+        leaked = {k for k in set(env) & set(HOSTILE_ENV) if env[k] == HOSTILE_ENV[k]}
+        assert not leaked, f"hostile vars reached the compiler: {leaked}"
+        # DEVELOPER_DIR and SDKROOT are ptk's own pinned values (round-17 xcrun incident), never the caller's
+        assert set(env) <= {"PATH", "TMPDIR", "LANG", "LC_ALL", "HOME", "DEVELOPER_DIR", "SDKROOT"}, sorted(env)
+        assert env.get("SDKROOT", "").startswith(host.developer_dir()), env.get("SDKROOT")
         for fixture, needle in (("asan_heap.c", "AddressSanitizer"), ("format_warning.c", "-Wformat")):
             tmp = kit.make_lesson("sec-env-", [kit.program("p1", fixture)], [kit.fact("f.x", "p1", 1)])
             try:

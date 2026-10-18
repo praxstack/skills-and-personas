@@ -65,6 +65,92 @@ def registry():
     return json.loads(REGISTRY.read_text())
 
 
+# ---------------------------------------------------------------- developer dir (round-17 xcrun incident)
+#
+# The /usr/bin developer tools below are xcrun shims: each asks xcrun for the active developer dir. When xcrun
+# cannot find one (no DEVELOPER_DIR, a sandbox hiding /var/db/xcode_select_link, Xcode mid-update), macOS pops up
+# "Install Command Line Developer Tools". ptk therefore pins DEVELOPER_DIR in every child env and never runs a
+# shim: host.run swaps it for the real binary inside the pinned dir, or refuses.
+
+XCRUN_SHIMS = ("clang", "clang++", "cc", "c++", "gcc", "g++", "cpp", "ld", "as", "ar", "nm", "strip", "lipo",
+               "otool", "libtool", "ranlib", "size", "strings", "make", "git", "lldb", "atos", "dsymutil",
+               "python3", "pip3", "swift", "swiftc", "xcodebuild", "llvm-symbolizer", "clangd")
+NO_DEVELOPER_DIR = "/nonexistent-ptk-no-developer-dir"  # xcrun errors out on it instead of offering an install
+_DEVDIR = []
+
+
+def _valid_devdir(p):
+    return bool(p) and Path(p).is_dir() and (Path(p) / "usr" / "bin").is_dir()
+
+
+def developer_dir():
+    """The developer dir every child gets as DEVELOPER_DIR: the one recorded by `ptk host setup` in the setup
+    inventory, else `xcode-select -p` (a real binary, not a shim), read once per process. None when neither
+    gives a usable dir. A caller's own DEVELOPER_DIR is never used."""
+    if not _DEVDIR:
+        dev = None
+        inv = state_path(INVENTORY)
+        try:
+            rec = json.loads(inv.read_text()).get("developer_dir") if inv.exists() else None
+        except (OSError, json.JSONDecodeError):
+            rec = None
+        if _valid_devdir(rec):
+            dev = rec
+        elif Path("/usr/bin/xcode-select").exists():
+            proc = subprocess.run(["/usr/bin/xcode-select", "-p"], env=contract_env({"PATH": "/usr/bin:/bin", "LANG": "C"},
+                                                                                  pin_devdir=False),
+                                  capture_output=True, text=True, timeout=30, check=False)
+            out = proc.stdout.strip()
+            if proc.returncode == 0 and _valid_devdir(out):
+                dev = str(Path(out).resolve())
+        _DEVDIR.append(dev)
+    return _DEVDIR[0]
+
+
+def dev_tool(name):
+    """The real binary behind a developer shim, inside the pinned developer dir, or None."""
+    dev = developer_dir()
+    if not dev:
+        return None
+    for d in (Path(dev) / "Toolchains" / "XcodeDefault.xctoolchain" / "usr" / "bin", Path(dev) / "usr" / "bin"):
+        p = d / name
+        if p.is_file() and os.access(p, os.X_OK):
+            return str(p)
+    return None
+
+
+def toolchain_bin():
+    """The directory holding the real clang (put before /usr/bin on a compiler's PATH, so gcc finds the real
+    `as` and `ld`)."""
+    c = dev_tool("clang")
+    return str(Path(c).parent) if c else None
+
+
+def sdk_root():
+    """The macOS SDK in the pinned developer dir (Xcode or Command Line Tools layout), or None."""
+    dev = developer_dir()
+    if not dev:
+        return None
+    for p in (Path(dev) / "Platforms" / "MacOSX.platform" / "Developer" / "SDKs" / "MacOSX.sdk",
+              Path(dev) / "SDKs" / "MacOSX.sdk"):
+        if p.is_dir():
+            return str(p.resolve())
+    return None
+
+
+def _unshim(cmd0):
+    """Replace an /usr/bin developer shim with its real binary; refuse when there is none."""
+    p = str(cmd0)
+    if p.startswith("/usr/bin/") and Path(p).name in XCRUN_SHIMS:
+        real = dev_tool(Path(p).name)
+        if not real:
+            raise errors.HostToolMissing(f"{Path(p).name}: no developer tools in the pinned developer dir "
+                                         f"({developer_dir()}); ptk never runs the /usr/bin shim, which would ask "
+                                         "macOS to install the Command Line Tools", tool=Path(p).name)
+        return real
+    return p
+
+
 def source_date_epoch(lesson_sha256):
     """Deterministic epoch inside 2020..2023 taken from the lesson hash."""
     return str(1_577_836_800 + int(lesson_sha256[:8], 16) % 126_230_400)
@@ -73,6 +159,7 @@ def source_date_epoch(lesson_sha256):
 def child_env(extra=None, lesson_sha256=None, node_home=False):
     env = {k: v for k, v in os.environ.items() if k not in SECRET_VARS}
     env.update(CONTRACT)
+    env["DEVELOPER_DIR"] = developer_dir() or NO_DEVELOPER_DIR
     st = state_dir()
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(st / "browsers")
     env["npm_config_cache"] = str(st / "npm-cache")
@@ -128,13 +215,15 @@ class Result:
 
 def which(tool, required=True):
     path = shutil.which(tool)
+    if Path(tool).name in XCRUN_SHIMS and (path is None or path.startswith("/usr/bin/")):
+        path = dev_tool(Path(tool).name)  # never the xcrun shim (round-17 incident)
     if not path and required:
         hint = registry().get("install_hints", {}).get(tool, "see `ptk host probe`")
         raise errors.HostToolMissing(f"{tool} not found: {hint}", tool=tool)
     return path
 
 
-def contract_env(env=None):
+def contract_env(env=None, pin_devdir=True):
     """The spec 5.5 contract on top of any env a caller built (AC-8.7). An allowlist env such as
     compile_env() or program_env() keeps its allowlist: only the fixed contract keys are added, and
     PLAYWRIGHT_BROWSERS_PATH and SOURCE_DATE_EPOCH when the caller left them out."""
@@ -142,6 +231,10 @@ def contract_env(env=None):
         return child_env()
     out = dict(env)
     out.update(CONTRACT)
+    if pin_devdir:  # only developer_dir() itself, asking xcode-select, runs unpinned
+        out["DEVELOPER_DIR"] = developer_dir() or NO_DEVELOPER_DIR  # pinned, never the caller's
+    else:
+        out.pop("DEVELOPER_DIR", None)
     out.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(state_dir() / "browsers"))
     out.setdefault("SOURCE_DATE_EPOCH", source_date_epoch("0" * 64))
     return out
@@ -150,6 +243,7 @@ def contract_env(env=None):
 def run(cmd, cwd=None, env=None, timeout=600, input_text=None, check=False):
     """Run a tool to completion with a timeout; kill its whole process group on timeout."""
     cmd = [str(c) for c in cmd]
+    cmd[0] = _unshim(cmd[0])
     t0 = time.monotonic()
     proc = subprocess.Popen(cmd, cwd=cwd, env=contract_env(env), stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, stdin=subprocess.PIPE if input_text else subprocess.DEVNULL,
@@ -174,6 +268,7 @@ def run_jsonrpc(cmd, messages, cwd=None, env=None, timeout=90):
     {id: reply}. The child is terminated afterwards; its whole group is killed on timeout."""
     import select
     cmd = [str(c) for c in cmd]
+    cmd[0] = _unshim(cmd[0])
     proc = subprocess.Popen(cmd, cwd=cwd, env=contract_env(env), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                             stderr=subprocess.DEVNULL, text=True, bufsize=1, start_new_session=True)
     replies = {}
@@ -250,6 +345,7 @@ def run_limited(cmd, cwd, timeout, max_output, max_rss_kb, env=None):
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
 
     cmd = [str(c) for c in cmd]
+    cmd[0] = _unshim(cmd[0])
     t0 = time.monotonic()
     proc = subprocess.Popen(cmd, cwd=cwd, env=contract_env(env), stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, stdin=subprocess.DEVNULL, start_new_session=True,
@@ -327,7 +423,7 @@ _RT = []
 def sanitizer_runtime_dir():
     """clang's darwin runtime dir (libclang_rt.asan/ubsan dylibs), realpath'd, cached."""
     if not _RT:
-        res = run([which("clang"), "-print-resource-dir"], timeout=30, check=True)
+        res = run([which("clang"), "-print-resource-dir"], timeout=30, check=True)  # the real clang, not the shim
         _RT.append(str((Path(res.stdout.strip()) / "lib" / "darwin").resolve()))
     return _RT[0]
 
@@ -452,7 +548,8 @@ def setup(yes=False, log=print):
     if not yes:
         return {"fetched": False, "plan": plan}
     reg = registry()
-    inv = {"state": str(state_dir()), "items": [], "started": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+    inv = {"state": str(state_dir()), "items": [], "started": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+           "developer_dir": developer_dir()}
     for item in reg["downloads"]:
         log(f"setup: {item['id']}")
         rec = _SETUP[item["kind"]](item)
