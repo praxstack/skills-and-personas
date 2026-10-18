@@ -83,15 +83,23 @@ class _Collector(HTMLParser):
         self.stack = []
         self.items = []
         self.svg_text = None  # [depth, kind, ref, parts] while inside a mapped SVG <text>
+        self.svgs = 0  # inline <svg> elements seen, so ticks of different drawings never share an axis
+        self.ticks = []  # (item index, svg number, x, y) for each axis-tick label
+
+    def close(self):
+        super().close()
+        self.items = rebind_ticks(self.items, [(i, (n, y), x) for i, n, x, y in self.ticks])
 
     def handle_starttag(self, tag, attrs):
         if tag in ("meta", "link", "br", "img", "source", "track", "input"):
             return
         a = dict(attrs)
         self.stack.append((tag, a))
+        if tag == "svg":
+            self.svgs += 1
         if tag == "text" and self.svg_text is None and any(t == "svg" for t, _ in self.stack):
             src = next(((m[5:], a[m]) for m in MAP_ATTRS if m in a), ("unmapped", ""))
-            self.svg_text = [len(self.stack), src[0], src[1], []]
+            self.svg_text = [len(self.stack), src[0], src[1], [], (a.get("x"), a.get("y"))]
         elif tag == "tspan" and self.svg_text is not None and "y" in a and self.svg_text[3]:
             self.svg_text[3].append(" ")
 
@@ -99,9 +107,11 @@ class _Collector(HTMLParser):
         for i in range(len(self.stack) - 1, -1, -1):
             if self.stack[i][0] == tag:
                 if self.svg_text is not None and i + 1 <= self.svg_text[0]:
-                    _d, kind, ref, parts = self.svg_text
+                    _d, kind, ref, parts, (x, y) = self.svg_text
                     self.svg_text = None
                     if "".join(parts).strip():
+                        if (kind, ref) == ("label", "axis-tick"):
+                            self.ticks.append((len(self.items), self.svgs, _num(x), _num(y)))
                         self.items.append((kind, ref, "".join(parts)))
                 del self.stack[i:]
                 return
@@ -120,11 +130,107 @@ class _Collector(HTMLParser):
         self.items.append(("unmapped", "", data))
 
 
+def _num(v):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+AXIS_FIT_PX = 1.0  # largest distance of a tick from the scale fitted through its axis's ticks
+
+
+def tick_scale_problem(ticks):
+    """Round-17 Codex 5: the ticks of one axis, [(label text, x)], must sit on one increasing linear scale fitted
+    from their own positions: x = a + b * value with b > 0 and every tick within AXIS_FIT_PX. Returns a problem
+    string, or None."""
+    pts = []
+    for t, x in ticks:
+        v = _num(t.strip().replace("\u2212", "-"))
+        if v is None or x is None:
+            return "an axis tick without a number or a position"
+        pts.append((v, x))
+    if len(pts) < 3 or len({v for v, _ in pts}) < 3:
+        return "an axis needs at least three distinct ticks to check its scale"
+    n = len(pts)
+    mv, mx = sum(v for v, _ in pts) / n, sum(x for _, x in pts) / n
+    var = sum((v - mv) ** 2 for v, _ in pts)
+    b = sum((v - mv) * (x - mx) for v, x in pts) / var
+    a = mx - b * mv
+    worst = max(abs(a + b * v - x) for v, x in pts)
+    if b <= 0 or worst > AXIS_FIT_PX:
+        return f"axis tick values are off the axis's linear scale (worst {worst:.1f} px from the fit, slope {b:.2f})"
+    return None
+
+
+def rebind_ticks(items, ticks):
+    """items: (kind, ref, text, ...) tuples; ticks: [(item index, axis key, x)]. Ticks of an axis whose scale fails
+    get ref "axis-tick-off-scale|<problem>", which map_item reports."""
+    axes = {}
+    for i, key, x in ticks:
+        axes.setdefault((key[0], None if key[1] is None else round(key[1], 1)), []).append((i, x))
+    out = list(items)
+    for members in axes.values():
+        why = tick_scale_problem([(items[i][2], x) for i, x in members])
+        if why:
+            for i, _x in members:
+                out[i] = (out[i][0], f"axis-tick-off-scale|{why}", *out[i][2:])
+    return out
+
+
+def _drawn(el, parents):
+    """A text element that is painted and not hidden by itself or an ancestor (attributes and inline style)."""
+    if (el.get("fill") or "").strip().lower() in ("none", "transparent") or _num(el.get("fill-opacity")) == 0:
+        return False
+    e = el
+    while e is not None:
+        style = re.sub(r"\s", "", (e.get("style") or "").lower())
+        if e.get("display") == "none" or e.get("visibility") in ("hidden", "collapse") or _num(e.get("opacity")) == 0 \
+                or "display:none" in style or "visibility:hidden" in style or re.search(r"(^|;)opacity:0(\.0*)?(;|$)", style):
+            return False
+        e = parents.get(e)
+    return True
+
+
+def _untransformed(el, parents):
+    e = el
+    while e is not None:
+        if e.get("transform"):
+            return False
+        e = parents.get(e)
+    return True
+
+
+def _inside(el, rect):
+    x, y = _num(el.get("x")), _num(el.get("y"))
+    rx, ry, rw, rh = (_num(rect.get(k)) for k in ("x", "y", "width", "height"))
+    if None in (x, y, rx, ry, rw, rh):
+        return False
+    return rx <= x <= rx + rw and ry <= y <= ry + rh
+
+
+def _labelled_boxes(root, parents):
+    """Ids of the boxes (<rect id>) that contain a drawn wrong-belief label: a <text> saying the chrome string
+    "wrong_belief", painted and not hidden, untransformed, whose anchor lies inside the box (round-17 Codex 4).
+    The label's own data-in is not trusted; the geometry decides."""
+    want = _squash(text.ui("wrong_belief"))
+    rects = [el for el in root.iter() if el.tag.split("}")[-1] == "rect" and el.get("id")]
+    out = set()
+    for el in root.iter():
+        if el.tag.split("}")[-1] != "text" or el.get("data-chrome") != "wrong_belief":
+            continue
+        if _squash("".join(el.itertext())) != want or not _drawn(el, parents) or not _untransformed(el, parents):
+            continue
+        out |= {r.get("id") for r in rects if _inside(el, r)}
+    return out
+
+
 def _svg_texts(lesson, svg):
-    raw = []
+    raw, ticks = [], []
     root = ET.parse(svg).getroot()
-    # boxes that carry the chrome "wrong belief" label: a misconception stated inside one is presented as wrong
-    labelled = {el.get("data-in") for el in root.iter() if el.get("data-chrome") == "wrong_belief" and el.get("data-in")}
+    parents = {c: p for p in root.iter() for c in p}
+    rects = {el.get("id"): el for el in root.iter() if el.tag.split("}")[-1] == "rect" and el.get("id")}
+    labelled = _labelled_boxes(root, parents)
     for el in root.iter():
         tag = el.tag.split("}")[-1]
         if tag == "text":
@@ -132,8 +238,12 @@ def _svg_texts(lesson, svg):
             lines = [ts for ts in el if ts.tag.split("}")[-1] == "tspan" and ts.get("y") is not None]
             body = " ".join("".join(ts.itertext()) for ts in lines) if lines else "".join(el.itertext())
             where = svg.name
-            if src[0] == "misconception" and el.get("data-in") and el.get("data-in") in labelled:
+            box = el.get("data-in")
+            if src[0] == "misconception" and box in labelled and box in rects and _inside(el, rects[box]) \
+                    and _untransformed(el, parents):
                 where = "still (labelled as a wrong belief)"  # the reviewer sees how the still presents it
+            if src == ("label", "axis-tick"):
+                ticks.append((len(raw), (svg.name, _num(el.get("y"))), _num(el.get("x"))))
             raw.append((src[0], src[1], body, where))
         elif tag == "title":
             raw.append(("label", "title", el.text or "", svg.name))
@@ -146,7 +256,7 @@ def _svg_texts(lesson, svg):
                     raw.append(("fact", ",".join(shown), sent, svg.name))
                 else:
                     raw.append(("alt", "", sent, svg.name))
-    return raw
+    return rebind_ticks(raw, ticks)
 
 
 def _projector_texts(build):
@@ -197,6 +307,7 @@ def collect_texts(lesson, build):
     for html in sorted(comp.glob("*.html")) if comp.exists() else []:
         c = _Collector()
         c.feed(html.read_text())
+        c.close()
         raw += [(k, r, t, f"video/{html.name}") for k, r, t in c.items]
     vdir = build / "video"
     if (vdir / "captions.vtt").exists():
@@ -218,6 +329,7 @@ def collect_texts(lesson, build):
     if (idir / "index.html").exists():
         c = _Collector()
         c.feed((idir / "index.html").read_text())
+        c.close()
         raw += [(k, r, t, "ive/index.html") for k, r, t in c.items]
         for cue in media.parse_vtt(idir / "states.vtt"):
             p = json.loads(cue["text"])
@@ -431,6 +543,8 @@ def map_item(lesson, it):
         if ref == "program-file":
             ok = t in {p["path"].split("/")[-1] for p in lesson.data["programs"]}
             return ([], None) if ok else ([], "not a lesson program file")
+        if ref.startswith("axis-tick-off-scale|"):
+            return [], ref.split("|", 1)[1]
         pat = LABEL_PATTERNS.get(ref)
         return ([], None) if pat and re.fullmatch(pat, t) else ([], f"label {ref!r} holds words")
     if kind == "code":
