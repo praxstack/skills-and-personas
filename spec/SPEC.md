@@ -1,6 +1,8 @@
 # Prax Teach v2.1: the lesson compiler, specification
 
-Version 1.3, 2026-10-18. Source of truth for /implement-from-spec.
+Version 1.4, 2026-10-19. Source of truth for /implement-from-spec.
+
+Changelog v1.4 (Prax approved the repair plan on 2026-10-19; `../FREEZE-v2.md`): explanation first everywhere. Amended AC-1.3, AC-1.6, AC-1.7, AC-6.6 (stricter, D23.5), AC-7.1 and AC-7.5 (3 reviewers on the lesson job). New: AC-1.10, AC-6.8, AC-7.7, AC-7.8, AC-7.9, WP10 (visual quality) and WP11 (learner-state privacy). Implementers of v2.2 must not change acceptance criteria.
 
 Changelog v1.3: D21.1 withdrawn (D22.1), proposal §9 pending Prax. AC-7.1 and AC-7.5 are back to the v1.1 text: a normal `ptk build` writes the full suite. `ptk build --canary` stays as an explicit cheaper mode whose best status is `canary-verified`, never `verified`.
 
@@ -204,19 +206,20 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 
 - **AC-1.1** When a request names a medium (video, narrated, voice over, animate, interactive video, explorer, cards, Q&A), `ptk route` shall return that medium. *Test:* `tests/test_route.py::test_medium_words` (dev set of 60 or more, including the M1 and M2 cases).
 - **AC-1.2** When the request is an ordinary task (fix, rename, write tests), `ptk route` shall return `intent=ordinary_task` and no teaching. *Test:* `test_route.py::test_ordinary_tasks`.
-- **AC-1.3** When the workspace contains AGENTS.md, MISSION.md or NOTES.md requiring prediction first, `ptk route` shall return `mode=predict-first` and a `first_turn` of one question. This applies even when a medium is requested; the artifact comes after the attempt. **Unless** the request explicitly says answer now, just explain, or build the full course: then the explicit request wins (D20.7). *Tests:* `test_route.py::test_workspace_contract_wins`, `::test_answer_now_overrides_contract`.
+- **AC-1.3** When a teaching request arrives, `ptk route` shall return an explanation-first lesson whose first turn is the complete explanation (with the requested or default medium), never a question, whatever the workspace's AGENTS.md, MISSION.md or NOTES.md say. When those files ask for prediction first, the route shall carry a `workspace_conflict` note naming the file and line, and shall not obey it. A prediction-first turn happens only when the request explicitly asks for a practice mode (quiz, exam-drill, Socratic, "let me predict", "test me"). "Answer now" or "just explain" ends questioning in any mode. *Tests:* `test_route.py::test_explanation_first_in_every_workspace`, `::test_workspace_conflict_reported`, `::test_practice_only_when_asked`, `::test_answer_now_overrides_practice`.
 - **AC-1.4** When the request asks for a direct or quick answer, `ptk route` shall return `mode=quick, build_needed=false`. *Test:* `test_route.py::test_quick_no_build`.
 - **AC-1.5** The router shall be table-driven (`route_rules.json`), and no function in `route.py` shall have more than 5 branches. *Test:* `test_route.py::test_rule_table_and_complexity`.
-- **AC-1.6** When predict-first runs, the protocol shall:
+- **AC-1.6** When a learner explicitly asks for a practice mode, the protocol shall:
   1. ask one question and end the turn;
   2. classify the attempt as correct, partial or a named misconception;
   3. give exactly one hint or feedback item;
   4. show the artifact;
   5. record one evidence event (with consent).
 
-  *Test:* `tests/test_protocol_transcripts.py::test_predict_first_flow` (agent-tests).
-- **AC-1.7** If a trace or storyboard state would reveal the answer to an open question, then the protocol shall hide it until the attempt (T3). *Test:* `test_protocol_transcripts.py::test_no_reveal_before_attempt`.
+  When no practice mode was asked for, the protocol shall deliver the complete explanation first, then offer optional practice in one closing sentence, with no question before the explanation. *Tests:* `tests/test_protocol_transcripts.py::test_practice_mode_flow`, `::test_explanation_first_flow` (agent-tests).
+- **AC-1.7** In a practice mode, if a trace or storyboard state would reveal the answer to an open question, then the protocol shall hide it until the attempt (T3). *Test:* `test_protocol_transcripts.py::test_no_reveal_before_attempt`.
 - **AC-1.8** Modes `quiz`, `exam-drill` (timed GATE MCQ/NAT) and `qa-expand` shall each have a protocol in `references/TEACHING.md` and one transcript test each. *Test:* `test_protocol_transcripts.py::test_modes`.
+- **AC-1.10** `references/TEACHING.md`, `SKILL.md` and `ptk/route_rules.json` shall state the explanation-first rule of AC-1.3 and contain no instruction that makes prediction the default. *Test:* `tests/test_lint.py::test_no_predict_first_default`.
 - **AC-1.9** The loader path (`SKILL.md`, plus whatever it requires before the first teaching word) shall be at most 4,000 tokens, measured with a fixed tokenizer approximation (characters/4). *Test:* `tests/test_skill_budget.py::test_loader_budget`.
 
 ### WP2: Lesson model and capture (P0)
@@ -280,16 +283,20 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 - **AC-6.3** When paused 0.1 s before an answer cue, the DOM, the alt text and the transcript shown so far shall not contain the answer. *Test:* `test_ive.mjs::test_no_leak_before_answer`.
 - **AC-6.4** The page shall offer captions on and off, a chapter list and a synced transcript with click-to-seek. Without JS, it shall show the poster sequence and the full transcript. *Test:* `test_ive.mjs::test_controls_and_noscript`.
 - **AC-6.5** Navigation in the IVE shall never write learner-attempt events, only `navigation` events (schema v2). *Test:* `tests/test_state.py::test_navigation_not_attempt`.
-- **AC-6.6** The IVE shall run a FILM / EXPLORE / RETURN state machine. In EXPLORE, live edits are visibly separate from the recorded film. RETURN resumes the film at the paused time with the film's state, not the edited state (D20.6). *Test:* `test_ive.mjs::test_film_explore_return`.
+- **AC-6.6** The IVE shall run a FILM / EXPLORE / RETURN state machine. In EXPLORE, every lesson's IVE shall offer at least one live control that changes the shown state (step-through alone does not pass, D23.5), and live edits are visibly separate from the recorded film. RETURN resumes the film at the paused time with the film's state, not the edited state (D20.6). *Test:* `test_ive.mjs::test_film_explore_return`, run on all four lessons.
+- **AC-6.8** By default the IVE film plays through and explains; it does not stop at a prediction. The prediction pause runs only when the learner turns on practice mode (a visible toggle, off by default). *Test:* `test_ive.mjs::test_explanation_first_default`, `::test_practice_mode_pauses`.
 - **AC-6.7** The IVE, including the MP4 and every WebVTT track, shall work when opened directly from disk (`file://`) in Chrome (D20.9). *Test:* `test_ive.mjs::test_file_protocol`.
 
 ### WP7: Claims gate (P0)
 
-- **AC-7.1** `ptk build` shall write one claims job per lesson, plus up to 12 mutation jobs paired with clean controls. Each job holds a manifest: the sha256 of the model, every artifact text, the sources and the rubric version. *Test:* `tests/test_claims.py::test_jobs_and_manifest`.
+- **AC-7.1** `ptk build` shall write one claims job per lesson for each of 3 independent reviewers, plus up to 12 mutation jobs paired with clean controls. Each job holds a manifest: the sha256 of the model, every artifact text, the sources and the rubric version. *Test:* `tests/test_claims.py::test_jobs_and_manifest`.
 - **AC-7.2** `ptk claims check` shall reject a review whose manifest hash doesn't match the current inputs. *Test:* `test_claims.py::test_stale_review_rejected`.
 - **AC-7.3** Every teaching sentence in every artifact shall map to a claim ID. Any that doesn't fails with `ClaimsUnmapped`. Fixed UI strings must be in `chrome.json` (E4). *Tests:* `test_claims.py::test_unmapped_sentence`, `tests/test_lint.py::test_no_literal_sentences_in_templates`.
 - **AC-7.4** Malformed, empty or refusal reviews shall be retried once with a schema reminder, then fail (`ClaimsReviewInvalid`). *Test:* `test_claims.py::test_invalid_reviews`.
 - **AC-7.5** Against the real reviewer subagent, the suite shall catch at least 90% of claim mutations and 100% of value mutations, and accept at least 95% of controls. Schema rejections are counted separately. *Test:* `tests/test_mutation.py::test_real_reviewer_rates` (agent-tests).
+- **AC-7.7** Every claim that cites a source (C17/N2176 clause, a book section, a manual page) shall have the cited passage stored with the lesson under `sources/`, with its sha256 in the job manifest. Jobs carry the passage, and the rubric tells reviewers to judge only against it. A cited passage that is missing fails the build (`SourceExcerptMissing`). *Test:* `test_claims.py::test_source_excerpts_bound`.
+- **AC-7.8** `verified` requires all 3 lesson-job reviews to accept. Any disagreement is listed in the report with each reviewer's finding, and the status is `failed` until the claim is fixed or the rubric clarified. *Test:* `test_claims.py::test_three_reviewers_agree`.
+- **AC-7.9** The rubric shall say how transcript, chapter-title and context sentences are judged, with one worked example each. *Test:* `test_claims.py::test_rubric_sentence_classes`.
 - **AC-7.6** The claim "printf never changes the bits; the format string only decides how to read them", applied to `printf("%f", (double)a)`, shall be rejected by the real reviewer. *Test:* `tests/test_regression_f_cast.py::test_same_bits_claim_rejected` (agent-tests, **CRITICAL**).
 
 ### WP8: Packaging, hosts, ports (P0)
@@ -309,6 +316,24 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 - **AC-9.2** "factorial(3) on the call stack" shall build all six media from a trace, and finish `verified`. *Test:* `test_exemplars.py::test_factorial_stack` (agent-tests).
 - **AC-9.3** Screenshot review of both exemplars shall record verdicts for the 6 non-automated aesthetics items in the build report, judged against the accepted Neuron Atlas reference (D20.1). *Test:* `test_exemplars.py::test_design_verdicts_recorded`.
 - **AC-9.4 (P1)** The Neuron Atlas neuron lesson (one weighted sum, bias and ReLU, with toy values) shall build through v2.1 in all six media and finish `verified`, as the unrelated-subject test (D20.10). *Test:* `test_exemplars.py::test_neuron_unrelated_subject`.
+
+### WP10: Visual quality (P0, v2.2 Track B)
+
+Each measure is a check script written and independently reviewed before the visual work it measures.
+
+- **AC-10.1** Every lesson's wide still shall be landscape: width ≥ 1.5 × height. It is figure-led: the elements marked `data-role="figure"` cover ≥ 50% of the canvas, and the still carries no code block and no hash text (provenance moves to the caption, alt text and metadata). A portrait variant exists for phones. *Test:* `tests/test_still_layout.py`.
+- **AC-10.2** Each lesson shall draw its mechanism, with every drawn value taken from captured facts: switch, a control-path figure; factorial, a stack column with return values flowing up; one-byte, all 4 bytes of `a` with the low byte marked, plus the double's 8 bytes; neuron, its existing panels. *Test:* `tests/test_mechanism_figures.py`.
+- **AC-10.3** In the 1080p video: output text is at least as large as its code line; teaching text is ≥ 28 px; the mechanism figure covers ≥ 55% of the frame in mechanism scenes; no empty region larger than 20% of the frame. On a 390 × 844 viewport the IVE shows the figure above the fold. *Test:* `tests/test_video_layout.py`.
+- **AC-10.4** Every explorer and IVE sentence that describes state shall be bound to live state and re-checked after each control step. The neuron `z = 1.11022e-16` case is explained as binary64 rounding. *Test:* `tests/test_live_captions.py`.
+- **AC-10.5** Narration shall be ≤ 170 words per minute per line, measured from the audio; contain no phrase from the hedge list outside claims that need it; repeat no sentence verbatim; and say code tokens from the lexicon correctly ("unsigned char"). Values appear on screen when spoken. *Test:* `tests/test_narration.py`.
+- **AC-10.6** An independent five-lens reviewer scores every lesson Looks ≥ 8 and Explanation ≥ 8 (reviewer judgments), and Prax's visual verdict per lesson against Atlas is recorded. Prax's verdict is the final gate. *Evidence:* `reviews/v2.2-five-lens.md`, Prax's verdict.
+
+### WP11: Learner-state privacy (P0, v2.2 Track A6)
+
+- **AC-11.1** When the workspace sits inside a folder Google Drive for desktop backs up, `ptk.state` shall refuse to create learner state unless the learner opts in explicitly; the opt-in is recorded with consent. *Test:* `tests/test_state_privacy.py::test_drive_folder_refused_by_default`.
+- **AC-11.2** The consent text shall name Google Drive when it backs up the folder. Warnings say "Google Drive", never "macOS backup". *Test:* `::test_consent_names_drive`.
+- **AC-11.3** `delete` shall report every surviving copy it can find outside the workspace (for example in `.tmp.driveupload`), and shall not report `all_state_deleted` while one exists. *Test:* `::test_delete_reports_surviving_copies`.
+- **AC-11.4** Read-only commands shall write nothing, extended attributes included, when consent is absent or withdrawn. *Test:* `::test_read_only_writes_nothing_without_consent`.
 
 ### P1 (after acceptance, D17.16)
 
@@ -333,7 +358,7 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
   - mutation catch rates;
   - the media measurements.
 - **Lagging** (after acceptance, needs Prax):
-  - his live predict-first session completed;
+  - his live usability session completed;
   - lessons he requests that build `verified` on the first try (target ≥ 80% across his first 10 requests);
   - lessons where he reports a wrong fact (target 0).
 
@@ -350,11 +375,12 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 All of these are non-blocking for implementation.
 
 - **For Prax:** approve or edit `plan/ACCEPTANCE-PROPOSAL.md` §1–§8, including the install-path amendment and the stop-rule interpretation.
-- **For Prax:** the live predict-first session after WP0 and WP1 (D18.6).
+- **For Prax:** a live usability session, explanation-first (usability feedback only; never a substitute for correctness checks).
 - **For Prax:** the BasicTeX or Typst install for Manim math (P2).
 
 ## 10. Phasing and budget
 
 - **Order:** WP0 → (WP1 ∥ WP2) → (WP3 ∥ WP4 ∥ WP5 ∥ WP7) → WP6 → WP8 → WP9.
 - **Budget:** 18 implement-and-review rounds in total, and at most 3 per package. Two rounds in a row with no newly passing AC park a package, and its dependents stop.
+- **v2.2 repair run (FREEZE-v2):** Track A (A1 → A2 → A3–A6; WP1 amendments, WP7 AC-7.7 to 7.9, WP11) at most 5 rounds; Track B (WP10, AC-6.6, AC-6.8) at most 5 rounds; at most 2 rounds per deliverable. A3–A6 and Track B run in parallel on separate files after A1 and A2.
 - **Templates:** to avoid merge conflicts, the still lane owns `templates/svg/` and the HTML lane owns `templates/html/` and `templates/ive/`.
