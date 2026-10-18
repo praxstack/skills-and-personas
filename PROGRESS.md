@@ -59,3 +59,7 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - **D21.1 (orchestrator, cost):** the full mutation suite (up to 12 mutations plus controls) becomes a calibration run. It runs on a rubric or reviewer-model change and at acceptance. A normal build writes the lesson job plus one canary mutation, so each build still proves the reviewer catches a planted error, at about 2 reviews instead of 23. This is a spec v1.2 change to AC-7.1, made in the integration pass (build.py and claims.py).
 - WP8 round 1 running: packaging, hosts, renderer port, state engine port, registry, protected map.
 - **Budget: 13 of 18 rounds used.**
+- WP5 closed at round 1 (`7c7cf66`). AC-5.1 to AC-5.7 pass: −16.0 LUFS, sync 0.05 s at starts and 0.11 s at ends, WER 2.9%. `hyperframes check` gives 0 errors and 0 warnings. The program change is now a diff, and the dark Atlas palette is the default video theme. I looked at the frames myself; they are polished.
+  - Open: at 37.2 s the note already says "With a break..." while the frame still shows fallthrough.c. Assigned to WP6.
+- WP6 round 1 running: FILM/EXPLORE/RETURN, half-open chapters, one-frame seek tolerance, file://, the poster flake.
+- **Budget: 14 of 18 rounds used.**
