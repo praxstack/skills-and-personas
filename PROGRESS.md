@@ -20,6 +20,7 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - [x] Eng review complete: E0–E25, `plan/TEST-PLAN.md`, Codex eng outside voice.
 - [x] `spec/SPEC.md` written: EARS criteria AC-0.x to AC-9.x, each with a named test.
 - [ ] /implement-from-spec, WP0 first (vertical slice and spikes), in the dependency order of D18.5. Budget: 18 implement-and-review rounds in total.
+  - [x] WP0 (2026-10-18): AC-0.1 to AC-0.5 pass. `ptk selftest` 8/8, `ptk agent-tests` 1/1. The slice `lessons/switch-fallthrough` is `verified` with 24/24 gates passed and none not-run. Render isolation uses sandbox-exec, not Docker. The real reviewer subagents ran 5 rounds: rounds 1 to 3 found real defects (3 overbroad or wrong claims, a misleading provenance line, an unbacked alt sentence). Every round rejected the planted false claim. Reviews are archived in `.state/review-rounds/`.
 - [ ] After WP0 and WP1, ask Prax for one 5-minute predict-first session (D18.6). This doesn't block the tooling packages.
 - [ ] Acceptance: run the holdout, the protected map and both exemplars. Prax approves `plan/ACCEPTANCE-PROPOSAL.md` (pending).
 
