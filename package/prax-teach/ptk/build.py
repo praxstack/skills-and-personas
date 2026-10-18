@@ -136,10 +136,11 @@ def build(lesson_path, only=None):
         jobs = claims_gate.write_jobs(lesson, items, build_dir)
         rep["claims"] = {"jobs": [str(build_dir / "claims-jobs" / f"{j}.json") for j in jobs],
                          "reviews_dir": str(build_dir / "claims-review"), "rubric": str(claims_gate.RUBRIC),
+                         "job_tokens": claims_gate.job_sizes(build_dir),
                          "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"}
         rep["gates"].append({"id": "claims.review", "medium": "all", "status": "pending", "measured": {},
                              "reason": "waiting for reviewer subagents"})
-        if any(json.loads((build_dir / "claims-private.json").read_text())[j]["kind"] == "mutation" for j in jobs):
+        if claims_gate.mutation_count(build_dir):
             rep["gates"].append({"id": "claims.sensitivity", "medium": "all", "status": "pending", "measured": {},
                                  "reason": "waiting for reviewer subagents"})
         st = final_status(rep["gates"], degraded)
