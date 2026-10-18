@@ -166,3 +166,11 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
 - **Round 17 (running):** verifier integrity. All weakenings, D22.1 to D22.3, and the protocol aligned to TEACHING.md.
 - **Round 18 (running, LAST):** lesson-quality P1s plus top-10 items as time allows.
 - **Budget: 18 of 18 rounds committed.** After these: one read-only verification and a stall report. No further rounds without Prax's approval (FREEZE).
+- **Rounds 17 and 18 are done. Budget 18 of 18 is spent.**
+  - **Round 17:** all 12 weakenings fixed with failing-first tests. D22.1 to D22.3 are in, and DEVELOPER_DIR is pinned (`edbc65b`), which stops the CLT installer popup.
+  - **Round 18:** the 5 lesson P1s are fixed. All four lessons are canary-verified. Codex's 1.5-exactness error is fixed, and rubric v3 checks justifications too.
+  - **Still open:** `test_legacy_unbound_state_migrates` fails; wide stills are tall; narration is about 195 wpm; two claims were dropped after three rejections.
+- **Final verification is running** (no product changes; all builds run in throwaway worktrees):
+  - A: a clean-worktree full selftest, the holdout routing evaluator v2 vs v2.1, the protected checks, and a numeric claims audit;
+  - B1 and B2: the full claims suite on all four lessons;
+  - C: an independent five-lens review.
