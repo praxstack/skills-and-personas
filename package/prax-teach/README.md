@@ -95,5 +95,5 @@ The job roles (lesson, canary, mutation, control) are kept in `$PTK_STATE/claims
 - **No LaTeX.** BasicTeX or Typst would be a system install that needs Prax's OK, so Manim `MathTex` is out. Math in stills uses MathJax `tex2svg`.
 - **Claims reviews are LLM findings, not proofs.** The full suite measures this reviewer's catch and control rates on this build. It does not prove that every claim is true.
 - **macOS only.** Capture needs `sandbox-exec`. There is no Linux sandbox yet.
-- **The sync gate reads whisper's word times.** Whisper stretches the last word before a pause over the silence; the gate now reads such a word from its start. This is an evaluator change made in WP9 and needs Prax's approval like D21.1.
+- **The sync gate reads whisper's word times.** Whisper stretches the last word before a pause over the silence; the gate reads such a word's end as the start of the silence that holds it. With no silence holding the end, the later boundary stands (round 17). This is an evaluator change made in WP9 and needs Prax's approval.
 - **Taste is Prax's call.** The gates check contrast, overflow, fonts, numerals and the network. Whether it looks world-class is for Prax to judge against the Neuron Atlas reference.

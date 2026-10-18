@@ -161,3 +161,25 @@ def test_refine_ignores_stretched_last_token():
     six = [{"text": "is", "start": 58.7, "end": 59.37}, {"text": "0.6.", "start": 59.02, "end": 61.0}]
     assert media.refine(six, starts=[57.87, 59.34, 60.28, 63.76], ends=[55.28])[1] == 60.28
     return {"stretched_offset": off}
+
+
+def test_refine_stretch_needs_a_silence_holding_the_token_end():
+    """Round-17 Codex 6: the long-token rule may only move the offset back to a silence that contains the token's
+    end (that is what a stretch over a pause looks like). Codex's counterexample: token [1, 4], a short pause
+    [2, 2.2] inside it, the speech resumes and stops at 4.05, cue ends at 2. The old rule measured 2 (a false pass);
+    now no silence holds 4, so the later boundary 4.05 stands and the cue fails by about 2 s."""
+    from ptk.verify import media
+    late = [{"text": "word", "start": 1.0, "end": 4.0}]
+    on, off = media.refine(late, starts=[2.0, 4.05], ends=[2.2, 5.0])
+    assert off == 4.05, off
+    assert abs(off - 2.0) > media.SYNC_TOL, "the hanging caption must fail the sync tolerance"
+    # the hanging-caption direction (round-17 P3-4): a caption that ends before a real stretch over a pause is
+    # measured at the pause start, so a cue that ends after the pause fails by the pause length
+    hang = [{"text": "on.", "start": 31.74, "end": 35.5}]
+    on, off = media.refine(hang, starts=[31.95, 35.61], ends=[35.45, 36.0])
+    assert off == 31.95 and abs(off - 35.5) > media.SYNC_TOL, off
+    # a silence that ends well before the token's end is a pause inside the word, not its end
+    inner = [{"text": "0.6.", "start": 59.02, "end": 61.0}]
+    assert media.refine(inner, starts=[59.34, 60.28], ends=[59.5, 61.05])[1] == 60.28
+    assert media.refine(inner, starts=[59.34, 61.2], ends=[59.5, 61.6])[1] == 61.2, "no silence holds 61.0"
+    return {"counterexample_offset": 4.05}

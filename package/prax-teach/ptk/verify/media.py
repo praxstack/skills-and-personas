@@ -151,6 +151,14 @@ def silences(wav, noise="-40dB", min_d=0.12):
     return starts, ends
 
 
+STRETCH_END_SLACK = 0.3  # whisper's stretched end may land a little after the silence ends (the next onset)
+
+
+def silence_spans(starts, ends):
+    """(start, end) of each silence; a silence with no end runs to the end of the audio."""
+    return [(s, min((e for e in ends if e > s), default=float("inf"))) for s in starts]
+
+
 def refine(words_in_cue, starts, ends):
     """Speech onset/offset for one cue: whisper places the words, the audio's silence edges
     give the exact boundary (whisper segment edges snap into neighbouring silence)."""
@@ -161,10 +169,14 @@ def refine(words_in_cue, starts, ends):
     # "on." 3.76 s before a pause), so its end says nothing about where the speech stops
     stretched = w1["end"] - w1["start"] > 0.75
     if stretched:
-        # the stretched end is the next speech's onset, so the speech stopped at the last silence that starts
-        # inside the token (a pause before the word's last syllable is not the end: neuron "is ... 0.6.")
-        offset = max((s for s in starts if w1["start"] - 0.2 <= s <= w1["end"]), default=w1["end"])
-        return round(onset, 3), round(offset, 3)
+        # the stretched end is the next speech's onset, so the speech stopped where the silence that runs up to
+        # that end began. Only a silence that holds the token's end proves the stretch (round-17 Codex 6): a pause
+        # inside the token that speech resumes after is not the end (neuron "is ... 0.6."), and with no such
+        # silence the later boundary below stands.
+        held = [s for s, e in silence_spans(starts, ends)
+                if w1["start"] - 0.2 <= s <= w1["end"] and s <= w1["end"] <= e + STRETCH_END_SLACK]
+        if held:
+            return round(onset, 3), round(max(held), 3)
     anchor = max(w1["start"], w1["end"] - 0.6)
     offset = min((s for s in starts if anchor - 0.2 <= s <= w1["end"] + 1.0), default=w1["end"])
     return round(onset, 3), round(offset, 3)
