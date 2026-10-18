@@ -132,8 +132,12 @@ def reference_errors(data, base_dir=None):
     for i, p in enumerate(data.get("programs", [])):
         if base_dir and not (Path(base_dir) / p["path"]).exists():
             errs.append({"pointer": f"/programs/{i}/path", "message": f"program file {p['path']} missing"})
+    from .expect import FUNCTIONS
     for i, f in enumerate(data.get("facts", [])):
         need("programs", f["program"], f"/facts/{i}/program")
+        fn = f.get("expect", {}).get("fn")
+        if fn is not None and fn not in FUNCTIONS:
+            errs.append({"pointer": f"/facts/{i}/expect/fn", "message": f"unknown expect function {fn!r}"})
     for i, c in enumerate(data.get("claims", [])):
         for j, fid in enumerate(c.get("facts", [])):
             need("facts", fid, f"/claims/{i}/facts/{j}")

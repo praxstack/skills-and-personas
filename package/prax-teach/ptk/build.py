@@ -6,7 +6,9 @@ claims check: reviews vs manifests → verified (0) | failed | incomplete | degr
 The report (build/build-report.json) records every gate, measurement, artifact hash and tool version.
 """
 import json
+import os
 import shutil
+import sys
 import time
 from pathlib import Path
 
@@ -45,9 +47,23 @@ def _entry():
 
 
 def save(lesson, rep):
+    """Validate, then replace the report atomically (write a sibling, then rename)."""
     import jsonschema
     jsonschema.Draft202012Validator(json.loads(REPORT_SCHEMA.read_text())).validate(rep)
-    report_path(lesson).write_text(json.dumps(rep, indent=2, default=str))
+    dst = report_path(lesson)
+    part = dst.with_name(dst.name + ".part")
+    part.write_text(json.dumps(rep, indent=2, default=str))
+    os.replace(part, dst)
+
+
+def _fail(lesson, rep, err, code, t0):
+    rep["error"] = err
+    rep["status"] = "failed"
+    rep["transitions"].append("failed")
+    rep["exit"] = code
+    rep["finished"] = _now()
+    rep["seconds"] = round(time.monotonic() - t0, 1)
+    save(lesson, rep)
 
 
 def _artifact_list(build):
@@ -69,10 +85,10 @@ def final_status(gates, degraded):
         return "failed"
     if "not-run" in st:
         return "incomplete"
+    if "pending" in st:
+        return "claims-pending"  # unreviewed claims outrank a fallback (review P1-1)
     if degraded:
         return "degraded"
-    if "pending" in st:
-        return "claims-pending"
     return "verified"
 
 
@@ -84,6 +100,9 @@ def build(lesson_path, only=None):
            "started": _now(), "finished": None, "media": media, "entry": _entry(), "gates": [], "fallbacks": [],
            "tools": {}, "artifacts": [], "transitions": ["draft"], "error": None}
     build_dir = lesson.dir / "build"
+    # Replace any earlier report now, so a killed or crashed build never leaves a stale "verified" (P1-2).
+    save(lesson, rep)
+    finished = False
 
     def go(target):
         rep["status"] = model.advance(rep["status"], target)
@@ -122,20 +141,22 @@ def build(lesson_path, only=None):
                                  "reason": "waiting for reviewer subagents"})
         st = final_status(rep["gates"], degraded)
         go("claims-pending" if st in ("claims-pending", "verified") else st)
-    except errors.PtkError as e:
-        rep["error"] = e.as_dict()
-        rep["status"] = "failed"
-        rep["transitions"].append("failed")
-        rep["exit"] = e.exit_code
+        rep["artifacts"] = _artifact_list(build_dir)
         rep["finished"] = _now()
         rep["seconds"] = round(time.monotonic() - t0, 1)
-        lesson.build_dir()
         save(lesson, rep)
+        finished = True
+    except errors.PtkError as e:
+        _fail(lesson, rep, e.as_dict(), e.exit_code, t0)
+        finished = True
         raise
-    rep["artifacts"] = _artifact_list(build_dir)
-    rep["finished"] = _now()
-    rep["seconds"] = round(time.monotonic() - t0, 1)
-    save(lesson, rep)
+    finally:
+        if not finished:
+            # Not a PtkError: a ptk bug or an unexpected tool output. Record it, then let it propagate.
+            exc = sys.exc_info()[1]
+            _fail(lesson, rep, {"error": type(exc).__name__ if exc else "Interrupted",
+                                "message": str(exc) if exc else "build stopped before finishing",
+                                "internal": True, "exit": errors.EXIT_GATE}, errors.EXIT_GATE, t0)
     return rep
 
 
@@ -265,4 +286,6 @@ def render_text(rep):
         lines.append(f"  {g['status']:<8} {g['id']:<28} {g.get('reason') or ''}")
     if rep.get("fallbacks"):
         lines.append(f"fallbacks: {rep['fallbacks']}")
+    if rep.get("error"):
+        lines.append(f"error: {rep['error'].get('error')}: {rep['error'].get('message')}")
     return "\n".join(lines)
