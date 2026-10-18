@@ -82,7 +82,7 @@ This shows how the Neural Networks lecture SHOULD look with clean markdown.
 ### 1. Neural Network Architecture
 
 **What Was Taught:**
-A neural network is composed of layers of neurons. Its trainable parameters are the weights and biases that connect them:
+A neural network is composed of layers of neurons. Its trainable parameters are the weights on the connections between neurons and each neuron's bias:
 - **Input Layer:** Receives raw data (e.g., house square footage)
 - **Hidden Layers:** Where feature extraction happens
 - **Output Layer:** Delivers the final prediction
