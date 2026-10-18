@@ -35,6 +35,7 @@ import argparse
 import hashlib
 import html
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -67,7 +68,7 @@ def norm_base(base: str) -> str:
 
 def load_manifest(course_dir: Path) -> dict:
     """courses/videos.json: {"<course-id>/<lesson-id>.mp4": "https://...", ...}; empty values allowed."""
-    f = course_dir.resolve().parent / "videos.json"  # resolved, so "." finds the parent
+    f = Path(os.path.abspath(course_dir)).parent / "videos.json"  # absolute so "." finds the parent; a symlink isn't followed
     return json.loads(f.read_text()) if f.exists() else {}
 
 
@@ -118,6 +119,7 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
     out.mkdir(parents=True, exist_ok=True)
     shared = [course_dir / s for s in data.get("shared", [])]
     manifest = load_manifest(course_dir)
+    stale = []
     for lesson in data["lessons"]:
         src = course_dir / lesson["file"]
         page = f"{lesson['id']}.html"
@@ -129,11 +131,10 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
             explorable_build.build(src, out / page, fragment, shared)
         lesson["page"] = page
         found = resolve_video(course_dir, data["id"], lesson["id"], manifest)
-        stale = out / "videos" / f"{lesson['id']}.mp4"
-        if (not found or found[0] != "local") and stale.exists():
-            # An earlier build copied the local MP4 here; it's on Blob now (or gone),
-            # and a left-over copy would still be served beside the page.
-            stale.unlink()
+        if not found or found[0] != "local":
+            # An earlier build may have copied the local MP4 here; it's on Blob now
+            # (or gone), and a left-over copy would still be served beside the page.
+            stale.append(out / "videos" / f"{lesson['id']}.mp4")
         if found:
             (out / "videos").mkdir(exist_ok=True)
             kind, where = found
@@ -168,6 +169,9 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
     finally:
         data_js.unlink()
     (out / "index.html").write_text(page)
+    # Only now: had a later lesson failed, the old index would still link these.
+    for f in stale:
+        f.unlink(missing_ok=True)
     return data
 
 

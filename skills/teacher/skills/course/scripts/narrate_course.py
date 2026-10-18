@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -37,7 +38,7 @@ def main() -> int:
     shared = [x for s in meta.get("shared", []) for x in ("--include", str(a.course / s))]
     out_dir = a.course / "videos"
     out_dir.mkdir(exist_ok=True)
-    manifest_file = a.course.resolve().parent / "videos.json"
+    manifest_file = Path(os.path.abspath(a.course)).parent / "videos.json"  # like build_course.load_manifest
     published = json.loads(manifest_file.read_text()) if manifest_file.exists() else {}
     bad = 0
     for lesson in meta["lessons"]:
@@ -47,7 +48,8 @@ def main() -> int:
             continue
         mp4 = out_dir / f"{lesson['id']}.mp4"
         on_blob = bool(published.get(f"{meta['id']}/{lesson['id']}.mp4"))
-        if (mp4.exists() or on_blob) and not (a.force or a.remux) and not mp4.with_suffix(".vtt").exists():
+        # --remux rewrites the captions of a local video, so only a Blob-only one is stuck here.
+        if (mp4.exists() or on_blob) and not a.force and not (a.remux and mp4.exists()) and not mp4.with_suffix(".vtt").exists():
             # build_course.py won't offer a video without its captions, so skipping would leave it stuck.
             print(f"FAIL {lesson['id']}: the video is made but {mp4.with_suffix('.vtt').name} is missing; "
                   f"--force --only {lesson['id']} makes both again")
