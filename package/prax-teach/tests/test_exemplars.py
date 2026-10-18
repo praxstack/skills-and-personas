@@ -56,7 +56,8 @@ def _verified(slug):
         assert "fn" in f["expect"] or f["expect"].get("reviewed"), f["id"]
     assert len([f for f in lesson.data["facts"] if "fn" in f["expect"]]) == len(lesson.data["facts"]), \
         "an exemplar computes every expectation (no reviewed literals)"
-    for p in ("video/lesson.mp4", "ive/index.html", "explorer/index.html", "qa/index.html", "cards/cards.apkg"):
+    for p in ("video/lesson.mp4", "ive/index.html", "explorer/index.html", "qa/index.html", f"cards/{slug}.apkg",
+              f"still/{slug}-wide-dark.png"):
         assert (_dir(slug) / "build" / p).exists(), p
     return rep, lesson, statuses
 
@@ -100,7 +101,7 @@ def test_factorial_stack():
     assert [lesson.fact(fr["ret"])["value"] for fr in rets] == ["1", "2", "6"]
     cues = json.loads((_dir("factorial-stack") / "build" / "ive" / "cues.json").read_text())
     assert any(c["state"].get("panel") for c in cues), "IVE cues carry the stack's values"
-    assert "returning" in (_dir("factorial-stack") / "build" / "ive" / "ive-data.js").read_text() or True
+    assert "RETURNS" in (_dir("factorial-stack") / "build" / "ive" / "ive-data.js").read_text()  # returning frames drawn
     assert out["programs"]["p1"]["ran"] is True
     return {"gates": len(statuses), "depths": depths}
 
