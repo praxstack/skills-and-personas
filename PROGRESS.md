@@ -22,7 +22,7 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - [x] WP0, round 1 (implement): AC-0.1 to AC-0.5 pass, 24 of 24 gates, status verified. The sandbox-exec render isolation works, so Docker wasn't needed.
 - [x] WP0 code review (`reviews/wp0-review.md`): 0 P0, 4 P1, 9 P2, 12 P3. Verdict: fix first.
 - [x] Three external sessions read and merged as D20.x (`plan/EXTERNAL-INPUTS.md`). Spec is now v1.1.
-- [ ] WP0, round 2 (fix): the four P1s, the cheap P2s, and the design fixes (arcs drawn in the video, recap, filling the frame). **Budget used: 2 of 18 rounds.**
+- [x] WP0, round 2 (fix): the four P1s, P2-1/4/6(label)/7/8 and P3-1/3/7(part)/8/10/11/12, plus the design fixes (arcs drawn in the video, recap without reset, frame filled, file label). Slice `verified`, 26/26 gates, `ptk selftest` 16/16, `ptk agent-tests` 1/1. Reviews archived in `.state/review-rounds/round6-wp0-fix1/`. Deferred: P2-2, P2-3, P2-5, P2-6 evidence, P2-9, P3-2, P3-4, P3-5, P3-6, P3-9. **Budget used: 3 of 18 rounds.**
 - [ ] Then WP1 ∥ WP2, following D18.5 and the spec v1.1 ACs.
   - [x] WP0 (2026-10-18): AC-0.1 to AC-0.5 pass. `ptk selftest` 8/8, `ptk agent-tests` 1/1. The slice `lessons/switch-fallthrough` is `verified` with 24/24 gates passed and none not-run. Render isolation uses sandbox-exec, not Docker. The real reviewer subagents ran 5 rounds: rounds 1 to 3 found real defects (3 overbroad or wrong claims, a misleading provenance line, an unbacked alt sentence). Every round rejected the planted false claim. Reviews are archived in `.state/review-rounds/`.
 - [ ] After WP0 and WP1, ask Prax for one 5-minute predict-first session (D18.6). This doesn't block the tooling packages.
