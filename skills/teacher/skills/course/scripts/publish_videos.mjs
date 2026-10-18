@@ -22,10 +22,10 @@ import { createHash } from "node:crypto";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// The site's courses/: the one in the folder this runs from (a site's root, as
-// npm runs it), else the one beside the engine when it sits at <site>/teacher/.
+// The site's courses/: the one beside the engine when it sits at <site>/teacher/,
+// so the folder this runs from doesn't matter; else the one in the current folder.
 const SITE = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
-const DEFAULT_COURSES = existsSync(resolve("courses")) ? resolve("courses") : join(SITE, "courses");
+const DEFAULT_COURSES = existsSync(join(SITE, "courses")) ? join(SITE, "courses") : resolve("courses");
 const YEAR = 365 * 24 * 60 * 60;
 
 export function parseArgs(argv) {

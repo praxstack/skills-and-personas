@@ -556,6 +556,12 @@ class Builds(unittest.TestCase):
                 self.assertEqual(build_course.load_manifest(Path(".")), manifest)
             finally:
                 os.chdir(cwd)
+            # A course folder linked in from elsewhere reads the videos.json beside the link, not beside its target.
+            linked = Path(tmp) / "linked"
+            linked.mkdir()
+            (linked / "one").symlink_to(d)
+            (linked / "videos.json").write_text(json.dumps({"one/one-a.mp4": "https://beside-the-link"}))
+            self.assertEqual(build_course.load_manifest(linked / "one"), {"one/one-a.mp4": "https://beside-the-link"})
             self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("url", url))
             self.assertIsNone(build_course.resolve_video(d, "one", "one-b", manifest), "no file, no manifest entry")
             self.assertIsNone(build_course.resolve_video(d, "one", "one-c", manifest), "an empty manifest entry is no video")
@@ -574,6 +580,11 @@ class Builds(unittest.TestCase):
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertTrue((out / "one/videos/one-a.mp4").exists(), "a local MP4 is copied")
             (d / "videos/one-a.mp4").unlink()  # published, so the local file goes
+            (d / "videos/one-c.mp4").write_bytes(b"")  # a later lesson fails: a video without captions
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertTrue((out / "one/videos/one-a.mp4").exists(), "a failed build keeps what the old index links")
+            (d / "videos/one-c.mp4").unlink()
             r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
             self.assertEqual(r.returncode, 0, r.stderr)
             page = (out / "one/index.html").read_text()
@@ -642,6 +653,17 @@ class Builds(unittest.TestCase):
             self.assertNotIn("stray", r.stdout)
             self.assertIn("would upload 1", r.stdout)
             self.assertEqual((courses / "videos.json").read_text(), "{}\n", "a dry run writes nothing")
+            # Inside a site (<site>/teacher/...), the default is that site's courses/, wherever it runs from.
+            site = Path(tmp) / "site"
+            (site / "teacher/skills/course/scripts").mkdir(parents=True)
+            shutil.copy(script, site / "teacher/skills/course/scripts")
+            shutil.copytree(courses, site / "courses")
+            shutil.copytree(root / "two/videos", site / "courses/two/videos")
+            (Path(tmp) / "other/courses").mkdir(parents=True)
+            r = subprocess.run(["node", str(site / "teacher/skills/course/scripts/publish_videos.mjs"), "--dry-run"],
+                               capture_output=True, text=True, env=env, cwd=Path(tmp) / "other")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn("would upload 1", r.stdout, "another courses/ in the current folder isn't used")
             # Skipped only when the manifest URL is the upload of these exact bytes.
             blob = "https://s.public.blob.vercel-storage.com/courses/two"
             for url, skipped in [(f"{blob}/two-a.{digest}.mp4", True), (f"{blob}/two-a.00000000.mp4", False), (f"{blob}/two-a.mp4", False), ("", False)]:
@@ -973,15 +995,16 @@ class Captions(unittest.TestCase):
                 self.assertEqual(run.call_count, runs, flags)
                 if "--remux" in flags:
                     self.assertIn("--remux", run.call_args.args[0])
-            # On Blob with no local MP4 and no captions: an error, not "already made".
+            # On Blob with no local MP4 and no captions: an error, not "already made" (or "no video to remux").
             (root / "videos" / "l1.mp4").unlink()
             (root / "videos" / "l1.vtt").unlink()
-            out = io.StringIO()
-            with mock.patch.object(sys, "argv", ["narrate_course.py", str(root)]), \
-                    mock.patch.object(course.subprocess, "run") as run, contextlib.redirect_stdout(out):
-                self.assertEqual(course.main(), 1)
-            run.assert_not_called()
-            self.assertIn("FAIL l1: the video is made but l1.vtt is missing", out.getvalue())
+            for flags in ([], ["--remux"]):
+                out = io.StringIO()
+                with mock.patch.object(sys, "argv", ["narrate_course.py", str(root), *flags]), \
+                        mock.patch.object(course.subprocess, "run") as run, contextlib.redirect_stdout(out):
+                    self.assertEqual(course.main(), 1, flags)
+                run.assert_not_called()
+                self.assertIn("FAIL l1: the video is made but l1.vtt is missing", out.getvalue(), flags)
 
     def test_narrate_speed_default_leaves_chatterbox_free(self):
         from unittest import mock
