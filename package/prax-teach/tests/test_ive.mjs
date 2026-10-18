@@ -96,9 +96,10 @@ await check('controls_and_noscript', async () => {
     const c = await run(page, `const v = D.v(); await D.seek(v.duration - 0.05); const n = document.querySelectorAll('#tx li').length;
       const p = D.once(v, 'seeked'); document.querySelector('#tx li button').click(); await p;
       const caps = [...v.textTracks].find((t) => t.kind === 'captions'); const cb = document.getElementById('caps');
-      const m0 = caps.mode; cb.click(); const m1 = caps.mode; cb.click(); const m2 = caps.mode;
+      const band = document.getElementById('capband');
+      const m0 = band.dataset.on; cb.click(); const m1 = band.dataset.on; cb.click(); const m2 = band.dataset.on;
       return { transcript_at_end: n, transcript_after_seek: document.querySelectorAll('#tx li').length, seek_to: v.currentTime,
-               caption_modes: [m0, m1, m2], chapters: document.querySelectorAll('#chapters li').length };`);
+               caption_modes: [m0, m1, m2], track_mode: caps.mode, chapters: document.querySelectorAll('#chapters li').length };`);
     await ctx.close();
     const nj = await open({ js: false });
     const n = await nj.page.evaluate(async () => {
@@ -111,7 +112,7 @@ await check('controls_and_noscript', async () => {
     });
     await nj.ctx.close();
     const ok = c.transcript_at_end === spec.counts.captions && c.chapters === spec.counts.chapters
-      && Math.abs(c.seek_to - spec.first_caption) < 0.01 && c.caption_modes.join() === 'showing,hidden,showing'
+      && Math.abs(c.seek_to - spec.first_caption) < 0.01 && c.caption_modes.join() === 'true,false,true' && c.track_mode === 'hidden'
       && n.images === spec.counts.chapters && n.decoded === n.images && n.heading_before_transcript
       && n.transcript_items === spec.counts.captions;
     runs.push({ ok, controls: c, nojs: n });

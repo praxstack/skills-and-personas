@@ -320,9 +320,11 @@ def _project_and_verify(lesson, build_dir, media, rep, go, video_theme=None, ren
                                                                          "not one sub-composition per scene")})
         if v["renderer"].frame_probe():
             gates.append(frames.scene_layout_gate(lesson, out, timing, lesson.sha256()))
+            gates.append(frames.morph_gate(lesson, out, timing, lesson.sha256()))
         else:
-            gates.append({"id": "video.scene-layout", "medium": "video", "status": "not-run", "measured": {},
-                          "reason": f"renderer {v['renderer'].name} has no frame probe"})
+            for gid in ("video.scene-layout", "video.morph-stable"):
+                gates.append({"id": gid, "medium": "video", "status": "not-run", "measured": {},
+                              "reason": f"renderer {v['renderer'].name} has no frame probe"})
         render_ok, log = True, ""
         try:
             mp4, log = video.finish(lesson, out, v["composition"], v["renderer"])

@@ -24,6 +24,7 @@ import re
 import shutil
 
 from .. import errors, fonts, host, node, text, tts
+from . import mech
 from . import path as rail
 from ..text import esc
 
@@ -31,6 +32,7 @@ FPS = 30
 W, H = 1920, 1080
 LEAD, GAP_IN, GAP_SCENE, THINK, TAIL, SCENE_LEAD = 0.8, 0.35, 0.8, 3.0, 1.6, 0.35
 SETTLE = 0.5
+MINUS = "\u2212"
 KEYWORDS = {"int", "switch", "case", "break", "return", "void", "char", "default"}
 
 
@@ -122,6 +124,8 @@ def draw_plan(lesson, before_sid, sid, budget=None):
     ends = [st["t0"] + st["dur"] + (0.33 if st["a"] == nob else 0.1) for st in steps] + [t + 0.1, morph]
     if new_out:
         ends.append(outputs_at + (len(new_out) - 1) * OUT_STEP + 0.3)
+    if (lesson.data.get("figure") or {}).get("panel") and before_sid and before_sid != sid:
+        ends.append(0.8)  # the panel's cross-fade (scene_html): 0.45 s in, then 0.3 s out from 0.45
     total = max(max(ends), SETTLE)
     # a short scene plays the same drawing faster (a nested timeline with timeScale 1/k), never cut off
     k = min(1.0, budget / total) if budget else 1.0
@@ -228,7 +232,6 @@ def write_text_tracks(lesson, timing, out):
 
 THEMES = ("dark", "light")
 DEFAULT_THEME = "dark"  # the Neuron Atlas palette Prax approved (D20.1); `light` is the paper theme
-PRINT_CALL = re.compile(r"\b(puts|printf|putchar|fputs|fprintf|fputc|putc)\s*\(")
 
 
 def _state_view(lesson, sid):
@@ -249,14 +252,6 @@ def _code_html(line_txt):
         else:
             out.append(esc(tok))
     return "".join(out)
-
-
-def output_lines(src, path, n_out):
-    """The source line that printed each output value: the k-th print call on the path printed
-    value k (D20.5, every summary value paired with the mechanism step that produced it).
-    None when the path's print calls do not line up one-to-one with the output."""
-    calls = [n for n in path if PRINT_CALL.search(src[n - 1])]
-    return calls[:n_out] if len(calls) == n_out else None
 
 
 # Frame layout (1920 x 1080). Sized to the frame, not fixed: the code card and the side column
@@ -280,22 +275,62 @@ OUT_H, OUT_TOP = 84, 84
 
 
 def _layout(lesson):
-    """Row height from the longest program body in the storyboard, so every scene shares one grid."""
-    rows = 1
+    """The frame grid, shared by every scene. Row height comes from the longest listing in the storyboard.
+
+    No panel: the code card (1060 wide) and the side column (output, variables, note) as drawn above.
+    Panel beside the code (views, stack): a narrower code card; the side column holds the panel on top and
+    the output and the note side by side under it.
+    Panel above the code (neuron): the panel spans the frame under the title; the code card and the side
+    column (output, then the note) share the rest.
+    """
+    panel = (lesson.data.get("figure") or {}).get("panel")
+    mode = None if not panel else ("side" if panel["kind"] == "stack" or panel["place"] == "side" else "hero")
+    L = {"mode": mode, "code_top": CODE_TOP, "card_w": CARD_W, "side_x": SIDE_X, "side_w": SIDE_W}
+    if mode == "side":
+        L.update(card_w=840, side_x=976, side_w=848, panel_box=(976, CODE_TOP, 848, 520))
+    elif mode == "hero":
+        L.update(code_top=600, card_w=840, side_x=976, side_w=848, panel_box=(MX, 176, W - 2 * MX, 380))
+    rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
-        src = lesson.program_source(lesson.state(sc["state"])["state"]["program"]).split("\n")
-        first, last = rail.body_range(src)
+        st = lesson.state(sc["state"])["state"]
+        src = lesson.program_source(st["program"]).split("\n")
+        first, last = rail.listing(lesson, st["program"])
         rows = max(rows, last - first + 1)
-    card_h = H - BOTTOM - CODE_TOP
-    line_h = int((card_h - 2 * ROW_PAD) // rows)
+        longest = max(longest, max(len(src[n - 1].rstrip()) for n in range(first, last + 1)))
+        made = rail.print_lines(src, st.get("path", []), [text.display(lesson.fact(f)) for f in st["output"]]) or []
+        per_line = max([per_line] + [made.count(n) for n in made])
+    L["card_h"] = H - BOTTOM - L["code_top"]
+    line_h = int((L["card_h"] - 2 * ROW_PAD) // rows)
+    # the longest line, its output-step badges and the tag column must fit the card
+    fit = (L["card_w"] - SRC_X - 40 - per_line * 46) / (longest * 0.6)
+    L.update(line_h=line_h, font=int(min(36, line_h * 0.64, fit)))
     max_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
-    return {"card_h": card_h, "line_h": line_h, "font": min(36, int(line_h * 0.64)), "max_out": max(max_out, 1)}
+    L["max_out"] = max(max_out, 1)
+    return L
+
+
+def _out_rect(L):
+    """The output card in panel layouts (x, y, w, h) relative to the side column: under the panel (side) or the
+    whole column (hero). The note is left to the narration and its captions; the panel carries the picture."""
+    if L["mode"] == "side":
+        top = L["panel_box"][3] + 12
+        return (0, top, L["side_w"], L["card_h"] - top)
+    return (0, 0, L["side_w"], L["card_h"])
+
+
+def _out_grid(L, n):
+    """(row height, rows per column, column width) for n output values in a panel layout's output card:
+    one column when rows of at least 46 px fit, else two."""
+    _x, _y, w, h = _out_rect(L)
+    rows = n if (h - 72) / max(n, 1) >= 46 else -(-n // 2)
+    cols = -(-n // rows)
+    return min(OUT_H, int((h - 72) / rows)), rows, (w - 34) / cols
 
 
 def _grid(lesson, program, L):
     """Rows of one program in the shared grid: lines, row index, top and centre y per line."""
     src = lesson.program_source(program).split("\n")
-    first, last = rail.body_range(src)
+    first, last = rail.listing(lesson, program)
     lines = [(n, src[n - 1]) for n in range(first, last + 1)]
     LH = L["line_h"]
     pad = round((L["card_h"] - 4 - len(lines) * LH) / 2)  # rows centred in the card
@@ -342,10 +377,11 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
         cls = "ln exec" if n in drawn_path else ("ln exec-new" if n in run else "ln")
         to = (morph_to or {}).get(n, n) if morph_to is None or n in morph_to else None
         extra = f' data-to="{to}"' if to is not None else ' data-gone="1"'
-        no2 = (f'<span class="no no2" data-label="line-number">{to}</span>' if morph_to is not None and to is not None
-               else "")
+        moves = morph_to is not None and to is not None and to != n
+        # only a row whose number changes cross-fades it; every other gutter number stays put (WP9 Part A)
+        no2 = f'<span class="no no2" data-label="line-number">{to}</span>' if moves else ""
         rows.append(f'<div class="{cls}" {S} data-line="{n}"{extra} style="top:{top[n]}px">'
-                    f'<span class="no no1" data-label="line-number">{n}</span>{no2}'
+                    f'<span class="no no1{" moves" if moves else ""}" data-label="line-number">{n}</span>{no2}'
                     f'<span class="src" data-code="{view["program"]}" style="padding-left:{indent * 0.6:.2f}em">'
                     f'{_code_html(txt.strip())}</span></div>')
     drawn_run = [n for n in drawn_path if n in top]
@@ -363,7 +399,7 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
         segs.append(f'<path class="seg{"" if drawn else " new"}" {S} data-seg="{a}-{b}" data-kind="{kind}" pathLength="1" d="{d}"/>')
     dots = [f'<circle class="dot{"" if n in drawn_path else " new"}" {S} data-line="{n}" cx="{RAIL_X}" cy="{cy[n]:.1f}" r="8"/>'
             for n in run]
-    svg = (f'<svg class="rail" {S} viewBox="0 0 {CARD_W - 4} {L["card_h"] - 4}" aria-hidden="true">'
+    svg = (f'<svg class="rail" {S} viewBox="0 0 {L["card_w"] - 4} {L["card_h"] - 4}" aria-hidden="true">'
            f'{"".join(segs)}{"".join(heads)}{"".join(dots)}</svg>')
     tags = []
     for n, key, tone in rail.tags(src, run, shown_lines):
@@ -376,11 +412,12 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
         tags.append(f'<p class="badge nobreak{"" if on else " new"}" {S} data-after="{nob}" data-chrome="no_break" '
                     f'style="top:{top[nob] + LH / 2 + 4:.0f}px">{esc(text.ui("no_break"))}</p>')
     steps = []
-    made = output_lines(src, view["path"], len(view["output"])) or []
+    made = rail.print_lines(src, view["path"], [o["text"] for o in view["output"]]) or []
     for k, n in enumerate(made, 1):
         txt = src[n - 1]
         indent = len(txt) - len(txt.lstrip(" "))
-        x = SRC_X + indent * 0.6 * font + fonts.width("mono", font, txt.strip()) + 22
+        # a line that printed several values (a recursive call, a loop) carries one badge per value, side by side
+        x = SRC_X + indent * 0.6 * font + fonts.width("mono", font, txt.strip()) + 22 + made[:k - 1].count(n) * 46
         steps.append(f'<p class="ostep{"" if k <= drawn_out else " new"}" {S} data-step="{k}" data-line="{n}" '
                      f'data-label="output-step" style="left:{x:.0f}px;top:{top[n] + (LH - 40) / 2:.0f}px">{k}</p>')
     return {"rows": f'<div class="rows" {S}>{"".join(rows)}</div>', "rail": svg, "tags": "".join(tags),
@@ -451,25 +488,27 @@ def scene_html(lesson, scene, index, count, timing):
         morph_js += [
             f"d.to(q('.rail{O}, .tag{O}, .badge{O}, .ostep{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
             f"d.to(q('.hl'), {{ opacity: 0, duration: 0.25 }}, 0);",
-            f"d.to(q('.out{O}'), {{ opacity: 0.32, duration: 0.3 }}, 0);",
-            f"d.fromTo(q('.band.minus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.15);",
-            f"d.fromTo(q('.band.minus .strike'), {{ scaleX: 0 }}, {{ scaleX: 1, duration: 0.3, ease: 'power2.out' }}, 0.2);",
-            f"d.to(q('.ln[data-gone]'), {{ color: '{t['correction']}', duration: 0.2 }}, 0.15);",
-            f"d.to(q('.ln[data-gone], .band.minus'), {{ opacity: 0, duration: 0.3, ease: 'power1.in' }}, 0.55);",
+            # the output, the gutter and the file name stay on screen through the diff (WP9 Part A)
+            f"d.fromTo(q('.band.minus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.05);",
+            f"d.fromTo(q('.band.minus .strike'), {{ scaleX: 0 }}, {{ scaleX: 1, duration: 0.25, ease: 'power2.out' }}, 0.08);",
+            f"d.to(q('.ln[data-gone]'), {{ color: '{t['correction']}', duration: 0.2 }}, 0.05);",
+            # a removed row fades while the rows below close over it, so no hole opens
+            f"d.to(q('.ln[data-gone], .band.minus'), {{ opacity: 0, duration: 0.6, ease: 'none' }}, 0.45);",
             f"d.to(q('.ln{O}[data-to]'), {{ color: '{t['label']}', duration: 0.3 }}, 0.45);",
-            f"d.to(q('.ln{O} .no1'), {{ opacity: 0, duration: 0.2 }}, 0.45);",
+            f"d.to(q('.ln{O} .no1.moves'), {{ opacity: 0, duration: 0.3 }}, 0.45);",
         ]
         for n_old, n_new in keep.items():
             dy = gc["top"][n_new] - go["top"][n_old]
             if abs(dy) > 0.01:
                 morph_js.append(f"d.to(q('.ln{O}[data-line=\"{n_old}\"]'), {{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
         morph_js += [
-            f"d.fromTo(q('.ln{O} .no2'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.25 }}, 0.85);",
-            f"d.fromTo(q('.ln.add'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.35, ease: 'power2.out' }}, 0.85);",
-            f"d.fromTo(q('.ln.add .src'), {{ x: 18 }}, {{ x: 0, duration: 0.35, ease: 'power2.out' }}, 0.85);",
-            f"d.to(q('.file[data-set=\"old\"]'), {{ opacity: 0, duration: 0.3 }}, 0.45);",
-            f"d.fromTo(q('.file[data-set=\"cur\"]'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.75);",
-            f"d.fromTo(q('.band.plus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.35 }}, 0.85);",
+            # a moving row's number cross-fades while it slides; an added row fills its slot as the slot opens
+            f"d.fromTo(q('.ln{O} .no2'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.45);",
+            f"d.fromTo(q('.ln.add'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.6, ease: 'power2.out' }}, 0.45);",
+            f"d.fromTo(q('.ln.add .src'), {{ x: 18 }}, {{ x: 0, duration: 0.6, ease: 'power2.out' }}, 0.45);",
+            f"d.to(q('.file[data-set=\"old\"]'), {{ opacity: 0, duration: 0.2 }}, 0.85);",
+            f"d.fromTo(q('.file[data-set=\"cur\"]'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.85);",
+            f"d.fromTo(q('.band.plus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.45 }}, 0.45);",
             f"d.set(q('.hl'), {{ y: {gc['cy'][plan['first']] - LH / 2 if plan['first'] else 0:.1f} }}, {MORPH - 0.05});",
             f"d.to(q('.hl'), {{ opacity: 1, duration: 0.2 }}, {MORPH - 0.05});",
         ]
@@ -490,35 +529,75 @@ def scene_html(lesson, scene, index, count, timing):
     # --- side column: output (hidden until the first value), variables, note or question
     before_out = before["output"] if (replay and (same_prog or morph)) else ([] if replay else cur["output"])
     has_out = bool(cur["output"] or before_out)
-    grow = has_out and not before_out  # the output card appears with this scene's first value
-    out_h = OUT_TOP + L["max_out"] * OUT_H + 20
-    shift = out_h + 30 if has_out else 0
+    mode = L["mode"]
+    grow = has_out and not before_out and mode is None  # the output card appears with this scene's first value
+    if mode is None:
+        out_h = OUT_TOP + L["max_out"] * OUT_H + 20
+        place = lambda k: (34, OUT_TOP + (k - 1) * OUT_H)  # noqa: E731
+        val_px = None
+    else:
+        out_h = _out_rect(L)[3]
+        oh, per_col, col_w = _out_grid(L, L["max_out"])
+        place = lambda k: (34 + ((k - 1) // per_col) * col_w, 64 + ((k - 1) % per_col) * oh)  # noqa: E731
+        vt_ = ty["value"]
+        longest = max([len(text.display(lesson.fact(f))) for sc in lesson.data["storyboard"]
+                       for f in lesson.state(sc["state"])["state"]["output"]] + [1])
+        val_px = int(min(oh * 0.66, 52, (col_w - 34 - 58 - 20) / (longest * 0.6)))
+    shift = out_h + 30 if has_out and mode is None else 0
     outs = []
+
+    def out_div(cls, set_name, k, o):
+        x_, y_ = place(k)
+        size = f";font-size:{val_px}px;line-height:{oh}px;height:{oh}px" if val_px else ""
+        return (f'<div class="{cls}" data-set="{set_name}" data-step="{k}" style="left:{x_:.0f}px;top:{y_}px{size}">'
+                f'<span class="step" data-label="output-step">{k}</span>'
+                f'<span class="val" data-fact="{esc(o["fact"])}">{esc(o["text"])}</span></div>')
     for k, o in enumerate(before_out if morph else [], 1):
-        outs.append(f'<div class="out" data-set="old" data-step="{k}" style="top:{OUT_TOP + (k - 1) * OUT_H}px">'
-                    f'<span class="step" data-label="output-step">{k}</span>'
-                    f'<span class="val" data-fact="{esc(o["fact"])}">{esc(o["text"])}</span></div>')
+        outs.append(out_div("out", "old", k, o))
     prev_out = {o["fact"] for o in before_out} if not morph else set()
     for k, o in enumerate(cur["output"], 1):
-        cls = "out" + ("" if o["fact"] in prev_out else " out-new")
-        outs.append(f'<div class="{cls}" data-set="cur" data-step="{k}" style="top:{OUT_TOP + (k - 1) * OUT_H}px">'
-                    f'<span class="step" data-label="output-step">{k}</span>'
-                    f'<span class="val" data-fact="{esc(o["fact"])}">{esc(o["text"])}</span></div>')
+        outs.append(out_div("out" + ("" if o["fact"] in prev_out else " out-new"), "cur", k, o))
     outcard = (f'<div class="outcard" data-key="output"><p class="outlabel" data-chrome="output_label">'
-               f'{esc(text.ui("output_label").upper())}</p>{"".join(outs)}</div>') if has_out else ""
+               f'{esc(text.ui("output_label").upper())}</p>{"".join(outs)}</div>') if has_out or mode else ""
     vars_html = " ".join(f'<span data-code="{cur["program"]}">{esc(k)} = {esc(v)}</span>' for k, v in cur["vars"].items())
     q = scene.get("question")
     panel_top = shift + 70
+    panel_w = L["side_w"]
     panel_h = L["card_h"] - panel_top
     nt = ty["note"]
     if q:
         side = (f'<div class="panel qcard" data-key="question"><p class="qlabel" data-chrome="question_label">'
                 f'{esc(text.ui("question_label"))}</p><p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p></div>')
-    else:
+    elif mode is None:
         sizes = tuple(round(x * nt["scale"]) for x in (64, 58, 52, 48, 44))
-        note_px = _fit(nt["key"], claims[note_claim]["text"], SIDE_W - 84, panel_h - 76, 1.18, sizes)
+        note_px = _fit(nt["key"], claims[note_claim]["text"], panel_w - 84, panel_h - 76, 1.18, sizes)
         side = (f'<div class="panel notecard" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
                 f'style="font-size:{note_px}px">{esc(claims[note_claim]["text"])}</p></div>')
+    else:
+        side = ""
+    if morph:
+        # while the program changes, the note column says what changes (the note itself states the new
+        # program's behaviour, so it waits for the diff to finish)
+        fo, fn = lesson.program(before["program"])["path"].split("/")[-1], lesson.program(cur["program"])["path"].split("/")[-1]
+        diff_rows = "".join(f'<p class="dl {k}"><span class="mark" data-label="diff-mark">{"+" if k == "plus" else MINUS}</span>'
+                            f'<span data-code="{pid}">{esc(src_[n - 1].strip())}</span></p>'
+                            for k, ns, src_, pid in (("minus", removed, go["src"], before["program"]), ("plus", added, gc["src"], cur["program"]))
+                            for n in ns)
+        side += (f'<div class="panel changecard"><p class="qlabel" data-chrome="morph_label">{esc(text.ui("morph_label"))}</p>'
+                 f'<p class="files" data-chrome="morph_files">{esc(text.ui("morph_files", old=fo, new=fn))}</p>{diff_rows}</div>')
+    # --- the mechanism panel: the state before this scene, with this scene's state faded in over it
+    mech_html = ""
+    if mode:
+        px, py, pw, ph = L["panel_box"]
+        mh = mech.max_height(lesson, "wide")
+        fit = 'preserveAspectRatio="xMidYMin meet"'
+        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}', height=mh)
+        layers = cur_svg
+        if replay and scene["before"] != scene["state"]:
+            bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" {fit}',
+                                                height=mh)
+            layers = bef_svg + cur_svg
+        mech_html = f'<div class="mechbox" data-key="panel">{layers}</div>' if not q else ""
     kicker = text.kicker(lesson).upper()
     fname = lambda prog: esc(lesson.program(prog)["path"].split("/")[-1])  # noqa: E731
     files = (f'<p class="file" data-set="old" data-label="program-file">{fname(before["program"])}</p>' if morph else "") + \
@@ -561,6 +640,21 @@ def scene_html(lesson, scene, index, count, timing):
     if morph:
         js.append(f"d.to(q('.out[data-set=\"old\"]'), {{ opacity: 0, duration: 0.25 }}, {oa:.3f});")
 
+    if mode and not q and replay and scene["before"] != scene["state"]:
+        # the panel: this scene's state fades in over the previous one, which then fades out (removed parts go)
+        js.append("d.fromTo(q('.mcur'), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power1.out' }, 0);")
+        js.append("d.to(q('.mbefore'), { opacity: 0, duration: 0.3, ease: 'power1.in' }, 0.45);")
+    vars_p = (f'<p class="vars"><span class="varlabel" data-chrome="vars_label">{esc(text.ui("vars_label").upper())}</span>'
+              f'{vars_html}</p>') if mode is None else ""
+    panel_css = ""
+    if mode:
+        bx, by, bw, bh = L["panel_box"]
+        ox, oy, ow, ohh = _out_rect(L)
+        panel_css = (f".mechbox {{ position:absolute; left:{bx}px; top:{by}px; width:{bw}px; height:{bh}px; }}\n"
+                     f".mlayer {{ position:absolute; left:0; top:0; width:100%; height:100%; }}\n"
+                     f".outcard {{ left:{ox}px; top:{oy}px; width:{ow}px; height:{ohh}px; }}\n"
+                     f".panel.pbox {{ left:{bx}px; top:{by}px; width:{bw}px; height:{bh}px; bottom:auto; }}\n")
+        side = side.replace('class="panel qcard"', 'class="panel qcard pbox"')
     font = L["font"]
     kt, dt, bt, lt, vt, ct = ty["kicker"], ty["display"], ty["body"], ty["label"], ty["value"], ty["code"]
     card_border = f"border:2px solid {t['rule']};" if frame.get("card_border") else ""
@@ -580,9 +674,9 @@ def scene_html(lesson, scene, index, count, timing):
 .count {{ margin-left:24px; padding-left:24px; border-left:2px solid {t['rule']}; font:500 24px/1.2 {ct['family']}; letter-spacing:.04em; color:{t['label']}; }}
 .title {{ position:absolute; left:{MX}px; top:90px; margin:0; font:{dt['weight']} {title_px}px/1.15 {dt['family']}; letter-spacing:-.015em; color:{t['ink']}; }}
 .file[data-set="cur"] {{ opacity:{0 if morph else 1}; }}
-.file {{ position:absolute; left:{MX}px; width:{CARD_W - 24}px; top:{CODE_TOP - 38}px; margin:0; text-align:right;
+.file {{ position:absolute; left:{MX}px; width:{L['card_w'] - 24}px; top:{L['code_top'] - 38}px; margin:0; text-align:right;
   font:600 24px/1.2 {ct['family']}; color:{t['label']}; }}
-.code {{ position:absolute; left:{MX}px; top:{CODE_TOP}px; width:{CARD_W}px; height:{L['card_h']}px; background:{t['surface']};
+.code {{ position:absolute; left:{MX}px; top:{L['code_top']}px; width:{L['card_w']}px; height:{L['card_h']}px; background:{t['surface']};
   {card_border} border-radius:22px; box-sizing:border-box; overflow:hidden; }}
 .rows {{ position:absolute; inset:0; }}
 .rows.hidden {{ opacity:0; }}
@@ -601,7 +695,7 @@ def scene_html(lesson, scene, index, count, timing):
 .band.minus {{ background:{_rgba(t['correction'], 0.16)}; border-left:6px solid {t['correction']}; box-sizing:border-box; }}
 .strike {{ position:absolute; left:{SRC_X - 6}px; right:300px; top:{LH / 2 - 1.5:.1f}px; height:3px; background:{t['correction']}; transform-origin:0 50%; }}
 .hl {{ position:absolute; left:{SRC_X - 14}px; right:20px; top:0; height:{LH}px; background:{t['highlight']}; border-left:6px solid {t['note']}; border-radius:8px; }}
-.rail {{ position:absolute; left:0; top:0; width:{CARD_W - 4}px; height:{L['card_h'] - 4}px; overflow:visible; }}
+.rail {{ position:absolute; left:0; top:0; width:{L["card_w"] - 4}px; height:{L['card_h'] - 4}px; overflow:visible; }}
 .seg {{ fill:none; stroke:{t['note']}; stroke-width:4; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:0; }}
 .seg.new {{ stroke-dashoffset:1; }}
 .head, .dot {{ fill:{t['note']}; }}
@@ -612,20 +706,27 @@ def scene_html(lesson, scene, index, count, timing):
   font:700 24px/38px {ct['family']}; color:{t['correction']}; background:{t['correction_tint']}; border:2px solid {t['correction']}; border-radius:20px; box-sizing:border-box; }}
 .ostep {{ position:absolute; margin:0; width:40px; height:40px; border-radius:20px; box-sizing:border-box; text-align:center;
   font:700 22px/40px {ct['family']}; color:{t['ground']}; background:{t['value']}; }}
-.side {{ position:absolute; left:{SIDE_X}px; top:{CODE_TOP}px; width:{SIDE_W}px; height:{L['card_h']}px; overflow:hidden; }}
+.side {{ position:absolute; left:{L['side_x']}px; top:{L['code_top']}px; width:{L['side_w']}px; height:{L['card_h']}px; overflow:hidden; }}
 .sidebody {{ position:absolute; inset:0; }}
-.outcard {{ position:absolute; left:0; top:0; width:{SIDE_W}px; height:{out_h}px; background:{t['surface']}; {card_border} border-radius:22px; box-sizing:border-box; }}
+.outcard {{ position:absolute; left:0; top:0; width:{L['side_w']}px; height:{out_h}px; background:{t['surface']}; {card_border} border-radius:22px; box-sizing:border-box; }}
 .outlabel {{ position:absolute; left:34px; top:28px; margin:0; font:{lt['weight']} 22px/1.2 {lt['family']}; letter-spacing:.12em; color:{t['label']}; }}
 .out {{ position:absolute; left:34px; height:76px; font:{vt['weight']} 52px/76px {vt['family']}; color:{t['value']}; }}
 .step {{ display:inline-block; width:58px; font-size:26px; font-weight:500; color:{t['faint']}; vertical-align:top; }}
 .vars {{ position:absolute; left:4px; top:{shift}px; margin:0; font:500 30px/1.3 {ct['family']}; color:{t['ink_soft']}; }}
 .varlabel {{ font:{lt['weight']} 22px/1.3 {lt['family']}; letter-spacing:.12em; color:{t['label']}; margin-right:18px; }}
-.panel {{ position:absolute; left:0; top:{panel_top}px; width:{SIDE_W}px; bottom:0; box-sizing:border-box; border-radius:{22 if frame.get('panel_fill') else 0}px; padding:30px 38px; }}
+.panel {{ position:absolute; left:0; top:{panel_top}px; width:{L['side_w']}px; bottom:0; box-sizing:border-box; border-radius:{22 if frame.get('panel_fill') else 0}px; padding:30px 38px; }}
 .notecard {{ {panel_fill} {panel_rule} }}
 .note {{ margin:0; font:{nt['weight']} 50px/1.18 {nt['family']}; color:{t['note']}; }}
 .qcard {{ {panel_fill} border:3px solid {t['note']}; border-radius:22px; }}
+.changecard {{ {panel_fill} {panel_rule} }}
+.changecard .files {{ margin:0 0 18px; font:600 30px/1.3 {ct['family']}; color:{t['ink']}; }}
+.changecard .dl {{ margin:0 0 8px; font:400 30px/1.3 {ct['family']}; color:{t['ink']}; white-space:pre; }}
+.changecard .mark {{ display:inline-block; width:40px; font-weight:700; }}
+.changecard .plus .mark {{ color:{t['value']}; }}
+.changecard .minus .mark {{ color:{t['correction']}; }}
 .qlabel {{ margin:0 0 14px; font:700 24px/1.2 {lt['family']}; letter-spacing:.14em; text-transform:uppercase; color:{t['note']}; }}
 .qtext {{ margin:0; font:500 {round(46 * bt['scale'])}px/1.24 {bt['family']}; color:{t['ink']}; }}
+{panel_css}
 .footrule {{ position:absolute; left:{MX}px; right:{MX}px; top:{H - BOTTOM + 22}px; height:2px; background:{t['rule']}; opacity:.6; }}
 .foot {{ position:absolute; right:{MX}px; top:{H - BOTTOM + 36}px; margin:0; font:400 20px/1.2 {ct['family']}; letter-spacing:.06em; color:{t['label']}; }}
 </style>
@@ -642,13 +743,15 @@ def scene_html(lesson, scene, index, count, timing):
     {''.join(s['rail'] for s in sets)}
     {''.join(s['tags'] + s['steps'] for s in sets)}
   </div>
+  {mech_html}
   <div class="side">
     {outcard}
     <div class="sidebody">
-      <p class="vars"><span class="varlabel" data-chrome="vars_label">{esc(text.ui('vars_label').upper())}</span>{vars_html}</p>
-      {side}
+      {vars_p}
+      {side if mode is None else ''}
     </div>
   </div>
+  {side if mode else ''}
   <div class="footrule"></div>
   {foot}
 </div>
@@ -666,7 +769,8 @@ def scene_html(lesson, scene, index, count, timing):
     // scene boundary: the title and the note dip through the ground (out over the last 0.3 s, in
     // over the first 0.4 s of the next scene); the code card and output stay, so nothing jumps
     tl.fromTo(q('.title'), {{ opacity: 0, y: 12 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, 0);
-    tl.fromTo(q('.panel'), {{ opacity: 0, y: 10 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, {note_at:.3f});
+    tl.fromTo(q('.panel:not(.changecard)'), {{ opacity: 0, y: 10 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, {note_at:.3f});
+    {f"tl.fromTo(q('.changecard'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4, ease: 'power2.out' }}, 0.05); tl.to(q('.changecard'), {{ opacity: 0, duration: 0.3 }}, {note_at + 0.05:.3f});" if morph else ""}
     {f"tl.to(q('.title, .panel'), {{ opacity: 0, duration: 0.3, ease: 'power1.in' }}, {scene['duration'] - 0.3:.3f});" if index + 1 < count else ""}
     if (q('.out-new').length) tl.set(q('.out-new'), {{ opacity: 0 }}, 0);
     if (q('.ln.exec-new').length) tl.set(q('.ln.exec-new'), {{ color: '{t['label']}' }}, 0);

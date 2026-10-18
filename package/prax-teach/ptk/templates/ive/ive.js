@@ -62,7 +62,16 @@
     trackEls.push(t);
     return t;
   }
-  var capT = addTrack('captions', D.captions_label, 'captions', true);
+  // captions are drawn in a band of their own under the film (never over the picture or the controls), so the
+  // track stays hidden to the browser and the band shows its active cue
+  var capT = addTrack('captions', D.captions_label, 'captions', false);
+  var capOn = true;
+  function showCaption() {
+    var band = $('captext'), t = capT.track, a = t.activeCues, txt = [];
+    for (var i = 0; a && i < a.length; i++) txt.push(a[i].text);
+    band.textContent = capOn ? txt.join(' ') : '';
+  }
+  capT.track.addEventListener('cuechange', showCaption);
   var chapT = addTrack('chapters', U.chapters, 'chapters', false);
   var metaT = addTrack('metadata', 'states', 'states', false);
   function cuesOf(t) {
@@ -130,15 +139,16 @@
     xp.setAttribute('data-origin', V.origin);
     box.textContent = '';
     box.setAttribute('data-program', V.program);
-    if (V.origin === 'film') {
+    if (V.origin === 'film' || V.origin === 'step') {
       box.setAttribute('data-state', V.state_id); box.setAttribute('data-cue', V.cue); box.setAttribute('data-kind', V.kind);
-      box.removeAttribute('data-edit');
+      if (V.origin === 'step') box.setAttribute('data-edit', 'step=' + V.cue); else box.removeAttribute('data-edit');
       var lab = el('p', 'slabel', V.label); lab.setAttribute('data-trace', V.state_id); box.appendChild(lab);
     } else {
       box.removeAttribute('data-state'); box.removeAttribute('data-cue'); box.setAttribute('data-kind', 'edit');
       box.setAttribute('data-edit', 'n=' + V.n + (V.brk ? ';break' : ''));
     }
-    $('origin').textContent = V.origin === 'film' ? fmt(U.ive_from_film, { time: clock(V.at) }) : U.ive_yours;
+    $('origin').textContent = V.origin === 'film' ? fmt(U.ive_from_film, { time: clock(V.at) })
+      : (V.origin === 'step' ? U.ive_step_back : U.ive_yours);
     var fig = el('figure', 'codepanel'); fig.setAttribute('data-key', 'code');
     var cap = el('figcaption', 'lbl'); cap.appendChild(el('span', null, U.code_label)); cap.appendChild(document.createTextNode(' · '));
     var fn = el('span', 'file', V.file); fn.setAttribute('data-label', 'program-file'); cap.appendChild(fn); fig.appendChild(cap);
@@ -176,6 +186,13 @@
     var vp = el('p', 'vars'); vp.appendChild(el('span', 'lbl', U.vars_label)); vp.appendChild(el('span', 'mono', vars));
     vp.setAttribute('data-code', V.program); os.appendChild(vp);
     side.appendChild(os);
+    var P = D.panels && D.panels[V.state_id];
+    if (P && V.origin !== 'yours') {
+      // the mechanism panel at this state (pre-drawn by ptk; CSS picks the copy for the width and colour scheme)
+      var mb = el('figure', 'mechbox place-' + D.panel_place); mb.setAttribute('data-key', 'panel');
+      mb.innerHTML = P.wl + P.wd + P.pl + P.pd;
+      side.insertBefore(mb, os);
+    }
     if (V.question) {
       var q = el('div', 'q'); q.setAttribute('data-key', 'question');
       q.appendChild(el('p', 'lbl', U.question_label));
@@ -199,7 +216,7 @@
     if (!booted) return;
     var i = shownIdx(), V;
     if (mode === 'explore' && edit) V = liveView(edit.n, edit.brk);
-    else if (mode === 'explore' && step !== null) V = filmView(step);
+    else if (mode === 'explore' && step !== null) { V = filmView(step); V.origin = 'step'; }
     else { V = filmView(i); V.at = mode === 'film' ? v.currentTime : returnTime; }
     var key = [mode, V.origin, V.cue, V.state_id, V.program, edit && edit.n, edit && edit.brk, clock(V.at || 0)].join('|');
     if (key !== lastKey) { render(V); lastKey = key; }
@@ -258,7 +275,8 @@
     if (quiet) quiet = false; else if (booted) emit('seek');
     paint();
   });
-  v.addEventListener('timeupdate', paint);
+  v.addEventListener('timeupdate', function () { paint(); showCaption(); });
+  v.addEventListener('seeked', showCaption);
   v.addEventListener('ended', function () { mode = 'film'; paint(); });
   $('explore').addEventListener('click', enterExplore);
   $('return').addEventListener('click', returnToFilm);
@@ -281,10 +299,12 @@
   }
   var capBtn = $('caps');
   capBtn.addEventListener('click', function () {
-    var on = capT.track.mode !== 'showing';
-    capT.track.mode = on ? 'showing' : 'hidden';
-    capBtn.setAttribute('aria-pressed', String(on));
-    capBtn.textContent = on ? U.captions_on : U.captions_off;
+    capOn = !capOn;
+    capT.track.mode = 'hidden';
+    $('capband').setAttribute('data-on', String(capOn));
+    capBtn.setAttribute('aria-pressed', String(capOn));
+    capBtn.textContent = capOn ? U.captions_on : U.captions_off;
+    showCaption();
   });
 
   // ---- chapters (all titles) and the transcript (only cues already reached)

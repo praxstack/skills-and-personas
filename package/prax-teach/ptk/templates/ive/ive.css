@@ -6,6 +6,11 @@
 .film{grid-area:film}.xpanel{grid-area:panel}.chap{grid-area:chap}.txw{grid-area:tx}
 .chap h2,.txw h2{margin-block-end:.5rem}
 .film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--surface);border-radius:.75rem}
+/* the caption band: reserved under the film for two lines, so a caption never covers the picture or the controls */
+.capband{min-height:calc(2 * 1.45 * 1.0625rem + .75rem);margin-block-start:.5rem;padding:.375rem .75rem;border-radius:.5rem;
+  background:var(--surface);border:1px solid var(--rule);display:flex;align-items:center}
+.capband p{margin:0;font-size:1.0625rem;line-height:1.45;color:var(--ink);text-wrap:balance}
+.capband[data-on="false"] p{visibility:hidden}
 .modebar{display:flex;flex-wrap:wrap;gap:.75rem 1rem;align-items:center;justify-content:space-between;margin-block-start:.875rem}
 .mode{display:flex;gap:.625rem;align-items:baseline;flex:1 1 18rem;margin:0;color:var(--ink_soft);font-size:.9375rem;line-height:1.45}
 .mode .tagm{flex:none;font-family:var(--label-font);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;
@@ -17,7 +22,18 @@ html[data-ive-mode="explore"] .mode .tagm{color:var(--surface);background:var(--
 
 /* the panel: the film's state, or the learner's edit */
 .xpanel{display:grid;gap:.875rem;padding:1rem 1rem 1.125rem;border:1px solid var(--panel-border);border-radius:.875rem;background:var(--panel-bg)}
-.xpanel[data-origin="yours"]{border:2px dashed var(--note);background:var(--note_tint)}
+.xpanel[data-origin="yours"],.xpanel[data-origin="step"]{border:2px dashed var(--note);background:var(--note_tint)}
+.mechbox{padding:.5rem;border:1px solid var(--rule);border-radius:.625rem;background:var(--panel-bg)}
+.mech{display:none;width:100%;height:auto}
+.mech-p-light{display:block}
+@media (prefers-color-scheme:dark){.mech-p-light{display:none}.mech-p-dark{display:block}}
+.mech text{font-variant-numeric:lining-nums tabular-nums}
+@media (min-width:1100px){.mech-p-light,.mech-p-dark{display:none!important}.mech-w-light{display:block}}
+@media (min-width:1100px) and (prefers-color-scheme:dark){.mech-w-light{display:none}.mech-w-dark{display:block}}
+/* a panel drawn full width in the still (neuron) is read here in its narrow copy at every width */
+.mechbox.place-hero .mech-w-light,.mechbox.place-hero .mech-w-dark{display:none!important}
+.mechbox.place-hero .mech-p-light{display:block!important}
+@media (prefers-color-scheme:dark){.mechbox.place-hero .mech-p-light{display:none!important}.mechbox.place-hero .mech-p-dark{display:block!important}}
 .xhead{display:flex;flex-wrap:wrap;gap:.25rem .75rem;align-items:baseline;justify-content:space-between}
 .origin{font-family:var(--tag-font);font-size:.8125rem;color:var(--label)}
 .xpanel[data-origin="yours"] .origin{font-family:var(--label-font);font-weight:700;color:var(--note);letter-spacing:.02em}
@@ -96,6 +112,6 @@ ol.chapters .ttl{font-family:var(--display-font);font-weight:600}
   .xpanel{grid-row:1 / span 2}
   .xstage{grid-template-columns:minmax(0,1fr)}
   .xside{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
-  .xside .q,.xside .prov{grid-column:1 / -1}
+  .xside .q,.xside .prov,.xside .mechbox{grid-column:1 / -1}
 }
 @media print{.modebar,.tools,.film{display:none!important}}

@@ -41,7 +41,7 @@ import re
 import shutil
 
 from .. import errors, host, text
-from . import explorer
+from . import explorer, mech
 from . import path as rail
 from ..text import esc
 
@@ -51,11 +51,28 @@ def _view(lesson, sid):
     s = st["state"]
     facts = lesson.by_id("facts")
     src = lesson.program_source(s["program"]).split("\n")
-    first, last = rail.body_range(src)
-    return {"state_id": sid, "label": st["label"], "program": s["program"],
+    first, last = rail.listing(lesson, s["program"])
+    view = {"state_id": sid, "label": st["label"], "program": s["program"],
             "program_path": lesson.program(s["program"])["path"], "line": s["line"], "path": s.get("path", []),
             "code": [[n, src[n - 1]] for n in range(first, last + 1)],
             "output": [{"fact": f, "text": text.display(facts[f])} for f in s["output"]], "vars": s.get("vars", {})}
+    if (lesson.data.get("figure") or {}).get("panel"):
+        # the panel's values ride in the cue (the values gate checks them); its drawing is in ive-data.js
+        _m, drawn, _c = mech.svg_fragment(lesson, sid, "wide", "light")
+        view["panel"] = [{"fact": f, "text": text.display(facts[f])} for f in dict.fromkeys(drawn)]
+    return view
+
+
+def panels(lesson):
+    """{state id: {"wl", "wd", "pl", "pd"}}: the panel of every trace state, wide and portrait, light and dark."""
+    if not (lesson.data.get("figure") or {}).get("panel"):
+        return None
+    out = {}
+    for st in lesson.data["trace"]:
+        out[st["id"]] = {f"{lay[0]}{th[0]}": mech.svg_fragment(lesson, st["id"], lay, th,
+                                                               attrs=f'class="mech mech-{lay[0]}-{th}"')[0]
+                         for lay in ("wide", "portrait") for th in ("light", "dark")}
+    return out
 
 
 def cues(lesson, timing):
@@ -111,7 +128,7 @@ def write_metadata_vtt(path, cue_list):
 
 
 IVE_DIR = host.PKG / "ptk" / "templates" / "ive"
-JS_UI = ("chapters", "code_label", "output_label", "vars_label", "question_label", "captions_on", "captions_off",
+JS_UI = ("chapters", "code_label", "output_label", "vars_label", "question_label", "captions_on", "captions_off", "ive_step_back",
          "ive_from_film", "ive_yours", "ive_mode_label_explore", "ive_mode_label_film", "ive_mode_explore",
          "ive_mode_film", "x_on", "x_off", "x_captured", "x_computed", "x_tag_changed", "x_tag_nomatch", "enter_label",
          "x_tag_fall", "exit_label", "x_tag_end")
@@ -151,7 +168,8 @@ def page_data(lesson, timing, cue_list, ive_dir, live):
     return {"fps": timing["fps"], "ui": {k: text.ui(k) for k in JS_UI}, "captions_label": "English",
             "artifact_id": f"{lesson.id}:ive", "session_id": "local",
             "tracks": {k: (ive_dir / f"{k}.vtt").read_text() for k in ("captions", "chapters", "states")},
-            "unlock_cue": answers[-1]["cue"] if answers else None, "live": live}
+            "unlock_cue": answers[-1]["cue"] if answers else None, "live": live, "panels": panels(lesson),
+            "panel_place": mech.page_place(lesson) if (lesson.data.get("figure") or {}).get("panel") else None}
 
 
 def _live_html(lesson, live, unlock):
@@ -175,7 +193,9 @@ def page(lesson, timing, cue_list, posters, live=None):
     script = (IVE_DIR / "ive.js").read_text()
     answers = [c for c in cue_list if c["kind"] == "answer"]
     unlock = answers[-1]["start"] if answers else None
-    used = " ".join([lesson.data["title"], text.kicker(lesson), explorer.all_chrome_text(),
+    pchars = " ".join(mech.svg_fragment(lesson, st["id"], lay, "light")[2] for st in lesson.data["trace"]
+                      for lay in ("wide", "portrait")) if (lesson.data.get("figure") or {}).get("panel") else ""
+    used = " ".join([lesson.data["title"], text.kicker(lesson), explorer.all_chrome_text(), pchars,
                      *[c["text"] for c in timing["cues"]], *[s["title"] for s in timing["scenes"]],
                      *[json.dumps(c, ensure_ascii=False) for c in cue_list],
                      *[ln for P in (live or {}).get("programs", {}).values() for _, ln in P["lines"]],
@@ -205,6 +225,7 @@ def page(lesson, timing, cue_list, posters, live=None):
 <video id="v" controls preload="metadata" playsinline poster="{esc(posters[0]['file'])}" aria-label="{esc(lesson.data['title'])}">
 <source src="lesson.mp4" type="video/mp4">
 </video>
+<div class="capband js-only" id="capband" data-on="true" aria-hidden="true"><p id="captext"></p></div>
 <div class="modebar js-only"><p class="mode" id="mode" role="status" data-nodata="{esc(ui('ive_no_data'))}"><span class="tagm" id="mode-label" data-chrome="ive_mode_label_film">{esc(ui('ive_mode_label_film'))}</span><span id="mode-text" data-chrome="ive_mode_film">{esc(ui('ive_mode_film'))}</span></p>
 <div class="acts"><button type="button" class="pill primary" id="explore" data-chrome="ive_explore">{esc(ui('ive_explore'))}</button>
 <button type="button" class="pill primary" id="return" hidden data-chrome="ive_return">{esc(ui('ive_return'))}</button>

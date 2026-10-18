@@ -171,3 +171,36 @@ def test_before_answer_shot_has_no_loading_spinner():
         return {"cue": ans["cue"], "settled": True}
     finally:
         shutil.rmtree(work, ignore_errors=True)
+
+
+def test_caption_band_clear_of_film():
+    """Integration finding (WP9 Part A): at 1440 a caption line sat half under the progress bar, and at 390 the
+    caption covered the film. Captions now live in a reserved band under the film: at both widths the band is
+    below the video, holds its text, shows the cue being spoken, and the browser draws no captions on the film."""
+    timing, _cues = _built()
+    cue = timing["cues"][len(timing["cues"]) // 2]
+    work = host.make_tmp("ive-capband-")
+    try:
+        jobs = []
+        for w in visual.WIDTHS:
+            steps = [{"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000},
+                     {"eval": visual.IVE_DRIVE.read_text(), "as": "drive"},
+                     {**visual._js(f"await D.seek({cue['start'] + 0.3:.3f}); await D.sleep(200); const L = D.layout(); "
+                                   "const b = document.getElementById('capband').getBoundingClientRect(), "
+                                   "f = D.v().getBoundingClientRect(); return {problems: L.problems, band_top: b.top, "
+                                   "film_bottom: f.bottom, text: document.getElementById('captext').textContent};"), "as": "m"}]
+            jobs.append({"id": f"w{w}", "type": "script", "url": (IVE / "index.html").resolve().as_uri(), "width": w,
+                         "height": 900, "steps": steps})
+        res = visual.shoot(jobs, work / "w")
+        out = {}
+        for r in res["results"]:
+            m = (r.get("values") or {}).get("m") or {}
+            assert r.get("ok"), r.get("error", "")[:500]
+            cap = [p for p in m["problems"] if p["kind"].startswith(("caption", "no-caption"))]
+            assert not cap, (r["id"], cap)
+            assert m["band_top"] >= m["film_bottom"] - 0.5, (r["id"], m)
+            assert m["text"] == cue["text"], (r["id"], m["text"], cue["text"])
+            out[r["id"]] = {"gap_px": round(m["band_top"] - m["film_bottom"], 1)}
+        return out
+    finally:
+        shutil.rmtree(work, ignore_errors=True)

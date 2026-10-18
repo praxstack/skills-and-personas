@@ -180,14 +180,23 @@ def _views(c, x, y, w):
         c.group(lane["fact"])
         svg.line(x, y - 12, x + w, y - 12, t["rule"], 1)
         y += S["code"] * 0.9
-        c.code(x, y, src[lane["line"] - 1].strip(), pid, lane["line"])
+        code_w = c.code(x, y, src[lane["line"] - 1].strip(), pid, lane["line"])
         if lane.get("via") and c.on(lane["via"]):
             y += S["value"] * 1.35
             lw = c.label(x + 18, y - 3, "lane_converts")
             c.value(x + 18 + lw + 12, y, lane["via"], size=S["value"] * 0.8, color=t["note"])
-        y += S["value"] * 1.35
-        lw = c.label(x + 18, y - 3, "lane_prints")
-        c.value(x + 18 + lw + 12, y, lane["fact"])
+            code_w = None
+        vfont, vpx, vweight, _c, _s = svg.role("value", S["value"])
+        val_w = fonts.width(vfont, vpx, c.val(lane["fact"]), weight=vweight)
+        if code_w is not None and x + code_w + 26 + val_w <= x + w:
+            # the output fits on the code line: arrow, then the value
+            ax = x + code_w + 8
+            svg.text(ax, y, "\u2192", "mono", S["code"], t["label"], ("chrome", "arrow"))
+            c.value(x + w, y + 1, lane["fact"], anchor="end")
+        else:
+            y += S["value"] * 1.35
+            lw = c.label(x + 18, y - 3, "lane_prints")
+            c.value(x + 18 + lw + 12, y, lane["fact"])
         if lane.get("claim"):
             y = c.note(x + 18, y + S["note"] * 1.5, lane["claim"], w - 18)
         svg.close()
@@ -225,11 +234,13 @@ def _stack(c, x, y, w):
     gap = 12
     arrow_w = 54 * S["k"]
     bw = w - arrow_w
-    # top of the stack first (the list is outermost first)
-    order = list(reversed(frames))
+    # the stack stands on a fixed base sized for the deepest state, so frames never move as others come and go
+    depth = max(len(s["state"].get("frames", [])) for s in lesson.data["trace"])
+    base = y + depth * (fh + gap)
+    order = list(reversed(frames))  # top of the stack first (the list is outermost first)
     boxes = []
     for i, fr in enumerate(order):
-        fy = y + i * (fh + gap)
+        fy = base - (len(order) - i) * (fh + gap)
         boxes.append((fr, fy))
     for i, (fr, fy) in enumerate(boxes):
         status = fr.get("status", "running" if i == 0 else "waiting")
@@ -258,7 +269,7 @@ def _stack(c, x, y, w):
             c.label(x + bw - 16, ty - 2, "frame_" + status, anchor="end",
                     color=t["note"] if status == "running" else t["label"], inside=rid)
         svg.close()
-    y = y + len(boxes) * (fh + gap) - gap
+    y = base - gap
     for cid in lesson.data["figure"]["panel"].get("claims", []):
         y = c.note(x, y + S["note"] * 2, cid, w)
     return y - y0 + 10
@@ -546,7 +557,18 @@ def page_place(lesson):
     return "side" if P["kind"] == "stack" else P["place"]
 
 
-def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs=""):
+def max_height(lesson, layout):
+    """The tallest the panel gets over the trace, so every state can share one scale."""
+    from . import still
+    best = 0
+    for st in lesson.data["trace"]:
+        svg = still.Svg("light", fonts.tokens())
+        w = WIDTHS[(layout, page_place(lesson))]
+        best = max(best, draw(svg, lesson, st["id"], 4, 4, w, layout, still.Flow(svg, {}), key=False))
+    return best
+
+
+def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="", height=None):
     """The panel at `sid` as one standalone <svg> for an HTML page or the video: (markup, fact ids drawn, chars).
     Colours and type come from `theme` (the page shows a light and a dark copy by colour scheme); fonts are the
     page's own @font-face families."""
@@ -562,6 +584,7 @@ def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="")
     defs = (f'<defs><marker id="arrow-{theme}-{layout}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" '
             f'markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{svg.t["note"]}"/></marker></defs>')
     body = body.replace('marker-end="url(#arrow)"', f'marker-end="url(#arrow-{theme}-{layout})"')
+    h = max(h, height or 0)
     markup = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w + 8:.0f} {h + 8:.0f}" role="img" '
               f'data-panel-state="{sid}" data-theme="{theme}" data-layout="{layout}" {attrs}>{defs}{body}</svg>')
     return markup, facts, chars

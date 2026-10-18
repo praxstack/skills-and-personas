@@ -46,10 +46,16 @@ PROBE_JS = r"""(t) => {
   const segs = [...root.querySelectorAll('.seg')].filter((s) => eop(s.parentElement) > 0.01)
     .map((s) => parseFloat(getComputedStyle(s).strokeDashoffset) || 0);
   // any tween on the mechanism (code card or output card) still running at t
-  const mech = (el) => el && el.closest && el.closest('.code, .outcard');
+  const mech = (el) => el && el.closest && el.closest('.code, .outcard, .mechbox');
   const active = tl.getChildren(false, true, true).some((ch) => (ch.data === 'draw' || (ch.targets && ch.targets().some(mech)))
     && ch.startTime() <= t + 1e-6 && t < ch.endTime() - 1e-6);
+  // the mechanism panel: the state of the top layer that is fully shown (a panel lesson draws two layers in a
+  // scene that changes state; mid cross-fade is moving)
+  const layers = [...root.querySelectorAll('.mlayer')];
+  const fullL = layers.filter((l) => eop(l) >= 0.99);
+  const panel = layers.length ? (fullL.length ? fullL[fullL.length - 1].dataset.panelState : null) : undefined;
   const moving = active || best > 1.5 || eop(hl) < 0.99 || segs.some((d) => d > 0.002 && d < 0.998)
+    || layers.some((l) => eop(l) > 0.01 && eop(l) < 0.99)
     || dots.some((d) => op(d) > 0.01 && op(d) < 0.99)
     || vals.some((v) => op(v) > 0.01 && op(v) < 0.99);
   const code = rows.map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
@@ -58,7 +64,7 @@ PROBE_JS = r"""(t) => {
   const each = (s) => [...root.querySelectorAll(s)].map((e) => +eop(e).toFixed(3));
   const diff = { file_old: one('.file[data-set="old"]'), file_cur: one('.file[data-set="cur"]'),
                  removed: each('.band.minus'), added: each('.ln.add'), rows_cur: one('.rows[data-set="cur"]') };
-  return { t, code, line, note: one('.notecard'), diff,
+  return { t, code, line, note: one('.notecard'), diff, panel: panel === undefined ? 'none' : panel,
            path: dots.filter((d) => op(d) >= 0.99).map((d) => +d.dataset.line),
            output: vals.filter((v) => op(v) >= 0.99).map((v) => v.dataset.fact),
            moving };
@@ -157,7 +163,8 @@ def match_state(lesson, probe):
     for st in lesson.data["trace"]:
         s = st["state"]
         if (s["program"] == probe["program"] and s["line"] == probe["line"]
-                and sorted(s.get("path", [])) == sorted(probe["path"]) and s["output"] == probe["output"]):
+                and sorted(s.get("path", [])) == sorted(probe["path"]) and s["output"] == probe["output"]
+                and probe.get("panel", "none") in ("none", st["id"])):
             return st["id"]
     return "unknown"
 
@@ -282,3 +289,82 @@ def compare_pauses(cue_list, frame_at, explorer, points):
                     _tween_ok(c, nxt, fr) or row["frame_state"] == row["explorer_state"]):
                 bad.append(row)
     return rows, bad
+
+
+# ---------------------------------------------------------------- the program diff keeps the frame steady (WP9 Part A)
+
+MORPH_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  const problems = [];
+  const max = (els) => els.reduce((m, e) => Math.max(m, eop(e)), 0);
+  // every code row on screen keeps a line number on screen (its own, or the one it is turning into)
+  const rows = [...root.querySelectorAll('.code .ln')].filter((r) => eop(r) >= 0.99);
+  for (const r of rows) {
+    if (max([...r.querySelectorAll('.no')]) < 0.5) problems.push({ kind: 'gutter-number-gone', line: r.dataset.line || r.dataset.to });
+  }
+  // the file name is always readable
+  const files = [...root.querySelectorAll('.file')];
+  if (files.length && max(files) < 0.5) problems.push({ kind: 'file-name-gone' });
+  // no gap opens in the code: visible rows (old, moved and added) cover the card without a hole
+  const tops = [...root.querySelectorAll('.code .ln')].filter((r) => eop(r) >= 0.3)
+    .map((r) => { const b = r.getBoundingClientRect(); return [b.top, b.bottom]; }).sort((a, b) => a[0] - b[0]);
+  const lh = tops.length ? tops[0][1] - tops[0][0] : 0;
+  for (let i = 1; i < tops.length; i++) {
+    const gap = tops[i][0] - tops[i - 1][1];
+    if (gap > 0.6 * lh) problems.push({ kind: 'code-gap', px: Math.round(gap) });
+  }
+  return { t, problems, out: [...root.querySelectorAll('.out[data-set="old"]')].map((o) => +eop(o).toFixed(3)),
+           notes: max([...root.querySelectorAll('.notecard, .changecard, .qcard')]) };
+}"""
+
+
+def morph_gate(lesson, video_dir, timing, lesson_sha=None):
+    """A program change keeps the frame steady (WP9 Part A): through the diff every visible code row keeps a line
+    number, the file name stays readable, no gap opens in the code, the output values stay fully shown until the
+    new output arrives, and the note column is never empty once the title is in. Sampled every 0.1 s from the
+    scene start to `shown`."""
+    scenes = [s for s in timing["scenes"] if s.get("morph")]
+    if not scenes:
+        return visual.g("video.morph-stable", "video", True, {"morph_scenes": 0, "note": "no program change in this lesson"})
+    from ..project import video as vproj
+    comp = video_dir / "composition"
+    hdir = video_dir / "work" / "frames-morph"
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    jobs, plans = [], {}
+    with visual.LocalServer(video_dir) as srv:
+        for sc in scenes:
+            plan = vproj.draw_plan(lesson, sc["before"], sc["state"], budget=vproj.DRAW_BUDGET * (sc["end"] - sc["reveal"]))
+            reveal = sc["reveal"] - sc["start"]
+            outputs_at = reveal + plan["outputs_at"] * plan["k"]
+            end = sc["shown"] - sc["start"]
+            ts = [round(x / 10, 2) for x in range(0, int(end * 10) + 1)]
+            plans[sc["id"]] = {"outputs_at": round(outputs_at, 3), "times": ts}
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            steps += [{"eval": f"({MORPH_JS})({t})", "as": f"t:{t}"} for t in ts]
+            jobs.append({"id": f"morph:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-morph/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / "frames-morph-run", lesson_sha)
+    bad, sampled = [], 0
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        if not r.get("ok"):
+            bad.append({"scene": sid, "kind": "job-failed", "error": r.get("error", "")[:300]})
+            continue
+        p = plans[sid]
+        for k, v in sorted((r.get("values") or {}).items(), key=lambda kv: float(kv[0][2:])):
+            t = float(k[2:])
+            sampled += 1
+            probs = list(v["problems"])
+            if t < p["outputs_at"] and v["out"] and min(v["out"]) < 0.99:
+                probs.append({"kind": "output-faded", "opacity": min(v["out"])})
+            if t >= 0.45 and v["notes"] < 0.5:
+                probs.append({"kind": "note-column-empty", "opacity": v["notes"]})
+            bad += [{"scene": sid, "t": t, **pr} for pr in probs]
+    return visual.g("video.morph-stable", "video", not bad and sampled > 0,
+                    {"morph_scenes": [s["id"] for s in scenes], "frames_sampled": sampled, "problems": bad[:30]},
+                    "" if not bad else "the frame loses its gutter, file name, output or note during the program diff")

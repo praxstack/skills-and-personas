@@ -482,9 +482,11 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
                         "out.push({...D.state(), current: b.getAttribute('aria-current')}); } return out;"), "as": "chapters"})
     steps.append({**_js("const v = D.v(); await D.seek(v.duration - 0.05); const n = document.querySelectorAll('#tx li').length; "
                         "const p = D.once(v, 'seeked'); document.querySelector('#tx li button').click(); await p; "
-                        "const caps = [...v.textTracks].find((t) => t.kind === 'captions'); const cb = document.getElementById('caps'); "
-                        "const m0 = caps.mode; cb.click(); const m1 = caps.mode; cb.click(); const m2 = caps.mode; "
+                        "await D.sleep(150); const band = document.getElementById('capband'); const cb = document.getElementById('caps'); "
+                        "const m0 = band.dataset.on; cb.click(); const m1 = band.dataset.on; cb.click(); const m2 = band.dataset.on; "
+                        "const caps = [...v.textTracks].find((t) => t.kind === 'captions'); "
                         "return {transcript_items_at_end: n, seek_after_click: v.currentTime, caption_modes: [m0, m1, m2], "
+                        "caption_track_mode: caps.mode, caption_text: document.getElementById('captext').textContent, "
                         "chapters: document.querySelectorAll('#chapters li').length, readyState: v.readyState, "
                         "error: v.error && v.error.code, nav: window.__ptkNav};"), "as": "controls"})
     jobs = [{"id": "ive-behaviour", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": steps}]
@@ -497,15 +499,17 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
             {**_js(f"return D.leak({json.dumps(words)});"), "as": "leak"},
             {"shot": str(shots / f"ive-before-answer-{c['cue']}.png"), "full": True}]})
     # FILM / EXPLORE / RETURN (AC-6.6), from a moment after every question is answered
-    film_cue = next((c for c in cue_list if c["kind"] == "state" and len(c["state"]["output"]) >= 2), cue_list[-1])
+    film_cue = next((c for c in cue_list[1:] if c["kind"] == "state" and len(c["state"]["output"]) >= 2), cue_list[-1])
     t_film = round(min(film_cue["start"] + 0.5, film_cue["end"] - 0.1), 3)
     flow = [ready, drive,
             {**_js(f"await D.seek({t_film}); return D.state();"), "as": "film"},
             {**_js("const v = D.v(); await v.play(); await D.sleep(400); document.getElementById('explore').click(); "
                    "await D.sleep(80); return {...D.state(), returnTime: window.__ptkIve.returnTime(), "
                    "expected_cue: window.__ptkIve.resolve(window.__ptkIve.returnTime())};"), "as": "explore"},
+            # a live edit where the lesson has one (the switch model); otherwise a step back through the film
             {**_js("const r = document.querySelector('#live-n input[value=\"3\"]'); if (r) r.click(); "
-                   "const b = document.getElementById('live-brk'); if (b) b.click(); await D.sleep(60); return D.state();"), "as": "edited"},
+                   "const b = document.getElementById('live-brk'); if (b) b.click(); "
+                   "if (!r && !b) document.getElementById('prev').click(); await D.sleep(60); return D.state();"), "as": "edited"},
             {**_js("const v = D.v(); const p = D.once(v, 'playing'); document.getElementById('return').click(); await p; "
                    "await D.sleep(150); const r = window.__ptkNav.filter((e) => e.action === 'return').pop(); "
                    "return {...D.state(), return_position: r && r.position, returnTime: window.__ptkIve.returnTime(), "
@@ -591,7 +595,8 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     nav_bad = [e for e in nav if e.get("event_type") != "navigation" or e.get("action") not in NAV_ACTIONS
                or set(e) != NAV_KEYS]
     imgs_ok = all(n.get("images") and all(i["ok"] for i in n["images"]) for n in nojs.values())
-    ok_ctl = (ctl.get("chapters") == len(timing["scenes"]) and ctl.get("caption_modes") == ["showing", "hidden", "showing"]
+    ok_ctl = (ctl.get("chapters") == len(timing["scenes"]) and ctl.get("caption_modes") == ["true", "false", "true"]
+              and ctl.get("caption_track_mode") == "hidden" and ctl.get("caption_text") == timing["cues"][0]["text"]
               and ctl.get("transcript_items_at_end") == len(timing["cues"]) and ctl.get("seek_after_click") is not None
               and abs(ctl["seek_after_click"] - timing["cues"][0]["start"]) < 0.01 and bool(nav) and not nav_bad)
     gates.append(g("ive.controls", "ive", ok_ctl and imgs_ok and all(R[f"ive-nojs:{w}"].get("ok") for w in WIDTHS),
@@ -603,11 +608,14 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     rt = e1.get("returnTime")
     p4_state = next((c["state"] for c in cue_list if c["cue"] == p4.get("cue")), None)
     alt = ((lesson.data.get("figure") or {}).get("compare") or {}).get("program")
+    from ..project import ive as ive_proj
+    live_edit = ive_proj.live_model(lesson) is not None
     checks = {
         "film_follows_clock": f0.get("mode") == "film" and f0.get("origin") == "film",
         "explore_on_pause": e1.get("mode") == "explore" and e1.get("paused") is True and e1.get("origin") == "film"
         and e1.get("cue") == e1.get("expected_cue"),
-        "edit_marked_yours": e2.get("origin") == "yours" and bool(e2.get("edit")) and e2.get("border") == "dashed"
+        "edit_marked_yours": e2.get("origin") == ("yours" if live_edit else "step") and bool(e2.get("edit"))
+        and e2.get("border") == "dashed"
         and e1.get("border") != "dashed" and e2.get("output") != e1.get("output"),
         "return_resumes_at_pause": r3.get("mode") == "film" and r3.get("paused") is False and rt is not None
         and r3.get("return_position") is not None and abs(r3["return_position"] - rt) < 0.002

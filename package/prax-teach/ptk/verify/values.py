@@ -163,7 +163,7 @@ def check_cue_payloads(vtt_path, lesson):
             continue
         body = "\n".join(lines[[i for i, ln in enumerate(lines) if "-->" in ln][0] + 1:])
         payload = json.loads(body)
-        for item in payload.get("state", {}).get("output", []):
+        for item in payload.get("state", {}).get("output", []) + payload.get("state", {}).get("panel", []):
             n += 1
             _compare(item["fact"], item["text"], lesson, f"{vtt_path.name}:{payload.get('cue')}", bad)
     return n, bad

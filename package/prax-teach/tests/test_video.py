@@ -259,3 +259,27 @@ def test_no_answer_leak_text():
                chaps_ok, tx_ok[:4] + [incidental[1]["text"]] + tx_ok[5:], incidental)
     assert inc["status"] == "passed", inc["measured"]["leaks"]
     return {"built": g["measured"]["questions"], "leak_cases": len(leak), "clean_cases": len(clean)}
+
+
+def test_morph_keeps_frame_steady():
+    """Integration finding (WP9 Part A): at the program change the frame kept losing its line numbers and file
+    name, opened a gap in the code, faded the output and emptied the note column. video.morph-stable samples the
+    diff every 0.1 s; the built video passes, and a copy with the old output fade put back fails."""
+    vdir, timing = _built()
+    lesson = model.load(SLICE)
+    g = frames.morph_gate(lesson, vdir, timing, lesson.sha256())
+    assert g["status"] == "passed", json.dumps(g["measured"]["problems"])[:2000]
+    assert g["measured"]["frames_sampled"] > 20
+    tmp, fx = _copy_video(vdir)
+    try:
+        sc = next(s["id"] for s in timing["scenes"] if s.get("morph"))
+        page = fx / "composition" / "compositions" / f"{sc}.html"
+        old_fade = "TO(d, '.out[data-set=\"old\"]', { opacity: 0.32, duration: 0.3 }, 0);"
+        page.write_text(page.read_text().replace("var d = gsap.timeline({ data: 'draw' });",
+                                                 "var d = gsap.timeline({ data: 'draw' });\n    " + old_fade, 1))
+        bad = frames.morph_gate(lesson, fx, timing, lesson.sha256())
+        kinds = {p["kind"] for p in bad["measured"]["problems"]}
+        assert bad["status"] == "failed" and "output-faded" in kinds, kinds
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return {"sampled": g["measured"]["frames_sampled"], "fixture": sorted(kinds)}

@@ -49,6 +49,16 @@
       if (r.left < -1 || r.right > iw + 1) problems.push({ kind: 'key-node-offscreen', key: e.dataset.key });
       if (e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1) problems.push({ kind: 'key-node-inner-scroll', key: e.dataset.key });
     }
+    // captions sit in their own band: below the film, never over it or its controls, holding every line it shows
+    const band = document.getElementById('capband'), vr = v().getBoundingClientRect();
+    if (band) {
+      const b = band.getBoundingClientRect();
+      if (b.top < vr.bottom - 0.5 && b.bottom > vr.top + 0.5 && b.right > vr.left && b.left < vr.right)
+        problems.push({ kind: 'captions-over-film', band: [b.top, b.bottom].map(Math.round), film: [vr.top, vr.bottom].map(Math.round) });
+      if (band.scrollHeight > band.clientHeight + 1) problems.push({ kind: 'caption-band-overflow' });
+    } else problems.push({ kind: 'no-caption-band' });
+    if ([...v().textTracks].some((t) => t.kind === 'captions' && t.mode === 'showing'))
+      problems.push({ kind: 'captions-drawn-on-film' });
     return { problems, keys: [...document.querySelectorAll('[data-key]')].map((e) => e.dataset.key) };
   };
   const tracks = () => [...v().textTracks].map((t) => ({ kind: t.kind, mode: t.mode, cues: t.cues ? t.cues.length : null }));
