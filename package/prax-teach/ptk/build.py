@@ -41,9 +41,12 @@ def tool_versions():
 
 
 def _entry():
+    """What this field can show: the build ran through the package's bin/ptk, next to this SKILL.md.
+    It cannot show that an agent loaded SKILL.md (review P2-6); that evidence is the agent session."""
     skill = host.PKG / "SKILL.md"
     return {"skill_md": str(skill), "skill_md_sha256": host.sha256_file(skill) if skill.exists() else None,
-            "ptk": str(host.PKG / "bin" / "ptk"), "registration": "none (direct path, D19.3)"}
+            "ptk": str(host.PKG / "bin" / "ptk"), "registration": "none (direct path, D19.3)",
+            "shows": "build invoked via bin/ptk; does not show that SKILL.md was loaded"}
 
 
 def save(lesson, rep):
@@ -273,6 +276,12 @@ def claims_check(lesson_path):
     if rep.get("lesson_sha256") and rep["lesson_sha256"] != lesson.sha256():
         rep["gates"].append({"id": "claims.lesson-unchanged", "medium": "all", "status": "failed", "measured": {},
                              "reason": "lesson.json changed after the build; rebuild"})
+    changed = [a["path"] for a in rep.get("artifacts", []) if not (build_dir / a["path"]).is_file()
+               or host.sha256_file(build_dir / a["path"]) != a["sha256"]]
+    rep["gates"] = [g for g in rep["gates"] if g["id"] != "claims.artifacts-unchanged"]
+    rep["gates"].append({"id": "claims.artifacts-unchanged", "medium": "all", "status": "failed" if changed else "passed",
+                         "measured": {"checked": len(rep.get("artifacts", [])), "changed": changed[:20]},
+                         "reason": "artifacts changed after the build; rebuild" if changed else ""})  # review P3-12
     target = final_status(rep["gates"], bool(rep.get("fallbacks")))
     if rep.get("error"):
         target = "failed"  # the build itself stopped; reviews cannot rescue it

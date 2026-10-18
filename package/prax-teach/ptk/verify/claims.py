@@ -70,11 +70,6 @@ class _Collector(HTMLParser):
         self.items.append(("unmapped", "", data))
 
 
-def _merge(items):
-    """Join text chunks of the same element (e.g. tspans, spans) for mapping checks."""
-    return items
-
-
 def collect_texts(lesson, build):
     raw = []  # (kind, ref, text, where)
     still = build / "still"

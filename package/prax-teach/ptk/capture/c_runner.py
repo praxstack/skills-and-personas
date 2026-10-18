@@ -65,6 +65,8 @@ def gcc_diagnostics(src_path, tmp):
     obj = tmp / (Path(src_path).stem + ".gcc.o")
     res = host.run(host.sandboxed([gcc, *GCC_FLAGS, "-o", obj.name, Path(src_path).name], "compile", tmp=tmp, proj=tmp), cwd=tmp,
                    timeout=120)
+    if res.code != 0:  # review P3-1: a gcc error is a compile error, not a diagnostic string
+        raise errors.CompileError(f"gcc-16 failed on {Path(src_path).name}", stderr=res.stderr[-4000:])
     return res.stderr.strip()
 
 

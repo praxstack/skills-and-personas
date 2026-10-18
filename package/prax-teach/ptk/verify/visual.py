@@ -370,11 +370,16 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
                 errs.append(R[f"ive-shot:{w}:{scn}"].get("error", "")[:300])
     bad_pages = [p for p in pages if p["problems"] or p["console"]]
     gates.append(g("ive.layout", "ive", not bad_pages and not errs, {"pages": pages, "errors": errs}))
-    fams = set()
+    firsts, faces = set(), set()
     for w in WIDTHS:
         for scn in SCHEMES:
-            fams |= _families((R[f"ive-measure:{w}:{scn}"].get("measure") or {}).get("fonts", []))
-    fams -= {"monospace", "serif", "cursive", "Georgia"}
-    gates.append(g("ive.fonts", "ive", fams <= ALLOWED_FAMILIES and fams, {"families_used": sorted(fams)}))
+            m = R[f"ive-measure:{w}:{scn}"].get("measure") or {}
+            firsts |= {f.split(",")[0].strip().strip("'\"") for f in m.get("fonts", []) if f}
+            faces |= set(m.get("loadedFaces", []))
+    firsts -= {"monospace", "serif", "cursive", "sans-serif"}
+    # review P3-10: the first family of every stack must be bundled and actually loaded (no Georgia pass)
+    gates.append(g("ive.fonts", "ive", bool(firsts) and firsts <= ALLOWED_FAMILIES and firsts <= faces,
+                   {"families_used": sorted(firsts), "faces_loaded": sorted(faces),
+                    "not_loaded": sorted(firsts - faces)}))
     gates.append(g("ive.network", "ive", not res["outbound"], {"outbound_requests": res["outbound"]}))
     return gates
