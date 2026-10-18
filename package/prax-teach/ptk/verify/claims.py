@@ -90,8 +90,14 @@ def collect_texts(lesson, build):
             elif tag == "title":
                 raw.append(("label", "title", el.text or "", svg.name))
             elif tag == "desc":
+                fig = lesson.data.get("figure", {})
+                shown = lesson.state(fig["states"][-1])["state"]["output"] if fig.get("states") else []
                 for sent in text.sentences(el.text or ""):
-                    raw.append(("alt", "", sent, svg.name))
+                    if _chrome_match("alt_output", sent):
+                        # the alt text's output sentence states captured values: tag it with those facts
+                        raw.append(("fact", ",".join(shown), sent, svg.name))
+                    else:
+                        raw.append(("alt", "", sent, svg.name))
     comp = build / "video" / "composition" / "compositions"
     for html in sorted(comp.glob("*.html")) if comp.exists() else []:
         c = _Collector()
@@ -193,7 +199,9 @@ def map_item(lesson, it):
         src = " ".join(_norm(lesson.program_source(p["id"])) for p in lesson.data["programs"])
         return ([], None) if t in src or t.replace(" = ", " = ") in src else ([], "code text not in any program")
     if kind == "fact":
-        return ([], None) if ref in lesson.by_id("facts") else ([], f"unknown fact {ref}")
+        known = lesson.by_id("facts")
+        bad = [f for f in ref.split(",") if f not in known]
+        return ([], None) if ref and not bad else ([], f"unknown fact {bad or ref}")
     if kind == "question":
         ok = any(s.get("question", {}).get("prompt") == t for s in lesson.data["storyboard"])
         return ([], None) if ok else ([], "not a storyboard question")
