@@ -160,6 +160,12 @@ def _kill_group(proc):
         os.killpg(proc.pid, signal.SIGKILL)
     except ProcessLookupError:
         pass
+    except PermissionError:
+        # macOS: once the leader is reaped, killpg on a group left with only zombies (children
+        # reparented to launchd, not yet collected) fails with EPERM. Nothing is left to kill then.
+        # With a live leader, EPERM means the kill really failed, so it still raises.
+        if proc.poll() is None:
+            raise
 
 
 def _group_rss_kb(pgid):
