@@ -838,7 +838,7 @@
     {
       "id": "c.add",
       "kind": "mechanism",
-      "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2, which the program prints as 0.6. That sum is z.",
+      "text": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
       "justification": "programs/neuron.c line 12: z = t1 + t2 + b, added left to right in double. With t1 = 0.8 * 1.5 (printed +1.2), t2 = 0.4 * -1 (printed -0.4) and b = -0.2, the double sum is the binary64 value just above 0.6 (0.6000000000000001), which %g on line 13 prints as 0.6 (C17 7.21.6.1p8: six significant digits). The sentence states the printed value, not an exact 0.6.",
       "sources": [
         {
@@ -931,7 +931,7 @@
     {
       "id": "c.round",
       "kind": "caveat",
-      "text": "In double, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
+      "text": "On this machine, where double is binary64, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
       "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
       "sources": [
         {
@@ -1210,7 +1210,7 @@
       ],
       "narration": [
         {
-          "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2, which the program prints as 0.6. That sum is z.",
+          "text": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
           "claims": [
             "c.add"
           ]
@@ -1262,7 +1262,7 @@
       ],
       "narration": [
         {
-          "text": "In double, 0.8 × 1.5 is not exactly 1.2, and z is not exactly 0.6, which has no exact double form.",
+          "text": "On this machine, where double is binary64, 0.8 × 1.5 is not exactly 1.2, and z is not exactly 0.6, which has no exact double form.",
           "claims": [
             "c.round"
           ]

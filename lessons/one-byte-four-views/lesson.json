@@ -865,7 +865,7 @@
         "p2"
       ],
       "text": "Without the cast, printf(\"%f\\n\", a) passes an int where %f needs a double, and the behaviour is undefined.",
-      "justification": "7.21.6.1p9: if any argument is not the correct type for its conversion specification, the behavior is undefined. %f requires a double; a is an int. clang warns about ub.c line 5 with -Wformat.",
+      "justification": "7.21.6.1p9: if any argument is not the correct type for its conversion specification, the behavior is undefined. %f requires a double; a is an int. The recorded diagnostics for ub.c flag line 5 (gcc-16: format '%f' expects argument of type 'double', but argument 2 has type 'int').",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",

@@ -21,8 +21,8 @@
    "id": "m3.add.bias",
    "kind": "false-mechanism",
    "target": "c.add",
-   "find": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2, which the program prints as 0.6.",
-   "replace": "The neuron adds the two terms and then multiplies by the bias: (1.2 - 0.4) × -0.2, which the program prints as 0.6.",
+   "find": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum",
+   "replace": "The neuron adds the two terms and then multiplies by the bias, which print as +1.2, -0.4 and -0.2, and the program prints that result",
    "why_false": "Line 12 adds b; (1.2 - 0.4) × -0.2 would be -0.16, not 0.6."
   },
   {
