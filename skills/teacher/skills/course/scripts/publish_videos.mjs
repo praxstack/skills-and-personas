@@ -17,7 +17,7 @@
 // it finished. --dry-run lists what would be uploaded and needs no token.
 
 import { readFile, writeFile, rename, stat, readdir } from "node:fs/promises";
-import { existsSync, createReadStream } from "node:fs";
+import { existsSync, createReadStream, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -140,7 +140,15 @@ function usage() {
   return "usage: VIDEOS_BLOB_TOKEN=... node publish_videos.mjs [videos-root] [--courses courses] [--dry-run]";
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// Compare real paths: run through a link (install.sh makes them), argv[1] is the link.
+const isMain = () => {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+};
+if (process.argv[1] && isMain()) {
   main().then(
     (code) => process.exit(code),
     (e) => {

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 import tempfile
@@ -24,6 +23,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 EXP = HERE.parent.parent / "explorable" / "scripts"
+sys.path.insert(0, str(HERE))
+from build_course import logical_path  # noqa: E402
 
 
 def main() -> int:
@@ -38,7 +39,7 @@ def main() -> int:
     shared = [x for s in meta.get("shared", []) for x in ("--include", str(a.course / s))]
     out_dir = a.course / "videos"
     out_dir.mkdir(exist_ok=True)
-    manifest_file = Path(os.path.abspath(a.course)).parent / "videos.json"  # like build_course.load_manifest
+    manifest_file = logical_path(a.course).parent / "videos.json"  # like build_course.load_manifest
     published = json.loads(manifest_file.read_text()) if manifest_file.exists() else {}
     bad = 0
     for lesson in meta["lessons"]:
