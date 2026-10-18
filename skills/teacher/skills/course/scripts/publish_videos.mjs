@@ -115,7 +115,7 @@ async function main() {
       bytes += v.size;
       continue;
     }
-    const blob = await put(v.pathname, await readFile(v.file), {
+    const blob = await put(v.pathname, createReadStream(v.file), { // streamed, so a big film isn't held in memory
       access: "public",
       addRandomSuffix: false, // the digest in the pathname already makes it unique
       allowOverwrite: true, // same pathname means same bytes, so a rerun after a crash is harmless

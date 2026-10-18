@@ -42,9 +42,15 @@ export function restoreProgress(stored, keys) {
   };
   if (!Array.isArray(s.steps)) return out;
   const now = new Map(keys.map((k, i) => [k, i]));
+  // Steps that share a key are told apart only by their order (#2, #3), so
+  // when that group grew or shrank, which saved step is which is a guess:
+  // its progress is dropped rather than handed to the wrong step.
+  const group = (k) => k.replace(/#\d+$/, "");
+  const sizes = (list) => list.reduce((m, k) => (typeof k === "string" ? m.set(group(k), (m.get(group(k)) || 0) + 1) : m), new Map());
+  const was = sizes(s.steps), is = sizes(keys);
   const move = (oldIndex) => {
     const k = s.steps[Number(oldIndex)];
-    return typeof k === "string" && now.has(k) ? now.get(k) : undefined;
+    return typeof k === "string" && now.has(k) && was.get(group(k)) === is.get(group(k)) ? now.get(k) : undefined;
   };
   if (Array.isArray(s.done)) for (const i of s.done) if (move(i) !== undefined) out.done.push(move(i));
   // Each entry is reshaped to what the page reads (report() reads x.right and

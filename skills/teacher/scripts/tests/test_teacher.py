@@ -498,6 +498,13 @@ class Builds(unittest.TestCase):
                 r = run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses")
                 self.assertNotEqual(r.returncode, 0, bad)
                 self.assertIn("links.json", r.stderr)
+            # links.json alone (no course.json folders) is a whole catalog too
+            only = Path(tmp) / "only"
+            only.mkdir()
+            (only / "links.json").write_text(json.dumps([{"href": "/lessons/x", "title": "X"}]))
+            r = run(script, "--catalog", str(only), "-o", str(Path(tmp) / "only-out"))
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn('href="/lessons/x"', (Path(tmp) / "only-out/index.html").read_text())
 
     def test_video_comes_from_local_file_then_manifest_then_none(self):
         # The MP4s live on Vercel Blob (courses/videos.json); a local file wins
@@ -613,6 +620,33 @@ class Builds(unittest.TestCase):
             r = subprocess.run(["node", script, str(root), "--courses", str(courses)], capture_output=True, text=True, env=env)
             self.assertEqual(r.returncode, 1)
             self.assertIn("KAI_MORI_VIDEOS_BLOB_TOKEN", r.stderr)
+
+    def test_publish_videos_streams_the_file(self):
+        # A stubbed @vercel/blob records what put() was given: a stream, not the whole file in memory.
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "scripts").mkdir()
+            shutil.copy(SKILLS / "course/scripts/publish_videos.mjs", tmp / "scripts")
+            stub = tmp / "node_modules/@vercel/blob"
+            stub.mkdir(parents=True)
+            (stub / "package.json").write_text('{"name": "@vercel/blob", "type": "module", "main": "index.js"}')
+            (stub / "index.js").write_text(
+                'import { writeFileSync } from "node:fs";\n'
+                'export async function put(name, body) {\n'
+                '  let n = 0; for await (const c of body) n += c.length;\n'
+                '  writeFileSync(process.env.PUT_LOG, JSON.stringify({ name, stream: typeof body.pipe === "function", n }));\n'
+                '  return { url: "https://s.public.blob.vercel-storage.com/" + name };\n}\n')
+            courses, root = tmp / "courses", tmp / "copies"
+            (courses / "two").mkdir(parents=True)
+            (courses / "two/course.json").write_text(json.dumps({"id": "two", "lessons": [{"id": "two-a"}]}))
+            (root / "two/videos").mkdir(parents=True)
+            (root / "two/videos/two-a.mp4").write_bytes(b"x" * 1000)
+            env = {**os.environ, "VIDEOS_BLOB_TOKEN": "test", "PUT_LOG": str(tmp / "put.json")}
+            r = subprocess.run(["node", str(tmp / "scripts/publish_videos.mjs"), str(root), "--courses", str(courses)], capture_output=True, text=True, env=env)
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+            log = json.loads((tmp / "put.json").read_text())
+            self.assertEqual((log["stream"], log["n"]), (True, 1000))
+            self.assertIn("two/two-a.mp4", json.loads((courses / "videos.json").read_text()))
 
     def test_code_check_passes_a_lesson_that_only_shows_other_languages(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -951,6 +985,9 @@ const out = {
   legacy: restoreProgress({ step: 1, done: [0, 1], attempts: { 0: [] }, notes: "n" }, now),
   junk: [null, 3, "x", [], { steps: "x", done: "x" }, { steps: old, done: [9, "0"], attempts: { 0: "bad" }, step: "nope" }].map((v) => restoreProgress(v, now)),
   dupes: stepKeys([b, b]),
+  // A new step with B's title lands before B: which saved B is which is a guess, so nothing moves.
+  grown: restoreProgress({ steps: stepKeys([b]), done: [0], tried: { 0: ["x"] } }, stepKeys([b, b])),
+  same: restoreProgress({ steps: stepKeys([b, b]), done: [1] }, stepKeys([a, b, b])),
   nested: restoreProgress({ steps: old, attempts: { 0: [null, 3, { answer: 1 }, { answer: 2, right: false }] }, tried: { 0: ["y", null] }, explained: { 0: { text: "saved" }, 2: { covered: [0] } } }, now),
 };
 console.log(JSON.stringify(out));
@@ -971,6 +1008,8 @@ console.log(JSON.stringify(out));
             self.assertEqual((j["step"], j["attempts"], j["tried"], j["explained"]), (0, {}, {}, {}))
         self.assertEqual(out["junk"][-1]["done"], [1])  # "0" (old A) still maps; 9 is out of range
         self.assertEqual(len(set(out["dupes"])), 2)
+        self.assertEqual((out["grown"]["done"], out["grown"]["tried"]), ([], {}))
+        self.assertEqual(out["same"]["done"], [2])  # the group kept its size, so order still tells them apart
         nested = out["nested"]  # malformed rows inside an entry would crash report()
         self.assertEqual(nested["attempts"], {"1": [{"answer": 2, "right": False}]})
         self.assertEqual(nested["tried"], {"1": ["y"]})

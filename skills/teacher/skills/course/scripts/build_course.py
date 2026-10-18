@@ -230,6 +230,7 @@ def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "",
         '<p class="cs-sub">Pick a subject. Every lesson lets you move the idea yourself, watch it, read and run the code, and quiz yourself, as many times and in as many ways as you like.</p></header>'
         f'<section class="cs-catalog">{"".join(cards)}</section></main>'
     )
+    out.mkdir(parents=True, exist_ok=True)  # a links.json-only catalog builds no course folder first
     page = bundle.page(title=f"{brand} Courses" if brand else "Courses", description="Interactive courses with films, code and quizzes.", css=[bundle.NOTEBOOK_CSS, CATALOG_CSS],
                        modules=[*bundle.NOTEBOOK_MODULES], body=body, fragment=fragment)
     (out / "index.html").write_text(page)
