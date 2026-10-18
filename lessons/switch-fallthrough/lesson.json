@@ -545,7 +545,7 @@
     {
       "id": "c.recap",
       "kind": "rule",
-      "text": "A case label only marks where execution enters a switch; it never ends a case. In this program, the break on line 12 is what ends the switch.",
+      "text": "A case label only marks where execution enters a switch; it never ends a case. In fallthrough.c, the break on line 12 is what ends the switch.",
       "justification": "Entry: 6.8.4.2p5 (control jumps to the statement after the matched label). Labels do not alter control flow: 6.8.1p4. The break on line 12 of programs/fallthrough.c ends the switch: 6.8.6.3p2. The sentence does not claim break is the only way out (return, goto and others also leave); it names what ends this switch.",
       "sources": [
         {
@@ -573,12 +573,24 @@
       "id": "c.bodyend",
       "kind": "mechanism",
       "text": "If execution reaches the end of the switch body without a break, the switch ends there.",
-      "justification": "The switch body is a compound statement (C17 6.8.4.2p1 with 6.8.2); when its last statement finishes, the switch statement is complete and control continues with the next statement (6.8p3, statements execute in sequence). In both programs case 4 is the last label and has no break, so after puts(\"four\") control reaches the closing brace on line 15 (16 in with_break.c) and the program goes on to puts(\"done\").",
+      "justification": "The switch body is the statement that the switch jumps to, into or past (C17 6.8.4.2p4). Inside it, statements execute in sequence unless a jump such as break changes that (6.8p2). In both programs case 4 is the last labelled statement and has no break, so after puts(\"four\") the body has no statements left, the switch statement completes, and execution continues with the next statement, puts(\"done\") (line 16 of fallthrough.c, line 17 of with_break.c).",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.4.2 ¶1, §6.8.2, §6.8 ¶3"
+          "clause": "§6.8 ¶2",
+          "quote": "Except as indicated, statements are executed in sequence."
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶4",
+          "quote": "A switch statement causes control to jump to, into, or past the statement that is the switch body, depending on the value of a controlling expression, and on the presence of a default label and the values of any case labels on or in the switch body."
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4 (syntax)"
         },
         {
           "title": "programs/fallthrough.c",
@@ -883,11 +895,11 @@
           ]
         },
         {
-          "text": "In this program, the break on line 12 is what ends the switch.",
+          "text": "In fallthrough.c, the break on line 12 is what ends the switch.",
           "claims": [
             "c.recap"
           ],
-          "spoken": "In this program, the break on line twelve is what ends the switch."
+          "spoken": "In fallthrough dot c, the break on line twelve is what ends the switch."
         }
       ],
       "key_nodes": [
