@@ -233,6 +233,151 @@ MODE_CASES = {
 }
 
 
+PROG = "```c\nswitch (n) {\ncase 1: puts(\"one\");\ncase 2: puts(\"two\");\ncase 3: puts(\"three\"); break;\n}\nputs(\"done\");\n```"
+QF1 = "Control enters at case 2, and case 3 is only a label, so it runs on until the break."
+QF2 = "The new break ends the switch right after two, so case 3 never runs."
+QF3 = "With n = 7 no label matches and there is no default, so only done prints."
+# P2-4 counterexamples, shaped like the stored live transcripts: each was rejected by the r16 checker
+QUIZ_LIVE = {"mode": "quiz", "turns": [
+    T(["question"], f"Three questions on this program.\n\n{PROG}\n\nQuestion 1 of 3: n is 2 and case 2 has no break. "
+      "What does it print, line by line?", question_count=3, answer_key="two\nthree\ndone\n"),
+    S("attempt", "two, three, done"),
+    T(["feedback", "question"], f"Correct. {QF1}\n\nQuestion 2 of 3: now add one line, break; right after puts(\"two\"). "
+      "With n still 2, what does the program print?", classification="correct", feedback=QF1, answer_key="two\ndone\n"),
+    S("attempt", "only two and done"),
+    T(["feedback", "question"], f"Correct. {QF2}\n\nQuestion 3 of 3: go back to the original program and set n to 7. "
+      "There is no default label. What does it print now?", classification="correct", feedback=QF2, answer_key="done\n"),
+    S("attempt", "two, three, done"),
+    T(["feedback", "consent"], f"Not quite. {QF3}\n\nScore: 2/3. Weakest item: a switch with no matching case. "
+      "Next step: predict the output for n = 5 before you run it. After that I can run another round if you want one. "
+      "Can I note these three attempts as evidence?", classification="misconception:m.nomatch", feedback=QF3),
+    S("consent-yes", "yes"),
+    T(["summary"], "Noted. Another round?"),
+    S("stop", "stop here"),
+    T(["close"], "Stopped. Score 2/3.", reason="learner-stop", score="2/3"),
+], "events": [dict(EVIDENCE, after_turn=8, item="switch fallthrough quiz", result="misconception:m.nomatch")]}
+
+EF1 = "The fast way: jump to the matching label, then read down to the first break."
+EF2 = "The break right after puts(\"two\") ends the switch, so case 3 never runs."
+OPTS1 = ["A. two, done", "B. two, three, done", "C. one, two, three, done", "D. two, three, four, done"]
+OPTS2 = ["A. two, three, done", "B. one, two, done", "C. two, done", "D. done"]
+EXAM_LIVE = {"mode": "exam-drill", "turns": [
+    T(["question"], f"GATE drill: 2 MCQs, 1 mark each, 90 s each, -1/3 for a wrong answer.\n\n{PROG}\n\n"
+      f"Q1 (1 mark, 90 s): with n = 2, what does it print? {' '.join(OPTS1)}", format="mcq", marks=1,
+      time_limit_s=90, options=OPTS1, answer_key={"option": "B", "fact": "f.p1.out", "value": "two\nthree\ndone\n"}),
+    S("attempt", "B", elapsed_s=50),
+    T(["feedback", "question"], f"Correct, B. +1 mark, 50 s of your 90. {EF1}\n\nQ2 (1 mark, 90 s). Same program, but now "
+      f"case 2 has its own break. What does it print? {' '.join(OPTS2)}", classification="correct", feedback=EF1,
+      marks_awarded=1, elapsed_s=50, options=OPTS2, answer_key={"option": "C", "value": "two\ndone\n"}),
+    S("attempt", "A", elapsed_s=30),
+    T(["feedback", "consent"], f"Not quite. The answer is C (two, done). -1/3 mark, 30 s of your 90. {EF2}\n\n"
+      "Total: 2/3 of 2 marks, 1 of 2 correct, 50 s and 30 s against 90 s each. Weakest topic: where a break sends control. "
+      "Next step: mark the first break below the matching label before you pick. Can I note both attempts as evidence?",
+      classification="misconception:ignores-break", feedback=EF2, marks_awarded="-1/3", elapsed_s=30),
+    S("consent-yes", "yes"),
+    T(["summary"], "Noted. Another question?"),
+    S("stop", "done"),
+    T(["close"], "Done. Total 2/3 of 2.", reason="learner-stop", total_marks="2/3"),
+], "events": [dict(EVIDENCE, after_turn=6, item="switch fallthrough drill", result="misconception:ignores-break")]}
+
+
+def _set_text(i, text):
+    return lambda t: t["turns"][i].update(text=text)
+
+
+LIVE_BREAKS = {
+    "quiz": (QUIZ_LIVE, {
+        "two corrections before the next question": (_set_text(2, f"Correct. {QF1} Only a break statement ends a "
+            "switch early, never a label.\n\nQuestion 2 of 3: now add break; after puts(\"two\"). What does it print?"),
+            "second correction"),
+        "a hint inside the next question": (_set_text(2, f"Correct. {QF1}\n\nQuestion 2 of 3: remember that a break "
+            "ends the switch at once. With a break after puts(\"two\"), what does it print?"), "hint"),
+        "the next question states its own key": (_set_text(2, f"Correct. {QF1}\n\nQuestion 2 of 3: with a break after "
+            "puts(\"two\") it prints two and done, right?"), "states its own answer key"),
+        "a second correction on the last feedback": (_set_text(6, f"Not quite. {QF3} Also, a switch body is skipped "
+            "entirely when no label matches. Score: 2/3. Can I note these three attempts as evidence?"), "second correction"),
+        "two next actions": (_set_text(6, f"Not quite. {QF3} Score: 2/3. Next step: predict the output for n = 5. "
+            "Next, trace the n = 1 case by hand. Can I note these three attempts as evidence?"), "more than one next action"),
+        "a weakest item that re-explains": (_set_text(6, f"Not quite. {QF3} Weakest item: a switch with no matching "
+            "case, because with no match and no default the whole body is skipped and only the line after it prints. "
+            "Can I note these three attempts as evidence?"), "second correction"),
+        "a next action before the last answer": (_set_text(2, f"Correct. {QF1} Next step: predict the output for n = 5 "
+            "before you run it.\n\nQuestion 2 of 3: now add break; after puts(\"two\"). What does it print?"),
+            "second correction"),
+        "a correction on its own line, merged into the consent question": (_set_text(6, f"Not quite. {QF3}\n"
+            "Also only a break ends a case early\nCan I note these three attempts as evidence?"), "second correction"),
+        "an extra output line called correct": (lambda t: t["turns"][3].update(text="two, three, done"),
+            "does not match the answer key"),
+        "a missing output line called correct": (lambda t: t["turns"][3].update(text="done"), "does not match the answer key"),
+    }),
+    "exam-drill": (EXAM_LIVE, {
+        "key revealed before the attempt": (_set_text(0, EXAM_LIVE["turns"][0]["text"] + " The answer is B."),
+            "states its own answer key"),
+        "next question's key revealed in the feedback": (_set_text(2, f"Correct, B. The answer is C. {EF1}\n\nQ2 (1 mark, "
+            f"90 s). What does it print? {' '.join(OPTS2)}"), "key other than"),
+        "next question's key inside its own block": (_set_text(2, f"Correct, B. {EF1}\n\nQ2 (1 mark, 90 s). C is correct "
+            f"here. What does it print? {' '.join(OPTS2)}"), "states its own answer key"),
+        "marks line carrying an explanation": (_set_text(2, f"Correct, B. +1 mark, 50 s of your 90, since the label "
+            f"never stops anything and the break decides where it ends. {EF1}\n\nQ2 (1 mark, 90 s). What does it print? "
+            f"{' '.join(OPTS2)}"), "second correction"),
+        "key reveal carrying an explanation": (_set_text(4, f"Not quite. The answer is C (two, done) because the break "
+            f"ends the switch at once. {EF2} Can I note both attempts as evidence?"), "second correction"),
+        "two corrections in exam feedback": (_set_text(4, f"Not quite. The answer is C (two, done). {EF2} Also, case "
+            "labels never stop execution on their own. Can I note both attempts as evidence?"), "second correction"),
+        "marks not a number or a fraction": (lambda t: t["turns"][4].update(marks_awarded="2/3 of 2"), "marks_awarded"),
+        "two letters for a one-letter key called correct": (lambda t: t["turns"][1].update(text="B and C"),
+            "does not match the answer key"),
+        "wrong letter called correct": (lambda t: t["turns"][4].update(classification="correct"),
+            "does not match the answer key"),
+    }),
+}
+
+
+def test_mode_feedback_rules():
+    """P2-4: the one-item rule is mode-aware. Quiz and exam-drill turns may hold what their TEACHING.md protocol
+    requires (the next question, score, weakest item, one next action, marks, time, the key after the attempt)
+    without that counting as a second explanation; each allowance still rejects a smuggled correction.
+    Predict-first keeps the strict one-hint rule (AC-1.6)."""
+    for mode, (good, breaks) in LIVE_BREAKS.items():
+        assert protocol.check_transcript(good) == [], f"{mode}: P2-4 counterexample still rejected: {protocol.check_transcript(good)}"
+        for name, (fn, why) in breaks.items():
+            v = protocol.check_transcript(_break(good, fn))
+            assert v, f"{mode}: the checker missed '{name}'"
+            assert why in " | ".join(v), f"{mode}: '{name}' caught for the wrong reason: {v}"
+    # a summary written as a list passes line by line
+    listed = _break(EXAM_LIVE, _set_text(4, f"Not quite. The answer is C (two, done). {EF2}\n\nDrill result:\n"
+        "- Marks: 2/3 out of 2 (+1, then -1/3)\n- Accuracy: 1 of 2\n- Time: 50 s on Q1, 30 s on Q2, both under 90 s\n"
+        "- Weak spot: where control goes once a break runs\n- Next: trace one switch by hand, untimed\n\n"
+        "Can I note both attempts as evidence?"))
+    assert protocol.check_transcript(listed) == [], protocol.check_transcript(listed)
+    # grading: option keys by letter, output keys by line sequence
+    ok = [("B", {"option": "B", "value": "x"}, []), (" (b). ", {"option": "B"}, []), ("Option B", {"option": "B"}, []),
+          ("B", "B", ["A x", "B y", "C z", "D w"]), ("A, C", {"option": ["A", "C"]}, []),
+          ("only two and done", "two\ndone\n", []), ("two, done", "two\ndone\n", []), ("two then done.", "two\ndone\n", []),
+          ("It prints \"two\" and \"done\"", "two\ndone\n", []), ("two\ndone", "two\ndone\n", []), ("-56", "-56", [])]
+    bad = [("C", {"option": "B"}, []), ("B and C", {"option": "B"}, []), ("A", {"option": ["A", "C"]}, []),
+           ("two, three, done", "two\ndone\n", []), ("done, two", "two\ndone\n", []), ("two", "two\ndone\n", []),
+           ("two, done, done", "two\ndone\n", []), ("two, three, done", "done\n", []), ("nope", "B", ["A", "B", "C", "D"])]
+    for attempt, key, options in ok:
+        assert protocol.answer_matches(attempt, key, options), (attempt, key)
+    for attempt, key, options in bad:
+        assert not protocol.answer_matches(attempt, key, options), (attempt, key)
+    # fractional GATE marks
+    for good_mark in (1, 0.5, -0.33, "-1/3", "2/3", "+1", "0"):
+        assert protocol.is_mark(good_mark), good_mark
+    for bad_mark in ("2/3 of 2", "one", True, None, "1/0"):
+        assert not protocol.is_mark(bad_mark), bad_mark
+    # predict-first stays strict: the quiz and exam allowances do not apply to it
+    strict = {
+        "marks line": f"Not quite. {FIX} +1 mark, 50 s of your 90. Here is the still. Can I note this attempt as evidence?",
+        "weakest item": f"Not quite. {FIX} Weakest item: a switch with no matching case. Can I note it?",
+    }
+    for name, text in strict.items():
+        v = protocol.check_transcript(_break(PREDICT_GOOD, _set_text(2, text)), _lesson())
+        assert "second correction" in " | ".join(v), f"predict-first accepted a {name}: {v}"
+    return {mode: len(breaks) for mode, (_, breaks) in LIVE_BREAKS.items()}
+
+
 def test_modes():
     """AC-1.8: quiz, exam-drill and qa-expand each have a TEACHING.md protocol and a transcript test."""
     ws = host.make_tmp("proto-modes-")
@@ -302,11 +447,13 @@ Tutor turn fields (JSON, all at the top level of the turn object):
 - classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback (the
   one hint or correction, one sentence, copied verbatim from text) on any turn with "feedback". The
   rest of a feedback turn's text may hold only a short verdict, the artifact, a consent question or
-  the next question;
+  the next question, plus the short lines the mode's protocol in TEACHING.md names;
 - artifacts (file paths you show) and states_shown (trace state ids you show);
-- quiz: answer_key (private, never in text) on each question, question_count on the first, score "k/n" on close;
+- quiz: answer_key (private, never in text; the exact answer: output lines, a value or an option letter) on
+  each question, question_count on the first, score "k/n" on close;
 - exam-drill: format ("mcq", "msq", "nat"), marks, time_limit_s on the first turn; options (4) and
-  answer_key on each question; marks_awarded and elapsed_s on each feedback; total_marks on close;
+  answer_key on each question; marks_awarded and elapsed_s on each feedback; total_marks on close (marks
+  as a number or a fraction string like "-1/3");
 - qa-expand: layer (1 for the first answer) and layers_offered on the first turn; layer and layer_name on each layer;
 - close: reason "satisfied" or "learner-stop".
 """

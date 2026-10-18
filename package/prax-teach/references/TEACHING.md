@@ -27,7 +27,10 @@ protocol. Follow the one the route names; don't blend them.
   (an id from the lesson's `misconceptions[]`, or a short new name if none fits).
 - **One feedback item per attempt.** One hint or one correction, not a list: one sentence, also
   written to the turn's `feedback` field. Besides it, a feedback turn holds only a short verdict
-  ("Not quite."), the artifact, a consent question or the next question. If the learner has
+  ("Not quite."), the artifact, a consent question or the next question. Quiz and exam-drill
+  feedback also carries the lines its protocol below names (score, the weakest item, one next
+  action, marks, time, the key after the attempt): each a short line, never a second explanation.
+  If the learner has
   failed twice, teach it directly from a different angle (worked example, picture, smaller case).
 - **Evidence needs consent.** Ask once per session: "Can I note this attempt as evidence?" Record
   only on yes. One event per attempt you observed, never for a solution you showed:
