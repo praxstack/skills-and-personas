@@ -27,9 +27,17 @@ projector hard-codes a sentence that isn't in `chrome.json`.
 
 ### 2. Jobs (`ptk build`)
 
-`build/claims-jobs/` gets one lesson job, up to 12 mutation jobs and one control per mutation.
+Two modes (D21.1, spec v1.2):
+- **Default (canary):** `build/claims-jobs/` gets the lesson job plus one canary: a mutation job with one
+  planted value or claim error. The canary is picked from the lesson's mutations by its sha256, so the
+  same lesson always gets the same canary and no fixed rule says which claim is planted. About 2 reviews
+  per build instead of 23.
+- **`ptk build --calibrate`:** the lesson job, up to 12 mutation jobs and one control per mutation.
+  Run it when the rubric or the reviewer model changes, and at acceptance. AC-7.5's rates come from here.
+
 A control is an unchanged copy of the lesson job. Nothing in a job says which it is; the roles live
-in `$PTK_STATE/claims-private/`, outside the lesson tree.
+in `$PTK_STATE/claims-private/`, outside the lesson tree. A mutation keeps the same job id in both
+modes, so a calibration review also answers the canary.
 
 A job carries only teaching texts: claims, narration and captions, alt text, questions and options,
 trace labels, titles, card and Q&A sentences, filled templates. Code, chrome strings and number labels
@@ -67,8 +75,11 @@ changed. Rejecting some other claim isn't a catch.
 
 Gates:
 - `claims.review`: the lesson job is accepted with no rejected claim or text.
-- `claims.sensitivity`: value mutations caught 100%, claim mutations caught 90% or more, controls
-  accepted 95% or more. Schema rejections are counted on their own and never as catches.
+- `claims.canary` (default): the canary review rejects overall and rejects the planted claim or a text it
+  changed. A canary the reviewer accepts fails the gate: its accept of the lesson proves nothing. No
+  applicable mutation, or a missing canary review, is `not-run`.
+- `claims.sensitivity` (`--calibrate`): value mutations caught 100%, claim mutations caught 90% or more,
+  controls accepted 95% or more. Schema rejections are counted on their own and never as catches.
 
 Every verdict is an LLM-reviewed finding, not a proof.
 

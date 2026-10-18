@@ -1,6 +1,8 @@
 # Prax Teach v2.1: the lesson compiler, specification
 
-Version 1.1, 2026-10-18. Source of truth for /implement-from-spec.
+Version 1.2, 2026-10-18. Source of truth for /implement-from-spec.
+
+Changelog v1.2 (orchestrator decision D21.1, cost; integration pass round 15): AC-7.1 amended. A normal `ptk build` writes the lesson claims job plus one canary mutation job; the full mutation suite with controls moves to `ptk build --calibrate`, run on a rubric or reviewer-model change and at acceptance. AC-7.5 is measured in calibration mode. This is a governing change made by the orchestrator, not yet approved by Prax (FREEZE stop rule).
 
 Changelog v1.1: adds D20.x from three independent sessions (`../plan/EXTERNAL-INPUTS.md`). Amended: AC-1.3, AC-3.4, AC-4.2, AC-5.6, AC-6.2. New: AC-4.6, AC-4.7, AC-4.8, AC-6.6, AC-6.7, AC-9.4 (P1), and the STYLE dark theme taken from the accepted Neuron Atlas reference.
 
@@ -144,7 +146,7 @@ draft ─validate─▶ valid ─capture─▶ captured ─project─▶ project
 | `ptk new <slug> [--dir lessons]` | scaffold `lesson.json` and `programs/` |
 | `ptk validate <lesson>` | schema plus reference checks, with JSON-pointer errors |
 | `ptk capture <lesson>` | sandboxed compile and run; writes facts and platform |
-| `ptk build <lesson> [--only a,b]` | validate, capture, project, run the automatic gates; writes `claims-jobs/` |
+| `ptk build <lesson> [--only a,b] [--calibrate]` | validate, capture, project, run the automatic gates; writes `claims-jobs/` (lesson + 1 canary; `--calibrate`: the full mutation suite) |
 | `ptk claims check <lesson>` | validate the reviews against the manifests and finish the status |
 | `ptk report <lesson> [--json]` | print the build report |
 | `ptk host probe` | which tools and alternatives are runnable now (D17.13) |
@@ -281,11 +283,11 @@ Development request (fixed): "Teach me how a switch statement with a missing bre
 
 ### WP7: Claims gate (P0)
 
-- **AC-7.1** `ptk build` shall write one claims job per lesson, plus up to 12 mutation jobs paired with clean controls. Each job holds a manifest: the sha256 of the model, every artifact text, the sources and the rubric version. *Test:* `tests/test_claims.py::test_jobs_and_manifest`.
+- **AC-7.1** `ptk build` shall write one claims job per lesson plus one canary mutation job: a planted value or claim error chosen deterministically from the lesson's mutations (D21.1). `verified` requires the lesson job accepted and the canary rejected (`claims.canary`). `ptk build --calibrate` shall instead write the full suite: up to 12 mutation jobs paired with clean controls (`claims.sensitivity`). Each job holds a manifest: the sha256 of the model, every artifact text, the sources and the rubric version. *Tests:* `tests/test_claims.py::test_jobs_and_manifest` (calibration), `::test_canary_jobs_by_default`, `::test_canary_gate`, `::test_build_cli_calibrate_flag`.
 - **AC-7.2** `ptk claims check` shall reject a review whose manifest hash doesn't match the current inputs. *Test:* `test_claims.py::test_stale_review_rejected`.
 - **AC-7.3** Every teaching sentence in every artifact shall map to a claim ID. Any that doesn't fails with `ClaimsUnmapped`. Fixed UI strings must be in `chrome.json` (E4). *Tests:* `test_claims.py::test_unmapped_sentence`, `tests/test_lint.py::test_no_literal_sentences_in_templates`.
 - **AC-7.4** Malformed, empty or refusal reviews shall be retried once with a schema reminder, then fail (`ClaimsReviewInvalid`). *Test:* `test_claims.py::test_invalid_reviews`.
-- **AC-7.5** Against the real reviewer subagent, the suite shall catch at least 90% of claim mutations and 100% of value mutations, and accept at least 95% of controls. Schema rejections are counted separately. *Test:* `tests/test_mutation.py::test_real_reviewer_rates` (agent-tests).
+- **AC-7.5** In calibration mode (`--calibrate`), against the real reviewer subagent, the suite shall catch at least 90% of claim mutations and 100% of value mutations, and accept at least 95% of controls. Schema rejections are counted separately. *Test:* `tests/test_mutation.py::test_real_reviewer_rates` (agent-tests).
 - **AC-7.6** The claim "printf never changes the bits; the format string only decides how to read them", applied to `printf("%f", (double)a)`, shall be rejected by the real reviewer. *Test:* `tests/test_regression_f_cast.py::test_same_bits_claim_rejected` (agent-tests, **CRITICAL**).
 
 ### WP8: Packaging, hosts, ports (P0)

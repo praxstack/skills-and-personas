@@ -49,7 +49,7 @@ def cmd_capture(a):
 def cmd_build(a):
     from . import build
     only = [m.strip() for m in a.only.split(",")] if a.only else None
-    report = build.build(a.lesson, only=only)
+    report = build.build(a.lesson, only=only, calibrate=a.calibrate)
     _emit(build.summary(report))
     return build.exit_code(report)
 
@@ -130,6 +130,9 @@ def parser():
     s = sub.add_parser("build")
     s.add_argument("lesson")
     s.add_argument("--only", help="comma list of media: still,video,ive,explorer,qa,cards")
+    s.add_argument("--calibrate", action="store_true",
+                   help="write the full claims mutation suite (up to 12 mutations plus controls) instead of one "
+                        "canary; run on a rubric or reviewer-model change and at acceptance (D21.1)")
     s.set_defaults(fn=cmd_build)
     s = sub.add_parser("claims")
     cs = s.add_subparsers(dest="claims_cmd", required=True)

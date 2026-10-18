@@ -74,13 +74,13 @@ def test_rates_count_schema_rejections_separately():
 
 
 def test_real_reviewer_rates():
-    """Against real reviewer subagents: 100% of value mutations, >= 90% of claim mutations caught,
+    """Calibration mode (`--calibrate`, D21.1). Against real reviewer subagents: 100% of value mutations, >= 90% of claim mutations caught,
     >= 95% of controls accepted, pooled over the f-cast fixture and a frozen snapshot of the switch slice;
     schema rejections reported apart."""
     lessons = {"f-cast": fcast_lesson(), "switch-fallthrough": slice_snapshot()}
     pending, rows, per = [], [], {}
     for name, (lesson, items) in lessons.items():
-        build = ensure_jobs(f"rates/{name}", lesson, items)
+        build = ensure_jobs(f"rates/{name}", lesson, items, calibrate=True)  # D21.1: AC-7.5 is a calibration run
         gates, priv, jobs = run_check(lesson, items, build)
         if jobs:
             pending += jobs

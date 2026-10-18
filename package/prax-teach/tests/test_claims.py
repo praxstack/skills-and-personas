@@ -44,7 +44,8 @@ def _gate(lesson, items, build, gid="claims.review"):
 # ---------------------------------------------------------------- AC-7.1
 
 def test_jobs_and_manifest():
-    """One lesson job, up to 12 mutation jobs each paired with a control; each job carries a manifest of the model,
+    """Calibration mode (`ptk build --calibrate`, D21.1): one lesson job, up to 12 mutation jobs each paired with a
+    control; each job carries a manifest of the model,
     every artifact text, the sources and the rubric version; the roles never appear in the job files; only
     teaching sentences are sent, and a job (plus rubric) stays under 30k tokens."""
     out = {}
@@ -53,8 +54,9 @@ def test_jobs_and_manifest():
         sets["switch-fallthrough"] = slice_lesson()
     for name, (lesson, items) in sets.items():
         build = _tmp_build(name)
-        ids = claims.write_jobs(lesson, items, build)
+        ids = claims.write_jobs(lesson, items, build, calibrate=True)
         priv = claims.load_private(build)
+        assert priv["mode"] == "calibrate", priv.get("mode")
         roles = [priv["jobs"][j]["role"] for j in ids]
         n_mut = roles.count("mutation")
         assert roles.count("lesson") == 1 and roles.count("control") == n_mut and 1 <= n_mut <= 12, roles
@@ -95,6 +97,94 @@ def test_jobs_and_manifest():
                      "teaching_texts": len(jobs[ids[0]]["teaching_texts"]),
                      "not_sent": jobs[ids[0]]["inputs"]["not_sent"]["count"]}
     return out
+
+
+def test_canary_jobs_by_default():
+    """D21.1 (spec v1.2, AC-7.1): a normal build writes the lesson job plus exactly one canary mutation job and no
+    controls. The canary is picked deterministically from the lesson's own mutations (same lesson, same canary),
+    never names its role, and carries the same manifest fields as every other job."""
+    out = {}
+    sets = {"f-cast": fcast_lesson()}
+    if slice_lesson():
+        sets["switch-fallthrough"] = slice_lesson()
+    for name, (lesson, items) in sets.items():
+        build = _tmp_build(f"canary-{name}")
+        ids = claims.write_jobs(lesson, items, build)
+        priv = claims.load_private(build)
+        assert priv["mode"] == "canary", priv.get("mode")
+        roles = sorted(priv["jobs"][j]["role"] for j in ids)
+        assert roles == ["lesson", "mutation"], roles
+        canary = next(m for m in priv["jobs"].values() if m["role"] == "mutation")["mutation"]["id"]
+        candidates = [m["id"] for m in claims.mc.select(lesson)]
+        assert canary in candidates, (canary, candidates)
+        again = _tmp_build(f"canary2-{name}")
+        ids2 = claims.write_jobs(lesson, items, again)
+        assert sorted(ids2) == sorted(ids), "the canary must be the same for the same lesson"
+        for jid, job in _jobs(build).items():
+            assert set(job) == JOB_KEYS, set(job) ^ JOB_KEYS
+            leaks = [h for h in HINTS if h in json.dumps(job)]
+            assert not leaks, f"{jid} names its role: {leaks}"
+        cal = _tmp_build(f"canary-cal-{name}")
+        cal_ids = claims.write_jobs(lesson, items, cal, calibrate=True)
+        assert set(ids) <= set(cal_ids), "a canary job is the same job as its calibration twin, so reviews carry over"
+        out[name] = {"jobs": len(ids), "canary": canary, "candidates": len(candidates), "calibration_jobs": len(cal_ids)}
+    return out
+
+
+def test_canary_gate():
+    """Verified needs the lesson job accepted and the canary rejected (caught). A canary the reviewer accepts fails
+    claims.canary; a missing canary review is not-run; calibration mode reports claims.sensitivity instead."""
+    lesson, items = fcast_lesson()
+    out = {}
+    for case in ("caught", "accepted", "missing"):
+        build = _tmp_build(f"canary-gate-{case}")
+        claims.write_jobs(lesson, items, build)
+        priv = claims.load_private(build)
+        for jid, job in _jobs(build).items():
+            meta = priv["jobs"][jid]
+            if meta["role"] == "lesson":
+                _write_review(build, job, _review(job))
+            elif case == "caught":
+                rev = _review(job)
+                planted = meta["planted_claim"]
+                if planted in {c["id"] for c in job["claims"]}:
+                    for c in rev["claims"]:
+                        if c["id"] == planted:
+                            c.update(verdict="reject", reason="planted error")
+                else:
+                    for t in rev["texts"]:
+                        if t["id"] in meta["changed_texts"]:
+                            t.update(verdict="reject", reason="planted error")
+                rev["overall"] = "reject"
+                _write_review(build, job, rev)
+            elif case == "accepted":
+                _write_review(build, job, _review(job))
+        gates = {g["id"]: g for g in claims.check(lesson, build, items)}
+        assert "claims.sensitivity" not in gates, "canary mode must not report calibration rates"
+        assert gates["claims.review"]["status"] == ("not-run" if case == "missing" else "passed"), gates["claims.review"]
+        want = {"caught": "passed", "accepted": "failed", "missing": "not-run"}[case]
+        assert gates["claims.canary"]["status"] == want, (case, gates["claims.canary"])
+        out[case] = gates["claims.canary"]["status"]
+    build = _tmp_build("canary-gate-cal")
+    claims.write_jobs(lesson, items, build, calibrate=True)
+    gates = {g["id"] for g in claims.check(lesson, build, items)}
+    assert "claims.sensitivity" in gates and "claims.canary" not in gates, gates
+    return out
+
+
+def test_build_cli_calibrate_flag():
+    """`ptk build --calibrate` reaches build.build(calibrate=True); without it the build is in canary mode."""
+    from ptk import cli
+    try:
+        parsed = cli.parser().parse_args(["build", "x", "--calibrate"])
+    except SystemExit as e:
+        raise AssertionError("ptk build does not accept --calibrate") from e
+    assert parsed.calibrate is True
+    assert cli.parser().parse_args(["build", "x"]).calibrate is False
+    import inspect
+    from ptk import build as b
+    assert inspect.signature(b.build).parameters["calibrate"].default is False
+    return {"flag": "--calibrate"}
 
 
 # ---------------------------------------------------------------- AC-7.2

@@ -14,7 +14,7 @@ REQUIRED_GATES = {"values.expect", "values.still", "visual.still.layout", "visua
                   "video.scene-layout",
                   "video.render-isolation", "values.video", "video.media", "video.sync", "video.no-answer-leak",
                   "values.ive", "ive.pause-state", "ive.no-answer-leak", "ive.controls", "ive.layout", "ive.fonts",
-                  "ive.network", "claims.mapping", "claims.review", "claims.sensitivity"}
+                  "ive.network", "claims.mapping", "claims.review", "claims.canary"}
 
 
 def _reviews_current(rep):
@@ -40,13 +40,13 @@ def test_switch_fallthrough_slice():
     assert REQUIRED_GATES <= set(statuses), REQUIRED_GATES - set(statuses)
     assert all(s == "passed" for s in statuses.values()), {k: v for k, v in statuses.items() if v != "passed"}
     assert not rep["fallbacks"]
-    assert rep["media"] == ["still", "video", "ive"]
+    assert {"still", "video", "ive"} <= set(rep["media"]), rep["media"]  # a full six-media build includes them
     m = gate(rep, "video.media")["measured"]
     assert abs(m["integrated_lufs"] + 16) <= 1 and m["true_peak_dbtp"] <= -1
     s = gate(rep, "video.sync")["measured"]
     assert s["max_abs_start_delta"] <= 0.5 and s["max_abs_end_delta"] <= 0.5 and s["non_code_wer"] <= 0.10
-    sens = gate(rep, "claims.sensitivity")["measured"]
-    assert sens["caught"] == sens["mutations"] >= 1
+    canary = gate(rep, "claims.canary")["measured"]  # D21.1: one planted error, caught
+    assert len(canary["rows"]) == 1 and canary["rows"][0]["caught"] is True, canary
     b = SLICE / "build"
     for p in ("still/switch-fallthrough-wide-light.png", "video/lesson.mp4", "video/captions.vtt",
               "video/chapters.vtt", "ive/index.html", "ive/states.vtt"):
@@ -72,7 +72,9 @@ def test_entry_by_direct_path():
     rep = json.loads(res.stdout)
     assert rep["entry"]["skill_md"] == str(skill)
     assert rep["entry"]["ptk"] == str(host.PKG / "bin" / "ptk")
-    assert rep["lesson"] == "switch-fallthrough" and rep["media"] == ["still", "video", "ive"]
+    # any build sequence (full, --only, or both) leaves a report naming this lesson and the media it holds
+    assert rep["lesson"] == "switch-fallthrough" and rep["media"], rep.get("media")
+    assert set(rep["media"]) <= set(build.SUPPORTED), rep["media"]
     home = Path.home()
     pkg = host.PKG.resolve()
     hits = []

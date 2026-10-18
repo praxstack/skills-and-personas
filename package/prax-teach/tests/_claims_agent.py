@@ -84,10 +84,10 @@ def same_bits_lesson():
     return lesson, claims.texts_from_model(lesson)
 
 
-def ensure_jobs(name, lesson, items, mutations=None):
+def ensure_jobs(name, lesson, items, mutations=None, calibrate=False):
     build = staging(name)
     claims.mapping_gate(lesson, items)
-    claims.write_jobs(lesson, items, build, mutations=mutations)
+    claims.write_jobs(lesson, items, build, mutations=mutations, calibrate=calibrate)
     return build
 
 

@@ -1,8 +1,8 @@
 # Host adapters: running claims-review jobs
 
 `ptk build` stops at `claims-pending` (exit 4) after writing `build/claims-jobs/<job>.json`:
-one lesson job, plus up to 12 mutation jobs, each paired with a control. They all look alike on
-purpose. The build report's `claims.jobs` lists them and `claims.job_tokens` gives their size.
+the lesson job plus one canary mutation job (with `--calibrate`: up to 12 mutation jobs, each
+paired with a control). They all look alike on purpose. The build report's `claims.jobs` lists them and `claims.job_tokens` gives their size.
 
 ## The contract (every host)
 

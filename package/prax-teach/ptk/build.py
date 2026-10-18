@@ -1,7 +1,7 @@
 """`ptk build` and `ptk claims check`: run the state machine in model.py and write the build report.
 
 build:  validate → capture → expect check → project (--only media) → automatic gates
-        → claims jobs → claims-pending (exit 4) | failed (1) | incomplete (5) | degraded (6)
+        → claims jobs (lesson + 1 canary; --calibrate: the full mutation suite with controls, D21.1) → claims-pending (exit 4) | failed (1) | incomplete (5) | degraded (6)
 claims check: reviews vs manifests → verified (0) | failed | incomplete | degraded
 The report (build/build-report.json) records every gate, measurement, artifact hash and tool version.
 """
@@ -123,7 +123,7 @@ def final_status(gates, degraded):
     return "verified"
 
 
-def build(lesson_path, only=None, video_theme=None, renderer="hyperframes"):
+def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", calibrate=False):
     lesson = model.load(lesson_path)
     media = only or [m for m in lesson.data.get("requested_media", []) if m in SUPPORTED]
     if only and not [m for m in only if m not in SUPPORTED]:
@@ -162,14 +162,18 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes"):
         rep["gates"] += gates
         items = claims_gate.collect_texts(lesson, build_dir)
         rep["gates"].append(claims_gate.mapping_gate(lesson, items))
-        jobs = claims_gate.write_jobs(lesson, items, build_dir)
-        rep["claims"] = {"jobs": [str(build_dir / "claims-jobs" / f"{j}.json") for j in jobs],
+        jobs = claims_gate.write_jobs(lesson, items, build_dir, calibrate=calibrate)
+        mode = "calibrate" if calibrate else "canary"
+        rep["claims"] = {"mode": mode, "jobs": [str(build_dir / "claims-jobs" / f"{j}.json") for j in jobs],
                          "reviews_dir": str(build_dir / "claims-review"), "rubric": str(claims_gate.RUBRIC),
                          "job_tokens": claims_gate.job_sizes(build_dir),
                          "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"}
         rep["gates"].append({"id": "claims.review", "medium": "all", "status": "pending", "measured": {},
                              "reason": "waiting for reviewer subagents"})
-        if claims_gate.mutation_count(build_dir):
+        if mode == "canary":
+            rep["gates"].append({"id": "claims.canary", "medium": "all", "status": "pending", "measured": {},
+                                 "reason": "waiting for reviewer subagents (one planted error must be caught, D21.1)"})
+        elif claims_gate.mutation_count(build_dir):
             rep["gates"].append({"id": "claims.sensitivity", "medium": "all", "status": "pending", "measured": {},
                                  "reason": "waiting for reviewer subagents"})
         st = final_status(rep["gates"], degraded)
