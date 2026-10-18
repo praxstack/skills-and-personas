@@ -112,3 +112,31 @@ def test_math_svg():
         return {"svgs": len(svgs), "formulas_per_svg": 2}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_wide_notes_numbered_and_column_filled():
+    """Integration finding (WP9 Part A): the wide still numbers its notes exactly as the portrait does (a badge
+    on the code line and the same number before the note), and the column beside the program starts at the
+    top of the code card, so no empty block sits top right."""
+    lesson = model.load(SLICE)
+    tk = fonts.tokens()
+    notes = lesson.data["figure"]["notes"]
+    want = [str(k) for k in range(1, len(notes) + 1)]
+    for layout in ("wide", "portrait"):
+        for theme in ("light", "dark"):
+            root = ET.fromstring(still.render(lesson, layout, theme, tk))
+            badges = [el for el in root.iter(f"{SVG_NS}text") if el.get("data-label") == "note-badge"]
+            in_code = sorted(b.text for b in badges if (b.get("data-in") or "").startswith("code-card-badge"))
+            listed = sorted(b.text for b in badges if (b.get("data-in") or "").startswith("badge-n"))
+            assert in_code == want and listed == want, (layout, theme, in_code, listed)
+            if layout == "wide":
+                card = next(el for el in root.iter(f"{SVG_NS}rect") if el.get("id") == "code-card")
+                first_note = next(el for el in root.iter(f"{SVG_NS}text") if el.get("data-claim") == notes[0]["claim"])
+                ny = float(first_note.get("y") or first_note[0].get("y"))
+                gap = ny - float(card.get("y"))
+                assert 0 <= gap <= 48, f"{theme}: the first note starts {gap:.0f} px below the code card top"
+                out = next(el for el in root.iter() if el.get("data-key") == "output")
+                fact_y = [float(el.get("y")) for el in out.iter(f"{SVG_NS}text") if el.get("data-fact")]
+                card_bottom = float(card.get("y")) + float(card.get("height"))
+                assert fact_y and max(fact_y) <= card_bottom + 40, f"{theme}: the output does not sit beside the code"
+    return {"notes": len(notes)}

@@ -41,6 +41,7 @@ import re
 import shutil
 
 from .. import errors, fonts, host, node, text
+from . import mech
 from . import path as rail
 from ..text import esc
 
@@ -50,6 +51,7 @@ MATH_RE = re.compile(r"\\\((.+?)\\\)", re.S)
 
 LAYOUTS = {
     "wide": dict(W=1200, X0=64, X1=1136, kicker=13, title=44, dek=19, code=17, code_lh=31, gutter=84, code_w=680,
+                 code_w_side=600,
                  note=23, out=26, out_gap=16, label=12.5, caption=20, foot=12.5, tag=12.5, mini=15, mini_lh=26,
                  mini_gutter=78, col_gap=40, out_w=300),
     "portrait": dict(W=400, X0=16, X1=384, kicker=12, title=30, dek=16, code=13, code_lh=23, gutter=58, code_w=368,
@@ -453,10 +455,14 @@ def _place_panels(svg, panels, heights):
         svg.els.insert(idx, box)
 
 
-def _output_list(svg, g, x, y, fids, facts, rid, group):
-    """Numbered output values. Returns the y after the list."""
+def _output_list(svg, g, x, y, fids, facts, rid, group, max_w=None):
+    """Numbered output values (smaller when a value would not fit max_w). Returns the y after the list."""
     t = svg.t
     vfont, vsize, vweight, _c, _s = svg.role("value", g["out"])
+    if max_w:
+        widest = max((fonts.width(vfont, vsize, text.display(facts[f]), weight=vweight) for f in fids), default=0)
+        if widest > max_w - 30:
+            vsize = round(max(13.0, vsize * (max_w - 30) / widest), 2)
     for k, fid in enumerate(fids, 1):
         val = text.display(facts[fid])
         svg.text(x, y, str(k), "mono", g["label"], t["faint"], ("label", "output-step"), inside=rid,
@@ -465,6 +471,90 @@ def _output_list(svg, g, x, y, fids, facts, rid, group):
                  ocr_group=group)
         y += vsize + g["out_gap"]
     return y
+
+
+def _notes(svg, flow, lesson, notes, x, y, w, g):
+    """Numbered notes, each with the badge its line carries in the code card. Returns the y after them."""
+    t = svg.t
+    claims = lesson.by_id("claims")
+    nfont, npx, nweight, _c, _s = svg.role("note", g["note"])
+    nlh = npx * (1.35 if nfont == "hand" else 1.42)
+    svg.open(data_key="note")
+    y += npx * 0.9
+    for k, note in enumerate(notes, 1):
+        svg.rect(x, y - 15, 20, 20, t["note"], rx=10, rid=f"badge-n{k}")
+        svg.text(x + 10, y - 0.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"), weight=700,
+                 anchor="middle", inside=f"badge-n{k}")
+        y = flow.emit(x + 30, y, claims[note["claim"]]["text"], nfont, npx, nlh, t["note"],
+                      ("claim", note["claim"]), w - 30, weight=nweight, tone="note") + 8
+    svg.close()
+    return y - nlh
+
+
+def _output_height(svg, g, lesson, state_id):
+    _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
+    n = len(lesson.state(state_id)["state"]["output"])
+    top = (22 if svg.frame["panel_fill"] else 0) or 6
+    return top + 30 + n * (vpx + g["out_gap"]) - g["out_gap"] + vpx * 0.3 + top
+
+
+def _output_card(svg, g, lesson, state_id, x, y, w):
+    """The output values of `state_id`, numbered, in a card (light) or an open panel (dark). Returns its height."""
+    facts = lesson.by_id("facts")
+    final = lesson.state(state_id)["state"]["output"]
+    inset = 22 if svg.frame["panel_fill"] else 0
+    top = inset or 6
+    _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
+    svg.open(data_key="output", data_state=state_id)
+    i_out = svg.mark()
+    _label(svg, x + inset, y + top + 10, text.ui("output_label"), g["label"], ("chrome", "output_label"),
+           inside="out-card")
+    end = _output_list(svg, g, x + inset, y + top + 30 + vpx * 0.8, final, facts, "out-card", "out",
+                       max_w=w - 2 * inset)
+    svg.close()
+    h = end - y - g["out_gap"] - vpx * 0.8 + vpx * 0.3 + top
+    _place_panels(svg, [(i_out, x, y, w, "out-card")], [h])
+    return h
+
+
+def _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w=None, col_x=None):
+    """The comparison program: its claim, its listing with its own path, and its output. Returns the y after it."""
+    t = svg.t
+    claims = lesson.by_id("claims")
+    facts = lesson.by_id("facts")
+    inset = 22 if svg.frame["panel_fill"] else 0
+    top = inset or 6
+    _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
+    ffont, fpx, _w, _c, _s = svg.role("foot", g["label"])
+    cstate_id = cmp["state"]
+    cst = lesson.state(cstate_id)["state"]
+    crun = cst.get("path", [])
+    csrc = lesson.program_source(cmp["program"]).split("\n")
+    cfirst = rail.enter_line(csrc, crun) or rail.listing(lesson, cmp["program"])[0]
+    cshown = list(range(cfirst, max(crun) + 1))
+    if svg.frame["panel_divider"]:
+        svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
+    cw = X1 - X0
+    bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"])
+    svg.open(data_key="compare", data_state=cstate_id)
+    i_cmp = svg.mark()
+    yy = flow.emit(X0 + inset, y + top + bpx * 0.95, claims[cmp["claim"]]["text"], bfont, bpx, bpx * 1.42,
+                   t["ink_soft"], ("claim", cmp["claim"]), cw - 2 * inset, weight=bweight, inside="cmp-card")
+    yy += 2
+    fname2 = lesson.program(cmp["program"])["path"].split("/")[-1]
+    svg.text(X0 + inset, yy, fname2, ffont, fpx, t["label"], ("label", "program-file"), inside="cmp-card")
+    yy += 10
+    mini_w = (code_w or 480) - 2 * inset if wide else cw - 2 * inset
+    mh, _ys2 = code_panel(svg, lesson, cmp["program"], crun, cshown, X0 + inset, yy, mini_w, g["mini"],
+                          g["mini_lh"], g["mini_gutter"], "cmp-code", "gutter-cmp", True, wide, nested=True)
+    # wide: the output sits in the same column as the program's output above, so the two compare by eye
+    lx, ly = (col_x or X0 + inset + mini_w + 40, yy + 18) if wide else (X0 + inset, yy + mh + 30)
+    _label(svg, lx, ly, text.ui("output_label"), g["label"], ("chrome", "output_label"), inside="cmp-card")
+    list_end = _output_list(svg, g, lx, ly + 20 + vpx * 0.8, cst["output"], facts, "cmp-card", "cmp")
+    svg.close()
+    cmp_h = max(yy + mh, list_end - g["out_gap"] - vpx * 0.8 + vpx * 0.3) + top - y
+    _place_panels(svg, [(i_cmp, X0, y, cw, "cmp-card")], [cmp_h])
+    return y + cmp_h
 
 
 def build_svg(lesson, layout, theme, tokens, math=None):
@@ -481,7 +571,7 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     # ---------- header ----------
     y = 64 if wide else 42
     font, px, weight, caps, spacing = svg.role("kicker", g["kicker"])
-    kicker = text.ui("kicker", topic=lesson.data["topic"])
+    kicker = text.kicker(lesson)
     svg.text(X0, y, kicker.upper() if caps else kicker, font, px, t["note"], ("chrome", "kicker"), weight=weight,
              spacing=spacing, tone="note")
     font, px, weight, _c, _s = svg.role("display", g["title"])
@@ -499,121 +589,59 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     svg.line(X0, y, X1, y, t["rule"], 1)
     y += 34 if wide else 28
 
+    # ---------- a hero panel spans the width above the program ----------
+    panel = fig.get("panel")
+    final_state = fig["states"][-1]
+    if panel and panel["place"] == "hero":
+        y += mech.draw(svg, lesson, final_state, X0, y, X1 - X0, layout, flow) + (34 if wide else 26)
+        svg.line(X0, y - 18, X1, y - 18, t["rule"], 1)
+        y += 20 if wide else 16
+
     # ---------- the program ----------
     states = [lesson.state(s) for s in fig["states"]]
     run = rail.executed(s["state"].get("path", []) for s in states)
     src_lines = lesson.program_source(fig["program"]).split("\n")
-    first, _last = rail.body_range(src_lines)
-    shown = list(range(first, max(run) + 1))
+    first, last = rail.listing(lesson, fig["program"])
+    shown = list(range(first, (last if lesson.program(fig["program"]).get("show") else max(run)) + 1))
     prog = lesson.program(fig["program"])
+    side = bool(panel and panel["place"] == "side")
+    code_w = (g["code_w_side"] if side else g["code_w"]) if wide else g["code_w"]
+    longest = max(len(src_lines[n - 1].rstrip()) for n in shown)
+    csize = round(min(g["code"], (code_w - g["gutter"] - (24 if wide else 16)) / (longest * MONO_ADV)), 2)
+    clh = round(g["code_lh"] * csize / g["code"], 2)
     _label(svg, X0, y, text.ui("code_label"), g["label"], ("chrome", "code_label"))
     fname = prog["path"].split("/")[-1]
     ffont, fpx, _w, _c, _s = svg.role("foot", g["label"])
-    svg.text(X0 + g["code_w"], y, fname, ffont, fpx, t["label"], ("label", "program-file"), anchor="end")
+    svg.text(X0 + code_w, y, fname, ffont, fpx, t["label"], ("label", "program-file"), anchor="end")
     y += 14
     notes = fig.get("notes", [])
     svg.open(data_key="code")
-    card_h, ys = code_panel(svg, lesson, fig["program"], run, shown, X0, y, g["code_w"], g["code"], g["code_lh"],
+    card_h, ys = code_panel(svg, lesson, fig["program"], run, shown, X0, y, code_w, csize, clh,
                             g["gutter"], "code-card", "gutter", True, wide,
-                            badges=None if wide else [(k, n["line"]) for k, n in enumerate(notes, 1)])
+                            badges=[(k, n["line"]) for k, n in enumerate(notes, 1)])
     svg.close()
-    card_bottom = y + card_h
+    card_top, card_bottom = y, y + card_h
 
-    # ---------- notes ----------
-    nfont, npx, nweight, _c, _s = svg.role("note", g["note"])
-    nlh = npx * (1.35 if nfont == "hand" else 1.42)
+    # ---------- beside the program (wide) or under it (portrait): panel, numbered notes, output ----------
+    col_x = X0 + code_w + g["col_gap"] if wide else X0
+    col_w = X1 - col_x
+    col_y = card_top if wide else card_bottom + 30
+    if side:
+        col_y += mech.draw(svg, lesson, final_state, col_x, col_y, col_w, layout, flow) + (30 if wide else 26)
     if notes:
-        svg.open(data_key="note")
-        if wide:
-            nx, nw = X0 + g["code_w"] + 34, X1 - (X0 + g["code_w"] + 34)
-            floor = y
-            for note in notes:
-                ny = max(ys.get(note["line"], floor) + 2, floor + npx)
-                svg.line(nx - 24, ny - npx * 0.32, nx - 10, ny - npx * 0.32, t["note"], 1.5, role="rule")
-                ny = flow.emit(nx, ny, claims[note["claim"]]["text"], nfont, npx, nlh, t["note"],
-                               ("claim", note["claim"]), nw, weight=nweight, tone="note")
-                floor = ny - nlh + 14
-            y = max(card_bottom, floor) + 44
-        else:
-            y = card_bottom + 30
-            for k, note in enumerate(notes, 1):
-                svg.rect(X0, y - 15, 20, 20, t["note"], rx=10, rid=f"badge-n{k}")
-                svg.text(X0 + 10, y - 0.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"), weight=700,
-                         anchor="middle", inside=f"badge-n{k}")
-                y = flow.emit(X0 + 30, y, claims[note["claim"]]["text"], nfont, npx, nlh, t["note"],
-                              ("claim", note["claim"]), X1 - X0 - 30, weight=nweight, tone="note")
-                y += 8
-            y += 22
-        svg.close()
-    else:
-        y = card_bottom + 40
+        col_y = _notes(svg, flow, lesson, notes, col_x, col_y, col_w, g) + (24 if wide else 22)
+    out_h = _output_height(svg, g, lesson, final_state)
+    in_col = not wide or col_y + out_h <= card_bottom + 40
+    out_x, out_y, out_w = (col_x, col_y, col_w) if in_col else (X0, card_bottom + 40, code_w)
+    out_h = _output_card(svg, g, lesson, final_state, out_x, out_y, out_w)
+    y = max(card_bottom, out_y + out_h) + (44 if wide else 36)
+    if not wide:
+        y = out_y + out_h + 36
 
-    # ---------- output (summary) next to the comparison program (its own mechanism) ----------
-    final_state = fig["states"][-1]
-    final = lesson.state(final_state)["state"]["output"]
+    # ---------- the comparison program, with its own path and output (mechanism, not metrics) ----------
     cmp = fig.get("compare")
-    pad = 22 if wide else 18
-    inset = pad if svg.frame["panel_fill"] else 0
-    top = inset or 6  # an unfilled panel still keeps its text clear of the box edge it is measured against
-    _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
-    row_y = y
-    out_w = g["out_w"] if cmp else X1 - X0
-
-    svg.open(data_key="output", data_state=final_state)
-    i_out = svg.mark()
-    _label(svg, X0 + inset, row_y + top + 10, text.ui("output_label"), g["label"], ("chrome", "output_label"),
-           inside="out-card")
-    out_end = _output_list(svg, g, X0 + inset, row_y + top + 30 + vpx * 0.8, final, facts, "out-card", "out")
-    svg.close()
-    out_h = out_end - row_y - g["out_gap"] - vpx * 0.8 + vpx * 0.3 + top
-    panels = [(i_out, X0, row_y, out_w, "out-card")]
-    if not cmp:
-        _place_panels(svg, panels, [out_h])
-        y = row_y + out_h + 36
-    else:
-        cstate_id = cmp["state"]
-        cst = lesson.state(cstate_id)["state"]
-        crun = cst.get("path", [])
-        csrc = lesson.program_source(cmp["program"]).split("\n")
-        cfirst = rail.enter_line(csrc, crun) or rail.body_range(csrc)[0]
-        cshown = list(range(cfirst, max(crun) + 1))
-        if wide:
-            cx, cy0 = X0 + out_w + g["col_gap"], row_y
-        else:
-            cx, cy0 = X0, row_y + out_h + (24 if svg.frame["panel_fill"] else 26)
-            if svg.frame["panel_divider"]:
-                svg.line(X0, cy0 - 14, X1, cy0 - 14, t["rule"], 1)
-        cw = X1 - cx
-        bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"])
-        svg.open(data_key="compare", data_state=cstate_id)
-        i_cmp = svg.mark()
-        yy = flow.emit(cx + inset, cy0 + top + bpx * 0.95, claims[cmp["claim"]]["text"],
-                       bfont, bpx, bpx * 1.42, t["ink_soft"], ("claim", cmp["claim"]), cw - 2 * inset,
-                       weight=bweight, inside="cmp-card")
-        yy += 2
-        fname2 = lesson.program(cmp["program"])["path"].split("/")[-1]
-        svg.text(cx + inset, yy, fname2, ffont, fpx, t["label"], ("label", "program-file"), inside="cmp-card")
-        yy += 10
-        mini_w = min(cw - 2 * inset, 400) if wide else cw - 2 * inset
-        mh, _ys2 = code_panel(svg, lesson, cmp["program"], crun, cshown, cx + inset, yy, mini_w, g["mini"],
-                              g["mini_lh"], g["mini_gutter"], "cmp-code", "gutter-cmp", True, wide, nested=True)
-        lx, ly = (cx + inset + mini_w + 30, yy + 18) if wide else (cx + inset, yy + mh + 30)
-        _label(svg, lx, ly, text.ui("output_label"), g["label"], ("chrome", "output_label"), inside="cmp-card")
-        list_end = _output_list(svg, g, lx, ly + 20 + vpx * 0.8, cst["output"], facts, "cmp-card", "cmp")
-        svg.close()
-        cmp_bottom = max(yy + mh, list_end - g["out_gap"] - vpx * 0.8 + vpx * 0.3) + top
-        cmp_h = cmp_bottom - cy0
-        if wide:
-            # filled cards keep their own height; unfilled panels share one so the divider spans both
-            h = max(out_h, cmp_h)
-            _place_panels(svg, panels + [(i_cmp, cx, cy0, cw, "cmp-card")],
-                          [out_h, cmp_h] if svg.frame["panel_fill"] else [h, h])
-            if svg.frame["panel_divider"]:
-                svg.line(cx - g["col_gap"] / 2, row_y + 4, cx - g["col_gap"] / 2, row_y + h - 4, t["rule"], 1)
-        else:
-            _place_panels(svg, panels + [(i_cmp, cx, cy0, cw, "cmp-card")], [out_h, cmp_h])
-        y = cy0 + cmp_h + 40
-
+    if cmp:
+        y = _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w, col_x + (22 if svg.frame["panel_fill"] else 0)) + 40
     # ---------- caption + provenance ----------
     cfont, cpx, cweight, _c, _s = svg.role("caption", g["caption"])
     for cid in fig.get("caption_claims", []):

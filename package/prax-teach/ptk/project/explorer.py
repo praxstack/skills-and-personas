@@ -354,7 +354,7 @@ def _body(lesson, model, v):
     src_links = "".join(f'<p data-role="source" data-chrome="source_link">{esc(text.ui("source_link", path=p))}</p>'
                         for p in paths)
     return f"""<div class="wrap">
-<header class="mast"><p class="kicker" data-chrome="kicker">{esc(text.ui('kicker', topic=lesson.data['topic']))}</p>
+<header class="mast"><p class="kicker" data-chrome="kicker">{esc(text.kicker(lesson))}</p>
 <h1 data-label="title">{esc(lesson.data['title'])}</h1>
 <p class="lede" data-claim="{lede['id']}">{esc(lede['text'])}</p></header>
 <main class="explorer" aria-labelledby="x-h">

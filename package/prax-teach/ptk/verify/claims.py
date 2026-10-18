@@ -45,6 +45,7 @@ MAP_ATTRS = ("data-claim", "data-chrome", "data-fact", "data-code", "data-label"
              "data-narration", "data-option")
 SKIP_TAGS = {"style", "script", "title", "head", "video", "track", "source"}
 LABEL_PATTERNS = {"line-number": r"\d+", "output-step": r"\d+", "note-badge": r"\d+", "time": r"[\d:.]+",
+                  "axis-tick": "[\u2212-]?\\d+(?:\\.\\d+)?", "diff-mark": "[+\u2212]",
                   "chapter-count": r"\d+ / \d+"}
 PROJECTOR_MODULES = ("explorer", "qa", "cards")
 TEACHING = {"claim", "alt", "narration", "question", "option", "trace", "projector", "misconception", "chrome-claim"}
@@ -281,7 +282,7 @@ def chrome_regex(lesson, key):
     displays = [text.display(f) for f in lesson.data["facts"]]
     statements = [m["statement"] for m in lesson.data.get("misconceptions", [])] + \
         [c["text"] for c in lesson.data["claims"]] + [x for c in lesson.data["claims"] for x in text.sentences(c["text"])]
-    slots = {"topic": _alt({lesson.data.get("topic", "")}), "compiler": _alt(_compilers(lesson)),
+    slots = {"topic": _alt({lesson.data.get("topic", "")}), "subject": _alt({lesson.data.get("subject", "C")}), "compiler": _alt(_compilers(lesson)),
              "path": _alt(_program_paths(lesson)), "program": _alt(_program_paths(lesson)),
              "file": _alt(_program_paths(lesson)), "sha": r"[0-9a-f]{12,64}", "statement": _alt(statements),
              "title": _alt({lesson.data["title"]}),

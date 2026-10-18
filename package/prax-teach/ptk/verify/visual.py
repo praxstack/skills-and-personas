@@ -286,10 +286,10 @@ def required_keys(lesson):
     from .. import model
     fig = lesson.data.get("figure") or {}
     keys = {"code", "output"} | ({"note"} if fig.get("notes") else set()) | ({"compare"} if fig.get("compare") else set())
-    keys |= set(fig.get("elements", []))
+    keys |= set(fig.get("elements", [])) | ({"panel"} if fig.get("panel") else set())
     for sc in lesson.data.get("storyboard", []):
         keys |= set(sc.get("key_nodes", []))
-    known = set(model.FIGURE_ELEMENTS.get(fig.get("kind"), ())) | set(fig.get("elements", []))
+    known = model.figure_elements(fig)
     return sorted(k for k in keys - STILL_DRAWS_NOT if k in known)
 
 

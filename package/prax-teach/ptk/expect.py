@@ -77,6 +77,81 @@ def factorial_frames(n):
     return ",".join(f"factorial({k})" for k in range(int(n), 0, -1))
 
 
+def double_bits_hex(value):
+    """The object representation of (double)value as printf("%#llx") shows it after a memcpy into an
+    unsigned long long: IEEE 754 binary64 (C17 Annex F), so 66 becomes 0x4050800000000000."""
+    import struct
+    return "0x" + format(struct.unpack(">Q", struct.pack(">d", float(value)))[0], "x")
+
+
+def call_label(fn, arg):
+    """How a call is written: call_label("factorial", 2) -> "factorial(2)"."""
+    return f"{fn}({int(arg)})"
+
+
+# ---- recursion: the lines an instrumented factorial(n) prints (C17 6.5.2.2p11: recursive calls)
+#
+#   int factorial(int n) { printf("enter factorial(%d)\n", n); int r = 1; if (n > 1) r = n * factorial(n - 1);
+#                          printf("factorial(%d) = %d\n", n, r); return r; }
+#   main: int r = factorial(n); printf("main got %d\n", r);
+#
+# Each call prints on entry, finishes its own callee first, then prints its result: the entries come out
+# in the order n, n-1, ..., 1 and the results in the reverse order, then main prints what it got.
+
+def factorial_events(n):
+    out = []
+
+    def call(k):
+        out.append(f"enter factorial({k})")
+        r = 1
+        if k > 1:
+            r = k * call(k - 1)
+        out.append(f"factorial({k}) = {r}")
+        return r
+    out.append(f"main got {call(int(n))}")
+    return out
+
+
+def factorial_event(n, line):
+    """The 1-based line `line` of the instrumented run's stdout."""
+    return factorial_events(n)[int(line) - 1]
+
+
+def factorial_stdout(n):
+    return "".join(s + "\n" for s in factorial_events(n))
+
+
+# ---- one artificial neuron in C doubles (IEEE 754 binary64, in the C program's own order of operations)
+
+def printf_g(value, sign=False):
+    """printf("%g") of a double, or "%+g" with sign: 6 significant digits, trailing zeros removed."""
+    return f"{float(value):{'+' if sign else ''}g}"
+
+
+def _neuron_z(xs, ws, b):
+    t = [float(x) * float(w) for x, w in zip(xs, ws)]
+    z = t[0]
+    for v in t[1:]:
+        z = z + v
+    return z + float(b)
+
+
+def neuron_term(x, w):
+    """printf("%+g", x * w)."""
+    return printf_g(float(x) * float(w), sign=True)
+
+
+def neuron_sum(xs, ws, b):
+    """printf("%g", t1 + t2 + ... + b) with t_i = x_i * w_i, added left to right as C does."""
+    return printf_g(_neuron_z(xs, ws, b))
+
+
+def neuron_relu(xs, ws, b):
+    """printf("%g", fmax(0.0, z)): ReLU of the weighted sum."""
+    z = _neuron_z(xs, ws, b)
+    return printf_g(z if z > 0.0 else 0.0)
+
+
 # ---- switch statement semantics (C17 6.8.4.2, 6.8.1, 6.8.6.4) ----
 #
 # cases: [{"label": int | "default", "out": [str, ...], "brk": bool}, ...] in source order.
@@ -110,7 +185,9 @@ FUNCTIONS = {
     "bits": bits, "hex": hex_, "printf_d": printf_d, "printf_u": printf_u, "printf_f": printf_f,
     "printf_x": printf_x, "printf_c": printf_c, "ascii": ascii_, "sizeof_abi": sizeof_abi,
     "sum": sum_, "factorial": factorial, "factorial_frames": factorial_frames, "switch_line": switch_line,
-    "switch_stdout": switch_stdout,
+    "switch_stdout": switch_stdout, "double_bits_hex": double_bits_hex, "call_label": call_label,
+    "factorial_event": factorial_event, "factorial_stdout": factorial_stdout, "printf_g": printf_g,
+    "neuron_term": neuron_term, "neuron_sum": neuron_sum, "neuron_relu": neuron_relu,
 }
 # Functions that take the captured platform as their first argument; `args` omits it. Empty on
 # purpose: an expectation read from the capture can never disagree with it (review WP2 P2-5).

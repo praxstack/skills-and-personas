@@ -41,6 +41,11 @@ def ui(key, **kw):
     return s.format(**kw) if kw else s
 
 
+def kicker(lesson):
+    """The kicker line: '<subject> · <topic>' (subject defaults to C)."""
+    return ui("kicker", subject=lesson.data.get("subject", "C"), topic=lesson.data["topic"])
+
+
 def provenance(lesson):
     """One provenance line naming every program's stdout hash (a single hash for several
     programs' outputs was rejected by the claims reviewer as misleading)."""

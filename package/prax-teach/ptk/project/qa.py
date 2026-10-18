@@ -101,7 +101,7 @@ def _body(lesson, m):
                    f'<span data-option="{m["scene"]}.{o["i"]}">{esc(o["text"])}</span></label>' for o in m["options"])
     layers, n = _layers_html(m)
     return f"""<div class="wrap">
-<header class="mast"><p class="kicker" data-chrome="kicker">{esc(text.ui('kicker', topic=lesson.data['topic']))}</p>
+<header class="mast"><p class="kicker" data-chrome="kicker">{esc(text.kicker(lesson))}</p>
 <h1 data-label="title">{esc(lesson.data['title'])}</h1></header>
 <main class="qa">
 <noscript><p class="nojs" data-chrome="qa_noscript">{esc(text.ui('qa_noscript'))}</p></noscript>

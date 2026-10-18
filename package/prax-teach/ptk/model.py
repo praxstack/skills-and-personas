@@ -120,6 +120,16 @@ def schema_errors(data):
 # Elements each figure kind always draws (data-key in the artifacts). Storyboard key_nodes may
 # name these or the figure's own `elements`.
 FIGURE_ELEMENTS = {"code-trace": ("code", "output", "question", "note", "compare")}
+
+
+def figure_elements(fig):
+    """The element ids a figure draws: its kind's fixed set, `panel` when it has one, and its own `elements`."""
+    if not fig:
+        return set()
+    return set(FIGURE_ELEMENTS.get(fig["kind"], ())) | ({"panel"} if fig.get("panel") else set()) \
+        | set(fig.get("elements", []))
+
+
 PLATFORM_KEYS = ("captured", "os", "arch", "sizeof", "char_signed", "endianness", "libc", "compilers", "sandbox")
 # The full shape of `platform` as the capture probe writes it (ptk/capture/c_runner.py PLATFORM_C).
 # A select key must name one leaf: a scalar key, or sizeof.<type>, or compilers.<name> (review WP2 P2-4).
@@ -254,6 +264,10 @@ def reference_errors(data, base_dir=None):
     trace = data.get("trace", [])
     for i, s in enumerate(trace):
         need("programs", s["state"]["program"], f"/trace/{i}/state/program")
+        for j, fr in enumerate(s["state"].get("frames", [])):
+            for k in ("call", "ret"):
+                if k in fr:
+                    need("facts", fr[k], f"/trace/{i}/state/frames/{j}/{k}")
         for j, fid in enumerate(s["state"].get("output", [])):
             need("facts", fid, f"/trace/{i}/state/output/{j}")
         for j, fid in enumerate(s.get("reveals", [])):
@@ -271,7 +285,7 @@ def _shown_facts(state):
 def _storyboard_errors(data, ids, need):
     errs = []
     fig = data.get("figure")
-    elements = set(FIGURE_ELEMENTS.get(fig["kind"], ())) | set(fig.get("elements", [])) if fig else set()
+    elements = figure_elements(fig)
     trace = data.get("trace", [])
     shown_states = set()
     for i, sc in enumerate(data.get("storyboard", [])):
@@ -321,11 +335,31 @@ def _figure_errors(data, need):
         need("claims", cid, f"/figure/caption_claims/{j}")
     if fig.get("title_claim"):
         need("claims", fig["title_claim"], "/figure/title_claim")
+    for k, ref in panel_refs(fig.get("panel") or {}):
+        need(*ref, f"/figure/panel/{k}")
     if "compare" in fig:
         need("programs", fig["compare"]["program"], "/figure/compare/program")
         need("trace", fig["compare"]["state"], "/figure/compare/state")
         need("claims", fig["compare"]["claim"], "/figure/compare/claim")
     return []
+
+
+def panel_refs(panel):
+    """[(json pointer tail, (section, id))] for every id a panel names."""
+    out = []
+    v = panel.get("value") or {}
+    out += [(f"value/{k}", ("facts", v[k])) for k in ("bits", "hex") if k in v]
+    for i, ln in enumerate(panel.get("lanes", [])):
+        out += [(f"lanes/{i}/{k}", ("facts" if k != "claim" else "claims", ln[k])) for k in ("fact", "via", "claim") if k in ln]
+    ub = panel.get("ub")
+    if ub:
+        out += [("ub/program", ("programs", ub["program"])), ("ub/claim", ("claims", ub["claim"])),
+                ("ub/after", ("trace", ub["after"]))]
+    for i, t in enumerate(panel.get("terms", [])):
+        out += [(f"terms/{i}/{k}", ("facts", t[k])) for k in ("x", "w", "t")]
+    out += [(k, ("facts", panel[k])) for k in ("bias", "sum", "out") if k in panel]
+    out += [(f"claims/{i}", ("claims", c)) for i, c in enumerate(panel.get("claims", []))]
+    return out
 
 
 def captured_errors(data):

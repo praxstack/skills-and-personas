@@ -519,7 +519,7 @@ def scene_html(lesson, scene, index, count, timing):
         note_px = _fit(nt["key"], claims[note_claim]["text"], SIDE_W - 84, panel_h - 76, 1.18, sizes)
         side = (f'<div class="panel notecard" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
                 f'style="font-size:{note_px}px">{esc(claims[note_claim]["text"])}</p></div>')
-    kicker = text.ui("kicker", topic=lesson.data["topic"]).upper()
+    kicker = text.kicker(lesson).upper()
     fname = lambda prog: esc(lesson.program(prog)["path"].split("/")[-1])  # noqa: E731
     files = (f'<p class="file" data-set="old" data-label="program-file">{fname(before["program"])}</p>' if morph else "") + \
         f'<p class="file" data-set="cur" data-label="program-file">{fname(cur["program"])}</p>'

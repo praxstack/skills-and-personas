@@ -35,6 +35,12 @@
       "type": "string",
       "minLength": 1
     },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "description": "What the lesson teaches, for the kicker ('{subject} · {topic}'). Default \"C\". A lesson about another subject still shows its values from C runs."
+    },
     "language": {
       "enum": [
         "c"
@@ -214,6 +220,25 @@
           "type": "string",
           "pattern": "^[0-9a-f]{64}$",
           "description": "Written by capture: sha256 of the compiled source bytes."
+        },
+        "show": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "to": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "description": "The source lines listings show (1-based, inclusive). Default: main's body. Use it when the program has a function before main."
         }
       }
     },
@@ -261,6 +286,11 @@
             },
             "key": {
               "type": "string"
+            },
+            "field": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "With line: the 1-based whitespace-separated token of that line (for one value inside a printed sentence)."
             }
           },
           "description": "Where capture reads the value: stream stdout with line N (1-based) or no line for the whole stdout; stream platform with key naming one platform value: captured, os, arch, char_signed, endianness, libc, sandbox, sizeof.<char|short|int|long|long long|float|double|void*> or compilers.<clang|gcc-16>.",
@@ -297,6 +327,23 @@
                   "required": [
                     "key"
                   ]
+                }
+              }
+            },
+            {
+              "if": {
+                "required": [
+                  "field"
+                ]
+              },
+              "then": {
+                "required": [
+                  "line"
+                ],
+                "properties": {
+                  "stream": {
+                    "const": "stdout"
+                  }
                 }
               }
             }
@@ -456,7 +503,22 @@
           "type": "array",
           "uniqueItems": true,
           "minItems": 1,
-          "items": {"enum": ["pragma-diagnostic", "pragma-attribute", "pragma-system-header", "pragma-operator", "pragma-other", "line-marker", "line-directive", "embed", "no-sanitize", "sanitizer-hook", "asm", "dynamic-symbol"]},
+          "items": {
+            "enum": [
+              "pragma-diagnostic",
+              "pragma-attribute",
+              "pragma-system-header",
+              "pragma-operator",
+              "pragma-other",
+              "line-marker",
+              "line-directive",
+              "embed",
+              "no-sanitize",
+              "sanitizer-hook",
+              "asm",
+              "dynamic-symbol"
+            ]
+          },
           "description": "Source-guard constructs (ptk/capture/guard.py) this claim declares on purpose for the programs in `programs`. Honoured only for programs that never run (ub:true or run:false); the claim goes through claims review like any other. Without it, capture refuses the construct by name."
         }
       }
@@ -561,6 +623,22 @@
                     "additionalProperties": {
                       "type": "string"
                     }
+                  },
+                  "call": {
+                    "$ref": "#/$defs/ref",
+                    "description": "A fact whose value labels this frame, e.g. factorial(2)."
+                  },
+                  "ret": {
+                    "$ref": "#/$defs/ref",
+                    "description": "A fact: the value this frame has returned (shown once it returns)."
+                  },
+                  "status": {
+                    "enum": [
+                      "running",
+                      "waiting",
+                      "returning"
+                    ],
+                    "description": "running: the top frame executing; waiting: blocked in a call; returning: popped, its value flowing to the caller."
                   }
                 }
               }
@@ -716,7 +794,7 @@
         "program",
         "states"
       ],
-      "description": "Still layout hints. kind=code-trace: a program listing with the execution path of the given trace states, the output, and an optional comparison program. Its fixed elements are code, output, question, note and compare.",
+      "description": "Still layout hints. kind=code-trace: a program listing with the execution path of the given trace states, the output, and an optional comparison program. Its fixed elements are code, output, question, note and compare. An optional `panel` adds a mechanism diagram drawn from the facts each trace state shows (kind views, stack or neuron); its element id is panel.",
       "properties": {
         "kind": {
           "enum": [
@@ -788,6 +866,158 @@
             "$ref": "#/$defs/ref"
           },
           "description": "Extra element ids this figure draws beyond its kind's fixed set; storyboard key_nodes may name them."
+        },
+        "panel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "place"
+          ],
+          "description": "A mechanism diagram. Every value in it is a fact; an element appears in a state once its fact is shown (output or reveals). views: one value in several printf conversions. stack: the call stack of each state's `frames`. neuron: multiply, add and gate panels.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "views",
+                "stack",
+                "neuron"
+              ]
+            },
+            "place": {
+              "enum": [
+                "side",
+                "hero"
+              ],
+              "description": "side: beside the program (wide) / under it (portrait). hero: full width above the program."
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "var",
+                "bits",
+                "hex"
+              ],
+              "properties": {
+                "var": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "bits": {
+                  "$ref": "#/$defs/ref"
+                },
+                "hex": {
+                  "$ref": "#/$defs/ref"
+                }
+              }
+            },
+            "lanes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "line",
+                  "fact"
+                ],
+                "properties": {
+                  "line": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "fact": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "via": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "claim": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
+            },
+            "ub": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "program",
+                "line",
+                "claim",
+                "after"
+              ],
+              "properties": {
+                "program": {
+                  "$ref": "#/$defs/ref"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "claim": {
+                  "$ref": "#/$defs/ref"
+                },
+                "after": {
+                  "$ref": "#/$defs/ref"
+                }
+              }
+            },
+            "terms": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "x",
+                  "w",
+                  "t"
+                ],
+                "properties": {
+                  "x": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "w": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "t": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
+            },
+            "bias": {
+              "$ref": "#/$defs/ref"
+            },
+            "sum": {
+              "$ref": "#/$defs/ref"
+            },
+            "out": {
+              "$ref": "#/$defs/ref"
+            },
+            "gate": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "line"
+              ],
+              "properties": {
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ref"
+              },
+              "description": "Claims the panel prints as its caption lines."
+            }
+          }
         }
       }
     }

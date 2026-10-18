@@ -10,6 +10,7 @@ still and the video draw the same picture:
                      12 "leaves the switch" (the executed `break;`)
     badge            "no break" between 9 and 10 (a run straight into a case label)
 """
+import re
 
 
 def body_range(src_lines):
@@ -66,4 +67,52 @@ def tags(src_lines, run, shown):
     if brk:
         out.append((brk, "exit_label", "path"))
     out += [(n, "skipped_label", "muted") for n in skipped_cases(src_lines, run, shown)]
+    return out
+
+
+def listing(lesson, pid):
+    """1-based (first, last) lines a listing of program `pid` shows: the program's `show` range, else
+    main's body (a program with a function before main sets `show` to include it)."""
+    prog = lesson.program(pid)
+    if prog.get("show"):
+        return prog["show"]["from"], prog["show"]["to"]
+    return body_range(lesson.program_source(pid).split("\n"))
+
+
+PRINT_CALL = re.compile(r'\b(puts|printf)\s*\(\s*"((?:[^"\\]|\\.)*)"')
+CONV = re.compile(r"%([-+ #0]*)(\d*)(?:\.(\d+))?(hh|h|ll|l|z|j|t|L)?([diuxXfFeEgGcs%])")
+
+
+def format_regex(src_line):
+    """The output a printf/puts call on this line can print, as a regex (None for any other line)."""
+    m = PRINT_CALL.search(src_line)
+    if not m:
+        return None
+    fmt = bytes(m.group(2), "utf-8").decode("unicode_escape").rstrip("\n")
+    if m.group(1) == "puts":
+        return re.compile(re.escape(fmt))
+    out, pos = "", 0
+    for c in CONV.finditer(fmt):
+        out += re.escape(fmt[pos:c.start()])
+        conv = c.group(5)
+        out += {"d": r"[-+ ]?\d+", "i": r"[-+ ]?\d+", "u": r"\d+", "x": r"(?:0x)?[0-9a-f]+", "X": r"(?:0X)?[0-9A-F]+",
+                "c": r".", "s": r".*", "%": "%"}.get(conv, r"[-+ ]?[\d.]+(?:[eE][-+]?\d+)?")
+        pos = c.end()
+    return re.compile(out + re.escape(fmt[pos:]))
+
+
+def print_lines(src_lines, path, outputs):
+    """The source line that printed each output text (D20.5: each summary value paired with the step that
+    printed it). One print call per output, in path order, maps one to one; a call that runs several
+    times (a loop, a recursive function) is found by matching each output against the format strings
+    on the path, and must match exactly one. None when an output cannot be paired."""
+    calls = [n for n in executed([path]) if format_regex(src_lines[n - 1])]
+    if len(calls) == len(outputs):
+        return calls
+    out = []
+    for text in outputs:
+        hits = [n for n in calls if format_regex(src_lines[n - 1]).fullmatch(text)]
+        if len(hits) != 1:
+            return None
+        out.append(hits[0])
     return out

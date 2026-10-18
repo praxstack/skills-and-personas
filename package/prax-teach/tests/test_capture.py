@@ -365,3 +365,18 @@ def test_sizeof_expectation_is_independent():
         return {"f.int": "4", "f.ptr": lesson.fact("f.ptr")["value"]}
     finally:
         kit.cleanup(tmp)
+
+
+def test_field_select():
+    """WP9: select.field picks one whitespace token of a printed line; a missing field is a mismatch, not a value."""
+    from ptk.capture import c_runner
+    cap = {"stdout": "return 2 from factorial(2)\nfactorial(3) = 6\n"}
+    f = {"id": "f.r", "program": "p1", "select": {"stream": "stdout", "line": 1, "field": 2}}
+    assert c_runner.select(f, cap, {}) == "2"
+    f["select"]["field"] = 4
+    assert c_runner.select(f, cap, {}) == "factorial(2)"
+    f["select"]["field"] = 9
+    assert isinstance(c_runner.select(f, cap, {}), c_runner._Missing)
+    f["select"] = {"stream": "stdout", "line": 2}
+    assert c_runner.select(f, cap, {}) == "factorial(3) = 6"
+    return {"fields": "ok"}

@@ -175,7 +175,7 @@ def page(lesson, timing, cue_list, posters, live=None):
     script = (IVE_DIR / "ive.js").read_text()
     answers = [c for c in cue_list if c["kind"] == "answer"]
     unlock = answers[-1]["start"] if answers else None
-    used = " ".join([lesson.data["title"], text.ui("kicker", topic=lesson.data["topic"]), explorer.all_chrome_text(),
+    used = " ".join([lesson.data["title"], text.kicker(lesson), explorer.all_chrome_text(),
                      *[c["text"] for c in timing["cues"]], *[s["title"] for s in timing["scenes"]],
                      *[json.dumps(c, ensure_ascii=False) for c in cue_list],
                      *[ln for P in (live or {}).get("programs", {}).values() for _, ln in P["lines"]],
@@ -197,7 +197,7 @@ def page(lesson, timing, cue_list, posters, live=None):
 <title>{esc(lesson.data['title'])}</title>
 <style>{css}</style>
 </head><body><div class="wrap">
-<header class="mast"><p class="kicker" data-chrome="kicker">{esc(ui('kicker', topic=lesson.data['topic']))}</p>
+<header class="mast"><p class="kicker" data-chrome="kicker">{esc(text.kicker(lesson))}</p>
 <h1 data-label="title">{esc(lesson.data['title'])}</h1></header>
 <main class="ive">
 <div class="ivegrid">

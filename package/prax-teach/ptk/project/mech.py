@@ -1,0 +1,436 @@
+r"""Mechanism panels (WP9): the diagram beside or above the program, drawn from facts.
+
+One renderer for every medium. It writes into a still.Svg-like writer (rect, line, path, circle, text,
+open/close, role), so the still embeds it at absolute coordinates, and the explorer, the IVE and the
+video wrap the same elements in their own <svg viewBox> (light and dark variants for pages, the video
+theme for the film).
+
+Every value is a fact (data-fact, checked by verify/values.py against capture and expect.py). Every
+sentence is a claim (data-claim) or a chrome.json label. An element appears in a state once its fact is
+shown there (the state's output, its reveals, or a token of a printed line), so the same function draws
+every trace state and the video fades in exactly what a scene reveals: each fact-bound group carries
+data-m="<fact id>".
+
+    views   one value seen through several printf conversions
+            ┌ the byte ─────────────────────┐
+            │ 0 1 0 0 0 0 1 0     0x42      │   bits and hex facts
+            └───────────────────────────────┘
+            printf("%d\n", a);      ↳ 66          one lane per conversion: the source line, then its output
+            printf("%f\n", (double)a);
+                ↳ new double 0x4050800000000000  a lane with `via` shows the converted value first
+                ↳ 66.000000
+            ub.c  printf("%f\n", a);  undefined     the ub program, compiled and never run (after a state)
+
+    stack   the call stack of the state's `frames`, outermost at the bottom
+            ┌ factorial(1)        returns  1 ┐ ╮  a returning frame is dashed, its value flows down
+            ┌ factorial(2)          waiting  ┐ ◀╯
+            ┌ main                  waiting  ┐
+
+    neuron  three panels, as in the accepted Neuron Atlas still (D20.1):
+            MULTIPLY: input × weight = signed term │ ADD: bars along a number line │ GATE: ReLU graph + output
+"""
+import re
+
+from .. import fonts, text
+
+MONO_ADV = 0.6
+SIZES = {"wide": dict(label=12.5, code=15, value=24, big=32, note=17, chip=12.5, k=1.0),
+         "portrait": dict(label=12.5, code=13.5, value=21, big=27, note=16, chip=12, k=0.9)}
+
+
+def number(s):
+    """A displayed value as a float (accepts the minus sign U+2212)."""
+    return float(s.replace("−", "-"))
+
+
+def shown_facts(lesson, sid):
+    """Facts visible at trace state `sid`: its output, its reveals, and every token fact of a printed line."""
+    st = lesson.state(sid)
+    out = set(st["state"].get("output", []))
+    for s in lesson.data["trace"]:  # reveals stay shown in later states of the same program
+        if s["state"]["program"] == st["state"]["program"]:
+            out |= set(s.get("reveals", []))
+        if s["id"] == sid:
+            break
+    facts = lesson.by_id("facts")
+    lines = {(facts[f]["program"], facts[f]["select"].get("line")) for f in out if f in facts}
+    for f in lesson.data["facts"]:
+        sel = f["select"]
+        if sel.get("field") and (f["program"], sel.get("line")) in lines:
+            out.add(f["id"])
+    return out
+
+
+def _after(lesson, sid, after):
+    order = [s["id"] for s in lesson.data["trace"]]
+    return order.index(sid) >= order.index(after)
+
+
+class Ctx:
+    def __init__(self, svg, lesson, sid, layout, flow=None):
+        self.svg, self.lesson, self.sid, self.layout = svg, lesson, sid, layout
+        self.t = svg.t
+        self.S = SIZES[layout]
+        self.facts = lesson.by_id("facts")
+        self.claims = lesson.by_id("claims")
+        self.shown = shown_facts(lesson, sid)
+        self.flow = flow
+
+    def val(self, fid):
+        return text.display(self.facts[fid])
+
+    def on(self, fid):
+        return fid in self.shown
+
+    def label(self, x, y, key, anchor="start", color=None, inside=None, **kw):
+        svg = self.svg
+        font, px, weight, caps, spacing = svg.role("label", self.S["label"])
+        s = text.ui(key, **kw)
+        svg.text(x, y, s.upper() if caps else s, font, px, color or self.t["label"], ("chrome", key), weight=weight,
+                 spacing=spacing, anchor=anchor, inside=inside)
+        return fonts.width(font, px, s.upper() if caps else s, weight=weight) + spacing * len(s)
+
+    def code(self, x, y, s, pid, line=None, size=None, color=None, anchor="start", inside=None):
+        size = size or self.S["code"]
+        extra = {"data-src-line": line} if line else None
+        self.svg.text(x, y, s, "mono", size, color or self.t["ink"], ("code", pid), anchor=anchor, inside=inside,
+                      extra=extra)
+        return len(s) * size * MONO_ADV
+
+    def value(self, x, y, fid, size=None, color=None, anchor="start", weight=None, inside=None, group=None):
+        vfont, vpx, vweight, _c, _s = self.svg.role("value", size or self.S["value"])
+        s = self.val(fid)
+        self.svg.text(x, y, s, vfont, vpx, color or self.t["value"], ("fact", fid), weight=weight or vweight,
+                      anchor=anchor, ocr=s, ocr_group=group, inside=inside)
+        return fonts.width(vfont, vpx, s, weight=weight or vweight)
+
+    def note(self, x, y, cid, w, color=None):
+        """A claim, wrapped in the note role. Returns the y after it."""
+        nfont, npx, nweight, _c, _s = self.svg.role("note", self.S["note"])
+        lh = npx * (1.35 if nfont == "hand" else 1.4)
+        if self.flow is not None:
+            return self.flow.emit(x, y, self.claims[cid]["text"], nfont, npx, lh, color or self.t["note"], ("claim", cid),
+                                  w, weight=nweight, tone="note") - lh
+        m0 = self.svg.mark()
+        for ln in fonts.wrap(nfont, npx, self.claims[cid]["text"], w, weight=nweight):
+            self.svg.text(x, y, ln, nfont, npx, color or self.t["note"], ("claim", cid), weight=nweight, tone="note")
+            y += lh
+        self.svg.merge(m0)
+        return y - lh
+
+    def note_height(self, cid, w):
+        nfont, npx, nweight, _c, _s = self.svg.role("note", self.S["note"])
+        lh = npx * (1.35 if nfont == "hand" else 1.4)
+        return len(fonts.wrap(nfont, npx, self.claims[cid]["text"], w, weight=nweight)) * lh
+
+    def group(self, fid=None, after=None):
+        attrs = {}
+        if fid:
+            attrs["data_m"] = fid
+        if after:
+            attrs["data_mstate"] = after
+        self.svg.open(**attrs)
+
+
+# ---------------------------------------------------------------- views
+
+def _views(c, x, y, w):
+    svg, t, S, lesson = c.svg, c.t, c.S, c.lesson
+    P = lesson.data["figure"]["panel"]
+    pid = lesson.data["figure"]["program"]
+    src = lesson.program_source(pid).split("\n")
+    y0 = y
+    v = P["value"]
+    lh = S["code"] * 1.6
+    # the value: its declaration, then its low byte as eight bit cells and the hex form
+    y += S["label"]
+    c.label(x, y, "panel_value")
+    y += 14
+    if v.get("line"):
+        y += S["code"] * 1.1
+        c.code(x, y, src[v["line"] - 1].strip(), pid, v["line"])
+        y += 10
+    if c.on(v["bits"]):
+        c.group(v["bits"])
+        cell = round(S["value"] * 1.05, 1)
+        bx, by = x, y + 6
+        for i in range(8):
+            svg.rect(bx + i * cell, by, cell - 4, cell * 1.25, t["surface"], rx=4, stroke=t["rule"], sw=1)
+        vfont, vpx, vweight, _c, _s = svg.role("value", S["value"])
+        adv = fonts.width(vfont, vpx, "0", weight=vweight)
+        svg.text(bx + (cell - 4) / 2 - adv / 2, by + cell * 0.9, c.val(v["bits"]), vfont, vpx, t["ink"],
+                 ("fact", v["bits"]), weight=vweight, ocr=c.val(v["bits"]), extra={"letter-spacing": f"{cell - adv:.2f}"})
+        svg.close()
+        hx = bx + 8 * cell + 14
+        if c.on(v["hex"]) and hx + 80 * S["k"] <= x + w:
+            c.group(v["hex"])
+            c.value(hx, by + cell * 0.9, v["hex"], color=t["note"])
+            svg.close()
+        y = by + cell * 1.25 + 8
+        c.label(x, y + S["label"] + 2, "panel_byte_note")
+        y += S["label"] + 10
+    # one lane per conversion
+    for lane in P["lanes"]:
+        if not c.on(lane["fact"]):
+            continue
+        y += 22
+        c.group(lane["fact"])
+        svg.line(x, y - 12, x + w, y - 12, t["rule"], 1)
+        y += S["code"] * 0.9
+        c.code(x, y, src[lane["line"] - 1].strip(), pid, lane["line"])
+        if lane.get("via") and c.on(lane["via"]):
+            y += S["value"] * 1.35
+            lw = c.label(x + 18, y - 3, "lane_converts")
+            c.value(x + 18 + lw + 12, y, lane["via"], size=S["value"] * 0.8, color=t["note"])
+        y += S["value"] * 1.35
+        lw = c.label(x + 18, y - 3, "lane_prints")
+        c.value(x + 18 + lw + 12, y, lane["fact"])
+        if lane.get("claim"):
+            y = c.note(x + 18, y + S["note"] * 1.5, lane["claim"], w - 18)
+        svg.close()
+    ub = P.get("ub")
+    if ub and _after(lesson, c.sid, ub["after"]):
+        usrc = lesson.program_source(ub["program"]).split("\n")
+        y += 26
+        c.group(after=ub["after"])
+        svg.line(x, y - 14, x + w, y - 14, t["correction"], 1.2)
+        fname = lesson.program(ub["program"])["path"].split("/")[-1]
+        ffont, fpx, _w, _c, _s = svg.role("foot", S["label"])
+        svg.text(x, y + 2, fname, ffont, fpx, t["label"], ("label", "program-file"))
+        lw = c.label(x + w, y + 2, "lane_undefined", anchor="end", color=t["correction"])
+        del lw
+        y += S["code"] * 1.4
+        c.code(x, y, usrc[ub["line"] - 1].strip(), ub["program"], ub["line"], color=t["correction"])
+        y = c.note(x, y + S["note"] * 1.5, ub["claim"], w, color=t["correction"])
+        svg.close()
+    return y - y0 + 10
+
+
+# ---------------------------------------------------------------- stack
+
+def _stack(c, x, y, w):
+    svg, t, S, lesson = c.svg, c.t, c.S, c.lesson
+    st = lesson.state(c.sid)["state"]
+    frames = st.get("frames", [])
+    pid = st["program"]
+    y0 = y
+    y += S["label"]
+    c.label(x, y, "stack_label")
+    c.label(x + w, y, "stack_top", anchor="end")
+    y += 16
+    fh = round(S["value"] * 2.3)
+    gap = 12
+    arrow_w = 54 * S["k"]
+    bw = w - arrow_w
+    # top of the stack first (the list is outermost first)
+    order = list(reversed(frames))
+    boxes = []
+    for i, fr in enumerate(order):
+        fy = y + i * (fh + gap)
+        boxes.append((fr, fy))
+    for i, (fr, fy) in enumerate(boxes):
+        status = fr.get("status", "running" if i == 0 else "waiting")
+        returning = status == "returning"
+        rid = f"frame-{c.layout}-{c.sid}-{i}"
+        c.group(fr.get("ret") if returning else fr.get("call"))
+        dash = ' stroke-dasharray="6 5"' if returning else ""
+        fill = t["note_tint"] if status == "running" else (t["surface"] if not returning else t["ground"])
+        svg.raw(f'<rect id="{rid}" data-role="frame" x="{x:.1f}" y="{fy:.1f}" width="{bw:.1f}" height="{fh}" rx="10" '
+                f'fill="{fill}" stroke="{t["note"] if status != "waiting" else t["rule"]}" stroke-width="1.5"{dash}/>')
+        ty = fy + fh / 2 + S["value"] * 0.33
+        if fr.get("call"):
+            c.value(x + 16, ty, fr["call"], color=t["ink"], size=S["value"] * 0.8, inside=rid)
+        else:
+            c.code(x + 16, ty, fr["fn"], pid, size=S["value"] * 0.8, inside=rid)
+        if returning and fr.get("ret"):
+            vw = fonts.width("mono", S["value"], c.val(fr["ret"]))
+            c.value(x + bw - 16, ty, fr["ret"], anchor="end", inside=rid)
+            c.label(x + bw - 16 - vw - 10, ty - 2, "frame_returns", anchor="end", color=t["note"], inside=rid)
+            if i + 1 < len(boxes):
+                ny = boxes[i + 1][1] + fh / 2
+                ax = x + bw + 6
+                svg.path(f"M{ax:.1f},{fy + fh / 2:.1f} C{ax + arrow_w - 10:.1f},{fy + fh / 2:.1f} "
+                         f"{ax + arrow_w - 10:.1f},{ny:.1f} {ax + 4:.1f},{ny:.1f}", t["note"], 2.5, marker=True)
+        else:
+            c.label(x + bw - 16, ty - 2, "frame_" + status, anchor="end",
+                    color=t["note"] if status == "running" else t["label"], inside=rid)
+        svg.close()
+    y = y + len(boxes) * (fh + gap) - gap
+    for cid in lesson.data["figure"]["panel"].get("claims", []):
+        y = c.note(x, y + S["note"] * 2, cid, w)
+    return y - y0 + 10
+
+
+# ---------------------------------------------------------------- neuron
+
+def _neuron(c, x, y, w):
+    svg, t, S, lesson = c.svg, c.t, c.S, c.lesson
+    P = lesson.data["figure"]["panel"]
+    pid = lesson.data["figure"]["program"]
+    src = lesson.program_source(pid).split("\n")
+    wide = c.layout == "wide"
+    gap = 48 if wide else 0
+    cw = (w - 2 * gap) / 3 if wide else w
+    cols = [(x + i * (cw + gap), y) for i in range(3)]
+    col_h = 300 if wide else None
+    big = S["big"]
+    tone = lambda fid: t["note"] if number(c.val(fid)) >= 0 else t["correction"]  # noqa: E731
+    heights = []
+
+    # ---- multiply
+    cx, cy = cols[0]
+    yy = cy + S["label"]
+    c.label(cx, yy, "panel_multiply")
+    yy += 20
+    rows = [(i, tm) for i, tm in enumerate(P["terms"], 1)] + [(0, None)]
+    for i, tm in rows:
+        yy += S["note"] * 1.6
+        if tm is None:
+            if not c.on(P["bias"]):
+                break
+            c.group(P["bias"])
+            c.label(cx, yy, "neuron_bias")
+            c.label(cx, yy + S["code"] * 1.7, "neuron_added")
+            c.value(cx + cw, yy + S["code"] * 1.2, P["bias"], size=big, color=tone(P["bias"]), anchor="end")
+            svg.close()
+        else:
+            if not c.on(tm["x"]):
+                break
+            c.group(tm["x"])
+            c.label(cx, yy, "neuron_input", i=i)
+            vy = yy + S["code"] * 1.7
+            xw = c.value(cx, vy, tm["x"], size=S["value"] * 0.85, color=t["ink"])
+            c.label(cx + xw + 12, vy - 2, "times")
+            c.value(cx + xw + 34, vy, tm["w"], size=S["value"] * 0.85, color=t["ink"])
+            svg.close()
+            if c.on(tm["t"]):
+                c.group(tm["t"])
+                c.value(cx + cw, yy + S["code"] * 1.2, tm["t"], size=big, color=tone(tm["t"]), anchor="end")
+                svg.close()
+        yy += S["code"] * 1.7 + 18
+        svg.line(cx, yy, cx + cw, yy, t["rule"], 1)
+    heights.append(yy - cy)
+
+    # ---- add: the running sum along a number line
+    cx, cy = cols[1] if wide else (x, cy + heights[0] + 40)
+    if not wide:
+        svg.line(x, cy - 20, x + w, cy - 20, t["rule"], 1)
+    yy = cy + S["label"]
+    c.label(cx, yy, "panel_add")
+    terms = [tm["t"] for tm in P["terms"]] + [P["bias"]]
+    vals = [number(c.val(f)) for f in terms]
+    ends, s = [], 0.0
+    for v in vals:
+        ends.append((s, s + v))
+        s += v
+    lo = min(0.0, min(a for e in ends for a in e)) - 0.5
+    hi = max(0.0, max(a for e in ends for a in e)) + 0.4
+    lo, hi = round(lo * 2) / 2, round(hi * 2) / 2
+    X = lambda v: cx + 10 + (v - lo) / (hi - lo) * (cw - 20)  # noqa: E731
+    row = S["value"] * 2.1
+    by = yy + 30
+    for k, (fid, (a, b)) in enumerate(zip(terms, ends)):
+        if not c.on(fid):
+            continue
+        c.group(fid)
+        ry = by + k * row + S["value"]
+        col = tone(fid)
+        svg.line(X(a), ry, X(b), ry, col, 9, role="path")
+        svg.circle(X(a), ry, 5.5, col)
+        svg.circle(X(b), ry, 5.5, col)
+        label_x = min(max(X(min(a, b)), cx), cx + cw - 150 * S["k"])
+        lab = text.ui("neuron_term_bias") if k == len(terms) - 1 else text.ui("neuron_term", i=k + 1)
+        lw = fonts.width("mono", S["chip"] + 2, lab)
+        svg.text(label_x, ry - 14, lab, "mono", S["chip"] + 2, col, ("chrome", "neuron_term_bias" if k == len(terms) - 1
+                                                                        else "neuron_term"))
+        c.value(label_x + lw + 10, ry - 14, fid, size=S["chip"] + 4, color=col)
+        if k:
+            svg.raw(f'<line data-role="guide" x1="{X(a):.1f}" y1="{ry - row:.1f}" x2="{X(a):.1f}" y2="{ry:.1f}" '
+                    f'stroke="{t["label"]}" stroke-width="1" stroke-dasharray="3 4"/>')
+        svg.close()
+    ay = by + len(terms) * row + 10
+    svg.line(cx + 10, ay, cx + cw - 10, ay, t["rule"], 1.2)
+    ffont, fpx, _w, _c, _s = svg.role("foot", S["label"])
+    for v in (lo, 0.0, hi):
+        svg.line(X(v), ay - 5, X(v), ay + 5, t["rule"], 1.2)
+        lab = f"{v:g}".replace("-", "−")
+        svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle")
+    yy = ay + 46
+    if c.on(P["sum"]):
+        c.group(P["sum"])
+        lw = c.label(cx, yy + S["value"] * 0.9, "neuron_sum")
+        c.value(cx + lw + 14, yy + S["value"] * 1.1, P["sum"], size=big)
+        svg.close()
+    yy += big * 1.4
+    heights.append(yy - cy)
+
+    # ---- gate: ReLU
+    cx, cy = cols[2] if wide else (x, cy + heights[1] + 40)
+    if not wide:
+        svg.line(x, cy - 20, x + w, cy - 20, t["rule"], 1)
+    yy = cy + S["label"]
+    c.label(cx, yy, "panel_gate")
+    gx0, gx1 = cx + 14, cx + cw - 24
+    gy1 = yy + 40          # top of the plot
+    gy0 = gy1 + (180 if wide else 150)  # the z axis (a = 0)
+    zlo, zhi = -1.0, 1.5
+    GX = lambda z: gx0 + (z - zlo) / (zhi - zlo) * (gx1 - gx0)  # noqa: E731
+    GY = lambda a: gy0 - a / zhi * (gy0 - gy1)  # noqa: E731
+    svg.line(gx0, gy0, gx1, gy0, t["rule"], 1.2)
+    svg.line(GX(0), gy0, GX(0), gy1, t["rule"], 1.2)
+    svg.path(f"M{GX(zlo):.1f},{gy0:.1f} L{GX(0):.1f},{gy0:.1f} L{GX(zhi):.1f},{GY(zhi):.1f}", t["value"], 3.5)
+    for z in (zlo, 0.0, zhi):
+        svg.text(GX(z), gy0 + 22, f"{z:g}".replace("-", "−"), ffont, fpx, t["label"], ("label", "axis-tick"),
+                 anchor="middle")
+    svg.text(gx1 + 6, gy0 + 5, text.ui("axis_z"), "mono", fpx, t["label"], ("chrome", "axis_z"))
+    svg.text(GX(0) - 8, gy1 - 6, text.ui("axis_a"), "mono", fpx, t["label"], ("chrome", "axis_a"), anchor="end")
+    if c.on(P["sum"]):
+        z = number(c.val(P["sum"]))
+        a = max(0.0, z)
+        c.group(P["out"] if c.on(P["out"]) else P["sum"])
+        svg.raw(f'<path data-role="guide" d="M{GX(z):.1f},{gy0:.1f} L{GX(z):.1f},{GY(a):.1f} L{GX(0):.1f},{GY(a):.1f}" '
+                f'fill="none" stroke="{t["label"]}" stroke-width="1.2" stroke-dasharray="4 4"/>')
+        svg.circle(GX(z), GY(a), 7, t["value"])
+        svg.close()
+    yy = gy0 + 52
+    if P.get("gate"):
+        ln = P["gate"]["line"]
+        m = re.search(r"fmax\([^;]*\)", src[ln - 1])
+        if m:
+            c.code(cx, yy, m.group(0), pid, size=S["code"] * 1.05)
+            yy += S["code"] * 1.2
+    if c.on(P["out"]):
+        c.group(P["out"])
+        lw = c.label(cx, yy + S["value"] * 0.9, "neuron_output")
+        c.value(cx + lw + 14, yy + S["value"] * 1.1, P["out"], size=big)
+        svg.close()
+    yy += big * 1.4
+    heights.append(yy - cy)
+    if wide:
+        h = max(max(heights), col_h)
+        for i in (1, 2):
+            dx = cols[i][0] - gap / 2
+            svg.line(dx, y + 4, dx, y + h - 4, t["rule"], 1)
+        return h
+    return heights[2] + (cols[0][1] and 0) + (cy - y)
+
+
+KINDS = {"views": _views, "stack": _stack, "neuron": _neuron}
+
+
+def draw(svg, lesson, sid, x, y, w, layout="wide", flow=None, key=True):
+    """Draw the lesson's panel at trace state `sid`; returns its height."""
+    P = lesson.data["figure"]["panel"]
+    c = Ctx(svg, lesson, sid, layout, flow)
+    if key:
+        svg.open(data_key="panel", data_state_panel=sid)
+    h = KINDS[P["kind"]](c, x, y, w)
+    if key:
+        svg.close()
+    return h
+
+
+def measure(svg_factory, lesson, sid, w, layout="wide"):
+    """Height of the panel at `sid` without keeping its elements."""
+    svg = svg_factory()
+    return draw(svg, lesson, sid, 0, 0, w, layout)

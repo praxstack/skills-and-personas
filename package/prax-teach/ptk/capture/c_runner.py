@@ -312,7 +312,14 @@ def select(fact, cap, platform, index=0):
         lines.pop()
     if sel["line"] > len(lines):
         return _Missing(f"{fact['program']} printed {len(lines)} line(s); the fact selects line {sel['line']}")
-    return lines[sel["line"] - 1]
+    line = lines[sel["line"] - 1]
+    if "field" not in sel:
+        return line
+    fields = line.split()
+    if sel["field"] > len(fields):
+        return _Missing(f"line {sel['line']} of {fact['program']} has {len(fields)} field(s); the fact selects field "
+                        f"{sel['field']}")
+    return fields[sel["field"] - 1]
 
 
 def capture_lesson(lesson):
