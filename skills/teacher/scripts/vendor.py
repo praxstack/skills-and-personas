@@ -144,6 +144,13 @@ def sync(sources: dict[str, Path], only: list[str] | None, discard_local: bool =
         if git_dirty(sources[key], rel):
             print(f"FAIL {label}: {sources[key] / rel} differs from HEAD (uncommitted, untracked or ignored); commit it first", file=sys.stderr)
             return 1
+    # A copy edited here but never recorded would be lost without a word.
+    for name, *_ in picked:
+        entry = manifest["skills"].get(name)
+        if entry and (SKILLS / name).exists() and not discard_local and tree_hash(SKILLS / name)[0] != entry["tree_sha256"]:
+            print(f"FAIL {name}: skills/{name} was changed here and not recorded; record it (vendor.py record {name} --note ...) "
+                  "or pass --discard-local", file=sys.stderr)
+            return 1
     for name, (key, rel, upstream, license_note) in ENTRIES.items():
         if only and name not in only:
             continue

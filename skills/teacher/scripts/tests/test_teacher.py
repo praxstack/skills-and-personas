@@ -254,6 +254,31 @@ class Scripts(unittest.TestCase):
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists(), "the default folder goes once empty")
 
+    def test_vendor_sync_keeps_unrecorded_edits(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import vendor  # type: ignore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "-q", str(root / "up")], check=True)
+            (root / "up/s").mkdir()
+            (root / "up/s/SKILL.md").write_text("a\n")
+            subprocess.run(["git", "-C", str(root / "up"), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(root / "up"), "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x"], check=True)
+            skills, manifest = root / "skills", root / "VENDOR.json"
+            old = (vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES)
+            vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES = skills, manifest, {"s": ("up", "s", "x", "MIT")}, {}
+            try:
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(vendor.sync({"up": root / "up"}, None), 0)
+                    (skills / "s/SKILL.md").write_text("edited here\n")
+                    self.assertEqual(vendor.sync({"up": root / "up"}, None), 1, "an unrecorded edit must stop the sync")
+                    self.assertEqual((skills / "s/SKILL.md").read_text(), "edited here\n")
+                    self.assertEqual(vendor.sync({"up": root / "up"}, None, discard_local=True), 0)
+                self.assertEqual((skills / "s/SKILL.md").read_text(), "a\n")
+            finally:
+                vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES = old
+
     def test_vendor_refuses_dirty_git_source(self):
         sys.path.insert(0, str(ROOT / "scripts"))
         import vendor  # type: ignore
@@ -292,6 +317,18 @@ class Scripts(unittest.TestCase):
             self.assertTrue((d / "teacher").is_symlink(), "uninstall must not remove a link that isn't ours")
             self.assertFalse((d / "explorable").exists() or (d / "explorable").is_symlink())
             self.assertTrue(other.is_dir())
+
+    @unittest.skipUnless(shutil.which("bash"), "no bash")
+    def test_install_force_never_replaces_its_own_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            skills = Path(tmp) / "skills"
+            here = skills / "teacher"
+            shutil.copytree(ROOT, here, ignore=shutil.ignore_patterns("__pycache__", "*.mp4", "*.zip", "references"))
+            (here / "MY_WORK.txt").write_text("keep")
+            r = subprocess.run(["bash", str(here / "install.sh"), "--dir", str(skills), "--force"], capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertFalse(here.is_symlink())
+            self.assertEqual((here / "MY_WORK.txt").read_text(), "keep")
 
     def test_recall_due_moves_on_after_an_overdue_ask(self):
         s = str(ROOT / "scripts/series.py")
@@ -338,6 +375,15 @@ class Scripts(unittest.TestCase):
             run(s, "recall", "result", "t", "0", "--right", "--unaided", cwd=Path(tmp))
             run(s, "resume", cwd=Path(tmp))
             self.assertNotIn("Recall due", run(s, "status", cwd=Path(tmp)).stdout, "shown unaided: done")
+
+    def test_forget_leaves_a_journal_md_it_did_not_write(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            (d / "journal.json").write_text("{}")
+            (d / "JOURNAL.md").write_text("# My own notes\n")
+            self.assertEqual(run(s, "--dir", ".", "forget", "--yes", cwd=d).returncode, 0)
+            self.assertEqual((d / "JOURNAL.md").read_text(), "# My own notes\n")
 
     def test_forget_deletes_a_corrupt_journal(self):
         s = str(ROOT / "scripts/series.py")
@@ -395,7 +441,8 @@ class Builds(unittest.TestCase):
             src = Path(tmp) / "src"
             (src / "one/lessons").mkdir(parents=True)
             shutil.copy(SKILLS / "explorable/assets/examples/seasons.lesson.js", src / "one/lessons/a.lesson.js")
-            (src / "one/course.json").write_text(json.dumps({"id": "one", "title": "One", "lessons": [{"id": "one-a", "file": "lessons/a.lesson.js", "title": "A", "needs": []}]}))
+            (src / "one/course.json").write_text(json.dumps({"id": "one", "title": "One", "subtitle": "a <!--<script> b",
+                                                            "lessons": [{"id": "one-a", "file": "lessons/a.lesson.js", "title": "A", "needs": []}]}))
             script = str(SKILLS / "course/scripts/build_course.py")
             for i, (args, label, title) in enumerate((([], '<p class="nb-label">Kai Mori</p>', "<title>Kai Mori Courses</title>"),
                                        (["--brand", "Ada & Co"], '<p class="nb-label">Ada &amp; Co</p>', "<title>Ada &amp; Co Courses</title>"),
@@ -404,6 +451,7 @@ class Builds(unittest.TestCase):
                 r = run(script, "--catalog", str(src), "-o", str(out), *args)
                 self.assertEqual(r.returncode, 0, r.stderr)
                 page = (out / "index.html").read_text()
+                self.assertNotIn("<!--<script>", (out / "one/index.html").read_text(), "course text can't change how the inline script parses")
                 self.assertIn(title, page, args)
                 if label:
                     self.assertIn(label, page, args)
@@ -444,7 +492,8 @@ class Builds(unittest.TestCase):
             self.assertIn('<a class="cs-title" href="/lessons/x">X &lt;b&gt;</a>', cat)
             self.assertLess(cat.index('href="/courses/two"'), cat.index('href="/lessons/x"'))
             self.assertFalse((absolute / "links.json").exists())
-            for bad in ([{"href": "javascript:alert(1)", "title": "x"}], [{"title": "no href"}], {"href": "/x", "title": "x"}):
+            for bad in ([{"href": "javascript:alert(1)", "title": "x"}], [{"title": "no href"}], {"href": "/x", "title": "x"},
+                        [{"href": "//evil.example/x", "title": "x"}], [{"href": "/\\evil.example", "title": "x"}]):
                 (src / "links.json").write_text(json.dumps(bad))
                 r = run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses")
                 self.assertNotEqual(r.returncode, 0, bad)
@@ -658,6 +707,17 @@ class Builds(unittest.TestCase):
         self.assertNotRegex(out, r"e/[a-h]|127\.0\.0\.1|c\.svg|srcset|ping")
         for kept in ('<use href="#n"/>', '<rect fill="url(#g)"/>', 'data:image/png;base64,AA', 'href="https://ok.example/"', 'values="red;blue"'):
             self.assertIn(kept, out)
+
+    def test_diagram_sanitizer_reads_css_escapes_like_a_browser(self):
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        # A browser reads CRLF as one newline, so "\\75" + CRLF + "rl(" is url(.
+        out = render.sanitize_svg('<svg><style>svg{background:\\75\r\nrl(http://e/a)}</style><style>@\\69\r\nmport "http://e/b.css";</style>'
+                                  '<rect style="fill:\\75&#13;&#10;rl(http://e/c)"/><rect fill="\\75&#13;&#10;rl(http://e/d)"/>'
+                                  '<rect fill="url(#g)"/></svg>')
+        self.assertNotRegex(out, r"e/[a-d]")
+        self.assertIn('fill="url(#g)"', out)
 
     def test_diagram_sanitizer_escapes_markup_in_values(self):
         sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))

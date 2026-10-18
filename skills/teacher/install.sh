@@ -72,6 +72,9 @@ place() { # place <source dir> <dest dir> <name>
     elif [ -e "$dest" ] || [ -L "$dest" ]; then echo "skip    $dest (isn't ours)"; fi
     return
   fi
+  if [ -d "$dest" ] && ! [ -L "$dest" ] && [ "$(cd "$dest" && pwd -P)" = "$(cd "$src" && pwd -P)" ]; then
+    echo "ok      $dest (this is the source itself)"; return
+  fi
   if [ -e "$dest" ] || [ -L "$dest" ]; then
     if [ "$MODE" != "copy" ] && [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then echo "ok      $dest"; return; fi
     if [ "$FORCE" != 1 ] && ! ours "$src" "$dest"; then

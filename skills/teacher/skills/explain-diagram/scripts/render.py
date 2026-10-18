@@ -139,7 +139,9 @@ _CSS_FETCH = r"@import|image-set\(|expression\(|" + _EXTERNAL_URL
 def _css_decoded(text: str) -> str:
     """Text as a browser reads it once HTML entities and CSS escapes are decoded: u\\72l( becomes url(."""
     seen = html.unescape(text)
-    seen = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(min(int(m.group(1), 16), 0x10FFFF)), seen)
+    # A browser turns CRLF, CR and FF into LF before it reads escapes, so "\\75" + CRLF is "u".
+    seen = re.sub(r"\r\n?|\f", "\n", seen)
+    seen = re.sub(r"\\([0-9a-fA-F]{1,6})[ \t\n]?", lambda m: chr(min(int(m.group(1), 16), 0x10FFFF)), seen)
     return re.sub(r"\\(.)", r"\1", seen, flags=re.S)
 
 

@@ -138,7 +138,7 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
     data["base"] = base
     data["root"] = root
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as f:
-        f.write("window.COURSE = " + json.dumps(data).replace("</", "<\\/") + ";\n")
+        f.write("window.COURSE = " + json.dumps(data).replace("<", "\\u003c") + ";\n")
         data_js = Path(f.name)
     try:
         page = bundle.page(
@@ -206,8 +206,8 @@ def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "",
     if not isinstance(extra, list) or not all(isinstance(c, dict) and c.get("href") and c.get("title") for c in extra):
         raise SystemExit(f"{links}: expected a list of objects, each with an href and a title")
     for c in extra:
-        if not c["href"].startswith(("/", "https://")):
-            raise SystemExit(f"{links}: href {c['href']!r} must start with / or https://")
+        if not (re.match(r"/(?![/\\])", c["href"]) or c["href"].startswith("https://")):
+            raise SystemExit(f"{links}: href {c['href']!r} must be a path on this site (/...) or start with https://")
         cards.append(
             f'<article class="cs-card nb-sheet"><p class="nb-label">{html.escape(c.get("level", ""))}</p>'
             f'<a class="cs-title" href="{html.escape(c["href"])}">{html.escape(c["title"])}</a>'

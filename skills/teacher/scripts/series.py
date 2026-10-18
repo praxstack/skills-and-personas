@@ -197,7 +197,12 @@ def main() -> int:
             raise SystemExit(f"no journal in {a.dir}; nothing deleted")
         # Delete only the files this script writes, never the folder's other contents.
         # journal.json goes last, so a forget that stops partway can be run again.
-        for f in (a.dir / "journal.tmp", a.dir / "JOURNAL.md", journal):
+        md = a.dir / "JOURNAL.md"
+        try:
+            ours = md.read_text(errors="replace").startswith("# Learning journal:")
+        except OSError:
+            ours = False
+        for f in (a.dir / "journal.tmp", *([md] if ours else []), journal):
             f.unlink(missing_ok=True)
         if a.dir.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
             try:
