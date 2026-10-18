@@ -181,7 +181,11 @@ def assemble_audio(timing, measured, work, out_wav):
             n += 1
         inputs += ["-i", str(wav[c["id"]])]
         idx = len(inputs) // 2 - 1
-        filters.append(f"[{idx}:a]aformat=sample_rates=48000:channel_layouts=mono,atrim=duration={c['end'] - c['start']:.4f}[a{n}]")
+        # pad as well as trim: a cue's frame-rounded window can be a few ms longer than its clip, and those ms add
+        # up over a lesson until the audio ends before the picture
+        d = c['end'] - c['start']
+        filters.append(f"[{idx}:a]aformat=sample_rates=48000:channel_layouts=mono,atrim=duration={d:.4f},"
+                       f"apad=whole_dur={d:.4f}[a{n}]")
         labels.append(f"[a{n}]")
         n += 1
         t = c["end"]
@@ -289,7 +293,7 @@ def _layout(lesson):
     if mode == "side":
         L.update(card_w=840, side_x=976, side_w=848, panel_box=(976, CODE_TOP, 848, 520))
     elif mode == "hero":
-        L.update(code_top=600, card_w=840, side_x=976, side_w=848, panel_box=(MX, 176, W - 2 * MX, 380))
+        L.update(code_top=616, card_w=840, side_x=976, side_w=848, panel_box=(MX, 176, W - 2 * MX, 420))
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
         st = lesson.state(sc["state"])["state"]
@@ -558,7 +562,7 @@ def scene_html(lesson, scene, index, count, timing):
     for k, o in enumerate(cur["output"], 1):
         outs.append(out_div("out" + ("" if o["fact"] in prev_out else " out-new"), "cur", k, o))
     outcard = (f'<div class="outcard" data-key="output"><p class="outlabel" data-chrome="output_label">'
-               f'{esc(text.ui("output_label").upper())}</p>{"".join(outs)}</div>') if has_out or mode else ""
+               f'{esc(text.ui("output_label").upper())}</p>{"".join(outs)}</div>') if has_out else ""
     vars_html = " ".join(f'<span data-code="{cur["program"]}">{esc(k)} = {esc(v)}</span>' for k, v in cur["vars"].items())
     q = scene.get("question")
     panel_top = shift + 70
@@ -589,13 +593,19 @@ def scene_html(lesson, scene, index, count, timing):
     mech_html = ""
     if mode:
         px, py, pw, ph = L["panel_box"]
-        mh = mech.max_height(lesson, "wide")
+        # a side panel is drawn wider when the frame's box is wider than the panel is tall, so it fills the box
+        pw_ = None
+        if mode == "side":
+            h0 = mech.max_height(lesson, "wide", notes=False)
+            pw_ = int(min(640, max(mech.WIDTHS[("wide", "side")], pw * h0 / ph)))
+        mh = mech.max_height(lesson, "wide", notes=False, width=pw_)
         fit = 'preserveAspectRatio="xMidYMin meet"'
-        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}', height=mh)
+        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}', height=mh,
+                                            notes=False, width=pw_)
         layers = cur_svg
         if replay and scene["before"] != scene["state"]:
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" {fit}',
-                                                height=mh)
+                                                height=mh, notes=False, width=pw_)
             layers = bef_svg + cur_svg
         mech_html = f'<div class="mechbox" data-key="panel">{layers}</div>' if not q else ""
     kicker = text.kicker(lesson).upper()
@@ -640,6 +650,8 @@ def scene_html(lesson, scene, index, count, timing):
     if morph:
         js.append(f"d.to(q('.out[data-set=\"old\"]'), {{ opacity: 0, duration: 0.25 }}, {oa:.3f});")
 
+    if mode and has_out and not before_out:
+        js.append(f"d.fromTo(q('.outcard'), {{ opacity: 0, y: -12 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }}, {max(0.0, oa - 0.15):.3f});")
     if mode and not q and replay and scene["before"] != scene["state"]:
         # the panel: this scene's state fades in over the previous one, which then fades out (removed parts go)
         js.append("d.fromTo(q('.mcur'), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power1.out' }, 0);")
@@ -683,7 +695,7 @@ def scene_html(lesson, scene, index, count, timing):
 .ln {{ position:absolute; left:0; right:0; height:{LH}px; font:400 {font}px/{LH}px {ct['family']}; white-space:pre; color:{t['label']}; }}
 .ln.exec {{ color:{t['ink']}; }}
 .ln.add {{ color:{t['label']}; }}
-.no {{ position:absolute; left:0; width:{NUM_X}px; text-align:right; color:{t['faint']}; font-size:{font - 8}px; }}
+.no {{ position:absolute; left:0; width:{NUM_X}px; text-align:right; color:{t['faint']}; font-size:{max(13, font - 8)}px; }}
 .no2 {{ opacity:1; }}
 .ln[data-to] .no2 {{ opacity:0; }}
 .ln.add .no2 {{ color:{t['value']}; opacity:1; }}

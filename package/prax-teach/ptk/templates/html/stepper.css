@@ -6,7 +6,7 @@ html.js .step[hidden]{display:none}
 .slabel{font-family:var(--note-font);font-weight:var(--note-weight);color:var(--note);font-size:calc(1.375rem * var(--note-scale));line-height:1.25}
 .sgrid{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
 .mechbox{padding:.75rem}
-.mech{display:none;width:100%;height:auto}
+.mech{display:none;max-width:100%;height:auto;margin-inline:auto}
 .mech-p-light{display:block}
 @media (prefers-color-scheme:dark){.mech-p-light{display:none}.mech-p-dark{display:block}}
 .mech text{font-variant-numeric:lining-nums tabular-nums}

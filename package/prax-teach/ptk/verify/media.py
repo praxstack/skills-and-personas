@@ -156,8 +156,12 @@ def refine(words_in_cue, starts, ends):
     give the exact boundary (whisper segment edges snap into neighbouring silence)."""
     w0, w1 = words_in_cue[0], words_in_cue[-1]
     onset = max((e for e in ends if w0["start"] - 1.0 <= e <= w0["start"] + 0.3), default=w0["start"])
-    anchor = max(w1["start"], w1["end"] - 0.6)
-    offset = min((s for s in starts if anchor - 0.2 <= s <= w1["end"] + 1.0), default=w1["end"])
+    # whisper stretches the last token of a segment across the silence after it (its DTW start stays put): a
+    # "word" longer than a second is that stretch, so its end says nothing about where the speech stops
+    stretched = w1["end"] - w1["start"] > 1.0
+    anchor = w1["start"] if stretched else max(w1["start"], w1["end"] - 0.6)
+    last = w1["start"] + 1.0 if stretched else w1["end"] + 1.0
+    offset = min((s for s in starts if anchor - 0.2 <= s <= last), default=w1["end"])
     return round(onset, 3), round(offset, 3)
 
 

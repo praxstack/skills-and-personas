@@ -140,3 +140,18 @@ def test_sync_fixtures_fail():
         out["mispronounced"]
     assert "out of sync" not in out["mispronounced"]["reason"], out["mispronounced"]
     return out
+
+
+def test_refine_ignores_stretched_last_token():
+    """WP9: before a long pause whisper stretches the last token over the silence (factorial's question line:
+    "on." from 31.74 to 35.50). The speech still stops at the first silence after the token's start, so the
+    offset is the silence edge at 31.95, not one after the stretched end. A normal last word keeps the old rule."""
+    from ptk.verify import media
+    words = [{"text": "go", "start": 31.5, "end": 34.65}, {"text": "on.", "start": 31.74, "end": 35.5}]
+    on, off = media.refine(words, starts=[31.95, 35.61], ends=[29.2])
+    assert off == 31.95, off
+    normal = [{"text": "go", "start": 31.5, "end": 31.7}, {"text": "on.", "start": 31.74, "end": 31.9}]
+    assert media.refine(normal, starts=[31.95, 35.61], ends=[29.2])[1] == 31.95
+    late = [{"text": "on.", "start": 33.0, "end": 33.3}]  # a genuinely late word still ends late
+    assert media.refine(late, starts=[31.95, 33.4], ends=[32.9])[1] == 33.4
+    return {"stretched_offset": off}

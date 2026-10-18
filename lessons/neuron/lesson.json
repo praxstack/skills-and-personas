@@ -682,11 +682,10 @@
           ]
         },
         {
-          "text": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and -1, and a bias of -0.2.",
+          "text": "This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and minus 1, and a bias of minus 0.2.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "This neuron has two inputs, zero point eight and zero point four, with weights one point five and minus one, and a bias of minus zero point two."
+          ]
         }
       ]
     },
@@ -701,11 +700,10 @@
       ],
       "narration": [
         {
-          "text": "Each input is multiplied by its weight: 0.8 × 1.5 = +1.2 and 0.4 × -1 = -0.4.",
+          "text": "Each input is multiplied by its weight. 0.8 times 1.5 is plus 1.2, and 0.4 times minus 1 is minus 0.4.",
           "claims": [
             "c.mul"
-          ],
-          "spoken": "Each input is multiplied by its weight. Zero point eight times one point five is plus one point two, and zero point four times minus one is minus zero point four."
+          ]
         },
         {
           "text": "A negative weight turns a positive input into a negative term.",
@@ -763,11 +761,10 @@
       ],
       "narration": [
         {
-          "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6. That sum is z.",
+          "text": "The neuron adds the two terms and the bias. 1.2 minus 0.4 minus 0.2 is 0.6. That sum is z.",
           "claims": [
             "c.add"
-          ],
-          "spoken": "The neuron adds the two terms and the bias. One point two, minus zero point four, minus zero point two, is zero point six. That sum is z."
+          ]
         }
       ]
     },
@@ -785,15 +782,13 @@
           "text": "ReLU passes a positive z through unchanged and turns a negative z into 0.",
           "claims": [
             "c.relu"
-          ],
-          "spoken": "ReLU passes a positive z through unchanged, and turns a negative z into zero."
+          ]
         },
         {
           "text": "Here z is 0.6, which is positive, so the output a is 0.6.",
           "claims": [
             "c.out"
-          ],
-          "spoken": "Here z is zero point six, which is positive, so the output a is zero point six."
+          ]
         }
       ]
     },

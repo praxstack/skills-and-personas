@@ -24,7 +24,7 @@ html[data-ive-mode="explore"] .mode .tagm{color:var(--surface);background:var(--
 .xpanel{display:grid;gap:.875rem;padding:1rem 1rem 1.125rem;border:1px solid var(--panel-border);border-radius:.875rem;background:var(--panel-bg)}
 .xpanel[data-origin="yours"],.xpanel[data-origin="step"]{border:2px dashed var(--note);background:var(--note_tint)}
 .mechbox{padding:.5rem;border:1px solid var(--rule);border-radius:.625rem;background:var(--panel-bg)}
-.mech{display:none;width:100%;height:auto}
+.mech{display:none;max-width:100%;height:auto;margin-inline:auto}
 .mech-p-light{display:block}
 @media (prefers-color-scheme:dark){.mech-p-light{display:none}.mech-p-dark{display:block}}
 .mech text{font-variant-numeric:lining-nums tabular-nums}

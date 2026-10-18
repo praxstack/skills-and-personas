@@ -614,7 +614,8 @@
           4,
           5,
           6,
-          7
+          7,
+          4
         ],
         "output": [
           "f.l1",
@@ -653,7 +654,8 @@
           4,
           5,
           6,
-          7
+          7,
+          4
         ],
         "output": [
           "f.l1",
@@ -699,6 +701,9 @@
           5,
           6,
           7,
+          4,
+          5,
+          6,
           8,
           9
         ],
@@ -748,6 +753,12 @@
           5,
           6,
           7,
+          4,
+          5,
+          6,
+          8,
+          9,
+          7,
           8,
           9
         ],
@@ -793,6 +804,15 @@
           5,
           6,
           7,
+          4,
+          5,
+          6,
+          8,
+          9,
+          7,
+          8,
+          9,
+          7,
           8,
           9
         ],
@@ -834,8 +854,18 @@
           5,
           6,
           7,
+          4,
+          5,
+          6,
           8,
           9,
+          7,
+          8,
+          9,
+          7,
+          8,
+          9,
+          13,
           14
         ],
         "output": [
@@ -871,18 +901,16 @@
       ],
       "narration": [
         {
-          "text": "main calls factorial(3), and factorial calls itself with n - 1 until n is 1.",
+          "text": "main calls factorial of 3, and factorial calls itself with n minus 1 until n is 1.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "main calls factorial of three, and factorial calls itself with n minus one, until n is one."
+          ]
         },
         {
           "text": "Each call to factorial gets its own n and its own r. This lesson draws each call as a frame on the call stack.",
           "claims": [
             "c.frame"
-          ],
-          "spoken": "Each call to factorial gets its own n, and its own r. This lesson draws each call as a frame on the call stack."
+          ]
         }
       ]
     },
@@ -897,11 +925,10 @@
       ],
       "narration": [
         {
-          "text": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+          "text": "factorial of 3 cannot finish line 7 until factorial of 2 returns a value, so its frame waits under the new one.",
           "claims": [
             "c.waits"
-          ],
-          "spoken": "factorial of three cannot finish line seven until factorial of two returns a value, so its frame waits under the new one."
+          ]
         }
       ]
     },
@@ -916,11 +943,10 @@
       ],
       "narration": [
         {
-          "text": "factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
+          "text": "factorial of 2 calls factorial of 1, so three factorial frames now sit on top of main.",
           "claims": [
             "c.depth"
-          ],
-          "spoken": "factorial of two calls factorial of one, so three factorial frames now sit on top of main."
+          ]
         }
       ]
     },
@@ -972,11 +998,10 @@
       ],
       "narration": [
         {
-          "text": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1.",
+          "text": "In factorial of 1, n greater than 1 is false, so r stays 1 and it returns 1.",
           "claims": [
             "c.base"
-          ],
-          "spoken": "In factorial of one, n greater than one is false, so r stays one, and it returns one."
+          ]
         }
       ]
     },
@@ -991,11 +1016,10 @@
       ],
       "narration": [
         {
-          "text": "Each return hands its value to the call that made it, one frame down. factorial(2) gets 1 and returns 2 × 1 = 2.",
+          "text": "Each return hands its value to the call that made it, one frame down. factorial of 2 gets 1 and returns 2 times 1, which is 2.",
           "claims": [
             "c.unwind"
-          ],
-          "spoken": "Each return hands its value to the call that made it, one frame down. factorial of two gets one, and returns two times one, which is two."
+          ]
         }
       ]
     },
@@ -1010,11 +1034,10 @@
       ],
       "narration": [
         {
-          "text": "factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
+          "text": "factorial of 3 gets 2 and returns 3 times 2, which is 6, to main.",
           "claims": [
             "c.ret3"
-          ],
-          "spoken": "factorial of three gets two, and returns three times two, which is six, to main."
+          ]
         }
       ]
     },
@@ -1032,15 +1055,13 @@
           "text": "main stores the 6 in its own r and prints main got 6.",
           "claims": [
             "c.main"
-          ],
-          "spoken": "main stores the six in its own r, and prints: main got six."
+          ]
         },
         {
           "text": "The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3.",
           "claims": [
             "c.order"
-          ],
-          "spoken": "The calls start in the order three, two, one, and they finish in the reverse order: one, two, three."
+          ]
         }
       ]
     },
@@ -1060,13 +1081,13 @@
           "text": "The stack grows by one frame for each call and shrinks by one frame for each return. Each return value flows to the frame below.",
           "claims": [
             "c.recap"
-          ],
-          "spoken": "The stack grows by one frame for each call, and shrinks by one frame for each return. Each return value flows to the frame below."
+          ]
         }
       ]
     }
   ],
   "figure": {
+    "misconception": "m.base",
     "kind": "code-trace",
     "title_claim": "c.frame",
     "program": "p1",
@@ -1095,8 +1116,7 @@
     },
     "caption_claims": [
       "c.order"
-    ],
-    "misconception": "m.base"
+    ]
   },
   "requested_media": [
     "still",

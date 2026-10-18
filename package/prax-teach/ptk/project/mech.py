@@ -68,8 +68,9 @@ def _after(lesson, sid, after):
 
 
 class Ctx:
-    def __init__(self, svg, lesson, sid, layout, flow=None):
+    def __init__(self, svg, lesson, sid, layout, flow=None, notes=True):
         self.svg, self.lesson, self.sid, self.layout = svg, lesson, sid, layout
+        self.notes = notes  # the film narrates the panel's claims, so its panel leaves their text out
         self.t = svg.t
         self.S = SIZES[layout]
         self.facts = lesson.by_id("facts")
@@ -104,7 +105,8 @@ class Ctx:
         col = color or self.t["value"]
         tone = "note" if col == self.t["note"] else ("correction" if col == self.t["correction"] else None)
         self.svg.text(x, y, s, vfont, vpx, col, ("fact", fid), weight=weight or vweight, tone=tone,
-                      anchor=anchor, ocr=s if ocr else None, ocr_group=group, inside=inside, raw=text.tight_points(s))
+                      anchor=anchor, ocr=s if ocr else None, ocr_group=group, inside=inside,
+                      raw=text.tight_points(s) if getattr(self.svg, "tight", True) else None)
         return fonts.width(vfont, vpx, s, weight=weight or vweight)
 
     def note(self, x, y, cid, w, color=None):
@@ -204,7 +206,7 @@ def _views(c, x, y, w):
             y += S["value"] * 1.35
             lw = c.label(x + 18, y - 3, "lane_prints")
             c.value(x + 18 + lw + 12, y, lane["fact"], ocr=c.layout == "wide")
-        if lane.get("claim"):
+        if lane.get("claim") and c.notes:
             y = c.note(x + 18, y + S["note"] * 1.5, lane["claim"], w - 18)
         svg.close()
     ub = P.get("ub")
@@ -220,7 +222,8 @@ def _views(c, x, y, w):
         del lw
         y += S["code"] * 1.4
         c.code(x, y, usrc[ub["line"] - 1].strip(), ub["program"], ub["line"], color=t["correction"])
-        y = c.note(x, y + S["note"] * 1.5, ub["claim"], w, color=t["correction"])
+        if c.notes:
+            y = c.note(x, y + S["note"] * 1.5, ub["claim"], w, color=t["correction"])
         svg.close()
     return y - y0 + 10
 
@@ -533,11 +536,11 @@ def _neuron(c, x, y, w):
 KINDS = {"views": _views, "stack": _stack, "neuron": _neuron}
 
 
-def draw(svg, lesson, sid, x, y, w, layout="wide", flow=None, key=True, states=None):
+def draw(svg, lesson, sid, x, y, w, layout="wide", flow=None, key=True, states=None, notes=True):
     """Draw the lesson's panel at trace state `sid`; returns its height. With `states` (the still), a stack
     panel draws every one of those states side by side instead."""
     P = lesson.data["figure"]["panel"]
-    c = Ctx(svg, lesson, sid, layout, flow)
+    c = Ctx(svg, lesson, sid, layout, flow, notes)
     if key:
         svg.open(data_key="panel", data_state_panel=sid)
     if states and P["kind"] == "stack":
@@ -565,27 +568,28 @@ def page_place(lesson):
     return "side" if P["kind"] == "stack" else P["place"]
 
 
-def max_height(lesson, layout):
+def max_height(lesson, layout, notes=True, width=None):
     """The tallest the panel gets over the trace, so every state can share one scale."""
     from . import still
     best = 0
     for st in lesson.data["trace"]:
         svg = still.Svg("light", fonts.tokens())
-        w = WIDTHS[(layout, page_place(lesson))]
-        best = max(best, draw(svg, lesson, st["id"], 4, 4, w, layout, still.Flow(svg, {}), key=False))
+        w = width or WIDTHS[(layout, page_place(lesson))]
+        best = max(best, draw(svg, lesson, st["id"], 4, 4, w, layout, still.Flow(svg, {}), key=False, notes=notes))
     return best
 
 
-def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="", height=None):
+def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="", height=None, notes=True, width=None):
     """The panel at `sid` as one standalone <svg> for an HTML page or the video: (markup, fact ids drawn, chars).
     Colours and type come from `theme` (the page shows a light and a dark copy by colour scheme); fonts are the
     page's own @font-face families."""
     from . import still  # still imports this module; the writer class lives there
     tokens = tokens or fonts.tokens()
     svg = still.Svg(theme, tokens)
+    svg.tight = False  # pull-in points only for the still's OCR; pages and the film keep plain glyph boxes
     flow = still.Flow(svg, {})
-    w = WIDTHS[(layout, page_place(lesson))] if not states else WIDTHS[(layout, lesson.data["figure"]["panel"]["place"])]
-    h = draw(svg, lesson, sid, 4, 4, w, layout, flow, key=False, states=states)
+    w = width or (WIDTHS[(layout, page_place(lesson))] if not states else WIDTHS[(layout, lesson.data["figure"]["panel"]["place"])])
+    h = draw(svg, lesson, sid, 4, 4, w, layout, flow, key=False, states=states, notes=notes)
     body = "\n".join(svg.els)
     facts = re.findall(r'data-fact="([^"]+)"', body)
     chars = "".join(svg.chars.values())
@@ -593,6 +597,7 @@ def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="",
             f'markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{svg.t["note"]}"/></marker></defs>')
     body = body.replace('marker-end="url(#arrow)"', f'marker-end="url(#arrow-{theme}-{layout})"')
     h = max(h, height or 0)
-    markup = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w + 8:.0f} {h + 8:.0f}" role="img" '
+    markup = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w + 8:.0f} {h + 8:.0f}" width="{w + 8:.0f}" '
+              f'height="{h + 8:.0f}" role="img" '
               f'data-panel-state="{sid}" data-theme="{theme}" data-layout="{layout}" {attrs}>{defs}{body}</svg>')
     return markup, facts, chars

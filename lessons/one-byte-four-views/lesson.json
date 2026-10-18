@@ -628,18 +628,16 @@
       ],
       "narration": [
         {
-          "text": "The program stores 66 in the int a.",
+          "text": "The program stores 66 in the integer variable a.",
           "claims": [
             "c.setup"
-          ],
-          "spoken": "The program stores 66 in the int a."
+          ]
         },
         {
-          "text": "66 fits in the low byte of a. Its bits are 01000010, which is 0x42 in hex.",
+          "text": "66 fits in the low byte of a. Its bits are 0 1 0 0 0 0 1 0, which is hex 42.",
           "claims": [
             "c.byte"
-          ],
-          "spoken": "66 fits in the low byte of a. Its bits are 0 1 0 0 0 0 1 0, which is hex 42."
+          ]
         }
       ]
     },
@@ -691,11 +689,10 @@
       ],
       "narration": [
         {
-          "text": "(double)a converts the value 66 to the double 66.0. That double has its own bit pattern, 0x4050800000000000, not the bits of a.",
+          "text": "The cast to double converts the value 66 to the double 66.0. That double has its own bit pattern, not the bits of a.",
           "claims": [
             "c.cast"
-          ],
-          "spoken": "The cast to double converts the value 66 to the double 66.0. That double has its own bit pattern, not the bits of a."
+          ]
         }
       ]
     },
@@ -710,11 +707,10 @@
       ],
       "narration": [
         {
-          "text": "%f prints a double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
+          "text": "Percent f prints a double with 6 digits after the decimal point when no precision is given, so it prints 66 followed by a point and six zeros.",
           "claims": [
             "c.fprint"
-          ],
-          "spoken": "Percent f prints a double with 6 digits after the decimal point, when no precision is given, so it prints 66.000000."
+          ]
         }
       ]
     },
@@ -729,18 +725,16 @@
       ],
       "narration": [
         {
-          "text": "%d prints an int as a signed decimal number, so it prints 66.",
+          "text": "Percent d prints an int as a signed decimal number, so it prints 66.",
           "claims": [
             "c.d"
-          ],
-          "spoken": "Percent d prints an int as a signed decimal number, so it prints 66."
+          ]
         },
         {
-          "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u prints 66.",
+          "text": "The cast to unsigned converts 66 to an unsigned int. 66 fits there, so the value stays 66, and percent u, too, prints 66.",
           "claims": [
             "c.u"
-          ],
-          "spoken": "The cast to unsigned converts 66 to unsigned int. 66 fits there, so the value stays 66, and percent u prints 66."
+          ]
         }
       ]
     },
@@ -755,11 +749,10 @@
       ],
       "narration": [
         {
-          "text": "%c converts the int 66 to unsigned char and writes that character. In ASCII, code 66 is B.",
+          "text": "Percent c converts the int 66 to an unsigned char, and writes that character. In ASCII, code 66 is B.",
           "claims": [
             "c.char"
-          ],
-          "spoken": "Percent c converts the int 66 to unsigned char, and writes that character. In ASCII, code 66 is B."
+          ]
         }
       ]
     },
@@ -773,25 +766,22 @@
       ],
       "narration": [
         {
-          "text": "printf does not reinterpret the bits of a for %f. It receives the double that (double)a made.",
+          "text": "printf does not reinterpret the bits of a for percent f. It receives the double that the cast made.",
           "claims": [
             "c.samebits"
-          ],
-          "spoken": "printf does not reinterpret the bits of a for percent f. It receives the double that the cast made."
+          ]
         },
         {
-          "text": "Without the cast, printf(\"%f\\n\", a) passes an int where %f needs a double, and the behaviour is undefined.",
+          "text": "Without the cast, passing a to percent f gives printf an int where it needs a double, and the behaviour is undefined.",
           "claims": [
             "c.ub"
-          ],
-          "spoken": "Without the cast, passing a to percent f gives printf an int where it needs a double, and the behaviour is undefined."
+          ]
         },
         {
-          "text": "So ub.c is compiled for its warning and never run.",
+          "text": "So the file ub dot c is compiled for its warning, and never run.",
           "claims": [
             "c.ubnorun"
-          ],
-          "spoken": "So ub dot c is compiled for its warning, and never run."
+          ]
         }
       ]
     },
@@ -808,11 +798,10 @@
       ],
       "narration": [
         {
-          "text": "Every view here shows the value 66. Only (double)a gives printf a different bit pattern.",
+          "text": "Every view here shows the value 66. Only the cast to double gives printf a different bit pattern.",
           "claims": [
             "c.recap"
-          ],
-          "spoken": "Every view here shows the value 66. Only the cast to double gives printf a different bit pattern."
+          ]
         }
       ]
     }
