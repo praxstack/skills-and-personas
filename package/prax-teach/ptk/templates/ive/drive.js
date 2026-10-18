@@ -20,6 +20,9 @@
     if (el.requestVideoFrameCallback) await Promise.race([new Promise((r) => el.requestVideoFrameCallback(() => r())), sleep(800)]);
     await sleep(60);
   };
+  // before a screenshot: the frame is on screen and Chrome's media-controls loading spinner, which fades out
+  // over about a second after any seek (measured: still visible at 0.9 s, gone by 1.2 s), has cleared
+  const settled = async () => { await frame(); await sleep(1500); };
   const seek = async (t) => {
     const el = v(), p = once(el, 'seeked');
     el.currentTime = t;
@@ -49,6 +52,6 @@
     return { problems, keys: [...document.querySelectorAll('[data-key]')].map((e) => e.dataset.key) };
   };
   const tracks = () => [...v().textTracks].map((t) => ({ kind: t.kind, mode: t.mode, cues: t.cues ? t.cues.length : null }));
-  window.__iveDrive = { v, sleep, once, state, frame, seek, leak, layout, tracks };
+  window.__iveDrive = { v, sleep, once, state, frame, settled, seek, leak, layout, tracks };
   return true;
 })()

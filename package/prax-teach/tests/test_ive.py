@@ -148,3 +148,26 @@ def test_file_protocol():
     """AC-6.7: opened from file:// in Chrome, the MP4 decodes and every WebVTT track loads."""
     out, c = _check("file_protocol")
     return {"browser": out["browser"], **{k: c["detail"][k] for k in ("tracks", "readyState", "track_src")}}
+
+
+def test_before_answer_shot_has_no_loading_spinner():
+    """Integration pass: Chrome's media-controls loading spinner fades out for about a second after a seek, and the
+    before-answer screenshot caught it. The shot is taken once the page has settled: a second shot 2.5 s later
+    is pixel-identical (no transient Chrome UI left in the frame)."""
+    timing, cue_list = _built()
+    ans = next(c for c in cue_list if c["kind"] == "answer")
+    work = host.make_tmp("ive-spinner-")
+    try:
+        a, b = work / "a.png", work / "b.png"
+        steps = [{"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000},
+                 {"eval": visual.IVE_DRIVE.read_text(), "as": "drive"},
+                 visual._js(f"await D.seek({ans['start'] - 0.1:.3f}); document.getElementById('explore').click(); "
+                            "await D.sleep(80); await (D.settled ? D.settled() : D.frame()); return 1;"),
+                 {"shot": str(a)}, {"wait": 2500}, {"shot": str(b)}]
+        visual.shoot([{"id": "spinner", "type": "script", "url": (IVE / "index.html").resolve().as_uri(),
+                       "width": 1440, "height": 1000, "steps": steps}], work / "w")
+        # Chrome's PNG encoder is deterministic: identical pixels give identical bytes
+        assert a.read_bytes() == b.read_bytes(), "the before-answer frame was still changing (Chrome's loading spinner)"
+        return {"cue": ans["cue"], "settled": True}
+    finally:
+        shutil.rmtree(work, ignore_errors=True)

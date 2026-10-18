@@ -493,7 +493,7 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
         sc = next(s for s in timing["scenes"] if s["id"] == c["answer_for"])
         words = [w.strip().lower() for w in lesson.fact(sc["question"]["answer_fact"])["value"].split("\n") if w.strip()]
         jobs.append({"id": f"ive-leak:{c['cue']}", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": [
-            ready, drive, _js(f"await D.seek({c['start'] - 0.1:.3f}); document.getElementById('explore').click(); await D.sleep(80); await D.frame(); return 1;"),
+            ready, drive, _js(f"await D.seek({c['start'] - 0.1:.3f}); document.getElementById('explore').click(); await D.sleep(80); await D.settled(); return 1;"),
             {**_js(f"return D.leak({json.dumps(words)});"), "as": "leak"},
             {"shot": str(shots / f"ive-before-answer-{c['cue']}.png"), "full": True}]})
     # FILM / EXPLORE / RETURN (AC-6.6), from a moment after every question is answered
@@ -526,12 +526,12 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     for w in WIDTHS:
         for scn in SCHEMES:
             jobs.append({"id": f"ive-shot:{w}:{scn}", "type": "script", "url": url, "width": w, "height": 900, "scheme": scn,
-                         "steps": [ready, drive, _js(f"await D.seek({t_film}); await D.frame(); return 1;"),
+                         "steps": [ready, drive, _js(f"await D.seek({t_film}); await D.settled(); return 1;"),
                                    {**_js("return D.layout();"), "as": "film_layout"},
                                    {"shot": str(shots / f"ive-{w}-{scn}.png"), "full": True},
                                    _js("document.getElementById('explore').click(); await D.sleep(60); "
                                        "const r = document.querySelector('#live-n input[value=\"3\"]'); if (r) r.click(); "
-                                       "await D.sleep(60); await D.frame(); return 1;"),
+                                       "await D.sleep(60); await D.settled(); return 1;"),
                                    {**_js("return D.layout();"), "as": "explore_layout"},
                                    {"shot": str(shots / f"ive-{w}-{scn}-explore.png"), "full": True}]})
             jobs.append({"id": f"ive-measure:{w}:{scn}", "type": "shot", "url": url, "width": w, "height": 900, "scheme": scn})
