@@ -6,11 +6,11 @@
   "TEACH": "\\bteach(?:es|ing)?\\b|\\bexplain(?:s|ed|ing)?\\b|\\bexplanations?\\b|\\bmy (?:understanding|confusion|misconceptions?)\\b|\\bconfus(?:ed|ion|ing)\\b|\\b(?:don'?t|do not|can'?t) (?:get|understand)\\b|\\bexplainer\\b|\\bhelp me (?:learn|understand|grasp|get|figure out)\\b|\\bi (?:want|need|would like|'d like) to (?:learn|understand)\\b|\\b(?:so|so that|to) (?:i )?(?:can )?(?:understand|learn)\\b|\\b(?:walk|run|talk) me through\\b|\\b(?:quiz|drill|tutor|test) me\\b|\\bsocratic\\b|\\bpredict\\b|\\b(?:quiz|lesson|tutorial|course|explainer|drill|mcqs?|flash ?cards?|cards|q&a)(?:\\s+(?:video|animation|still|diagram|explorer|cards?|deck|pack|set|session))?\\s+(?:on|about|for|covering|explaining|of)\\b|(?:video|animation|still|diagram|explorer|cards?|picture|image|figure|clip|film|explainer|walkthrough)s?\\s+(?:on|about|of|explaining|showing|that (?:shows|explains|teaches))\\b",
   "NEG": "\\b(?:don'?t|do not|never|not|no)\\s+(?:just\\s+)?(?:tell|give|show|answer|explain)\\b",
   "MW": "(?:videos?|animat(?:e|ed|es|ion|ions|ing)|films?|clips?|movies?|mp4s?|gifs?|cards?|interactive|images?|pictures?|figures?|diagrams?|stills?|slides?|explorers?|simulat(?:or|ion)s?|audio|sound|narration|visuals?)\\b",
-  "BUILT": "(?:video|animation|still|diagram|explorer|cards|deck|lesson|captions?|audio|narration|clip|render|subtitles|voice ?over|ive)\\b",
+  "BUILT": "(?:video|animation|still|diagram|explorer|(?:flash ?)?cards|deck|lesson|captions?|audio|narration|clip|render|subtitles|voice ?over|ive)\\b",
   "LATER": "\\bquiz(?:zes)?(?: me)?(?: on (?:it|them|that))? (?:after(?:wards)?|later|at the end|(?:when|once) (?:it'?s |you'?re )?(?:done|built|finished))\\b|\\b(?:then|after(?:wards)?,?|and after that) quiz me\\b",
   "CODE_OBJ": "(?:build|make|create|generate|scaffold|write|add|implement|set up|setup|design|code)\\b(?:\\s+(?:me|us))?(?:\\s+\\S+){0,4}?\\s+(?:component|app|application|api|endpoint|function|class|module|script|cli|page|player|parser|service|server|tests?|test suite|pipeline|database|schema|ui|website|site|plugin|extension|branch|file|folder|directory|repo|repository|pr|pull request|issue|ticket|makefile|target|config|dockerfile|workflow|hook|library|package|program|tool|bot|game|backend|frontend)\\b"
  },
- "negation": "\\b(?:no need (?:for|to)|instead of|rather than|don'?t|do not|does not|doesn'?t|never|not|without|skip(?:ping)?|stop \\w+ing|avoid|minus|no)\\b(?:\\s+(?!(?:but|just|then|instead|only|and|also)\\b)[^\\s,.;:!?]+){0,6}",
+ "negation": "\\b(?:no need (?:for|to)|instead of|rather than|don'?t|do not|does not|doesn'?t|never|not|without|skip(?:ping)?|stop \\w+ing|avoid|minus|forget(?: about)?|ditch|scrap|no)\\b(?:\\s+(?!(?:but|just|then|instead|only|and|also)\\b)[^\\s,.;:!?]+){0,6}",
  "clause": "\\s*(?:[,;!?]|[.:](?=\\s|$))\\s*|\\s+(?:and then|and|then|but|also|plus)\\s+",
  "clean": "^[\\s,.;:!?]+|[\\s,.;:!?]+$",
  "topic_frames": [
@@ -309,6 +309,8 @@
      "\\bno (?:more )?(?:questions|quiz(?:zes|zing)?|predictions?|socratic)\\b",
      "\\bskip (?:the )?(?:questions|quiz|prediction|ceremony|socratic)\\b",
      "\\bstop (?:asking|quizzing|questioning)\\b",
+     "\\b(?:not|never|don'?t|do not|stop) (?:ask(?:ing)?|mak(?:e|ing)|hav(?:e|ing)|forc(?:e|ing)) me (?:to )?(?:guess|predict)\\b",
+     "\\bno (?:more )?guess(?:ing|es|work)?\\b",
      "\\bwithout (?:the |a |any )?(?:asking|questions?|quiz(?:zing)?|predictions?)\\b",
      "\\b(?:don'?t|do not|never) (?:ask|quiz|test|question) me\\b",
      "\\bno need (?:to (?:ask|quiz|test)|for (?:a |the |any )?(?:quiz|questions?|predictions?))\\b",
