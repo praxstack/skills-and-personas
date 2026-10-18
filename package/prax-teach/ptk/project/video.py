@@ -11,9 +11,11 @@ Outputs in build/video/: lesson.mp4, captions.vtt, chapters.vtt, transcript.txt,
 narration.wav, composition/ (index.html + compositions/<scene>.html), work/ (intermediates).
 """
 import json
+import math
 import shutil
 
 from .. import errors, fonts, host, node, text, tts
+from . import path as rail
 from ..text import esc
 
 FPS = 30
@@ -63,9 +65,81 @@ def schedule(lesson, measured):
     for i, s in enumerate(out_scenes):
         s["end"] = out_scenes[i + 1]["start"] if i + 1 < len(out_scenes) else total
         s["duration"] = round(s["end"] - s["start"], 4)
-        s["shown"] = round(min(s["reveal"] + SETTLE, s["end"]), 3) if i else 0.0
+    plan_screen(lesson, out_scenes)
     return {"fps": FPS, "duration": total, "cues": cues, "scenes": out_scenes,
-            "rule": "start(n) = end(n-1) + gap; durations measured from trimmed TTS audio; shown = reveal + 0.5 s"}
+            "rule": "start(n) = end(n-1) + gap; durations measured from trimmed TTS audio; see plan_screen for "
+                    "before/reveal/shown"}
+
+
+# ---------------------------------------------------------------- what is on screen when
+
+SEG_RUN, SEG_JUMP, OUT_STEP = 0.32, 0.62, 0.12
+DRAW_BUDGET = 0.7  # at most this share of the time left in a scene goes to drawing
+
+
+def draw_plan(lesson, before_sid, sid, budget=None):
+    """The path segments a scene draws, in execution order, with offsets from the reveal (seconds).
+
+    Same program: only the segments past the `before` state's path. New program: the whole path,
+    first dot at 0. Returns {"steps": [{"a", "b", "kind", "t0", "dur"}], "first": line or None,
+    "outputs_at": offset where new output values appear, "total": offset when everything is settled}.
+    """
+    cur = lesson.state(sid)["state"]
+    old = lesson.state(before_sid)["state"] if before_sid else None
+    same = old is not None and old["program"] == cur["program"]
+    old_segs = {(a, b) for a, b, _k in rail.segments(old["path"])} if same else set()
+    steps, t = [], 0.0
+    first = None if same else (cur["path"][0] if cur["path"] else None)
+    if first is not None:
+        t = 0.15
+    for a, b, kind in rail.segments(cur["path"]):
+        if (a, b) in old_segs:
+            continue
+        dur = SEG_JUMP if kind == "jump" else SEG_RUN
+        steps.append({"a": a, "b": b, "kind": kind, "t0": round(t, 3), "dur": dur})
+        t += dur
+    new_out = [f for f in cur["output"] if not same or f not in old["output"]]
+    outputs_at = round(t + 0.05, 3)
+    # settled = the end of the last tween scene_html schedules (dots/tags +0.06, line colour +0.1,
+    # the no-break pulse +0.33, the last output value outputs_at + (k-1) * step + 0.3)
+    src = lesson.program_source(cur["program"]).split("\n")
+    nob = rail.nobreak_after(src, cur["path"])
+    ends = [st["t0"] + st["dur"] + (0.33 if st["a"] == nob else 0.1) for st in steps] + [t + 0.1]
+    if new_out:
+        ends.append(outputs_at + (len(new_out) - 1) * OUT_STEP + 0.3)
+    total = max(max(ends), SETTLE)
+    # a short scene plays the same drawing faster (a nested timeline with timeScale 1/k), never cut off
+    k = min(1.0, budget / total) if budget else 1.0
+    return {"steps": steps, "first": first, "outputs_at": outputs_at, "total": round(total * k, 3), "k": round(k, 4)}
+
+
+def plan_screen(lesson, scenes):
+    """The one owner of what the frame shows (review P1-3). Per scene it sets:
+
+    before   the state on screen until `reveal` (the previous scene's state, or this scene's own);
+    reveal   when this scene starts drawing its new path segments;
+    shown    when the new state is fully drawn (the IVE switches its cue here, D18.2);
+    replay   False when the state was already shown earlier (a recap): it appears settled at the
+             scene start, with no reset and no replay.
+
+    A scene that changes program reveals at its start, so the frame never shows a program the
+    explorer does not. Both video.scene_html and ive.cues read these fields.
+    """
+    seen, prev = set(), None
+    for i, s in enumerate(scenes):
+        sid = s["state"]
+        if i == 0 or sid == prev or sid in seen:
+            s.update(before=sid, reveal=s["start"], shown=s["start"], replay=False, draw_total=0.0)
+        else:
+            prog_change = lesson.state(prev)["state"]["program"] != lesson.state(sid)["state"]["program"]
+            reveal = s["start"] if prog_change else s["reveal"]
+            plan = draw_plan(lesson, prev, sid, budget=DRAW_BUDGET * (s["end"] - reveal))
+            settled = math.ceil(round((reveal + plan["total"]) * FPS, 6)) / FPS  # first frame with nothing moving
+            s.update(before=prev, reveal=reveal, shown=round(min(settled, s["end"] - 1 / FPS), 4),
+                     replay=True, draw_total=plan["total"])
+        seen.add(sid)
+        prev = sid
+    return scenes
 
 
 # ---------------------------------------------------------------- audio
@@ -139,14 +213,6 @@ def _state_view(lesson, sid):
             "vars": st.get("vars", {})}
 
 
-def _code_lines(lesson, pid, path):
-    """The body of main: from the first statement through `return`, the same in every scene."""
-    src = lesson.program_source(pid).split("\n")
-    first = min(path) if path else 4
-    last = next((i + 1 for i, ln in enumerate(src) if ln.strip().startswith("return")), len(src))
-    return [(n, src[n - 1]) for n in range(first, last + 1)]
-
-
 def _code_html(line_txt):
     import re
     out = []
@@ -160,60 +226,157 @@ def _code_html(line_txt):
     return "".join(out)
 
 
-LINE_H = 46
-CODE_TOP = 250
+# Frame layout (1920 x 1080). Sized to the frame, not fixed: the code card and the side column
+# both run from CODE_TOP to H - BOTTOM, and LINE_H is the card height over the longest body.
+#
+#  96                                   1156  1200                       1824
+#  ┌ kicker / title ─────────────────────────────────────────────── n / N ┐   56..170
+#  ┌ code card ───────────────────────────┐  ┌ output card ──────────────┐   212
+#  │ 4 ● int n = 2;                       │  │ OUTPUT  1 two  2 three    │
+#  │ 5 ●╮ switch (n) {                    │  └───────────────────────────┘
+#  │ 6  │   case 1:             skipped   │  VARIABLES n = 2
+#  │ 8 ◀╯   case 2:         enters here   │  ┌ note / question card ─────┐
+#  │ 9 ●      puts("two");   [no break]   │  │ claim text (Caveat)       │
+#  │ ...                                  │  │                           │
+#  └──────────────────────────────────────┘  └───────────────────────────┘   1016
+MX, CODE_TOP, BOTTOM = 96, 212, 64
+CARD_W, SIDE_X, SIDE_W = 1060, 1200, 624
+ROW_PAD = 28  # minimum, rows are centred
+NUM_X, RAIL_X, SRC_X, BULGE = 58, 124, 170, 46
 
 
-def scene_html(lesson, scene, prev_sid, index, count, timing):
+def _layout(lesson):
+    """Row height from the longest program body in the storyboard, so every scene shares one grid."""
+    rows = 1
+    for sc in lesson.data["storyboard"]:
+        src = lesson.program_source(lesson.state(sc["state"])["state"]["program"]).split("\n")
+        first, last = rail.body_range(src)
+        rows = max(rows, last - first + 1)
+    card_h = H - BOTTOM - CODE_TOP
+    line_h = int((card_h - 2 * ROW_PAD) // rows)
+    max_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
+    return {"card_h": card_h, "line_h": line_h, "font": min(36, int(line_h * 0.64)), "max_out": max(max_out, 1)}
+
+
+def _fit(font, s, width, height, lh, sizes):
+    """The largest size whose wrapped lines fit the box (the last size if none does)."""
+    for px in sizes:
+        if len(fonts.wrap(font, px, s, width)) * px * lh <= height:
+            return px
+    return sizes[-1]
+
+
+def scene_html(lesson, scene, index, count, timing):
     t = fonts.tokens()["themes"]["light"]
-    cur = _state_view(lesson, scene["state"])
-    prev = _state_view(lesson, prev_sid) if prev_sid else cur
-    if prev["program"] != cur["program"]:
-        prev = {"program": cur["program"], "line": cur["path"][0] if cur["path"] else cur["line"], "path": [],
-                "output": [], "vars": cur["vars"]}
-    lines = _code_lines(lesson, cur["program"], cur["path"])
-    row = {n: i for i, (n, _) in enumerate(lines)}
-    reveal = round(scene["reveal"] - scene["start"], 3) if index else 0.0
+    L = _layout(lesson)
+    LH = L["line_h"]
     sid = scene["id"]
+    cur = _state_view(lesson, scene["state"])
+    replay = scene["replay"]
+    before = _state_view(lesson, scene["before"]) if replay else cur
+    same_prog = before["program"] == cur["program"]
+    plan = draw_plan(lesson, scene["before"], scene["state"],
+                     budget=DRAW_BUDGET * (scene["end"] - scene["reveal"])) if replay else \
+        {"steps": [], "first": None, "outputs_at": 0.0, "total": 0.0, "k": 1.0}
+    src = lesson.program_source(cur["program"]).split("\n")
+    first, last = rail.body_range(src)
+    lines = [(n, src[n - 1]) for n in range(first, last + 1)]
+    row = {n: i for i, (n, _) in enumerate(lines)}
+    pad = round((L["card_h"] - 4 - len(lines) * LH) / 2)  # rows centred in the card
+    cy = {n: pad + row[n] * LH + LH / 2 for n in row}
+    old_path = before["path"] if (replay and same_prog) else ([] if replay else cur["path"])
+    reveal = round(scene["reveal"] - scene["start"], 3)
     claims = lesson.by_id("claims")
-    sb = next(s for s in lesson.data["storyboard"] if s["id"] == sid)
+    sb = next(x for x in lesson.data["storyboard"] if x["id"] == sid)
     note_claim = sb["narration"][0]["claims"][0]
+    run = [n for n in cur["path"] if n in row]
+    shown_lines = [n for n, _ in lines]
+    nob = rail.nobreak_after(src, run)
+    tags = rail.tags(src, run, shown_lines)
+    old_segs = {(a, b) for a, b, _k in rail.segments([n for n in old_path if n in row])}
 
     code_rows = []
     for n, txt in lines:
         indent = len(txt) - len(txt.lstrip(" "))
-        cls = ["ln"]
-        if n in prev["path"]:
-            cls.append("exec")
-        elif n in cur["path"]:
-            cls.append("exec-new")
-        code_rows.append(f'<div class="{" ".join(cls)}" style="top:{row[n] * LINE_H}px">'
+        cls = "ln exec" if n in old_path else ("ln exec-new" if n in cur["path"] else "ln")
+        code_rows.append(f'<div class="{cls}" data-line="{n}" style="top:{pad + row[n] * LH}px">'
                          f'<span class="no" data-label="line-number">{n}</span>'
                          f'<span class="src" data-code="{cur["program"]}" style="padding-left:{indent * 0.6:.2f}em">'
                          f'{_code_html(txt.strip())}</span></div>')
-    dots = []
-    for n in cur["path"]:
-        if n in row:
-            cls = "dot" + ("" if n in prev["path"] else " dot-new")
-            dots.append(f'<div class="{cls}" style="top:{row[n] * LINE_H + LINE_H / 2 - 7}px"></div>')
-    hl_from = row.get(prev["line"], row.get(cur["line"], 0)) * LINE_H
-    hl_to = row.get(cur["line"], 0) * LINE_H
+    # rail: segments, arrowheads, dots (seek-safe: every element has a fixed final geometry)
+    segs, heads = [], []
+    for a, b, kind in rail.segments(run):
+        drawn = (a, b) in old_segs
+        if kind == "run":
+            d = f"M{RAIL_X},{cy[a]:.1f} L{RAIL_X},{cy[b]:.1f}"
+        else:
+            d = (f"M{RAIL_X},{cy[a]:.1f} C{RAIL_X - BULGE},{cy[a]:.1f} {RAIL_X - BULGE},{cy[b]:.1f} "
+                 f"{RAIL_X - 9},{cy[b]:.1f}")
+            heads.append(f'<path class="head{"" if drawn else " new"}" data-seg="{a}-{b}" '
+                         f'd="M{RAIL_X - 24},{cy[b] - 10:.1f} L{RAIL_X - 6},{cy[b]:.1f} L{RAIL_X - 24},{cy[b] + 10:.1f} Z"/>')
+        segs.append(f'<path class="seg{"" if drawn else " new"}" data-seg="{a}-{b}" data-kind="{kind}" pathLength="1" d="{d}"/>')
+    dots = [f'<circle class="dot{"" if n in old_path else " new"}" data-line="{n}" cx="{RAIL_X}" cy="{cy[n]:.1f}" r="8"/>'
+            for n in run]
+    tag_html = []
+    for n, key, tone in tags:
+        on = any(a < n < b for a, b in old_segs) if key == "skipped_label" else n in old_path
+        tag_html.append(f'<p class="tag {tone}{"" if on else " new"}" data-line="{n}" data-chrome="{key}" '
+                        f'style="top:{pad + row[n] * LH}px">{esc(text.ui(key))}</p>')
+    if nob:
+        on = nob in old_path and (nob + 1) in old_path
+        tag_html.append(f'<p id="nobreak" class="badge{"" if on else " new"}" data-after="{nob}" data-chrome="no_break" '
+                        f'style="top:{pad + row[nob] * LH + LH / 2 + 4:.0f}px">{esc(text.ui("no_break"))}</p>')
     outs = []
-    prev_out = {o["fact"] for o in prev["output"]}
+    prev_out = {o["fact"] for o in before["output"]} if (replay and same_prog) else ({} if replay else
+                                                                                     {o["fact"] for o in cur["output"]})
+    OUT_H = 84
     for k, o in enumerate(cur["output"], 1):
         cls = "out" + ("" if o["fact"] in prev_out else " out-new")
-        outs.append(f'<div class="{cls}" style="top:{80 + (k - 1) * 72}px"><span class="step" data-label="output-step">{k}</span>'
+        outs.append(f'<div class="{cls}" style="top:{84 + (k - 1) * OUT_H}px"><span class="step" data-label="output-step">{k}</span>'
                     f'<span class="val" data-fact="{esc(o["fact"])}">{esc(o["text"])}</span></div>')
     vars_html = " ".join(f'<span data-code="{cur["program"]}">{esc(k)} = {esc(v)}</span>' for k, v in cur["vars"].items())
     q = scene.get("question")
-    side = ""
+    out_h = 84 + L["max_out"] * OUT_H + 20
     if q:
-        side = (f'<div id="qcard" class="qcard"><p class="qlabel" data-chrome="question_label">{esc(text.ui("question_label"))}</p>'
-                f'<p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p></div>')
+        side = (f'<div id="qcard" class="panel qcard" data-key="question"><p class="qlabel" data-chrome="question_label">'
+                f'{esc(text.ui("question_label"))}</p><p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p></div>')
     else:
-        side = f'<p class="note" data-claim="{esc(note_claim)}">{esc(claims[note_claim]["text"])}</p>'
+        note_px = _fit("hand", claims[note_claim]["text"], SIDE_W - 76, L["card_h"] - out_h - 100 - 64, 1.16,
+                       (64, 58, 52, 48, 44))
+        side = (f'<div class="panel notecard" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
+                f'style="font-size:{note_px}px">{esc(claims[note_claim]["text"])}</p></div>')
     kicker = text.ui("kicker", topic=lesson.data["topic"]).upper()
-    out_h = 80 + max(len(cur["output"]), 1) * 72 + 10
+    if not replay:
+        hl_line = cur["line"]
+    elif same_prog:
+        hl_line = before["line"]
+    else:
+        hl_line = plan["first"] or cur["line"]
+    hl_from = cy.get(hl_line, cy[run[0]] if run else LH / 2)
+    js_steps = []
+    for st in plan["steps"]:
+        a, b = st["a"], st["b"]
+        t0 = f"{st['t0']:.3f}"
+        js_steps.append(f"d.to(q('.seg[data-seg=\"{a}-{b}\"]'), {{ strokeDashoffset: 0, duration: {st['dur']}, ease: 'power1.inOut' }}, {t0});")
+        js_steps.append(f"d.to(q('#hl'), {{ y: {cy[b] - LH / 2:.1f}, duration: {st['dur']}, ease: 'power1.inOut' }}, {t0});")
+        end = f"{st['t0'] + st['dur']:.3f}"
+        js_steps.append(f"d.to(q('.dot[data-line=\"{b}\"], .head[data-seg=\"{a}-{b}\"], .tag[data-line=\"{b}\"]'), "
+                        f"{{ opacity: 1, duration: 0.12 }}, {end} - 0.06);")
+        js_steps.append(f"d.to(q('.ln[data-line=\"{b}\"]'), {{ color: '{t['ink']}', duration: 0.2 }}, {end} - 0.1);")
+        if st["kind"] == "jump":
+            for n in shown_lines:
+                if a < n < b and (n, "skipped_label", "muted") in tags:
+                    js_steps.append(f"d.to(q('.tag[data-line=\"{n}\"]'), {{ opacity: 1, duration: 0.2 }}, {t0} + {st['dur'] / 2:.3f});")
+        if nob and a == nob:
+            js_steps.append(f"d.fromTo(q('#nobreak'), {{ opacity: 0, scale: 0.8 }}, {{ opacity: 1, scale: 1.08, duration: 0.18, ease: 'power2.out' }}, {end} - 0.1);")
+            js_steps.append(f"d.to(q('#nobreak'), {{ scale: 1, duration: 0.25, ease: 'power2.inOut' }}, {end} + 0.08);")
+    if plan["first"] is not None:
+        f0 = plan["first"]
+        js_steps.insert(0, f"d.to(q('.dot[data-line=\"{f0}\"], .tag[data-line=\"{f0}\"]'), {{ opacity: 1, duration: 0.12 }}, 0);"
+                           f"d.to(q('.ln[data-line=\"{f0}\"]'), {{ color: '{t['ink']}', duration: 0.2 }}, 0);")
+    js_steps.append(f"if (q('.out-new').length) d.fromTo(q('.out-new'), {{ opacity: 0, x: -16 }}, "
+                    f"{{ opacity: 1, x: 0, duration: 0.3, stagger: {OUT_STEP}, ease: 'power2.out' }}, {plan['outputs_at']:.3f});")
+    font = L["font"]
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>{esc(scene['title'])}</title></head>
 <body><template>
@@ -221,45 +384,58 @@ def scene_html(lesson, scene, prev_sid, index, count, timing):
 {font_faces()}
 #root {{ position:absolute; inset:0; background:{t['paper']}; color:{t['ink']}; font-family:'Source Serif 4',serif;
   font-variant-numeric:lining-nums tabular-nums; overflow:hidden; }}
-.kicker {{ position:absolute; left:120px; top:78px; margin:0; font:600 24px/1.2 'JetBrains Mono',monospace; letter-spacing:.12em; color:{t['blue']}; }}
-.count {{ position:absolute; right:120px; top:78px; margin:0; font:500 24px/1.2 'JetBrains Mono',monospace; color:{t['muted']}; }}
-.title {{ position:absolute; left:120px; top:118px; margin:0; font:600 66px/1.15 'Source Serif 4',serif; letter-spacing:-.01em; }}
-.code {{ position:absolute; left:120px; top:{CODE_TOP}px; width:1000px; height:{len(lines) * LINE_H + 48}px; background:{t['card']};
-  border:2px solid {t['rule']}; border-radius:20px; }}
-.rows {{ position:absolute; left:0; top:24px; right:0; }}
-.ln {{ position:absolute; left:0; right:0; height:{LINE_H}px; font:500 32px/{LINE_H}px 'JetBrains Mono',monospace; white-space:pre; color:{t['muted']}; }}
-.ln.exec, .ln.exec-new {{ color:{t['ink']}; }}
-.no {{ position:absolute; left:0; width:70px; text-align:right; color:{t['faint']}; font-size:26px; }}
-.src {{ position:absolute; left:130px; }}
+.kicker {{ position:absolute; left:{MX}px; top:56px; margin:0; font:600 24px/1.2 'JetBrains Mono',monospace; letter-spacing:.12em; color:{t['blue']}; }}
+.count {{ position:absolute; right:{MX}px; top:56px; margin:0; font:500 24px/1.2 'JetBrains Mono',monospace; color:{t['muted']}; }}
+.title {{ position:absolute; left:{MX}px; top:92px; margin:0; font:600 64px/1.15 'Source Serif 4',serif; letter-spacing:-.01em; }}
+.file {{ position:absolute; left:{MX}px; width:{CARD_W - 24}px; top:{CODE_TOP - 38}px; margin:0; text-align:right;
+  font:600 24px/1.2 'JetBrains Mono',monospace; color:{t['muted']}; }}
+.code {{ position:absolute; left:{MX}px; top:{CODE_TOP}px; width:{CARD_W}px; height:{L['card_h']}px; background:{t['card']};
+  border:2px solid {t['rule']}; border-radius:22px; box-sizing:border-box; overflow:hidden; }}
+.ln {{ position:absolute; left:0; right:0; height:{LH}px; font:500 {font}px/{LH}px 'JetBrains Mono',monospace; white-space:pre; color:{t['muted']}; }}
+.ln.exec {{ color:{t['ink']}; }}
+.no {{ position:absolute; left:0; width:{NUM_X}px; text-align:right; color:{t['faint']}; font-size:{font - 8}px; }}
+.src {{ position:absolute; left:{SRC_X}px; }}
 .kw {{ font-weight:800; }}
 .str {{ color:{t['soft']}; }}
-.hl {{ position:absolute; left:112px; right:16px; top:0; height:{LINE_H}px; background:{t['hl']}; border-left:6px solid {t['blue']}; border-radius:8px; }}
-.rail {{ position:absolute; left:96px; top:24px; }}
-.dot {{ position:absolute; left:-7px; width:14px; height:14px; border-radius:7px; background:{t['blue']}; }}
-.side {{ position:absolute; left:1180px; top:{CODE_TOP}px; width:620px; }}
-.outcard {{ position:absolute; left:0; top:0; width:620px; height:{out_h}px; background:{t['card']}; border:2px solid {t['rule']}; border-radius:20px; }}
-.outlabel {{ position:absolute; left:32px; top:26px; margin:0; font:600 22px/1.2 'JetBrains Mono',monospace; letter-spacing:.12em; color:{t['muted']}; }}
-.out {{ position:absolute; left:32px; height:64px; font:600 46px/64px 'JetBrains Mono',monospace; }}
-.step {{ display:inline-block; width:56px; font-size:24px; font-weight:500; color:{t['faint']}; }}
-.vars {{ position:absolute; left:0; top:{out_h + 28}px; margin:0; font:500 30px/1.3 'JetBrains Mono',monospace; color:{t['soft']}; }}
+.hl {{ position:absolute; left:{SRC_X - 14}px; right:20px; top:0; height:{LH}px; background:{t['hl']}; border-left:6px solid {t['blue']}; border-radius:8px; }}
+.rail {{ position:absolute; left:0; top:0; width:{CARD_W - 4}px; height:{L['card_h'] - 4}px; overflow:visible; }}
+.seg {{ fill:none; stroke:{t['blue']}; stroke-width:4; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:0; }}
+.seg.new {{ stroke-dashoffset:1; }}
+.head {{ fill:{t['blue']}; }}
+.dot {{ fill:{t['blue']}; }}
+.head.new, .dot.new, .tag.new, .badge.new {{ opacity:0; }}
+.tag {{ position:absolute; right:28px; margin:0; height:{LH}px; font:500 24px/{LH}px 'JetBrains Mono',monospace; color:{t['blue']}; }}
+.tag.muted {{ color:{t['muted']}; }}
+.badge {{ position:absolute; right:24px; margin:0; padding:0 16px; height:40px; transform-origin:100% 50%;
+  font:700 24px/38px 'JetBrains Mono',monospace; color:{t['red']}; background:{t['red_tint']}; border:2px solid {t['red']}; border-radius:20px; box-sizing:border-box; }}
+.side {{ position:absolute; left:{SIDE_X}px; top:{CODE_TOP}px; width:{SIDE_W}px; height:{L['card_h']}px; }}
+.outcard {{ position:absolute; left:0; top:0; width:{SIDE_W}px; height:{out_h}px; background:{t['card']}; border:2px solid {t['rule']}; border-radius:22px; box-sizing:border-box; }}
+.outlabel {{ position:absolute; left:34px; top:28px; margin:0; font:600 22px/1.2 'JetBrains Mono',monospace; letter-spacing:.12em; color:{t['muted']}; }}
+.out {{ position:absolute; left:34px; height:76px; font:600 52px/76px 'JetBrains Mono',monospace; }}
+.step {{ display:inline-block; width:58px; font-size:26px; font-weight:500; color:{t['faint']}; vertical-align:top; }}
+.vars {{ position:absolute; left:4px; top:{out_h + 30}px; margin:0; font:500 30px/1.3 'JetBrains Mono',monospace; color:{t['soft']}; }}
 .varlabel {{ font-size:22px; letter-spacing:.12em; color:{t['muted']}; margin-right:18px; }}
-.note {{ position:absolute; left:0; top:{out_h + 100}px; width:620px; margin:0; font:600 44px/1.18 'Caveat',cursive; color:{t['blue']}; }}
-.qcard {{ position:absolute; left:0; top:{out_h + 96}px; width:620px; padding:28px 32px; box-sizing:border-box; background:{t['blue_tint']};
-  border:3px solid {t['blue']}; border-radius:20px; }}
-.qlabel {{ margin:0 0 10px; font:700 22px/1.2 'JetBrains Mono',monospace; letter-spacing:.14em; color:{t['blue']}; }}
-.qtext {{ margin:0; font:500 40px/1.25 'Source Serif 4',serif; color:{t['ink']}; }}
+.panel {{ position:absolute; left:0; top:{out_h + 100}px; width:{SIDE_W}px; bottom:0; box-sizing:border-box; border-radius:22px; padding:30px 34px; }}
+.notecard {{ background:{t['blue_tint']}; border-left:8px solid {t['blue']}; }}
+.note {{ margin:0; font:600 50px/1.16 'Caveat',cursive; color:{t['blue']}; }}
+.qcard {{ background:{t['blue_tint']}; border:3px solid {t['blue']}; }}
+.qlabel {{ margin:0 0 14px; font:700 24px/1.2 'JetBrains Mono',monospace; letter-spacing:.14em; color:{t['blue']}; }}
+.qtext {{ margin:0; font:500 46px/1.24 'Source Serif 4',serif; color:{t['ink']}; }}
 </style>
-<div id="root" data-composition-id="{sid}" data-width="{W}" data-height="{H}">
+<div id="root" data-composition-id="{sid}" data-width="{W}" data-height="{H}" data-program="{cur['program']}"
+  data-state="{scene['state']}" data-before="{scene['before']}">
   <p class="kicker" data-chrome="kicker">{esc(kicker)}</p>
   <p class="count" data-label="chapter-count">{index + 1} / {count}</p>
   <h1 class="title" data-label="scene-title">{esc(scene['title'])}</h1>
-  <div class="code" id="code-{sid}">
-    <div class="hl" id="hl" style="transform:translateY({hl_from + 24}px)"></div>
-    <div class="rows">{''.join(code_rows)}</div>
-    <div class="rail">{''.join(dots)}</div>
+  <p class="file" data-label="program-file">{esc(lesson.program(cur['program'])['path'].split('/')[-1])}</p>
+  <div class="code" id="code-{sid}" data-key="code">
+    <div class="hl" id="hl" style="transform:translateY({hl_from - LH / 2:.1f}px)"></div>
+    {''.join(code_rows)}
+    <svg class="rail" viewBox="0 0 {CARD_W - 4} {L['card_h'] - 4}" aria-hidden="true">{''.join(segs)}{''.join(heads)}{''.join(dots)}</svg>
+    {''.join(tag_html)}
   </div>
   <div class="side">
-    <div class="outcard"><p class="outlabel" data-chrome="output_label">{esc(text.ui('output_label').upper())}</p>{''.join(outs)}</div>
+    <div class="outcard" data-key="output"><p class="outlabel" data-chrome="output_label">{esc(text.ui('output_label').upper())}</p>{''.join(outs)}</div>
     <p class="vars"><span class="varlabel" data-chrome="vars_label">{esc(text.ui('vars_label').upper())}</span>{vars_html}</p>
     {side}
   </div>
@@ -272,14 +448,13 @@ def scene_html(lesson, scene, prev_sid, index, count, timing):
     var tl = gsap.timeline({{ paused: true }});
     var R = {reveal:.3f};
     tl.fromTo(q('.title'), {{ opacity: 0, y: 18 }}, {{ opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }}, 0.05);
-    tl.fromTo(q('.note, .qcard'), {{ opacity: 0, y: 14 }}, {{ opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }}, {0.35 if not index else 0.25});
+    tl.fromTo(q('.panel'), {{ opacity: 0, y: 14 }}, {{ opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }}, {0.35 if not index else 0.25});
     if (q('.out-new').length) tl.set(q('.out-new'), {{ opacity: 0 }}, 0);
-    if (q('.dot-new').length) tl.set(q('.dot-new'), {{ opacity: 0 }}, 0);
-    if (q('.exec-new').length) tl.set(q('.exec-new'), {{ color: '{t['muted']}' }}, 0);
-    tl.to(q('#hl'), {{ y: {hl_to + 24}, duration: 0.45, ease: 'power2.inOut' }}, R);
-    if (q('.exec-new').length) tl.to(q('.exec-new'), {{ color: '{t['ink']}', duration: 0.3 }}, R + 0.1);
-    if (q('.dot-new').length) tl.to(q('.dot-new'), {{ opacity: 1, duration: 0.2, stagger: 0.06 }}, R + 0.1);
-    if (q('.out-new').length) tl.fromTo(q('.out-new'), {{ opacity: 0, x: -14 }}, {{ opacity: 1, x: 0, duration: 0.35, stagger: 0.12, ease: 'power2.out' }}, R + 0.15);
+    if (q('.ln.exec-new').length) tl.set(q('.ln.exec-new'), {{ color: '{t['muted']}' }}, 0);
+    var d = gsap.timeline({{ data: 'draw' }});
+    {chr(10).join('    ' + j for j in js_steps).strip()}
+    d.timeScale({1 / plan['k']:.6f});
+    tl.add(d, R);
     tl.set({{}}, {{}}, {scene['duration']:.3f});
     window.__timelines["{sid}"] = tl;
   }})();
@@ -339,10 +514,8 @@ def write_composition(lesson, timing, comp):
     (comp / "hyperframes.json").write_text(json.dumps({"media": {"autoProxy": False}}))
     (comp / "index.html").write_text(host_html(lesson, timing))
     scenes = timing["scenes"]
-    prev = None
     for i, s in enumerate(scenes):
-        (comp / "compositions" / f"{s['id']}.html").write_text(scene_html(lesson, s, prev, i, len(scenes), timing))
-        prev = s["state"]
+        (comp / "compositions" / f"{s['id']}.html").write_text(scene_html(lesson, s, i, len(scenes), timing))
 
 
 # ---------------------------------------------------------------- render + mux

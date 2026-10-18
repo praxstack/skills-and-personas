@@ -130,7 +130,14 @@ function measurePage(minPx) {
       problems.push({ kind: 'overflow', text: el.textContent.trim().slice(0, 40), scrollWidth: el.scrollWidth, clientWidth: el.clientWidth });
     if (r.right > iw + 1 && !el.closest('[data-scroll]')) problems.push({ kind: 'offscreen', tag: el.tagName, id: el.id, right: r.right });
   }
-  return { problems, fonts: [...new Set([...document.querySelectorAll('body *')].map((e) => getComputedStyle(e).fontFamily))],
+  // key nodes (D20.3): fully inside the viewport horizontally, and no inner scroll of their own
+  for (const el of document.querySelectorAll('[data-key]')) {
+    const r = el.getBoundingClientRect();
+    if (r.left < -1 || r.right > iw + 1) problems.push({ kind: 'key-node-offscreen', key: el.dataset.key, left: r.left, right: r.right });
+    if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
+      problems.push({ kind: 'key-node-inner-scroll', key: el.dataset.key, scrollWidth: el.scrollWidth, clientWidth: el.clientWidth });
+  }
+  return { keyNodes: [...document.querySelectorAll('[data-key]')].map((e) => e.dataset.key), problems, fonts: [...new Set([...document.querySelectorAll('body *')].map((e) => getComputedStyle(e).fontFamily))],
            loadedFaces: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family) };
 }
 

@@ -193,6 +193,9 @@ def map_item(lesson, it):
         if ref == "scene-title":
             ok = t in {s["title"] for s in lesson.data["storyboard"]}
             return ([], None) if ok else ([], "not a storyboard scene title")
+        if ref == "program-file":
+            ok = t in {p["path"].split("/")[-1] for p in lesson.data["programs"]}
+            return ([], None) if ok else ([], "not a lesson program file")
         pat = LABEL_PATTERNS.get(ref)
         return ([], None) if pat and re.fullmatch(pat, t) else ([], f"label {ref!r} holds words")
     if kind == "code":

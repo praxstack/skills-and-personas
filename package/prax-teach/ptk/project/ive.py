@@ -24,6 +24,7 @@ import os
 import shutil
 
 from .. import fonts, host, text
+from . import path as rail
 from ..text import esc
 
 
@@ -32,8 +33,7 @@ def _view(lesson, sid):
     s = st["state"]
     facts = lesson.by_id("facts")
     src = lesson.program_source(s["program"]).split("\n")
-    first = min(s.get("path") or [4])
-    last = next((i + 1 for i, ln in enumerate(src) if ln.strip().startswith("return")), len(src))
+    first, last = rail.body_range(src)
     return {"state_id": sid, "label": st["label"], "program": s["program"],
             "program_path": lesson.program(s["program"])["path"], "line": s["line"], "path": s.get("path", []),
             "code": [[n, src[n - 1]] for n in range(first, last + 1)],
@@ -41,33 +41,41 @@ def _view(lesson, sid):
 
 
 def cues(lesson, timing):
-    """Metadata cues per the rule above."""
-    scenes = timing["scenes"]
+    """Metadata cues from the screen plan (video.plan_screen): the explorer and the frame read the
+    same before/reveal/shown fields, so they cannot disagree about what is on screen."""
     out = []
-    prev_state = None
     answer_pending = None
-    for i, sc in enumerate(scenes):
-        shown = sc["shown"] if i else 0.0
-        if prev_state is not None and sc["state"] != prev_state and sc["reveal"] < shown:
+    for sc in timing["scenes"]:
+        start = sc["start"]
+        if sc["before"] != sc["state"]:
             kind = "answer" if answer_pending else "transition"
-            out.append({"kind": kind, "scene": sc["id"], "start": sc["reveal"], "end": shown,
-                        "state": _view(lesson, prev_state),
+            if sc["reveal"] > sc["start"]:
+                out.append({"kind": "state", "scene": sc["id"], "start": sc["start"], "end": sc["reveal"],
+                            "state": _view(lesson, sc["before"])})
+            out.append({"kind": kind, "scene": sc["id"], "start": sc["reveal"], "end": sc["shown"],
+                        "state": _view(lesson, sc["before"]),
                         **({"answer_for": answer_pending} if answer_pending else {})})
             answer_pending = None
+            start = sc["shown"]
         q = sc.get("question")
-        start = shown if sc["state"] != prev_state else sc["start"]
         cue = {"kind": "question" if q else "state", "scene": sc["id"], "start": start, "end": sc["end"],
                "state": _view(lesson, sc["state"])}
         if q:
             cue["question"] = {"prompt": q["prompt"], "scene": sc["id"]}
             answer_pending = sc["id"]
         out.append(cue)
-        prev_state = sc["state"]
     out.sort(key=lambda c: c["start"])
-    for i, c in enumerate(out):
-        c["end"] = out[i + 1]["start"] if i + 1 < len(out) else timing["duration"]
+    merged = []
+    for c in out:
+        # a plain state cue that continues the previous cue's state (and adds no question) is the same cue
+        if merged and c["kind"] == "state" and merged[-1]["kind"] in ("state", "question") \
+                and merged[-1]["state"]["state_id"] == c["state"]["state_id"]:
+            continue
+        merged.append(c)
+    for i, c in enumerate(merged):
+        c["end"] = merged[i + 1]["start"] if i + 1 < len(merged) else timing["duration"]
         c["cue"] = f"m{i + 1}"
-    return [c for c in out if c["end"] - c["start"] > 0.001]
+    return [c for c in merged if c["end"] - c["start"] > 0.001]
 
 
 def write_metadata_vtt(path, cue_list):
@@ -150,7 +158,7 @@ JS = r"""
     var p = cues[i].p, st = p.state;
     box.dataset.state = st.state_id; box.dataset.cue = p.cue; box.dataset.kind = p.kind;
     box.appendChild(el('p', 'slabel', st.label)).setAttribute('data-trace', st.state_id);
-    var code = el('div', 'code'); code.setAttribute('data-code', st.program); code.setAttribute('role', 'group');
+    var code = el('div', 'code'); code.setAttribute('data-code', st.program); code.setAttribute('role', 'group'); code.setAttribute('data-key', 'code');
     code.setAttribute('aria-label', S.code_label + ': ' + st.program_path);
     st.code.forEach(function (row) {
       var ln = el('div', 'ln' + (st.path.indexOf(row[0]) >= 0 ? ' exec' : '') + (row[0] === st.line ? ' cur' : ''));
@@ -158,13 +166,13 @@ JS = r"""
     });
     box.appendChild(el('p', 'plabel', S.code_label)); box.appendChild(code);
     box.appendChild(el('p', 'plabel', S.output_label));
-    var out = el('ol', 'out'); out.setAttribute('data-role', 'output');
+    var out = el('ol', 'out'); out.setAttribute('data-role', 'output'); out.setAttribute('data-key', 'output');
     if (!st.output.length) out.appendChild(el('li', 'empty', '—'));
     st.output.forEach(function (o, k) { var li = el('li'); li.appendChild(el('span', 'k', String(k + 1))); var s = el('span', 'val', o.text); s.setAttribute('data-fact', o.fact); li.appendChild(s); out.appendChild(li); });
     box.appendChild(out);
     var vars = Object.keys(st.vars).map(function (k) { return k + ' = ' + st.vars[k]; }).join('   ');
     var vp = el('p', 'vars', S.vars_label + ': ' + vars); vp.setAttribute('data-code', st.program); box.appendChild(vp);
-    if (p.question) { var q = el('div', 'q'); q.appendChild(el('p', 'plabel', S.question_label)); var qt = el('p', 'qt', p.question.prompt); qt.setAttribute('data-question', p.question.scene); q.appendChild(qt); box.appendChild(q); }
+    if (p.question) { var q = el('div', 'q'); q.setAttribute('data-key', 'question'); q.appendChild(el('p', 'plabel', S.question_label)); var qt = el('p', 'qt', p.question.prompt); qt.setAttribute('data-question', p.question.scene); q.appendChild(qt); box.appendChild(q); }
     $('prev').disabled = i <= 0; $('next').disabled = i >= shownIdx;
   }
   function sync(reason) {
@@ -294,7 +302,7 @@ def project(lesson, out, video_dir, timing):
     ffmpeg = host.which("ffmpeg")
     posters = []
     for sc in timing["scenes"]:
-        t = min(sc["shown"] + 0.3, sc["end"] - 0.1) if sc["shown"] else min(1.5, sc["end"] - 0.1)
+        t = min(max(sc["shown"], sc["start"] + 1.0) + 0.3, sc["end"] - 0.1)
         f = pdir / f"{sc['id']}.jpg"
         host.run([ffmpeg, "-v", "error", "-y", "-ss", f"{t:.3f}", "-i", mp4, "-frames:v", "1", "-vf", "scale=960:-2",
                   "-q:v", "3", f], check=True, timeout=120)

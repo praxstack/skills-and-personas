@@ -253,6 +253,13 @@ LEAK_JS = r"""(answerWords) => {
 }"""
 
 
+def _pause_points(c):
+    """Just after the cue starts (1.5 frames), the old WP0 point, and just before it ends."""
+    span = c["end"] - c["start"]
+    pts = [c["start"] + min(0.05, span / 3), c["start"] + min(0.2, span / 2), c["end"] - min(0.05, span / 3)]
+    return sorted({round(t, 3) for t in pts})
+
+
 def ive_gates(lesson, ive_dir, cue_list, timing):
     sha = lesson.sha256()
     work = ive_dir.parent / "work" / "ive"
@@ -262,14 +269,14 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
         url = srv.url + "/index.html"
         ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
         steps = [ready]
-        # pause/seek: every cue, a point inside it
+        # pause/seek: every cue at three points (just after its start, inside it, just before its end)
         for c in cue_list:
-            t = c["start"] + min(0.2, (c["end"] - c["start"]) / 2)
-            steps += [{"eval": f"(async () => {{ const v = document.getElementById('v'); v.pause(); v.currentTime = {t:.3f}; "
-                               f"await new Promise(r => v.addEventListener('seeked', r, {{once: true}})); "
-                               f"await new Promise(r => setTimeout(r, 150)); "
-                               f"const s = document.getElementById('state'); return {{t: {t:.3f}, state: s.dataset.state, cue: s.dataset.cue}}; }})()",
-                       "as": f"seek:{c['cue']}"}]
+            for t in _pause_points(c):
+                steps += [{"eval": f"(async () => {{ const v = document.getElementById('v'); v.pause(); v.currentTime = {t:.3f}; "
+                                   f"await new Promise(r => v.addEventListener('seeked', r, {{once: true}})); "
+                                   f"await new Promise(r => setTimeout(r, 150)); "
+                                   f"const s = document.getElementById('state'); return {{t: {t:.3f}, state: s.dataset.state, cue: s.dataset.cue}}; }})()",
+                           "as": f"seek:{c['cue']}@{t:.3f}"}]
         # leak: 0.1 s before each answer cue
         for c in answer_cues:
             q = next(x for x in cue_list if x.get("question") and x["question"]["scene"] == c["answer_for"])
@@ -315,14 +322,13 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     R = {r["id"]: r for r in res["results"]}
     beh = R["ive-behaviour"]
     vals = beh.get("values", {})
-    seek_rows, bad_seek = [], []
-    for c in cue_list:
-        got = vals.get(f"seek:{c['cue']}") or {}
-        row = {"cue": c["cue"], "kind": c["kind"], "t": got.get("t"), "expected_state": c["state"]["state_id"],
-               "shown_state": got.get("state"), "shown_cue": got.get("cue")}
-        seek_rows.append(row)
-        if row["shown_state"] != row["expected_state"]:
-            bad_seek.append(row)
+    # what the video frame shows at the same instants, derived from the composition (review P1-3)
+    from . import frames
+    times = [round(t, 3) for c in cue_list for t in _pause_points(c)]
+    frame_at, _sc = frames.probe(lesson, ive_dir.parent / "video", timing, times, work_name="frames-ive", lesson_sha=sha)
+    explorer = {(c["cue"], t): (vals.get(f"seek:{c['cue']}@{t:.3f}") or {}).get("state")
+                for c in cue_list for t in _pause_points(c)}
+    seek_rows, bad_seek = frames.compare_pauses(cue_list, frame_at, explorer, _pause_points)
     chap = vals.get("chapters") or []
     exp_chap = []
     for s in timing["scenes"]:
@@ -330,8 +336,12 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
         exp_chap.append(cue_list[k]["state"]["state_id"])
     chap_bad = [{"chapter": i, "expected": e, "shown": (chap[i] if i < len(chap) else {}).get("state")}
                 for i, e in enumerate(exp_chap) if i >= len(chap) or chap[i].get("state") != e]
-    gates.append(g("ive.pause-state", "ive", beh.get("ok") and not bad_seek and not chap_bad and len(seek_rows) == len(cue_list),
-                   {"cues_checked": len(seek_rows), "mismatches": bad_seek, "chapter_jumps": chap, "chapter_mismatches": chap_bad,
+    gates.append(g("ive.pause-state", "ive", beh.get("ok") and not bad_seek and not chap_bad
+                   and len(seek_rows) == len(times) and len(frame_at) == len(set(times)),
+                   {"rule": "explorer == cue state, and explorer == state derived from the frame (a transition or "
+                            "answer cue may show a frame in mid-tween)", "pauses_checked": len(seek_rows),
+                    "mismatches": bad_seek, "chapter_jumps": chap, "chapter_mismatches": chap_bad,
+                    "frame_states": {f"{r['cue']}@{r['t']}": r["frame_state"] for r in seek_rows},
                     "error": beh.get("error", "")[:500]}))
     leaks = {k: v for k, v in vals.items() if k.startswith("leak:")}
     leak_bad = [{"cue": k, **v} for k, v in leaks.items() if v.get("hits")]
@@ -349,7 +359,11 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     for w in WIDTHS:
         for scn in SCHEMES:
             m = R[f"ive-measure:{w}:{scn}"]
-            pages.append({"width": w, "scheme": scn, "problems": (m.get("measure") or {}).get("problems", ["job failed"]),
+            keys = (m.get("measure") or {}).get("keyNodes", [])
+            missing = [k for k in ("code", "output") if k not in keys]
+            pages.append({"width": w, "scheme": scn, "key_nodes": keys,
+                          "problems": (m.get("measure") or {}).get("problems", ["job failed"])
+                          + ([{"kind": "key-node-missing", "keys": missing}] if missing else []),
                           "console": [c for c in m.get("console", []) if "error" in c.lower() or "violat" in c.lower()],
                           "shot": f"shots/ive-{w}-{scn}.png"})
             if not R[f"ive-shot:{w}:{scn}"].get("ok"):
