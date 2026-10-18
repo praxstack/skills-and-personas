@@ -188,3 +188,64 @@ def test_morph_output_stays_readable_until_the_new_output_is_on_screen():
     none_old = frames.morph_output_problems([{"t": t / 10, "out": [], "cur": [0.0]} for t in range(5)])
     assert none_old == [], none_old
     return {"gap_caught_at": gap[0]["t"], "cross_fade_ok": True}
+
+
+def _layer_rows(out_curve, in_curve, step=0.05):
+    return [{"t": round(i * step, 2), "layers": [{"state": "s1", "flagged": True, "o": a},
+                                                 {"state": "s2", "flagged": False, "o": b}]}
+            for i, (a, b) in enumerate(zip(out_curve, in_curve))]
+
+
+def test_panel_overlap_only_while_cross_fading():
+    """Round-17 P2-3: the outgoing panel layer carries HyperFrames' overlap exemption, so the probe owns the
+    cross-fade check, measured on the frames. Two layers may both be on screen only while one of them is fading,
+    for at most MAX_CROSSFADE seconds, and the exempt (outgoing) layer must be gone by the scene's end. The
+    auditor's counterexample: drop the outgoing layer's fade-out tween, so it stays fully shown under the new one
+    for the whole scene. That is now a failure."""
+    real_in = [0, 0, 0.074, 0.276, 0.452, 0.605, 0.732, 0.835, 0.913, 0.966, 0.995, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    real_out = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.997, 0.95, 0.848, 0.69, 0.477, 0.208, 0, 0, 0, 0]
+    assert frames.layer_overlap_problems(_layer_rows(real_out, real_in)) == [], "the measured neuron sc4 cross-fade"
+    stuck = frames.layer_overlap_problems(_layer_rows([1] * len(real_in), real_in))
+    kinds = {p["kind"] for p in stuck}
+    assert {"layer-never-fades-out", "overlap-not-fading"} <= kinds, stuck
+    half = frames.layer_overlap_problems(_layer_rows([1] * 11 + [0.5] * 10, real_in))
+    assert "layer-never-fades-out" in {p["kind"] for p in half}, half
+    slow_out = [1] * 11 + [round(1 - i / 30, 3) for i in range(1, 31)] + [0] * 3
+    slow = frames.layer_overlap_problems(_layer_rows(slow_out, real_in + [1] * (len(slow_out) - len(real_in))))
+    assert "cross-fade-too-long" in {p["kind"] for p in slow}, slow
+    one = [{"t": i / 20, "layers": [{"state": "s1", "flagged": False, "o": 1}]} for i in range(10)]
+    assert frames.layer_overlap_problems(one) == []
+    return {"stuck": sorted(kinds), "max_crossfade_s": frames.MAX_CROSSFADE}
+
+
+def test_path_set_matching_refuses_ambiguity():
+    """Round-17 P3-1: the frame probe compares visited lines as sets (a dot per line). Two trace states that are the
+    same program, line, output and path set would be indistinguishable, and match_state used to return the first.
+    Now such a frame is `ambiguous`, never a state. For a lesson with a figure.panel, a frame whose panel is missing
+    (`none`) is unknown, not a match, except in a question scene, which hides the panel by design."""
+    import copy
+    lesson = model.load(SLICE)
+    s0 = lesson.data["trace"][0]
+    twin = copy.deepcopy(lesson)
+    clone = copy.deepcopy(s0)
+    clone["id"] = "s-twin"
+    clone["state"]["path"] = list(s0["state"]["path"]) + list(s0["state"]["path"])  # same set, repeated lines
+    twin.data["trace"].append(clone)
+    probe = {"program": s0["state"]["program"], "line": s0["state"]["line"], "path": list(s0["state"]["path"]),
+             "output": list(s0["state"]["output"]), "panel": "none", "moving": False}
+    assert frames.match_state(lesson, probe) == s0["id"]
+    assert frames.match_state(twin, probe) == "ambiguous", frames.match_state(twin, probe)
+    assert frames.set_collisions(twin) == [[s0["id"], "s-twin"]], frames.set_collisions(twin)
+    assert frames.set_collisions(lesson) == [], "the slice has no set collisions"
+    panel = model.load(SLICE.parent / "neuron")
+    p0 = panel.data["trace"][-1]
+    pp = {"program": p0["state"]["program"], "line": p0["state"]["line"], "path": list(p0["state"]["path"]),
+          "output": list(p0["state"]["output"]), "moving": False}
+    scene = next(sc for sc in panel.data["storyboard"] if sc["state"] == p0["id"] and not sc.get("question"))
+    assert frames.match_state(panel, {**pp, "panel": p0["id"]}, scene) == p0["id"]
+    assert frames.match_state(panel, {**pp, "panel": "none"}, scene) == "unknown", "a lost panel must not match"
+    assert frames.match_state(panel, {**pp, "panel": "none"}) == "unknown", "with no scene known, the panel is expected"
+    q = {"id": "q", "state": p0["id"], "question": {"prompt": "?"}}
+    assert frames.match_state(panel, {**pp, "panel": "none"}, q) == p0["id"], "a question scene hides the panel"
+    assert frames.match_state(panel, {**pp, "panel": p0["id"]}, q) == "unknown", "and must not draw it"
+    return {"collision": "ambiguous", "lost_panel": "unknown"}

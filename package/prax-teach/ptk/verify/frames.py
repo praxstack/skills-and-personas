@@ -70,6 +70,91 @@ PROBE_JS = r"""(t) => {
            moving };
 }"""
 
+LAYERS_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  return { t, layers: [...root.querySelectorAll('.mlayer')].map((l) => ({ state: l.dataset.panelState,
+           flagged: l.hasAttribute('data-layout-allow-overlap'), o: +eop(l).toFixed(3) })) };
+}"""
+
+MAX_CROSSFADE = 1.0  # seconds two panel layers may share the screen (measured: 0.65 to 0.7 s in the exemplars)
+LAYER_SHOWN = 0.01
+
+
+def layer_overlap_problems(rows, max_crossfade=MAX_CROSSFADE):
+    """Round-17 P2-3: HyperFrames exempts the outgoing panel layer (data-layout-allow-overlap) from its overlap
+    audit, so this owns the cross-fade, measured on frames. `rows`: [{t, layers: [{state, flagged, o}]}] sampled
+    through a scene. Two layers on screen together is allowed only inside a window where a layer is fading
+    (opacity changing frame to frame), no longer than max_crossfade, that ends before the scene does; an exempt
+    layer must be off screen at the scene's end."""
+    rows = sorted(rows, key=lambda r: r["t"])
+    problems, run = [], []
+
+    def ops(i):
+        return [l["o"] for l in rows[i]["layers"]]
+
+    def moving(i):
+        here = ops(i)
+        near = [ops(j) for j in (i - 1, i + 1) if 0 <= j < len(rows)]
+        return any(abs(a - b) > 0.001 for other in near for a, b in zip(here, other))
+
+    def close(run, at_end):
+        if not run:
+            return
+        t0, t1 = rows[run[0]]["t"], rows[run[-1]]["t"]
+        if t1 - t0 > max_crossfade + 1e-6:
+            problems.append({"kind": "cross-fade-too-long", "from": t0, "to": t1, "max": max_crossfade})
+        if at_end:
+            problems.append({"kind": "layer-never-fades-out", "from": t0,
+                             "states": [l["state"] for l in rows[run[-1]]["layers"] if l["o"] > LAYER_SHOWN]})
+        still = [rows[i]["t"] for i in run if not moving(i)]
+        if still:
+            problems.append({"kind": "overlap-not-fading", "at": still[:10], "frames": len(still)})
+
+    for i, r in enumerate(rows):
+        if sum(1 for l in r["layers"] if l["o"] > LAYER_SHOWN) > 1:
+            run.append(i)
+        else:
+            close(run, False)
+            run = []
+    close(run, True)
+    if rows:
+        left = [l["state"] for l in rows[-1]["layers"] if l.get("flagged") and l["o"] > LAYER_SHOWN]
+        if left:
+            problems.append({"kind": "exempt-layer-still-shown", "at": rows[-1]["t"], "states": left})
+    return problems
+
+
+def layer_samples(video_dir, timing, lesson_sha=None, step=0.05):
+    """{scene_id: rows} for every scene whose composition draws panel layers, sampled every `step` seconds."""
+    comp = video_dir / "composition"
+    with_layers = {f.stem for f in (comp / "compositions").glob("*.html") if "mlayer" in f.read_text()}
+    scenes = [s for s in timing["scenes"] if s["id"] in with_layers]
+    if not scenes:
+        return {}
+    hdir = video_dir / "work" / "frames-layers"
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    jobs = []
+    with visual.LocalServer(video_dir) as srv:
+        for sc in scenes:
+            ts = [round(i * step, 3) for i in range(int((sc["end"] - sc["start"]) / step))]
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            steps += [{"eval": f"({LAYERS_JS})({t})", "as": f"t:{t}"} for t in ts]
+            jobs.append({"id": f"layers:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-layers/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / "frames-layers-run", lesson_sha)
+    out = {}
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        out[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:300],
+                    "rows": sorted((r.get("values") or {}).values(), key=lambda v: v["t"])}
+    return out
+
+
 LAYOUT_JS = r"""() => {
   const W = 1920, H = 1080, problems = [];
   const root = document.querySelector('[data-composition-id]');
@@ -157,16 +242,47 @@ def drawn_program(lesson, code):
     return hits[0] if len(hits) == 1 else None
 
 
-def match_state(lesson, probe):
+def _frame_key(st):
+    s = st["state"]
+    return (s["program"], s["line"], tuple(sorted(set(s.get("path", [])))), tuple(s["output"]))
+
+
+def set_collisions(lesson):
+    """Groups of trace states a frame cannot tell apart (same program, line, output and visited-line set) when the
+    lesson has no panel to separate them (round-17 P3-1)."""
+    if "panel" in (lesson.data.get("figure") or {}):
+        return []
+    groups = {}
+    for st in lesson.data["trace"]:
+        groups.setdefault(_frame_key(st), []).append(st["id"])
+    return [ids for ids in groups.values() if len(ids) > 1]
+
+
+def panel_expected(lesson, scene=None):
+    """Whether a frame of `scene` must draw the mechanism panel: the lesson declares a figure.panel and the scene
+    is not a question (a question scene hides the panel, which would show the answer)."""
+    return "panel" in (lesson.data.get("figure") or {}) and not (scene or {}).get("question")
+
+
+def match_state(lesson, probe, scene=None):
+    """The one trace state the frame shows; "moving", "unknown", or "ambiguous" when more than one state fits.
+    Paths compare as sets (one dot per line). Where the panel is expected (panel_expected), the drawn panel must
+    show the state; a frame that lost its panel ("none") matches nothing. Where it is not, no panel may be drawn."""
     if probe.get("moving"):
         return "moving"
+    has_panel = "panel" in (lesson.data.get("figure") or {})
+    want_panel = panel_expected(lesson, scene)
+    hits = []
     for st in lesson.data["trace"]:
         s = st["state"]
         if (s["program"] == probe["program"] and s["line"] == probe["line"]
                 and sorted(set(s.get("path", []))) == sorted(set(probe["path"])) and s["output"] == probe["output"]
-                and probe.get("panel", "none") in ("none", st["id"])):
-            return st["id"]
-    return "unknown"
+                and (probe.get("panel") == st["id"] if want_panel else
+                     probe.get("panel", "none") == "none" if has_panel else probe.get("panel", "none") in ("none", st["id"]))):
+            hits.append(st["id"])
+    if len(hits) > 1:
+        return "ambiguous"
+    return hits[0] if hits else "unknown"
 
 
 def check_points(scene):
@@ -205,6 +321,7 @@ def probe(lesson, video_dir, timing, times, snapshots=None, work_name="frames", 
                          "width": 1920, "height": 1080, "steps": steps})
         res = visual.shoot(jobs, video_dir / "work" / f"{work_name}-run", lesson_sha)
     frames, scenes = {}, {}
+    by_id = {sc["id"]: sc for sc in timing["scenes"]}
     for r in res["results"]:
         sid = r["id"].split(":", 1)[1]
         vals = r.get("values", {})
@@ -212,12 +329,13 @@ def probe(lesson, video_dir, timing, times, snapshots=None, work_name="frames", 
             if isinstance(v, dict) and "code" in v:
                 v["program"] = drawn_program(lesson, v.pop("code"))
             if k.startswith("t:"):
-                frames[float(k[2:])] = {**v, "scene": sid, "state": match_state(lesson, v)}
+                frames[float(k[2:])] = {**v, "scene": sid, "state": match_state(lesson, v, by_id.get(sid))}
         scenes[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:400],
                        "console": [c for c in r.get("console", []) if "error" in c.lower()]}
         for name in ("mid", "settled"):
             if f"p:{name}" in vals:
-                scenes[sid][name] = {"state": match_state(lesson, vals[f"p:{name}"]), "layout": vals.get(f"l:{name}")}
+                scenes[sid][name] = {"state": match_state(lesson, vals[f"p:{name}"], by_id.get(sid)),
+                                     "layout": vals.get(f"l:{name}")}
     return frames, scenes
 
 
@@ -229,6 +347,7 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
     if snaps.exists():
         shutil.rmtree(snaps)
     _f, scenes = probe(lesson, video_dir, timing, [], snapshots=snaps, work_name="frames-layout", lesson_sha=lesson_sha)
+    layers = layer_samples(video_dir, timing, lesson_sha)
     bad, summary = {}, {}
     for s in timing["scenes"]:
         got = scenes.get(s["id"], {})
@@ -244,8 +363,12 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
             # the midpoint may fall inside the scene's own drawing (a morph is long); it must still
             # pass the layout checks, and the settled point must show the scene's state
             drawing = name == "mid" and s["reveal"] - s["start"] <= s["duration"] / 2 < s["shown"] - s["start"]
-            if pt.get("state") in (None, "unknown") or (pt.get("state") == "moving" and not drawing):
+            if pt.get("state") in (None, "unknown", "ambiguous") or (pt.get("state") == "moving" and not drawing):
                 probs.append({"kind": "no-trace-state", "at": name, "shows": pt.get("state")})
+        if s["id"] in layers:
+            lay = layers[s["id"]]
+            probs += ([] if lay["ok"] else [{"kind": "layer-probe-failed", "error": lay["error"]}])
+            probs += layer_overlap_problems(lay["rows"]) if lay["rows"] else [{"kind": "layer-probe-empty"}]
         if (got.get("settled") or {}).get("state") != s["state"]:
             probs.append({"kind": "settled-state", "shows": (got.get("settled") or {}).get("state"), "scene_state": s["state"]})
         summary[s["id"]] = {n: {"state": (got.get(n) or {}).get("state"),
@@ -253,7 +376,11 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
                                    for k in ("min_px", "empty_bottom_frac", "key_nodes")}} for n in ("mid", "settled")}
         if probs:
             bad[s["id"]] = probs
-    measured = {"scenes": summary, "problems": bad, "max_empty_bottom": MAX_EMPTY_BOTTOM,
+    collide = set_collisions(lesson)
+    if collide:
+        bad["lesson"] = [{"kind": "states-indistinguishable", "groups": collide}]
+    measured = {"scenes": summary, "problems": bad, "max_empty_bottom": MAX_EMPTY_BOTTOM, "set_collisions": collide,
+                "panel_layers": {sid: {"frames": len(v["rows"]), "max_crossfade_s": MAX_CROSSFADE} for sid, v in layers.items()},
                 "snapshots": sorted(f"video/work/snapshots/{p.name}" for p in snaps.glob("*.png"))}
     return visual.g("video.scene-layout", "video", not bad and len(scenes) == len(timing["scenes"]), measured,
                     "" if not bad else "scene snapshots fail the AC-5.6 layout or show no trace state")
