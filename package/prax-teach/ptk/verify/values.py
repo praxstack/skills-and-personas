@@ -37,6 +37,32 @@ def _compare(fid, shown, lesson, where, bad):
         bad.append({"where": where, "fact": fid, "shown": shown, "captured": captured, "expected": expected})
 
 
+def _alt_output(root, lesson, where, bad):
+    """The alt text's "Output of <program>: <values>." sentence, value by value (review P2-4)."""
+    fig = lesson.data.get("figure")
+    desc = next((el for el in root.iter() if el.tag.split("}")[-1] == "desc"), None)
+    if not fig or desc is None:
+        return 0
+    tpl = re.escape(text.ui("alt_output", program="\0", lines="\1"))
+    pat = tpl.replace(re.escape("\0"), "(?P<program>.+?)").replace(re.escape("\1"), "(?P<lines>.+)")
+    found = [m for m in (re.fullmatch(pat, s) for s in text.sentences(desc.text or "")) if m]
+    fids = lesson.state(fig["states"][-1])["state"]["output"]
+    if len(found) != 1:
+        bad.append({"where": f"{where}:<desc>", "problem": f"{len(found)} alt output sentence(s), expected 1"})
+        return 0
+    m = found[0]
+    if m["program"] != lesson.program(fig["program"])["path"]:
+        bad.append({"where": f"{where}:<desc>", "problem": "wrong program", "shown": m["program"]})
+    shown = m["lines"].split(", ")
+    if len(shown) != len(fids):
+        bad.append({"where": f"{where}:<desc>", "problem": "wrong number of values", "shown": m["lines"],
+                    "facts": fids})
+        return len(fids)
+    for fid, val in zip(fids, shown):
+        _compare(fid, val, lesson, f"{where}:<desc>", bad)
+    return len(fids)
+
+
 def check_svg(path, lesson):
     root = ET.parse(path).getroot()
     bad, n = [], 0
@@ -45,6 +71,7 @@ def check_svg(path, lesson):
         if fid is not None:
             n += 1
             _compare(fid, "".join(el.itertext()), lesson, path.name, bad)
+    n += _alt_output(root, lesson, path.name, bad)
     return n, bad
 
 
