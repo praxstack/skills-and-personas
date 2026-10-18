@@ -51,7 +51,7 @@
    "id": "m6.recap.overbroad",
    "kind": "overbroad",
    "target": "c.recap",
-   "find": "In this program, the break on line 12 is what ends the switch.",
+   "find": "In fallthrough.c, the break on line 12 is what ends the switch.",
    "replace": "In every switch, a break statement is what ends the switch.",
    "why_false": "A switch also ends when control reaches the end of its body, or by return or goto."
   },

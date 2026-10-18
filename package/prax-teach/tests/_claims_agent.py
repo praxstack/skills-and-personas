@@ -65,7 +65,7 @@ def fcast_lesson():
 
 def same_bits_lesson():
     """The f-cast lesson as an author who believes the 'same bits' story would write it: c.cast says
-    the format string only reads the bits, and the representation claim (c.bits) is gone."""
+    the format string only reads the bits, with a matching justification and citation."""
     base = _fixture(F_CAST)
     data = copy.deepcopy(base.data)
     for c in data["claims"]:
@@ -78,12 +78,8 @@ def same_bits_lesson():
                              "clause": "§7.21.6.1 ¶8",
                              "quote": "f,F A double argument representing a floating-point number is converted to "
                                       "decimal notation in the style [−]ddd.ddd"}]
-    data["claims"] = [c for c in data["claims"] if c["id"] != "c.bits"]
     for sc in data["storyboard"]:
-        sc["narration"] = [dict(n, text=SAME_BITS) if n["claims"] == ["c.cast"] else n
-                           for n in sc["narration"] if n["claims"] != ["c.bits"]]
-    data["trace"] = [t for t in data["trace"] if t["id"] != "s3"]
-    data["storyboard"] = [dict(sc, state="s2") if sc["state"] == "s3" else sc for sc in data["storyboard"]]
+        sc["narration"] = [dict(n, text=SAME_BITS) if n["claims"] == ["c.cast"] else n for n in sc["narration"]]
     lesson = FixtureLesson(base.path, data)
     return lesson, claims.texts_from_model(lesson)
 

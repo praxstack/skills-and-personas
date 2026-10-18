@@ -39,7 +39,7 @@
         "clang": "",
         "gcc-16": ""
       },
-      "source_sha256": "b9c5ea96ab744e86e0f99ac80d9797f782f9838397dbc6fed0ee7e1d53780f7a"
+      "source_sha256": "f55bd5e4b0b316f149b082e4b4a2bd5297284ae3c989b54711453188eab2ea5d"
     }
   ],
   "facts": [
@@ -59,7 +59,7 @@
       "source": {
         "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
         "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fcast.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "07abf38f2522f8ae1f37a06fbd20d7c45d0c68ba2b181485e1cb2279e2d16504",
+        "stdout_sha256": "9e17157baf1a7ff61793906b62f70d9ade4a6ccd4c052de044fdf228a44272aa",
         "runs": 2,
         "sandbox": "sandbox-exec MODE=run"
       }
@@ -80,49 +80,7 @@
       "source": {
         "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
         "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fcast.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "07abf38f2522f8ae1f37a06fbd20d7c45d0c68ba2b181485e1cb2279e2d16504",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
-      }
-    },
-    {
-      "id": "f.abyte",
-      "program": "p1",
-      "kind": "stdout-line",
-      "select": {
-        "stream": "stdout",
-        "line": 3
-      },
-      "expect": {
-        "value": "42",
-        "reviewed": true
-      },
-      "value": "42",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fcast.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "07abf38f2522f8ae1f37a06fbd20d7c45d0c68ba2b181485e1cb2279e2d16504",
-        "runs": 2,
-        "sandbox": "sandbox-exec MODE=run"
-      }
-    },
-    {
-      "id": "f.dbits",
-      "program": "p1",
-      "kind": "stdout-line",
-      "select": {
-        "stream": "stdout",
-        "line": 4
-      },
-      "expect": {
-        "value": "4050800000000000",
-        "reviewed": true
-      },
-      "value": "4050800000000000",
-      "source": {
-        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
-        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fcast.c && ./p1 (sandbox-exec MODE=run, run twice)",
-        "stdout_sha256": "07abf38f2522f8ae1f37a06fbd20d7c45d0c68ba2b181485e1cb2279e2d16504",
+        "stdout_sha256": "9e17157baf1a7ff61793906b62f70d9ade4a6ccd4c052de044fdf228a44272aa",
         "runs": 2,
         "sandbox": "sandbox-exec MODE=run"
       }
@@ -132,8 +90,8 @@
     {
       "id": "c.setup",
       "kind": "framing",
-      "text": "The program stores 'B' in the char a, prints a with %d and (double)a with %f, then prints the bytes of a and of (double)a in hex.",
-      "justification": "Lines 5 to 12 of fcast.c do exactly this, in this order.",
+      "text": "The program stores 'B' in the char a, then prints a with %d and (double)a with %f.",
+      "justification": "Lines 4 to 6 of fcast.c do exactly this, in this order.",
       "sources": [
         {
           "title": "The lesson program",
@@ -144,8 +102,8 @@
     {
       "id": "c.ascii",
       "kind": "implementation-defined",
-      "text": "On this platform the execution character set is ASCII, so the character constant 'B' has the value 66.",
-      "justification": "C17 leaves the values of execution characters to the implementation; macOS uses ASCII, where B is 66, and the captured %d line shows 66.",
+      "text": "On this platform the character constant 'B' has the value 66, its code in ASCII and in UTF-8.",
+      "justification": "C17 leaves the values of execution characters to the implementation. Apple clang encodes 'B' as the single byte 66, which is its code in ASCII and in UTF-8, and the captured %d line shows 66.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -223,28 +181,6 @@
       ]
     },
     {
-      "id": "c.bits",
-      "kind": "implementation-defined",
-      "text": "On this platform double is IEEE 754 binary64, so the cast changes the representation: the char a is the single byte 42 in hex, while the double 66.0 has the 64-bit pattern 4050800000000000 in hex.",
-      "justification": "The program prints (unsigned char)a with %02x and the bits of d, copied into an unsigned long long with memcpy, with %016llx. 66.0 is 1.03125 times 2 to the 6, which binary64 encodes as 0x4050800000000000.",
-      "sources": [
-        {
-          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
-          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§F.2 ¶1",
-          "quote": "The double type matches the IEC 60559 double format."
-        },
-        {
-          "title": "The lesson program",
-          "clause": "programs/fcast.c"
-        }
-      ],
-      "facts": [
-        "f.abyte",
-        "f.dbits"
-      ]
-    },
-    {
       "id": "c.mismatch",
       "kind": "undefined-behaviour",
       "text": "Without the cast, printf(\"%f\\n\", a) would pass an int where %f expects a double, which is undefined behaviour.",
@@ -284,9 +220,9 @@
       "label": "a holds 'B', which is 66 on this platform",
       "state": {
         "program": "p1",
-        "line": 5,
+        "line": 4,
         "path": [
-          5
+          4
         ],
         "output": [],
         "vars": {
@@ -300,20 +236,16 @@
       "label": "%d receives the int 66 and prints 66",
       "state": {
         "program": "p1",
-        "line": 9,
+        "line": 5,
         "path": [
-          5,
-          6,
-          7,
-          8,
-          9
+          4,
+          5
         ],
         "output": [
           "f.d"
         ],
         "vars": {
-          "a": "'B'",
-          "d": "66.0"
+          "a": "'B'"
         }
       },
       "reveals": [
@@ -325,58 +257,22 @@
       "label": "(double)a is the double 66.0, so %f prints 66.000000",
       "state": {
         "program": "p1",
-        "line": 10,
+        "line": 6,
         "path": [
+          4,
           5,
-          6,
-          7,
-          8,
-          9,
-          10
+          6
         ],
         "output": [
           "f.d",
           "f.f"
         ],
         "vars": {
-          "a": "'B'",
-          "d": "66.0"
+          "a": "'B'"
         }
       },
       "reveals": [
         "f.f"
-      ]
-    },
-    {
-      "id": "s3",
-      "label": "a is the byte 42 in hex; 66.0 is 4050800000000000 in hex",
-      "state": {
-        "program": "p1",
-        "line": 12,
-        "path": [
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12
-        ],
-        "output": [
-          "f.d",
-          "f.f",
-          "f.abyte",
-          "f.dbits"
-        ],
-        "vars": {
-          "a": "'B'",
-          "d": "66.0"
-        }
-      },
-      "reveals": [
-        "f.abyte",
-        "f.dbits"
       ]
     }
   ],
@@ -387,7 +283,7 @@
       "state": "s0",
       "narration": [
         {
-          "text": "The program stores 'B' in the char a, prints a with %d and (double)a with %f, then prints the bytes of a and of (double)a in hex.",
+          "text": "The program stores 'B' in the char a, then prints a with %d and (double)a with %f.",
           "claims": [
             "c.setup"
           ]
@@ -417,7 +313,7 @@
       "state": "s1",
       "narration": [
         {
-          "text": "On this platform the execution character set is ASCII, so the character constant 'B' has the value 66.",
+          "text": "On this platform the character constant 'B' has the value 66, its code in ASCII and in UTF-8.",
           "claims": [
             "c.ascii"
           ]
@@ -440,19 +336,13 @@
           "claims": [
             "c.cast"
           ]
-        },
-        {
-          "text": "On this platform double is IEEE 754 binary64, so the cast changes the representation: the char a is the single byte 42 in hex, while the double 66.0 has the 64-bit pattern 4050800000000000 in hex.",
-          "claims": [
-            "c.bits"
-          ]
         }
       ]
     },
     {
       "id": "sc5",
       "title": "Without the cast",
-      "state": "s3",
+      "state": "s2",
       "narration": [
         {
           "text": "Without the cast, printf(\"%f\\n\", a) would pass an int where %f expects a double, which is undefined behaviour.",

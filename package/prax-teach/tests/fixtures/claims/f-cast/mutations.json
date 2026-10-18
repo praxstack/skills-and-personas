@@ -13,7 +13,7 @@
    "id": "f2.ascii.always",
    "kind": "dropped-caveat",
    "target": "c.ascii",
-   "find": "On this platform the execution character set is ASCII, so the character constant 'B' has the value 66.",
+   "find": "On this platform the character constant 'B' has the value 66, its code in ASCII and in UTF-8.",
    "replace": "In C, the character constant 'B' always has the value 66.",
    "why_false": "The execution character set and its values are implementation-defined (5.2.1p1); EBCDIC systems give 'B' the value 194."
   },
@@ -48,12 +48,12 @@
    "why_false": "6.3.1.3 covers conversions between integer types, not integer to double (6.3.1.4p2) or casts (6.5.4p5)."
   },
   {
-   "id": "f6.bits.same",
-   "kind": "false-mechanism",
-   "target": "c.bits",
-   "find": "so the cast changes the representation: the char a is the single byte 42 in hex, while the double 66.0 has the 64-bit pattern 4050800000000000 in hex.",
-   "replace": "so the cast keeps the representation: the double 66.0 is the byte 42 in hex padded with zero bytes.",
-   "why_false": "binary64 encodes 66.0 as sign, exponent and fraction: 4050800000000000, not 42 padded with zeros."
+   "id": "f6.setup.format",
+   "kind": "false-framing",
+   "target": "c.setup",
+   "find": "then prints a with %d and (double)a",
+   "replace": "then prints a with %c and (double)a",
+   "why_false": "Line 5 uses %d, which prints 66; %c would print B."
   },
   {
    "id": "f7.promote.all",

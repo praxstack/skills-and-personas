@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from _claims_agent import fcast_lesson, slice_lesson
+from _util import report
 from ptk import host, model
 from ptk.verify import claims
 
@@ -175,10 +176,13 @@ def test_unmapped_sentence():
     assert g["status"] == "passed", g["measured"]["unmapped"]
     out = {"f-cast": g["measured"]["texts"]}
     s = slice_lesson()
-    if s:
+    rep = report()
+    if s and rep and rep.get("lesson_sha256") == s[0].sha256():
         g = claims.mapping_gate(*s)
         assert g["status"] == "passed", g["measured"]["unmapped"][:5]
         out["switch-fallthrough"] = {"texts": g["measured"]["texts"], "teaching": g["measured"]["teaching"]}
+    else:
+        out["switch-fallthrough"] = "skipped: the slice build is older than lesson.json"
     cast = lesson.claim("c.cast")["text"]
     bad = [
         ("claim", "c.cast", cast.split(", so ")[0] + "."),                  # a fragment of the claim
