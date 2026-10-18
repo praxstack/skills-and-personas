@@ -1,0 +1,15 @@
+{
+  "schema": "prax-teach/lexicon@1",
+  "version": "1",
+  "note": "Spoken forms for C code tokens. `code: true` tokens are excluded from the non-code WER (AC-5.5). Matching is whole-word, case-sensitive.",
+  "entries": [
+    {"token": "puts", "spoken": "put-s", "code": true},
+    {"token": "printf", "spoken": "print-f", "code": true},
+    {"token": "n", "spoken": "en", "code": true},
+    {"token": "\\n", "spoken": "newline", "code": true},
+    {"token": "==", "spoken": "equals equals", "code": true},
+    {"token": "int", "spoken": "int", "code": true},
+    {"token": "char", "spoken": "car", "code": true},
+    {"token": "sizeof", "spoken": "size of", "code": true}
+  ]
+}

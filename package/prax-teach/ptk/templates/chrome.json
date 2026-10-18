@@ -1,0 +1,33 @@
+{
+  "schema": "prax-teach/chrome@1",
+  "note": "Fixed UI strings (E4). Exempt from the claims gate; every other sentence comes from the lesson model.",
+  "strings": {
+    "kicker": "C · {topic}",
+    "code_label": "the program",
+    "output_label": "output",
+    "enter_label": "enters here",
+    "no_break": "no break",
+    "exit_label": "leaves the switch",
+    "skipped_label": "skipped",
+    "provenance": "Outputs captured from {compiler}, sandboxed, run twice · stdout sha256 {sha}",
+    "provenance_short": "captured: {compiler}",
+    "source_link": "Source: {path}",
+    "alt_output": "Output of {program}: {lines}.",
+    "question_label": "Predict",
+    "answer_label": "Answer",
+    "state_label": "On screen now",
+    "chapters": "Chapters",
+    "transcript": "Transcript",
+    "captions_on": "Captions on",
+    "captions_off": "Captions off",
+    "prev_state": "Previous step",
+    "next_state": "Next step",
+    "explore_hint": "Paused: explore the state on screen. Steps you have not watched yet stay hidden.",
+    "noscript": "Video controls need JavaScript. The frames and the full transcript are below.",
+    "vars_label": "variables",
+    "video_title": "Narrated video",
+    "line_label": "line {n}",
+    "play": "Play",
+    "pause": "Pause"
+  }
+}

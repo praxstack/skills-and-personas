@@ -2,7 +2,7 @@
   "schema": "prax-teach/lesson@1",
   "id": "switch-fallthrough",
   "title": "A missing break falls through",
-  "topic": "C switch statement: fallthrough without break",
+  "topic": "switch statement",
   "language": "c",
   "request": "Teach me how a switch statement with a missing break falls through, as a still, a narrated video and an interactive video.",
   "platform": {
@@ -762,7 +762,7 @@
     },
     {
       "id": "sc5",
-      "title": "Break, then done",
+      "title": "Break ends the switch",
       "state": "s3",
       "narration": [
         {
