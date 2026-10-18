@@ -14,10 +14,16 @@ from pathlib import Path
 from . import errors
 
 
+def _head(path, max_bytes):
+    """At most max_bytes of the file, never the whole file (a huge NOTES.md costs nothing)."""
+    with path.open("rb") as fh:
+        return fh.read(max_bytes).decode(errors="replace")
+
+
 def _lines(root, names, max_bytes):
     for name in names:
         path = root / name
-        text = path.read_text(errors="replace")[:max_bytes] if path.is_file() else ""
+        text = _head(path, max_bytes) if path.is_file() else ""
         for no, line in enumerate(text.splitlines(), 1):
             yield name, no, line.strip()
 

@@ -1,11 +1,29 @@
 {
  "schema": "prax-teach/route-rules@1",
- "doc": "Ordered rule table for `ptk route` (spec AC-1.1..1.5, E9, D17.3, D20.7, D20.8). Within a list the first matching rule wins; a rule matches when any `any` regex matches and no `unless` regex does. <<NAME>> expands a macro. Requests are lower-cased and whitespace-collapsed before matching. Mode precedence is the `precedence` list: the first stage with a candidate wins.",
+ "doc": "Ordered rule table for `ptk route` (spec AC-1.1..1.5, E9, D17.3, D20.7, D20.8). Within a list the first matching rule wins; a rule matches when any `any` regex matches, every `all` regex matches and no `unless` regex does. <<NAME>> expands a macro. Requests are lower-cased and whitespace-collapsed. `scope` says which view of the request a rule reads: full (the whole request), positive (negated spans removed: `negation` is a cue plus the rest of its clause, at most six words), media (positive with `topic_frames` removed, so a medium word used as the topic is not a medium), clause (each clause of positive text, split by `clause`), first (the first clause). Mode precedence is the `precedence` list: the first stage with a candidate wins.",
  "macros": {
   "PFX": "^(?:(?:please|quickly|kindly|just|now|ok(?:ay)?|hey|so)[,:\\s]+)*(?:(?:can|could|would|will) you\\s+|i (?:need|want) you to\\s+|help me(?: to)?\\s+|go ahead and\\s+|let's\\s+)?(?:(?:please|quickly|just)\\s+)*",
-  "TEACH": "\\bteach(?:es|ing)?\\b|\\bexplain(?:s|ed|ing)?\\b|\\bexplanations?\\b|\\bmy (?:understanding|confusion|misconceptions?)\\b|\\bconfus(?:ed|ion|ing)\\b|\\bexplainer\\b|\\bhelp me (?:learn|understand|grasp|get)\\b|\\bi (?:want|need|would like|'d like) to (?:learn|understand)\\b|\\b(?:so|so that|to) (?:i )?(?:can )?(?:understand|learn)\\b|\\b(?:walk|run|talk) me through\\b|\\b(?:quiz|drill|tutor|test) me\\b|\\bsocratic\\b|\\bpredict\\b|\\b(?:quiz|lesson|tutorial|course|explainer|drill|mcqs?|flash ?cards?|cards|q&a)(?:\\s+(?:video|animation|still|diagram|explorer|cards?|deck|pack|set|session))?\\s+(?:on|about|for|covering|explaining|of)\\b|(?:video|animation|still|diagram|explorer|cards?|picture|image|figure|clip|film|explainer|walkthrough)s?\\s+(?:on|about|of|explaining|showing|that (?:shows|explains|teaches))\\b",
-  "NEG": "\\b(?:don't|do not|never|not|no)\\s+(?:just\\s+)?(?:tell|give|show|answer|explain)\\b"
+  "TEACH": "\\bteach(?:es|ing)?\\b|\\bexplain(?:s|ed|ing)?\\b|\\bexplanations?\\b|\\bmy (?:understanding|confusion|misconceptions?)\\b|\\bconfus(?:ed|ion|ing)\\b|\\b(?:don'?t|do not|can'?t) (?:get|understand)\\b|\\bexplainer\\b|\\bhelp me (?:learn|understand|grasp|get|figure out)\\b|\\bi (?:want|need|would like|'d like) to (?:learn|understand)\\b|\\b(?:so|so that|to) (?:i )?(?:can )?(?:understand|learn)\\b|\\b(?:walk|run|talk) me through\\b|\\b(?:quiz|drill|tutor|test) me\\b|\\bsocratic\\b|\\bpredict\\b|\\b(?:quiz|lesson|tutorial|course|explainer|drill|mcqs?|flash ?cards?|cards|q&a)(?:\\s+(?:video|animation|still|diagram|explorer|cards?|deck|pack|set|session))?\\s+(?:on|about|for|covering|explaining|of)\\b|(?:video|animation|still|diagram|explorer|cards?|picture|image|figure|clip|film|explainer|walkthrough)s?\\s+(?:on|about|of|explaining|showing|that (?:shows|explains|teaches))\\b",
+  "NEG": "\\b(?:don'?t|do not|never|not|no)\\s+(?:just\\s+)?(?:tell|give|show|answer|explain)\\b",
+  "MW": "(?:videos?|animat(?:e|ed|es|ion|ions|ing)|films?|clips?|movies?|mp4s?|gifs?|cards?|interactive|images?|pictures?|figures?|diagrams?|stills?|slides?|explorers?|simulat(?:or|ion)s?|audio|sound|narration|visuals?)\\b",
+  "BUILT": "(?:video|animation|still|diagram|explorer|cards|deck|lesson|captions?|audio|narration|clip|render|subtitles|voice ?over|ive)\\b",
+  "LATER": "\\bquiz(?:zes)?(?: me)?(?: on (?:it|them|that))? (?:after(?:wards)?|later|at the end|(?:when|once) (?:it'?s |you'?re )?(?:done|built|finished))\\b|\\b(?:then|after(?:wards)?,?|and after that) quiz me\\b",
+  "CODE_OBJ": "(?:build|make|create|generate|scaffold|write|add|implement|set up|setup|design|code)\\b(?:\\s+(?:me|us))?(?:\\s+\\S+){0,4}?\\s+(?:component|app|application|api|endpoint|function|class|module|script|cli|page|player|parser|service|server|tests?|test suite|pipeline|database|schema|ui|website|site|plugin|extension|branch|file|folder|directory|repo|repository|pr|pull request|issue|ticket|makefile|target|config|dockerfile|workflow|hook|library|package|program|tool|bot|game|backend|frontend)\\b"
  },
+ "negation": "\\b(?:no need (?:for|to)|instead of|rather than|don'?t|do not|does not|doesn'?t|never|not|without|skip(?:ping)?|stop \\w+ing|avoid|minus|no)\\b(?:\\s+(?!(?:but|just|then|instead|only|and|also)\\b)[^\\s,.;:!?]+){0,6}",
+ "clause": "\\s*(?:[,;!?]|[.:](?=\\s|$))\\s*|\\s+(?:and then|and|then|but|also|plus)\\s+",
+ "clean": "^[\\s,.;:!?]+|[\\s,.;:!?]+$",
+ "topic_frames": [
+  "\\b(?:about|regarding) (?:the |a |an )?<<MW>>",
+  "\\bhow (?:to |do |does |did |is |are |can |would |should )?(?:i |we |you |they |it )?(?:\\w+ ){0,2}?<<MW>>",
+  "\\b(?:mode|deck|kind|type|format|codec|frame rate|resolution|quality|size) of (?:the |a |an )?<<MW>>",
+  "\\b<<MW>> (?:codecs?|compression|formats?|files?|players?|editing|editors?|encoding|decoding|mode|shell|session|prompt|games?|tricks?|stored|storage|processing|of merit)\\b",
+  "^(?:what|which|why|where|when)(?:'s| (?:\\w+ ){0,2}?(?:is|are|was|were|does|do|did)) (?:a |an |the )?<<MW>>",
+  "\\b(?:watched|watching|saw|seen|read|found|tried|liked|loved|hated) (?:a |an |the |your |this |that |some |my )?(?:\\w+ )?<<MW>>",
+  "\\b(?:the|this|that|your|my) (?:\\w+ ){0,2}?<<MW>> (?:you|we|i) (?:made|built|rendered|generated|did|sent|showed|gave)\\b",
+  "\\b(?:the|this|that|your|my) (?:\\w+ ){0,2}?<<MW>> (?:in|from|of) (?:the|this|that|your|my|our) (?:lesson|build|pack|course|last|previous)\\b",
+  "\\b(?:my|our) (?:own )?<<MW>>"
+ ],
  "intent_rules": [
   {
    "id": "product-media",
@@ -17,23 +35,54 @@
    ]
   },
   {
+   "id": "rebuild",
+   "intent": "rebuild",
+   "note": "re-render or repair a build that already exists: build that lesson again, no new lesson, no teaching",
+   "scope": "positive",
+   "any": [
+    "\\bre-?(?:render|build|generate|export|record|make|do)\\b",
+    "\\brender (?:\\w+ ){0,3}again\\b",
+    "\\b(?:fix|repair|correct|redo|update) (?:it|that|this|them)\\b",
+    "\\b(?:fix|repair|correct|redo) (?:the|this|that|your|my) (?:\\w+ ){0,2}?<<BUILT>>",
+    "\\bout of sync\\b"
+   ],
+   "all": [
+    "\\b(?:the|this|that|your|my|our) (?:\\w+ ){0,2}?<<BUILT>>"
+   ]
+  },
+  {
    "id": "code-object-build",
    "intent": "ordinary_task",
    "any": [
-    "<<PFX>>(?:build|make|create|generate|scaffold|write|add|implement|set up|setup|design|code)\\b(?:\\s+(?:me|us))?(?:\\s+\\S+){0,4}?\\s+(?:component|app|application|api|endpoint|function|class|module|script|cli|page|player|parser|service|server|tests?|test suite|pipeline|database|schema|ui|website|site|plugin|extension|branch|file|folder|directory|repo|repository|pr|pull request|issue|ticket|makefile|target|config|dockerfile|workflow|hook|library|package|program|tool|bot|game|backend|frontend)\\b"
+    "<<PFX>><<CODE_OBJ>>"
    ],
    "unless": [
     "<<TEACH>>"
-   ]
+   ],
+   "scope": "positive"
   },
   {
    "id": "code-verb",
    "intent": "ordinary_task",
    "any": [
-    "<<PFX>>(?:fix|rename|refactor|write|implement|add|delete|remove|update|deploy|install|uninstall|run|commit|push|pull|merge|rebase|migrate|patch|edit|debug|lint|format|bump|upgrade|configure|set up|setup|move|copy|summari[sz]e|translate|proofread|compile|benchmark|profile|optimi[sz]e|clean up|cleanup|revert|port|convert|resolve|stage|review (?:this|the|my) (?:pr|pull request|code|diff|commit))\\b"
+    "<<PFX>>(?:fix|rename|refactor|write|implement|add|delete|remove|update|deploy|install|uninstall|run|commit|push|pull|merge|rebase|migrate|patch|edit|debug|lint|format|bump|upgrade|configure|set up|setup|move|copy|summari[sz]e|translate|proofread|compile|benchmark|profile|optimi[sz]e|clean up|cleanup|revert|port|convert|resolve|stage|review (?:this|the|my) (?:pr|pull request|code|diff|commit)|check (?:my|the|this|that) (?:code|program|file|function|script|build|implementation|logic|diff|pr)|test (?:the|this|that|my) (?!knowledge|understanding|recall|memory)|re-?run|rebuild|speed up|make (?:it|this|that) (?:faster|work|compile|pass|smaller|cleaner|safer|portable))\\b"
    ],
    "unless": [
     "<<TEACH>>"
+   ],
+   "scope": "positive"
+  },
+  {
+   "id": "code-verb-clause",
+   "intent": "ordinary_task",
+   "note": "P2-2: a task verb starting a later clause, followed by its object (fix the bug and explain what was wrong)",
+   "scope": "clause",
+   "any": [
+    "^(?:(?:then|also|please|just|now)\\s+)*(?:fix|rename|refactor|write|implement|add|delete|remove|update|deploy|install|uninstall|run|commit|push|merge|rebase|migrate|patch|edit|debug|lint|format|bump|upgrade|configure|move|copy|compile|benchmark|profile|optimi[sz]e|clean up|revert|resolve|test|check)\\s+(?:the|my|this|that|it|its|these|those|them|all|\\S+\\.\\w+)\\b"
+   ],
+   "unless": [
+    "<<TEACH>>",
+    "\\b(?:examples?|diagrams?|stills?|videos?|animations?|explorers?|cards|quiz|questions?|analog(?:y|ies)|pictures?|figures?)\\b"
    ]
   },
   {
@@ -66,6 +115,14 @@
     "\\bpause (?:and|to) (?:play with|explore|poke|inspect|tweak|interact)\\b",
     "\\bvideo (?:i|we) can (?:pause|interact with|explore|play with)\\b",
     "\\b(?:pause|stop) (?:the video|the film|it|anywhere)\\b[^.]{0,40}?\\b(?:explore|play with|poke|inspect|edit|tweak|interact)\\b"
+   ]
+  },
+  {
+   "id": "m-explorer-interaction",
+   "medium": "explorer",
+   "note": "an animation where I can drag the slider is an explorer: the interaction wins over the noun",
+   "any": [
+    "\\b(?:animations?|animated \\w+|visuali[sz]ations?|videos?|clips?|visuals?|diagrams?)\\s+(?:where|that|which|in which|so)\\s+(?:i|we|you)\\s+can\\s+(?:drag|change|tweak|play with|toggle|move|adjust|set|edit|slide|control|step through|click)\\b"
    ]
   },
   {
@@ -124,7 +181,11 @@
     "\\bquestion[- ]and[- ]answer\\b",
     "\\bexpanders?\\b",
     "\\bfaqs?\\b"
-   ]
+   ],
+   "unless": [
+    "\\bq\\s*(?:&|and|n)\\s*a session\\b|\\blet me ask\\b|\\b(?:answer|take) my questions\\b"
+   ],
+   "note": "P2-5: a chat Q&A session is not a Q&A expander artifact"
   },
   {
    "id": "m-cards",
@@ -162,7 +223,8 @@
     "\\b(?:png|svg)\\b",
     "\\bdraw\\b",
     "\\bvisuali[sz](?:e|ed|ation)\\b",
-    "\\bvisual (?:summary|explainer|explanation)\\b"
+    "\\bvisual (?:summary|explainer|explanation)\\b",
+    "\\bvisuals?\\b(?! studio)"
    ]
   }
  ],
@@ -181,7 +243,8 @@
  "silent": [
   "\\bsilent\\b",
   "\\bmuted?\\b",
-  "\\b(?:no|without)\\s+(?:narration|voice|voice[- ]?over|audio|sound)\\b"
+  "\\b(?:no|without)\\s+(?:narration|voice|voice[- ]?over|audio|sound)\\b",
+  "\\b(?:don'?t|do not|no need to)\\s+narrat"
  ],
  "mode_rules": {
   "override": [
@@ -192,7 +255,8 @@
      "\\b(?:full|whole|entire|complete) (?:course|pack|lesson pack|set|series|curriculum)\\b",
      "\\ball (?:six|6|the) (?:media|formats|artifacts|artifact types)\\b",
      "\\bevery (?:medium|format)\\b"
-    ]
+    ],
+    "scope": "full"
    },
    {
     "id": "just-explain",
@@ -200,11 +264,15 @@
     "any": [
      "\\bjust explain\\b",
      "\\bexplain (?:it )?(?:directly|straight away|right away|now)\\b",
-     "\\bexplain (?:it )?without (?:asking|questions|quizzing|a quiz)\\b"
+     "\\bexplain (?:it )?without (?:asking|questions|quizzing|a quiz)\\b",
+     "\\bjust want (?:the|an|a) explanation\\b",
+     "\\bno back[- ]and[- ]forth\\b",
+     "\\bwithout (?:the |a |any )?(?:back[- ]and[- ]forth|ceremony)\\b"
     ],
     "unless": [
      "<<NEG>>"
-    ]
+    ],
+    "scope": "full"
    },
    {
     "id": "answer-now",
@@ -224,11 +292,15 @@
      "\\bkeep it (?:brief|short|concise)\\b",
      "\\beli5\\b",
      "\\bquickly (?:tell|explain|answer)\\b",
-     "\\bexplain (?:it )?quickly\\b"
+     "\\bexplain (?:it )?quickly\\b",
+     "\\b(?:the )?answer (?:directly|straight(?: away)?|right away|outright)\\b",
+     "\\bgive me the answer\\b",
+     "\\bjust want the answer\\b"
     ],
     "unless": [
      "<<NEG>>"
-    ]
+    ],
+    "scope": "full"
    },
    {
     "id": "no-questions",
@@ -236,10 +308,13 @@
     "any": [
      "\\bno (?:more )?(?:questions|quiz(?:zes|zing)?|predictions?|socratic)\\b",
      "\\bskip (?:the )?(?:questions|quiz|prediction|ceremony|socratic)\\b",
-     "\\bstop (?:asking|quizzing)\\b",
-     "\\bwithout (?:asking|questions|quizzing|a quiz)\\b",
-     "\\b(?:don't|do not) (?:ask|quiz|test) me\\b"
-    ]
+     "\\bstop (?:asking|quizzing|questioning)\\b",
+     "\\bwithout (?:the |a |any )?(?:asking|questions?|quiz(?:zing)?|predictions?)\\b",
+     "\\b(?:don'?t|do not|never) (?:ask|quiz|test|question) me\\b",
+     "\\bno need (?:to (?:ask|quiz|test)|for (?:a |the |any )?(?:quiz|questions?|predictions?))\\b",
+     "\\binstead of (?:quizzing|asking|questioning|testing) me\\b"
+    ],
+    "scope": "full"
    }
   ],
   "attempt": [
@@ -260,7 +335,8 @@
      "\\bexam[- ]style\\b",
      "\\bdrill me\\b",
      "\\bunder (?:exam )?time\\b"
-    ]
+    ],
+    "scope": "positive"
    },
    {
     "id": "socratic",
@@ -271,7 +347,8 @@
      "\\bkeep asking me\\b",
      "\\bleading questions\\b",
      "\\bask me (?:guiding|leading) questions\\b"
-    ]
+    ],
+    "scope": "positive"
    },
    {
     "id": "quiz",
@@ -284,26 +361,44 @@
      "\\bask me (?:\\w+ )?(?:questions|problems)\\b",
      "\\bpractice (?:questions|problems)\\b",
      "\\bself[- ]test\\b"
+    ],
+    "scope": "positive",
+    "unless": [
+     "<<LATER>>"
+    ],
+    "note": "reads positive text, so 'dont ask me questions' and 'without the quiz' never start a quiz"
+   },
+   {
+    "id": "predict-ask",
+    "mode": "predict-first",
+    "scope": "full",
+    "note": "phrased as a negation, so it reads the full request",
+    "any": [
+     "\\b(?:don'?t|do not) (?:just )?(?:tell|give|show) me (?:the )?(?:answer|output|result)\\b",
+     "\\b(?:do not|don'?t) reveal\\b",
+     "\\bbefore (?:an |my |the |i )?attempt\\b",
+     "\\bbefore you (?:show|tell|explain|reveal)\\b"
     ]
    },
    {
     "id": "predict",
     "mode": "predict-first",
     "any": [
-     "\\bpredict(?:ion|ions|ing)?\\b",
+     "\\bpredictions? (?:questions?|first)\\b",
+     "\\b(?:let me|lemme|i(?:'ll| will| want to| wanna| get to)?|ask me to|make me|have me) (?:try to )?predict\\b",
+     "\\bpredict (?:the|what|its|which) (?:\\w+ )?(?:output|result|value|prints?|happens|runs)\\b",
+     "\\bpredict first\\b",
      "\\bguess (?:first|the output)\\b",
-     "\\blet me (?:try|guess|attempt|predict|think)(?: it)?(?: first)?\\b",
+     "\\b(?:let me|lemme) (?:try|guess|attempt|predict|think)(?: it)?(?: first)?\\b",
      "\\bask me (?:\\w+ ){0,3}first\\b",
      "\\bquestions? first\\b",
      "\\bi(?:'d| would)? (?:want|like) to (?:try|attempt|guess|predict)(?: it)?(?: myself)? first\\b",
      "\\btry (?:it )?(?:myself )?first\\b",
-     "\\b(?:don't|do not) (?:just )?(?:tell|give|show) me (?:the )?(?:answer|output|result)\\b",
-     "\\b(?:do not|don't) reveal\\b",
-     "\\bbefore (?:an |my |the |i )?attempt\\b",
      "\\battempt first\\b",
-     "\\bmake me (?:think|predict|work it out)\\b",
-     "\\bbefore you (?:show|tell|explain|reveal)\\b"
-    ]
+     "\\bmake me (?:think|predict|work it out)\\b"
+    ],
+    "scope": "positive",
+    "note": "P3-1: needs a learner subject or an output object, so 'can you predict how long the build takes' is not a prediction request"
    }
   ],
   "request": [
@@ -321,7 +416,8 @@
      "\\b(?:answer|take) my questions\\b",
      "\\bfollow[- ]up questions\\b",
      "\\bq&a session\\b"
-    ]
+    ],
+    "scope": "positive"
    }
   ],
   "intent": [
@@ -330,14 +426,40 @@
     "mode": "quick",
     "note": "a short question with no medium and no teaching verb gets a direct answer (D17.3)",
     "any": [
-     "^(?:what|why|how|is|are|does|do|can|could|which|when|where|should)\\b(?:\\s*\\S+){0,14}\\s*\\??$"
+     "^(?:what'?s|hows|whys|what|why|how|is|are|does|do|can|could|which|when|where|should)\\b(?:\\s*\\S+){0,14}\\s*\\??$"
     ],
     "unless": [
      "\\bteach\\b|\\blesson\\b|^(?:can|could|would|will) you (?:make|create|build|give|draw|show|do|write|generate|produce)\\b"
-    ]
+    ],
+    "scope": "positive"
    }
   ]
  },
+ "also_rules": [
+  {
+   "id": "quiz-after",
+   "also": "quiz",
+   "scope": "positive",
+   "any": [
+    "<<LATER>>"
+   ]
+  },
+  {
+   "id": "task-too",
+   "also": "ordinary_task",
+   "low": true,
+   "scope": "clause",
+   "any": [
+    "^<<PFX>>(?:write|implement|code|build|create) (?:\\w+ ){0,4}?(?:function|program|class|module|script|parser|tests?)\\b"
+   ]
+  }
+ ],
+ "explicit_stages": [
+  "override",
+  "attempt",
+  "request"
+ ],
+ "strong": "<<TEACH>>",
  "precedence": [
   "override",
   "attempt",
@@ -373,7 +495,7 @@
    "questions": 0,
    "end_turn": false,
    "artifact": "none",
-   "instruction": "Do the task as asked. No teaching, no lesson build, no prediction question."
+   "instruction": "Do the task as asked. No teaching, no lesson build, no prediction question. If explain_after is true, explain briefly once it is done."
   },
   "predict-first": {
    "kind": "question",
@@ -437,6 +559,13 @@
    "end_turn": false,
    "artifact": "after-build",
    "instruction": "Confirm the full pack (all six media) and the build time, then build. TEACHING.md#lesson."
+  },
+  "rebuild": {
+   "kind": "rebuild",
+   "questions": 0,
+   "end_turn": false,
+   "artifact": "after-build",
+   "instruction": "Repair the existing lesson: fix its model, then ptk build <lesson> --only <media> (all its media if none named). No new lesson, no teaching."
   }
  },
  "workspace_contract": {
@@ -456,15 +585,22 @@
    "\\b(?:no|never) reveal\\w* (?:\\w+ )?before\\b"
   ],
   "negations": [
-   "\\b(?:without|no|never|don't|do not|skip|avoid|instead of)\\b[^.]{0,30}?\\b(?:predict|prediction|predictions|questions?|quiz|socratic)\\b"
+   "\\b(?:without|no|never|don'?t|do not|skip|avoid|instead of)\\b[^.]{0,30}?\\b(?:predict|prediction|predictions|questions?|quiz|socratic)\\b"
   ],
   "explain_first": [
    "\\bwithout (?:a )?(?:prediction|predictions|quiz|questions)\\b",
    "\\bexplanation[- ]first\\b",
    "\\bexplain first\\b",
    "\\bwhole explanation\\b",
-   "\\b(?:no|don't ask|do not ask|never ask)\\b[^.]{0,20}?\\b(?:prediction|predictions|quiz|quizzes|questions)\\b"
+   "\\b(?:no|don'?t ask|do not ask|never ask)\\b[^.]{0,20}?\\b(?:prediction|predictions|quiz|quizzes|questions)\\b"
   ],
   "max_evidence": 4
- }
+ },
+ "signal_stages": [
+  "override",
+  "attempt",
+  "request",
+  "media",
+  "intent"
+ ]
 }

@@ -9,12 +9,14 @@ The loader path is everything an agent must read before its first teaching word:
 import json
 import re
 import shutil
+from pathlib import Path
 
 from ptk import host, route
 
 BUDGET_TOKENS = 4000
 SKILL = host.PKG / "SKILL.md"
 DEV = host.PKG / "tests" / "data" / "route-dev.jsonl"
+C_WORKSPACE = Path.home() / "Study" / "Actual_Study_Gate2027" / "01-Interview Preperation" / "01-C"
 
 
 def tokens(text):
@@ -29,11 +31,14 @@ def loader_files(skill_text):
 
 
 def _largest_route_json():
+    """Largest route output over the dev set, against a one-line fixture workspace and, when present,
+    Prax's real C workspace (read-only), whose four evidence lines make the output longer."""
     ws = host.make_tmp("budget-ws-")
     (ws / "AGENTS.md").write_text("Ask one bounded prediction and wait for the attempt.\n")
+    workspaces = [ws] + [C_WORKSPACE] * (C_WORKSPACE / "AGENTS.md").is_file()
     try:
         rows = [json.loads(line) for line in DEV.read_text().splitlines() if line.strip()]
-        return max(len(json.dumps(route.route(r["request"], workspace_dir=ws), indent=2)) for r in rows)
+        return max(len(json.dumps(route.route(r["request"], workspace_dir=w), indent=2)) for r in rows for w in workspaces)
     finally:
         shutil.rmtree(ws)
 

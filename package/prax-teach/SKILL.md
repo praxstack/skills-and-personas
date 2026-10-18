@@ -17,16 +17,23 @@ the section of `references/TEACHING.md` for the routed mode. Read nothing else f
 
    `ptk route "<request>" --workspace <learner workspace dir> --json`
 
-   It returns `{intent, mode, media[], workspace_contract, first_turn, build_needed}`. The router
-   has already read the workspace's AGENTS.md, MISSION.md and NOTES.md and applied their teaching
-   rules, and it has applied any "answer now" or "just explain" in the request. Don't re-decide.
-2. Obey it:
-   - `intent: ordinary_task`: do the task. No teaching, no question, no build.
+   It returns `{intent, mode, media[], workspace_contract, first_turn, build_needed, confidence,
+   reasons[], also[]}`. The router has already read the workspace's AGENTS.md, MISSION.md and
+   NOTES.md, applied their teaching rules and any "answer now" or "just explain", and dropped every
+   medium the learner refused ("no video") or only mentioned as a topic ("video codecs").
+2. `confidence: high`: obey the route. `confidence: low`: `reasons` says what conflicted. Decide
+   yourself among the modes TEACHING.md allows, using its rules (explicit words beat the contract,
+   the contract beats defaults, a refused medium is never built). Ask one short question only if a
+   wrong guess would cost a long build. Then act on the route, or on your corrected reading:
+   - `intent: ordinary_task`: do the task. No teaching, no question, no build. If `explain_after`,
+     explain briefly when done.
+   - `intent: rebuild`: repair the existing lesson and rebuild only its `media[]`. No new lesson.
    - Otherwise do exactly what `first_turn.instruction` says, using the protocol for `mode` in
      `references/TEACHING.md`. If `first_turn.end_turn` is true, end your turn after it.
    - `first_turn.artifact: after-attempt` means nothing from the lesson (artifact, trace state,
      output) is shown until the learner has attempted the question.
    - `build_needed: true` means build exactly `media[]`, as below. `false` means build nothing.
+   - `also[]` is a second request to do after the first (for example a quiz after the build).
 3. If the learner later says "answer now", "just explain" or "stop", that wins over the protocol.
 
 | mode | first turn |

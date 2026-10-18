@@ -90,7 +90,9 @@ def cmd_route(a):
         _emit(res)
     else:
         print(f"intent={res['intent']} mode={res['mode']} media={','.join(res['media']) or '-'} "
-              f"build_needed={res['build_needed']}\nfirst turn: {res['first_turn']['instruction']}")
+              f"build_needed={res['build_needed']} confidence={res['confidence']}"
+              f"{' (' + '; '.join(res['reasons']) + ')' if res['reasons'] else ''}"
+              f"\nfirst turn: {res['first_turn']['instruction']}")
     return errors.EXIT_OK
 
 

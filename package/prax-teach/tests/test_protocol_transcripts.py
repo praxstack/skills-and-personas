@@ -2,7 +2,10 @@
 
 - test_no_reveal_before_attempt, test_modes (automatic): the router picks the mode, TEACHING.md has
   its protocol, and ptk/protocol.py accepts a scripted transcript that follows it and rejects each
-  scripted break (a reveal, two questions at once, a skipped layer, and so on).
+  scripted break (a reveal, two questions at once, a skipped layer, and so on). Scripted learner
+  attempts carry their ground-truth class (`expect_class`); the checker grades the tutor's
+  classification against it (or against the question's answer key) instead of trusting the
+  tutor's own labels.
 - test_predict_first_flow, test_modes_live (agent-tests): a real tutor agent, loaded from SKILL.md by
   direct path, plays the tutor one turn at a time against fixed learner turns it can't see ahead
   of time. Each run appends the next learner turn and stops at claims-pending (exit 4) until the
@@ -52,18 +55,17 @@ EVIDENCE = {"kind": "evidence", "item": "switch fallthrough output", "result": "
             "gap": "treats a case label as a stop", "next_action": "predict the same switch with n = 1",
             "consent": True}
 
+FIX = "A case label is only a label, so control runs on into case 3."
 PREDICT_GOOD = {"mode": "predict-first", "turns": [
     T(["question"], "Here is the program: n is 2 and case 2 has no break. What does it print?", states_shown=["s0"]),
-    S("attempt", "two, then done"),
+    S("attempt", "two, then done", expect_class="misconception:m.stops"),
     T(["feedback", "artifact", "consent"],
-      "Not quite: that's the 'a case label stops execution' idea. A label is only a label, so control runs "
-      "on into case 3. Here is the still with every step. Can I note this attempt as evidence?",
-      classification="misconception:m.stops", feedback_items=1,
+      f"Not quite. {FIX} Here is the still with every step. Can I note this attempt as evidence?",
+      classification="misconception:m.stops", feedback=FIX,
       artifacts=["lessons/switch-fallthrough/build/still/switch-fallthrough-wide-light.png"],
       states_shown=["s0", "s1", "s2", "s3"]),
     S("consent-yes", "yes"),
-    T(["feedback"], "Noted. Next, try the same switch with n = 1 when you're ready.", classification="misconception:m.stops",
-      feedback_items=1),
+    T(["summary"], "Noted. Next, try the same switch with n = 1 when you're ready."),
     S("satisfied", "got it, that's enough"),
     T(["close"], "Good. One attempt observed; the n = 1 variation is the next check.", reason="satisfied"),
 ], "events": [dict(EVIDENCE, after_turn=4)]}
@@ -105,18 +107,47 @@ def test_no_reveal_before_attempt():
     # showing the program in a fenced block is not a reveal; inline prose is
     code = "```c\nputs(\"two\");\nputs(\"three\");\nputs(\"done\");\n```\nWhat does it print?"
     assert protocol.check_transcript(_break(PREDICT_GOOD, lambda t: t["turns"][0].update(text=code)), lesson) == []
+    # a ternary in the program and an imperative prediction prompt are good first turns (P2-3)
+    ternary = "```c\nint k = n ? 2 : 3;\n```\nWhat does it print?"
+    imperative = "Predict the output of the program for n = 2."
+    for text in (ternary, imperative):
+        assert protocol.check_transcript(_break(PREDICT_GOOD, lambda t: t["turns"][0].update(text=text)), lesson) == [], text
+    # ground truth may come from the harness instead of the learner turn, which the tutor never sees
+    hidden = _break(PREDICT_GOOD, lambda t: t["turns"][1].pop("expect_class"))
+    assert protocol.check_transcript(hidden, lesson, truth=["misconception:m.stops"]) == []
+    assert protocol.check_transcript(hidden, lesson, truth=["correct"]), "the harness truth must be enforced"
     breaks = {
         "inline code reveal": lambda t: t["turns"][0].update(text="It prints `two` then `three`. Agree?"),
         "hidden state": lambda t: t["turns"][0].update(states_shown=["s0", "s2"]),
         "states the answer": lambda t: t["turns"][0].update(text="It prints two, three, done. Why do you think?"),
         "artifact before": lambda t: t["turns"][0].update(artifacts=["build/still/x.png"]),
         "first turn": lambda t: t["turns"][0].update(acts=["question", "artifact"]),
+        # P1-3 counterexamples from the WP1 review: each passed the old checker
+        "three corrections labelled as one": lambda t: t["turns"][2].update(
+            feedback_items=1, text=f"Not quite. {FIX} Also, only a break statement ends a case. And the switch "
+            "jumped straight to case 2, so case 1 never ran. Here is the still. Can I note this attempt as evidence?"),
+        "misconception classified correct": lambda t: t["turns"][2].update(classification="correct"),
+        "hint in the opening question": lambda t: t["turns"][0].update(
+            text="Hint: a case label does not stop anything, so look for the next break. What does it print?"),
+        "correction claim in the opening question": lambda t: t["turns"][0].update(
+            text="n is 2, and a case label is only a label. What does the program print?"),
+        "partial reveal": lambda t: t["turns"][0].update(
+            text="It keeps going into case 3, so three shows up. What is the full output?"),
+        "feedback field missing": lambda t: t["turns"][2].pop("feedback"),
+        "two-sentence feedback field": lambda t: t["turns"][2].update(
+            feedback=f"{FIX} Only break ends a case.", text=f"Not quite. {FIX} Only break ends a case. Can I note it?"),
+        "attempt without ground truth": lambda t: t["turns"][1].pop("expect_class"),
     }
+    why = {"three corrections labelled as one": "second correction", "misconception classified correct": "ground truth",
+           "hint in the opening question": "hint marker", "correction claim in the opening question": "correction claim",
+           "partial reveal": "gives away", "feedback field missing": "no `feedback` field",
+           "two-sentence feedback field": "one sentence", "attempt without ground truth": "no ground truth"}
     caught = {}
     for name, fn in breaks.items():
         v = protocol.check_transcript(_break(PREDICT_GOOD, fn), lesson)
         assert v, f"the checker missed: {name}"
-        caught[name] = v[0]
+        assert why.get(name, "") in " | ".join(v), f"{name}: caught for the wrong reason: {v}"
+        caught[name] = next((x for x in v if why.get(name, "") in x), v[0])
     return {"hidden": p["hidden_states"], "caught": caught}
 
 
@@ -125,15 +156,15 @@ def test_no_reveal_before_attempt():
 QUIZ = {"mode": "quiz", "turns": [
     T(["question"], "Three questions on integer promotion. 1: in char c = 200; on this Mac, what is c?",
       answer_key="-56", question_count=3),
-    S("attempt", "-56"),
+    S("attempt", "-56", expect_class="correct"),
     T(["feedback", "question"], "Right: char is signed here. 2: what type is 'a' + 1 in C?",
-      classification="correct", feedback_items=1, answer_key="int"),
-    S("attempt", "char"),
+      classification="correct", feedback="char is signed here.", answer_key="int"),
+    S("attempt", "char", expect_class="partial"),
     T(["feedback", "question"], "Partly: 'a' is already an int in C. 3: what does sizeof('a') give on this Mac?",
-      classification="partial", feedback_items=1, answer_key="4"),
-    S("attempt", "4"),
+      classification="partial", feedback="'a' is already an int in C.", answer_key="4"),
+    S("attempt", "4", expect_class="correct"),
     T(["feedback", "consent"], "Right. Can I note these three attempts as evidence?", classification="correct",
-      feedback_items=1),
+      feedback="Right."),
     S("consent-yes", "yes"),
     T(["summary"], "Noted. Score so far 2/3. Weakest: the type of a character constant. Another round?"),
     S("stop", "stop here"),
@@ -144,13 +175,13 @@ EXAM = {"mode": "exam-drill", "turns": [
     T(["question"], "GATE drill: 2 MCQs, 1 mark each, 90 s each, -1/3 for a wrong answer. "
       "Q1: which operator has the highest precedence?", format="mcq", marks=1, time_limit_s=90,
       options=["A ++ (postfix)", "B *", "C +", "D ="], answer_key="A"),
-    S("attempt", "B", elapsed_s=40),
+    S("attempt", "B", elapsed_s=40, expect_class="misconception:*"),
     T(["feedback", "question"], "Wrong, -1/3: postfix ++ binds tighter than *. Q2: which of these is evaluated first in a = b + c * d?",
-      classification="partial", feedback_items=1, marks_awarded=-0.33, elapsed_s=40,
-      format="mcq", options=["A =", "B +", "C *", "D none"], answer_key="C"),
-    S("attempt", "C", elapsed_s=25),
+      classification="misconception:star-first", feedback="postfix ++ binds tighter than *.", marks_awarded=-0.33,
+      elapsed_s=40, format="mcq", options=["A =", "B +", "C *", "D none"], answer_key="C"),
+    S("attempt", "C", elapsed_s=25, expect_class="correct"),
     T(["feedback", "consent"], "Right, +1, 25 s of 90. Can I note both attempts as evidence?", classification="correct",
-      feedback_items=1, marks_awarded=1, elapsed_s=25),
+      feedback="Right, +1, 25 s of 90.", marks_awarded=1, elapsed_s=25),
     S("consent-yes", "yes"),
     T(["summary"], "Noted. 0.67 of 2 so far. Weakest: postfix precedence. Another question?"),
     S("stop", "done"),
@@ -175,14 +206,21 @@ MODE_CASES = {
         "two questions in one turn": lambda t: t["turns"][0].update(text="1: what is c? 2: and what is 'a' + 1?"),
         "answer in the question": lambda t: t["turns"][0].update(text="1: c is -56 here, right?"),
         "no feedback": lambda t: t["turns"][2].update(acts=["question"]),
-        "two hints": lambda t: t["turns"][2].update(feedback_items=2),
+        "two hints": lambda t: t["turns"][2].update(
+            text="Right: char is signed here. Remember that plain char signedness is implementation-defined. "
+                 "2: what type is 'a' + 1 in C?"),
+        "partial called correct": lambda t: t["turns"][4].update(classification="correct"),
+        "correct answer called wrong (no scripted truth, key decides)": lambda t: (
+            t["turns"][1].pop("expect_class"), t["turns"][2].update(classification="partial")),
         "bad score": lambda t: t["turns"][-1].update(score="3/5"),
+        "score does not match the classifications": lambda t: t["turns"][-1].update(score="3/3"),
         "closed before the learner stopped": lambda t: t["turns"][8].update(acts=["close"], reason="satisfied"),
     }),
     "exam-drill": ("GATE-style MCQs on operator precedence, timed", EXAM, {
         "no time limit": lambda t: t["turns"][0].pop("time_limit_s"),
         "three options": lambda t: t["turns"][0].update(options=["A", "B", "C"]),
         "no marks in feedback": lambda t: t["turns"][2].pop("marks_awarded"),
+        "wrong answer called correct": lambda t: t["turns"][2].update(classification="correct"),
         "no total": lambda t: t["turns"][-1].pop("total_marks"),
     }),
     "qa-expand": ("Let me ask you questions about arrays and expand the answer layer by layer", QA, {
@@ -223,7 +261,8 @@ SCENARIOS = {
     "predict-first": {
         "request": "Teach me how a switch statement with a missing break falls through, as a still.",
         "workspace": PREDICT_WS, "mode": "predict-first", "lesson": True,
-        "learner": [S("attempt", "It prints two and then done. The next case label stops it."),
+        "learner": [S("attempt", "It prints two and then done. The next case label stops it.",
+                      expect_class="misconception:m.stops"),
                     S("consent-yes", "Yes, you can note it."),
                     S("satisfied", "Got it, thanks. That's enough for today.")]},
     "quiz": {
@@ -260,8 +299,10 @@ You are the tutor in a scripted teaching transcript. Write only inside this job 
 Tutor turn fields (JSON, all at the top level of the turn object):
 - role "tutor"; acts: any of "question", "feedback", "artifact", "consent", "answer", "layer", "close";
 - text: exactly what you say to the learner;
-- classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback_items
-  (the number of hint or feedback items) on any turn with "feedback";
+- classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback (the
+  one hint or correction, one sentence, copied verbatim from text) on any turn with "feedback". The
+  rest of a feedback turn's text may hold only a short verdict, the artifact, a consent question or
+  the next question;
 - artifacts (file paths you show) and states_shown (trace state ids you show);
 - quiz: answer_key (private, never in text) on each question, question_count on the first, score "k/n" on close;
 - exam-drill: format ("mcq", "msq", "nat"), marks, time_limit_s on the first turn; options (4) and
@@ -307,11 +348,13 @@ def _step(sid):
         return f"waiting for the tutor's turn: {job / 'JOB.md'}"
     said = sum(x["role"] == "learner" for x in t["turns"])
     if said < len(sc["learner"]):
-        t["turns"].append(sc["learner"][said])
+        # the tutor reads this file, so the learner's ground-truth class stays in the script
+        t["turns"].append({k: v for k, v in sc["learner"][said].items() if k != "expect_class"})
         (job / "transcript.json").write_text(json.dumps(t, indent=1))
         return f"learner turn {said} appended; tutor turn needed: {job / 'JOB.md'}"
     assert t["mode"] == sc["mode"], f"{sid}: tutor used mode {t['mode']!r}, route says {sc['mode']!r}"
-    v = protocol.check_transcript(t, _lesson() if sc["lesson"] else None)
+    truth = [x.get("expect_class") for x in sc["learner"] if x["kind"] == "attempt"]
+    v = protocol.check_transcript(t, _lesson() if sc["lesson"] else None, truth=truth)
     assert not v, f"{sid}: protocol violations: {v}"
     return None
 

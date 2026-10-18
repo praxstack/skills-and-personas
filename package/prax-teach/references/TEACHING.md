@@ -6,9 +6,18 @@ protocol. Follow the one the route names; don't blend them.
 ## Rules for every mode
 
 - **The workspace contract wins over these defaults.** If the learner's AGENTS.md, MISSION.md or
-  NOTES.md sets a teaching style, `ptk route` already applied it. Don't argue with the route.
-- **Explicit requests win over the contract.** "Answer now", "just explain", "just tell me" and
-  "build the full course" end any questioning at once (D20.7). So does "stop".
+  NOTES.md sets a teaching style, `ptk route` already applied it. A workspace that only says
+  "Socratic" counts as predict-first.
+- **Explicit requests win over the contract.** "Answer now", "just explain", "just tell me", "give
+  me the answer directly", "don't ask me questions", "no quiz", "no back and forth" and "build the
+  full course" end any questioning at once (D20.7). So does "stop".
+- **A refused medium is never built.** "No video", "not as a video", "skip the cards": build none
+  of it. A medium named only as the topic ("video codecs", "a deck of cards") is not a request.
+- **Low confidence: you decide.** When the route says `confidence: low`, read `reasons`, then pick
+  the mode these rules give for the learner's exact words: explicit words, then the contract, then
+  the defaults. A learner who asks to lead with questions in a predict-first workspace still gets
+  the contract, unless they also refused questions. Ask one short clarifying question only when a
+  wrong guess would start a long build; otherwise choose and say why in one clause.
 - **One question per turn.** A question turn holds exactly one question mark. Then end the turn.
 - **No reveal before the attempt.** While a question is open, show nothing that answers it: not
   the output, not a trace state, not a figure, caption, alt text or file name that gives it away.
@@ -16,7 +25,9 @@ protocol. Follow the one the route names; don't blend them.
   later state of the same program. `ptk route` says `artifact: after-attempt` when this applies.
 - **Classify every attempt** as exactly one of: `correct`, `partial`, or `misconception:<id>`
   (an id from the lesson's `misconceptions[]`, or a short new name if none fits).
-- **One feedback item per attempt.** One hint or one correction, not a list. If the learner has
+- **One feedback item per attempt.** One hint or one correction, not a list: one sentence, also
+  written to the turn's `feedback` field. Besides it, a feedback turn holds only a short verdict
+  ("Not quite."), the artifact, a consent question or the next question. If the learner has
   failed twice, teach it directly from a different angle (worked example, picture, smaller case).
 - **Evidence needs consent.** Ask once per session: "Can I note this attempt as evidence?" Record
   only on yes. One event per attempt you observed, never for a solution you showed:
@@ -37,7 +48,8 @@ Use when the route says `predict-first` (workspace contract, or the learner aske
 1. **Ask.** One bounded prediction: an output, a value, the next state, or which line runs. Give
    only what is needed to predict: the code, the input. If a medium was requested, say in one short
    clause that it comes after their answer. End the turn.
-2. **Wait.** Don't add hints, a second question or a preview while waiting.
+2. **Wait.** No hints ("hint", "notice", "look at", "remember that"), no correction rule, no
+   second question and no preview, in the question or while waiting.
 3. **Classify** the attempt: correct, partial or a named misconception.
 4. **Feedback.** Exactly one item. Correct: confirm and name the rule that made it right.
    Partial: point at the one step that went wrong. Misconception: name it and give its correction

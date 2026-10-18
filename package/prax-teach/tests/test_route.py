@@ -1,7 +1,11 @@
 """AC-1.1..AC-1.5: `ptk route` against the dev prompt set (tests/data/route-dev.jsonl, 60+ prompts).
 
 The dev set was written independently of the holdout. Each case names a workspace fixture
-(created here in a temp dir) and the fields it expects; only the named fields are compared.
+(created here in a temp dir) and the fields it expects; only the named fields are compared. A case may
+also list `accept`: other values a good tutor could defend for a field (the WP1 reviewer's scoring).
+
+route-dev-heldback.jsonl holds 20 adversarial probes that were never used to tune the rules. Its test
+only reports accuracy; it does not assert a score, so nobody is tempted to tune on it.
 """
 import ast
 import json
@@ -13,6 +17,7 @@ from _util import ptk_cmd
 from ptk import host, route
 
 DEV = host.PKG / "tests" / "data" / "route-dev.jsonl"
+HELDBACK = host.PKG / "tests" / "data" / "route-dev-heldback.jsonl"
 C_WORKSPACE = Path.home() / "Study" / "Actual_Study_Gate2027" / "01-Interview Preperation" / "01-C"
 
 # Fixture workspaces, written for this test (not copied from any real workspace).
@@ -38,9 +43,13 @@ def _workspaces():
     return root, dirs
 
 
-def _cases(tag=None):
-    rows = [json.loads(line) for line in DEV.read_text().splitlines() if line.strip()]
+def _cases(tag=None, path=DEV):
+    rows = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
     return [r for r in rows if tag is None or tag in r["tags"]]
+
+
+def _ok(case, key, got):
+    return got == case["expect"][key] or got in case.get("accept", {}).get(key, [])
 
 
 def _run(cases):
@@ -50,7 +59,7 @@ def _run(cases):
         bad = []
         for c in cases:
             got = route.route(c["request"], workspace_dir=dirs[c["workspace"] or "none"])
-            diff = {k: (v, got.get(k)) for k, v in c["expect"].items() if got.get(k) != v}
+            diff = {k: (v, got.get(k)) for k, v in c["expect"].items() if not _ok(c, k, got.get(k))}
             if diff:
                 bad.append({"id": c["id"], "request": c["request"], "diff": diff, "rules": got["rules"]})
         return len(cases), bad
@@ -163,6 +172,131 @@ def test_modes_route():
     return out
 
 
+# ---------------------------------------------------------------- negation, topic words, confidence (WP1 fix)
+
+def _route(req, ws="none"):
+    root, dirs = _workspaces()
+    try:
+        return route.route(req, workspace_dir=dirs[ws])
+    finally:
+        shutil.rmtree(root)
+
+
+def test_fresh_and_adversarial_sets():
+    """The reviewer's 60 fresh prompts and the 20 tuning adversarial probes all route as labelled."""
+    out = {}
+    for tag, minimum in (("fresh-wp1-review", 60), ("adversarial", 20)):
+        out[tag] = _assert_all(tag, minimum)["cases"]
+    return out
+
+
+def test_negated_medium_is_never_built():
+    """P1-1: a medium inside a negated clause is removed, never built, and the route says so (low confidence)."""
+    cases = {"I don't want a video, just explain pointers": [], "no video please, explain recursion": [],
+             "teach me pointers, not as a video": [], "quiz me, no cards": [], "explain pointers, no diagrams": [],
+             "skip the video, give me flashcards on structs": ["cards"],
+             "rather than a video, make me a still of the stack frame": ["still"],
+             "make a video of bubble sort but dont narrate it": ["video"]}
+    for req, media in cases.items():
+        got = _route(req)
+        assert got["media"] == media and got["build_needed"] is bool(media), (req, got)
+        dropped = "narrate" not in req  # a negated narration keeps the video, so nothing was dropped
+        assert (got["confidence"] == "low") is dropped, (req, got)
+        assert any(r.startswith("negated") for r in got["reasons"]) is dropped, (req, got)
+    assert _route("make a video of bubble sort but dont narrate it")["narration"] is False
+    return {"cases": len(cases)}
+
+
+def test_refusal_beats_quiz_and_contract():
+    """P1-2 / D20.7: refusing questions never starts a quiz, and natural override phrasing beats predict-first."""
+    for ws in ("none", "predict"):
+        for req in ("dont ask me questions, what does static do", "explain without the quiz thing",
+                    "pls dont quiz me rn, just tell me what volatile does", "instead of quizzing me, just walk me through unions",
+                    "give me the answer directly", "I just want the explanation, no back and forth",
+                    "stop asking me to predict, just tell me what happens"):
+            got = _route(req, ws)
+            assert got["mode"] in ("quick", "explain") and not got["build_needed"], (ws, req, got)
+    got = _route("no need to ask me, show me the video on pointers", "predict")
+    assert got["mode"] == "lesson" and got["media"] == ["video"], got
+    assert _route("Don't just tell me the answer, let me guess first: what does this switch print?")["mode"] == "predict-first"
+    assert _route("can you predict how long the build takes")["mode"] != "predict-first"
+    return {"ok": True}
+
+
+def test_topic_words_are_not_media():
+    """A medium word used as the topic (video codecs, a deck of cards, the interactive mode of gdb) builds nothing."""
+    for req in ("teach me about video codecs", "explain how mp4 compression works", "teach me how to animate in CSS",
+                "explain how to shuffle a deck of cards in C", "explain the interactive mode of gdb",
+                "how do images get stored in memory", "what is the figure of merit",
+                "I watched a video on pointers but I'm still confused",
+                "in one sentence, what does the diagram in the lesson show"):
+        got = _route(req)
+        assert got["intent"] == "teach" and got["media"] == [] and not got["build_needed"], (req, got)
+    got = _route("can you make an animation where i can drag the slider and see the bits flip")
+    assert got["media"] == ["explorer"], "interaction wins over the noun animation"
+    return {"ok": True}
+
+
+def test_tasks_and_rebuilds():
+    """P2-2: a task verb at the start of any clause is a task (explain_after when it also asks why);
+    re-rendering or repairing an existing build is intent=rebuild, which builds that lesson only."""
+    for req in ("check my code for bugs", "make it faster", "test the parser", "do not explain, just fix it"):
+        assert _route(req)["intent"] == "ordinary_task", req
+    for req in ("fix the bug and explain what was wrong", "run the tests and explain the failure"):
+        got = _route(req, "predict")
+        assert got["intent"] == "ordinary_task" and got["explain_after"] is True and got["mode"] is None, got
+    for req in ("render the video again, the audio is out of sync", "the animation is out of sync, re-render it",
+                "the explainer video you made had wrong numbers, fix it"):
+        got = _route(req, "predict")
+        assert got["intent"] == "rebuild" and got["mode"] is None and got["media"] == ["video"], got
+        assert got["build_needed"] is True and got["first_turn"]["kind"] == "rebuild", got
+    assert _route("Fix my understanding of pointers")["intent"] == "teach"
+    return {"ok": True}
+
+
+def test_confidence():
+    """`confidence` is high when one reading is clear and low (with reasons) when signals conflict."""
+    high = ["Teach me how printf %d works as a narrated video", "Quiz me on C integer promotion",
+            "Fix the off-by-one in basics.c", "flashcards + a short video on operator precedence, also quiz me after"]
+    for req in high:
+        got = _route(req)
+        assert got["confidence"] == "high" and got["reasons"] == [], (req, got)
+    seq = _route("flashcards + a short video on operator precedence, also quiz me after")
+    assert seq["mode"] == "lesson" and seq["also"] == ["quiz"], seq
+    low = {"I don't want a video, just explain pointers": "negated",
+           "teach me about video codecs": "topic",
+           "write a function that reverses a linked list and make a video of it running": "also",
+           "make it": "weak"}
+    for req, reason in low.items():
+        got = _route(req)
+        assert got["confidence"] == "low" and any(r.startswith(reason) for r in got["reasons"]), (req, got)
+    lost = _route("lets do a q&a session on pointers", "predict")
+    assert lost["mode"] == "predict-first" and lost["media"] == [] and lost["confidence"] == "low", lost
+    return {"high": len(high), "low": len(low) + 1}
+
+
+def test_heldback_report():
+    """20 adversarial probes kept out of tuning: disjoint from the dev set; accuracy reported, not asserted."""
+    held = _cases(path=HELDBACK)
+    assert len(held) == 20, len(held)
+    dev = {c["request"].lower() for c in _cases()}
+    assert not [c["id"] for c in held if c["request"].lower() in dev], "held-back probes leaked into the dev set"
+    n, bad = _run(held)
+    return {"cases": n, "correct": n - len(bad), "misses": [b["id"] for b in bad]}
+
+
+def test_workspace_negation_without_apostrophe():
+    """A workspace line that says "dont ask prediction questions" is explain-first, not predict-first."""
+    ws = host.make_tmp("route-ws-neg-")
+    try:
+        (ws / "NOTES.md").write_text("Teach directly. dont ask prediction questions before explaining.\n")
+        got = route.route("Teach me pointers", workspace_dir=ws)
+    finally:
+        shutil.rmtree(ws)
+    assert got["workspace_contract"]["mode"] == "explain-first" and got["mode"] == "explain", got
+    return {"mode": got["mode"]}
+
+
 # ---------------------------------------------------------------- AC-1.5
 
 BRANCH_NODES = (ast.If, ast.IfExp, ast.For, ast.AsyncFor, ast.While, ast.ExceptHandler, ast.match_case)
@@ -214,6 +348,6 @@ def test_rule_table_and_complexity():
         assert stage in table["precedence"], stage
         for r in rules:
             assert r["mode"] in table["first_turn"], r["id"]
-            for p in r["any"] + r.get("unless", []):
+            for p in r["any"] + r.get("unless", []) + r.get("all", []):
                 re.compile(route._expand(p, table["macros"]))
     return {"max_branches": max(counts.values()), "functions": len(counts)}
