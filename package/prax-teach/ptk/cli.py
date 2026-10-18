@@ -83,6 +83,17 @@ def cmd_host(a):
     return errors.EXIT_OK
 
 
+def cmd_route(a):
+    from . import route
+    res = route.route(a.request, workspace_dir=a.workspace)
+    if a.json:
+        _emit(res)
+    else:
+        print(f"intent={res['intent']} mode={res['mode']} media={','.join(res['media']) or '-'} "
+              f"build_needed={res['build_needed']}\nfirst turn: {res['first_turn']['instruction']}")
+    return errors.EXIT_OK
+
+
 def cmd_selftest(a):
     from . import selftest
     return selftest.run(suite="auto", pattern=a.k)
@@ -123,6 +134,11 @@ def parser():
     h = hs.add_parser("setup")
     h.add_argument("--yes", action="store_true")
     h.set_defaults(fn=cmd_host)
+    s = sub.add_parser("route", help="intent, mode, media and first turn for a request (AC-1.1)")
+    s.add_argument("request")
+    s.add_argument("--workspace", help="learner workspace dir (default: current dir)")
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(fn=cmd_route)
     for name, fn in (("selftest", cmd_selftest), ("agent-tests", cmd_agent_tests)):
         s = sub.add_parser(name)
         s.add_argument("-k", help="only tests whose name contains this")

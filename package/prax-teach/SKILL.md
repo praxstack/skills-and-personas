@@ -1,24 +1,48 @@
 ---
 name: prax-teach
-description: Compile a C lesson into verified explainers (still, narrated video, interactive video) from one lesson model. Every number comes from a sandboxed real run; every sentence maps to a reviewed claim. Use when Prax asks to be taught a C topic in a named medium.
+description: Teach Prax a C topic the way his workspace asks, and compile lessons into verified explainers (still, explorer, Q&A, cards, narrated video, interactive video) from one lesson model. Every number comes from a sandboxed real run; every sentence maps to a reviewed claim. Use when Prax asks to be taught, quizzed or drilled, or asks for a lesson in a named medium.
 ---
 
-# Prax Teach v2.1 (WP0 slice)
+# Prax Teach v2.1
 
 Status: development candidate. Loaded by direct path; not registered with any host.
+`ptk` lives in `bin/` next to this file. Put that directory on PATH.
 
-## Before you teach
+## Before your first teaching word
 
-1. Read the learner workspace contract first (AGENTS.md, MISSION.md, NOTES.md). If it says predict first, ask one bounded prediction and wait for the attempt before showing any artifact.
-2. A quick question gets a direct answer. No lesson, no build.
+You need only three things before you say anything that teaches: this file, the route below, and
+the section of `references/TEACHING.md` for the routed mode. Read nothing else first.
+
+1. Run the router on the learner's exact words, from the learner's workspace:
+
+   `ptk route "<request>" --workspace <learner workspace dir> --json`
+
+   It returns `{intent, mode, media[], workspace_contract, first_turn, build_needed}`. The router
+   has already read the workspace's AGENTS.md, MISSION.md and NOTES.md and applied their teaching
+   rules, and it has applied any "answer now" or "just explain" in the request. Don't re-decide.
+2. Obey it:
+   - `intent: ordinary_task`: do the task. No teaching, no question, no build.
+   - Otherwise do exactly what `first_turn.instruction` says, using the protocol for `mode` in
+     `references/TEACHING.md`. If `first_turn.end_turn` is true, end your turn after it.
+   - `first_turn.artifact: after-attempt` means nothing from the lesson (artifact, trace state,
+     output) is shown until the learner has attempted the question.
+   - `build_needed: true` means build exactly `media[]`, as below. `false` means build nothing.
+3. If the learner later says "answer now", "just explain" or "stop", that wins over the protocol.
+
+| mode | first turn |
+|---|---|
+| predict-first, socratic, quiz, exam-drill | one question, then wait |
+| qa-expand | layer-1 answer, name the deeper layers |
+| quick, explain | answer in chat, no build |
+| lesson, full-pack | say what you'll build and how long, then build |
 
 ## Build a lesson in a named medium
 
-`ptk` lives in `bin/` next to this file. Put that directory on PATH.
+Read `references/LESSON-MODEL.md` now, not before.
 
 1. Write `lessons/<slug>/lesson.json` and `programs/*.c` following `references/LESSON-MODEL.md`. Every displayed value is a fact with an independent `expect`; every sentence is a claim with a justification and a source (cite the C17 clause).
 2. `ptk validate <lesson>`. Fix errors at the JSON pointer it prints (at most two repairs per error).
-3. Tell the learner the build takes about 2 minutes, then run `ptk build <lesson> --only still,video,ive` (only the media asked for).
+3. Tell the learner how long the build takes (about 2 minutes), then run `ptk build <lesson> --only <media from the route>`, for example `--only still,video,ive`.
 4. Act on the exit code:
 
 | Exit | Meaning | Do next |
@@ -31,7 +55,7 @@ Status: development candidate. Loaded by direct path; not registered with any ho
 | 5 | incomplete | report which gate did not run and why; never call it verified |
 | 6 | degraded | deliver, naming the fallback |
 
-5. Deliver `build/still/*.png`, `build/video/lesson.mp4` (+ captions and chapters), and `build/ive/index.html`. Quote the status from `ptk report <lesson>`.
+5. Deliver the built files (`build/still/*.png`, `build/video/lesson.mp4` with captions and chapters, `build/ive/index.html`). Quote the status from `ptk report <lesson>`. In predict-first mode, deliver only after the learner's attempt.
 
 ## Rules
 

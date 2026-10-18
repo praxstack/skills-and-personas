@@ -1,0 +1,470 @@
+{
+ "schema": "prax-teach/route-rules@1",
+ "doc": "Ordered rule table for `ptk route` (spec AC-1.1..1.5, E9, D17.3, D20.7, D20.8). Within a list the first matching rule wins; a rule matches when any `any` regex matches and no `unless` regex does. <<NAME>> expands a macro. Requests are lower-cased and whitespace-collapsed before matching. Mode precedence is the `precedence` list: the first stage with a candidate wins.",
+ "macros": {
+  "PFX": "^(?:(?:please|quickly|kindly|just|now|ok(?:ay)?|hey|so)[,:\\s]+)*(?:(?:can|could|would|will) you\\s+|i (?:need|want) you to\\s+|help me(?: to)?\\s+|go ahead and\\s+|let's\\s+)?(?:(?:please|quickly|just)\\s+)*",
+  "TEACH": "\\bteach(?:es|ing)?\\b|\\bexplain(?:s|ed|ing)?\\b|\\bexplanations?\\b|\\bmy (?:understanding|confusion|misconceptions?)\\b|\\bconfus(?:ed|ion|ing)\\b|\\bexplainer\\b|\\bhelp me (?:learn|understand|grasp|get)\\b|\\bi (?:want|need|would like|'d like) to (?:learn|understand)\\b|\\b(?:so|so that|to) (?:i )?(?:can )?(?:understand|learn)\\b|\\b(?:walk|run|talk) me through\\b|\\b(?:quiz|drill|tutor|test) me\\b|\\bsocratic\\b|\\bpredict\\b|\\b(?:quiz|lesson|tutorial|course|explainer|drill|mcqs?|flash ?cards?|cards|q&a)(?:\\s+(?:video|animation|still|diagram|explorer|cards?|deck|pack|set|session))?\\s+(?:on|about|for|covering|explaining|of)\\b|(?:video|animation|still|diagram|explorer|cards?|picture|image|figure|clip|film|explainer|walkthrough)s?\\s+(?:on|about|of|explaining|showing|that (?:shows|explains|teaches))\\b",
+  "NEG": "\\b(?:don't|do not|never|not|no)\\s+(?:just\\s+)?(?:tell|give|show|answer|explain)\\b"
+ },
+ "intent_rules": [
+  {
+   "id": "product-media",
+   "intent": "ordinary_task",
+   "note": "D20.8 negative: media made for a product or channel is not a lesson",
+   "any": [
+    "\\b(?:promo(?:tional)?|adverts?|advertisements?|ads|marketing|trailer|teaser|commercial|sizzle reel|launch (?:video|film|clip)|product (?:video|demo|launch)|investor|pitch (?:video|deck)|landing page|social media|youtube channel)\\b",
+    "\\b(?:bug report|for the (?:pr|pull request|issue|ticket|readme|changelog|release notes|docs))\\b"
+   ]
+  },
+  {
+   "id": "code-object-build",
+   "intent": "ordinary_task",
+   "any": [
+    "<<PFX>>(?:build|make|create|generate|scaffold|write|add|implement|set up|setup|design|code)\\b(?:\\s+(?:me|us))?(?:\\s+\\S+){0,4}?\\s+(?:component|app|application|api|endpoint|function|class|module|script|cli|page|player|parser|service|server|tests?|test suite|pipeline|database|schema|ui|website|site|plugin|extension|branch|file|folder|directory|repo|repository|pr|pull request|issue|ticket|makefile|target|config|dockerfile|workflow|hook|library|package|program|tool|bot|game|backend|frontend)\\b"
+   ],
+   "unless": [
+    "<<TEACH>>"
+   ]
+  },
+  {
+   "id": "code-verb",
+   "intent": "ordinary_task",
+   "any": [
+    "<<PFX>>(?:fix|rename|refactor|write|implement|add|delete|remove|update|deploy|install|uninstall|run|commit|push|pull|merge|rebase|migrate|patch|edit|debug|lint|format|bump|upgrade|configure|set up|setup|move|copy|summari[sz]e|translate|proofread|compile|benchmark|profile|optimi[sz]e|clean up|cleanup|revert|port|convert|resolve|stage|review (?:this|the|my) (?:pr|pull request|code|diff|commit))\\b"
+   ],
+   "unless": [
+    "<<TEACH>>"
+   ]
+  },
+  {
+   "id": "tooling-lookup",
+   "intent": "ordinary_task",
+   "any": [
+    "^(?:what|which) version\\b",
+    "\\bhow do i (?:install|update|upgrade|uninstall)\\b",
+    "\\bwhere (?:is|are) \\S+(?: \\S+)? installed\\b",
+    "^is \\S+(?: \\S+)? installed\\b"
+   ]
+  },
+  {
+   "id": "default-teach",
+   "intent": "teach",
+   "any": [
+    ""
+   ]
+  }
+ ],
+ "medium_rules": [
+  {
+   "id": "m-ive",
+   "medium": "ive",
+   "any": [
+    "\\binteractive (?:video|film|clip|animation|movie)s?\\b",
+    "\\bvideo explorers?\\b",
+    "\\bexplorable (?:video|film)s?\\b",
+    "\\bclickable video\\b",
+    "\\bpause (?:and|to) (?:play with|explore|poke|inspect|tweak|interact)\\b",
+    "\\bvideo (?:i|we) can (?:pause|interact with|explore|play with)\\b",
+    "\\b(?:pause|stop) (?:the video|the film|it|anywhere)\\b[^.]{0,40}?\\b(?:explore|play with|poke|inspect|edit|tweak|interact)\\b"
+   ]
+  },
+  {
+   "id": "m-video-visual",
+   "medium": "video",
+   "any": [
+    "\\bvideos?\\b",
+    "\\banimat(?:e|ed|es|ion|ions)\\b",
+    "\\bfilms?\\b",
+    "\\bclips?\\b",
+    "\\bscreencasts?\\b",
+    "\\bmovies?\\b",
+    "\\bmanim\\b",
+    "\\bmp4\\b|\\bgifs?\\b",
+    "\\bwatch (?:how|it|the|as)\\b",
+    "\\b3blue1brown\\b|\\b3b1b\\b",
+    "\\bhyperframes\\b",
+    "\\bmotion graphics?\\b"
+   ]
+  },
+  {
+   "id": "m-video-narration",
+   "medium": "video",
+   "note": "D20.8: narration is a layer over a visual, never audio only",
+   "any": [
+    "\\bnarrat(?:e|ed|es|ing|ion|or)\\b",
+    "\\bvoice[- ]?overs?\\b",
+    "\\bvoiced\\b",
+    "\\b(?:audio|spoken|read[- ]aloud|tts|podcast|listen)\\b"
+   ],
+   "unless": [
+    "\\b(?:no|without)\\s+(?:narration|voice|voice[- ]?over|audio|sound)\\b"
+   ]
+  },
+  {
+   "id": "m-explorer",
+   "medium": "explorer",
+   "any": [
+    "\\bexplorers?\\b",
+    "\\binteractive\\b",
+    "\\bsimulat(?:or|ion)s?\\b",
+    "\\bplayground\\b",
+    "\\bsliders?\\b",
+    "\\bwidget\\b",
+    "\\bmanipulat(?:e|able)\\b",
+    "\\bstep[- ]through\\b",
+    "\\bexplorable\\b",
+    "\\b(?:let me|i want to|so i can|where i can|i can) (?:change|tweak|drag|play with|poke|manipulate|edit|step through|toggle)\\b"
+   ]
+  },
+  {
+   "id": "m-qa",
+   "medium": "qa",
+   "any": [
+    "(?<![a-z0-9])q\\s*(?:&|and|n)\\s*a(?![a-z0-9])",
+    "\\bquestion[- ]and[- ]answer\\b",
+    "\\bexpanders?\\b",
+    "\\bfaqs?\\b"
+   ]
+  },
+  {
+   "id": "m-cards",
+   "medium": "cards",
+   "any": [
+    "\\bflash ?cards?\\b",
+    "\\banki\\b",
+    "\\b(?:review|study|memory|recall) cards?\\b",
+    "\\bcards?\\b",
+    "\\bspaced[- ]repetition\\b",
+    "\\bapkg\\b"
+   ],
+   "unless": [
+    "\\bcredit cards?\\b|\\bsd cards?\\b|\\bgraphics cards?\\b"
+   ]
+  },
+  {
+   "id": "m-still",
+   "medium": "still",
+   "any": [
+    "\\b(?:a|an|the|as|one|single|static|printable) still\\b",
+    "\\bstill (?:image|frame|diagram|figure|picture|explainer|visual|graphic)s?\\b",
+    "\\bstills\\b",
+    "\\bdiagrams?\\b",
+    "\\bfigures?\\b(?! out)",
+    "\\bpictures?\\b",
+    "\\bimages?\\b",
+    "\\binfographics?\\b",
+    "\\bposters?\\b",
+    "\\billustrat(?:e|ed|ion|ions)\\b",
+    "\\bsketch(?:es)?\\b",
+    "\\bcheat ?sheet\\b",
+    "\\bone[- ]pager\\b",
+    "\\bslides?\\b|\\bslideshows?\\b|\\bslide deck\\b",
+    "\\b(?:png|svg)\\b",
+    "\\bdraw\\b",
+    "\\bvisuali[sz](?:e|ed|ation)\\b",
+    "\\bvisual (?:summary|explainer|explanation)\\b"
+   ]
+  }
+ ],
+ "media_order": [
+  "still",
+  "explorer",
+  "qa",
+  "cards",
+  "video",
+  "ive"
+ ],
+ "narrated_media": [
+  "video",
+  "ive"
+ ],
+ "silent": [
+  "\\bsilent\\b",
+  "\\bmuted?\\b",
+  "\\b(?:no|without)\\s+(?:narration|voice|voice[- ]?over|audio|sound)\\b"
+ ],
+ "mode_rules": {
+  "override": [
+   {
+    "id": "full-course",
+    "mode": "full-pack",
+    "any": [
+     "\\b(?:full|whole|entire|complete) (?:course|pack|lesson pack|set|series|curriculum)\\b",
+     "\\ball (?:six|6|the) (?:media|formats|artifacts|artifact types)\\b",
+     "\\bevery (?:medium|format)\\b"
+    ]
+   },
+   {
+    "id": "just-explain",
+    "mode": "explain",
+    "any": [
+     "\\bjust explain\\b",
+     "\\bexplain (?:it )?(?:directly|straight away|right away|now)\\b",
+     "\\bexplain (?:it )?without (?:asking|questions|quizzing|a quiz)\\b"
+    ],
+    "unless": [
+     "<<NEG>>"
+    ]
+   },
+   {
+    "id": "answer-now",
+    "mode": "quick",
+    "any": [
+     "\\banswer (?:it )?now\\b",
+     "\\bjust (?:tell|show|give) me\\b",
+     "\\bjust answer\\b",
+     "\\b(?:direct|quick|short|straight|brief|simple) answer\\b",
+     "\\bquick (?:question|q)\\b",
+     "\\btl;?dr\\b",
+     "\\bjust the answer\\b",
+     "\\bin (?:one|a single|a|1|two|2) (?:sentence|line)s?\\b",
+     "\\bin (?:one|two|three|five|ten|\\d+) minutes?\\b",
+     "\\bbriefly\\b",
+     "\\bconcisely\\b",
+     "\\bkeep it (?:brief|short|concise)\\b",
+     "\\beli5\\b",
+     "\\bquickly (?:tell|explain|answer)\\b",
+     "\\bexplain (?:it )?quickly\\b"
+    ],
+    "unless": [
+     "<<NEG>>"
+    ]
+   },
+   {
+    "id": "no-questions",
+    "mode": "explain",
+    "any": [
+     "\\bno (?:more )?(?:questions|quiz(?:zes|zing)?|predictions?|socratic)\\b",
+     "\\bskip (?:the )?(?:questions|quiz|prediction|ceremony|socratic)\\b",
+     "\\bstop (?:asking|quizzing)\\b",
+     "\\bwithout (?:asking|questions|quizzing|a quiz)\\b",
+     "\\b(?:don't|do not) (?:ask|quiz|test) me\\b"
+    ]
+   }
+  ],
+  "attempt": [
+   {
+    "id": "exam-drill",
+    "mode": "exam-drill",
+    "any": [
+     "\\bexam[- ]?drills?\\b",
+     "\\bgate[- ](?:style|level|pattern|pyqs?|questions?)\\b",
+     "\\bmcqs?\\b",
+     "\\bmsqs?\\b",
+     "\\bnat (?:questions?|problems?)\\b",
+     "\\bnumerical answer\\b",
+     "\\btimed\\b",
+     "\\bmock (?:test|exam|paper)s?\\b",
+     "\\bpyqs?\\b",
+     "\\bprevious[- ]year (?:questions|papers?)\\b",
+     "\\bexam[- ]style\\b",
+     "\\bdrill me\\b",
+     "\\bunder (?:exam )?time\\b"
+    ]
+   },
+   {
+    "id": "socratic",
+    "mode": "socratic",
+    "any": [
+     "\\bsocratic(?:ally)?\\b",
+     "\\b(?:guide|lead) me (?:with|through) questions\\b",
+     "\\bkeep asking me\\b",
+     "\\bleading questions\\b",
+     "\\bask me (?:guiding|leading) questions\\b"
+    ]
+   },
+   {
+    "id": "quiz",
+    "mode": "quiz",
+    "any": [
+     "\\bquiz(?:zes)?\\b",
+     "\\btest me\\b",
+     "\\btest my (?:knowledge|understanding|recall)\\b",
+     "\\bcheck my understanding\\b",
+     "\\bask me (?:\\w+ )?(?:questions|problems)\\b",
+     "\\bpractice (?:questions|problems)\\b",
+     "\\bself[- ]test\\b"
+    ]
+   },
+   {
+    "id": "predict",
+    "mode": "predict-first",
+    "any": [
+     "\\bpredict(?:ion|ions|ing)?\\b",
+     "\\bguess (?:first|the output)\\b",
+     "\\blet me (?:try|guess|attempt|predict|think)(?: it)?(?: first)?\\b",
+     "\\bask me (?:\\w+ ){0,3}first\\b",
+     "\\bquestions? first\\b",
+     "\\bi(?:'d| would)? (?:want|like) to (?:try|attempt|guess|predict)(?: it)?(?: myself)? first\\b",
+     "\\btry (?:it )?(?:myself )?first\\b",
+     "\\b(?:don't|do not) (?:just )?(?:tell|give|show) me (?:the )?(?:answer|output|result)\\b",
+     "\\b(?:do not|don't) reveal\\b",
+     "\\bbefore (?:an |my |the |i )?attempt\\b",
+     "\\battempt first\\b",
+     "\\bmake me (?:think|predict|work it out)\\b",
+     "\\bbefore you (?:show|tell|explain|reveal)\\b"
+    ]
+   }
+  ],
+  "request": [
+   {
+    "id": "qa-expand",
+    "mode": "qa-expand",
+    "any": [
+     "\\blayer by layer\\b",
+     "\\bin layers\\b",
+     "\\blayered\\b",
+     "\\bexpand(?:ing|able)?\\b",
+     "\\bdrill down\\b",
+     "\\bgo deeper\\b",
+     "\\blet me ask (?:you )?(?:some )?(?:questions|follow[- ]ups?)\\b",
+     "\\b(?:answer|take) my questions\\b",
+     "\\bfollow[- ]up questions\\b",
+     "\\bq&a session\\b"
+    ]
+   }
+  ],
+  "intent": [
+   {
+    "id": "short-question",
+    "mode": "quick",
+    "note": "a short question with no medium and no teaching verb gets a direct answer (D17.3)",
+    "any": [
+     "^(?:what|why|how|is|are|does|do|can|could|which|when|where|should)\\b(?:\\s*\\S+){0,14}\\s*\\??$"
+    ],
+    "unless": [
+     "\\bteach\\b|\\blesson\\b|^(?:can|could|would|will) you (?:make|create|build|give|draw|show|do|write|generate|produce)\\b"
+    ]
+   }
+  ]
+ },
+ "precedence": [
+  "override",
+  "attempt",
+  "workspace",
+  "request",
+  "media",
+  "intent",
+  "default"
+ ],
+ "precedence_doc": "override = explicit answer-now / just explain / full course (D20.7); attempt = an explicit attempt-first mode the learner asked for (quiz, exam-drill, socratic, predict), which already satisfies a predict-first contract; workspace = AGENTS.md/MISSION.md/NOTES.md (AC-1.3); request = other explicit modes (qa-expand); media = a named medium means a lesson build; intent = request shape (short question); default = chat explanation.",
+ "default_mode": "explain",
+ "contract_modes": {
+  "predict-first": "predict-first",
+  "explain-first": "explain"
+ },
+ "with_media": {
+  "quick": "lesson",
+  "explain": "lesson"
+ },
+ "mode_media": {
+  "full-pack": [
+   "still",
+   "explorer",
+   "qa",
+   "cards",
+   "video",
+   "ive"
+  ]
+ },
+ "first_turn": {
+  "ordinary_task": {
+   "kind": "task",
+   "questions": 0,
+   "end_turn": false,
+   "artifact": "none",
+   "instruction": "Do the task as asked. No teaching, no lesson build, no prediction question."
+  },
+  "predict-first": {
+   "kind": "question",
+   "questions": 1,
+   "end_turn": true,
+   "artifact": "after-attempt",
+   "instruction": "Ask exactly one bounded prediction question and end the turn. Show no artifact, trace end state or answer until the learner attempts. TEACHING.md#predict-first."
+  },
+  "socratic": {
+   "kind": "question",
+   "questions": 1,
+   "end_turn": true,
+   "artifact": "after-attempt",
+   "instruction": "Ask one guiding question and end the turn. TEACHING.md#socratic."
+  },
+  "quiz": {
+   "kind": "question",
+   "questions": 1,
+   "end_turn": true,
+   "artifact": "after-attempt",
+   "instruction": "Say how many questions, then ask question 1 only and end the turn. TEACHING.md#quiz."
+  },
+  "exam-drill": {
+   "kind": "question",
+   "questions": 1,
+   "end_turn": true,
+   "artifact": "after-attempt",
+   "instruction": "State the format (GATE MCQ or NAT), the marks and the time limit, then ask question 1 only and end the turn. TEACHING.md#exam-drill."
+  },
+  "qa-expand": {
+   "kind": "answer",
+   "questions": 0,
+   "end_turn": true,
+   "artifact": "on-request",
+   "instruction": "Give the one-layer answer, then name the deeper layers the learner can open. Open one layer per request. TEACHING.md#qa-expand."
+  },
+  "quick": {
+   "kind": "answer",
+   "questions": 0,
+   "end_turn": true,
+   "artifact": "none",
+   "instruction": "Answer directly in a few sentences. No lesson model, no build. TEACHING.md#quick."
+  },
+  "explain": {
+   "kind": "answer",
+   "questions": 0,
+   "end_turn": true,
+   "artifact": "none",
+   "instruction": "Explain in chat with one exact example. Offer a medium in one line; build nothing unless asked. TEACHING.md#explain."
+  },
+  "lesson": {
+   "kind": "build-notice",
+   "questions": 0,
+   "end_turn": false,
+   "artifact": "after-build",
+   "instruction": "Name the media you will build and whether it takes over 60 s, then write the lesson model and run ptk build --only <media>. TEACHING.md#lesson."
+  },
+  "full-pack": {
+   "kind": "build-notice",
+   "questions": 0,
+   "end_turn": false,
+   "artifact": "after-build",
+   "instruction": "Confirm the full pack (all six media) and the build time, then build. TEACHING.md#lesson."
+  }
+ },
+ "workspace_contract": {
+  "files": [
+   "AGENTS.md",
+   "MISSION.md",
+   "NOTES.md"
+  ],
+  "max_bytes": 65536,
+  "predict_first": [
+   "\\bpredict(?:ion|ions|ing)?\\b",
+   "\\bsocratic\\b",
+   "\\bwait for (?:the|an|their|my|his|her) attempt\\b",
+   "\\battempt (?:first|before)\\b",
+   "\\bask (?:one|a) (?:bounded |short |single )?(?:question|prediction)\\b",
+   "\\bbefore (?:explaining|the answer|revealing|showing the answer)\\b",
+   "\\b(?:no|never) reveal\\w* (?:\\w+ )?before\\b"
+  ],
+  "negations": [
+   "\\b(?:without|no|never|don't|do not|skip|avoid|instead of)\\b[^.]{0,30}?\\b(?:predict|prediction|predictions|questions?|quiz|socratic)\\b"
+  ],
+  "explain_first": [
+   "\\bwithout (?:a )?(?:prediction|predictions|quiz|questions)\\b",
+   "\\bexplanation[- ]first\\b",
+   "\\bexplain first\\b",
+   "\\bwhole explanation\\b",
+   "\\b(?:no|don't ask|do not ask|never ask)\\b[^.]{0,20}?\\b(?:prediction|predictions|quiz|quizzes|questions)\\b"
+  ],
+  "max_evidence": 4
+ }
+}
