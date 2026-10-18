@@ -212,6 +212,14 @@ When this skill's output is consumed by downstream tutorial packaging:
 2. Final published filename: `<Domain> Class <NN> [DD-MM-YYYY] - <Topic>.md`
 3. Learner sanitization: remove inline `[source: ...]` tags from final tutorial; keep traceability in sidecar artifacts (coverage matrix + segment ledger)
 
+## Special Cases
+
+- **Long transcripts (2+ hours):** Break into logical segments with intermediate summaries
+- **Heavy Q&A sessions:** Separate Q&A section, note common confusions
+- **Live coding sessions:** Document code evolution step-by-step, note debugging
+- **Multiple instructors:** Attribute teachings when distinguishable
+- **With Topic Inventory:** Always verify 100% coverage before output
+
 ## Quality Checklist
 
 Before output, verify:
@@ -229,6 +237,8 @@ Before output, verify:
 
 ## References
 
+- `references/output-template.md`: Full output structure template.
+- `references/example-output.md`: Complete example (Neural Networks lecture).
 - `references/domain-knowledge.md` — Domain-specific extraction priorities, technical-analysis templates, instructor-shortcut-fills, resource recommendations. Load during domain-specific sections.
 - `references/platform-adaptations.md` — OpenAI GPT / Gems / Claude Projects adjustments, long-transcript handling, usage recommendations.
 - `references/examples.md` — Worked examples: WebDev (React hooks), DSA (binary search), AI/ML (gradient descent), Web3 (ERC-20 security).

@@ -92,8 +92,9 @@ def main() -> int:
         fail("embedded engine identity changed unexpectedly")
 
     print(
-        "PASS: teach-pro-max wrapper and "
-        f"{len(actual)} embedded engine files match {payload['source']['git_head']}"
+        f"PASS: {len(actual)} embedded engine files match "
+        f"{payload['source']['git_head']}; wrapper name line checked "
+        "(wrapper content is not hashed)"
     )
     return 0
 
