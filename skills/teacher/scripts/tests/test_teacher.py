@@ -691,6 +691,32 @@ setTimeout(() => console.log(log.join("|")), 150);
         self.assertEqual(r.returncode, 0, r.stderr)
         log = r.stdout.strip().split("|")
         self.assertLess(log.index("done 1"), log.index("started 2"), log)
+        self.assertLess(log.index("done 1"), log.index("turn 2"), log)
+
+    def test_queued_python_run_waits_for_its_turn_to_time_out(self):
+        # A run queued behind another starts its load timer only at its turn, so a
+        # slow first load can't time out (and kill) the worker the first run is using.
+        js = r"""
+const timers = [];
+globalThis.setTimeout = (fn, ms) => (timers.push(ms), timers.length);
+globalThis.clearTimeout = () => {};
+let worker;
+globalThis.Worker = class { constructor() { worker = this; this.l = {}; }
+  addEventListener(t, f) { (this.l[t] ||= []).push(f); } removeEventListener(t, f) { this.l[t] = (this.l[t] || []).filter((g) => g !== f); }
+  postMessage() {} terminate() {} emit(data) { for (const f of this.l.message || []) f({ data }); } };
+globalThis.URL = { createObjectURL: () => "blob:", revokeObjectURL() {} };
+globalThis.Blob = class {};
+const { runPython } = await import(process.argv[1]);
+runPython("A", "");
+runPython("B", "");
+const before = timers.length;
+worker.emit({ id: 1, type: "turn" });
+console.log(JSON.stringify({ before, after: timers.length }));
+"""
+        mod = (SKILLS / "explorable/assets/engine/code.js").as_uri()
+        r = subprocess.run(["node", "--input-type=module", "-e", js, mod], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout), {"before": 0, "after": 1})
 
     @unittest.skipUnless((ROOT.parent / "courses/ai-math").is_dir(), "needs a site's courses/ (kai-mori-fanout-sh)")
     def test_code_check_fails_when_nothing_can_run(self):

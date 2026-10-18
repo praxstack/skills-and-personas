@@ -90,6 +90,7 @@ const WORKER_SRC = `
   };
   async function run({ data }) {
     const { id, url, sri, index, src, stdin, limit } = data;
+    postMessage({ id, type: "turn" }); // its turn now: the page starts its load timer here
     let py;
     try {
       py = await (ready ||= load(url, sri, index));
@@ -169,8 +170,10 @@ export function runPython(src, stdin, onStarted) {
     }
     let settled = false;
     // A load that times out ends the worker too: it may finish loading later and
-    // run this program, and the next run must not queue behind it.
-    let timer = setTimeout(() => finish(reject, Object.assign(new Error("Pyodide took too long to load"), { load: true }), true), LOAD_LIMIT_MS);
+    // run this program, and the next run must not queue behind it. The timer
+    // starts at this run's turn, so time spent queued behind another run
+    // doesn't count (that run has its own timers).
+    let timer = null;
     const finish = (fn, v, kill = false) => {
       if (settled) return;
       settled = true;
@@ -185,7 +188,9 @@ export function runPython(src, stdin, onStarted) {
     const abort = () => finish(reject, Object.assign(new Error("stopped"), { stopped: "restart" }));
     const onMsg = ({ data }) => {
       if (data.id !== id) return;
-      if (data.type === "started") {
+      if (data.type === "turn") {
+        timer = setTimeout(() => finish(reject, Object.assign(new Error("Pyodide took too long to load"), { load: true }), true), LOAD_LIMIT_MS);
+      } else if (data.type === "started") {
         clearTimeout(timer);
         timer = setTimeout(() => finish(reject, Object.assign(new Error("timeout"), { stopped: "timeout" }), true), RUN_LIMIT_MS);
         onStarted?.();
