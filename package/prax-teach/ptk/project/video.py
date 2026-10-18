@@ -4,8 +4,9 @@ schedule from measured durations, WebVTT captions + chapters, LUFS normalisation
 Timeline rule (AC-5.3, E17, D18.2):
     segment n starts after segment n-1 ends + gap (0.35 s in a scene, 0.8 s across scenes,
     plus a 3 s think pause after a question scene); durations are measured from the trimmed audio.
-    A scene's state change starts at its last segment's start (`reveal`) and is settled
-    0.5 s later (`shown`). The IVE uses `shown`, never a time inside the tween.
+    A scene's state change starts at its last segment's start (`reveal`) and is settled when its
+    drawing ends (`shown`). The IVE uses `shown`, never a time inside the tween. A recap or a change
+    of program has no tween: it is settled at the scene start (see plan_screen).
 
 Outputs in build/video/: lesson.mp4, captions.vtt, chapters.vtt, transcript.txt, timing.json,
 narration.wav, composition/ (index.html + compositions/<scene>.html), work/ (intermediates).
@@ -119,20 +120,22 @@ def plan_screen(lesson, scenes):
     before   the state on screen until `reveal` (the previous scene's state, or this scene's own);
     reveal   when this scene starts drawing its new path segments;
     shown    when the new state is fully drawn (the IVE switches its cue here, D18.2);
-    replay   False when the state was already shown earlier (a recap): it appears settled at the
-             scene start, with no reset and no replay.
+    replay   False when the state appears settled at the scene start, with no reset and no
+             drawing: a recap of a state shown earlier, or a change of program.
 
-    A scene that changes program reveals at its start, so the frame never shows a program the
-    explorer does not. Both video.scene_html and ive.cues read these fields.
+    A change of program is a cut, not a drawing (review P1-A): any tween would show the new
+    program while the explorer still holds the last settled state of the old one, because a cue
+    never carries a tween target (D18.2). So the frame and the explorer switch together, at the
+    scene start. Both video.scene_html and ive.cues read these fields.
     """
     seen, prev = set(), None
     for i, s in enumerate(scenes):
         sid = s["state"]
-        if i == 0 or sid == prev or sid in seen:
+        prog_change = i > 0 and lesson.state(prev)["state"]["program"] != lesson.state(sid)["state"]["program"]
+        if i == 0 or sid == prev or sid in seen or prog_change:
             s.update(before=sid, reveal=s["start"], shown=s["start"], replay=False, draw_total=0.0)
         else:
-            prog_change = lesson.state(prev)["state"]["program"] != lesson.state(sid)["state"]["program"]
-            reveal = s["start"] if prog_change else s["reveal"]
+            reveal = s["reveal"]
             plan = draw_plan(lesson, prev, sid, budget=DRAW_BUDGET * (s["end"] - reveal))
             settled = math.ceil(round((reveal + plan["total"]) * FPS, 6)) / FPS  # first frame with nothing moving
             s.update(before=prev, reveal=reveal, shown=round(min(settled, s["end"] - 1 / FPS), 4),

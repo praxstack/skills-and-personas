@@ -4,7 +4,7 @@ Each scene's sub-composition is loaded on its own in a 1920 x 1080 page with the
 fonts, and its paused timeline is seeked to the frame time, exactly as the renderer seeks it.
 The rendered state is then *derived from what is drawn*, not from timing data:
 
-    program   the code card's data-program
+    program   the program whose source matches the drawn code rows (not a data attribute)
     line      the code row under the highlight bar (its current transform)
     path      the rail dots that are fully opaque
     output    the output values that are fully opaque, in order
@@ -45,7 +45,8 @@ PROBE_JS = r"""(t) => {
   const moving = active || best > 1.5 || segs.some((d) => d > 0.002 && d < 0.998)
     || dots.some((d) => op(d) > 0.01 && op(d) < 0.99)
     || vals.some((v) => op(v.parentElement) > 0.01 && op(v.parentElement) < 0.99);
-  return { t, program: root.dataset.program, line,
+  const code = [...document.querySelectorAll('.ln[data-line]')].map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
+  return { t, code, line,
            path: dots.filter((d) => op(d) >= 0.99).map((d) => +d.dataset.line),
            output: vals.filter((v) => op(v.parentElement) >= 0.99).map((v) => v.dataset.fact),
            moving };
@@ -112,6 +113,14 @@ def scene_at(timing, t):
     return next(s for s in timing["scenes"] if s["start"] <= t + 1e-6 < s["end"] or s is timing["scenes"][-1])
 
 
+def drawn_program(lesson, code):
+    """The one program whose source lines are exactly the drawn code rows (review P3-B), else None."""
+    hits = [p["id"] for p in lesson.data["programs"] if code and all(
+        0 < n <= len(src) and src[n - 1].strip() == txt.strip()
+        for src in [lesson.program_source(p["id"]).split("\n")] for n, txt in code)]
+    return hits[0] if len(hits) == 1 else None
+
+
 def match_state(lesson, probe):
     if probe.get("moving"):
         return "moving"
@@ -163,6 +172,8 @@ def probe(lesson, video_dir, timing, times, snapshots=None, work_name="frames", 
         sid = r["id"].split(":", 1)[1]
         vals = r.get("values", {})
         for k, v in vals.items():
+            if isinstance(v, dict) and "code" in v:
+                v["program"] = drawn_program(lesson, v.pop("code"))
             if k.startswith("t:"):
                 frames[float(k[2:])] = {**v, "scene": sid, "state": match_state(lesson, v)}
         scenes[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:400],
@@ -208,18 +219,29 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
                     "" if not bad else "scene snapshots fail the AC-5.6 layout or show no trace state")
 
 
+def _tween_ok(cue, nxt, frame):
+    """A frame in mid-tween is acceptable only inside a transition or answer cue, drawing the
+    explorer's program on a path between the cue's state and the next cue's (review P1-A)."""
+    if cue["kind"] not in ("transition", "answer") or frame.get("state") != "moving" or nxt is None:
+        return False
+    drawn, lo, hi = set(frame.get("path") or []), cue["state"], nxt["state"]
+    return (frame.get("program") == lo["program"] == hi["program"]
+            and set(lo["path"]) <= drawn <= set(hi["path"]))
+
+
 def compare_pauses(cue_list, frame_at, explorer, points):
     """Rows for every pause point; a row is bad when the explorer is not on the cue's state, or the
-    frame shows something else (only a transition or answer cue may meet a frame in mid-tween)."""
+    frame shows something else (see _tween_ok for the one allowed mid-tween case)."""
     rows, bad = [], []
-    for c in cue_list:
+    for i, c in enumerate(cue_list):
+        nxt = cue_list[i + 1] if i + 1 < len(cue_list) else None
         for t in points(c):
             fr = frame_at.get(round(t, 3), {})
             row = {"cue": c["cue"], "kind": c["kind"], "t": t, "expected_state": c["state"]["state_id"],
                    "explorer_state": explorer.get((c["cue"], t)), "frame_state": fr.get("state"),
                    "frame": {k: fr.get(k) for k in ("program", "line", "path", "output")}}
             rows.append(row)
-            in_tween = c["kind"] in ("transition", "answer") and row["frame_state"] == "moving"
-            if row["explorer_state"] != row["expected_state"] or not (in_tween or row["frame_state"] == row["explorer_state"]):
+            if row["explorer_state"] != row["expected_state"] or not (
+                    _tween_ok(c, nxt, fr) or row["frame_state"] == row["explorer_state"]):
                 bad.append(row)
     return rows, bad

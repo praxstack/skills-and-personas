@@ -11,7 +11,9 @@ Cue-to-state rule (D17.2, D18.2):
     * a cue's state is the last state already settled on screen, never a tween target;
     * a question scene adds a `question` cue (state before the answer);
     * the first reveal after a question adds an `answer` cue at the reveal time; pausing
-      0.1 s before it shows no answer anywhere in the DOM, alt text or transcript.
+      0.1 s before it shows no answer anywhere in the DOM, alt text or transcript;
+    * a recap or a change of program is a cut: frame and explorer switch together at the scene
+      start, and no transition cue is needed (video.plan_screen).
 
 The page reads state only from cue payloads (the VTT is fetched by the browser, it is not in
 the DOM), so no future state or answer text sits in the document before its cue.
@@ -44,9 +46,14 @@ def cues(lesson, timing):
     """Metadata cues from the screen plan (video.plan_screen): the explorer and the frame read the
     same before/reveal/shown fields, so they cannot disagree about what is on screen."""
     out = []
-    answer_pending = None
+    answer_pending, prev = None, None
     for sc in timing["scenes"]:
         start = sc["start"]
+        # a cut to a new state (recap or change of program, no tween) answers a pending question itself
+        cut_answer = answer_pending if sc["before"] == sc["state"] != prev and prev is not None else None
+        prev = sc["state"]
+        if cut_answer:
+            answer_pending = None
         if sc["before"] != sc["state"]:
             kind = "answer" if answer_pending else "transition"
             if sc["reveal"] > sc["start"]:
@@ -58,8 +65,8 @@ def cues(lesson, timing):
             answer_pending = None
             start = sc["shown"]
         q = sc.get("question")
-        cue = {"kind": "question" if q else "state", "scene": sc["id"], "start": start, "end": sc["end"],
-               "state": _view(lesson, sc["state"])}
+        cue = {"kind": "question" if q else ("answer" if cut_answer else "state"), "scene": sc["id"], "start": start,
+               "end": sc["end"], "state": _view(lesson, sc["state"]), **({"answer_for": cut_answer} if cut_answer else {})}
         if q:
             cue["question"] = {"prompt": q["prompt"], "scene": sc["id"]}
             answer_pending = sc["id"]

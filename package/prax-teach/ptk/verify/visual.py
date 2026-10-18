@@ -339,7 +339,7 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
     gates.append(g("ive.pause-state", "ive", beh.get("ok") and not bad_seek and not chap_bad
                    and len(seek_rows) == len(times) and len(frame_at) == len(set(times)),
                    {"rule": "explorer == cue state, and explorer == state derived from the frame (a transition or "
-                            "answer cue may show a frame in mid-tween)", "pauses_checked": len(seek_rows),
+                            "answer cue may show a frame in mid-tween of the same program, between its state and the next)", "pauses_checked": len(seek_rows),
                     "mismatches": bad_seek, "chapter_jumps": chap, "chapter_mismatches": chap_bad,
                     "frame_states": {f"{r['cue']}@{r['t']}": r["frame_state"] for r in seek_rows},
                     "error": beh.get("error", "")[:500]}))
