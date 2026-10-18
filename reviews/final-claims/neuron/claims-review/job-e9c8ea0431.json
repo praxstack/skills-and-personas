@@ -1,0 +1,335 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-e9c8ea0431",
+ "manifest_sha256": "e9c8ea0431b705bf7b01d350930b6ce8b13c49704fba0f676efd68d317f519ee",
+ "rubric_version": "3",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent (Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.formula",
+   "verdict": "accept",
+   "reason": "Explanation: the four steps match lines 8, 10, 12 and 14 of neuron.c, line numbers check out, and fmax(0.0, z) is ReLU for this finite z. The Deep Learning quote supports the ReLU definition.",
+   "evidence": [
+    "Deep Learning §6.3.1",
+    "programs/neuron.c lines 8-14"
+   ]
+  },
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Maths: lines 5-7 set exactly these values and %g prints them as 0.8, 1.5, 0.4, -1 and -0.2.",
+   "evidence": [
+    "fact f.x1",
+    "fact f.w1",
+    "fact f.x2",
+    "fact f.w2",
+    "fact f.b"
+   ]
+  },
+  {
+   "id": "c.mul",
+   "verdict": "accept",
+   "reason": "Maths: I recomputed 0.8 * 1.5 as the double 1.2000000000000002, which %+g prints as +1.2, and 0.4 * -1.0 is exactly the negated double, printed -0.4. The cited g-style rule is the right clause.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8",
+    "fact f.t1",
+    "fact f.t2"
+   ]
+  },
+  {
+   "id": "c.sign",
+   "verdict": "accept",
+   "reason": "Explanation: scoped with 'Here', and a positive times a negative double is negative; the run prints -0.4.",
+   "evidence": [
+    "fact f.t2"
+   ]
+  },
+  {
+   "id": "c.add",
+   "verdict": "accept",
+   "reason": "Maths: line 12 adds (t1 + t2) + b in double, giving 0.6000000000000001, which %g prints as 0.6. The text only states printed values, so it is true as worded.",
+   "evidence": [
+    "programs/neuron.c line 12",
+    "fact f.z"
+   ]
+  },
+  {
+   "id": "c.relu",
+   "verdict": "accept",
+   "reason": "Explanation: ReLU is max(0, z) as a maths definition, so positive z passes through and z <= 0 gives 0. The fmax quote is C17 7.12.12.2 ¶3 and supports the program's use of it.",
+   "evidence": [
+    "Deep Learning §6.3.1",
+    "C17 §7.12.12.2 ¶3"
+   ]
+  },
+  {
+   "id": "c.out",
+   "verdict": "accept",
+   "reason": "Explanation: z is the double just above 0.6, so it is positive, fmax returns z and line 15 prints 0.6. Scoped with 'Here'.",
+   "evidence": [
+    "C17 §7.12.12.2 ¶3",
+    "fact f.a"
+   ]
+  },
+  {
+   "id": "c.toy",
+   "verdict": "accept",
+   "reason": "Explanation: every quantity is double and is printed with %g or %+g with no precision, so at most 6 significant digits show (C17 7.21.6.1 ¶8). The 'toy values' part is orientation only.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing: a predict-first prompt that asserts nothing about C.",
+   "evidence": []
+  },
+  {
+   "id": "c.round",
+   "verdict": "accept",
+   "reason": "Maths and caveat: scoped to this binary64 platform; t1 is 1.2000000000000002, z is 0.6000000000000001 (the next double above 0.6), z == 0.6 is false, and %g prints 0.6. Annex F.2 ¶1 is the right clause for double as binary64.",
+   "evidence": [
+    "C17 §F.2 ¶1",
+    "C17 §7.21.6.1 ¶8",
+    "fact f.z"
+   ]
+  },
+  {
+   "id": "c.kzero",
+   "verdict": "accept",
+   "reason": "Maths: in neuron_k1.c z is -0.19999999999999984, which %g prints as -0.2, and fmax(0.0, z) is exactly 0; the first term still prints +1.2. Shows ReLU acts on the sum, not each term.",
+   "evidence": [
+    "fact f.k1.t1",
+    "fact f.k1.z",
+    "fact f.k1.a"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "First sentence of c.toy, unchanged."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "Second sentence of c.toy, unchanged."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Same words as c.formula."
+  },
+  {
+   "id": "t.081",
+   "verdict": "accept",
+   "reason": "True-or-false card for c.relu, which is true; the statement is unchanged."
+  },
+  {
+   "id": "t.082",
+   "verdict": "accept",
+   "reason": "True-or-false card for c.round, which is true; the statement is unchanged."
+  },
+  {
+   "id": "t.083",
+   "verdict": "accept",
+   "reason": "Shows m.negterm as a card to judge, not as true, and the belief is false: here a term is negative yet a is 0.6."
+  },
+  {
+   "id": "t.084",
+   "verdict": "accept",
+   "reason": "Shows m.nobias as a card to judge, not as true, and the belief is false: the bias is in the sum and a prints 0.6."
+  },
+  {
+   "id": "t.085",
+   "verdict": "accept",
+   "reason": "Same words as c.add."
+  },
+  {
+   "id": "t.086",
+   "verdict": "accept",
+   "reason": "Same words as c.formula."
+  },
+  {
+   "id": "t.087",
+   "verdict": "accept",
+   "reason": "Same words as c.kzero."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "Same words as c.mul."
+  },
+  {
+   "id": "t.089",
+   "verdict": "accept",
+   "reason": "Same words as c.out."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "Same words as c.relu."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Same words as c.setup."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Same words as c.sign."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Same words as c.toy."
+  },
+  {
+   "id": "t.166",
+   "verdict": "accept",
+   "reason": "Scene title matches the addition step in c.add."
+  },
+  {
+   "id": "t.167",
+   "verdict": "accept",
+   "reason": "Scene title matches the ReLU gate in c.relu and c.out."
+  },
+  {
+   "id": "t.168",
+   "verdict": "accept",
+   "reason": "Scene title matches the multiply step in c.mul."
+  },
+  {
+   "id": "t.169",
+   "verdict": "accept",
+   "reason": "Multiply, add, gate: three steps, as c.formula says."
+  },
+  {
+   "id": "t.170",
+   "verdict": "accept",
+   "reason": "Scene title for the prediction question; claims nothing."
+  },
+  {
+   "id": "t.171",
+   "verdict": "accept",
+   "reason": "Scene title; claims nothing."
+  },
+  {
+   "id": "t.183",
+   "verdict": "accept",
+   "reason": "Lesson title; doesn't overstate any claim."
+  },
+  {
+   "id": "t.184",
+   "verdict": "accept",
+   "reason": "Labelled as a wrong belief and it is false, as c.relu and the 0.6 output show."
+  },
+  {
+   "id": "t.185",
+   "verdict": "accept",
+   "reason": "Labelled as a wrong belief and it is false, as c.add shows."
+  },
+  {
+   "id": "t.186",
+   "verdict": "accept",
+   "reason": "Narration matches c.formula word for word."
+  },
+  {
+   "id": "t.187",
+   "verdict": "accept",
+   "reason": "Narration matches c.setup word for word."
+  },
+  {
+   "id": "t.188",
+   "verdict": "accept",
+   "reason": "Narration matches c.mul; only the punctuation changed."
+  },
+  {
+   "id": "t.189",
+   "verdict": "accept",
+   "reason": "Narration matches c.sign word for word."
+  },
+  {
+   "id": "t.190",
+   "verdict": "accept",
+   "reason": "Narration matches c.pause; the question is in the transcript, so it works without the screen."
+  },
+  {
+   "id": "t.191",
+   "verdict": "accept",
+   "reason": "Narration matches c.add word for word."
+  },
+  {
+   "id": "t.192",
+   "verdict": "accept",
+   "reason": "Narration matches c.relu word for word."
+  },
+  {
+   "id": "t.193",
+   "verdict": "accept",
+   "reason": "Narration matches c.out word for word."
+  },
+  {
+   "id": "t.194",
+   "verdict": "accept",
+   "reason": "First half of c.round with the binary64 scope kept."
+  },
+  {
+   "id": "t.195",
+   "verdict": "accept",
+   "reason": "Second half of c.round; z is the program's z, already named in t.194."
+  },
+  {
+   "id": "t.196",
+   "verdict": "accept",
+   "reason": "Narration matches c.formula word for word."
+  },
+  {
+   "id": "t.197",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: 0.8 is the sum without the bias, but a prints 0.6."
+  },
+  {
+   "id": "t.198",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: z is positive, so a is not 0."
+  },
+  {
+   "id": "t.199",
+   "verdict": "accept",
+   "reason": "Marked correct and is correct: a prints as 0.6 (fact f.a)."
+  },
+  {
+   "id": "t.200",
+   "verdict": "accept",
+   "reason": "The prompt asks for a and doesn't give away 0.6."
+  },
+  {
+   "id": "t.201",
+   "verdict": "accept",
+   "reason": "True for state s0: lines 5-7 set inputs, weights and bias, with no output yet."
+  },
+  {
+   "id": "t.202",
+   "verdict": "accept",
+   "reason": "True for state s1: lines 8-11 multiply and print both terms."
+  },
+  {
+   "id": "t.203",
+   "verdict": "accept",
+   "reason": "True for state s2: line 12 adds the terms and bias, line 13 prints z."
+  },
+  {
+   "id": "t.204",
+   "verdict": "accept",
+   "reason": "True for state s3: line 14 applies fmax(0.0, z), line 15 prints a."
+  }
+ ],
+ "overall": "accept"
+}

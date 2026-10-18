@@ -1,0 +1,428 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-1b38712430",
+ "manifest_sha256": "1b38712430c138096b723965f8ffccb096a810d855ea0aafaed8b424a974afb8",
+ "rubric_version": "3",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent, rubric v3, read only the job and rubric"
+ },
+ "claims": [
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Explanation: true for this program. Line 13 calls factorial(3) and line 7 recurses with n - 1 only while n > 1, so the calls stop at n = 1.",
+   "evidence": [
+    "programs/factorial.c lines 6-7, 13"
+   ]
+  },
+  {
+   "id": "c.frame",
+   "verdict": "accept",
+   "reason": "Explanation: each recursive entry gets new instances of the automatic objects n and r, and the sentence marks the frame picture as the lesson's own drawing. Both cited clauses say what is needed.",
+   "evidence": [
+    "C17 §6.2.4 ¶6",
+    "C17 §6.5.2.2 ¶11",
+    "C17 §6.9.1 ¶9"
+   ]
+  },
+  {
+   "id": "c.waits",
+   "verdict": "accept",
+   "reason": "Explanation: the multiplication on line 7 needs the call's value, which only exists once factorial(2) returns, and factorial(3)'s n and r stay alive meanwhile. Output lines 1-2 match the facts.",
+   "evidence": [
+    "C17 §6.5.2.2 ¶5",
+    "C17 §6.8.6.4 ¶3",
+    "C17 §6.2.4 ¶6",
+    "fact f.call3",
+    "fact f.call2"
+   ]
+  },
+  {
+   "id": "c.depth",
+   "verdict": "accept",
+   "reason": "Maths and explanation: in factorial(2) n > 1 holds, so line 7 calls factorial(1), leaving factorial(3), (2) and (1) live above main. Matches f.call1.",
+   "evidence": [
+    "programs/factorial.c lines 6-7, 13",
+    "fact f.call1"
+   ]
+  },
+  {
+   "id": "c.base",
+   "verdict": "accept",
+   "reason": "Maths: with n = 1 the test on line 6 fails, r keeps 1 from line 5, and line 9 returns 1. Line numbers and value match f.ret1.",
+   "evidence": [
+    "programs/factorial.c lines 5-9",
+    "fact f.ret1"
+   ]
+  },
+  {
+   "id": "c.unwind",
+   "verdict": "accept",
+   "reason": "Explanation: a return value goes to the caller as the value of the call expression, and 2 * 1 = 2 matches f.ret2.",
+   "evidence": [
+    "C17 §6.8.6.4 ¶3",
+    "fact f.ret2"
+   ]
+  },
+  {
+   "id": "c.ret3",
+   "verdict": "accept",
+   "reason": "Maths: 3 * 2 = 6, and main is the caller of factorial(3) on line 13. Matches f.ret3.",
+   "evidence": [
+    "C17 §6.8.6.4 ¶3",
+    "fact f.ret3"
+   ]
+  },
+  {
+   "id": "c.main",
+   "verdict": "accept",
+   "reason": "Framing: line 13 initialises main's r with 6 and line 14 prints main got 6, which matches f.l7.",
+   "evidence": [
+    "programs/factorial.c lines 13-14",
+    "fact f.l7"
+   ]
+  },
+  {
+   "id": "c.order",
+   "verdict": "accept",
+   "reason": "Maths and explanation: each call prints its enter line before recursing and its result line after, so entries go 3, 2, 1 and results 1, 2, 3. Matches f.l1 to f.l6.",
+   "evidence": [
+    "fact f.l1",
+    "fact f.l6"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing: a prediction prompt that states nothing about C.",
+   "evidence": []
+  },
+  {
+   "id": "c.recap",
+   "verdict": "accept",
+   "reason": "Explanation: scoped to the lesson's drawing; one new set of n and r per call, released per return, and each value goes back to the caller.",
+   "evidence": [
+    "C17 §6.2.4 ¶6",
+    "C17 §6.8.6.4 ¶3"
+   ]
+  },
+  {
+   "id": "c.slot",
+   "verdict": "accept",
+   "reason": "Framing: describes the lesson's own notation for line 7 with n = 3 and the pending call as an empty box. No C assertion beyond the source line.",
+   "evidence": [
+    "programs/factorial.c line 7"
+   ]
+  },
+  {
+   "id": "c.korder",
+   "verdict": "accept",
+   "reason": "Maths: all five captured runs show entries counting down from n to 1, results in reverse, and main got 1, 2, 6, 24, 120, which are 1! to 5!. The n = 1 case is handled in the justification.",
+   "evidence": [
+    "fact f.n1.out",
+    "fact f.n2.out",
+    "fact f.out",
+    "fact f.n4.out",
+    "fact f.n5.out"
+   ]
+  },
+  {
+   "id": "c.kbase1",
+   "verdict": "accept",
+   "reason": "Explanation: with n = 1 line 7 never runs, so there is no further call to factorial and r = 1 is returned. Matches f.n1.out.",
+   "evidence": [
+    "programs/fact_n1.c lines 5-9",
+    "fact f.n1.out"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "First sentence of c.frame, unchanged."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "Same as c.order."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Second sentence of c.frame, unchanged."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "True-or-false card with c.frame's text, which is true."
+  },
+  {
+   "id": "t.089",
+   "verdict": "accept",
+   "reason": "Card shows m.base, which is false: main gets 6, not 1."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "Card shows m.firstdone, which is false: factorial(3)'s result prints last."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Card shows m.once, which is false: factorial(3) returns 3 * 2 = 6."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Card shows m.zero, which is false: recursion stops at factorial(1)."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Same as c.base."
+  },
+  {
+   "id": "t.094",
+   "verdict": "accept",
+   "reason": "Same as c.depth."
+  },
+  {
+   "id": "t.095",
+   "verdict": "accept",
+   "reason": "Same as c.frame."
+  },
+  {
+   "id": "t.096",
+   "verdict": "accept",
+   "reason": "Same as c.kbase1."
+  },
+  {
+   "id": "t.097",
+   "verdict": "accept",
+   "reason": "Same as c.korder."
+  },
+  {
+   "id": "t.098",
+   "verdict": "accept",
+   "reason": "Same as c.main."
+  },
+  {
+   "id": "t.099",
+   "verdict": "accept",
+   "reason": "Same as c.order."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "Same as c.ret3."
+  },
+  {
+   "id": "t.101",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.102",
+   "verdict": "accept",
+   "reason": "Same as c.slot."
+  },
+  {
+   "id": "t.103",
+   "verdict": "accept",
+   "reason": "Same as c.unwind."
+  },
+  {
+   "id": "t.104",
+   "verdict": "accept",
+   "reason": "Same as c.waits."
+  },
+  {
+   "id": "t.182",
+   "verdict": "accept",
+   "reason": "Fits sc7, where factorial(3) returns 6 to main."
+  },
+  {
+   "id": "t.183",
+   "verdict": "accept",
+   "reason": "Fits sc6, where a return value goes to the caller one frame down."
+  },
+  {
+   "id": "t.184",
+   "verdict": "accept",
+   "reason": "Fits the frame-per-call drawing in c.frame and c.recap."
+  },
+  {
+   "id": "t.185",
+   "verdict": "accept",
+   "reason": "Neutral title for the prediction scene."
+  },
+  {
+   "id": "t.186",
+   "verdict": "accept",
+   "reason": "Neutral recap title."
+  },
+  {
+   "id": "t.187",
+   "verdict": "accept",
+   "reason": "Fits sc5, where factorial(1) returns 1."
+  },
+  {
+   "id": "t.188",
+   "verdict": "accept",
+   "reason": "Fits c.depth: three factorial frames are live."
+  },
+  {
+   "id": "t.189",
+   "verdict": "accept",
+   "reason": "Fits c.setup and line 13."
+  },
+  {
+   "id": "t.190",
+   "verdict": "accept",
+   "reason": "Fits c.main: main prints main got 6."
+  },
+  {
+   "id": "t.204",
+   "verdict": "accept",
+   "reason": "The lesson title doesn't overstate any claim."
+  },
+  {
+   "id": "t.205",
+   "verdict": "accept",
+   "reason": "Shown as a wrong belief, and it is false: main gets 6."
+  },
+  {
+   "id": "t.206",
+   "verdict": "accept",
+   "reason": "Shown as a wrong belief, and it is false per c.order."
+  },
+  {
+   "id": "t.207",
+   "verdict": "accept",
+   "reason": "Shown as a wrong belief, and it is false per c.base."
+  },
+  {
+   "id": "t.208",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.209",
+   "verdict": "accept",
+   "reason": "Same as c.frame."
+  },
+  {
+   "id": "t.210",
+   "verdict": "accept",
+   "reason": "c.waits with 'Now' added, meaning unchanged."
+  },
+  {
+   "id": "t.211",
+   "verdict": "accept",
+   "reason": "Same as c.slot."
+  },
+  {
+   "id": "t.212",
+   "verdict": "accept",
+   "reason": "c.depth with 'Then' added, meaning unchanged."
+  },
+  {
+   "id": "t.213",
+   "verdict": "accept",
+   "reason": "Same as c.pause."
+  },
+  {
+   "id": "t.214",
+   "verdict": "accept",
+   "reason": "Same as c.base."
+  },
+  {
+   "id": "t.215",
+   "verdict": "accept",
+   "reason": "Same as c.unwind."
+  },
+  {
+   "id": "t.216",
+   "verdict": "accept",
+   "reason": "c.ret3 with 'Then' added, meaning unchanged."
+  },
+  {
+   "id": "t.217",
+   "verdict": "accept",
+   "reason": "Same as c.main."
+  },
+  {
+   "id": "t.218",
+   "verdict": "accept",
+   "reason": "Same as c.order."
+  },
+  {
+   "id": "t.219",
+   "verdict": "accept",
+   "reason": "First sentence of c.recap, scope kept."
+  },
+  {
+   "id": "t.220",
+   "verdict": "accept",
+   "reason": "Second sentence of c.recap."
+  },
+  {
+   "id": "t.221",
+   "verdict": "accept",
+   "reason": "Marked wrong, and it is wrong: line 4 is factorial(1) = 1, and factorial(3) = 6 is line 6."
+  },
+  {
+   "id": "t.222",
+   "verdict": "accept",
+   "reason": "Marked correct, and it matches f.l4."
+  },
+  {
+   "id": "t.223",
+   "verdict": "accept",
+   "reason": "Marked wrong, and it is wrong: factorial(0) is never called."
+  },
+  {
+   "id": "t.224",
+   "verdict": "accept",
+   "reason": "The prompt doesn't give away f.l4."
+  },
+  {
+   "id": "t.225",
+   "verdict": "accept",
+   "reason": "Fits s0: main waits at line 13 while factorial(3) runs line 4."
+  },
+  {
+   "id": "t.226",
+   "verdict": "accept",
+   "reason": "Fits s1: factorial(3) waits at line 7 while factorial(2) runs."
+  },
+  {
+   "id": "t.227",
+   "verdict": "accept",
+   "reason": "Fits s2: main plus three factorial frames."
+  },
+  {
+   "id": "t.228",
+   "verdict": "accept",
+   "reason": "Fits s3: factorial(1) at line 9, returning f.ret1 = 1."
+  },
+  {
+   "id": "t.229",
+   "verdict": "accept",
+   "reason": "Fits s4: factorial(2) at line 9, returning 2."
+  },
+  {
+   "id": "t.230",
+   "verdict": "accept",
+   "reason": "Fits s5: factorial(3) at line 9, returning 6."
+  },
+  {
+   "id": "t.231",
+   "verdict": "accept",
+   "reason": "Fits s6: main at line 14 with output through f.l7."
+  }
+ ],
+ "overall": "accept"
+}

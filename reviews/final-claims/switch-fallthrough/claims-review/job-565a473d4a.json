@@ -1,0 +1,461 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-565a473d4a",
+ "manifest_sha256": "565a473d4a685a1988736f36400ff44bc26b7378efbc860366ab6d5e16b94b6d",
+ "rubric_version": "3",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent (Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Explanation/framing: fallthrough.c line 4 sets n = 2, line 5 switches on n, and case 2 (lines 8-9) has no break before case 3 on line 10. Only orients, read straight from the source.",
+   "evidence": [
+    "programs/fallthrough.c lines 4-10"
+   ]
+  },
+  {
+   "id": "c.match",
+   "verdict": "accept",
+   "reason": "Explanation: matches C17 6.8.4.2p5, control goes to the statement after the matched case label; case values are unique by 6.8.4.2p3 so 'the' label is well defined. Quote and clause are right.",
+   "evidence": [
+    "C17 \u00a76.8.4.2 \u00b65"
+   ]
+  },
+  {
+   "id": "c.labels",
+   "verdict": "accept",
+   "reason": "Explanation: 6.8.1p4 says labels do not alter flow of control; a case label is a labelled-statement label. Quote is exact and relevant.",
+   "evidence": [
+    "C17 \u00a76.8.1 \u00b64"
+   ]
+  },
+  {
+   "id": "c.fall",
+   "verdict": "accept",
+   "reason": "Maths and explanation: entering at case 2 (line 9) and running past the case 3 label (line 11) prints two then three, matching f.p1.l1 and f.p1.l2. Mechanism is c.match plus c.labels.",
+   "evidence": [
+    "C17 \u00a76.8.4.2 \u00b65",
+    "C17 \u00a76.8.1 \u00b64",
+    "fact f.p1.l1",
+    "fact f.p1.l2"
+   ]
+  },
+  {
+   "id": "c.break",
+   "verdict": "accept",
+   "reason": "Explanation: 6.8.6.3p2 is quoted correctly; 'here' is scoped, and the break on line 12 is inside no loop, so control goes to line 16 and case 4 does not run.",
+   "evidence": [
+    "C17 \u00a76.8.6.3 \u00b62"
+   ]
+  },
+  {
+   "id": "c.done",
+   "verdict": "accept",
+   "reason": "Maths: puts(\"done\") on line 16 follows the switch and is stdout line 3, matching f.p1.l3. True for both programs.",
+   "evidence": [
+    "fact f.p1.l3"
+   ]
+  },
+  {
+   "id": "c.withbreak",
+   "verdict": "accept",
+   "reason": "Maths and explanation: in with_break.c case 2 is on line 9, puts on line 10, break on line 11, puts(\"done\") on line 18; output two then done matches f.p2.l1 and f.p2.l2.",
+   "evidence": [
+    "C17 \u00a76.8.6.3 \u00b62",
+    "fact f.p2.l1",
+    "fact f.p2.l2"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing: a predict-first prompt that states no fact about C. Fits the framing kind.",
+   "evidence": [
+    "AGENTS.md Teaching"
+   ]
+  },
+  {
+   "id": "c.recap",
+   "verdict": "accept",
+   "reason": "Explanation: labels only mark entry (6.8.4.2p5) and do not alter flow (6.8.1p4); fallthrough.c fixes n = 2, so the break on line 12 is what ends its switch (6.8.6.3p2). Scoped to fallthrough.c, line number right.",
+   "evidence": [
+    "C17 \u00a76.8.4.2 \u00b65",
+    "C17 \u00a76.8.1 \u00b64",
+    "C17 \u00a76.8.6.3 \u00b62"
+   ]
+  },
+  {
+   "id": "c.nomatch",
+   "verdict": "accept",
+   "reason": "Explanation: the quoted last sentence of 6.8.4.2p5 says exactly this. Both programs have cases 1-4 and no default, so the justification holds.",
+   "evidence": [
+    "C17 \u00a76.8.4.2 \u00b65"
+   ]
+  },
+  {
+   "id": "c.bodyend",
+   "verdict": "accept",
+   "reason": "Explanation: the body is the statement the switch jumps into (6.8.4.2p4) and statements run in sequence (6.8p2), so finishing the body completes the switch. Line references (16 in fallthrough.c, 18 in with_break.c) are right.",
+   "evidence": [
+    "C17 \u00a76.8 \u00b62",
+    "C17 \u00a76.8.4.2 \u00b64"
+   ]
+  },
+  {
+   "id": "c.fix",
+   "verdict": "accept",
+   "reason": "Explanation and maths: with_break.c adds break on line 8 and line 11, case 3 already breaks (line 14), case 4 is last and closes at line 17, so no case runs into another. Diagnostics show two -Wimplicit-fallthrough warnings for p1 and none for p2. Assertion is shown by its sources.",
+   "evidence": [
+    "C17 \u00a76.8.6.3 \u00b62",
+    "programs/with_break.c lines 6-17",
+    "gcc-16 diagnostics p1, p2"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "First sentence of c.recap, unchanged."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "Second sentence of c.recap, unchanged; line 12 is the break in fallthrough.c."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Same as c.fall."
+  },
+  {
+   "id": "t.082",
+   "verdict": "accept",
+   "reason": "True statement from c.break presented as a true-or-false card; the statement is true."
+  },
+  {
+   "id": "t.083",
+   "verdict": "accept",
+   "reason": "True statement from c.match on a true-or-false card."
+  },
+  {
+   "id": "t.084",
+   "verdict": "accept",
+   "reason": "True statement from c.recap on a true-or-false card."
+  },
+  {
+   "id": "t.085",
+   "verdict": "accept",
+   "reason": "Presents m.fromtop for rejection; it is false (control enters at case 2, so one is never printed)."
+  },
+  {
+   "id": "t.086",
+   "verdict": "accept",
+   "reason": "Presents m.stops for rejection; it is false (three is also printed because labels do not stop control)."
+  },
+  {
+   "id": "t.087",
+   "verdict": "accept",
+   "reason": "Presents m.toend for rejection; it is false (the break on line 12 stops before case 4)."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "State n=2 break=on is with_break.c; its case 2 break is on line 11. Correct."
+  },
+  {
+   "id": "t.089",
+   "verdict": "accept",
+   "reason": "State n=1 break=off is fallthrough.c; one, two, three run and the break on line 12 ends the switch. Correct."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "State n=3 break=on is with_break.c; the case 3 break is on line 14. Correct."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "State n=1 break=on is with_break.c; the case 1 break is on line 8. Correct."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "State n=4 break=off is fallthrough.c; case 4 has no break and the body's closing brace is line 15. Correct."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "State n=4 break=on is with_break.c; the body's closing brace is line 17. Correct."
+  },
+  {
+   "id": "t.094",
+   "verdict": "accept",
+   "reason": "fallthrough.c with n=1: case 1 has no break and case 2 is on line 8. Backed by c.labels."
+  },
+  {
+   "id": "t.095",
+   "verdict": "accept",
+   "reason": "fallthrough.c with n=1: case 2 has no break and case 3 is on line 10. Backed by c.labels."
+  },
+  {
+   "id": "t.096",
+   "verdict": "accept",
+   "reason": "fallthrough.c: puts(\"one\") after case 1 is line 7. Correct."
+  },
+  {
+   "id": "t.097",
+   "verdict": "accept",
+   "reason": "with_break.c: case 2 is line 9, the statement after it is line 10. Correct."
+  },
+  {
+   "id": "t.098",
+   "verdict": "accept",
+   "reason": "fallthrough.c: puts(\"two\") after case 2 is line 9. Correct."
+  },
+  {
+   "id": "t.099",
+   "verdict": "accept",
+   "reason": "fallthrough.c: puts(\"three\") after case 3 is line 11. Correct."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "with_break.c: puts(\"three\") after case 3 is line 13. Correct."
+  },
+  {
+   "id": "t.101",
+   "verdict": "accept",
+   "reason": "fallthrough.c: puts(\"four\") after case 4 is line 14. Correct."
+  },
+  {
+   "id": "t.102",
+   "verdict": "accept",
+   "reason": "with_break.c: puts(\"four\") after case 4 is line 16. Correct."
+  },
+  {
+   "id": "t.103",
+   "verdict": "accept",
+   "reason": "0 is not among cases 1-4 and there is no default; matches c.nomatch."
+  },
+  {
+   "id": "t.104",
+   "verdict": "accept",
+   "reason": "5 is not among cases 1-4 and there is no default; matches c.nomatch."
+  },
+  {
+   "id": "t.105",
+   "verdict": "accept",
+   "reason": "Same as c.break."
+  },
+  {
+   "id": "t.106",
+   "verdict": "accept",
+   "reason": "Same as c.done; also true for the n=0 state, where the skipped switch is followed by puts(\"done\")."
+  },
+  {
+   "id": "t.107",
+   "verdict": "accept",
+   "reason": "Same as c.fall."
+  },
+  {
+   "id": "t.108",
+   "verdict": "accept",
+   "reason": "Same as c.fix."
+  },
+  {
+   "id": "t.109",
+   "verdict": "accept",
+   "reason": "Same as c.labels."
+  },
+  {
+   "id": "t.110",
+   "verdict": "accept",
+   "reason": "Same as c.match."
+  },
+  {
+   "id": "t.111",
+   "verdict": "accept",
+   "reason": "Same as c.recap."
+  },
+  {
+   "id": "t.112",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.113",
+   "verdict": "accept",
+   "reason": "Same as c.withbreak."
+  },
+  {
+   "id": "t.221",
+   "verdict": "accept",
+   "reason": "Scene title fits c.setup; fallthrough.c is missing breaks after cases 1 and 2."
+  },
+  {
+   "id": "t.222",
+   "verdict": "accept",
+   "reason": "Scene title fits c.fix; with_break.c adds the two missing breaks."
+  },
+  {
+   "id": "t.223",
+   "verdict": "accept",
+   "reason": "Scene title fits c.match without overstating."
+  },
+  {
+   "id": "t.224",
+   "verdict": "accept",
+   "reason": "Scene title fits c.labels."
+  },
+  {
+   "id": "t.225",
+   "verdict": "accept",
+   "reason": "Neutral scene title for the prediction step."
+  },
+  {
+   "id": "t.226",
+   "verdict": "accept",
+   "reason": "Neutral scene title."
+  },
+  {
+   "id": "t.227",
+   "verdict": "accept",
+   "reason": "Scene title fits c.break and c.bodyend."
+  },
+  {
+   "id": "t.240",
+   "verdict": "accept",
+   "reason": "Lesson title; does not overstate any claim."
+  },
+  {
+   "id": "t.241",
+   "verdict": "accept",
+   "reason": "m.fromtop labelled as a wrong belief; it is false."
+  },
+  {
+   "id": "t.242",
+   "verdict": "accept",
+   "reason": "m.stops labelled as a wrong belief; it is false."
+  },
+  {
+   "id": "t.243",
+   "verdict": "accept",
+   "reason": "m.toend labelled as a wrong belief; it is false."
+  },
+  {
+   "id": "t.244",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.245",
+   "verdict": "accept",
+   "reason": "Same as c.pause; in captions and transcript it is a faithful record of the narration, not a cross-medium instruction."
+  },
+  {
+   "id": "t.246",
+   "verdict": "accept",
+   "reason": "Same as c.match."
+  },
+  {
+   "id": "t.247",
+   "verdict": "accept",
+   "reason": "First half of c.fall: entering at case 2 prints two (f.p1.l1)."
+  },
+  {
+   "id": "t.248",
+   "verdict": "accept",
+   "reason": "Same as c.labels."
+  },
+  {
+   "id": "t.249",
+   "verdict": "accept",
+   "reason": "Second half of c.fall: control runs past the case 3 label and prints three (f.p1.l2)."
+  },
+  {
+   "id": "t.250",
+   "verdict": "accept",
+   "reason": "c.break with the last clause dropped; what remains is still true and scoped."
+  },
+  {
+   "id": "t.251",
+   "verdict": "accept",
+   "reason": "Same as c.done."
+  },
+  {
+   "id": "t.252",
+   "verdict": "accept",
+   "reason": "Same as c.fix."
+  },
+  {
+   "id": "t.253",
+   "verdict": "accept",
+   "reason": "Same as c.withbreak."
+  },
+  {
+   "id": "t.254",
+   "verdict": "accept",
+   "reason": "First sentence of c.recap."
+  },
+  {
+   "id": "t.255",
+   "verdict": "accept",
+   "reason": "Second sentence of c.recap."
+  },
+  {
+   "id": "t.256",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: three is also printed (m.stops)."
+  },
+  {
+   "id": "t.257",
+   "verdict": "accept",
+   "reason": "Marked correct and matches f.p1.out (two, three, done)."
+  },
+  {
+   "id": "t.258",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: the break on line 12 stops before four (m.toend)."
+  },
+  {
+   "id": "t.259",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: entry is at case 2, so one is never printed (m.fromtop)."
+  },
+  {
+   "id": "t.260",
+   "verdict": "accept",
+   "reason": "Prompt states the setup (n is 2, case 2 has no break) but not the output, so it does not give away f.p1.out."
+  },
+  {
+   "id": "t.261",
+   "verdict": "accept",
+   "reason": "True for s0: line 5, n is 2, nothing printed yet; the switch is about to go to case 2."
+  },
+  {
+   "id": "t.262",
+   "verdict": "accept",
+   "reason": "True for s1: line 9 after jumping to case 2, output two."
+  },
+  {
+   "id": "t.263",
+   "verdict": "accept",
+   "reason": "True for s2: no break after line 9, control passes the case 3 label to line 11, output two, three."
+  },
+  {
+   "id": "t.264",
+   "verdict": "accept",
+   "reason": "True for s3: path goes through the break on line 12 to line 16, output adds done."
+  },
+  {
+   "id": "t.265",
+   "verdict": "accept",
+   "reason": "True for s4: with_break.c at n=2 runs only case 2, which has its break on line 11."
+  }
+ ],
+ "overall": "accept"
+}

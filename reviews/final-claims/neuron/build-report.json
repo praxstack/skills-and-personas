@@ -1,0 +1,2627 @@
+{
+  "schema": "prax-teach/build-report@1",
+  "lesson": "neuron",
+  "lesson_sha256": "a7f18855af8e95f922ffe2a8204cec082e175bb5c86f4a9aab8ac232f76e7889",
+  "status": "failed",
+  "started": "2026-10-18T20:55:18+0530",
+  "finished": "2026-10-18T20:58:38+0530",
+  "media": [
+    "still",
+    "explorer",
+    "qa",
+    "cards",
+    "video",
+    "ive"
+  ],
+  "entry": {
+    "skill_md": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/package/prax-teach/SKILL.md",
+    "skill_md_sha256": "78ec6651266aa18fb43945a6b0ffb5356fca6bc0a7292664a59e19bdf97181e9",
+    "ptk": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/package/prax-teach/bin/ptk",
+    "registration": "none (direct path, D19.3)",
+    "shows": "build invoked via bin/ptk; does not show that SKILL.md was loaded"
+  },
+  "gates": [
+    {
+      "id": "values.expect",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "facts": 25,
+        "mismatches": 0
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.explorer",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 11,
+        "states": 4,
+        "against": "stepper.expected_view (facts, mech.shown_facts)",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.knob",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "kind": "neuron",
+        "views_checked": 8,
+        "against": "captured facts and expect.py (values, calls); expect_neuron.py and the captured check runs (neuron)",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.prose-follows-state",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 11,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.a11y-csp-noscript",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "csp": "default-src 'none'; script-src 'sha256-fbYWi0kS5MFSpEJEIlKMLZayagTrq1wWS7v8trm5orU='; style-src 'sha256-EL3IETprdswjAzHS",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.layout",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "layouts": 16,
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ],
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.file-protocol",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "url": "file:///Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/explorer/index.html",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.layers-misconceptions-print",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "layers": 4,
+        "options": 3,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.page",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "problems": [],
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.cards",
+      "medium": "cards",
+      "status": "passed",
+      "measured": {
+        "cards": 8,
+        "misconception_cards": 2,
+        "apkg": "neuron.apkg",
+        "problems": [],
+        "anki_import": "tests/test_cards.py::test_anki_import (not part of the build)"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.still",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "values_checked": 92,
+        "mismatches": [],
+        "files": [
+          "neuron-wide-light.svg",
+          "neuron-wide-dark.svg",
+          "neuron-portrait-light.svg",
+          "neuron-portrait-dark.svg"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.layout",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "views": {
+          "neuron-wide-light.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "neuron-wide-dark.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "neuron-portrait-light.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          },
+          "neuron-portrait-dark.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          }
+        },
+        "svg_problems": [],
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-light.png"
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-dark.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-light.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-dark.png"
+          }
+        ],
+        "min_text_px_at_display": 11.38,
+        "job_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.key-nodes",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "required": [
+          "code",
+          "note",
+          "output",
+          "panel"
+        ],
+        "problems": [],
+        "nodes": {
+          "neuron-wide-light.svg": {
+            "panel": {
+              "left": 64,
+              "right": 1125.5,
+              "top": 226.9,
+              "height": 343.8,
+              "width": 1061.5
+            },
+            "code": {
+              "left": 64,
+              "right": 744,
+              "top": 642.7,
+              "height": 404.2,
+              "width": 680
+            },
+            "note": {
+              "left": 784,
+              "right": 1133.8,
+              "top": 640.3,
+              "height": 189.7,
+              "width": 349.8
+            },
+            "output": {
+              "left": 784,
+              "right": 1136,
+              "top": 856,
+              "height": 201.8,
+              "width": 352
+            }
+          },
+          "neuron-wide-dark.svg": {
+            "panel": {
+              "left": 64,
+              "right": 1125.5,
+              "top": 226.9,
+              "height": 343.8,
+              "width": 1061.5
+            },
+            "code": {
+              "left": 64,
+              "right": 744,
+              "top": 642.7,
+              "height": 404.2,
+              "width": 680
+            },
+            "note": {
+              "left": 784,
+              "right": 1133.8,
+              "top": 640.3,
+              "height": 189.7,
+              "width": 349.8
+            },
+            "output": {
+              "left": 784,
+              "right": 1136,
+              "top": 856,
+              "height": 201.8,
+              "width": 352
+            }
+          },
+          "neuron-portrait-light.svg": {
+            "panel": {
+              "left": 10.7,
+              "right": 375.6,
+              "top": 186.8,
+              "height": 838.1,
+              "width": 364.9
+            },
+            "code": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 1085.8,
+              "height": 271.6,
+              "width": 358.8
+            },
+            "note": {
+              "left": 15.6,
+              "right": 366,
+              "top": 1385,
+              "height": 112,
+              "width": 350.4
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 1521.3,
+              "height": 164.1,
+              "width": 358.8
+            }
+          },
+          "neuron-portrait-dark.svg": {
+            "panel": {
+              "left": 10.7,
+              "right": 375.6,
+              "top": 186.8,
+              "height": 838.1,
+              "width": 364.9
+            },
+            "code": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 1085.8,
+              "height": 271.6,
+              "width": 358.8
+            },
+            "note": {
+              "left": 15.6,
+              "right": 366,
+              "top": 1385,
+              "height": 112,
+              "width": 350.4
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 1521.3,
+              "height": 164.1,
+              "width": 358.8
+            }
+          }
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.contrast",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "pairs_checked": 560,
+        "below_minimum": [],
+        "min_text_ratio": 4.67,
+        "min_rule_ratio": 3.71,
+        "dark_note_correction_delta_L": 16.8,
+        "note_correction_delta_L": {
+          "neuron-wide-light.svg": 16.9,
+          "neuron-wide-dark.svg": 16.8,
+          "neuron-portrait-light.svg": 16.9,
+          "neuron-portrait-dark.svg": 16.8
+        },
+        "token_pairs": 50,
+        "token_failures": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.ocr",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "cells": 32,
+        "digit_cells_lining_checked": 32,
+        "misread_or_not_lining": [],
+        "numeric_style_problems": [],
+        "engine": "tesseract 5.5.3"
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.fonts",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_bundled": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.alt-source",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "svgs": [
+          {
+            "svg": "neuron-wide-light.svg",
+            "title": true,
+            "desc_chars": 336,
+            "source_link": true
+          },
+          {
+            "svg": "neuron-wide-dark.svg",
+            "title": true,
+            "desc_chars": 336,
+            "source_link": true
+          },
+          {
+            "svg": "neuron-portrait-light.svg",
+            "title": true,
+            "desc_chars": 336,
+            "source_link": true
+          },
+          {
+            "svg": "neuron-portrait-dark.svg",
+            "title": true,
+            "desc_chars": 336,
+            "source_link": true
+          }
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.network",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.hyperframes-check",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "exit": 0,
+        "counts": {
+          "lint": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "runtime": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "layout": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "contrast": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "motion": {
+            "errors": 0,
+            "warnings": 0
+          }
+        },
+        "sandboxed": true,
+        "sub_compositions": 6,
+        "scenes": 6
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.scene-layout",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "scenes": {
+          "sc1": {
+            "mid": {
+              "state": "s0",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel"
+              ]
+            },
+            "settled": {
+              "state": "s0",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel"
+              ]
+            }
+          },
+          "sc2": {
+            "mid": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc3": {
+            "mid": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output",
+                "question"
+              ]
+            },
+            "settled": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output",
+                "question"
+              ]
+            }
+          },
+          "sc4": {
+            "mid": {
+              "state": "s2",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s2",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc5": {
+            "mid": {
+              "state": "s2",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s3",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc6": {
+            "mid": {
+              "state": "s3",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s3",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          }
+        },
+        "problems": {},
+        "max_empty_bottom": 0.12,
+        "set_collisions": [],
+        "panel_layers": {
+          "sc1": {
+            "frames": 358,
+            "max_crossfade_s": 1.0
+          },
+          "sc2": {
+            "frames": 442,
+            "max_crossfade_s": 1.0
+          },
+          "sc3": {
+            "frames": 148,
+            "max_crossfade_s": 1.0
+          },
+          "sc4": {
+            "frames": 269,
+            "max_crossfade_s": 1.0
+          },
+          "sc5": {
+            "frames": 325,
+            "max_crossfade_s": 1.0
+          },
+          "sc6": {
+            "frames": 546,
+            "max_crossfade_s": 1.0
+          }
+        },
+        "snapshots": [
+          "video/work/snapshots/sc1-mid.png",
+          "video/work/snapshots/sc1-settled.png",
+          "video/work/snapshots/sc2-mid.png",
+          "video/work/snapshots/sc2-settled.png",
+          "video/work/snapshots/sc3-mid.png",
+          "video/work/snapshots/sc3-settled.png",
+          "video/work/snapshots/sc4-mid.png",
+          "video/work/snapshots/sc4-settled.png",
+          "video/work/snapshots/sc5-mid.png",
+          "video/work/snapshots/sc5-settled.png",
+          "video/work/snapshots/sc6-mid.png",
+          "video/work/snapshots/sc6-settled.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.morph-stable",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "morph_scenes": 0,
+        "note": "no program change in this lesson"
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.render-isolation",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "isolation": "sandbox-exec -f ptk/capture/sandbox.sb -D MODE=render",
+        "canaries": {
+          "dns": {
+            "inside_exit": 1,
+            "inside_error": "e/installs/python/3.13.16/lib/python3.13/socket.py\", line 983, in getaddrinfo\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\n               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsocket.gaierror: [Errno 8] nodename nor servname provided, or not known",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          },
+          "https": {
+            "inside_exit": 6,
+            "inside_error": "curl: (6) Could not resolve host: example.com",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          },
+          "child-connect": {
+            "inside_exit": 7,
+            "inside_error": "child-connect failed: [Errno 1] Operation not permitted",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          }
+        },
+        "render_succeeded": true,
+        "denied_requests_in_render_log": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.video",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "values_checked": 104,
+        "mismatches": [],
+        "files": [
+          "sc1.html",
+          "sc2.html",
+          "sc3.html",
+          "sc4.html",
+          "sc5.html",
+          "sc6.html"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.media",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "video_h264_1920x1080": true,
+          "video_30fps": true,
+          "audio_aac": true,
+          "captions_track_in_mp4": true,
+          "chapters_in_mp4": true,
+          "captions_vtt": true,
+          "chapters_vtt": true,
+          "loudness_in_range": true,
+          "true_peak_ok": true,
+          "av_duration_match": true
+        },
+        "integrated_lufs": -16.0,
+        "true_peak_dbtp": -2.0,
+        "lra_lu": 2.8,
+        "video": {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "r_frame_rate": "30/1",
+          "pix_fmt": "yuv420p",
+          "duration": "104.600000"
+        },
+        "audio": {
+          "codec_name": "aac",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "104.566646"
+        },
+        "subtitle": "mov_text",
+        "chapters": 6,
+        "caption_cues": 11,
+        "chapter_cues": 6,
+        "duration": 104.6,
+        "thresholds": {
+          "lufs": [
+            -17.0,
+            -15.0
+          ],
+          "true_peak_max": -1.0
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.sync",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "cues": [
+          {
+            "cue": "sc1.0",
+            "cue_start": 0.8,
+            "speech_start": 0.819,
+            "start_delta": 0.019,
+            "cue_end": 7.1333,
+            "speech_end": 7.08,
+            "end_delta": -0.053,
+            "words": 17,
+            "whisper_first_word": 0.94,
+            "whisper_last_word_end": 7.0
+          },
+          {
+            "cue": "sc1.1",
+            "cue_start": 7.4667,
+            "speech_start": 7.486,
+            "start_delta": 0.019,
+            "cue_end": 17.5,
+            "speech_end": 17.44,
+            "end_delta": -0.06,
+            "words": 19,
+            "whisper_first_word": 7.56,
+            "whisper_last_word_end": 18.17
+          },
+          {
+            "cue": "sc2.0",
+            "cue_start": 18.3,
+            "speech_start": 18.319,
+            "start_delta": 0.019,
+            "cue_end": 31.0667,
+            "speech_end": 31.036,
+            "end_delta": -0.031,
+            "words": 20,
+            "whisper_first_word": 18.4,
+            "whisper_last_word_end": 31.0
+          },
+          {
+            "cue": "sc2.1",
+            "cue_start": 31.4333,
+            "speech_start": 31.451,
+            "start_delta": 0.018,
+            "cue_end": 39.6333,
+            "speech_end": 39.584,
+            "end_delta": -0.049,
+            "words": 16,
+            "whisper_first_word": 31.58,
+            "whisper_last_word_end": 39.97
+          },
+          {
+            "cue": "sc3.0",
+            "cue_start": 40.4333,
+            "speech_start": 40.452,
+            "start_delta": 0.019,
+            "cue_end": 44.0333,
+            "speech_end": 43.987,
+            "end_delta": -0.046,
+            "words": 12,
+            "whisper_first_word": 40.54,
+            "whisper_last_word_end": 46.98
+          },
+          {
+            "cue": "sc4.0",
+            "cue_start": 47.8333,
+            "speech_start": 47.852,
+            "start_delta": 0.019,
+            "cue_end": 60.4667,
+            "speech_end": 60.414,
+            "end_delta": -0.053,
+            "words": 26,
+            "whisper_first_word": 47.88,
+            "whisper_last_word_end": 61.0
+          },
+          {
+            "cue": "sc5.0",
+            "cue_start": 61.2667,
+            "speech_start": 61.286,
+            "start_delta": 0.019,
+            "cue_end": 70.0,
+            "speech_end": 69.955,
+            "end_delta": -0.045,
+            "words": 23,
+            "whisper_first_word": 61.42,
+            "whisper_last_word_end": 69.96
+          },
+          {
+            "cue": "sc5.1",
+            "cue_start": 70.3333,
+            "speech_start": 70.343,
+            "start_delta": 0.01,
+            "cue_end": 76.7667,
+            "speech_end": 76.721,
+            "end_delta": -0.046,
+            "words": 16,
+            "whisper_first_word": 70.46,
+            "whisper_last_word_end": 77.0
+          },
+          {
+            "cue": "sc6.0",
+            "cue_start": 77.5667,
+            "speech_start": 77.586,
+            "start_delta": 0.019,
+            "cue_end": 91.1333,
+            "speech_end": 91.117,
+            "end_delta": -0.016,
+            "words": 27,
+            "whisper_first_word": 77.68,
+            "whisper_last_word_end": 91.0
+          },
+          {
+            "cue": "sc6.1",
+            "cue_start": 91.4667,
+            "speech_start": 91.486,
+            "start_delta": 0.019,
+            "cue_end": 96.3,
+            "speech_end": 96.272,
+            "end_delta": -0.028,
+            "words": 12,
+            "whisper_first_word": 91.68,
+            "whisper_last_word_end": 95.98
+          },
+          {
+            "cue": "sc6.2",
+            "cue_start": 96.6333,
+            "speech_start": 96.652,
+            "start_delta": 0.019,
+            "cue_end": 102.9667,
+            "speech_end": 102.916,
+            "end_delta": -0.051,
+            "words": 17,
+            "whisper_first_word": 96.8,
+            "whisper_last_word_end": 103.0
+          }
+        ],
+        "mispronounced": [],
+        "max_abs_start_delta": 0.019,
+        "max_abs_end_delta": 0.06,
+        "non_code_wer": 0.0737,
+        "wer_reference": "lexicon(text), the form the voice was given (round 18)",
+        "hand_respelled": [],
+        "ref_words": 217,
+        "hyp_words": 210,
+        "whisper": {
+          "model": "ggml-base.en.bin",
+          "model_sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002",
+          "wav": "speech-16k.wav",
+          "timestamps": "start = DTW token time (fallback segment offset), end = token end offset",
+          "boundaries": "onset/offset = nearest silencedetect edge (-40 dB, 0.12 s) around the whisper words"
+        },
+        "heard": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with Raylu. This neuron has two inputs, 0.8 and 0.4, with weights 1.5 and -1 and a bias of -0. 2. Each input is multiplied by its weight, 0.8 times 1.5 prints as +1.2 and 0. 4 times -1 equals -0.4. Here the negative weight -1 turns the positive input 0.4 into a negative term, -0. 4. What do you predict? Commit to an answer before the answer comes. The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum z as 0. 6. Raylu outputs the larger of 0 and z. A positive z passes through unchanged, and a z of 0 or less gives 0. Here z prints as 0.6, which is positive, so the output of prints as 0. 6. On this machine, where double is binary 64, 0.8 times 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form. Percent g rounds z to 6 significant digits and prints 0. 6. This neuron multiplies each input by its weight, adds the bias, then gates the sum with Raylu."
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.no-answer-leak",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc3",
+            "answer_cue": 47.8333,
+            "answer": [
+              {
+                "kind": "number",
+                "value": "0.6"
+              }
+            ],
+            "subject": [
+              "display",
+              "output",
+              "print",
+              "program",
+              "show",
+              "write"
+            ]
+          }
+        ],
+        "leaks": [],
+        "rule": "words answers as phrases anywhere; numeric answers only as the value in a sentence about the question's subject, not in code or line numbers"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.ive",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "values_checked": 72,
+        "mismatches": [],
+        "files": [
+          "states.vtt"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.pause-state",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "rule": "explorer == cue state, and explorer == state derived from the frame (a transition or answer cue may show a frame in mid-tween of the same program, between its state and the next); windows are half-open and a time under one frame before a boundary resolves to the later window",
+        "pauses_checked": 24,
+        "mismatches": [],
+        "chapter_jumps": [
+          {
+            "t": 0,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [],
+            "origin_text": "From the film at 0:00",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 17.933,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [],
+            "origin_text": "From the film at 0:17",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 40.067,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "0.8 * 1.5 = +1.2",
+              "0.4 * -1 = -0.4"
+            ],
+            "origin_text": "From the film at 0:40",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 47.467,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "0.8 * 1.5 = +1.2",
+              "0.4 * -1 = -0.4"
+            ],
+            "origin_text": "From the film at 0:47",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 60.933,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s2",
+            "cue": "m6",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "0.8 * 1.5 = +1.2",
+              "0.4 * -1 = -0.4",
+              "b = -0.2  z = 0.6"
+            ],
+            "origin_text": "From the film at 1:00",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 77.233,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s3",
+            "cue": "m8",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "0.8 * 1.5 = +1.2",
+              "0.4 * -1 = -0.4",
+              "b = -0.2  z = 0.6",
+              "a = 0.6"
+            ],
+            "origin_text": "From the film at 1:17",
+            "border": "solid",
+            "current": "true"
+          }
+        ],
+        "chapter_mismatches": [],
+        "boundary_seeks": 49,
+        "boundary_mismatches": [],
+        "boundary_cases_strict_rule_gets_wrong": 27,
+        "frame_states": {
+          "m1@0.05": "s0",
+          "m1@0.2": "s0",
+          "m1@18.25": "s0",
+          "m2@18.35": "moving",
+          "m2@18.5": "moving",
+          "m2@20.017": "moving",
+          "m3@20.117": "s1",
+          "m3@20.267": "s1",
+          "m3@40.017": "s1",
+          "m4@40.117": "s1",
+          "m4@40.267": "s1",
+          "m4@47.783": "s1",
+          "m5@47.883": "moving",
+          "m5@48.033": "moving",
+          "m5@48.783": "moving",
+          "m6@48.883": "s2",
+          "m6@49.033": "s2",
+          "m6@70.283": "s2",
+          "m7@70.383": "moving",
+          "m7@70.533": "moving",
+          "m7@71.283": "moving",
+          "m8@71.383": "s3",
+          "m8@71.533": "s3",
+          "m8@104.517": "s3"
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.no-answer-leak",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checked_before": {
+          "ive-leak:m5": {
+            "hits": [],
+            "transcript_items": 5,
+            "t": 47.733,
+            "paused": true,
+            "mode": "explore",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "0.8 * 1.5 = +1.2",
+              "0.4 * -1 = -0.4"
+            ],
+            "origin_text": "From the film at 0:47",
+            "border": "solid"
+          }
+        },
+        "leaks": [],
+        "noscript_answers_heading_first": true,
+        "rule": "paused 0.1 s before each answer cue: no answer word in the DOM (noscript excluded), alt text, aria-label, title or the transcript so far; the noscript transcript sits after its 'contains the answers' heading"
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.controls",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "controls": {
+          "transcript_items_at_end": 11,
+          "seek_after_click": 0.8,
+          "caption_states": [
+            {
+              "shown": true,
+              "text": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
+              "visibility": "visible",
+              "w": 698.796875,
+              "h": 49.28125,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            },
+            {
+              "shown": false,
+              "text": "",
+              "visibility": "hidden",
+              "w": 0,
+              "h": 0,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "false"
+            },
+            {
+              "shown": true,
+              "text": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
+              "visibility": "visible",
+              "w": 698.796875,
+              "h": 49.28125,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            }
+          ],
+          "caption_second_cue": {
+            "shown": true,
+            "text": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
+            "visibility": "visible",
+            "w": 698.796875,
+            "h": 49.28125,
+            "color": "rgb(23, 29, 41)",
+            "data_on": "true"
+          },
+          "caption_track_mode": "hidden",
+          "chapters": 6,
+          "readyState": 4,
+          "error": null
+        },
+        "captions": "ok",
+        "nav_events": 88,
+        "nav_actions": [
+          "chapter",
+          "explore",
+          "open",
+          "return",
+          "seek"
+        ],
+        "nav_not_navigation": [],
+        "nojs": {
+          "390": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 11
+          },
+          "1440": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 11
+          }
+        },
+        "nojs_shots": [
+          "shots/ive-nojs-390.png",
+          "shots/ive-nojs-1440.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.explore-return",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "film_follows_clock": true,
+          "explore_on_pause": true,
+          "step_back_marked": true,
+          "return_resumes_at_pause": true,
+          "return_shows_film_state": true,
+          "no_edit_after_return": true
+        },
+        "mode": "step",
+        "live_edit": false,
+        "live_model_error": null,
+        "declared_by": "figure.panel (step-through, no live edit)",
+        "film": {
+          "t": 20.567,
+          "paused": true,
+          "mode": "film",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "0.8 * 1.5 = +1.2",
+            "0.4 * -1 = -0.4"
+          ],
+          "origin_text": "From the film at 0:20",
+          "border": "solid"
+        },
+        "explore": {
+          "t": 20.886952,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "0.8 * 1.5 = +1.2",
+            "0.4 * -1 = -0.4"
+          ],
+          "origin_text": "From the film at 0:20",
+          "border": "solid",
+          "returnTime": 20.886952,
+          "expected_cue": "m3"
+        },
+        "edited": {
+          "t": 20.886952,
+          "paused": true,
+          "mode": "explore",
+          "origin": "step",
+          "state": "s0",
+          "cue": "m2",
+          "kind": "transition",
+          "edit": "step=m2",
+          "program": "p1",
+          "output": [],
+          "origin_text": "An earlier step of the film, not the paused frame",
+          "border": "dashed"
+        },
+        "returned": {
+          "t": 20.959509,
+          "paused": false,
+          "mode": "film",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "0.8 * 1.5 = +1.2",
+            "0.4 * -1 = -0.4"
+          ],
+          "origin_text": "From the film at 0:20",
+          "border": "solid",
+          "return_position": 20.887,
+          "returnTime": 20.886952,
+          "film_cue": "m3",
+          "edits_left": 0
+        },
+        "repaused": {
+          "t": 20.961183,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "0.8 * 1.5 = +1.2",
+            "0.4 * -1 = -0.4"
+          ],
+          "origin_text": "From the film at 0:20",
+          "border": "solid",
+          "n_checked": null,
+          "brk_pressed": null
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.file-protocol",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "files": {
+          "protocol": "file:",
+          "tracks": [
+            {
+              "kind": "captions",
+              "mode": "hidden",
+              "cues": 11
+            },
+            {
+              "kind": "chapters",
+              "mode": "hidden",
+              "cues": 6
+            },
+            {
+              "kind": "metadata",
+              "mode": "hidden",
+              "cues": 8
+            }
+          ],
+          "track_src": [
+            "blob",
+            "blob",
+            "blob"
+          ],
+          "readyState": 4,
+          "error": null,
+          "duration": 104.6,
+          "h264": "probably"
+        },
+        "expected_cues": {
+          "captions": 11,
+          "chapters": 6,
+          "metadata": 8
+        },
+        "console_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.layout",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-light.png",
+              "shots/ive-390-light-explore.png"
+            ]
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-dark.png",
+              "shots/ive-390-dark-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-light.png",
+              "shots/ive-1440-light-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-dark.png",
+              "shots/ive-1440-dark-explore.png"
+            ]
+          }
+        ],
+        "errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.fonts",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_loaded": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.network",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.predict-gated",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc3",
+            "pause_at": 44.283,
+            "resume_at": 47.467,
+            "answer_at": 47.833,
+            "silence_before_pause": 0.25,
+            "silence_after_jump": 0.366,
+            "question_wpm": [
+              200
+            ],
+            "invite": "What do you predict? Commit to an answer before the answer comes.",
+            "sealed_chapters": [
+              4
+            ]
+          }
+        ],
+        "driven": {
+          "sc3@1440": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc3",
+              "t": 44.25884,
+              "paused": true,
+              "options": [
+                "0.8",
+                "0",
+                "0.6"
+              ],
+              "chapters": [
+                "One neuron, three steps",
+                "Multiply",
+                "Predict",
+                "Add",
+                "Opens after you answer",
+                "Recap"
+              ],
+              "panel": [
+                "f.x1",
+                "f.w1",
+                "f.t1",
+                "f.x2",
+                "f.w2",
+                "f.t2",
+                "f.b"
+              ],
+              "plan": {
+                "scene": "sc3",
+                "prompt": "What output a does the program print?",
+                "options": [
+                  {
+                    "text": "0.8",
+                    "correct": false,
+                    "misconception": "The bias is not part of the sum, so the output is 0.8.",
+                    "correction": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6."
+                  },
+                  {
+                    "text": "0",
+                    "correct": false,
+                    "misconception": "ReLU outputs 0 whenever any term is negative.",
+                    "correction": "ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0."
+                  },
+                  {
+                    "text": "0.6",
+                    "correct": true
+                  }
+                ],
+                "pause_at": 44.283,
+                "q_end": 44.0333,
+                "resume_at": 47.467,
+                "answer_at": 47.833,
+                "verdict_until": 60.933,
+                "sealed": [
+                  4
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 44.25884,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 44.283,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 47.500742,
+              "t_later": 49.002196,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: 0.8Not quite. That answer comes from a common wrong belief:The bias is not part of the sum, so the output is 0.8.What is actually true:The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
+              "chapters": [
+                "One neuron, three steps",
+                "Multiply",
+                "Predict",
+                "Add",
+                "Gate",
+                "Recap"
+              ],
+              "picked": {
+                "sc3": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc3-1440.png",
+              "shots/ive-after-pick-sc3-1440.png"
+            ]
+          },
+          "sc3@390": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc3",
+              "t": 44.260247,
+              "paused": true,
+              "options": [
+                "0.8",
+                "0",
+                "0.6"
+              ],
+              "chapters": [
+                "One neuron, three steps",
+                "Multiply",
+                "Predict",
+                "Add",
+                "Opens after you answer",
+                "Recap"
+              ],
+              "panel": [
+                "f.x1",
+                "f.w1",
+                "f.t1",
+                "f.x2",
+                "f.w2",
+                "f.t2",
+                "f.b"
+              ],
+              "plan": {
+                "scene": "sc3",
+                "prompt": "What output a does the program print?",
+                "options": [
+                  {
+                    "text": "0.8",
+                    "correct": false,
+                    "misconception": "The bias is not part of the sum, so the output is 0.8.",
+                    "correction": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6."
+                  },
+                  {
+                    "text": "0",
+                    "correct": false,
+                    "misconception": "ReLU outputs 0 whenever any term is negative.",
+                    "correction": "ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0."
+                  },
+                  {
+                    "text": "0.6",
+                    "correct": true
+                  }
+                ],
+                "pause_at": 44.283,
+                "q_end": 44.0333,
+                "resume_at": 47.467,
+                "answer_at": 47.833,
+                "verdict_until": 60.933,
+                "sealed": [
+                  4
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 44.260247,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 44.283,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 47.513988,
+              "t_later": 49.015841,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: 0.8Not quite. That answer comes from a common wrong belief:The bias is not part of the sum, so the output is 0.8.What is actually true:The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
+              "chapters": [
+                "One neuron, three steps",
+                "Multiply",
+                "Predict",
+                "Add",
+                "Gate",
+                "Recap"
+              ],
+              "picked": {
+                "sc3": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc3-390.png",
+              "shots/ive-after-pick-sc3-390.png"
+            ]
+          }
+        },
+        "problems": [],
+        "rule": "the film stops within 0.12 s of the pause point, at most 0.6 s after the last spoken word, shows the storyboard's options, holds through a wait and a play(), keeps answer-stating chapter titles sealed, and resumes at the answer scene after a pick"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.mapping",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "texts": 204,
+        "teaching": 44,
+        "claim_mapped": 29,
+        "unmapped": [],
+        "rule": "every sentence equals a whole claim or narration sentence, or a typed chrome.json string"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.review",
+      "medium": "all",
+      "status": "failed",
+      "reason": "the reviewer rejected a claim or text",
+      "measured": {
+        "lesson_job": {
+          "job": "job-fe6fdf9077",
+          "overall": "reject",
+          "rejected_claims": [
+            {
+              "id": "c.mul",
+              "verdict": "reject",
+              "reason": "Sources: the claim and its values are right, but the quote isn't verbatim. C17 7.21.6.1p8 says 'style f (or F)', and the quote drops '(or F)' without marking the cut. The quoted rule on its own also gives +1.20000. The plus sign shows only as +1.2 because of the next sentence in the same paragraph, which removes trailing zeros, and neither the quote nor the justification mentions it. Quote the clause exactly and include the trailing-zero sentence.",
+              "evidence": [
+                "C17 \u00a77.21.6.1 \u00b68",
+                "fact f.t1",
+                "fact f.t2"
+              ]
+            }
+          ],
+          "rejected_texts": [],
+          "reviewer": {
+            "host": "claude-code",
+            "agent": "claims reviewer subagent (Opus 5.5), job and rubric only"
+          }
+        },
+        "invalid": [],
+        "stale": [],
+        "missing": [],
+        "retrying": [],
+        "current_manifest_sha256": "a0f6b6ea4b9afc04df6e2e04954b65566a8e6ef291204e588d70c36cad487776",
+        "rubric_version": "3",
+        "label": "LLM-reviewed finding, not a proof"
+      }
+    },
+    {
+      "id": "claims.sensitivity",
+      "medium": "all",
+      "status": "passed",
+      "reason": "",
+      "measured": {
+        "value": {
+          "n": 4,
+          "caught": 4,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "claim": {
+          "n": 5,
+          "caught": 5,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "control": {
+          "n": 9,
+          "accepted": 9,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "meets_thresholds": true,
+        "thresholds": {
+          "value": 1.0,
+          "claim": 0.9,
+          "control": 0.95
+        },
+        "mutations": 9,
+        "caught": 9,
+        "skipped": [],
+        "rows": [
+          {
+            "job": "job-9d42dbaad9",
+            "role": "control",
+            "pair": 1,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-2b254810be",
+            "role": "mutation",
+            "pair": 1,
+            "mutation": "m1.mul.sign",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.mul",
+              "t.088",
+              "t.188"
+            ]
+          },
+          {
+            "job": "job-88da7dc59a",
+            "role": "control",
+            "pair": 2,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-6733fe60fe",
+            "role": "mutation",
+            "pair": 2,
+            "mutation": "m2.relu.overbroad",
+            "kind": "overbroad",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.relu",
+              "t.081",
+              "t.083",
+              "t.090",
+              "t.184",
+              "t.192"
+            ]
+          },
+          {
+            "job": "job-71e61036fe",
+            "role": "control",
+            "pair": 3,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-cedc738687",
+            "role": "mutation",
+            "pair": 3,
+            "mutation": "m3.add.bias",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.add",
+              "t.084",
+              "t.085",
+              "t.185",
+              "t.191"
+            ]
+          },
+          {
+            "job": "job-addd5f479f",
+            "role": "control",
+            "pair": 4,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-ca624e5152",
+            "role": "mutation",
+            "pair": 4,
+            "mutation": "m4.out.caveat",
+            "kind": "dropped-caveat",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.out",
+              "t.089",
+              "t.193"
+            ]
+          },
+          {
+            "job": "job-9eefd15bab",
+            "role": "control",
+            "pair": 5,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-cbfe9d104d",
+            "role": "mutation",
+            "pair": 5,
+            "mutation": "m5.relu.citation",
+            "kind": "wrong-citation",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.relu",
+              "t.081",
+              "t.090",
+              "t.192"
+            ]
+          },
+          {
+            "job": "job-ac1d71f9df",
+            "role": "control",
+            "pair": 6,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-c554c104b4",
+            "role": "mutation",
+            "pair": 6,
+            "mutation": "auto.value.c.setup.f.x1",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "t.091",
+              "t.187"
+            ]
+          },
+          {
+            "job": "job-bc3acfc15f",
+            "role": "control",
+            "pair": 7,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-8e09f34137",
+            "role": "mutation",
+            "pair": 7,
+            "mutation": "auto.value.c.mul.f.t1",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.mul",
+              "t.088",
+              "t.188"
+            ]
+          },
+          {
+            "job": "job-e9c8ea0431",
+            "role": "control",
+            "pair": 8,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-7e2d09d238",
+            "role": "mutation",
+            "pair": 8,
+            "mutation": "auto.value.c.sign.f.t2",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.sign",
+              "t.092",
+              "t.189"
+            ]
+          },
+          {
+            "job": "job-c340102921",
+            "role": "control",
+            "pair": 9,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-dae3bfa25d",
+            "role": "mutation",
+            "pair": 9,
+            "mutation": "auto.value.c.add.f.z",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.add",
+              "t.085",
+              "t.191"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "claims.artifacts-unchanged",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "checked": 50,
+        "changed": []
+      },
+      "reason": ""
+    }
+  ],
+  "fallbacks": [],
+  "tools": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0",
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "whisper-cli": "usage: /opt/homebrew/bin/whisper-cli [options] file0 file1 ...",
+    "tesseract": "tesseract 5.5.3",
+    "node": "v24.22.0",
+    "hyperframes": "0.8.169",
+    "playwright": "1.63.0",
+    "python": "3.13.16",
+    "sandbox-exec": "/usr/bin/sandbox-exec"
+  },
+  "artifacts": [
+    {
+      "path": "still/index.html",
+      "bytes": 768,
+      "sha256": "4befe5136e42e5ad447f13af8df24280d54b486c87d6fd1659b30e00f2cb541d"
+    },
+    {
+      "path": "still/neuron-portrait-dark.png",
+      "bytes": 363832,
+      "sha256": "99ec9bd18d63fdb61f72f9f14a99837cc3fb8265b8ed7c502cfadf7bce455cc0"
+    },
+    {
+      "path": "still/neuron-portrait-dark.svg",
+      "bytes": 77589,
+      "sha256": "d1953b1651d9011be883aeb0495936bf68fda1b9910c42b9080186e3d1f7c2de"
+    },
+    {
+      "path": "still/neuron-portrait-light.png",
+      "bytes": 360741,
+      "sha256": "d9aca1bc40d22b549bcf686270a5c3e49e4625ce3afef860299fdccb786c0979"
+    },
+    {
+      "path": "still/neuron-portrait-light.svg",
+      "bytes": 77590,
+      "sha256": "36bd5d7632fb2ed0ce4422bf6a17746d332d630bb8cc39d32e96fe7516dfd83b"
+    },
+    {
+      "path": "still/neuron-wide-dark.png",
+      "bytes": 426669,
+      "sha256": "259691b67eca921a652f1965a4eead08297b6e5423600fca4bfc67a680aede91"
+    },
+    {
+      "path": "still/neuron-wide-dark.svg",
+      "bytes": 77326,
+      "sha256": "77f965cde482dccabd822ace09412a6c7c9009a3011e2ae710be645a57f18b76"
+    },
+    {
+      "path": "still/neuron-wide-light.png",
+      "bytes": 424447,
+      "sha256": "5778d8d02e264c360c2e7ebfa98f61569df6e2c1744bd785ae35b8dfbe9d02f1"
+    },
+    {
+      "path": "still/neuron-wide-light.svg",
+      "bytes": 77327,
+      "sha256": "d7344d41c17fa40f5b573015be6018085f70259e06cb21413caa248f86346f33"
+    },
+    {
+      "path": "video/captions.vtt",
+      "bytes": 1467,
+      "sha256": "e382634f8ab8987c70be75b8fcc7d0736cc24a31b48fde25a7083fe8a104926e"
+    },
+    {
+      "path": "video/chapters.vtt",
+      "bytes": 273,
+      "sha256": "ef0389928e3922c6c5bbf718433590edd91f07e04ea31b8fbc0f2e17d2c30d35"
+    },
+    {
+      "path": "video/composition/compositions/sc1.html",
+      "bytes": 18756,
+      "sha256": "a76690985494fb42fdfa1fcd5af13bedac8601c5ba28a8421a13e53fc9a69bdc"
+    },
+    {
+      "path": "video/composition/compositions/sc2.html",
+      "bytes": 28450,
+      "sha256": "c4798cbefc29f9518bcc36e7bd12892bb5462512f1a3d7e518e47a399746230c"
+    },
+    {
+      "path": "video/composition/compositions/sc3.html",
+      "bytes": 21178,
+      "sha256": "d945b2e40831bb600d7ce135d46a96d4972e6027f36aa04d8e74b50086939e69"
+    },
+    {
+      "path": "video/composition/compositions/sc4.html",
+      "bytes": 32074,
+      "sha256": "c295ed6960d85cd87a9d527371d845ac3287a761991b1a2362df949c6638762c"
+    },
+    {
+      "path": "video/composition/compositions/sc5.html",
+      "bytes": 36660,
+      "sha256": "45c7b00ef8a273171e33fb39b6dbd025aef1f94d9bf6f5341288422da503a392"
+    },
+    {
+      "path": "video/composition/compositions/sc6.html",
+      "bytes": 25916,
+      "sha256": "3c620ed639c8647eb226032e32c75866708884e5df07cb9564cbb903d3036b53"
+    },
+    {
+      "path": "video/composition/fonts/Caveat.woff2",
+      "bytes": 73380,
+      "sha256": "29791689b93416dd6ac7285999996569e250b841bb96a1df33d8accacd73d9e3"
+    },
+    {
+      "path": "video/composition/fonts/JetBrainsMono.woff2",
+      "bytes": 44712,
+      "sha256": "1d8a0d014d1aeff07f8a7b8a8a3f41f2878a2968c291e12b6a8b4eb947141a23"
+    },
+    {
+      "path": "video/composition/fonts/NunitoSans.woff2",
+      "bytes": 28712,
+      "sha256": "2827f778cbbbf51af671a8078606ea862c1a4a656529e86de8c6f8aef9e9155c"
+    },
+    {
+      "path": "video/composition/fonts/SourceSerif4-Roman.woff2",
+      "bytes": 186584,
+      "sha256": "4f8975136a23751d17aeeb04b5c77e6347ee7ba5909cc5e4ae7a56f01093325e"
+    },
+    {
+      "path": "video/composition/hyperframes.json",
+      "bytes": 31,
+      "sha256": "b48cb9c7270dfa06827c0552c6e6dbd120091650725255fda1df47b08f1547d4"
+    },
+    {
+      "path": "video/composition/index.html",
+      "bytes": 2567,
+      "sha256": "76971ea46be84bb03c6a9aa4c330cd4387e1d0fc53d36c40281ed118ec8c20cc"
+    },
+    {
+      "path": "video/composition/vendor/gsap.min.js",
+      "bytes": 72927,
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    },
+    {
+      "path": "video/lesson.mp4",
+      "bytes": 4231967,
+      "sha256": "7bc4a467bbefca7d810694dd79370eb01d53e464123c0b748b7d26182d0cb7a2"
+    },
+    {
+      "path": "video/narration.wav",
+      "bytes": 20076874,
+      "sha256": "b02582af324cf581689244315c14be930e1391be37fb068af3a8a3e843799ac7"
+    },
+    {
+      "path": "video/timing.json",
+      "bytes": 9827,
+      "sha256": "f28d8a95b9f1d362f955102259c5a7970aafc8b86cfe49c16dd5f54405f977cb"
+    },
+    {
+      "path": "video/transcript.txt",
+      "bytes": 1200,
+      "sha256": "de6b92a5a9d2514517ebd60dffa7bc254b9b3f48a8e9a30948deaecd61666f57"
+    },
+    {
+      "path": "ive/captions.vtt",
+      "bytes": 1467,
+      "sha256": "e382634f8ab8987c70be75b8fcc7d0736cc24a31b48fde25a7083fe8a104926e"
+    },
+    {
+      "path": "ive/chapters.vtt",
+      "bytes": 273,
+      "sha256": "ef0389928e3922c6c5bbf718433590edd91f07e04ea31b8fbc0f2e17d2c30d35"
+    },
+    {
+      "path": "ive/cues.json",
+      "bytes": 12996,
+      "sha256": "e9bfd071c72c1c6a922adc3713ed9053e69c99e435b98283dc23a0cbf0945044"
+    },
+    {
+      "path": "ive/index.html",
+      "bytes": 109361,
+      "sha256": "4a106376931af88365d47c048c36dd0821ed986ad7a5b7ffa91c76da6f9e29ef"
+    },
+    {
+      "path": "ive/ive-data.js",
+      "bytes": 151100,
+      "sha256": "ac6506221f65d7c441a97a6b4f04ba32c3ca17d9c47eeddc4365edd7e62f42d1"
+    },
+    {
+      "path": "ive/lesson.mp4",
+      "bytes": 4231967,
+      "sha256": "7bc4a467bbefca7d810694dd79370eb01d53e464123c0b748b7d26182d0cb7a2"
+    },
+    {
+      "path": "ive/posters/sc1.jpg",
+      "bytes": 32141,
+      "sha256": "98a975fa1d8e712272ca1ab25fa4122f45e8ccaf59a6839c90ed2964e11ce806"
+    },
+    {
+      "path": "ive/posters/sc2.jpg",
+      "bytes": 35294,
+      "sha256": "85b051a8ce5920f4a5f1f1226ab40f72df0c3173d98a8ad4e4c208760d302240"
+    },
+    {
+      "path": "ive/posters/sc3.jpg",
+      "bytes": 37772,
+      "sha256": "49e185608358144c4c4ee14e76646e491a40a1a07d2ec7bcddeaf3407ff83203"
+    },
+    {
+      "path": "ive/posters/sc4.jpg",
+      "bytes": 40497,
+      "sha256": "c2afa2c052114d681d3aed9a5ca95b7ab589dfb80b93e7e2e554a485cb8bb2f4"
+    },
+    {
+      "path": "ive/posters/sc5.jpg",
+      "bytes": 42675,
+      "sha256": "8cee20f915a476cd88dfb0979ab15396cba18547d161631bccd90719d6528904"
+    },
+    {
+      "path": "ive/posters/sc6.jpg",
+      "bytes": 42861,
+      "sha256": "16d481bf5fbf79c1d81c06ec4becbb2808dce493d2820c7cc4dbfc66e521bf21"
+    },
+    {
+      "path": "ive/states.vtt",
+      "bytes": 8202,
+      "sha256": "20180541c8ef241f447b7cd517875f71db963f9348340b6ccfb1c4f349e553f3"
+    },
+    {
+      "path": "explorer/domain.json",
+      "bytes": 3514,
+      "sha256": "500b9c2c6be45f00e0324a64864555b088b94179ad64e70a4850e5d8a172fd18"
+    },
+    {
+      "path": "explorer/index.html",
+      "bytes": 395595,
+      "sha256": "68e2d38d5fdf32d0a7e55848b29e72a7475d29bba344e6524ba2b18625b977b9"
+    },
+    {
+      "path": "explorer/texts.json",
+      "bytes": 5952,
+      "sha256": "333794cdb780a350b1d29da7d2e7eaea265e7ca6ce4ee116f6a5509b7b3f9a28"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 91878,
+      "sha256": "7fed33f281922fb90cf4be97da0999c7d8f4ae01a427cda72e4ae972f5033b80"
+    },
+    {
+      "path": "qa/texts.json",
+      "bytes": 5659,
+      "sha256": "55ab3382f73fbd0891df329f1a7b53e5b1ddc8a36a24c65706d050f170c6c9b6"
+    },
+    {
+      "path": "cards/cards.json",
+      "bytes": 2992,
+      "sha256": "e2561049c0daf9725af61deaaa8032aab656bcbbae22be3a01f9d7babeb1ee69"
+    },
+    {
+      "path": "cards/neuron.apkg",
+      "bytes": 69850,
+      "sha256": "5bcfca6fd7107eaf1165b068858d68776d41152944533188d655ac6f1260f52d"
+    },
+    {
+      "path": "cards/neuron.md",
+      "bytes": 3465,
+      "sha256": "bad2991b602ba2c0348a5e1d3b0955816774e62f6191f161ac55b042a669db90"
+    },
+    {
+      "path": "cards/texts.json",
+      "bytes": 3774,
+      "sha256": "7886166fdd09a4160553230f50a3af530bfe8f7c162976e73f2c53fbfb551da1"
+    }
+  ],
+  "transitions": [
+    "draft",
+    "valid",
+    "captured",
+    "projected",
+    "claims-pending",
+    "failed"
+  ],
+  "error": null,
+  "cleared": [],
+  "capture": {
+    "programs": {
+      "p1": {
+        "ran": true,
+        "stdout_sha256": "72231c1384d11502f7cc94b87d380988e188dfe1a254578b5ec811431fd6fa7b",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p2": {
+        "ran": true,
+        "stdout_sha256": "b1c1b799b2b3ac55626c8bb45a2a6d9e1c4912972fe00a437463f4c86fc217e3",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p3": {
+        "ran": true,
+        "stdout_sha256": "0a8e4a7d2054e4eb0bd3acccb31412680292720d8faa6ec9f1f3020a79bab040",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p4": {
+        "ran": true,
+        "stdout_sha256": "ed6cf144c699e1da7a8d864b6b09658a1033e5e03ae13139ed0a4e95718bf56a",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      }
+    },
+    "platform": {
+      "captured": true,
+      "os": "macOS 27.0.1",
+      "arch": "arm64",
+      "sizeof": {
+        "char": 1,
+        "short": 2,
+        "int": 4,
+        "long": 8,
+        "long long": 8,
+        "float": 4,
+        "double": 8,
+        "void*": 8
+      },
+      "char_signed": true,
+      "endianness": "little",
+      "libc": "libSystem (macOS 27.0.1)",
+      "compilers": {
+        "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+      },
+      "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+    }
+  },
+  "ptk": {
+    "version": "2.1.0-wp0",
+    "code_sha256": "44b0120440006b797acad08f995815594b9e9fe6bc7f61747ea76e44537a401c"
+  },
+  "video": {
+    "theme": "dark",
+    "renderer": "hyperframes"
+  },
+  "tts": {
+    "engine": "kokoro-onnx 0.6.1 (Kokoro-82M v1.0)",
+    "voice": "af_heart",
+    "speed": 0.9,
+    "degraded": false,
+    "cache_inputs": {
+      "engine": "kokoro-onnx",
+      "engine_version": "0.6.1",
+      "model_sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5",
+      "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+      "voice": "af_heart",
+      "speed": 0.9,
+      "lang": "en-us",
+      "lexicon_version": "4"
+    },
+    "process_count": 0,
+    "model_loads": 0,
+    "synthesised_now": 0,
+    "cached": 11
+  },
+  "claims": {
+    "mode": "full",
+    "jobs": [
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-fe6fdf9077.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-2b254810be.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-9d42dbaad9.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-6733fe60fe.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-88da7dc59a.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-cedc738687.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-71e61036fe.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-ca624e5152.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-addd5f479f.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-cbfe9d104d.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-9eefd15bab.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-c554c104b4.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-ac1d71f9df.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-8e09f34137.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-bc3acfc15f.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-7e2d09d238.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-e9c8ea0431.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-dae3bfa25d.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-jobs/job-c340102921.json"
+    ],
+    "reviews_dir": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/lessons/neuron/build/claims-review",
+    "rubric": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-b/package/prax-teach/ptk/verify/rubric.md",
+    "job_tokens": {
+      "job-2b254810be": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-6733fe60fe": {
+        "job_tokens": 7690,
+        "with_rubric": 9295
+      },
+      "job-71e61036fe": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-7e2d09d238": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-88da7dc59a": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-8e09f34137": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-9d42dbaad9": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-9eefd15bab": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-ac1d71f9df": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-addd5f479f": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-bc3acfc15f": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-c340102921": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-c554c104b4": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-ca624e5152": {
+        "job_tokens": 7686,
+        "with_rubric": 9291
+      },
+      "job-cbfe9d104d": {
+        "job_tokens": 7618,
+        "with_rubric": 9223
+      },
+      "job-cedc738687": {
+        "job_tokens": 7730,
+        "with_rubric": 9335
+      },
+      "job-dae3bfa25d": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-e9c8ea0431": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      },
+      "job-fe6fdf9077": {
+        "job_tokens": 7713,
+        "with_rubric": 9318
+      }
+    },
+    "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"
+  },
+  "seconds": 200.5,
+  "claims_checked": "2026-10-18T21:13:14+0530"
+}
