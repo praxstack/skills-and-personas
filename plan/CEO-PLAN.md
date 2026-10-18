@@ -56,7 +56,7 @@ Prax asked for a fully autonomous run: CEO review, then eng review, write-spec, 
 | Explorer HTML | `proof/still-interactive/dist/byte-explorer.html` | Generalise into a template. |
 | Flash cards | proof genanki deck | Generalise. |
 | Narrated video | `proof/video` (HyperFrames composition, `tools/build.py`, Kokoro via `HYPERFRAMES_PYTHON`, LUFS, transcribe sync) and the C repo's `assets/video/0000-demo` | Generalise into the video projector. |
-| Markdown → HTML with provenance | v2 `render_markdown.mjs` | Port, then add inline SVG, math (KaTeX server-side), `<video>`/`<track>`, dark-mode figures, lining numerals. |
+| Markdown → HTML with provenance | v2 `render_markdown.mjs` | Port, then add inline SVG, math (MathJax `tex2svg`), `<video>`/`<track>`, dark-mode figures, lining numerals. |
 | Learner state and FSRS | v2 `praxteach` engine, `fsrs==6.3.1` | Port as an optional, lazily loaded module. |
 | Tool registry | v2 `visualization-tool-registry.json` (38 tools) | Port, correct the entries flagged in M11–M16, rank by fit instead of alphabetically, and probe binaries, not just skill files. |
 | Video skills | `hyperframes`, `hyperframes-core`, `-cli`, `-animation`, `manim-video` | Hand off to them with a written contract (M21). |
@@ -131,7 +131,7 @@ APPROACH C: Thin router skill that delegates every medium to existing skills (mi
 |---|---|---|---|---|
 | D4.1 | Lesson model with facts captured from real compiler runs (clang 21 and gcc-16, both, results compared) | L / 1.5 h | ACCEPTED | Root fix for V1 and the consistency across all six artifacts. |
 | D4.2 | Claims ledger plus an independent claims review gate | M / 1 h | ACCEPTED | Today's proofs passed every value check and still taught a false claim about `%f`. |
-| D4.3 | Interactive video explorer (in-page composition player, pause-to-explore at the same state, chapters, synced transcript) | L / 1.5 h | ACCEPTED | Prax named it as the most important artifact. |
+| D4.3 | Interactive video explorer (MP4 + WebVTT metadata cue track mapping time to scene state + explorer state bridge, pause-to-explore, chapters, synced transcript; see D17.2) | L / 1.5 h | ACCEPTED | Prax named it as the most important artifact. |
 | D4.4 | Q&A expander with misconception routing | M / 45 min | ACCEPTED | Requested type. Fixes T10. |
 | D4.5 | Flash cards: Markdown and .apkg, FSRS-ready, generated from facts and misconceptions | S / 30 min | ACCEPTED | Requested type, and the proof already exists. |
 | D4.6 | Narrated video projector: HyperFrames, Kokoro, WebVTT, chapters, LUFS and sync gates, env hardening | L / 1.5 h | ACCEPTED | Requested type. Fixes M1–M5, M10, M17–M19 and M26. |
@@ -142,8 +142,8 @@ APPROACH C: Thin router skill that delegates every medium to existing skills (mi
 | D4.11 | "Show me the real run" provenance links | S / 15 min | ACCEPTED | Delight item. Cheap once facts carry sources. |
 | D4.12 | Localhost compile-and-trace server that runs the learner's own code inside explorers | L / 2 h | DEFERRED | It runs untrusted code from a browser, so it needs its own threat model. P2 in TODOS. |
 | D4.13 | LLDB execution traces for step-through (recursion, pointers) | M / 1 h | ACCEPTED (scoped) | Use a deterministic instrumented trace (printf-trace harness) for the second exemplar. LLDB scripting is a stretch goal inside the same work package. |
-| D4.14 | Manim projector for math-heavy topics | M / 1 h | ACCEPTED (scoped) | Route and hand-off contract only. `MathTex` needs LaTeX, which isn't installed and isn't approved. Math in stills and video uses KaTeX→SVG instead. |
-| D4.15 | Host installs: BasicTeX or Typst, whisper-cpp | S | DEFERRED, needs Prax | FREEZE.md: software installs need his OK. A project-local Kokoro venv is allowed: it lives in a user data dir and changes no system state. |
+| D4.14 | Manim projector for math-heavy topics | M / 1 h | ACCEPTED (scoped) | Route and hand-off contract only. `MathTex` needs LaTeX, which isn't installed and isn't approved. Math in stills uses MathJax `tex2svg` (KaTeX cannot emit SVG); math in HTML and video uses MathJax SVG output too, so one renderer covers both. |
+| D4.15 | Host installs: BasicTeX or Typst | S | DEFERRED, needs Prax | One install rule (PLAN-INPUT §7, D17.14): new system-wide software needs his OK; user-scope venvs and model files under `~/.local/share/prax-teach` are allowed with disclosure. whisper-cli is already installed and is used for the sync gate. |
 | D4.16 | Topic packs for C++, DSA and GATE | XL | DEFERRED | Phase 2, built on the compiler once it is accepted. |
 
 ### 0D-POST. Accepted scope
@@ -193,7 +193,106 @@ Kokoro venv location, **D5.7**: `~/.local/share/prax-teach/venvs/kokoro`. It is 
 
 ## Spec review of this document
 
-The adversarial review loop ran after writing. Results are appended under "Reviewer Concerns" if any remain.
+Round 1: the adversarial spec reviewer scored it 6/10 with 15 issues, and Codex as outside voice raised 13. Both are folded into "Round 1 revisions" below. Round 2 follows.
+
+## Round 1 revisions (binding; they override earlier text where the two conflict)
+
+Cross-model tension was resolved autonomously, as Prax asked. Each D17 item records which reviewer raised it and why it was accepted. None of these items changes FREEZE.md.
+
+**D17.1 Vertical slice first** (Codex 1, 12; reviewer 9).
+- **Before generalising, build WP0.** One unfamiliar request goes through the real skill entry → `lesson.json` → all six artifacts → every gate, for one lesson.
+- **Dependency order:** WP0 → (WP1 ∥ WP2) → WP3 → WP4 → WP5 → WP6 → WP7 → WP8 → WP9.
+- **If a package stalls, its dependents stop.**
+- **Total budget:** 18 implement-and-review rounds across all packages. This is stricter than FREEZE's maximum of 27, so it is a self-limit, not a gate change.
+- **A live session is a human step.** One real prediction → attempt → feedback session with Prax is listed as a human acceptance step, like the Competitive Companion click. The agent can't run it alone.
+
+**D17.2 Interactive video design** (Codex 2, reviewer 6). The IVE is the narrated MP4 plus a WebVTT `metadata` cue track.
+- Each cue carries `{scene_id, state_id}`.
+- On pause, seek or chapter jump, the page loads the explorer at that cue's *settled* state.
+- It works for any video source, HyperFrames or Manim. No in-page composition runtime is needed.
+
+**D17.3 Authoring contract** (Codex 3; reviewer 9).
+- **Writing the model:** the host agent writes `lesson.json` from `references/LESSON-MODEL.md`, using `ptk new <slug>` to scaffold. `ptk validate` reports JSON-pointer errors, and the agent repairs at most twice per error.
+- **Runtime flow per mode:**
+  - **Quick answer:** the agent answers directly. No model and no build.
+  - **Predict-first:** one question, wait, then feedback. Artifacts come only after the attempt.
+  - **Lesson in a named medium:** model → capture → the projectors for the requested media only → gates → deliver. The agent tells the learner first whether the build will take more than 60 s.
+  - **Full pack:** only when asked.
+- **The router is code** (`ptk route`). SKILL.md tells the agent to call it and obey its result.
+
+**D17.4 Undefined-behaviour guard and platform facts** (Codex 4; reviewer 1, 14).
+- **Compiler flags:** capture compiles with `-std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address`. Any warning or sanitizer report blocks the fact, unless a claim of kind `undefined-behaviour` covers it, and such programs are compiled but never run.
+- **Platform facts are captured once and shown wherever relevant:** `sizeof` of each scalar, char signedness, endianness, libc.
+- **CompilerDisagreement is never rescued automatically.** It fails unless an authored claim of kind `implementation-defined` cites the C standard clause.
+- **Two compilers don't add trust here.** clang and gcc-16 share Apple's libc on this Mac, so comparing them doesn't make printf output more trustworthy. The claim is dropped. The second compiler only checks diagnostics.
+
+**D17.5 Independent expectations and mutation testing** (Codex 5, 6; reviewer 1).
+- Every displayed fact needs an independent `expect` field, computed by a separate Python function (bits, ASCII, arithmetic) or authored and reviewed.
+- The values gate compares the artifact against both the capture and the expectation.
+- **Mutation suite:** for each lesson, a script makes 10 or more corrupted variants (false claims, swapped values) and runs the *real* claims reviewer and value gates. At least 90% must be caught, and every value mutation must be.
+- **Explorer logic:** checked against an independent computation over its whole input domain.
+- **No spoilers:** a paused state never shows the answer to an open prediction question (retrieval safety, M20). That covers narration, transcript, chapter titles and alt text.
+
+**D17.6 Teaching protocol** (Codex 7; reviewer 1).
+- **Multi-turn spec:** `references/TEACHING.md` defines predict-first as a multi-turn protocol:
+  1. ask one question;
+  2. end the turn;
+  3. classify the attempt as correct, partial or misconception;
+  4. give exactly one hint or feedback;
+  5. show the artifact;
+  6. record evidence (recognition, recall, explain, apply).
+- **Transcript test:** `tests/test_protocol_transcripts.py` drives it with scripted learner turns.
+- **Workspace contract precedence:** AGENTS.md, MISSION.md and NOTES.md are read first, and their rules beat skill defaults.
+- **Hidden end state:** traces hide the final state until the learner predicts (fixes T3).
+- **Evidence:** stored in `.prax-teach/state` as `evidence` events, with consent. T2 is answered by the stop rule "satisfaction plus at least one observed evidence item, or an explicit stop".
+
+**D17.7 Claims reviewer contract** (Codex 8; reviewer 8).
+- **Who reviews:** the host agent spawns a separate subagent with a fixed rubric and the lesson's claims, sources and artifact texts. It writes `claims-review.json`, and `ptk claims check` validates its schema.
+- **Coverage:** every sentence in narration, captions, labels, cards, Q&A and the still must carry a claim ID, tagged by the author in the storyboard or model and checked by `ptk`.
+- **Not run is not passed:** if no subagent facility exists in the host, the gate is `not-run` and the build is `incomplete`. It is never `passed`.
+
+**D17.8 Offline caption sync** (Codex 8; reviewer 4).
+- The sync gate uses `whisper-cli`, which is already installed, with a local ggml model under `~/.local/share/prax-teach/models`. `hyperframes transcribe` is the second choice.
+- **Pass rule:** every cue start within 0.5 s of its planned time, and word error rate on non-code words of 10% or less.
+
+**D17.9 Pinned and reproducible builds** (Codex 9; reviewer 10, 13).
+- **Pinned HyperFrames:** a local npm install inside `~/.local/share/prax-teach/tools` at a pinned version, never the global auto-upgrading CLI.
+- **Cache keys:** the full effective inputs (source bytes, includes, flags, compiler version, TTS engine, model file sha256, voice, speed, lexicon version and fallback engine).
+- **What reproducibility means:** "reproducible" applies to the lesson data and the HTML/SVG bytes. Media bytes are checked against tolerances instead.
+- **No silent fetches:** outbound network during render is blocked through a Chrome flag and request interception, and any attempted request fails the build.
+
+**D17.10 Sandbox** (Codex 10; reviewer 14).
+- **The profile:** capture runs under a tested `sandbox-exec` profile that denies network and denies file writes outside its temp dir. A test proves both denials.
+- **Memory limit:** enforced by a watchdog that samples resident size, because macOS doesn't enforce `RLIMIT_AS`.
+- **No sandbox, no capture:** if `sandbox-exec` is missing, `ptk` refuses to capture. There is no silent fallback.
+
+**D17.11 Acceptance proposal** (Codex 11; reviewer 3).
+- **Proposal for approval:** `plan/ACCEPTANCE-PROPOSAL.md` adds an unfamiliar end-to-end request set and numeric media thresholds (integrated loudness of −16 ± 1 LUFS, true peak of −1 dBTP or lower, cue sync within 0.5 s). It also adds an aesthetics rule: 15 checklist items, 9 automated (including an OCR digit check with tesseract, which is installed), and the rest reviewed by screenshot. It goes to Prax for approval as a new FREEZE version.
+- **Until he approves:** the frozen evaluator stands, and these checks run as the candidate's own internal tests.
+
+**D17.12 Rollback and state** (Codex 13; reviewer 5).
+- **Candidate registration:** the candidate is never registered in any host's skill dir, so each host keeps exactly one entry. It's reachable by `ptk` and a direct path only.
+- **Before acceptance:** learner state is snapshotted, and install and rollback are tested per host (Claude Code, Codex, Hermes, OpenCode).
+- **Schema version:** the state schema becomes v2 (navigation events kept separate from learner attempts, plus an `evidence` kind). It has a migration and a test, and v1 state reads unchanged.
+
+**D17.13 Alternatives per artifact type** (reviewer 2).
+- WP8's registry lists the ranked alternatives per type from report 05 (13 to 16 each).
+- Each alternative has a binary probe and a fallback order.
+- `ptk host probe` reports which alternatives this machine can run right now.
+
+**D17.14 One install rule** (reviewer 4). New system-wide software needs Prax's OK. User-scope venvs and models under `~/.local/share/prax-teach` are allowed, with the download size disclosed before fetching.
+
+**D17.15 Dependencies** (reviewer 13). The core gets a venv with pinned `jsonschema`, `genanki` and `fsrs==6.3.1`, created by `ptk host setup`. "stdlib-only" is dropped.
+
+**D17.16 Delight after acceptance** (reviewer 11). Chapter thumbnails, provenance links, `ptk report --html` and LLDB traces move after acceptance. The pronunciation lexicon stays, because M19 needs it.
+
+**D17.17 Protected v2 tests** (reviewer 6). `plan/PROTECTED-MAP.md` maps each of v2's 22 JS tests and its passing Python tests to a v2.1 equivalent, or gives a written reason the behaviour was removed. The FREEZE protected check is satisfied that way.
+
+**D17.18 Missing issues** (reviewer 1).
+- **T13** is covered by D17.4.
+- **T22:** the loader must stay under 4k tokens before the first teaching word, and a test counts it.
+- **M20** is covered by D17.5.
+- **T2** is covered by D17.6.
 
 ## Section 1: Architecture
 
@@ -304,7 +403,7 @@ Section 1 decisions:
   CompilerDisagreement     | Y        | require a claim of kind implementation-defined | which compilers disagree
   ModelSchemaError/RefErr  | Y        | stop; JSON pointer to the bad field            | "/facts/3/source missing"
   LayoutOverflow           | Y        | fail the gate; screenshot path                 | screenshot + element id
-  TTSUnavailable           | Y        | fall back to `say`, report says so             | "TTS: say (Kokoro missing)"
+  TTSUnavailable           | Y        | fall back to `say`; build status `degraded`    | "TTS: say (Kokoro missing), degraded"
   NarrationEmpty           | Y        | stop                                           | scene id
   RenderCheckFailed        | Y        | stop; keep hyperframes output                  | lint/runtime lines
   MediaGate/Loudness       | Y        | fail; numbers in report                        | measured vs target
@@ -473,7 +572,7 @@ After v2.1, all six media exist with verified values and reviewed claims for C t
 
 ## Error and rescue registry
 
-Section 2 is the complete registry: 22 failure modes, all rescued and all named, with 0 critical gaps.
+Section 2 is the complete registry: 22 failure modes, all named; 21 rescued; one known limit (the claims reviewer can itself be wrong), mitigated by a mutation test set and labelled in every report. 0 silent gaps.
 
 ## Failure modes registry
 
@@ -483,7 +582,7 @@ Section 2 is the complete registry: 22 failure modes, all rescued and all named,
   capture         | compiler disagreement   | Y        | Y     | which compilers       | Y
   values gate     | tampered value          | Y        | Y     | mismatch list         | Y
   claims gate     | false claim, mapped     | Y        | Y     | reviewer finding      | Y
-  claims gate     | reviewer itself wrong   | PARTIAL  | Y     | finding is advisory + human-readable | Y
+  claims gate     | reviewer itself wrong   | N (known limit) | Y (mutation set) | report labels review as LLM-reviewed, not proven | Y
   visual gate     | Playwright missing      | Y        | Y     | not-run, incomplete   | Y
   tts             | Kokoro missing          | Y        | Y     | fallback disclosed    | Y
   video           | HyperFrames upgraded    | Y        | Y     | version drift warning | Y
@@ -514,6 +613,13 @@ There are no stale diagrams, because the repo is new.
 
 ## Implementation Tasks
 
+- [ ] **T0 (P1, human ~2d / CC ~1.5h)**: vertical slice (D17.1). Spikes first:
+  - `sandbox-exec` profile;
+  - whisper-cli sync on the proof MP4;
+  - a pinned local HyperFrames;
+  - the claims subagent contract.
+
+  Then one unfamiliar request goes through the whole path end to end. *Verify:* the build report has no `not-run` gates.
 - [ ] **T1 (P1, human ~2d / CC ~1h)**: router: table-driven intent, medium and workspace-contract classifier with modes and a dev set of at least 60 prompts. *From:* Step 0 and Section 5 (T1–T3, M1, M2, V8, E12). *Verify:* dev-set accuracy; the holdout runs only at acceptance.
 - [ ] **T2 (P1, ~2d / ~1.5h)**: lesson model, schema and C capture runner with the sandbox and both compilers. *From:* D4.1, Section 3. *Verify:* capture tests with real compilers.
 - [ ] **T3 (P1, ~2d / ~1h)**: still projector and style system with bundled fonts. Value, tamper, contrast and screenshot gates. *From:* V1, V2, V6, V7, V12, V13. *Verify:* tamper test catches 5 of 5, and contrast is measured.

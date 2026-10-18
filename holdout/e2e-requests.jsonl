@@ -1,0 +1,6 @@
+{"id": "E1", "medium": "still", "prompt": "Draw a still explainer of the memory layout of struct { char c; int i; short s; } on this Mac, with padding bytes marked."}
+{"id": "E2", "medium": "explorer", "prompt": "Build an interactive explorer for two's complement on 8-bit signed char: set a value, see bits, and see what happens at 127 + 1 (and explain why that is undefined for int but the char case involves conversion)."}
+{"id": "E3", "medium": "qa-expander", "prompt": "Make a layered Q&A expander: why does sizeof(arr) differ from sizeof(p) when p = arr?"}
+{"id": "E4", "medium": "flashcards", "prompt": "Make flash cards on integer promotion and the usual arithmetic conversions in C, including two output-prediction cards from real runs."}
+{"id": "E5", "medium": "narrated-video", "prompt": "Make a narrated video explaining how a for loop that sums an int array is traced step by step, with captions and chapters."}
+{"id": "E6", "medium": "interactive-video", "prompt": "Make an interactive video on how factorial(3) builds and unwinds the call stack, where pausing lets me inspect the stack frames at that moment."}
