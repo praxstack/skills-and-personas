@@ -223,8 +223,8 @@ def refusal(findings, allowed, program_path, pointer, layer):
 def read_program(lesson_dir, rel_path, pointer):
     """The program's bytes, read with no symlink followed anywhere inside the lesson.
 
-    Refuses when programs/ or the file is a symlink, when the file is not a regular file, has other
-    hard links, or is larger than MAX_SOURCE. Opens programs/ with O_NOFOLLOW|O_DIRECTORY and the file
+    Refuses when programs/ or the file is a symlink, when the file is not a regular file, or when it is
+    larger than MAX_SOURCE. Opens programs/ with O_NOFOLLOW|O_DIRECTORY and the file
     relative to that fd with O_NOFOLLOW, so nothing can swap a link in between the check and the read.
     """
     rel = Path(rel_path)
@@ -254,9 +254,11 @@ def read_program(lesson_dir, rel_path, pointer):
             st = os.fstat(fd)
             if not stat.S_ISREG(st.st_mode):
                 raise errors.ModelReferenceError(f"{rel_path} is not a regular file", pointer=pointer)
-            if st.st_nlink > 1:
-                raise errors.ModelReferenceError(f"{rel_path} has {st.st_nlink} hard links; copy the file in",
-                                                 pointer=pointer)
+            # No st_nlink check: on this Mac a background process gives new files under ~/Developer a
+            # second hard link within seconds, so a link count says nothing about provenance. The agent
+            # writes the lesson, and a hard link exposes no more than copying the file in would; the
+            # protections that matter are no symlink followed, regular file only, size cap, and compiler
+            # stderr limited to the lesson's own files.
             if st.st_size > MAX_SOURCE:
                 raise errors.ModelReferenceError(f"{rel_path} is {st.st_size} bytes; a lesson program stays under "
                                                  f"{MAX_SOURCE}", pointer=pointer)

@@ -16,7 +16,7 @@ from pathlib import Path
 
 from fixtures.capture import kit
 from ptk import errors, host, model
-from ptk.capture import c_runner
+from ptk.capture import c_runner, guard
 from _util import ptk_cmd
 
 PROBE = host.PKG / "tests" / "fixtures" / "sandbox-probe" / "probe.c"
@@ -466,3 +466,20 @@ def test_kill_group_eperm_only_ignored_after_reap():
     finally:
         os.killpg = real
     return {"reaped": "ignored", "alive": "raised"}
+
+
+def test_hard_linked_program_accepted():
+    """A program file with a second hard link is still a regular file inside the lesson and must be read.
+    macOS gave fresh files under ~/Developer a link count of 2 within seconds (seen 2026-10-18), so a link
+    count check rejected every new lesson."""
+    tmp = kit.make_lesson("sec-hardlink-", [kit.program("p1", "hello.c")],
+                          [kit.fact("f.x", "p1", 1, {"value": "hello", "reviewed": True})])
+    try:
+        src = tmp / "programs" / "hello.c"
+        os.link(src, tmp / "hello-alias.c")
+        assert os.stat(src).st_nlink == 2
+        model.validate(model.load(tmp))
+        data = guard.read_program(tmp, "programs/hello.c", "/programs/0/path")
+        assert data == src.read_bytes()
+    finally:
+        kit.cleanup(tmp)
