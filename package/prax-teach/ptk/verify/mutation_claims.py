@@ -59,13 +59,14 @@ def _word_re(v):
 
 def _other_value(v, pool):
     """A different, plausible value: a number nudged by one, or another fact value of the same shape."""
-    m = re.fullmatch(r"(-?)(\d+)((?:\.\d+)?)", v)
+    m = re.fullmatch(r"([-+]?)(\d+)((?:\.\d+)?)", v)
     if m:
         return f"{m.group(1)}{int(m.group(2)) + 1}{m.group(3)}"
     if re.fullmatch(r"[0-9a-fA-F]{2,}", v) and not v.isalpha():
         last = v[-1]
         return v[:-1] + ("0" if last != "0" else "1")
-    return next((p for p in pool if p != v and p.isalpha() == v.isalpha()), None)
+    # another value, but never one that still says v (a swap to "0.8 * 1.5 = +1.2" for "+1.2" plants nothing)
+    return next((p for p in pool if p != v and v not in p and p.isalpha() == v.isalpha()), None)
 
 
 def auto_value_swaps(lesson, limit=AUTO_VALUE_SWAPS):

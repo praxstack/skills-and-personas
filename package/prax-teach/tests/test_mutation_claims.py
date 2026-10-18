@@ -127,3 +127,14 @@ def _rows(lesson, items, build):
 
 
 test_real_reviewer_rates.agent = True
+
+
+def test_value_swap_plants_a_real_error():
+    """WP9: the neuron canary swapped "+1.2" for the fact "0.8 * 1.5 = +1.2", which still says +1.2, so the claim
+    stayed true and the reviewer rightly accepted it. A swap now changes the value itself: signed numbers are
+    nudged, and a pool value that contains the original is never used."""
+    from ptk.verify import mutation_claims as mc
+    assert mc._other_value("+1.2", ["0.8 * 1.5 = +1.2", "-0.4"]) == "+2.2"
+    assert mc._other_value("-0.4", []) == "-1.4"
+    assert mc._other_value("main got 6", ["factorial(3) = 6 then main got 6", "enter factorial(1)"]) == "enter factorial(1)"
+    return {"ok": True}
