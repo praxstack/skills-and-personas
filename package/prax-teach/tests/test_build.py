@@ -109,3 +109,44 @@ def test_hyperframes_check_missing_count_fails():
         clean, _counts, why = build.hf_check_clean(bad)
         assert not clean and "missing" in why, bad
     assert not build.hf_check_clean({**full, "layout": {"errorCount": 0, "warningCount": 2}})[0]
+
+
+def test_only_keeps_other_media():
+    """WP5 (open bug from WP3): `--only x` clears and rebuilds x only. Other media's outputs and the
+    claims reviews stay; `--only video` and `--only ive` rebuild both, since the IVE plays the video."""
+    assert build.rebuilt_media(["still"]) == ["still"]
+    assert build.rebuilt_media(["video"]) == ["ive", "video"] == build.rebuilt_media(["ive"])
+    tmp = host.make_tmp("only-unit-")
+    try:
+        b = tmp / "build"
+        for rel in ("still", "video", "ive", "work/ive", "work/other", "explorer", "qa", "cards", "claims-jobs",
+                    "claims-review", "shots"):
+            (b / rel).mkdir(parents=True)
+            (b / rel / "x").write_text("x")
+        removed = build.clear_outputs(b, ["still"])
+        assert sorted(removed) == ["claims-jobs", "still"], removed
+        assert all((b / r / "x").exists() for r in ("video", "ive", "explorer", "qa", "cards", "claims-review", "shots"))
+        removed = build.clear_outputs(b, ["video"])
+        assert sorted(removed) == ["ive", "video", "work/ive"], removed
+        assert (b / "work" / "other" / "x").exists() and (b / "explorer" / "x").exists()
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    # end to end through the CLI on a copy of the slice
+    tmp, lesson_dir = _copy_slice("only-e2e-")
+    try:
+        keep = {}
+        for rel in ("ive", "explorer", "qa", "video", "claims-review"):
+            (lesson_dir / "build" / rel).mkdir(parents=True, exist_ok=True)
+            (lesson_dir / "build" / rel / "marker.txt").write_text(rel)
+            keep[rel] = lesson_dir / "build" / rel / "marker.txt"
+        res = host.run([*ptk_cmd(), "build", str(lesson_dir), "--only", "cards"], timeout=900)
+        assert res.code in (errors.EXIT_CLAIMS_PENDING, errors.EXIT_OK, errors.EXIT_INCOMPLETE), res.stderr[-1500:]
+        gone = [r for r, p in keep.items() if not p.exists()]
+        assert not gone, f"--only cards deleted {gone}"
+        assert (lesson_dir / "build" / "cards").is_dir()
+        rep = json.loads((lesson_dir / "build" / "build-report.json").read_text())
+        assert rep["media"] == ["cards"], rep["media"]
+        assert set(rep["cleared"]) <= {"cards", "claims-jobs"}, rep["cleared"]
+        return {"exit": res.code, "kept": sorted(keep), "cleared": rep["cleared"]}
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)

@@ -82,6 +82,34 @@ def _artifact_list(build):
     return out
 
 
+# What each medium writes under build/. `--only` clears exactly these for the media it rebuilds.
+MEDIA_OUTPUTS = {"still": ("still",), "video": ("video",), "ive": ("ive", "work/ive"), "explorer": ("explorer",),
+                 "qa": ("qa",), "cards": ("cards",)}
+# The IVE plays the video and reads its timing: `--only` with either one builds both, so a
+# stale IVE never sits next to a new video and no other medium's outputs are deleted.
+DEPENDS = {"video": ("ive",), "ive": ("video",)}
+
+
+def rebuilt_media(media):
+    out = set(media)
+    for m in media:
+        out |= set(DEPENDS.get(m, ()))
+    return sorted(out)
+
+
+def clear_outputs(build_dir, media):
+    """Remove the outputs of the media this build rewrites, plus the claims jobs (always rewritten).
+    Everything else under build/ (other media, claims reviews, shots of other media) is kept.
+    Returns the relative paths removed."""
+    removed = []
+    for rel in ["claims-jobs"] + [r for m in rebuilt_media(media) for r in MEDIA_OUTPUTS.get(m, ())]:
+        d = build_dir / rel
+        if d.exists():
+            shutil.rmtree(d)
+            removed.append(rel)
+    return removed
+
+
 def final_status(gates, degraded):
     st = [g["status"] for g in gates]
     if "failed" in st:
@@ -95,9 +123,11 @@ def final_status(gates, degraded):
     return "verified"
 
 
-def build(lesson_path, only=None):
+def build(lesson_path, only=None, video_theme=None, renderer="hyperframes"):
     lesson = model.load(lesson_path)
     media = only or [m for m in lesson.data.get("requested_media", []) if m in SUPPORTED]
+    if only and not [m for m in only if m not in SUPPORTED]:
+        media = [m for m in SUPPORTED if m in rebuilt_media(only)]  # `--only video` rebuilds the IVE with it
     t0 = time.monotonic()
     rep = {"schema": "prax-teach/build-report@1", "lesson": None, "lesson_sha256": None, "status": "draft",
            "started": _now(), "finished": None, "media": media, "entry": _entry(), "gates": [], "fallbacks": [],
@@ -119,8 +149,7 @@ def build(lesson_path, only=None):
         model.validate(lesson)
         rep["lesson"] = lesson.id
         go("valid")
-        for sub in ("still", "ive", "shots", "work", "claims-jobs", "explorer", "qa", "cards"):
-            shutil.rmtree(build_dir / sub, ignore_errors=True)
+        rep["cleared"] = clear_outputs(build_dir, media)
         cap = c_runner.capture_lesson(lesson)
         model.validate(lesson, stage="captured")
         rep["lesson_sha256"] = lesson.sha256()
@@ -129,7 +158,7 @@ def build(lesson_path, only=None):
         rep["tools"] = tool_versions()
         rep["gates"].append({"id": "values.expect", "medium": "all", "status": "passed",
                              "measured": values.check_expectations(lesson), "reason": ""})
-        gates, degraded = _project_and_verify(lesson, build_dir, media, rep, go)
+        gates, degraded = _project_and_verify(lesson, build_dir, media, rep, go, video_theme, renderer)
         rep["gates"] += gates
         items = claims_gate.collect_texts(lesson, build_dir)
         rep["gates"].append(claims_gate.mapping_gate(lesson, items))
@@ -187,7 +216,7 @@ def hf_check_clean(hf):
     return clean, counts, why
 
 
-def _project_and_verify(lesson, build_dir, media, rep, go):
+def _project_and_verify(lesson, build_dir, media, rep, go, video_theme=None, renderer="hyperframes"):
     from .project import ive, still, video
     from .verify import frames, isolation, visual
     from .verify import media as media_gates
@@ -203,16 +232,16 @@ def _project_and_verify(lesson, build_dir, media, rep, go):
         projected["still"] = (out, svgs)
     if "video" in media or "ive" in media:
         out = build_dir / "video"
-        v = video.project(lesson, out)
+        v = video.project(lesson, out, theme=video_theme, renderer=renderer)
         timing = v["timing"]
+        rep["video"] = {"theme": timing["theme"], "renderer": timing["renderer"]}
         if v["degraded"]:
             degraded = True
             rep["fallbacks"].append({"what": "tts", "engine": v["tts"]["engine"]})
         rep["tts"] = {k: val for k, val in v["tts"].items() if k != "segments"}
         tmp = host.make_tmp("canary-")
         canaries = isolation.run_canaries(v["composition"], tmp)
-        chk = node.hyperframes(["check", ".", "--json"], cwd=v["composition"], timeout=900,
-                               lesson_sha256=lesson.sha256(), sandbox_tmp=host.make_tmp("check-"), check=False)
+        chk = v["renderer"].check(lesson, v["composition"])
         projected["video"] = (out, v, canaries, chk)
     from .project import cards, explorer, qa  # WP4
     for name, mod in (("explorer", explorer), ("qa", qa), ("cards", cards)):
@@ -231,17 +260,21 @@ def _project_and_verify(lesson, build_dir, media, rep, go):
         gates += visual.still_gates(lesson, out, svgs)
     if "video" in projected:
         out, v, canaries, chk = projected["video"]
-        try:
-            hf = json.loads(chk.stdout)
-        except json.JSONDecodeError:
-            hf = {"ok": False, "raw": (chk.stdout or chk.stderr)[-2000:]}
-        clean, counts, why = hf_check_clean(hf)
-        gates.append({"id": "video.hyperframes-check", "medium": "video", "status": "passed" if clean else "failed",
-                      "measured": {"exit": chk.code, "counts": counts, "sandboxed": True}, "reason": why})
-        gates.append(frames.scene_layout_gate(lesson, out, timing, lesson.sha256()))
+        per_scene = chk["scenes"] == len(timing["scenes"])
+        gates.append({"id": "video.hyperframes-check", "medium": "video",
+                      "status": "passed" if chk["clean"] and per_scene else "failed",
+                      "measured": {"exit": chk["exit"], "counts": chk["counts"], "sandboxed": True,
+                                   "sub_compositions": chk["scenes"], "scenes": len(timing["scenes"])},
+                      "reason": chk["reason"] if not chk["clean"] else ("" if per_scene else
+                                                                         "not one sub-composition per scene")})
+        if v["renderer"].frame_probe():
+            gates.append(frames.scene_layout_gate(lesson, out, timing, lesson.sha256()))
+        else:
+            gates.append({"id": "video.scene-layout", "medium": "video", "status": "not-run", "measured": {},
+                          "reason": f"renderer {v['renderer'].name} has no frame probe"})
         render_ok, log = True, ""
         try:
-            mp4, log = video.finish(lesson, out, v["composition"])
+            mp4, log = video.finish(lesson, out, v["composition"], v["renderer"])
         except errors.RenderFailed as e:
             render_ok, log = False, e.detail.get("log_tail", "")
         gates.append(isolation.gate(canaries, render_ok, log))

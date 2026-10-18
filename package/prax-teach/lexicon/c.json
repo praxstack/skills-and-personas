@@ -1,15 +1,15 @@
 {
   "schema": "prax-teach/lexicon@1",
-  "version": "1",
-  "note": "Spoken forms for C code tokens. `code: true` tokens are excluded from the non-code WER (AC-5.5). Matching is whole-word, case-sensitive.",
+  "version": "2",
+  "note": "Spoken forms for C code tokens. `code: true` tokens are excluded from the non-code WER (AC-5.5). `heard` lists what whisper may write for a correct reading (normalised words); the sync gate fails a cue whose code token is heard as none of them. Matching is whole-word, case-sensitive.",
   "entries": [
-    {"token": "puts", "spoken": "put-s", "code": true},
-    {"token": "printf", "spoken": "print-f", "code": true},
-    {"token": "n", "spoken": "en", "code": true},
-    {"token": "\\n", "spoken": "newline", "code": true},
-    {"token": "==", "spoken": "equals equals", "code": true},
-    {"token": "int", "spoken": "int", "code": true},
-    {"token": "char", "spoken": "car", "code": true},
-    {"token": "sizeof", "spoken": "size of", "code": true}
+    {"token": "puts", "spoken": "put-s", "code": true, "heard": ["puts", "put s", "put's"]},
+    {"token": "printf", "spoken": "print-f", "code": true, "heard": ["printf", "print f", "print-f"]},
+    {"token": "n", "spoken": "en", "code": true, "heard": ["n", "en"]},
+    {"token": "\\n", "spoken": "newline", "code": true, "heard": ["newline", "new line"]},
+    {"token": "==", "spoken": "equals equals", "code": true, "heard": ["equals equals", "equal equal", "double equals"]},
+    {"token": "int", "spoken": "int", "code": true, "heard": ["int", "inch"]},
+    {"token": "char", "spoken": "car", "code": true, "heard": ["char", "car"]},
+    {"token": "sizeof", "spoken": "size of", "code": true, "heard": ["sizeof", "size of"]}
   ]
 }

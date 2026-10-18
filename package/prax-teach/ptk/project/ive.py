@@ -12,8 +12,10 @@ Cue-to-state rule (D17.2, D18.2):
     * a question scene adds a `question` cue (state before the answer);
     * the first reveal after a question adds an `answer` cue at the reveal time; pausing
       0.1 s before it shows no answer anywhere in the DOM, alt text or transcript;
-    * a recap or a change of program is a cut: frame and explorer switch together at the scene
-      start, and no transition cue is needed (video.plan_screen).
+    * a recap of a state already shown on the same program is a cut: frame and explorer switch
+      together at the scene start, and no transition cue is needed;
+    * a change of program is a diff morph: its transition cue holds the old program's state
+      until `shown`, when the frame's rows become the new program's (video.plan_screen).
 
 The page reads state only from cue payloads (the VTT is fetched by the browser, it is not in
 the DOM), so no future state or answer text sits in the document before its cue.

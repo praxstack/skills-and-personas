@@ -23,37 +23,46 @@ import shutil
 
 from . import visual
 
+EOP_JS = r"""const eop = (el) => { let o = 1; for (let e = el; e && e.nodeType === 1 && e !== document.body; e = e.parentElement)
+    o *= parseFloat(getComputedStyle(e).opacity); return o; };"""
+
 PROBE_JS = r"""(t) => {
-  const root = document.getElementById('root');
+  const root = document.querySelector('[data-composition-id]');
   const tl = window.__timelines[root.dataset.compositionId];
   tl.seek(t, false);
-  const op = (e) => parseFloat(getComputedStyle(e).opacity);
-  const hl = document.getElementById('hl');
+  """ + EOP_JS + r"""
+  const op = eop;
+  const hl = root.querySelector('.hl');
   const hb = hl.getBoundingClientRect();
+  // only rows that are fully visible carry the program's identity (a morph draws two sets)
+  const rows = [...root.querySelectorAll('.ln[data-line]')].filter((r) => eop(r) >= 0.99);
   let line = null, best = 1e9;
-  for (const r of document.querySelectorAll('.ln[data-line]')) {
+  for (const r of rows) {
     const b = r.getBoundingClientRect(); const d = Math.abs((b.top + b.bottom) / 2 - (hb.top + hb.bottom) / 2);
     if (d < best) { best = d; line = +r.dataset.line; }
   }
-  const dots = [...document.querySelectorAll('.dot')];
-  const vals = [...document.querySelectorAll('.out .val')];
-  const segs = [...document.querySelectorAll('.seg')].map((s) => parseFloat(getComputedStyle(s).strokeDashoffset) || 0);
+  const dots = [...root.querySelectorAll('.dot')];
+  const vals = [...root.querySelectorAll('.out .val')];
+  const segs = [...root.querySelectorAll('.seg')].filter((s) => eop(s.parentElement) > 0.01)
+    .map((s) => parseFloat(getComputedStyle(s).strokeDashoffset) || 0);
   // any tween on the mechanism (code card or output card) still running at t
   const mech = (el) => el && el.closest && el.closest('.code, .outcard');
   const active = tl.getChildren(false, true, true).some((ch) => (ch.data === 'draw' || (ch.targets && ch.targets().some(mech)))
     && ch.startTime() <= t + 1e-6 && t < ch.endTime() - 1e-6);
-  const moving = active || best > 1.5 || segs.some((d) => d > 0.002 && d < 0.998)
+  const moving = active || best > 1.5 || eop(hl) < 0.99 || segs.some((d) => d > 0.002 && d < 0.998)
     || dots.some((d) => op(d) > 0.01 && op(d) < 0.99)
-    || vals.some((v) => op(v.parentElement) > 0.01 && op(v.parentElement) < 0.99);
-  const code = [...document.querySelectorAll('.ln[data-line]')].map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
+    || vals.some((v) => op(v) > 0.01 && op(v) < 0.99);
+  const code = rows.map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
   return { t, code, line,
            path: dots.filter((d) => op(d) >= 0.99).map((d) => +d.dataset.line),
-           output: vals.filter((v) => op(v.parentElement) >= 0.99).map((v) => v.dataset.fact),
+           output: vals.filter((v) => op(v) >= 0.99).map((v) => v.dataset.fact),
            moving };
 }"""
 
 LAYOUT_JS = r"""() => {
   const W = 1920, H = 1080, problems = [];
+  const root = document.querySelector('[data-composition-id]');
+  """ + EOP_JS + r"""
   const keys = [...document.querySelectorAll('[data-key]')];
   let lowest = 0;
   for (const k of keys) {
@@ -65,9 +74,9 @@ LAYOUT_JS = r"""() => {
       problems.push({ kind: 'key-node-inner-overflow', key: k.dataset.key, scroll: [k.scrollWidth, k.scrollHeight], client: [k.clientWidth, k.clientHeight] });
   }
   let minPx = 1e9;
-  for (const el of document.querySelectorAll('#root *')) {
+  for (const el of root.querySelectorAll('*')) {
     const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
-    if (!own) continue;
+    if (!own || eop(el) < 0.02) continue;  // text nobody can see (faded out) is not on screen
     const st = getComputedStyle(el), b = el.getBoundingClientRect();
     const px = parseFloat(st.fontSize); minPx = Math.min(minPx, px);
     if (px < 11) problems.push({ kind: 'min-size', text: el.textContent.trim().slice(0, 40), px });
@@ -80,8 +89,24 @@ LAYOUT_JS = r"""() => {
         problems.push({ kind: 'text-outside-card', key: box.dataset.key, text: el.textContent.trim().slice(0, 40) });
     }
   }
+  // no empty panel: an output card on screen shows at least one value (dimmed values of the previous run count)
+  const outcard = root.querySelector('.outcard');
+  const outs = [...root.querySelectorAll('.out')];
+  if (outcard && eop(outcard) > 0.5 && !outs.some((o) => eop(o) > 0.2))
+    problems.push({ kind: 'empty-panel', key: 'output' });
+  // D20.5: every output value on screen is paired with its mechanism: the step badge on the code
+  // line that printed it, and that line on the drawn path
+  const pairs = [];
+  for (const o of outs.filter((o) => eop(o) >= 0.99)) {
+    const set = o.dataset.set, step = o.dataset.step;
+    const badge = [...root.querySelectorAll('.ostep')].find((b) => b.dataset.set === set && b.dataset.step === step && eop(b) >= 0.99);
+    if (!badge) { problems.push({ kind: 'summary-without-mechanism', step: +step }); continue; }
+    const dot = [...root.querySelectorAll('.dot')].find((d) => d.dataset.set === set && d.dataset.line === badge.dataset.line && eop(d) >= 0.99);
+    if (!dot) problems.push({ kind: 'mechanism-not-drawn', step: +step, line: +badge.dataset.line });
+    pairs.push({ step: +step, line: +badge.dataset.line, drawn: !!dot });
+  }
   const band = H - lowest;
-  return { problems, min_px: minPx, empty_bottom_px: Math.round(band), empty_bottom_frac: +(band / H).toFixed(3),
+  return { problems, pairs, min_px: minPx, empty_bottom_px: Math.round(band), empty_bottom_frac: +(band / H).toFixed(3),
            key_nodes: keys.map((k) => k.dataset.key) };
 }"""
 
@@ -204,7 +229,10 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
             probs += [{**pr, "at": name} for pr in lay.get("problems", [])]
             if lay.get("empty_bottom_frac", 1) > MAX_EMPTY_BOTTOM:
                 probs.append({"kind": "empty-bottom-band", "at": name, "frac": lay.get("empty_bottom_frac")})
-            if pt.get("state") in (None, "moving", "unknown"):
+            # the midpoint may fall inside the scene's own drawing (a morph is long); it must still
+            # pass the layout checks, and the settled point must show the scene's state
+            drawing = name == "mid" and s["reveal"] - s["start"] <= s["duration"] / 2 < s["shown"] - s["start"]
+            if pt.get("state") in (None, "unknown") or (pt.get("state") == "moving" and not drawing):
                 probs.append({"kind": "no-trace-state", "at": name, "shows": pt.get("state")})
         if (got.get("settled") or {}).get("state") != s["state"]:
             probs.append({"kind": "settled-state", "shows": (got.get("settled") or {}).get("state"), "scene_state": s["state"]})
@@ -221,10 +249,14 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
 
 def _tween_ok(cue, nxt, frame):
     """A frame in mid-tween is acceptable only inside a transition or answer cue, drawing the
-    explorer's program on a path between the cue's state and the next cue's (review P1-A)."""
+    explorer's program on a path between the cue's state and the next cue's (review P1-A).
+    Across a change of program (the diff morph), the rows on screen are still the explorer's
+    program, and the dots drawn belong to one of the two paths."""
     if cue["kind"] not in ("transition", "answer") or frame.get("state") != "moving" or nxt is None:
         return False
     drawn, lo, hi = set(frame.get("path") or []), cue["state"], nxt["state"]
+    if lo["program"] != hi["program"]:
+        return frame.get("program") == lo["program"] and (drawn <= set(lo["path"]) or drawn <= set(hi["path"]))
     return (frame.get("program") == lo["program"] == hi["program"]
             and set(lo["path"]) <= drawn <= set(hi["path"]))
 

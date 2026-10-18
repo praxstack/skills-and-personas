@@ -61,8 +61,11 @@ def test_explorer_matches_frame_at_every_pause():
         rows, bad = _check(lesson, timing, vdir, cue_list)
         assert rows and not bad, f"explorer and frame disagree: {bad[:4]}"
         recap = next(s for s in timing["scenes"] if s["id"] == lesson.data["storyboard"][-1]["id"])
-        recap_rows = [r for r in rows if recap["start"] <= r["t"] < recap["end"]]
+        recap_rows = [r for r in rows if recap["shown"] <= r["t"] < recap["end"]]
         assert recap_rows and all(r["frame_state"] == recap["state"] == r["explorer_state"] for r in recap_rows), recap_rows
+        # WP5: the recap changes program, so it opens with a diff morph whose cue holds the old state
+        morph_rows = [r for r in rows if recap["start"] <= r["t"] < recap["shown"]]
+        assert recap["morph"] and morph_rows and all(r["explorer_state"] == recap["before"] for r in morph_rows), morph_rows
         # the comparison is not self-referential: the old cue rule fails it, in the recap
         _rows, old_bad = _check(lesson, timing, vdir, _old_rule_cues(lesson, timing))
         assert any(recap["start"] <= r["t"] < recap["end"] for r in old_bad), "old cue rule passed the frame check"
@@ -111,12 +114,15 @@ def test_compare_pauses_rejects_a_moving_frame_of_another_program():
     assert run({"state": "moving", "program": "p1", "path": [4, 5, 8, 9, 11], "output": []}), "path past the target accepted"
 
 
-def test_a_cut_after_a_question_is_the_answer_cue():
-    """A program change right after a question is a cut, so its first cue carries the answer."""
+def test_a_program_change_after_a_question_answers_at_its_morph():
+    """WP5: a program change right after a question is a diff morph, not a cut. The morph's
+    transition cue is the answer cue (it still holds the question's state), and the new state
+    follows when the morph is drawn."""
     lesson = model.load(SLICE)
     scenes = [{"id": "a", "state": "s0", "start": 0.0, "end": 5.0, "question": {"prompt": "?"}},
               {"id": "b", "state": "s4", "start": 5.0, "end": 9.0}]
     video.plan_screen(lesson, scenes)
     out = ive.cues(lesson, {"scenes": scenes, "duration": 9.0})
+    assert scenes[1]["morph"] and scenes[1]["start"] < scenes[1]["reveal"] < scenes[1]["shown"] < scenes[1]["end"]
     assert [(c["kind"], c["state"]["state_id"], c.get("answer_for")) for c in out] == \
-        [("question", "s0", None), ("answer", "s4", "a")], out
+        [("question", "s0", None), ("answer", "s0", "a"), ("state", "s4", None)], out
