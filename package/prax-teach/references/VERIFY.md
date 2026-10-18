@@ -21,6 +21,11 @@ compositions, captions, chapters, transcript, the IVE page and its state track, 
 | fact | equals the captured value, or the `alt_output` chrome string filled with those values |
 | chrome | matches its `chrome.json` string; each `{slot}` takes only values this lesson can hold (topic, program paths, compiler, fact values, integers) |
 | chrome with claims (template) | matches its `chrome.json` string, cites real claims, and every filled instance goes to the reviewer |
+| axis tick (`data-label="axis-tick"`) | a number, and the ticks of one axis (same drawing, same baseline) fit one increasing linear scale from their own positions within 1 px, with at least three ticks |
+
+A misconception in a still is shown to the reviewer as "labelled as a wrong belief" only when a `<text>`
+saying the `wrong_belief` chrome string is painted, not hidden, and lies inside the same box as the
+misconception by geometry (round 17). Wrapped lines of one SVG `<text>` are joined into one run.
 
 Anything else fails with `ClaimsUnmapped`. `tests/test_lint_claims.py` fails if a template or
 projector hard-codes a sentence that isn't in `chrome.json`.
@@ -95,3 +100,21 @@ limits, UB and implementation-defined honesty, sources, misconceptions), looks (
 interaction (questions don't leak answers, options and trace labels true), media and portability
 (captions match, no colour-only or medium-only wording). The `%f` "same bits" case is deliberately
 not in the rubric: it is the held-out regression.
+
+## Video and IVE gates changed in round 17
+
+- `video.morph-stable`: through a program change the old output stays fully shown until a new output
+  value is on screen (opacity 0.5 or more), sampled every 0.05 s on the frames. No time from the
+  renderer's planner is used.
+- `video.scene-layout`: in a panel lesson two mechanism layers may share the screen only while one is
+  fading, for at most 1.0 s, ending before the scene ends; the outgoing layer (which HyperFrames
+  exempts from its overlap audit) must be gone by then. A frame matches a trace state only when exactly
+  one state fits (paths compare as sets, so two indistinguishable states give `ambiguous`), and a panel
+  lesson's frame must draw that state's panel, except in a question scene, which hides it.
+- `video.sync`: a stretched last word moves the speech end back only to a silence that holds the word's
+  end; otherwise the later boundary stands.
+- `ive.controls`: captions on, off, on are judged by the caption text as drawn (computed style and box),
+  plus the text at a second cue, not by a data attribute.
+- `ive.explore-return`: a lesson with `figure.panel` declares a step-through IVE; any other lesson must
+  have a live model, and a model that fails to build fails the gate.
+- `--only`: see README, "Build modes" (D22.2).
