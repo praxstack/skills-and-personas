@@ -72,7 +72,7 @@ def test_jobs_and_manifest():
                       "rubric_sha256", "slot"):
                 assert k in m, (jid, k)
             assert m["model_sha256"] == lesson.sha256()
-            assert m["rubric_version"] == claims.RUBRIC_VERSION == "2"
+            assert m["rubric_version"] == claims.RUBRIC_VERSION == "3"
             assert m["rubric_sha256"] == hashlib.sha256(claims.RUBRIC.read_bytes()).hexdigest()
             assert job["manifest_sha256"] == hashlib.sha256(model.canonical(m).encode()).hexdigest()
             assert jid == "job-" + job["manifest_sha256"][:10]

@@ -539,6 +539,13 @@ def _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w=None, col_x=None
     crun = cst.get("path", [])
     csrc = lesson.program_source(cmp["program"]).split("\n")
     cfirst = rail.enter_line(csrc, crun) or rail.listing(lesson, cmp["program"])[0]
+    # every line the comparison adds is on screen, with the two lines above it for context (round 18: the
+    # break added after case 1 sat above the listing, so the learner never saw it)
+    import difflib
+    base_src = lesson.program_source(lesson.data["figure"]["program"]).split("\n")
+    added = [j + 1 for op, _i1, _i2, j1, j2 in difflib.SequenceMatcher(a=base_src, b=csrc, autojunk=False).get_opcodes()
+             if op in ("insert", "replace") for j in range(j1, j2)]
+    cfirst = max(1, min([cfirst] + [n - 2 for n in added]))
     cshown = list(range(cfirst, max(crun) + 1))
     if svg.frame["panel_divider"]:
         svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)

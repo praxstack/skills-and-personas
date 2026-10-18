@@ -21,7 +21,7 @@
    "id": "m3.withbreak.caveat",
    "kind": "dropped-caveat",
    "target": "c.withbreak",
-   "find": "With a break after case 2, the switch prints only two",
+   "find": "With n = 2, with_break.c prints only two from the switch",
    "replace": "The switch prints only two",
    "why_false": "Without the qualifier it describes fallthrough.c, which prints two, three, done."
   },

@@ -45,7 +45,7 @@ def test_calls_check_catches_a_wrong_frame():
     probs, n = knob.check(lesson, rec)
     assert not probs and n == 35, probs[:3]
     bad = copy.deepcopy(rec)
-    bad["knob"][5]["frames"][0]["vars"][-1] = "r = 1"
+    bad["knob"][5]["frames"][0]["vars"][-1] = "r = 99"
     assert knob.check(lesson, bad)[0]
 
 

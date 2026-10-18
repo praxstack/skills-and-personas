@@ -838,8 +838,8 @@
     {
       "id": "c.add",
       "kind": "mechanism",
-      "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6. That sum is z.",
-      "justification": "Line 12 computes z = t1 + t2 + b, left to right in double: 1.2000000000000002 + -0.4 = 0.8000000000000002, then + -0.2 = 0.6000000000000001, which %g prints as 0.6 (third line of the run, after z =).",
+      "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2, which the program prints as 0.6. That sum is z.",
+      "justification": "programs/neuron.c line 12: z = t1 + t2 + b, added left to right in double. With t1 = 0.8 * 1.5 (printed +1.2), t2 = 0.4 * -1 (printed -0.4) and b = -0.2, the double sum is the binary64 value just above 0.6 (0.6000000000000001), which %g on line 13 prints as 0.6 (C17 7.21.6.1p8: six significant digits). The sentence states the printed value, not an exact 0.6.",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -864,7 +864,7 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§7.12.12.2 ¶2",
+          "clause": "§7.12.12.2 ¶3",
           "quote": "The fmax functions return the maximum numeric value of their arguments."
         },
         {
@@ -876,8 +876,8 @@
     {
       "id": "c.out",
       "kind": "mechanism",
-      "text": "Here z is 0.6, which is positive, so the output a is 0.6.",
-      "justification": "fmax(0.0, 0.6000000000000001) is 0.6000000000000001, printed with %g as 0.6 on the last line of the run.",
+      "text": "Here z prints as 0.6, which is positive, so the output a prints as 0.6.",
+      "justification": "Line 14: a = fmax(0.0, z). z is the double just above 0.6, so it is positive and fmax returns z; line 15 prints a with %g as 0.6 (C17 7.12.12.2, 7.21.6.1p8).",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -926,7 +926,7 @@
       "id": "c.round",
       "kind": "caveat",
       "text": "In double, z here is not exactly 0.6, but %g rounds it to 6 significant digits and prints 0.6.",
-      "justification": "0.8, 1.5, 0.4 and 0.2 have no exact binary64 form; 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
+      "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -971,8 +971,8 @@
     {
       "id": "c.kzero",
       "kind": "mechanism",
-      "text": "With w2 = -1 and b = -1, z drops to -0.2 and a is 0, even though the first term is still +1.2.",
-      "justification": "Captured run of programs/neuron_k1.c: 0.8 * 1.5 = +1.2, 0.4 * -1 = -0.4, b = -1, z = -0.2, a = fmax(0, -0.2) = 0. ReLU looks only at the sum z, not at each term.",
+      "text": "With w2 = -1 and b = -1, z prints as -0.2 and a is 0, even though the first term is still +1.2.",
+      "justification": "Captured run of programs/neuron_k1.c: 0.8 * 1.5 prints +1.2, 0.4 * -1 prints -0.4, b = -1; z is the double -0.19999999999999984, which %g prints as -0.2; it is negative, so a = fmax(0, z) = 0 exactly. ReLU looks only at the sum z, not at each term.",
       "sources": [
         {
           "title": "captured run of programs/neuron_k1.c",
@@ -1204,7 +1204,7 @@
       ],
       "narration": [
         {
-          "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6. That sum is z.",
+          "text": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2, which the program prints as 0.6. That sum is z.",
           "claims": [
             "c.add"
           ]
@@ -1232,7 +1232,7 @@
           ]
         },
         {
-          "text": "Here z is 0.6, which is positive, so the output a is 0.6.",
+          "text": "Here z prints as 0.6, which is positive, so the output a prints as 0.6.",
           "claims": [
             "c.out"
           ]

@@ -40,7 +40,7 @@ from . import mutation_claims as mc
 
 RUBRIC = host.PKG / "ptk" / "verify" / "rubric.md"
 REVIEW_SCHEMA = host.PKG / "schemas" / "claims-review.schema.json"
-RUBRIC_VERSION = "2"
+RUBRIC_VERSION = "3"  # round 18: justifications must be literally true
 JOB_SCHEMA = "prax-teach/claims-job@2"
 MAP_ATTRS = ("data-claim", "data-chrome", "data-fact", "data-code", "data-label", "data-question", "data-trace",
              "data-narration", "data-option", "data-misconception")
@@ -78,17 +78,19 @@ class _Collector(HTMLParser):
     """Text runs of an HTML page by the mapping attribute that owns them. An inline SVG <text> is one run, as
     in a still: its wrapped lines (<tspan> with a y) are joined with a space, other tspans with nothing."""
 
-    def __init__(self):
+    def __init__(self, lesson=None):
         super().__init__(convert_charrefs=True)
+        self.lesson = lesson
         self.stack = []
         self.items = []
         self.svg_text = None  # [depth, kind, ref, parts] while inside a mapped SVG <text>
         self.svgs = 0  # inline <svg> elements seen, so ticks of different drawings never share an axis
-        self.ticks = []  # (item index, svg number, x, y) for each axis-tick label
+        self.ticks = []  # (item index, svg number, x, y or data-axis) for each axis-tick label
+        self.anchors = {}  # (svg number, data-axis): [(expression, cx)] data marks the axis must place right
 
     def close(self):
         super().close()
-        self.items = rebind_ticks(self.items, [(i, (n, y), x) for i, n, x, y in self.ticks])
+        self.items = rebind_ticks(self.items, [(i, (n, y), x) for i, n, x, y in self.ticks], self.anchors, self.lesson)
 
     def handle_starttag(self, tag, attrs):
         if tag in ("meta", "link", "br", "img", "source", "track", "input"):
@@ -97,9 +99,11 @@ class _Collector(HTMLParser):
         self.stack.append((tag, a))
         if tag == "svg":
             self.svgs += 1
+        if tag == "circle" and a.get("data-axis-anchor"):
+            self.anchors.setdefault((self.svgs, a["data-axis-anchor"]), []).append((a.get("data-anchor"), _num(a.get("cx"))))
         if tag == "text" and self.svg_text is None and any(t == "svg" for t, _ in self.stack):
             src = next(((m[5:], a[m]) for m in MAP_ATTRS if m in a), ("unmapped", ""))
-            self.svg_text = [len(self.stack), src[0], src[1], [], (a.get("x"), a.get("y"))]
+            self.svg_text = [len(self.stack), src[0], src[1], [], (a.get("x"), a.get("data-axis") or a.get("y"))]
         elif tag == "tspan" and self.svg_text is not None and "y" in a and self.svg_text[3]:
             self.svg_text[3].append(" ")
 
@@ -111,7 +115,7 @@ class _Collector(HTMLParser):
                     self.svg_text = None
                     if "".join(parts).strip():
                         if (kind, ref) == ("label", "axis-tick"):
-                            self.ticks.append((len(self.items), self.svgs, _num(x), _num(y)))
+                            self.ticks.append((len(self.items), self.svgs, _num(x), y if _num(y) is None else _num(y)))
                         self.items.append((kind, ref, "".join(parts)))
                 del self.stack[i:]
                 return
@@ -163,15 +167,62 @@ def tick_scale_problem(ticks):
     return None
 
 
-def rebind_ticks(items, ticks):
-    """items: (kind, ref, text, ...) tuples; ticks: [(item index, axis key, x)]. Ticks of an axis whose scale fails
-    get ref "axis-tick-off-scale|<problem>", which map_item reports."""
+ANCHOR_PX = 1.5  # how far a data mark may sit from where its axis's tick scale puts its value
+
+
+def anchor_value(lesson, expr):
+    """The value a data mark stands for, from the facts' independent expectations: "0", "f.t1" or "f.t1+f.t2+f.b"."""
+    from .. import expect
+    if expr in (None, ""):
+        return None
+    total = 0.0
+    for part in expr.split("+"):
+        if part == "0":
+            continue
+        f = lesson.fact(part)
+        total += float(expect.evaluate(f["expect"], lesson.data.get("platform", {})).replace("\u2212", "-"))
+    return total
+
+
+def axis_anchor_problem(lesson, ticks, anchors):
+    """Round-17 Codex P2 (round 18): ticks shifted all together still fit a line, so the axis is also bound to the data.
+    Each data mark on the axis (a bar end, the gate's dot) must sit within ANCHOR_PX of where the scale fitted through
+    the ticks puts the value its facts give, and that value must lie inside the ticked range. Returns a problem or None."""
+    pts = [(_num(t.strip().replace("\u2212", "-")), x) for t, x in ticks]
+    pts = [(v, x) for v, x in pts if v is not None and x is not None]
+    if len(pts) < 2 or not anchors:
+        return None
+    n = len(pts)
+    mv, mx = sum(v for v, _ in pts) / n, sum(x for _, x in pts) / n
+    var = sum((v - mv) ** 2 for v, _ in pts) or 1.0
+    b = sum((v - mv) * (x - mx) for v, x in pts) / var
+    a = mx - b * mv
+    lo, hi = min(v for v, _ in pts), max(v for v, _ in pts)
+    for expr, cx in anchors:
+        v = anchor_value(lesson, expr)
+        if v is None or cx is None:
+            return f"an axis data mark without a value or a position ({expr!r})"
+        if not lo - 1e-9 <= v <= hi + 1e-9:
+            return f"the axis ({lo:g} to {hi:g}) does not span the data value {v:g} of {expr}"
+        if abs(a + b * v - cx) > ANCHOR_PX:
+            return (f"axis ticks do not match the data: {expr} = {v:g} is drawn at x {cx:.1f}, where the ticks put "
+                    f"{a + b * v:.1f}")
+    return None
+
+
+def rebind_ticks(items, ticks, anchors=None, lesson=None):
+    """items: (kind, ref, text, ...) tuples; ticks: [(item index, axis key, x)]. Ticks of an axis whose scale fails,
+    or whose data marks (anchors: {axis key: [(expression, x)]}) sit off that scale, get ref
+    "axis-tick-off-scale|<problem>", which map_item reports."""
     axes = {}
     for i, key, x in ticks:
-        axes.setdefault((key[0], None if key[1] is None else round(key[1], 1)), []).append((i, x))
+        k1 = key[1] if isinstance(key[1], str) or key[1] is None else round(key[1], 1)
+        axes.setdefault((key[0], k1), []).append((i, x))
     out = list(items)
-    for members in axes.values():
+    for akey, members in axes.items():
         why = tick_scale_problem([(items[i][2], x) for i, x in members])
+        if not why and lesson is not None and anchors and akey in anchors:
+            why = axis_anchor_problem(lesson, [(items[i][2], x) for i, x in members], anchors[akey])
         if why:
             for i, _x in members:
                 out[i] = (out[i][0], f"axis-tick-off-scale|{why}", *out[i][2:])
@@ -226,7 +277,7 @@ def _labelled_boxes(root, parents):
 
 
 def _svg_texts(lesson, svg):
-    raw, ticks = [], []
+    raw, ticks, anchors = [], [], {}
     root = ET.parse(svg).getroot()
     parents = {c: p for p in root.iter() for c in p}
     rects = {el.get("id"): el for el in root.iter() if el.tag.split("}")[-1] == "rect" and el.get("id")}
@@ -243,7 +294,7 @@ def _svg_texts(lesson, svg):
                     and _untransformed(el, parents):
                 where = "still (labelled as a wrong belief)"  # the reviewer sees how the still presents it
             if src == ("label", "axis-tick"):
-                ticks.append((len(raw), (svg.name, _num(el.get("y"))), _num(el.get("x"))))
+                ticks.append((len(raw), (svg.name, el.get("data-axis") or _num(el.get("y"))), _num(el.get("x"))))
             raw.append((src[0], src[1], body, where))
         elif tag == "title":
             raw.append(("label", "title", el.text or "", svg.name))
@@ -256,7 +307,10 @@ def _svg_texts(lesson, svg):
                     raw.append(("fact", ",".join(shown), sent, svg.name))
                 else:
                     raw.append(("alt", "", sent, svg.name))
-    return rebind_ticks(raw, ticks)
+    for el in root.iter():
+        if el.tag.split("}")[-1] == "circle" and el.get("data-axis-anchor"):
+            anchors.setdefault((svg.name, el.get("data-axis-anchor")), []).append((el.get("data-anchor"), _num(el.get("cx"))))
+    return rebind_ticks(raw, ticks, anchors, lesson)
 
 
 def _projector_texts(build):
@@ -305,7 +359,7 @@ def collect_texts(lesson, build):
         raw += _svg_texts(lesson, svg)
     comp = build / "video" / "composition" / "compositions"
     for html in sorted(comp.glob("*.html")) if comp.exists() else []:
-        c = _Collector()
+        c = _Collector(lesson)
         c.feed(html.read_text())
         c.close()
         raw += [(k, r, t, f"video/{html.name}") for k, r, t in c.items]
@@ -327,7 +381,7 @@ def collect_texts(lesson, build):
                 raw.append(("narration", _narration_id(lesson, line), line, "transcript.txt"))
     idir = build / "ive"
     if (idir / "index.html").exists():
-        c = _Collector()
+        c = _Collector(lesson)
         c.feed((idir / "index.html").read_text())
         c.close()
         raw += [(k, r, t, "ive/index.html") for k, r, t in c.items]

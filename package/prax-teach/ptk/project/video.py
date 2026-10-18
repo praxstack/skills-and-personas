@@ -228,11 +228,11 @@ def assemble_audio(timing, measured, work, out_wav):
              check=True, timeout=600)
     # Two-pass EBU R128 to -16 LUFS / -1.5 dBTP on the stereo upmix the MP4 carries.
     first = host.run([ffmpeg, "-hide_banner", "-i", raw, "-af",
-                      "aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"],
+                      "aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-2.0:LRA=11:print_format=json", "-f", "null", "-"],
                      timeout=600)
     err = first.stderr
     m = json.loads(err[err.rindex("{"):err.rindex("}") + 1])
-    af = (f"aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-1.5:LRA=11:measured_I={m['input_i']}:"
+    af = (f"aformat=channel_layouts=stereo,loudnorm=I=-16:TP=-2.0:LRA=11:measured_I={m['input_i']}:"
           f"measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:"
           f"offset={m['target_offset']}:linear=true")
     host.run([ffmpeg, "-v", "error", "-y", "-i", raw, "-af", af, "-ar", "48000", "-ac", "2", "-c:a", "pcm_s16le",

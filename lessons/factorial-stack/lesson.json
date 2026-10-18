@@ -750,18 +750,16 @@
     {
       "id": "c.korder",
       "kind": "mechanism",
-      "text": "For every n from 1 to 5, the calls start in the order n, n - 1, down to 1, and finish in the reverse order, and main gets n!.",
-      "justification": "Each call prints its entry line before calling factorial(n - 1) and its result line after that call returns (C17 6.5.2.2p11: recursive calls are permitted, each with its own parameter object). The captured runs of the five programs print the entries in descending order, the results in ascending order, and main got 1, 2, 6, 24, 120.",
+      "text": "For every n from 1 to 5, the calls to factorial start at n and count down to 1, then finish in the reverse order, and main gets n!.",
+      "justification": "Each call prints its entry line, then (when n > 1) calls factorial(n - 1) and waits for it, then prints its result line. So for n = 1 there is a single call, factorial(1); for larger n the entries run n, n - 1, ..., 1 and the results 1, 2, ..., n. The captured runs of the five programs show exactly this, with main got 1, 2, 6, 24, 120.",
       "sources": [
-        {
-          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
-          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.5.2.2 ¶11",
-          "quote": "Recursive function calls shall be permitted, both directly and indirectly through any chain of other functions."
-        },
         {
           "title": "captured run of programs/fact_n1.c, fact_n2.c, factorial.c, fact_n4.c, fact_n5.c",
           "clause": "whole stdout"
+        },
+        {
+          "title": "programs/factorial.c",
+          "clause": "lines 3-14"
         }
       ],
       "facts": [
@@ -775,8 +773,8 @@
     {
       "id": "c.kbase1",
       "kind": "mechanism",
-      "text": "With n = 1, n > 1 is false at once, so factorial(1) makes no call and returns 1.",
-      "justification": "programs/fact_n1.c: main calls factorial(1); line 6 tests n > 1, which is false, so line 7 never runs, r stays 1 (line 5) and line 9 returns it. The captured run prints enter factorial(1), factorial(1) = 1, main got 1.",
+      "text": "With n = 1, n > 1 is false at once, so factorial(1) never calls factorial again and returns 1.",
+      "justification": "programs/fact_n1.c: main calls factorial(1); line 6 tests n > 1, which is false, so line 7 (the only call to factorial inside factorial) never runs, r stays 1 (line 5) and line 9 returns it. The captured run prints enter factorial(1), factorial(1) = 1, main got 1. factorial(1) still calls printf; the sentence is about calls to factorial.",
       "sources": [
         {
           "title": "captured run of programs/fact_n1.c",
@@ -1209,7 +1207,7 @@
       ],
       "narration": [
         {
-          "text": "So factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+          "text": "Now factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
           "claims": [
             "c.waits"
           ]

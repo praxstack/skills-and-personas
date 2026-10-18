@@ -308,7 +308,13 @@ def _views(c, x, y, w):
         if lane.get("via") and c.on(lane["via"]):
             y += S["value"] * 1.35
             lw = c.label(x + 18, y - 3, "lane_converts")
-            c.value(x + 18 + lw + 12, y, lane["via"], size=S["value"] * 0.8, color=t["note"], ocr=False)
+            vfont0, vpx0, vw0, _c0, _s0 = svg.role("value", S["value"] * 0.8)
+            via_w = fonts.width(vfont0, vpx0, c.val(lane["via"]), weight=vw0)
+            if x + 18 + lw + 12 + via_w > x + w:  # too wide beside its label (portrait): the value goes under it
+                y += S["value"] * 1.05
+                c.value(x + 18, y, lane["via"], size=S["value"] * 0.8, color=t["note"], ocr=False)
+            else:
+                c.value(x + 18 + lw + 12, y, lane["via"], size=S["value"] * 0.8, color=t["note"], ocr=False)
             code_w = None
         vfont, vpx, vweight, _c, _s = svg.role("value", S["value"])
         val_w = fonts.width(vfont, vpx, c.val(lane["fact"]), weight=vweight)
@@ -622,8 +628,11 @@ def _neuron(c, x, y, w):
         ry = by + k * row + S["value"]
         col = tone(fid)
         svg.line(X(a), ry, X(b), ry, col, 9, role="path")
-        svg.circle(X(a), ry, 5.5, col)
-        svg.circle(X(b), ry, 5.5, col)
+        # each end is an anchor of the axis: the gates check it sits where the tick scale puts the value the
+        # facts give (claims.axis_anchor_problems), so ticks shifted all together cannot pass
+        for xx, expr in ((X(a), "+".join(terms[:k]) or "0"), (X(b), "+".join(terms[:k + 1]))):
+            svg.raw(f'<circle data-role="path" data-axis-anchor="add" data-anchor="{expr}" cx="{xx:.1f}" cy="{ry:.1f}" '
+                    f'r="5.5" fill="{col}"/>')
         lab = text.ui("neuron_term_bias") if k == len(terms) - 1 else text.ui("neuron_term", i=k + 1)
         lw = fonts.width("mono", S["chip"] + 2, lab)
         vw = fonts.width("mono", S["chip"] + 4, c.val(fid))
@@ -646,7 +655,7 @@ def _neuron(c, x, y, w):
     for v in (lo, 0.0, hi):
         svg.line(X(v), ay - 5, X(v), ay + 5, t["rule"], 1.2)
         lab = f"{v:g}".replace("-", "−")
-        svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle")
+        svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle", extra={"data-axis": "add"})
     yy = ay + 46
     if all(c.on(f) for f in terms) and c.on(P["sum"]):
         # z = t1 t2 b: the sum written out from the terms it adds
@@ -680,7 +689,7 @@ def _neuron(c, x, y, w):
     svg.line(GX(0), gy0, GX(0), gy1, t["rule"], 1.2)
     svg.path(f"M{GX(zlo):.1f},{gy0:.1f} L{GX(0):.1f},{gy0:.1f} L{GX(zhi):.1f},{GY(zhi):.1f}", t["value"], 3.5)
     for z in (zlo, 0.0, zhi):
-        svg.text(GX(z), gy0 + 22, f"{z:g}".replace("-", "−"), ffont, fpx, t["label"], ("label", "axis-tick"),
+        svg.text(GX(z), gy0 + 22, f"{z:g}".replace("-", "−"), ffont, fpx, t["label"], ("label", "axis-tick"), extra={"data-axis": "gate-z"},
                  anchor="middle")
     svg.text(gx1 + 6, gy0 + 5, text.ui("axis_z"), "mono", fpx, t["label"], ("chrome", "axis_z"))
     svg.text(GX(0) - 8, gy1 - 6, text.ui("axis_a"), "mono", fpx, t["label"], ("chrome", "axis_a"), anchor="end")
@@ -690,7 +699,8 @@ def _neuron(c, x, y, w):
         c.group(P["out"] if c.on(P["out"]) else P["sum"])
         svg.raw(f'<path data-role="guide" d="M{GX(z):.1f},{gy0:.1f} L{GX(z):.1f},{GY(a):.1f} L{GX(0):.1f},{GY(a):.1f}" '
                 f'fill="none" stroke="{t["label"]}" stroke-width="1.2" stroke-dasharray="4 4"/>')
-        svg.circle(GX(z), GY(a), 7, t["value"])
+        svg.raw(f'<circle data-role="path" data-axis-anchor="gate-z" data-anchor="{P["sum"]}" cx="{GX(z):.1f}" '
+                f'cy="{GY(a):.1f}" r="7" fill="{t["value"]}"/>')
         svg.close()
     yy = gy0 + 52
     if P.get("gate"):

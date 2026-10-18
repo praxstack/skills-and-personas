@@ -708,6 +708,12 @@
           "clause": "§6.2.6.2 ¶1"
         },
         {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.6.2 ¶2",
+          "quote": "For signed integer types, the bits of the object representation shall be divided into three groups: value bits, padding bits, and the sign bit."
+        },
+        {
           "title": "captured run of programs/views.c",
           "clause": "stdout lines 1-2"
         },
@@ -746,7 +752,7 @@
     {
       "id": "c.u",
       "kind": "mechanism",
-      "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u gives 66.",
+      "text": "(unsigned)a converts 66 to unsigned int. 66 is representable there, so the value stays 66 and %u gives 66.",
       "justification": "6.3.1.3p1: a value representable in the new integer type is unchanged; 66 is representable in unsigned int. %u converts an unsigned int to unsigned decimal (7.21.6.1p8). The run printed 66 on line 4.",
       "sources": [
         {
@@ -905,7 +911,7 @@
     {
       "id": "c.dbits",
       "kind": "mechanism",
-      "text": "The last line prints that double's own bits: 0x4050800000000000. They are not the bits of a.",
+      "text": "On this machine, the last line prints that double's own bits: 0x4050800000000000. They are not the bits of a.",
       "justification": "views.c copies the double d = (double)a into an unsigned long long with memcpy (line 17) and prints it with %#llx (line 18): 0x4050800000000000, the binary64 encoding of 66.0 (C17 Annex F / IEC 60559). a's own value is 0x42 in its low byte.",
       "sources": [
         {
@@ -948,7 +954,7 @@
     {
       "id": "c.k200.c",
       "kind": "mechanism",
-      "text": "%c converts 200 to unsigned char, which keeps 200. That byte is outside ASCII, which stops at 127, so what a terminal draws for it depends on its encoding.",
+      "text": "%c converts 200 to unsigned char, which on this machine holds 0 to 255, so it keeps 200. That byte is outside ASCII, which stops at 127, so what a terminal draws for it depends on its encoding.",
       "justification": "C17 7.21.6.1p8: for %c the int argument is converted to unsigned char and that character is written. 200 is representable in unsigned char (UCHAR_MAX is 255), so the byte written is 200; the program records it by formatting %c into a buffer with snprintf and printing the byte as a number. ASCII defines codes 0 to 127 only.",
       "sources": [
         {
@@ -969,7 +975,7 @@
     {
       "id": "c.km1.u",
       "kind": "mechanism",
-      "text": "(unsigned)-1 converts -1 to unsigned int by adding 2^32 once, so %u prints 4294967295 while %d prints -1.",
+      "text": "On this machine, where unsigned int is 32 bits, (unsigned)-1 adds 2^32 once, so %u prints 4294967295 while %d prints -1.",
       "justification": "C17 6.3.1.3p2: a negative value converted to an unsigned type is brought into range by adding one more than the maximum value of the new type. unsigned int is 32 bits here (sizeof(int) is 4), so -1 + 4294967296 = 4294967295. %d prints the int -1. Captured run of views_m1.c lines 3-4.",
       "sources": [
         {
@@ -992,7 +998,7 @@
     {
       "id": "c.km1.c",
       "kind": "mechanism",
-      "text": "%c converts -1 to unsigned char by adding 256, which gives the byte 255, outside ASCII.",
+      "text": "On this machine, where unsigned char holds 0 to 255, %c converts -1 by adding 256, which gives the byte 255, outside ASCII.",
       "justification": "C17 7.21.6.1p8 converts the %c argument to unsigned char; by 6.3.1.3p2, -1 + (UCHAR_MAX + 1) = -1 + 256 = 255. ASCII stops at 127. The program prints the byte %c produced: 255.",
       "sources": [
         {
@@ -1017,13 +1023,19 @@
     {
       "id": "c.k321.byte",
       "kind": "mechanism",
-      "text": "321 does not fit in one byte. Its low byte is 01000001, which is 0x41, and %d and %u still print 321.",
+      "text": "On this machine, with 8-bit bytes, 321 does not fit in one byte. Its low byte is 01000001, which is 0x41, and %d and %u still print 321.",
       "justification": "321 = 256 + 65, so bits 7..0 of a are 01000001 (0x41); the int value 321 is unchanged, so %d prints 321 and (unsigned)a is 321 for %u. Captured run of views_321.c lines 1-4.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.2.6.2 ¶1"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.6.2 ¶2",
+          "quote": "For signed integer types, the bits of the object representation shall be divided into three groups: value bits, padding bits, and the sign bit."
         },
         {
           "title": "captured run of programs/views_321.c",
@@ -1040,7 +1052,7 @@
     {
       "id": "c.k321.c",
       "kind": "mechanism",
-      "text": "%c converts 321 to unsigned char by subtracting 256, which leaves 65, and code 65 is A in ASCII.",
+      "text": "On this machine, where unsigned char holds 0 to 255, %c converts 321 by subtracting 256, which leaves 65, and code 65 is A in ASCII.",
       "justification": "C17 7.21.6.1p8 converts the %c argument to unsigned char; by 6.3.1.3p2, 321 - 256 = 65. ASCII code 65 is the letter A. The program prints the byte %c produced: 65.",
       "sources": [
         {
@@ -1065,7 +1077,7 @@
     {
       "id": "c.kf",
       "kind": "mechanism",
-      "text": "For every a, (double)a converts the value, so %f prints that value with six digits after the point.",
+      "text": "For each of these four values, (double)a converts the value exactly, so %f prints it with six digits after the point.",
       "justification": "C17 6.3.1.4p2: an integer converted to a real floating type that can represent it exactly is unchanged in value; every int here (66, 200, -1, 321) is exact in double. 7.21.6.1p8 %f: six digits after the decimal point when the precision is missing. Captured runs: 66.000000, 200.000000, -1.000000, 321.000000.",
       "sources": [
         {
@@ -1346,7 +1358,7 @@
           ]
         },
         {
-          "text": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66 and %u gives 66.",
+          "text": "(unsigned)a converts 66 to unsigned int. 66 is representable there, so the value stays 66 and %u gives 66.",
           "claims": [
             "c.u"
           ]
@@ -1461,7 +1473,7 @@
           ]
         },
         {
-          "text": "The last line prints that double's own bits, in hex. They are not the bits of a.",
+          "text": "On this machine, the last line prints that double's own bits, in hex. They are not the bits of a.",
           "claims": [
             "c.dbits"
           ]

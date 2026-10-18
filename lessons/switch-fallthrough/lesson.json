@@ -625,8 +625,8 @@
     {
       "id": "c.warn",
       "kind": "caveat",
-      "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra.",
-      "justification": "GCC documents -Wimplicit-fallthrough (warn when a switch case falls through) and enables -Wimplicit-fallthrough=3 with -Wextra. The capture compiles every program with gcc-16 -Wall -Wextra and records its diagnostics: fallthrough.c gets 'this statement may fall through' at lines 7 and 9.",
+      "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra, unless the fallthrough is marked as intended.",
+      "justification": "GCC documents -Wimplicit-fallthrough (warn when a switch case falls through) and enables -Wimplicit-fallthrough=3 with -Wextra; it stays silent where the fallthrough is marked as intended (a [[fallthrough]] / __attribute__((fallthrough)) statement or a recognised comment) and for an empty case. The capture compiles every program with gcc-16 -Wall -Wextra and records its diagnostics: fallthrough.c gets 'this statement may fall through' at lines 7 and 9.",
       "sources": [
         {
           "title": "GCC manual, Warning Options",
@@ -945,7 +945,7 @@
           ]
         },
         {
-          "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra.",
+          "text": "gcc warns about a case that can run on into the next one when -Wimplicit-fallthrough is on, as it is under -Wextra, unless the fallthrough is marked as intended.",
           "claims": [
             "c.warn"
           ]

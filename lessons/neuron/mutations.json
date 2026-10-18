@@ -13,23 +13,23 @@
    "id": "m2.relu.overbroad",
    "kind": "overbroad",
    "target": "c.relu",
-   "find": "ReLU passes a positive z through unchanged and turns a negative z into 0.",
-   "replace": "ReLU turns every z into a value between 0 and 1.",
+   "find": "a positive z passes through unchanged, and a z of 0 or less gives 0.",
+   "replace": "every z comes out as a value between 0 and 1.",
    "why_false": "ReLU is max(0, z): a positive z passes unchanged, so it can exceed 1."
   },
   {
    "id": "m3.add.bias",
    "kind": "false-mechanism",
    "target": "c.add",
-   "find": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2 = 0.6.",
-   "replace": "The neuron adds the two terms and then multiplies by the bias: (1.2 - 0.4) × -0.2 = 0.6.",
+   "find": "The neuron adds the two terms and the bias: 1.2 - 0.4 - 0.2, which the program prints as 0.6.",
+   "replace": "The neuron adds the two terms and then multiplies by the bias: (1.2 - 0.4) × -0.2, which the program prints as 0.6.",
    "why_false": "Line 12 adds b; (1.2 - 0.4) × -0.2 would be -0.16, not 0.6."
   },
   {
    "id": "m4.out.caveat",
    "kind": "dropped-caveat",
    "target": "c.out",
-   "find": "Here z is 0.6, which is positive, so the output a is 0.6.",
+   "find": "Here z prints as 0.6, which is positive, so the output a prints as 0.6.",
    "replace": "The output a is always equal to z.",
    "why_false": "Only a positive z passes unchanged; a negative z gives 0."
   },

@@ -13,7 +13,7 @@
    "id": "m2.u.overbroad",
    "kind": "overbroad",
    "target": "c.u",
-   "find": "(unsigned)a converts 66 to unsigned int. 66 fits there, so the value stays 66",
+   "find": "(unsigned)a converts 66 to unsigned int. 66 is representable there, so the value stays 66",
    "replace": "(unsigned)a never changes a value, so the value stays 66",
    "why_false": "A negative int converted to unsigned int changes value (6.3.1.3p2); only representable values are unchanged."
   },
@@ -51,8 +51,8 @@
    "id": "m6.byte.hex",
    "kind": "false-mechanism",
    "target": "c.byte",
-   "find": "Its bits are 01000010, which is 0x42 in hex.",
-   "replace": "Its bits are 01000010, which is 0x24 in hex.",
+   "find": "01000010, which is 0x42 in hex.",
+   "replace": "01000010, which is 0x24 in hex.",
    "why_false": "01000010 is 0x42; the run printed 0x42."
   }
  ]
