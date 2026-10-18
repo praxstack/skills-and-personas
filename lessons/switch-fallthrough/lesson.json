@@ -554,6 +554,38 @@
           "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2"
         }
       ]
+    },
+    {
+      "id": "c.nomatch",
+      "kind": "rule",
+      "text": "If no case label matches and the switch has no default label, no part of the switch body runs.",
+      "justification": "C17 6.8.4.2p5, last sentence: if no converted case constant expression matches and there is no default label, no part of the switch body is executed. programs/fallthrough.c and programs/with_break.c have case labels 1 to 4 and no default, so any other value of n skips the body and control continues after the switch.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5",
+          "quote": "If no converted case constant expression matches and there is no default label, no part of the switch body is executed."
+        }
+      ]
+    },
+    {
+      "id": "c.bodyend",
+      "kind": "mechanism",
+      "text": "If execution reaches the end of the switch body without a break, the switch ends there.",
+      "justification": "The switch body is a compound statement (C17 6.8.4.2p1 with 6.8.2); when its last statement finishes, the switch statement is complete and control continues with the next statement (6.8p3, statements execute in sequence). In both programs case 4 is the last label and has no break, so after puts(\"four\") control reaches the closing brace on line 15 (16 in with_break.c) and the program goes on to puts(\"done\").",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶1, §6.8.2, §6.8 ¶3"
+        },
+        {
+          "title": "programs/fallthrough.c",
+          "url": "programs/fallthrough.c",
+          "clause": "lines 13-16"
+        }
+      ]
     }
   ],
   "misconceptions": [
@@ -561,6 +593,11 @@
       "id": "m.stops",
       "statement": "Execution stops at the next case label, so the program prints only two and done.",
       "correction": "c.labels"
+    },
+    {
+      "id": "m.fromtop",
+      "statement": "A switch runs every case from the top, so the program prints one, two, three and done.",
+      "correction": "c.match"
     }
   ],
   "trace": [
@@ -701,6 +738,9 @@
           ],
           "spoken": "The program sets n to two, and switches on n. Case two has no break."
         }
+      ],
+      "key_nodes": [
+        "code"
       ]
     },
     {
@@ -709,7 +749,23 @@
       "state": "s0",
       "question": {
         "prompt": "n is 2 and case 2 has no break. What does the program print?",
-        "answer_fact": "f.p1.out"
+        "answer_fact": "f.p1.out",
+        "options": [
+          {
+            "text": "two, done",
+            "correct": false,
+            "misconception": "m.stops"
+          },
+          {
+            "text": "two, three, done",
+            "correct": true
+          },
+          {
+            "text": "one, two, three, done",
+            "correct": false,
+            "misconception": "m.fromtop"
+          }
+        ]
       },
       "narration": [
         {
@@ -718,6 +774,10 @@
             "c.pause"
           ]
         }
+      ],
+      "key_nodes": [
+        "code",
+        "question"
       ]
     },
     {
@@ -738,6 +798,10 @@
           ],
           "spoken": "With n equal to two, that is case two, which prints two."
         }
+      ],
+      "key_nodes": [
+        "code",
+        "output"
       ]
     },
     {
@@ -758,6 +822,11 @@
           ],
           "spoken": "So the switch falls through into case three, and prints three."
         }
+      ],
+      "key_nodes": [
+        "code",
+        "output",
+        "note"
       ]
     },
     {
@@ -777,6 +846,11 @@
             "c.done"
           ]
         }
+      ],
+      "key_nodes": [
+        "code",
+        "output",
+        "note"
       ]
     },
     {
@@ -791,6 +865,10 @@
           ],
           "spoken": "With a break after case two, the switch prints only two, and then the program prints done."
         }
+      ],
+      "key_nodes": [
+        "code",
+        "output"
       ]
     },
     {
@@ -811,6 +889,11 @@
           ],
           "spoken": "In this program, the break on line twelve is what ends the switch."
         }
+      ],
+      "key_nodes": [
+        "code",
+        "output",
+        "note"
       ]
     }
   ],
@@ -850,6 +933,9 @@
   "requested_media": [
     "still",
     "video",
-    "ive"
+    "ive",
+    "explorer",
+    "qa",
+    "cards"
   ]
 }
