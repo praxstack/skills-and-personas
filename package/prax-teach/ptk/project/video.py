@@ -298,7 +298,7 @@ def _layout(lesson):
     if mode == "side":
         L.update(card_w=840, side_x=976, side_w=848, panel_box=(976, CODE_TOP, 848, 520))
     elif mode == "hero":
-        L.update(code_top=616, card_w=840, side_x=976, side_w=848, panel_box=(MX, 176, W - 2 * MX, 420))
+        L.update(code_top=616, card_w=840, side_x=976, side_w=848, panel_box=(MX, 176, W - 2 * MX, 390))  # ends clear of the file label at code_top - 38
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
         st = lesson.state(sc["state"])["state"]

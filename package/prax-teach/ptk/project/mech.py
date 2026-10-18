@@ -434,7 +434,7 @@ def _neuron(c, x, y, w):
     row = S["value"] * 2.1
     by = yy + 30
     for k, (fid, (a, b)) in enumerate(zip(terms, ends)):
-        if not c.on(fid):
+        if not all(c.on(f) for f in terms[:k + 1]):  # a bar starts where the one before it ends
             continue
         c.group(fid)
         ry = by + k * row + S["value"]
