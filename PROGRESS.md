@@ -153,3 +153,12 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
   3. a Codex outside voice on the gate diffs.
 
   One fix round follows (17). Round 18 is spare.
+- **Round 17 review results:**
+  - The gates audit (`reviews/round17-gates-audit.md`) and the Codex gates review (`reviews/round17-codex-gates.md`) agree on 3 P1 weakenings: the `--only` stale-pass carry, canary-only `verified`, and the hard-link containment change.
+  - The audit adds two more: the IVE explore check excuses a broken lesson, and the overlap exemption covers the whole outgoing layer.
+  - Codex adds five P2s: the caption toggle trusts a flag, axis ticks go unchecked, the long-token silence heuristic, the morph deadline taken from the renderer's own planner, and the wrong-belief label taken from metadata.
+  - Protocol verdict: TEACHING.md is right, and protocol.py must follow it for quiz and exam-drill.
+- **D22 (orchestrator, correcting a process error):**
+  - **D22.1:** D21.1 was a spec change made in the same run as code changes, which AGENTS.md forbids. It is reverted to the original AC-7.1 full-suite default. Canary-only builds become `canary-verified`. The cheaper policy goes to Prax as ACCEPTANCE-PROPOSAL §9.
+  - **D22.2:** `--only` carries old gate results only when every artifact hash and the ptk version match the recorded inventory; anything else is re-gated.
+  - **D22.3:** learner state binds content instead of counting links. Each state file carries its learner id, checked against the directory's id, so aliasing across learners is detected. Writes always atomic-replace onto a fresh inode, so they never go through an alias. Reads tolerate backup links. This is recorded in PROTECTED-MAP as a justified change.

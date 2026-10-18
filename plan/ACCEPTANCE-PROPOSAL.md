@@ -44,3 +44,7 @@ Codex and the spec reviewer both found that the frozen evaluator can pass while 
 ## Approval
 
 Reply "approve acceptance v2" to adopt this as FREEZE v2, or name the items to drop.
+
+9. **Canary-only claims verification (proposed as D21.1; withdrawn from the run by D22.1).**
+   - **The proposal:** run the full mutation suite (up to 12 mutations plus controls) only as a calibration run, when the rubric or reviewer model changes and at acceptance. A normal build then needs a current calibration record for its exact rubric sha and model, plus one caught canary. That cuts about 23 reviews to about 2 per build, roughly 2M tokens down to 200k.
+   - **Until Prax approves:** builds use the full suite (the original AC-7.1), and canary-only builds report `canary-verified`, never `verified`.
