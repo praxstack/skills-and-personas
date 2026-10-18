@@ -71,3 +71,29 @@ Use /deep-research where it helps. Run it all without stopping to ask.
 - WP6 closed at round 1 (`b0e6ab8`). AC-6.1 to AC-6.7 pass. 77 boundary seeks give 0 mismatches. FILM/EXPLORE/RETURN never leaks edits into the film. The page now works from file://; before, Chrome refused every `<track src>` there. The note-timing fix is in.
 - **Integration pass (round 15) running:** D21.1 canary mode, the state hard-link fix, `--only` merge, install and rollback CLI (dry-run only), the 3 router misroutes, the IVE spinner, a full six-media rebuild ending verified, full selftest and agent-tests, README.
 - **Budget: 15 of 18 rounds used.** Left: WP9 (16), a fix round after the consolidated five-lens review (17), one spare (18).
+- **Integration pass (round 15) done.** Commits `28c9b19`..HEAD, all `integ:`.
+  1. D21.1: `ptk build` writes the lesson job plus one canary (picked from the lesson's mutations by its sha256); `--calibrate` writes the full suite. `claims.canary` must catch the planted error for `verified`. Spec v1.2 (AC-7.1, AC-7.5), VERIFY.md and HOST-ADAPTERS.md updated. **This is a governing change made by the orchestrator, not yet approved by Prax.**
+  2. Hard links: same-owner regular state files with nlink > 1 are accepted with a `HardlinkAccepted` warning. Symlinks, other owners and non-regular files are still refused. Seen live during this pass: `continuity.json` under `.state/tmp` had 2 links. Two ported tests changed; PROTECTED-MAP.md records it with the residual risk (a deliberate same-user link between two learners is now read). A follow-up idea is an inode ledger.
+  3. `--only` merges the previous report's other media when the lesson sha matches; a changed lesson lists them as `uncovered_media`. `test_entry_by_direct_path` passes after any build order.
+  4. `ptk install --candidate` and `ptk rollback`, both with `--dry-run`. The real HOME is refused without `--real-home`. Only dry runs and throwaway HOMEs were run.
+  5. Router: "forget the video", "regenerate the flashcards" and "can you not ask me to guess" fixed. Dev set 192/192 (3 added), held-back probes 20/20, WP1 fresh 60/60.
+  6. IVE: the before-answer shot had caught Chrome's media-controls spinner, which fades for about 1 s after a seek. The shots now wait (`D.settled()`), and a test checks that a second shot 2.5 s later is byte-identical.
+  7. Full six-media rebuild (no `--only`): **verified**, 37 gates passed, none not-run, no fallbacks. The canary (`m1.match.nomatch`, false mechanism) was rejected and the lesson job accepted, each in a fresh subagent.
+  8. `ptk selftest`: 160 passed, 1 not-run (Anki import, no Anki), 0 failed. `ptk agent-tests`: 4 passed, 1 failed.
+     - Passed: rates (calibration: value 6/6, claim 15/15, controls 21/21), the %f regression, the slice and the predict-first flow.
+     - Failed: `test_modes_live`. qa-expand passes, but quiz and exam-drill fail the protocol checker.
+     - Most of the violations come from TEACHING.md and `ptk/protocol.py` disagreeing:
+       - The checker allows only a verdict besides the one feedback sentence, while TEACHING.md's exam-drill asks for marks, time and next-question setup in that turn.
+       - TEACHING.md allows a new misconception name, but the checker rejects unknown ids.
+       - JOB.md doesn't say `marks_awarded`/`total_marks` must be numbers, or what shape `answer_key` takes.
+     - Predict-first failed its first live run on one extra sentence and passed on a fresh run.
+     - Not fixed here: it needs a governing decision (gate or protocol), and a run may not change both.
+  9. `package/prax-teach/README.md` written.
+  10. Artifacts I looked at (still, explorer, Q&A, IVE, 5 video frames): see the integration report; open items are listed below.
+- **Open after integration:**
+  - The protocol-checker vs TEACHING.md mismatch above. Assign it to the round-17 fix after the five-lens review.
+  - Video at 38 s ("Add the missing break"): mid-morph frame with no line numbers or filename, a gap in the code, faded output and an empty note column.
+  - IVE: a caption line sits half under the progress bar at 1440. At 390 the caption covers the film.
+  - Wide still: an empty area top right, and its notes are not numbered or anchored like the portrait's.
+  - The explorer footnote wraps "n = 2." badly, and the explorer still has no diagram beyond the code path.
+- **Budget: 15 of 18 rounds used.**
