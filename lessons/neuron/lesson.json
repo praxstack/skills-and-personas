@@ -1268,7 +1268,13 @@
           ]
         },
         {
-          "text": "In double, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
+          "text": "In double, 0.8 × 1.5 is not exactly 1.2, and z is not exactly 0.6, which has no exact double form.",
+          "claims": [
+            "c.round"
+          ]
+        },
+        {
+          "text": "%g rounds z to 6 significant digits and prints 0.6.",
           "claims": [
             "c.round"
           ]
