@@ -68,8 +68,12 @@ ours() { # ours <source dir> <dest>: a link that resolves to this source, or a c
 place() { # place <source dir> <dest dir> <name>
   local src="$1" dest="$2/$3"
   if [ "$UNINSTALL" = 1 ]; then
-    if ours "$src" "$dest"; then run rm -rf "$dest"; echo "removed $dest"; fi
+    if ours "$src" "$dest"; then run rm -rf "$dest"; echo "removed $dest"
+    elif [ -e "$dest" ] || [ -L "$dest" ]; then echo "skip    $dest (isn't ours)"; fi
     return
+  fi
+  if [ -d "$dest" ] && ! [ -L "$dest" ] && [ "$(cd "$dest" && pwd -P)" = "$(cd "$src" && pwd -P)" ]; then
+    echo "ok      $dest (this is the source itself)"; return
   fi
   if [ -e "$dest" ] || [ -L "$dest" ]; then
     if [ "$MODE" != "copy" ] && [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then echo "ok      $dest"; return; fi

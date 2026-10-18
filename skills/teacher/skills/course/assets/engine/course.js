@@ -9,12 +9,14 @@
 // see why. The learner can ask for the same idea in any medium, as often as
 // they like.
 
-import { arrow, curvedArrow, loop, seedFrom } from "../../../lesson-notebook/assets/ink.js";
+import { arrow, curvedArrow, loop, seedFrom, rng } from "../../../lesson-notebook/assets/ink.js";
 import { drawIn, svgEl, inkMark } from "../../../lesson-notebook/assets/pen.js";
 import { soundButton } from "../../../lesson-notebook/assets/sound.js";
 import { boardButton, restoreBoard } from "../../../lesson-notebook/assets/board.js";
 
 const C = window.COURSE;
+// "Quiz me" has no figure to look at, so questions that need one stay in the lesson.
+for (const l of C.lessons) l.quiz = (l.quiz || []).filter((q) => !q.needsFigure);
 const STORE = `course:${C.id}`;
 const STATUS = ["learning", "done", "skip"];
 const STATUS_LABEL = { learning: "Learning", done: "Done", skip: "Skip" };
@@ -32,7 +34,11 @@ function el(tag, attrs = {}, ...kids) {
 }
 const readStore = () => {
   try {
-    return JSON.parse(localStorage.getItem(STORE)) || { status: {} };
+    // Stored progress may come from an older build or a bad write: keep it
+    // only if status is a plain object.
+    const saved = JSON.parse(localStorage.getItem(STORE));
+    const ok = saved && typeof saved === "object" && !Array.isArray(saved) && saved.status && typeof saved.status === "object" && !Array.isArray(saved.status);
+    return ok ? saved : { status: {} };
   } catch {
     return { status: {} };
   }
@@ -87,7 +93,7 @@ const header = el(
   el("h1", { text: C.title }),
   C.subtitle ? el("p", { class: "cs-sub", text: C.subtitle }) : null,
   (C.prereqs || []).length
-    ? el("p", { class: "cs-sub" }, "Builds on: ", ...C.prereqs.map((p, i) => [i ? ", " : "", el("a", { href: `../${p}/index.html`, text: C.prereqTitles?.[p] || p })]))
+    ? el("p", { class: "cs-sub" }, "Builds on: ", ...C.prereqs.map((p, i) => [i ? ", " : "", el("a", { href: C.root ? `${C.root}${p}` : `../${p}/index.html`, text: C.prereqTitles?.[p] || p })]))
     : null,
   el("div", { class: "cs-head-row" }, progressBar, progressText),
   el(
@@ -124,7 +130,9 @@ const size = () => {
   return { ...b, h: b.h + (most - 2) * (b.title + 3), lines: most };
 };
 const narrow = () => window.innerWidth < 720;
-const mapSvg = svgEl("svg", { class: "ink-svg cs-map-svg", role: "img", "aria-label": `Map of ${C.title}: ${ordered.map((l) => l.title).join(", ")}` });
+// A group, not an image: role="img" would make the lesson buttons inside it
+// presentational, so screen readers couldn't reach them.
+const mapSvg = svgEl("svg", { class: "ink-svg cs-map-svg", role: "group", "aria-label": `Map of ${C.title}: ${ordered.length} lessons` });
 const drawer = el("aside", { class: "cs-drawer nb-sheet", "aria-live": "polite" });
 let selected = ordered[0]?.id;
 
@@ -188,6 +196,9 @@ function drawMap() {
   mapSvg.style.width = `${Math.round(box[2] * scale)}px`;
   mapSvg.style.height = `${Math.round(box[3] * scale)}px`;
   mapSvg.dataset.layout = vertical ? "down" : "across";
+  // Redrawing replaces every node, so a focused node would drop focus to the
+  // page; note which lesson had it and focus its new node afterwards.
+  const focusedId = mapSvg.contains(document.activeElement) ? document.activeElement.closest(".cs-node")?.getAttribute("data-id") : null;
   mapSvg.replaceChildren();
   // Arrows from what a lesson needs to the lesson.
   for (const l of ordered) {
@@ -216,7 +227,7 @@ function drawMap() {
   for (const l of ordered) {
     const p = pos[l.id];
     const st = state.status[l.id];
-    const g = svgEl("g", { class: `cs-node${l.id === selected ? " is-selected" : ""}${st ? ` is-${st}` : ""}`, tabindex: "0", role: "button", "aria-label": `${l.title}${st ? `, ${STATUS_LABEL[st]}` : ""}. Open` }, mapSvg);
+    const g = svgEl("g", { class: `cs-node${l.id === selected ? " is-selected" : ""}${st ? ` is-${st}` : ""}`, tabindex: "0", role: "button", "data-id": l.id, "aria-current": l.id === selected ? "true" : null, "aria-label": `${l.title}${st ? `, ${STATUS_LABEL[st]}` : ""}. Open` }, mapSvg);
     svgEl("rect", { x: p.x - NODE_W / 2, y: p.y - NODE_H / 2, width: NODE_W, height: NODE_H, rx: 4, class: st === "done" ? "f-green-soft s-ink" : l.id === selected ? "f-hl s-ink" : "f-paper s-ink", "stroke-dasharray": st === "skip" ? "6 5" : null }, g);
     const lines = titleLines(l.title, WRAP);
     const top = p.y - NODE_H / 2 + 8 + TITLE + ((size().lines - lines.length) * (TITLE + 3)) / 2;
@@ -226,14 +237,18 @@ function drawMap() {
     const open = () => select(l.id);
     g.addEventListener("click", open);
     g.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open()));
+    if (l.id === focusedId) g.focus({ preventScroll: true });
   }
 }
 
+// C.base is the course folder's URL path when built with --base (root-absolute
+// links for hosts with clean URLs), and empty for relative links.
 function lessonHref(l, hash = "") {
-  return `${l.page}${hash ? `#${hash}` : ""}`;
+  return `${C.base || ""}${l.page}${hash ? `#${hash}` : ""}`;
 }
 
 function setStatus(id, s) {
+  const fromDrawer = drawer.contains(document.activeElement);
   if (state.status[id] === s) delete state.status[id];
   else state.status[id] = s;
   persist();
@@ -241,6 +256,9 @@ function setStatus(id, s) {
   drawMap();
   paintOutline();
   select(id, { keepFocus: true });
+  // select() rebuilds the drawer, so the pressed button is gone: focus its
+  // replacement rather than letting focus fall to the page.
+  if (fromDrawer) drawer.querySelectorAll(".cs-status .cs-chip")[STATUS.indexOf(s)]?.focus();
 }
 
 function select(id, { keepFocus = false } = {}) {
@@ -286,11 +304,32 @@ function playVideo(l, box) {
     box.replaceChildren();
     return;
   }
+  // l.video is the MP4 beside the page (local builds) or its Vercel Blob URL.
+  // A cross-origin video plays without a crossorigin attribute; leaving it off
+  // means the video needs no CORS headers, and the captions below are
+  // same-origin (l.captions, built next to the page), which a track loads
+  // either way.
   const video = el("video", { controls: "", preload: "metadata", playsinline: "", src: l.video, "aria-label": `Narrated video: ${l.title}` });
-  const vtt = l.video.replace(/\.mp4$/, ".vtt");
-  const track = el("track", { kind: "captions", srclang: "en", label: "English", default: "", src: vtt });
-  // Some hosts serve .vtt with the wrong type, which a track refuses. Then
-  // fetch the captions and hand them over as a text/vtt blob instead.
+  if (l.captions) video.append(captionTrack(l.captions));
+  const open = el("a", { class: "nb-print", href: l.video, text: "Open the video on its own" });
+  box.replaceChildren(video, open);
+  // A host can refuse a video (a paywall, a lapsed link): say so instead of
+  // leaving an empty player, and let the link show the host's own page.
+  video.addEventListener("error", () => {
+    open.textContent = "The video didn't load here. Open it on its own to see why";
+  });
+  video.play().catch(() => {
+    /* autoplay with sound needs a click; the controls are there */
+  });
+}
+
+function captionTrack(vtt) {
+  // The captions are already burned into the picture, so the track is off by
+  // default (no doubled text); it's there for screen readers and the CC menu.
+  const track = el("track", { kind: "captions", srclang: "en", label: "English", src: vtt });
+  // Some hosts serve .vtt with the wrong type, which a track refuses (it only
+  // loads once the viewer turns captions on). Then fetch the captions and hand
+  // them over as a text/vtt blob instead, still showing.
   track.addEventListener(
     "error",
     () =>
@@ -303,14 +342,25 @@ function playVideo(l, box) {
         .catch(() => {}),
     { once: true },
   );
-  video.append(track);
-  box.replaceChildren(video, el("a", { class: "nb-print", href: l.video, text: "Open the video on its own" }));
-  video.play().catch(() => {
-    /* autoplay with sound needs a click; the controls are there */
-  });
+  return track;
 }
 
 // ---------- quiz: try first, then see why ----------
+// Choice options in a fixed shuffled order per question, so the right answer
+// isn't always in the same place. Options that are all numbers keep their
+// order (a scale reads best sorted), and so does a question with keepOrder: true.
+// Returns the original indices in display order.
+function optionOrder(options, key, keepOrder = false) {
+  const idx = options.map((_, k) => k);
+  if (keepOrder || options.every((o) => /^\s*[-−+]?\d*\.?\d+\s*$/.test(String(o)))) return idx;
+  const rand = rng(seedFrom(key));
+  for (let k = idx.length - 1; k > 0; k -= 1) {
+    const j = Math.floor(rand() * (k + 1));
+    [idx[k], idx[j]] = [idx[j], idx[k]];
+  }
+  return idx;
+}
+
 function quiz(l, box) {
   let k = 0;
   let right = 0;
@@ -327,7 +377,7 @@ function quiz(l, box) {
     let choice = null;
     let input = null;
     const opts = q.kind === "choice"
-      ? el("div", { class: "cs-opts" }, q.options.map((o, i) => el("button", { type: "button", class: "cs-opt", "aria-pressed": "false", text: o, onclick: (e) => ((choice = i), box.querySelectorAll(".cs-opt").forEach((b) => b.setAttribute("aria-pressed", String(b === e.currentTarget)))) })))
+      ? el("div", { class: "cs-opts" }, optionOrder(q.options, `${l.id}:${q.step}`, q.keepOrder).map((i) => el("button", { type: "button", class: "cs-opt", "aria-pressed": "false", "data-k": String(i), text: q.options[i], onclick: (e) => ((choice = i), box.querySelectorAll(".cs-opt").forEach((b) => b.setAttribute("aria-pressed", String(b === e.currentTarget)))) })))
       : el("div", { class: "cs-opts" }, (input = el("input", { type: "number", step: "any", class: "nb-field", "aria-label": q.q })), q.unit ? el("span", { class: "nb-print", text: q.unit }) : null);
     const check = el("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Check" });
     check.addEventListener("click", () => {

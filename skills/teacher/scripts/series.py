@@ -19,7 +19,8 @@ every write. Any host can read both.
 
 Recall is counted in sessions: a point is due 1, 3 and 6 sessions after it's
 added. It counts as demonstrated only after a right, unaided answer in a
-later session than the one it was taught in.
+later session than the one it was taught in; any other result brings it
+back the next session and restarts the spacing.
 """
 
 from __future__ import annotations
@@ -35,11 +36,6 @@ LEVELS = ["L0", "L1", "L2", "L3", "L4"]
 LEVEL_NAMES = {"L0": "intuition", "L1": "mechanism", "L2": "formal model", "L3": "edge cases and limits", "L4": "transfer"}
 
 
-def asked(point: dict, slot: int) -> bool:
-    """A due slot is covered once the point was asked in that session or any later one."""
-    return any(s >= slot for s in point["asked_in"])
-
-
 def now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
@@ -48,7 +44,10 @@ class Journal:
     def __init__(self, root: Path):
         self.root = root
         self.file = root / "journal.json"
-        self.data: dict = json.loads(self.file.read_text()) if self.file.exists() else {}
+        try:
+            self.data: dict = json.loads(self.file.read_text()) if self.file.exists() else {}
+        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+            raise SystemExit(f"{self.file} can't be read ({e}); fix it, or delete the journal with: series.py forget --yes")
 
     @property
     def exists(self) -> bool:
@@ -77,13 +76,21 @@ class Journal:
         (self.root / "JOURNAL.md").write_text(self.markdown())
 
     # ---- views ----
+    @staticmethod
+    def pending(p: dict) -> list[int]:
+        """Due sessions still ahead of the point. Asking it settles every due
+        session up to then, so a session that passed unasked doesn't keep it
+        due forever: it stays due (overdue) only until it's next asked."""
+        last = max(p["asked_in"], default=0)
+        return [d for d in p["due"] if d > last]
+
     def due(self) -> list[tuple[str, int, dict]]:
         out = []
         for tid, t in self.data["threads"].items():
             for i, p in enumerate(t.get("recall", [])):
                 if p["demonstrated"]:
                     continue
-                nxt = next((d for d in p["due"] if not asked(p, d)), None)
+                nxt = next(iter(self.pending(p)), None)
                 if nxt is not None and nxt <= self.session:
                     out.append((tid, i, p))
         return out
@@ -134,7 +141,7 @@ class Journal:
             if t.get("recall"):
                 out += ["", "Recall:"]
                 for p in t["recall"]:
-                    state = "demonstrated" if p["demonstrated"] else f"due in sessions {', '.join(str(x) for x in p['due'] if not asked(p, x))}"
+                    state = "demonstrated" if p["demonstrated"] else (f"due in sessions {', '.join(str(x) for x in self.pending(p))}" if self.pending(p) else "no more reviews scheduled")
                     out.append(f"- {p['point']} ({state})")
             if t["status"] == "satisfied":
                 out += ["", f"Satisfied in session {t['satisfied_session']}: {t.get('satisfied_note') or 'the learner said so'}."]
@@ -181,6 +188,31 @@ def main() -> int:
     p = sub.add_parser("export")
     a = ap.parse_args()
 
+    if a.cmd == "forget":
+        if not a.yes:
+            raise SystemExit("this deletes the journal; run again with --yes once the learner has confirmed")
+        # Before the journal is read: a corrupt journal.json can still be deleted.
+        journal = a.dir / "journal.json"
+        if not journal.is_file():
+            raise SystemExit(f"no journal in {a.dir}; nothing deleted")
+        # Delete only the files this script writes, never the folder's other contents.
+        # journal.json goes last, so a forget that stops partway can be run again.
+        md = a.dir / "JOURNAL.md"
+        try:
+            ours = md.read_text(errors="replace").startswith("# Learning journal:")
+        except (FileNotFoundError, IsADirectoryError):
+            ours = False
+        except OSError as e:  # there but unreadable: stop before deleting anything, or the forget is half done
+            raise SystemExit(f"can't read {md} ({e.strerror}); nothing deleted")
+        for f in (a.dir / "journal.tmp", *([md] if ours else []), journal):
+            f.unlink(missing_ok=True)
+        if a.dir.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
+            try:
+                a.dir.rmdir()
+            except OSError:
+                pass  # the folder holds other files; leave them alone
+        print(f"deleted the journal in {a.dir}")
+        return 0
     j = Journal(a.dir)
     if a.cmd == "init":
         if j.exists:
@@ -189,22 +221,6 @@ def main() -> int:
                   "sessions": [{"n": 1, "started": now()}], "threads": {}}
         j.save()
         print(f"journal started in {a.dir} (session 1)")
-        return 0
-    if a.cmd == "forget":
-        if not a.yes:
-            raise SystemExit("this deletes the journal; run again with --yes once the learner has confirmed")
-        if not j.file.is_file():
-            raise SystemExit(f"no journal in {a.dir}; nothing deleted")
-        # Delete only the files this script writes, never the folder's other contents.
-        # journal.json goes last, so a forget that stops partway can be run again.
-        for f in (j.file.with_suffix(".tmp"), j.root / "JOURNAL.md", j.file):
-            f.unlink(missing_ok=True)
-        if j.root.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
-            try:
-                j.root.rmdir()
-            except OSError:
-                pass  # the folder holds other files; leave them alone
-        print(f"deleted the journal in {a.dir}")
         return 0
     j.need()
     if a.cmd == "resume":
@@ -241,20 +257,22 @@ def main() -> int:
             if a.right == a.wrong:
                 raise SystemExit("give exactly one of --right or --wrong")
             try:
-                p = t["recall"][int(a.point)]
+                n = int(a.point)
+                if n < 0:  # -1 would quietly pick the last point
+                    raise IndexError
+                p = t["recall"][n]
             except (ValueError, IndexError):
-                raise SystemExit(f"no recall point {a.point} on {a.id}")
+                raise SystemExit(f"no recall point {a.point} on {a.id} (points are numbered from 0)")
             p["results"].append({"session": j.session, "right": a.right, "unaided": a.unaided})
             if j.session not in p["asked_in"]:
                 p["asked_in"].append(j.session)
             if a.right and a.unaided and j.session > p["taught_session"]:
                 p["demonstrated"] = True
-            elif not a.right:
-                # A miss brings it back next session, then restarts the spacing.
+            else:
+                # A miss, or a right answer that needed help (or came in the
+                # session it was taught), brings it back next session, then
+                # restarts the spacing: it stays due until shown unaided.
                 p["due"] = sorted(set(p["asked_in"]) | {j.session + s for s in SPACING})
-            if not p["demonstrated"] and all(asked(p, d) for d in p["due"]):
-                # Asked late and not yet shown unaided: keep it coming back.
-                p["due"].append(j.session + SPACING[0])
             j.save()
             print("demonstrated" if p["demonstrated"] else "recorded")
     elif a.cmd in ("satisfied", "reopen", "park"):

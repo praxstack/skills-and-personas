@@ -111,7 +111,7 @@ function audit() {
     const r = el.getBoundingClientRect();
     const inline = el.tagName === "A" && getComputedStyle(el).display === "inline";
     if (!inline && (r.width < 24 || r.height < 24)) problems.push(`tap target ${Math.round(r.width)}x${Math.round(r.height)}: ${describe(el)}`);
-    const labelled = el.getAttribute("aria-label") || el.getAttribute("aria-labelledby") || el.title || (el.labels && el.labels.length) || (el.textContent || "").trim() || el.getAttribute("placeholder") || el.value;
+    const labelled = el.getAttribute("aria-label") || el.getAttribute("aria-labelledby") || el.title || (el.labels && el.labels.length) || (el.textContent || "").trim() || el.getAttribute("placeholder") || (el.tagName === "INPUT" && ["submit", "button", "reset"].includes(el.type) && el.value);
     if (!labelled) problems.push(`control without a name: ${describe(el)}`);
   }
   for (const img of document.querySelectorAll("img")) if (!img.hasAttribute("alt")) problems.push(`img without alt: ${img.src.slice(0, 60)}`);

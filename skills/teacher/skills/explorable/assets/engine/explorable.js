@@ -13,10 +13,14 @@ import { drawIn, svgEl, inkMark, handText, reducedMotion, scaledSize } from "../
 import { soundButton } from "../../../lesson-notebook/assets/sound.js";
 import { boardButton, restoreBoard } from "../../../lesson-notebook/assets/board.js";
 import { createCodePanel } from "./code.js";
+import { stepKeys, restoreProgress } from "./progress.js";
 
 const INK = { seedFrom, rng, smoothPath, line, polyline, loop, arrow, arrowHead, curvedArrow, cross, tick, underline, swipe, ring, bracket };
 const L = window.LESSON;
 const KEY = `explorable:${L.id || L.title}`;
+// Saved progress follows each step by key, so inserting, removing or
+// reordering steps never hands a learner the answers of a different step.
+const STEP_KEYS = stepKeys(L.steps);
 
 // ---------- small DOM helpers ----------
 function h(tag, attrs = {}, ...kids) {
@@ -37,8 +41,9 @@ function h(tag, attrs = {}, ...kids) {
 // before punctuation ("outside , it").
 function plainText(html) {
   return String(html || "")
-    // A paragraph that ends without a stop gets one (looking past closing </strong> and the like).
-    .replace(/([^\s>])((?:<\/(?:strong|em|b|i|span|a|code|var|sub|sup)>)*)\s*<\/(p|li|h\d)>(?=[\s\S]*\S)/g, (m, c, inl, tag) => `${c}${/[.!?:;]/.test(c) ? "" : "."}${inl}</${tag}>`)
+    // A paragraph that ends without a stop gets one (looking past closing </strong> and the like),
+    // unless a formula follows: "the points with</p><p class="nb-print">w₁x₁ + ..." reads on into it.
+    .replace(/([^\s>])((?:<\/(?:strong|em|b|i|span|a|code|var|sub|sup)>)*)\s*<\/(p|li|h\d)>(?=[\s\S]*\S)(?!\s*<(?:pre\b|(?:p|div)\b[^>]*\bclass="[^"]*\b(?:nb-print|formula|math)\b))/g, (m, c, inl, tag) => `${c}${/[.!?:;]/.test(c) ? "" : "."}${inl}</${tag}>`)
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .replace(/\s+([,.;:!?)])/g, "$1")
@@ -73,20 +78,20 @@ const snap = (k, v) => {
   const st = L.params?.[k]?.step;
   return st >= 1 ? Math.round(v / st) * st : v;
 };
-const stored = load();
+const stored = restoreProgress(load(), STEP_KEYS);
 const S = {
   params: { ...defaults },
-  step: Math.min(stored.step ?? 0, L.steps.length - 1),
-  done: new Set(stored.done || []),
-  attempts: stored.attempts || {}, // step -> [{answer, right}]
-  tried: stored.tried || {}, // step -> [alt labels]
-  curious: stored.curious || [], // questions the learner wants to chase
-  explained: stored.explained || {}, // step -> { text, covered: [point indexes] }
+  step: Math.min(stored.step, L.steps.length - 1),
+  done: new Set(stored.done),
+  attempts: stored.attempts, // step -> [{answer, right}]
+  tried: stored.tried, // step -> [alt labels]
+  curious: stored.curious, // questions the learner wants to chase
+  explained: stored.explained, // step -> { text, covered: [point indexes] }
   altIndex: {},
   view: "lesson",
 };
 const persist = () =>
-  save({ step: S.step, done: [...S.done], attempts: S.attempts, tried: S.tried, notes: notesBox?.value, curious: S.curious, explained: S.explained });
+  save({ steps: STEP_KEYS, step: S.step, done: [...S.done], attempts: S.attempts, tried: S.tried, notes: notesBox?.value, curious: S.curious, explained: S.explained });
 
 // ---------- figure ----------
 // Narrow figures get their own layout when the lesson asks for one:
@@ -312,14 +317,28 @@ function explainBox(step, i) {
   const reveal = h("div", { class: "xp-feedback", "aria-live": "polite" });
   const go = h("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Compare with the teacher's version" });
   const box = h("div", { class: "xp-ask nb-sheet", role: "group", "aria-label": "Explain it back" }, h("p", { class: "xp-q", text: ask.q }), h("p", { class: "xp-muted", text: "Write it before you look. A rough answer is fine; the gaps are the point." }), text, h("div", { class: "xp-row" }, go), reveal);
+  const covered = new Set(prev?.covered || []);
+  const keep = () => {
+    S.explained[i] = { text: text.value.trim(), covered: [...covered] };
+    persist();
+  };
+  // Once the teacher's version is shown, later edits are saved too (the report
+  // reads them), a moment after typing stops and when the box loses focus.
+  let revealed = false;
+  let typing;
+  text.addEventListener("input", () => {
+    if (!revealed) return;
+    clearTimeout(typing);
+    typing = setTimeout(keep, 400);
+  });
+  text.addEventListener("change", () => revealed && (clearTimeout(typing), keep()));
   const showModel = () => {
-    const covered = new Set(prev?.covered || []);
+    revealed = true;
     const checks = (ask.points || []).map((pt, k) => {
       const cb = h("input", { type: "checkbox", id: `xp-pt-${i}-${k}`, checked: covered.has(k) ? true : null });
       cb.addEventListener("change", () => {
         cb.checked ? covered.add(k) : covered.delete(k);
-        S.explained[i] = { text: text.value.trim(), covered: [...covered] };
-        persist();
+        keep();
       });
       return h("li", {}, cb, " ", h("label", { for: `xp-pt-${i}-${k}`, text: pt }));
     });
@@ -330,8 +349,7 @@ function explainBox(step, i) {
       checks.length ? h("ul", { class: "xp-points" }, checks) : null,
       h("p", { class: "nb-hand", text: "Missed something? That's the bit to say out loud once more." }),
     );
-    S.explained[i] = { text: text.value.trim(), covered: [...covered] };
-    persist();
+    keep();
     finishStep(i);
   };
   go.addEventListener("click", () => {
@@ -343,6 +361,21 @@ function explainBox(step, i) {
   });
   if (prev) showModel();
   return box;
+}
+
+// Choice options in a fixed shuffled order per question, so the right answer
+// isn't always in the same place. Options that are all numbers keep their
+// order (a scale reads best sorted), and so does an ask with keepOrder: true.
+// Returns the original indices in display order.
+function optionOrder(options, key, keepOrder = false) {
+  const idx = options.map((_, k) => k);
+  if (keepOrder || options.every((o) => /^\s*[-−+]?\d*\.?\d+\s*$/.test(String(o)))) return idx;
+  const rand = rng(seedFrom(key));
+  for (let k = idx.length - 1; k > 0; k -= 1) {
+    const j = Math.floor(rand() * (k + 1));
+    [idx[k], idx[j]] = [idx[j], idx[k]];
+  }
+  return idx;
 }
 
 function askBox(step, i) {
@@ -361,12 +394,13 @@ function askBox(step, i) {
       h(
         "div",
         { class: "xp-options" },
-        ask.options.map((opt, k) =>
+        optionOrder(ask.options, `${L.id}:${i}`, ask.keepOrder).map((k) =>
           h("button", {
             type: "button",
             class: "xp-option",
             "aria-pressed": "false",
-            text: opt,
+            "data-k": String(k),
+            text: ask.options[k],
             onclick: (e) => {
               choice = k;
               box.querySelectorAll(".xp-option").forEach((b) => b.setAttribute("aria-pressed", String(b === e.currentTarget)));
@@ -587,13 +621,18 @@ function endPanel() {
 // ---------- the film: the same model, narrated ----------
 function filmView() {
   const scenes = L.film || L.steps.map((st) => ({ chapter: st.title, say: st.filmSay || plainText(st.say), set: st.set || {} }));
+  // Each scene's "set" adds to the ones before it, as in the narrated export,
+  // so a scene that sets one value keeps the rest from earlier scenes.
+  const sceneParams = [];
+  scenes.reduce((acc, sc) => {
+    const next = { ...acc, ...(sc.set || {}) };
+    sceneParams.push(next);
+    return next;
+  }, { ...defaults });
   const chapters = [];
   scenes.forEach((sc, i) => (!chapters.length || chapters.at(-1).name !== sc.chapter) && chapters.push({ name: sc.chapter, start: i }));
   const ffig = makeFigure();
   const params = { ...defaults };
-  // Each scene's values build on the scenes before it, exactly as the exported film does.
-  const full = [];
-  scenes.reduce((acc, sc) => (full.push({ ...acc, ...(sc.set || {}) }), { ...acc, ...(sc.set || {}) }), { ...defaults });
   const caption = h("p", { class: "xp-film-caption nb-hand", "aria-live": "polite" });
   const counter = h("span", { class: "nb-print" });
   const play = h("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Play" });
@@ -654,7 +693,7 @@ function filmView() {
     index = Math.max(0, Math.min(scenes.length - 1, i));
     paint();
     const sc = scenes[index];
-    const moving = tweenTo(full[index], animate ? 900 / Number(speed.value) : 0, my);
+    const moving = tweenTo(sceneParams[index], animate ? 900 / Number(speed.value) : 0, my);
     if (!playing) return moving;
     await Promise.all([moving, speak(sc.say, my)]);
     if (my !== token || !playing) return;

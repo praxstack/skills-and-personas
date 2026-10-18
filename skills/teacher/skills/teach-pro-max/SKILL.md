@@ -19,7 +19,11 @@ outcome and support every claim with the right evidence.
 
 Before teaching, read
 [`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md)
-completely and follow it as the normative teaching protocol.
+completely and follow it as the normative teaching protocol, with one
+exception: when the style is `visual-explain` (see "Choose the teaching style"
+below), that section overrides the engine's first live-lesson gate. The
+explanation comes first and the attempt-first gate applies only to the optional
+check that follows it. In `practice-first` the engine's gates apply unchanged.
 
 Resolve every path named by that embedded skill relative to
 `references/prax-teach-v2/`. Read only the detailed references needed for the
@@ -48,6 +52,73 @@ Use the embedded engine's modes:
 
 Infer the lightest suitable mode. Honor `quick`, `lesson`, `course`, `go
 deeper`, `keep it concise`, and **Answer now** overrides immediately.
+
+## Choose the teaching style
+
+Mode says how much to build. Style says what order things happen in. Pick the
+style separately from the mode.
+
+| Style | Default for | Order |
+|---|---|---|
+| `visual-explain` | "Teach me X", "help me understand", "build intuition" | Picture and explanation first, then one optional check, then the learner leads |
+| `practice-first` | Interview prep, DSA/LLD/HLD drills, "quiz me", "practice", any project that pins it | Picture of the problem (not the solution), learner attempts, one hint per miss, then teach |
+| `quick` answer | One bounded question such as "what does X mean?" | Short answer and example, optional visual, optional check |
+
+Precedence, highest first: the learner's explicit request for this turn, then
+a style pinned by the project or agent instructions (for example "teaching
+style: practice-first"), then a preference the learner stated in a consented
+workspace, then the defaults above. The embedded `route` command chooses a
+mode only; it never overrides the style.
+
+### `visual-explain`
+
+1. Infer a starting level and a bounded outcome. Ask only when missing context
+   would change the explanation.
+2. Plan a connected visual story: a concrete anchor, then the mechanism, then
+   the result. Each scene answers one question and shows what changes and why
+   the next scene follows. Explain prerequisites inline where they're needed.
+3. Choose the medium by job: drawings for structure, animation for real change
+   over time, interaction when changing a variable shows its effect. No
+   decoration, no media quota.
+4. When it adds understanding, change one important condition and show why
+   the result changes, and map the visual to the formal terms, code, equations
+   or argument the learner will meet next. State where an analogy stops
+   holding.
+5. Before delivering, check that every scene earns its place, no causal or
+   logical step is skipped, labels match the explanation, and controls or
+   animations produce what the text says. Name any check the host couldn't
+   perform.
+6. Deliver the complete lesson by default; deliver it in layers only when the
+   learner asks.
+7. Offer one optional intuition check, then follow the learner's next request.
+   Viewing a lesson is never evidence of learning; a skipped check leaves
+   performance unknown.
+8. When it doesn't click: if the likely gap is clear, rebuild that link from a
+   different angle at once; if several gaps are plausible, ask one focused
+   question first. Never repeat the same explanation with new wording.
+
+If a requested animation or interaction can't be produced after trying the
+suitable tools, deliver an accurate static version and say what's missing. If
+the learner said that medium is essential, stop and ask instead.
+
+### `practice-first`
+
+Follow the embedded engine's live-lesson gates: put the first prediction,
+retrieval or proposed move before the explanatory model and end the turn
+there. After a miss, give exactly one next hint and wait. After two useful
+misses, or on **Answer now**, teach directly from a different angle, then give
+a fresh variation without naming the pattern. Count spacing in sessions, not
+calendar days.
+
+### Pinning a style
+
+A learner or project can pin a style ("always practice-first here"). Keep the
+pin in the project instructions (for example `CLAUDE.md`) or, in a consented
+workspace, in a plain notes file such as `NOTES.md`, and announce it on resume.
+Never add it to `state/learner.json` or any other engine state file: the state
+engine rejects unknown fields, so a new `preferences` field breaks every later
+engine command. Without consent, honor the pin for the current conversation
+only.
 
 ## Make visualization first-class
 
@@ -80,10 +151,12 @@ the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model though
 
 ## Preserve the teaching invariants
 
-- Diagnose or ask for a meaningful prediction before revealing an answer when
-  effort will help.
-- After an incorrect attempt, reveal exactly one next-needed hint and wait for
-  a revised attempt unless the learner requests **Answer now**.
+- In `practice-first`, and whenever the learner asked to be quizzed, diagnose
+  or ask for a meaningful prediction before revealing an answer. In
+  `visual-explain`, the explanation comes first by design; it is not a
+  retrieval task, so the attempt-first gates apply only to the optional check.
+- After an incorrect attempt at any check, reveal exactly one next-needed hint
+  and wait for a revised attempt unless the learner requests **Answer now**.
 - Separate recognition, recall, explanation, application, discrimination, and
   transfer evidence.
 - Never infer mastery from completion, confidence, time-on-page, one correct

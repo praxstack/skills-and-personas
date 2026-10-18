@@ -37,8 +37,16 @@ def main() -> int:
     ap.add_argument("--out", type=Path)
     ap.add_argument("--skip-qa", action="store_true", help="skip the 6-run visual QA (faster)")
     a = ap.parse_args()
-    out = a.out or Path(tempfile.mkdtemp(prefix="course-"))
     sys.path.insert(0, str(HERE))
+    if a.out:
+        return check(a, a.out)
+    # Builds, screenshots and copied videos run to hundreds of MB: without
+    # --out they go in a folder that is removed afterwards.
+    with tempfile.TemporaryDirectory(prefix="course-") as tmp:
+        return check(a, Path(tmp))
+
+
+def check(a: argparse.Namespace, out: Path) -> int:
     import build_course  # noqa: E402
 
     data = build_course.build_course(a.course, out)
@@ -53,7 +61,11 @@ def main() -> int:
         if lesson["hasCode"]:
             code, text = run(["node", str(EXP / "check_code.mjs"), src, *inc])
             m = re.search(r"(\d+) runs match the model, (\d+) problems", text)
-            parts.append(f"code {m.group(1)} runs ok" if code == 0 and m else "code FAIL")
+            if code == 0 and "no C++ or Python to run" in text:
+                parts.append("code shown, not checked")
+            else:
+                parts.append(f"code {m.group(1)} runs ok" if code == 0 and m and int(m.group(1)) else "code FAIL")
+                code = code or not (m and int(m.group(1)))  # C++ or Python shown but none of it ran
             ok &= code == 0
             if code:
                 print(text)
@@ -71,6 +83,17 @@ def main() -> int:
             ok &= code == 0
             if code:
                 print(text[:3000])
+        stale = build_course.unpublished_change(a.course, data["id"], lesson["id"], build_course.load_manifest(a.course))
+        if stale:
+            parts.append(f"WARN {stale}")
+        if lesson.get("video", "").startswith("https://"):
+            parts.append("video on Blob")
+        elif lesson.get("video"):
+            local = (out / "videos" / f"{lesson['id']}.mp4").exists()
+            parts.append("video local" if local else "video FAIL (missing)")
+            ok &= local
+        else:
+            parts.append("no video")
         failed += not ok
         print(f"{'ok  ' if ok else 'FAIL'} {lesson['id']}: {', '.join(parts)}")
     code, text = run(["node", str(HERE / "check_course_page.mjs"), str(out / "index.html")])
@@ -84,7 +107,8 @@ def main() -> int:
         failed += code != 0
         if code:
             print(text[:3000])
-    print(f"{data['id']}: {len(data['lessons'])} lessons, {'all passed' if not failed else f'{failed} failed'} (outputs in {out})")
+    where = f" (outputs in {out})" if a.out else " (pass --out to keep the outputs)"
+    print(f"{data['id']}: {len(data['lessons'])} lessons, {'all passed' if not failed else f'{failed} failed'}{where}")
     return 1 if failed else 0
 
 

@@ -34,8 +34,19 @@ def probe(path: Path) -> dict:
     return json.loads(r.stdout)
 
 
+class DecodeError(Exception):
+    pass
+
+
 def stretches(path: Path, filt: str, key: str) -> list[float]:
-    r = run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(path), "-vf", filt, "-an", "-f", "null", "-"])
+    """Lengths of the stretches the filter reports. Frames ffmpeg can't decode
+    raise DecodeError: an empty list must mean "none found", not "not looked at".
+    A decoder can hide damage (it conceals the frame and exits 0), so its
+    error lines count too."""
+    r = run(["ffmpeg", "-hide_banner", "-nostats", "-xerror", "-i", str(path), "-vf", filt, "-an", "-f", "null", "-"])
+    bad = [l for l in r.stderr.splitlines() if re.match(r"\[\w+ @ 0x[0-9a-f]+\] .*(error|invalid|corrupt)", l, re.I)]
+    if r.returncode or bad:
+        raise DecodeError((bad or r.stderr.strip().splitlines() or ["ffmpeg failed"])[-1 if not bad else 0])
     return [float(x) for x in re.findall(rf"{key}:\s*([\d.]+)", r.stderr)]
 
 
@@ -89,10 +100,14 @@ def main() -> int:
             problems.append(f"frame rate {fps:.1f} is under 24")
         if video.get("pix_fmt") not in (None, "yuv420p"):
             problems.append(f"pixel format {video.get('pix_fmt')}: use yuv420p for playback everywhere")
-        black = stretches(a.video, "blackdetect=d=1.5:pix_th=0.10", "black_duration")
+        try:
+            black = stretches(a.video, "blackdetect=d=1.5:pix_th=0.10", "black_duration")
+            frozen = stretches(a.video, "freezedetect=n=0.001:d=4", "lavfi.freezedetect.freeze_duration")
+        except DecodeError as e:
+            problems.append(f"the video doesn't decode, so black and frozen stretches weren't checked: {e}")
+            black = frozen = None
         if black:
             problems.append(f"black stretches: {', '.join(f'{b:.1f}s' for b in black)}")
-        frozen = stretches(a.video, "freezedetect=n=0.001:d=4", "lavfi.freezedetect.freeze_duration")
         if frozen:
             problems.append(f"frozen stretches over 4s: {', '.join(f'{f:.1f}s' for f in frozen)}")
         facts.update(black=black, frozen=frozen)
@@ -103,6 +118,12 @@ def main() -> int:
     if audio:
         lufs, peak = loudness(a.video)
         facts.update(lufs=lufs, true_peak=peak)
+        # An audio stream that can't be measured (corrupt, or no summary) is a
+        # failure, not a pass with the checks skipped.
+        if lufs is None:
+            problems.append("audio stream present but its loudness couldn't be measured")
+        if peak is None:
+            problems.append("audio stream present but its true peak couldn't be measured")
         if lufs is not None and abs(lufs - a.lufs) > 2:
             problems.append(f"loudness {lufs} LUFS, target {a.lufs} (±2)")
         if peak is not None and peak > -1:

@@ -14,7 +14,8 @@ dead-simple picture mode. This skill adds depth, evidence, and control.
 Delegate by skill name. Do not restate their rules here.
 
 - Prose quality: load `/unslop`. It must always apply to the page copy and to
-  this skill's own text.
+  this skill's own text. It isn't bundled here. If it isn't installed, say so
+  once and run the plain-language self-check below instead.
 - Visualization and evidence discipline: load `/teach-pro-max`. Take its
   honest-claims boundary. Report what was observed. Name remaining
   uncertainty. Never infer mastery from completion.
@@ -72,7 +73,12 @@ Pick the lightest mode that serves the decision.
    fill decision fields from memory.
 2. Write the page. Apply unslop to every sentence. Short declarative
    sentences, active voice, sentence case headings, straight quotes, no
-   em dashes, no mid-sentence colons.
+   em dashes, no mid-sentence colons. Without unslop, reread every sentence
+   against this self-check before delivering: Is it plain words a newcomer
+   knows, or is each term defined where it first appears? Does it say one
+   thing, with a concrete subject and verb? Can a filler word, hedge or
+   stacked adjective go? Is any claim vaguer than the facts gathered in
+   step 1? Fix each sentence that fails.
 3. Validate. Open the file. Check that details expand with JS disabled,
    filters work with JS on, commands copy cleanly, and no field is empty.
 4. Deliver. State the file path, what is interactive, and what remains

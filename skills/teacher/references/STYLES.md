@@ -8,7 +8,7 @@ Style decides the order things happen in. Pick it before planning the lesson.
 | `practice-first` | interview prep, DSA and design drills, "quiz me", "practise", or when the project pins it | a picture of the problem (never the solution), the learner attempts, one hint per miss, then teach, then a fresh variation |
 | quick answer | one bounded question ("what does idempotent mean?") | a short answer and an example, a picture only if it carries the idea, offer more |
 
-Precedence, highest first: what the learner asks for this turn, a style pinned by the project or agent instructions ("teaching style: practice-first"), a preference stored in a consented journal, then the defaults above.
+Precedence, highest first: what the learner asks for this turn, a style pinned by the project or agent instructions ("teaching style: practice-first"), a preference the learner stated in a consented journal or notes file, then the defaults above. Mode (how much to build: quick, lesson, course) is chosen separately; teach-pro-max's `route` command picks a mode only and never overrides the style.
 
 ## visual-explain
 
@@ -19,6 +19,10 @@ Precedence, highest first: what the learner asks for this turn, a style pinned b
 5. Check every step earns its place, labels match the text, and controls do what the text says. Name any check the host couldn't do.
 6. Deliver the whole lesson, then "where to next?".
 7. When it doesn't click, repair (change one thing). Never repeat the same explanation in new words.
+
+If a requested animation or interaction can't be made after trying the suitable tools, deliver an accurate static version and say what's missing. If the learner said that medium is essential, stop and ask instead.
+
+In visual-explain the explanation comes first by design, so attempt-first gates (teach-pro-max's first live-lesson gate included) apply only to the optional check. In practice-first they apply unchanged.
 
 ## practice-first
 
@@ -32,3 +36,7 @@ The explorable engine follows this order inside each step: manipulate, commit, t
 ## Switching
 
 The learner can switch any time ("just explain it", "let me try first"). Switch at once, and in a series, ask whether to remember it.
+
+## Pinning a style
+
+A pin ("always practice-first here") goes in the project instructions (for example `CLAUDE.md`) or, with consent, in a plain notes file or the series journal (`series.py log ... --note "style: practice-first"`), and is announced on resume. Never write it into teach-pro-max's `state/learner.json` or any other engine state file: that engine rejects unknown fields, so a new field breaks every later engine command. Without consent, honour the pin for this conversation only.

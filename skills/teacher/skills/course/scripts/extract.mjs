@@ -40,12 +40,15 @@ const lessons = course.lessons.map((meta) => {
         kind: ask.kind,
         q: ask.q,
         options: ask.options || null,
+        keepOrder: Boolean(ask.keepOrder),
         answer,
         tol: ask.tol ?? 0,
         unit: ask.unit || "",
         decimals: ask.decimals ?? 2,
         hint: ask.hint || "",
         why: strip(ask.why),
+        // Answerable only with the lesson's figure in front of you (its values aren't in the question).
+        needsFigure: Boolean(ask.needsFigure),
       });
     });
   }

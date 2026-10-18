@@ -6,8 +6,10 @@
 Builds each explorable lesson, runs explorable/scripts/narrate.py on it and
 writes courses/<id>/videos/<lesson-id>.mp4 with its .vtt captions (and a
 .sheet.png contact sheet to look at, which .gitignore keeps out of git). The
-course page links them as "Watch the narrated video". Run it with a Python
-that has kokoro-onnx, soundfile and numpy installed.
+MP4s stay out of git too: publish_videos.mjs puts them on Vercel Blob and
+records their URLs in courses/videos.json, and a lesson with a URL there
+counts as made. The course page links them as "Watch the narrated video".
+Run it with a Python that has kokoro-onnx, soundfile and numpy installed.
 """
 
 from __future__ import annotations
@@ -29,12 +31,14 @@ def main() -> int:
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--board", choices=["paper", "chalk"], default="paper")
-    ap.add_argument("--remux", action="store_true", help="keep each existing video's picture and only remake its sound")
+    ap.add_argument("--remux", action="store_true", help="remake only the sound of every existing video, keeping its picture (no --force needed)")
     a = ap.parse_args()
     meta = json.loads((a.course / "course.json").read_text())
     shared = [x for s in meta.get("shared", []) for x in ("--include", str(a.course / s))]
     out_dir = a.course / "videos"
     out_dir.mkdir(exist_ok=True)
+    manifest_file = a.course.resolve().parent / "videos.json"
+    published = json.loads(manifest_file.read_text()) if manifest_file.exists() else {}
     bad = 0
     for lesson in meta["lessons"]:
         if a.only and lesson["id"] not in a.only:
@@ -42,8 +46,24 @@ def main() -> int:
         if not lesson["file"].endswith(".lesson.js"):
             continue
         mp4 = out_dir / f"{lesson['id']}.mp4"
+        on_blob = bool(published.get(f"{meta['id']}/{lesson['id']}.mp4"))
+        if (mp4.exists() or on_blob) and not (a.force or a.remux) and not mp4.with_suffix(".vtt").exists():
+            # build_course.py won't offer a video without its captions, so skipping would leave it stuck.
+            print(f"FAIL {lesson['id']}: the video is made but {mp4.with_suffix('.vtt').name} is missing; "
+                  f"--force --only {lesson['id']} makes both again")
+            bad += 1
+            continue
+        # --remux works on the videos that exist (it keeps their picture), so it
+        # implies --force for them and skips lessons that have no video yet.
+        if a.remux and not mp4.exists():
+            print(f"skip {lesson['id']}: no video to remux")
+            continue
         if mp4.exists() and not (a.force or a.remux):
             print(f"skip {lesson['id']}: already made")
+            continue
+        # A published video is made, but --remux still remakes its sound.
+        if on_blob and not (a.force or a.remux):
+            print(f"skip {lesson['id']}: already on Blob (courses/videos.json); --force makes it again")
             continue
         with tempfile.TemporaryDirectory() as tmp:
             page = Path(tmp) / f"{lesson['id']}.html"

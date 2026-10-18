@@ -27,8 +27,9 @@
 
 Needs: kokoro-onnx, soundfile and numpy in the Python running this script
 (pip install kokoro-onnx==0.6.1 soundfile==0.14.0), the Kokoro model files
-(downloaded and SHA-256 checked into ~/.cache/kokoro on first use), Node with
-Playwright, and ffmpeg. The bundled explainer-video skill documents the full
+(downloaded and SHA-256 checked into ~/.cache/kokoro on first use; KOKORO_DIR
+moves them), Node with Playwright, and ffmpeg. Spoken clips are cached in
+~/.cache/kai-mori-voice; NARRATE_CACHE moves the cache. The bundled explainer-video skill documents the full
 voice ladder (Kokoro, then edge-tts, then Piper) if Kokoro can't run.
 """
 
@@ -142,10 +143,19 @@ def has_gpu_chatterbox() -> bool:
         return False
 
 
-def make_voice(engine: str, voice: str, speed: float):
-    """Return (name, speak) where speak(sentence) gives float32 audio at SR."""
+KOKORO_SPEED = 0.95  # Kokoro's teaching pace when --speed isn't given
+
+
+def make_voice(engine: str, voice: str, speed: float | None):
+    """Return (name, speak) where speak(sentence) gives float32 audio at SR.
+    speed is None when --speed wasn't given: Kokoro then uses KOKORO_SPEED."""
+    # Chatterbox has no speed control, so only an explicit speed other than
+    # 1.0 rules it out (for auto too); without --speed it's free to pick.
+    fixed = speed is None or speed == 1.0
     if engine == "auto":
-        engine = "chatterbox" if has_gpu_chatterbox() else "kokoro"
+        engine = "chatterbox" if fixed and has_gpu_chatterbox() else "kokoro"
+    if engine == "chatterbox" and not fixed:
+        raise SystemExit("chatterbox can't change speed; drop --speed or use --engine kokoro")
     if engine == "chatterbox":
         model = chatterbox()
 
@@ -156,6 +166,8 @@ def make_voice(engine: str, voice: str, speed: float):
             return wav
 
         return "chatterbox", speak
+    if speed is None:
+        speed = KOKORO_SPEED
     tts = kokoro()
 
     def speak(sentence: str) -> np.ndarray:
@@ -298,12 +310,52 @@ def run(cmd: list[str]) -> str:
     return r.stdout
 
 
+def cue_text(text: str) -> str:
+    """WebVTT cue text is markup: a bare < starts a tag and swallows the rest
+    of the line ("det < 0" showed as "det "), so escape &, < and >."""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def vtt(timing: dict, texts: list[str]) -> str:
     def stamp(s: float) -> str:
         ms = int(round(s * 1000))
         return f"{ms // 3600000:02d}:{ms % 3600000 // 60000:02d}:{ms % 60000 // 1000:02d}.{ms % 1000:03d}"
-    cues = [f"{i + 1}\n{stamp(sc['voiceAt'])} --> {stamp(sc['start'] + sc['dur'])}\n{texts[i]}\n" for i, sc in enumerate(timing["scenes"])]
+    cues = [f"{i + 1}\n{stamp(sc['voiceAt'])} --> {stamp(sc['start'] + sc['dur'])}\n{cue_text(texts[i])}\n" for i, sc in enumerate(timing["scenes"])]
     return "WEBVTT\n\n" + "\n".join(cues)
+
+
+def video_length(path: Path) -> tuple[float, float]:
+    """(seconds, frames per second) of a file's video stream."""
+    out = json.loads(run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=duration,r_frame_rate:format=duration", "-of", "json", str(path)]))
+    st = (out.get("streams") or [{}])[0]
+    num, _, den = st.get("r_frame_rate", "24/1").partition("/")
+    fps = float(num) / float(den or 1) or 24.0
+    return float(st.get("duration") or out.get("format", {}).get("duration") or 0), fps
+
+
+def picture_scene_ends(video: Path) -> list[float] | None:
+    """When each scene ends in an existing video's picture: from its .timing.json,
+    else from its .vtt (each cue ends where its scene ends; videos made before the
+    sidecar only have that). None when neither file is there."""
+    side = video.with_suffix(".timing.json")
+    if side.exists():
+        return [sc["start"] + sc["dur"] for sc in json.loads(side.read_text())["scenes"]]
+    cap = video.with_suffix(".vtt")
+    if cap.exists():
+        # Cue text escapes ">", so "-->" only appears in timing lines.
+        return [int(h) * 3600 + int(m) * 60 + int(s) + int(ms) / 1000
+                for h, m, s, ms in re.findall(r"--> (\d+):(\d\d):(\d\d)\.(\d{3})", cap.read_text())]
+    return None
+
+
+def remux_drift(total: float, length: float, fps: float) -> str | None:
+    """Why the old picture can't carry the new sound, or None if it can. The
+    picture was rendered as ceil(total * fps) frames, so a length more than a
+    frame away from the new total means the scene timings changed."""
+    if abs(length - total) > 1 / fps + 1e-6:
+        return (f"the new timing runs {total:.2f} s but the video is {length:.2f} s: the voice or the scenes changed, "
+                "so the picture would drift out of step. Render it again without --remux")
+    return None
 
 
 def true_peak(path: Path) -> float | None:
@@ -332,16 +384,16 @@ def main() -> int:
     ap.add_argument("-o", "--out", type=Path, required=True)
     ap.add_argument("--engine", choices=["auto", "kokoro", "chatterbox"], default="auto")
     ap.add_argument("--voice", default="af_heart", help="Kokoro voice")
-    ap.add_argument("--speed", type=float, default=0.95)
+    ap.add_argument("--speed", type=float, default=None, help=f"Kokoro's pace (default {KOKORO_SPEED}); Chatterbox only takes 1.0")
     ap.add_argument("--pause", type=float, default=0.3, help="seconds between sentences")
     ap.add_argument("--board", choices=["paper", "chalk"], default="paper")
     ap.add_argument("--fps", type=int, default=24)
     ap.add_argument("--crf", type=int, default=28, help="x264 quality: lower is bigger and sharper")
     ap.add_argument("--keep", action="store_true", help="keep the frames folder")
     ap.add_argument("--pen", action="store_true", help="add the pen's sound under the marks (off by default: it follows an estimate of the strokes, not the strokes)")
-    ap.add_argument("--remux", action="store_true", help="keep the picture of the existing --out video and only remake its sound")
+    ap.add_argument("--remux", action="store_true", help="keep the picture of the existing --out video and only remake its sound (refused if the new timing is more than a frame off its length)")
     a = ap.parse_args()
-    for tool in ("node", "ffmpeg"):
+    for tool in ("node", "ffmpeg", "ffprobe"):
         if not shutil.which(tool):
             raise SystemExit(f"{tool} not found")
 
@@ -362,66 +414,85 @@ def main() -> int:
         t += dur
     timing["total"] = t + 0.8
     work = Path(tempfile.mkdtemp(prefix="narrate-"))
-    (work / "timing.json").write_text(json.dumps(timing))
+    # The frames and audio go in a temp folder that is removed however the
+    # render ends (kept only with --keep), so a failure leaves no frames behind.
+    try:
+        (work / "timing.json").write_text(json.dumps(timing))
 
-    frames = work / "frames"
-    if a.remux:
-        if not a.out.exists():
-            raise SystemExit(f"--remux needs the existing video at {a.out}")
+        frames = work / "frames"
+        if a.remux:
+            if not a.out.exists():
+                raise SystemExit(f"--remux needs the existing video at {a.out}")
+            if a.pen:
+                raise SystemExit("--remux can't add the pen: it needs the marks from a fresh render")
+            # The picture was drawn against the old scene timings. Refuse when the new narration changes
+            # them, or the voice and captions would drift from the picture and -shortest would cut one.
+            # A matching total alone isn't enough: one scene longer and another shorter would pass it.
+            before = picture_scene_ends(a.out)
+            if before is None:
+                raise SystemExit(f"--remux needs {a.out.with_suffix('.timing.json').name} or {a.out.with_suffix('.vtt').name} "
+                                 "to check the scene timings; render the picture again without --remux")
+            after = [sc["start"] + sc["dur"] for sc in timing["scenes"]]
+            if len(before) != len(after) or any(abs(x - y) > 0.05 for x, y in zip(before, after)):
+                raise SystemExit("--remux: the new narration moves the scene timings; render the picture again without --remux")
+            # And the picture's length must still match the new total, to the frame.
+            drift = remux_drift(timing["total"], *video_length(a.out))
+            if drift:
+                raise SystemExit(f"--remux refused: {drift}")
+            marks = [0] * len(scenes)
+        else:
+            print("rendering frames…")
+            run(["node", str(HERE / "film_export.mjs"), str(a.lesson), "--timing", str(work / "timing.json"), "--out", str(frames), "--fps", str(a.fps), "--board", a.board])
+            marks = json.loads((frames / "marks.json").read_text())["marks"]
+
+        # Voice track plus the pen: each scene's marks draw one after another over its first 45%.
+        total = int(timing["total"] * SR) + SR
+        voice = np.zeros(total, dtype=np.float32)
+        pen = np.zeros(total, dtype=np.float32)
+        rng = np.random.default_rng(7)
+        kind = "chalk" if a.board == "chalk" else "paper"
+        bank = load_pen(kind)
         if a.pen:
-            raise SystemExit("--remux can't add the pen: it needs the marks from a fresh render")
-        marks = [0] * len(scenes)
-    else:
-        print("rendering frames…")
-        run(["node", str(HERE / "film_export.mjs"), str(a.lesson), "--timing", str(work / "timing.json"), "--out", str(frames), "--fps", str(a.fps), "--board", a.board])
-        marks = json.loads((frames / "marks.json").read_text())["marks"]
+            print(f"pen: {'recordings' if bank else 'friction synth'} ({kind})")
+        for sc, clip, m in zip(timing["scenes"], clips, marks):
+            s = int(sc["voiceAt"] * SR)
+            voice[s: s + len(clip)] += clip[: total - s]
+            if m and a.pen:
+                window = 0.45 * sc["dur"]
+                for j in range(m):
+                    st = int((sc["start"] + window * j / m) * SR)
+                    sx = scratch(window / m * 0.85, kind == "chalk", rng, bank)
+                    pen[st: st + len(sx)] += sx[: total - st]
+        voice /= max(1e-6, np.max(np.abs(voice))) / 0.9
+        v = active_rms(voice)
+        p = active_rms(pen)
+        if p:
+            pen *= v * db(PEN_UNDER_VOICE_DB[kind]) / p
+        mix = voice + pen + room_tone(total, rng) * v * db(ROOM_TONE_DB)
+        mix /= max(1.0, np.max(np.abs(mix)) / 0.95)
+        sf.write(work / "audio.wav", mix, SR)
 
-    # Voice track plus the pen: each scene's marks draw one after another over its first 45%.
-    total = int(timing["total"] * SR) + SR
-    voice = np.zeros(total, dtype=np.float32)
-    pen = np.zeros(total, dtype=np.float32)
-    rng = np.random.default_rng(7)
-    kind = "chalk" if a.board == "chalk" else "paper"
-    bank = load_pen(kind)
-    if a.pen:
-        print(f"pen: {'recordings' if bank else 'friction synth'} ({kind})")
-    for sc, clip, m in zip(timing["scenes"], clips, marks):
-        s = int(sc["voiceAt"] * SR)
-        voice[s: s + len(clip)] += clip[: total - s]
-        if m and a.pen:
-            window = 0.45 * sc["dur"]
-            for j in range(m):
-                st = int((sc["start"] + window * j / m) * SR)
-                sx = scratch(window / m * 0.85, kind == "chalk", rng, bank)
-                pen[st: st + len(sx)] += sx[: total - st]
-    voice /= max(1e-6, np.max(np.abs(voice))) / 0.9
-    v = active_rms(voice)
-    p = active_rms(pen)
-    if p:
-        pen *= v * db(PEN_UNDER_VOICE_DB[kind]) / p
-    mix = voice + pen + room_tone(total, rng) * v * db(ROOM_TONE_DB)
-    mix /= max(1.0, np.max(np.abs(mix)) / 0.95)
-    sf.write(work / "audio.wav", mix, SR)
-
-    a.out.parent.mkdir(parents=True, exist_ok=True)
-    # Write and check a .partial copy; the real file is only replaced once it
-    # passes, so a failed render never clobbers a good video.
-    out = a.out.with_name(a.out.stem + ".partial" + a.out.suffix)
-    print("encoding…")
-    master = "loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,alimiter=limit=0.75:attack=1:release=60:level=false"
-    if a.remux:
-        run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(a.out), "-i", str(work / "audio.wav"), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
-             "-af", master, "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
-    else:
-        run(["ffmpeg", "-loglevel", "error", "-y", "-framerate", str(a.fps), "-i", str(frames / "%06d.png"), "-i", str(work / "audio.wav"),
-             "-af", master, "-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p", "-crf", str(a.crf),
-             "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
-    settle_peak(out)
-    out.with_suffix(".vtt").write_text(vtt(timing, [sc["say"] for sc in scenes]))
-    if not a.keep:
-        shutil.rmtree(work, ignore_errors=True)
-    else:
-        print(f"work files in {work}")
+        a.out.parent.mkdir(parents=True, exist_ok=True)
+        # Write and check a .partial copy; the real file is only replaced once it
+        # passes, so a failed render never clobbers a good video.
+        out = a.out.with_name(a.out.stem + ".partial" + a.out.suffix)
+        print("encoding…")
+        master = "loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,alimiter=limit=0.75:attack=1:release=60:level=false"
+        if a.remux:
+            run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(a.out), "-i", str(work / "audio.wav"), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
+                 "-af", master, "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
+        else:
+            run(["ffmpeg", "-loglevel", "error", "-y", "-framerate", str(a.fps), "-i", str(frames / "%06d.png"), "-i", str(work / "audio.wav"),
+                 "-af", master, "-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p", "-crf", str(a.crf),
+                 "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])
+        settle_peak(out)
+        out.with_suffix(".vtt").write_text(vtt(timing, [sc["say"] for sc in scenes]))
+        out.with_suffix(".timing.json").write_text(json.dumps(timing))  # lets a later --remux check the picture still fits
+    finally:
+        if a.keep:
+            print(f"work files in {work}")
+        else:
+            shutil.rmtree(work, ignore_errors=True)
     print(f"wrote {out} ({timing['total']:.1f} s) and {out.with_suffix('.vtt').name}")
     r = subprocess.run([sys.executable, str(QA / "check_video.py"), str(out), "--sheet", str(out.with_suffix(".sheet.png"))], capture_output=True, text=True)
     print(r.stdout.strip())
@@ -434,7 +505,7 @@ def main() -> int:
         print(sp.stdout.strip() or sp.stderr.strip()[-400:])
         code = code or sp.returncode
     if code == 0:
-        for ext in (a.out.suffix, ".vtt", ".sheet.png"):
+        for ext in (a.out.suffix, ".vtt", ".timing.json", ".sheet.png"):
             src = out.with_suffix(ext) if ext != a.out.suffix else out
             if ext == ".sheet.png":
                 src = out.with_name(out.stem + ".sheet.png")
