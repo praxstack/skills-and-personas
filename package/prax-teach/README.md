@@ -81,7 +81,7 @@ The job roles (lesson, canary, mutation, control) are kept in `$PTK_STATE/claims
 
 ## Learner state
 
-`python -m ptk.state` is v2's consent-first state engine, ported, with schema 2 adding `navigation` and `evidence` events. One change from v2: macOS backup and versioning give new files under `~/Developer` and the C study workspace a second hard link. So a state file with more than one link is now accepted if it is a regular file owned by you, with a warning on stderr. Symlinks, files owned by someone else and non-regular files are still refused. `plan/PROTECTED-MAP.md` in the dev tree records this, including the risk it leaves.
+`python -m ptk.state` is v2's consent-first state engine, ported, with schema 2 adding `navigation` and `evidence` events. One change from v2 (D22.3, pending Prax): macOS backup and versioning give new files under `~/Developer` and the C study workspace a second hard link, so state binds content instead of counting links. Each workspace's `state/` directory and every file the engine writes carry the workspace's learner binding (the extended attribute `user.praxteach.learner`). A file with an extra link is read, with a warning, only when it is a regular file you own carrying this workspace's binding. A file linked in from another learner's workspace is refused (exit 5). Writes always land on a fresh inode, and locks are created with `O_EXCL`. Older unbound files with an extra link are refused until `python -m ptk.state rebind <workspace> --confirm` copies them onto fresh inodes. `plan/PROTECTED-MAP.md` in the dev tree records this, including the risk it leaves.
 
 ## Exemplars
 
