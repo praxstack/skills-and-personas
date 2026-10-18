@@ -488,29 +488,24 @@ def _setup_hf_chrome(item):
 
 
 def _setup_font(item):
-    """Fetch the upstream OFL font (pinned sha256), subset to Latin, write woff2 + LICENSE."""
-    raw = state_path("downloads", "fonts", Path(item["dest"]).name.replace(".woff2", ".ttf"))
-    if not (raw.exists() and sha256_file(raw) == item["sha256"]):
-        _fetch(item["url"], raw, item["sha256"], item.get("size"))
-    out = FONTS_DIR / item["dest"]
-    out.parent.mkdir(parents=True, exist_ok=True)
-    core = state_path("venvs", "core", "bin", "python")
-    run([core, "-m", "fontTools.subset", str(raw), f"--output-file={out}", "--flavor=woff2",
-         "--unicodes=U+0020-007E,U+00A0-00FF,U+2013,U+2014,U+2018,U+2019,U+201C,U+201D,U+2022,U+2026,U+2192,U+2190,U+2193,U+00B7,U+2212",
-         "--layout-features=*", "--name-IDs=*", "--no-hinting"], check=True)
-    lic = FONTS_DIR / item["license_dest"]
-    if not (lic.exists() and sha256_file(lic) == item["license_sha256"]):
-        _fetch(item["license_url"], lic, item["license_sha256"])
-    _write_font_sums()
-    return {"url": item["url"], "path": str(out), "size": raw.stat().st_size, "sha256": item["sha256"],
-            "derived_sha256": sha256_file(out), "derived_size": out.stat().st_size,
-            "license": str(lic), "license_url": item["license_url"], "source": "fetched + fontTools subset"}
-
-
-def _write_font_sums():
-    lines = [f"{sha256_file(p)}  {p.name}" for p in sorted(FONTS_DIR.iterdir())
-             if p.is_file() and p.name != "SHA256SUMS"]
-    (FONTS_DIR / "SHA256SUMS").write_text("\n".join(lines) + "\n")
+    """Verify a bundled font against the committed pin (assets/fonts/SHA256SUMS). Setup never writes
+    into the package (AC-0.1, review P2-1): the woff2 subsets and licenses ship with it. The upstream
+    URL and sha256 stay in the registry as provenance for re-subsetting, which a maintainer does by hand."""
+    pins = {}
+    for line in (FONTS_DIR / "SHA256SUMS").read_text().splitlines():
+        if line.strip():
+            digest, name = line.split(None, 1)
+            pins[name.strip()] = digest
+    out, lic = FONTS_DIR / item["dest"], FONTS_DIR / item["license_dest"]
+    for f in (out, lic):
+        if not f.is_file() or sha256_file(f) != pins.get(f.name):
+            raise errors.SetupError(f"bundled {f.name} is missing or does not match assets/fonts/SHA256SUMS",
+                                    path=str(f), pinned=pins.get(f.name))
+    if pins.get(lic.name) != item["license_sha256"]:
+        raise errors.SetupError(f"{lic.name} pin disagrees with the registry", registry=item["license_sha256"])
+    return {"url": item["url"], "path": str(out), "size": out.stat().st_size, "sha256": pins[out.name],
+            "upstream_sha256": item["sha256"], "license": str(lic), "license_url": item["license_url"],
+            "source": "bundled subset, verified against the committed SHA256SUMS (setup writes nothing here)"}
 
 
 def _du(path):

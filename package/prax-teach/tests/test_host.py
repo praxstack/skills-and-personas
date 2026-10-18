@@ -11,10 +11,12 @@ REQUIRED = {"playwright-chromium", "node-tools", "hyperframes-chrome", "kokoro-m
 
 def test_setup_inventory_and_paths():
     """`ptk host setup --yes`, run inside a sandbox that denies every write outside $PTK_STATE
-    (and the bundled-fonts dir), must finish and leave an inventory with a sha256 per item."""
+    must finish and leave an inventory with a sha256 per item. The bundled fonts are checked against
+    the committed SHA256SUMS, which setup never rewrites."""
     st = host.state_dir()
     jail = host.PKG / "tests" / "fixtures" / "write-jail.sb"
-    res = host.run([host.sandbox_exec(), "-f", jail, "-D", f"STATE={st}", "-D", f"FONTS={host.FONTS_DIR}",
+    sums_before = host.sha256_file(host.FONTS_DIR / "SHA256SUMS")
+    res = host.run([host.sandbox_exec(), "-f", jail, "-D", f"STATE={st}",
                     *ptk_cmd(), "host", "setup", "--yes"],
                    env=host.child_env({"PTK_STATE": str(st), "TMPDIR": str(st / "tmp") + "/"}), timeout=3600)
     assert res.code == 0, f"setup failed inside the write jail: {res.stderr[-1500:]}"
@@ -33,9 +35,10 @@ def test_setup_inventory_and_paths():
     hf = host.registry()["hyperframes_chrome"]
     assert (st / "browsers" / "hyperframes" / hf["dir"] / hf["binary"]).exists()
     assert list((st / "browsers").glob("chromium_headless_shell-*")), "Playwright Chromium missing"
+    assert host.sha256_file(host.FONTS_DIR / "SHA256SUMS") == sums_before, "setup rewrote the font pins"
+    sums = dict(reversed(ln.split(None, 1)) for ln in (host.FONTS_DIR / "SHA256SUMS").read_text().splitlines() if ln.strip())
     for f in host.FONTS_DIR.glob("*.woff2"):
-        sums = (host.FONTS_DIR / "SHA256SUMS").read_text()
-        assert host.sha256_file(f) in sums, f.name
+        assert sums.get(f.name) == host.sha256_file(f), f.name
     return {"items": len(inv["items"]), "total_bytes": inv["total_bytes"]}
 
 

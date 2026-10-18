@@ -1,9 +1,8 @@
-;; Test-only profile: allow everything except file writes outside STATE and FONTS.
-;; Used by tests/test_host.py to prove `ptk host setup` writes only inside $PTK_STATE
-;; (plus the font files in package/prax-teach/assets/fonts, which the spec places there).
+;; Test-only profile: allow everything except file writes outside STATE.
+;; Used by tests/test_host.py to prove `ptk host setup` writes only inside $PTK_STATE.
+;; The bundled fonts are verified, never written (review P2-1), so the package dir is not allowed.
 (version 1)
 (allow default)
 (deny file-write*)
-(allow file-write* (subpath (param "STATE")) (subpath (param "FONTS")))
-(allow file-write* (subpath "/private/var/folders"))
+(allow file-write* (subpath (param "STATE")))
 (allow file-write* (literal "/dev/null") (literal "/dev/tty") (regex #"^/dev/fd/") (regex #"^/dev/ttys"))
