@@ -311,7 +311,13 @@ function playVideo(l, box) {
   // either way.
   const video = el("video", { controls: "", preload: "metadata", playsinline: "", src: l.video, "aria-label": `Narrated video: ${l.title}` });
   if (l.captions) video.append(captionTrack(l.captions));
-  box.replaceChildren(video, el("a", { class: "nb-print", href: l.video, text: "Open the video on its own" }));
+  const open = el("a", { class: "nb-print", href: l.video, text: "Open the video on its own" });
+  box.replaceChildren(video, open);
+  // A host can refuse a video (a paywall, a lapsed link): say so instead of
+  // leaving an empty player, and let the link show the host's own page.
+  video.addEventListener("error", () => {
+    open.textContent = "The video didn't load here. Open it on its own to see why";
+  });
   video.play().catch(() => {
     /* autoplay with sound needs a click; the controls are there */
   });

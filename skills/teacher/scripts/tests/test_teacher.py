@@ -547,6 +547,16 @@ class Builds(unittest.TestCase):
                 self.assertNotIn("captions", lessons[lid])
             self.assertFalse((out / "one/videos/one-b.vtt").exists(), "captions without a video are not shipped")
             self.assertIn("1 narrated videos", (out / "index.html").read_text())
+            # --video-url sends Blob videos through the host's own route; captions don't change.
+            routed = Path(tmp) / "routed"
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(routed), "--base", "/courses", "--video-url", "/api/watch?v={course}/{lesson}")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            page = (routed / "one/index.html").read_text()
+            lessons = {l["id"]: l for l in json.loads(re.search(r"window\.COURSE = (.*?);\n", page).group(1))["lessons"]}
+            self.assertEqual(lessons["one-a"]["video"], "/api/watch?v=one/one-a")
+            self.assertEqual(lessons["one-a"]["captions"], "/courses/one/videos/one-a.vtt")
+            self.assertNotIn(url, page, "the Blob URL isn't on the page")
+            self.assertNotIn("video", lessons["one-b"])
             # A video without captions fails the build instead of shipping without a track.
             (d / "videos/one-a.vtt").unlink()
             r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(Path(tmp) / "out2"))

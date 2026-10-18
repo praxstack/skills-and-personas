@@ -23,6 +23,10 @@ the URL for "<course-id>/<lesson-id>.mp4" in courses/videos.json (the MP4s
 live in Vercel Blob, see publish_videos.mjs), else the lesson has no video
 button. The captions always come from videos/<lesson-id>.vtt in git and are
 served beside the pages.
+
+--video-url TEMPLATE points the pages at the host's own video route instead of
+the Blob URL, e.g. --video-url "/api/watch?v={course}/{lesson}", so the host
+decides who gets each video (Kai Mori's paywall does). Local MP4s are unchanged.
 """
 
 from __future__ import annotations
@@ -97,9 +101,15 @@ def unpublished_change(course_dir: Path, course_id: str, lesson_id: str, manifes
     return f"local {local.name} isn't the video on Blob; run npm run publish:videos"
 
 
-def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: dict | None = None, base: str = "", root: str = "") -> dict:
+def video_route(template: str, course_id: str, lesson_id: str) -> str:
+    """The host's URL for a Blob-hosted video, from a --video-url template."""
+    return template.replace("{course}", course_id).replace("{lesson}", lesson_id)
+
+
+def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: dict | None = None, base: str = "", root: str = "", video_url: str = "") -> dict:
     """base: URL path this course's folder is served at ('' for relative links);
-    root: the URL path of the catalog that holds it (for prerequisite links)."""
+    root: the URL path of the catalog that holds it (for prerequisite links);
+    video_url: a --video-url template for Blob-hosted videos ('' for the Blob URL)."""
     base, root = norm_base(base), norm_base(root)
     data = extract(course_dir)
     for ident in [data.get("id", "course"), *(l["id"] for l in data["lessons"])]:
@@ -126,7 +136,7 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
                 shutil.copy2(where, out / "videos" / where.name)
                 lesson["video"] = f"{base}videos/{where.name}"
             else:
-                lesson["video"] = where
+                lesson["video"] = video_route(video_url, data["id"], lesson["id"]) if video_url else where
             # Captions stay same-origin even when the video is on Blob. A video
             # without them isn't offered: narrate.py writes the .vtt beside the MP4.
             vtt = course_dir / "videos" / f"{lesson['id']}.vtt"
@@ -162,7 +172,7 @@ CATALOG_CSS = ENGINE / "course.css"
 DEFAULT_BRAND = "Kai Mori"
 
 
-def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "", brand: str = DEFAULT_BRAND) -> None:
+def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "", brand: str = DEFAULT_BRAND, video_url: str = "") -> None:
     """brand: the name over the catalog and in its title ("" for none)."""
     base = norm_base(base)
     dirs = sorted(d for d in root.iterdir() if (d / "course.json").exists())
@@ -171,7 +181,7 @@ def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "",
     built = []
     for d in dirs:
         cid = metas[d.name]["id"]
-        data = build_course(d, out / cid, fragment, titles, base=f"{base}{cid}/" if base else "", root=base)
+        data = build_course(d, out / cid, fragment, titles, base=f"{base}{cid}/" if base else "", root=base, video_url=video_url)
         built.append(data)
         print(f"built {data['id']}: {len(data['lessons'])} lessons")
     # Courses a learner should take first come first; each card links both ways.
@@ -249,12 +259,13 @@ def main() -> int:
     ap.add_argument("--base", default="", help="URL path the output folder is served at, e.g. /courses/ (default: relative links)")
     ap.add_argument("--root", default="", help="with a single course and --base: the URL path of its catalog, for prerequisite links")
     ap.add_argument("--brand", default=DEFAULT_BRAND, help=f"with --catalog: the name over the catalog page (default: {DEFAULT_BRAND}; \"\" for none)")
+    ap.add_argument("--video-url", default="", help='URL template for Blob-hosted videos, e.g. "/api/watch?v={course}/{lesson}" (default: the Blob URL)')
     ap.add_argument("--icon", default="", help="URL of an SVG site icon to link from every page, e.g. /favicon.svg")
     a = ap.parse_args()
     if a.catalog:
-        build_catalog(a.course, a.out, a.fragment, a.base, a.brand)
+        build_catalog(a.course, a.out, a.fragment, a.base, a.brand, a.video_url)
     else:
-        data = build_course(a.course, a.out, a.fragment, base=a.base, root=a.root)
+        data = build_course(a.course, a.out, a.fragment, base=a.base, root=a.root, video_url=a.video_url)
         print(f"built {data['id']}: {len(data['lessons'])} lessons into {a.out}")
     if a.icon and not a.fragment:
         add_icon(a.out, a.icon)
