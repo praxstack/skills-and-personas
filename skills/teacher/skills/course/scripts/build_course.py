@@ -102,11 +102,11 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
     root: the URL path of the catalog that holds it (for prerequisite links)."""
     base, root = norm_base(base), norm_base(root)
     data = extract(course_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    shared = [course_dir / s for s in data.get("shared", [])]
     for ident in [data.get("id", "course"), *(l["id"] for l in data["lessons"])]:
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", str(ident)):
             raise SystemExit(f"{course_dir}: id {ident!r} may use only letters, digits, - and _ (it becomes a file name)")
+    out.mkdir(parents=True, exist_ok=True)
+    shared = [course_dir / s for s in data.get("shared", [])]
     manifest = load_manifest(course_dir)
     for lesson in data["lessons"]:
         src = course_dir / lesson["file"]
