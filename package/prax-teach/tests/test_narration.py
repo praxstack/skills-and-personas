@@ -3,7 +3,8 @@ screen when they are spoken.
 
   pace        per narration line, words per minute <= 170, measured from the final audio. The MP4's track is
               resampled to 16 kHz mono and silencedetect (-40 dB, 0.12 s) finds the silences. The line's window
-              runs between the midpoints of the gaps to its neighbours (the planned timeline only separates lines);
+              runs between the midpoints of the gaps to its neighbours (the planned timeline only separates lines;
+              the last window ends where the audio track ends);
               speech starts where the first silence in the window ends and stops where the last one begins, so
               pauses inside a line count. Words are the TTS input (the spoken form): whitespace tokens, hyphenated
               parts counted apart, numbers counted as read aloud ("66" is 2, "1.5" is 3). The whisper word span
@@ -349,9 +350,11 @@ def _lesson(slug):
     try:
         words, winfo = media.whisper_words(b / "video" / "lesson.mp4", work)
         starts, ends = media.silences(work / "speech-16k.wav")
+        audio_end = float(media.probe(work / "speech-16k.wav")["format"]["duration"])
     finally:
         shutil.rmtree(work, ignore_errors=True)
-    duration = timing.get("duration") or cues[-1]["end"] + 1
+    # the last line's window ends where the audio ends (the film may run on silently after it)
+    duration = min(timing.get("duration") or cues[-1]["end"] + 1, audio_end)
     rows = pace_rows(cues, starts, ends, duration, words)
     heard = {}
     for c, (lo, hi) in zip(cues, windows(cues, duration)):
