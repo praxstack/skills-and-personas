@@ -528,6 +528,17 @@
             ]
           },
           "description": "Source-guard constructs (ptk/capture/guard.py) this claim declares on purpose for the programs in `programs`. Honoured only for programs that never run (ub:true or run:false); the claim goes through claims review like any other. Without it, capture refuses the construct by name."
+        },
+        "needs_hedge": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "on this machine"
+            ]
+          },
+          "description": "Hedge phrases this claim needs in narration (AC-10.5). Closed list: \"on this machine\" only, and only on a claim that cites a platform fact and whose own text holds the phrase. The claims job shows this field, so reviewers judge each exemption."
         }
       }
     },
