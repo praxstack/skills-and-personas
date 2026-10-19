@@ -13,7 +13,7 @@ Everything here is plain files and scripts. Nothing depends on one host. Where a
 
 1. **Find out what this host can do.** Can you write files, run shell commands, open a browser, publish a page, start subagents? Don't assume; check the tools you actually have. Then run `python3 scripts/find_tool.py --inventory --net` once to see which visual tools work here. See [references/HOSTS.md](references/HOSTS.md).
 2. **Find the learner.** If there's a consented journal (`.teacher/` in the workspace), run `python3 scripts/series.py resume` and pick up the open thread. Otherwise infer their level from how they asked. Ask one question only when the answer would change the lesson ("Have you met derivatives yet?"), and never quiz them before teaching.
-3. **Pick the style.** `visual-explain` for "teach me X" and "help me understand". `practice-first` for interview prep, drills, "quiz me", or when the project pins it. A plain answer for a one-line question, with a picture only if it helps. The learner's request for this turn beats any pinned style. Details: [references/STYLES.md](references/STYLES.md).
+3. **Pick the style.** `visual-explain` for "teach me X" and "help me understand". `practice-first` only when the learner explicitly asks for practice, drills, "quiz me", or an attempt before explanation. A workspace note or an interview topic alone does not request a quiz. A plain answer for a one-line question, with a picture only if it helps. The learner's request for this turn beats any pinned style. Details: [references/STYLES.md](references/STYLES.md).
 4. **Name the outcome.** One sentence: what the learner will be able to see, explain or do. That sentence is what every visual has to serve.
 
 ## The loop
@@ -27,10 +27,10 @@ Everything here is plain files and scripts. Nothing depends on one host. Where a
                          "where to next?" deeper · another example · differently · practise · done
 ```
 
-- **Picture before words, question before answer.** Show the thing, let the learner predict or manipulate it, then explain why it behaves that way.
+- **Complete visual explanation first.** Show the mechanism and explain why it behaves that way. Controls are available immediately. Offer a prediction or check afterward; require an attempt only in explicitly requested practice.
 - **One idea per step.** If a step needs three paragraphs, it's two steps.
 - **Explain the why and the how**, not just the what. Every visual carries a claim, the reason it's true, how it works, and a "look for" cue.
-- **Check with a fresh case**, not the one just shown. A right answer on the example proves recall, not understanding.
+- **Offer an optional fresh-case check** after the explanation. Skipping it never blocks navigation, the answer, closure or continuation. Viewing is not evidence of understanding.
 - **Depth is a ladder**, L0 intuition, L1 mechanism, L2 formal model (the equations, the code), L3 edge cases and limits, L4 transfer to a new situation. Climb only as far as the learner wants, and say which rung you're on.
 
 The full loop, the depth ladder and how to tell understanding from recognition: [references/TEACHING-LOOP.md](references/TEACHING-LOOP.md).
@@ -59,6 +59,9 @@ If several gaps are plausible, ask one focused question to find which. After two
 | a change the learner should watch | a scrubbable animation, exported to MP4 or GIF | `skills/concept-animation` |
 | a story: intro, walkthrough, recap to rewatch | a narrated video with a natural voice | `skills/explorable/scripts/narrate.py` turns any lesson into one; `skills/explainer-video` for bespoke films (Manim, Motion Canvas, Remotion, HyperFrames, Three.js and more) |
 | code the learner should read and run | the lesson's code panel (C++ / Python, line lit per step, Python runs in the page) | `skills/explorable` (`code` field) |
+| layered questions about one mechanism | explanation-first Q&A from the lesson | `skills/explorable/scripts/bundle_lesson.mjs` |
+| explicit recall or revision cards | contextual flashcards, with optional reveal | `skills/explorable/scripts/bundle_lesson.mjs` |
+| video plus learner-controlled state exploration | narrated video, chapters and the same live model | `skills/explorable/scripts/bundle_lesson.mjs` |
 | a whole subject over many sittings | a course: map, outline, notes, quiz, every lesson in every medium | `skills/course` |
 | equations transforming, proofs | a math animation | `skills/manim-video` |
 | shape in space | 3D | `skills/threejs-video`, Three.js in an explorable |
@@ -77,6 +80,12 @@ python3 scripts/find_tool.py --job structure --medium still --net --have mcp:exc
 ```
 
 The registry (`assets/registry.json`) maps jobs to 45 tools and host surfaces, and links each to official docs in the teach-pro-max registry. If the best tool is missing, offer to install it or take the next one, and say what was traded away. [references/TOOL-DISCOVERY.md](references/TOOL-DISCOVERY.md).
+
+## Deliver the requested formats
+
+Write one sourced lesson with `window.LESSON`; qualitative lessons use a selection/context model, not invented measurements. Build the explorer with `skills/explorable/scripts/build.py`, narrate it with `scripts/narrate.py`, then run `node skills/explorable/scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. This exports an editable still and PNG, layered Q&A, contextual flashcards, a complete no-JavaScript lesson and an interactive video with the same live explorer. Keep outputs outside this skill. See [references/ARTIFACT-EXPORTS.md](references/ARTIFACT-EXPORTS.md).
+
+Sources are `sources: [{title, url, note}]` on the lesson. Tie claims to their example, assumptions and limits; include the necessary context on standalone cards. Source links support qualitative facts, while computed quantities come from a checked model. Never manufacture numbers to make a humanities topic fit a chart.
 
 ## Make it look like a lesson
 

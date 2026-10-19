@@ -12,13 +12,13 @@ The loop runs until the learner says they're satisfied. Each pass makes the pict
 ## 2. Picture it
 
 - Lead with a picture of the thing itself, not of the explanation. The beam on the ground, the request hitting the cache, the weights on the wires.
-- Concrete before abstract: one real case with real numbers, then the general rule.
-- The picture comes from a model, so it can change honestly when the learner pokes it.
+- Concrete before abstract: one traceable example, then the general rule. Use real computed numbers when relevant and sourced context for qualitative subjects.
+- Quantitative pictures come from a checked model. Qualitative pictures can select and compare sourced examples, roles or context without pretending those are measured numbers.
 
-## 3. Let them move it (or predict it)
+## 3. Offer manipulation and optional practice
 
-- Before explaining, give the learner something to do: drag a slider, predict the next frame, pick what happens. Manipulate first, commit an answer, then reveal.
-- In `practice-first` style this is the attempt, and the turn ends there until they answer.
+- Explain the whole mechanism before optional practice. Leave controls available so the learner can inspect another case without answering a question.
+- Only in explicitly requested `practice-first` style, offer the attempt before revealing the worked answer. The learner can ask to be shown it or stop practice at any time.
 - One hint per miss. After a second miss, or "just show me", teach it directly from a different angle. No shame in either path; both get recorded.
 
 ## 4. Explain why and how

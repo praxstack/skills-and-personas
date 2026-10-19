@@ -18,6 +18,9 @@ const C = window.COURSE;
 // "Quiz me" has no figure to look at, so questions that need one stay in the lesson.
 for (const l of C.lessons) l.quiz = (l.quiz || []).filter((q) => !q.needsFigure);
 const STORE = `course:${C.id}`;
+const CONSENT_STORE = `${STORE}:consent`;
+let rememberProgress = false;
+try { rememberProgress = localStorage.getItem(CONSENT_STORE) === "yes"; } catch { /* ephemeral */ }
 const STATUS = ["learning", "done", "skip"];
 const STATUS_LABEL = { learning: "Learning", done: "Done", skip: "Skip" };
 
@@ -33,6 +36,7 @@ function el(tag, attrs = {}, ...kids) {
   return e;
 }
 const readStore = () => {
+  if (!rememberProgress) return { status: {} };
   try {
     // Stored progress may come from an older build or a bad write: keep it
     // only if status is a plain object.
@@ -45,6 +49,7 @@ const readStore = () => {
 };
 const state = readStore();
 const persist = () => {
+  if (!rememberProgress) return;
   try {
     localStorage.setItem(STORE, JSON.stringify(state));
   } catch {
@@ -86,6 +91,18 @@ function show(v) {
   if (v === "map") requestAnimationFrame(() => drawIn(mapSvg));
 }
 
+function progressConsent() {
+  const input = el("input", { type: "checkbox", id: "cs-remember", checked: rememberProgress ? true : null, style: "width:24px;height:24px;vertical-align:middle" });
+  input.addEventListener("change", () => {
+    rememberProgress = input.checked;
+    try {
+      if (rememberProgress) { localStorage.setItem(CONSENT_STORE, "yes"); persist(); }
+      else { localStorage.removeItem(STORE); localStorage.removeItem(CONSENT_STORE); }
+    } catch { rememberProgress = false; input.checked = false; }
+  });
+  return el("label", { for: "cs-remember", style: "display:flex;align-items:center;gap:.5rem;min-height:44px;font-size:.9rem" }, input, "Remember progress on this device");
+}
+
 const header = el(
   "header",
   { class: "cs-head" },
@@ -96,6 +113,7 @@ const header = el(
     ? el("p", { class: "cs-sub" }, "Builds on: ", ...C.prereqs.map((p, i) => [i ? ", " : "", el("a", { href: C.root ? `${C.root}${p}` : `../${p}/index.html`, text: C.prereqTitles?.[p] || p })]))
     : null,
   el("div", { class: "cs-head-row" }, progressBar, progressText),
+  progressConsent(),
   el(
     "div",
     { class: "cs-head-row" },

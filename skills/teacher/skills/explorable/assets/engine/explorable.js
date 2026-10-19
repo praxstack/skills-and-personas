@@ -17,7 +17,13 @@ import { stepKeys, restoreProgress } from "./progress.js";
 
 const INK = { seedFrom, rng, smoothPath, line, polyline, loop, arrow, arrowHead, curvedArrow, cross, tick, underline, swipe, ring, bracket };
 const L = window.LESSON;
-const KEY = `explorable:${L.id || L.title}`;
+const query = new URLSearchParams(location.search);
+const PRACTICE = query.has("practice") ? !["0", "false"].includes(query.get("practice")) : L.style === "practice-first";
+const KEY = `explorable:v3:${L.id || L.title}:${PRACTICE ? "practice" : "explain"}`;
+const CONSENT_KEY = `${KEY}:consent`;
+document.documentElement.dataset.teachingStyle = PRACTICE ? "practice-first" : "visual-explain";
+let rememberProgress = false;
+try { rememberProgress = localStorage.getItem(CONSENT_KEY) === "yes"; } catch { /* ephemeral */ }
 // Saved progress follows each step by key, so inserting, removing or
 // reordering steps never hands a learner the answers of a different step.
 const STEP_KEYS = stepKeys(L.steps);
@@ -55,6 +61,7 @@ function put(el, ...kids) {
   el.replaceChildren(...kids.flat().filter((k) => k !== null && k !== undefined && k !== false));
 }
 const load = () => {
+  if (!rememberProgress) return {};
   try {
     return JSON.parse(localStorage.getItem(KEY)) || {};
   } catch {
@@ -62,6 +69,7 @@ const load = () => {
   }
 };
 const save = (data) => {
+  if (!rememberProgress) return;
   try {
     localStorage.setItem(KEY, JSON.stringify(data));
   } catch {
@@ -163,6 +171,25 @@ const outlineList = h("ol", { class: "xp-outline-list" });
 const takeaways = h("ul", { class: "xp-takeaways" });
 let notesBox;
 
+function progressConsent() {
+  const input = h("input", { type: "checkbox", id: "xp-remember", checked: rememberProgress ? true : null });
+  input.addEventListener("change", () => {
+    rememberProgress = input.checked;
+    try {
+      if (rememberProgress) { localStorage.setItem(CONSENT_KEY, "yes"); persist(); }
+      else { localStorage.removeItem(KEY); localStorage.removeItem(CONSENT_KEY); }
+    } catch { rememberProgress = false; input.checked = false; }
+  });
+  return h("label", { class: "xp-consent nb-print", for: "xp-remember" }, input, " Remember progress on this device");
+}
+function sourcePanel() {
+  const items = (L.sources || []).map((source) => typeof source === "string" ? { title: source, url: source } : source)
+    .filter((source) => /^https?:\/\//.test(source.url || source.href || ""));
+  if (!items.length) return null;
+  return h("aside", { class: "xp-sources", "aria-label": "Sources and scope" }, h("h3", { class: "nb-label", text: "Sources and scope" }),
+    h("ul", {}, items.map((source) => h("li", {}, h("a", { href: source.url || source.href, target: "_blank", rel: "noopener noreferrer", text: source.title || source.label || source.url }), source.note ? `: ${source.note}` : ""))),
+    L.limits ? h("p", { text: L.limits }) : null);
+}
 function header() {
   const tabs = h(
     "div",
@@ -184,7 +211,8 @@ function header() {
     "header",
     { class: "xp-head" },
     h("div", { class: "xp-head-text" }, h("p", { class: "nb-label", text: [L.subject, L.level].filter(Boolean).join(" · ") || "Lesson" }), h("h1", { text: L.title }), L.subtitle ? h("p", { class: "xp-sub", text: L.subtitle }) : null),
-    h("div", { class: "xp-head-tools" }, tabs, boardButton(), soundButton()),
+    h("div", { class: "xp-head-tools" }, tabs, boardButton(), soundButton(), progressConsent()),
+    PRACTICE ? h("p", { class: "xp-mode" }, "Practice mode. ", h("a", { href: `${location.pathname}?practice=0`, text: "Read the complete explanation instead" })) : null,
   );
 }
 
@@ -353,7 +381,7 @@ function explainBox(step, i) {
     finishStep(i);
   };
   go.addEventListener("click", () => {
-    if (text.value.trim().length < 12) {
+    if (PRACTICE && text.value.trim().length < 12) {
       put(reveal, h("p", { class: "nb-hand is-red", text: "Give it a go first: a sentence or two." }));
       return text.focus();
     }
@@ -509,7 +537,7 @@ function goStep(i, { focus = true } = {}) {
     type: "button",
     class: "nb-btn nb-btn-primary xp-next",
     text: last ? "Where to next?" : "Next",
-    disabled: step.ask && !S.done.has(S.step) ? true : null,
+    disabled: PRACTICE && step.ask && !S.done.has(S.step) ? true : null,
     onclick: () => (last ? endPanel() : goStep(S.step + 1)),
   });
   const prev = h("button", { type: "button", class: "nb-btn", text: "Back", disabled: S.step === 0 ? true : null, onclick: () => goStep(S.step - 1) });
@@ -521,17 +549,20 @@ function goStep(i, { focus = true } = {}) {
     h("p", { class: "nb-label", text: `Step ${S.step + 1} of ${L.steps.length}` }),
     h("h2", { tabindex: "-1", text: step.title }),
     hook,
-    h("div", { class: "xp-say", html: step.say }),
     stage,
     controls,
+    h("div", { class: "xp-say", html: step.say }),
     stepCode ? stepCode.el : null,
     step.lookFor ? h("p", { class: "xp-lookfor" }, h("span", { class: "nb-label", text: "Look for" }), h("span", { class: "nb-hand", text: step.lookFor })) : null,
-    step.ask ? (step.ask.kind === "explain" ? explainBox(step, S.step) : askBox(step, S.step)) : null,
+    !PRACTICE && step.ask && (step.ask.why || step.ask.model) ? h("div", { class: "xp-explanation nb-printout", html: step.ask.why || step.ask.model }) : null,
+    step.ask ? (PRACTICE ? (step.ask.kind === "explain" ? explainBox(step, S.step) : askBox(step, S.step))
+      : h("details", { class: "xp-optional-practice" }, h("summary", { text: "Optional practice" }), step.ask.kind === "explain" ? explainBox(step, S.step) : askBox(step, S.step))) : null,
+    sourcePanel(),
     confusedBox(step, S.step),
     h("div", { class: "xp-row xp-nav" }, prev, next),
     ].filter(Boolean),
   );
-  if (!step.ask) finishStep(S.step);
+  if (!PRACTICE || !step.ask) finishStep(S.step);
   update({ pen: true });
   drawIn(stage);
   if (focus) stepBox.querySelector("h2").focus({ preventScroll: false });
@@ -539,7 +570,7 @@ function goStep(i, { focus = true } = {}) {
 
 // ---------- the end: keep going until the learner is satisfied ----------
 function report(choice, text) {
-  const lines = [`Lesson: ${L.title}${L.id ? ` (${L.id})` : ""}`, `Steps done: ${S.done.size}/${L.steps.length}`];
+  const lines = [`Lesson: ${L.title}${L.id ? ` (${L.id})` : ""}`, `${PRACTICE ? "Steps done" : "Steps viewed"}: ${S.done.size}/${L.steps.length}`, `Practice: ${PRACTICE ? "requested" : "optional; viewing is not proof of learning"}`];
   L.steps.forEach((st, i) => {
     const a = S.attempts[i];
     const t = S.tried[i];
@@ -691,9 +722,11 @@ function filmView() {
     const my = ++token;
     if (!keep) playing = false;
     index = Math.max(0, Math.min(scenes.length - 1, i));
-    paint();
     const sc = scenes[index];
-    const moving = tweenTo(sceneParams[index], animate ? 900 / Number(speed.value) : 0, my);
+    // Captions make claims about this scene, so the displayed state must
+    // already agree when the caption appears. Controls provide exploration.
+    const moving = tweenTo(sceneParams[index], 0, my);
+    paint();
     if (!playing) return moving;
     await Promise.all([moving, speak(sc.say, my)]);
     if (my !== token || !playing) return;
@@ -796,11 +829,11 @@ function exportMode() {
     if (said) out.push({ ...base, say: said });
     const ask = st.ask;
     if (ask && ask.kind === "explain") out.push({ ...base, say: `In one breath: ${plain(ask.model)}` });
-    else if (ask) {
+    else if (ask && PRACTICE) {
       const q = plainText(ask.q);
       out.push({ ...base, say: `Quick check: ${q}${/[.?!…]$/.test(q) ? "" : "."} Think about it for a second.` });
       if (ask.why) out.push({ ...base, say: plain(ask.why) });
-    }
+    } else if (ask?.why && !said.includes(plain(ask.why))) out.push({ ...base, say: plain(ask.why) });
     return out.length ? out : [{ ...base, say: st.title }];
   }).flatMap((sc) => {
     // Keep each caption to about two lines: split long narration at sentence ends.
@@ -826,10 +859,11 @@ function exportMode() {
   window.__filmExport = {
     title: L.title,
     scenes: scenes.map((sc) => ({ chapter: sc.chapter, say: sc.say })),
-    frame(i, u, cu = 1) {
+    sceneStates: full.map((params) => ({ ...params })),
+    frame(i, u, cu = 1, settled = Math.min(1, u / 0.3)) {
       const from = full[Math.max(0, i - 1)];
       const to = full[i];
-      const e = i === 0 ? 1 : ease(Math.min(1, u / 0.3));
+      const e = i === 0 ? 1 : ease(Math.max(0, Math.min(1, settled)));
       const params = {};
       for (const k of Object.keys(to)) params[k] = typeof to[k] === "number" && typeof from[k] === "number" ? snap(k, from[k] + (to[k] - from[k]) * e) : to[k];
       // Count this scene's marks, then draw them one after another over the first 45%.
@@ -839,6 +873,7 @@ function exportMode() {
       ef.render({ params, progress: (j) => Math.max(0, Math.min(1, w - j)) });
       chapter.textContent = scenes[i].chapter;
       caption.textContent = scenes[i].say;
+      caption.hidden = cu <= 0;
       // The caption is written as it's spoken, and the camera drifts in a little,
       // so the picture never sits still while the voice talks.
       const lineH = parseFloat(getComputedStyle(caption).lineHeight) || 35;
@@ -860,7 +895,7 @@ function exportMode() {
         }
         return { tone: g.getAttribute("class"), len, angle };
       });
-      return { marks };
+      return { marks, params: { ...params }, captionVisible: cu > 0 };
     },
   };
 }
@@ -874,7 +909,26 @@ window.__explorable = {
     return { step: S.step, done: [...S.done], params: { ...S.params }, attempts: S.attempts, tried: S.tried };
   },
   goStep,
+  paramsAt: (index) => ({ ...paramsAt(index) }),
+  setParams(params) {
+    for (const [key, value] of Object.entries(params || {})) {
+      const spec = L.params?.[key];
+      if (spec && Number.isFinite(Number(value))) S.params[key] = snap(key, Math.max(spec.min, Math.min(spec.max, Number(value))));
+    }
+    update();
+    paintControls(L.steps[S.step]);
+    return { ...S.params };
+  },
   show,
   report: () => report("(not chosen yet)", ""),
   check: () => (L.checks || []).map((c) => ({ name: c.name, ok: Boolean(c.test(L.model)) })),
 };
+
+// A local interactive-video parent can pause at a narrated state and let the
+// learner manipulate the same model. No persistence is enabled by this message.
+window.addEventListener("message", (event) => {
+  if (event.source !== window.parent || event.data?.type !== "teach:set-params") return;
+  window.__explorable.show("lesson");
+  if (Number.isInteger(event.data.step)) window.__explorable.goStep(event.data.step, { focus: false });
+  window.__explorable.setParams(event.data.params);
+});
