@@ -1,0 +1,548 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-38c601ec7e",
+ "manifest_sha256": "38c601ec7e57d2d99fc73bb904f00b4a63b4d96f1223b06bfa347ae364fe806d",
+ "rubric_version": "4",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent (Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Framing: views.c line 5 is int a = 66; it only orients, and its one place (explorer step 1) shows views.c.",
+   "evidence": [
+    "program p1 line 5"
+   ]
+  },
+  {
+   "id": "c.byte",
+   "verdict": "accept",
+   "reason": "Maths: 66 = 0b01000010 = 0x42, int is 4 bytes per platform; scoped 'on this machine'. 6.2.6.2 p1/p2 passages give the pure binary value bits.",
+   "evidence": [
+    "fact f.isize",
+    "fact f.bits",
+    "fact f.hex",
+    "passage sources/n2310-6.2.6.2p1.txt",
+    "passage sources/n2310-6.2.6.2p2.txt"
+   ]
+  },
+  {
+   "id": "c.d",
+   "verdict": "accept",
+   "reason": "Mechanism and value match: d converts the int to signed decimal; scoped 'for a = 66'; prints 66.",
+   "evidence": [
+    "passage sources/n2310-7.21.6.1p8-d.txt",
+    "fact f.d"
+   ]
+  },
+  {
+   "id": "c.u",
+   "verdict": "accept",
+   "reason": "6.3.1.3p1 passage: a representable value is unchanged; (unsigned)66 is 66 and the run printed 66.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.3p1.txt",
+    "fact f.u"
+   ]
+  },
+  {
+   "id": "c.cast",
+   "verdict": "accept",
+   "reason": "Maths: 66 = 1.03125 x 2^6, biased exponent 1029 = 0x405, fraction bit 2^-5 gives 0x4050800000000000; representation scoped to this machine, binary64 parameters measured and matched to EXAMPLE 2.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.4p2.txt",
+    "passage sources/n2310-5.2.4.2.2-example2.txt",
+    "fact f.dbits",
+    "fact f.radix",
+    "fact f.mantdig",
+    "fact f.minexp",
+    "fact f.maxexp",
+    "fact f.dsize"
+   ]
+  },
+  {
+   "id": "c.fprint",
+   "verdict": "reject",
+   "reason": "Standalone claim, unscoped: 'so it prints 66.000000' has %f as its subject and names no program or argument, so read alone it says %f prints 66.000000; views_200.c, views_m1.c and views_321.c print 200.000000, -1.000000 and 321.000000 with %f (same failure as the rubric's div.c example). Needs 'for (double)a in views.c' or similar.",
+   "evidence": [
+    "passage sources/n2310-7.21.6.1p8-f.txt",
+    "fact f.f",
+    "fact f.v200.f"
+   ]
+  },
+  {
+   "id": "c.char",
+   "verdict": "accept",
+   "reason": "c conversion passage: int converted to unsigned char and written; scoped to the int 66, and ASCII 66 is B.",
+   "evidence": [
+    "passage sources/n2310-7.21.6.1p8-c.txt",
+    "fact f.c"
+   ]
+  },
+  {
+   "id": "c.samebits",
+   "verdict": "accept",
+   "reason": "Scoped to views.c; line 13 passes (double)a, a double, through the ellipsis and f converts a double argument.",
+   "evidence": [
+    "passage sources/n2310-6.5.2.2p7.txt",
+    "passage sources/n2310-7.21.6.1p8-f.txt",
+    "program p1 line 13"
+   ]
+  },
+  {
+   "id": "c.ub",
+   "verdict": "accept",
+   "reason": "UB lens: ub.c line 5 passes an int to %f; 7.21.6.1p9 passage says wrong argument type is undefined; called undefined, no result given.",
+   "evidence": [
+    "passage sources/n2310-7.21.6.1p9.txt",
+    "program p2 line 5"
+   ]
+  },
+  {
+   "id": "c.ubnorun",
+   "verdict": "accept",
+   "reason": "Framing: ub.c is marked ub with only a recorded gcc-16 warning and no captured run facts; orients only.",
+   "evidence": [
+    "program p2 diagnostics"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing context sentence: the next scene, sc4, has output f.f and narration stating 66.000000.",
+   "evidence": [
+    "scene sc4",
+    "fact f.f"
+   ]
+  },
+  {
+   "id": "c.dbits",
+   "verdict": "accept",
+   "reason": "Scoped 'on this machine'; line 18 prints the memcpy'd double bits 0x4050800000000000, which are not a's 0x42; only shown at explorer step 5 (views.c line 18).",
+   "evidence": [
+    "fact f.dbits",
+    "passage sources/n2310-5.2.4.2.2-example2.txt"
+   ]
+  },
+  {
+   "id": "c.recap",
+   "verdict": "reject",
+   "reason": "Caveat dropped (explanation lens): '(double)a changes the type and the bits' is a representation claim with no platform scope in its text; only the justification says 'on this machine', and the justification does not scope the claim. c.cast and c.dbits keep that qualifier.",
+   "evidence": [
+    "passage sources/n2310-6.2.5p9.txt",
+    "fact f.dbits"
+   ]
+  },
+  {
+   "id": "c.k200.u",
+   "verdict": "accept",
+   "reason": "6.3.1.3p1 passage: 200 is representable in unsigned int so it is unchanged; both lines print 200.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.3p1.txt",
+    "fact f.v200.d",
+    "fact f.v200.u"
+   ]
+  },
+  {
+   "id": "c.k200.c",
+   "verdict": "accept",
+   "reason": "Scoped to this machine's 0..255 unsigned char; 200 is unchanged, the byte 200 is above ASCII's 127; captured byte is 200.",
+   "evidence": [
+    "passage sources/n2310-7.21.6.1p8-c.txt",
+    "fact f.v200.c"
+   ]
+  },
+  {
+   "id": "c.km1.u",
+   "verdict": "accept",
+   "reason": "Maths: -1 + 2^32 = 4294967295 with 32-bit unsigned int on this machine; 6.3.1.3p2 passage gives the adding rule.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.3p2.txt",
+    "fact f.vm1.u",
+    "fact f.vm1.d",
+    "fact f.isize"
+   ]
+  },
+  {
+   "id": "c.km1.c",
+   "verdict": "accept",
+   "reason": "Maths: -1 + 256 = 255, scoped to this machine's unsigned char range; captured byte 255.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.3p2.txt",
+    "passage sources/n2310-7.21.6.1p8-c.txt",
+    "fact f.vm1.c"
+   ]
+  },
+  {
+   "id": "c.k321.byte",
+   "verdict": "accept",
+   "reason": "Maths: 321 = 256 + 65, low byte 01000001 = 0x41; value unchanged so %d and %u print 321; scoped to 8-bit bytes on this machine.",
+   "evidence": [
+    "fact f.v321.bits",
+    "fact f.v321.hex",
+    "fact f.v321.d",
+    "fact f.v321.u",
+    "passage sources/n2310-6.2.6.2p1.txt"
+   ]
+  },
+  {
+   "id": "c.k321.c",
+   "verdict": "accept",
+   "reason": "Maths: 321 - 256 = 65, ASCII 65 is A; scoped; captured byte 65.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.3p2.txt",
+    "fact f.v321.c"
+   ]
+  },
+  {
+   "id": "c.kf",
+   "verdict": "accept",
+   "reason": "Every 32-bit int is exact in binary64, and f with no precision gives six digits; matches all four captured %f lines.",
+   "evidence": [
+    "passage sources/n2310-6.3.1.4p2.txt",
+    "passage sources/n2310-7.21.6.1p8-f.txt",
+    "fact f.f",
+    "fact f.v200.f",
+    "fact f.vm1.f",
+    "fact f.v321.f"
+   ]
+  },
+  {
+   "id": "c.mem",
+   "verdict": "accept",
+   "reason": "bytes.c prints 42 00 00 00 from index 0; the claim scopes the byte order to this machine (little-endian, int 4 bytes); 6.2.6.1 p2/p4 passages support object representation and implementation-defined order.",
+   "evidence": [
+    "passage sources/n2310-6.2.6.1p4.txt",
+    "passage sources/n2310-6.2.6.1p2.txt",
+    "fact f.mem.a0",
+    "fact f.endian",
+    "fact f.isize"
+   ]
+  },
+  {
+   "id": "c.dmem",
+   "verdict": "reject",
+   "reason": "False mechanism: a cast yields a value, not an object, so '(double)a is a new object with 8 bytes of its own' is wrong; the 8 bytes belong to d, the object initialised from (double)a in bytes.c line 6. The byte values and size also lack a platform scope.",
+   "evidence": [
+    "program p7 line 6",
+    "fact f.mem.d5",
+    "fact f.dbits",
+    "fact f.dsize"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "reject",
+   "reason": "Alt (looks lens): it restates the c.samebits rule instead of saying what the still shows (views.c, its output lines and the notes)."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "Rule card for c.d; scoped 'for a = 66', true."
+  },
+  {
+   "id": "t.101",
+   "verdict": "reject",
+   "reason": "Rule card cards r:c.fprint, read on its own: 'so it prints 66.000000' has no argument or program, so it reads as %f always printing 66.000000 (see c.fprint)."
+  },
+  {
+   "id": "t.102",
+   "verdict": "accept",
+   "reason": "Rule card for c.ub; the code shown makes the missing cast and the int argument explicit; true."
+  },
+  {
+   "id": "t.103",
+   "verdict": "accept",
+   "reason": "Misconception card: %f with no precision prints six decimals, so the belief is false and the card answers False."
+  },
+  {
+   "id": "t.104",
+   "verdict": "accept",
+   "reason": "Misconception card: (double)a converts the value, so the belief is false and the card answers False."
+  },
+  {
+   "id": "t.105",
+   "verdict": "accept",
+   "reason": "Same as c.byte; true at explorer step 1 (state s0)."
+  },
+  {
+   "id": "t.106",
+   "verdict": "accept",
+   "reason": "Same as c.cast; scoped and true at explorer step 3."
+  },
+  {
+   "id": "t.107",
+   "verdict": "accept",
+   "reason": "Same as c.char; names the int 66, true in each place."
+  },
+  {
+   "id": "t.108",
+   "verdict": "accept",
+   "reason": "Same as c.d; scoped to a = 66."
+  },
+  {
+   "id": "t.109",
+   "verdict": "accept",
+   "reason": "Same as c.dbits; at explorer step 5 (line 18) 'the last line' and 'that double' point at what is shown."
+  },
+  {
+   "id": "t.110",
+   "verdict": "reject",
+   "reason": "Class claim must carry its own scope; on cards m:m.nodecimals (read on its own, under the whole-number belief) 'so it prints 66.000000' has no argument, so it reads as %f always printing 66.000000."
+  },
+  {
+   "id": "t.111",
+   "verdict": "accept",
+   "reason": "Same as c.k200.c; names 200 and scopes the range to this machine."
+  },
+  {
+   "id": "t.112",
+   "verdict": "accept",
+   "reason": "Same as c.k200.u; scoped 'for a = 200'."
+  },
+  {
+   "id": "t.113",
+   "verdict": "accept",
+   "reason": "Same as c.k321.byte; scoped and values correct."
+  },
+  {
+   "id": "t.114",
+   "verdict": "accept",
+   "reason": "Same as c.k321.c; scoped and values correct."
+  },
+  {
+   "id": "t.115",
+   "verdict": "accept",
+   "reason": "Same as c.kf; true for any int value here, shown in the live-value section."
+  },
+  {
+   "id": "t.116",
+   "verdict": "accept",
+   "reason": "Same as c.km1.c; scoped and values correct."
+  },
+  {
+   "id": "t.117",
+   "verdict": "accept",
+   "reason": "Same as c.km1.u; scoped and values correct."
+  },
+  {
+   "id": "t.118",
+   "verdict": "accept",
+   "reason": "Same as c.mem; byte order scoped to this machine; true on the still."
+  },
+  {
+   "id": "t.119",
+   "verdict": "reject",
+   "reason": "Same text as c.recap on cards q:sc3: '(double)a changes the type and the bits' is a representation claim with no platform scope."
+  },
+  {
+   "id": "t.120",
+   "verdict": "accept",
+   "reason": "Same as c.samebits; scoped 'In views.c', true in every listed place."
+  },
+  {
+   "id": "t.121",
+   "verdict": "accept",
+   "reason": "Same as c.setup; explorer step 1 shows views.c with a = 66."
+  },
+  {
+   "id": "t.122",
+   "verdict": "accept",
+   "reason": "Same as c.u; names the value 66."
+  },
+  {
+   "id": "t.123",
+   "verdict": "accept",
+   "reason": "Same as c.ub; calls it undefined."
+  },
+  {
+   "id": "t.124",
+   "verdict": "accept",
+   "reason": "Same as c.ubnorun; follows the UB line at explorer step 6."
+  },
+  {
+   "id": "t.229",
+   "verdict": "accept",
+   "reason": "Chapter title for sc5 (state s3, %c gives B); matches."
+  },
+  {
+   "id": "t.230",
+   "verdict": "accept",
+   "reason": "Chapter title 'Recap' for sc8; does not overstate."
+  },
+  {
+   "id": "t.231",
+   "verdict": "accept",
+   "reason": "Chapter title for sc6 (state s4 shows f.dbits); matches."
+  },
+  {
+   "id": "t.232",
+   "verdict": "accept",
+   "reason": "Chapter title for sc1 (state s0, a = 66, low byte bits); matches."
+  },
+  {
+   "id": "t.233",
+   "verdict": "accept",
+   "reason": "Chapter title 'The question' for sc3; gives nothing away."
+  },
+  {
+   "id": "t.234",
+   "verdict": "accept",
+   "reason": "Chapter title for sc2 (%d and %u); matches."
+  },
+  {
+   "id": "t.235",
+   "verdict": "accept",
+   "reason": "Chapter title for sc4, after the question; matches its narration."
+  },
+  {
+   "id": "t.236",
+   "verdict": "accept",
+   "reason": "Chapter title for sc7 (ub.c without the cast); matches."
+  },
+  {
+   "id": "t.252",
+   "verdict": "accept",
+   "reason": "Lesson title: views.c has seven printf calls printing seven lines about one int; not overstated."
+  },
+  {
+   "id": "t.253",
+   "verdict": "accept",
+   "reason": "Wrong belief shown labelled as wrong; it is false (%f prints six decimals)."
+  },
+  {
+   "id": "t.254",
+   "verdict": "accept",
+   "reason": "Wrong belief shown labelled as wrong; it is false ((double)a converts the value)."
+  },
+  {
+   "id": "t.255",
+   "verdict": "accept",
+   "reason": "Narration for sc1; views.c line 5."
+  },
+  {
+   "id": "t.256",
+   "verdict": "accept",
+   "reason": "Narration matches c.byte, scoped 'on this machine'."
+  },
+  {
+   "id": "t.257",
+   "verdict": "accept",
+   "reason": "Narration matches c.d."
+  },
+  {
+   "id": "t.258",
+   "verdict": "accept",
+   "reason": "Narration matches c.u."
+  },
+  {
+   "id": "t.259",
+   "verdict": "accept",
+   "reason": "Context sentence: transcript prints the prompt before it and the next scene sc4 states 66.000000; asks for no video-only action."
+  },
+  {
+   "id": "t.260",
+   "verdict": "reject",
+   "reason": "Caveat dropped: 'That double's bits are not the bits of a' is a representation claim; c.cast scopes it 'On this machine, where double is IEC 60559 binary64', this line drops that in captions.vtt, transcript.txt, ive and qa."
+  },
+  {
+   "id": "t.261",
+   "verdict": "accept",
+   "reason": "Narration in sc4 (views.c line 13, previous line names 66): the rule is general and true, and 'it prints 66.000000' refers to the shown call in every place it appears."
+  },
+  {
+   "id": "t.262",
+   "verdict": "accept",
+   "reason": "Narration matches c.char."
+  },
+  {
+   "id": "t.263",
+   "verdict": "accept",
+   "reason": "Narration matches c.samebits, scoped to views.c."
+  },
+  {
+   "id": "t.264",
+   "verdict": "accept",
+   "reason": "Narration in sc6: line 18 prints the memcpy'd double bits with %#llx, in hex."
+  },
+  {
+   "id": "t.265",
+   "verdict": "accept",
+   "reason": "Narration matches c.ub in sc7; calls it undefined."
+  },
+  {
+   "id": "t.266",
+   "verdict": "accept",
+   "reason": "Narration matches c.ubnorun."
+  },
+  {
+   "id": "t.267",
+   "verdict": "accept",
+   "reason": "Narration in sc8 (views.c state s4): values for %d, %u, %f, %c are all 66 and %c writes code 66."
+  },
+  {
+   "id": "t.268",
+   "verdict": "accept",
+   "reason": "6.2.5p9: a nonnegative value has the same representation in int and unsigned int; true in all C, no platform scope needed."
+  },
+  {
+   "id": "t.269",
+   "verdict": "reject",
+   "reason": "Caveat dropped: '(double)a changes both the type and the bits' is a representation claim with no platform scope (c.cast keeps 'on this machine'); a technical statement doesn't get scope by sitting in sc8."
+  },
+  {
+   "id": "t.270",
+   "verdict": "accept",
+   "reason": "Option marked wrong: views.c prints 66.000000, not 0.000000."
+  },
+  {
+   "id": "t.271",
+   "verdict": "accept",
+   "reason": "Option marked correct: matches fact f.f."
+  },
+  {
+   "id": "t.272",
+   "verdict": "accept",
+   "reason": "Option marked wrong: %f prints six decimals, not 66."
+  },
+  {
+   "id": "t.273",
+   "verdict": "accept",
+   "reason": "Prompt does not give away 66.000000, makes sense without options, and the earlier titles and narration don't reveal it."
+  },
+  {
+   "id": "t.274",
+   "verdict": "accept",
+   "reason": "Trace label true for s0: a is 66, bits output 01000010."
+  },
+  {
+   "id": "t.275",
+   "verdict": "accept",
+   "reason": "Trace label true for s1: lines 3-4 print 66; doesn't reveal the %f answer in sc3."
+  },
+  {
+   "id": "t.276",
+   "verdict": "accept",
+   "reason": "Trace label true for s2: line 13 passes (double)a and %f prints 66.000000."
+  },
+  {
+   "id": "t.277",
+   "verdict": "accept",
+   "reason": "Trace label true for s3: %c writes code 66 (B)."
+  },
+  {
+   "id": "t.278",
+   "verdict": "accept",
+   "reason": "Trace label true for s4: line 18 prints the double's bits."
+  },
+  {
+   "id": "t.279",
+   "verdict": "accept",
+   "reason": "Trace label for s5, consistent with sc7 and c.ubnorun: ub.c is never run."
+  }
+ ],
+ "overall": "reject"
+}

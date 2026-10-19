@@ -1,0 +1,381 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-f6442c1977",
+ "manifest_sha256": "f6442c1977bb7bec7560570992dedc5885bfe8139a218b68569a86b8ec1d76e5",
+ "rubric_version": "4",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims-review subagent (Claude Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.formula",
+   "verdict": "accept",
+   "reason": "Framing (lens 2, kind fits): neuron.c lines 8-14 multiply, sum with b and apply fmax(0.0, z); the stored Deep Learning passage defines ReLU as max{0, z}.",
+   "evidence": [
+    "passage sources/dl-6.3.1-relu.txt",
+    "program p1 lines 8-14"
+   ]
+  },
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Maths: lines 5-7 set 0.8, 1.5, 0.4, -1.0, -0.2 and the run prints them as 0.8, 1.5, 0.4, -1, -0.2. 'This neuron' is the lesson's neuron.",
+   "evidence": [
+    "fact f.x1",
+    "fact f.w1",
+    "fact f.x2",
+    "fact f.w2",
+    "fact f.b"
+   ]
+  },
+  {
+   "id": "c.mul",
+   "verdict": "accept",
+   "reason": "Maths and mechanism check out: 0.8d*1.5 is a tie that rounds to even, giving 1.2000000000000002; %+g with P=6, X=0 gives +1.2 and X=-1 gives -0.4; the p8 and p6 passages support each step.",
+   "evidence": [
+    "fact f.t1",
+    "fact f.t2",
+    "passage sources/n2310-7.21.6.1p8-g.txt",
+    "passage sources/n2310-7.21.6.1p6-minus-plus.txt"
+   ]
+  },
+  {
+   "id": "c.sign",
+   "verdict": "accept",
+   "reason": "Scoped by 'Here'; 0.4 * -1.0 is negative and line 2 prints -0.4.",
+   "evidence": [
+    "fact f.t2",
+    "fact f.l2"
+   ]
+  },
+  {
+   "id": "c.add",
+   "verdict": "reject",
+   "reason": "Maths: the claim says z prints as 1.6, but the captured run prints z = 0.6 (fact f.z, stdout line 3) and 1.2 - 0.4 - 0.2 is 0.6. The justification is also self-contradictory: it calls 0.6000000000000001 'the binary64 value just above 1.6'.",
+   "evidence": [
+    "fact f.z",
+    "fact f.l3",
+    "program p1 line 12"
+   ]
+  },
+  {
+   "id": "c.relu",
+   "verdict": "accept",
+   "reason": "Definition matches the stored Deep Learning passage (g(z) = max{0, z}) and the fmax passage; positive z passes unchanged, z <= 0 gives 0. It does not state m.negterm.",
+   "evidence": [
+    "passage sources/dl-6.3.1-relu.txt",
+    "passage sources/n2310-7.12.12.2p3.txt"
+   ]
+  },
+  {
+   "id": "c.out",
+   "verdict": "accept",
+   "reason": "Scoped by 'Here'; z is 0.6000000000000001 > 0, so fmax(0.0, z) returns z and %g prints 0.6. Mechanism is paired with c.relu.",
+   "evidence": [
+    "fact f.z",
+    "fact f.a",
+    "passage sources/n2310-7.12.12.2p3.txt"
+   ]
+  },
+  {
+   "id": "c.toy",
+   "verdict": "reject",
+   "reason": "Explanation (scope, sentence classes): the sentence names no program, so it must hold for every program in the job, but double_format.c (p5) prints int macros (FLT_RADIX, DBL_MANT_DIG, ...) with %d, not doubles with %g or %+g, and those numbers are real format parameters, not toy values. Name neuron.c to fix.",
+   "evidence": [
+    "program p5",
+    "program p1"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing: in sc3 the question precedes it (also in transcript.txt), and the next scenes sc4 and sc5 print z and then a = 0.6. No technical assertion.",
+   "evidence": [
+    "scenes sc3, sc4, sc5"
+   ]
+  },
+  {
+   "id": "c.round",
+   "verdict": "reject",
+   "reason": "Explanation (scope, sentence classes): it appears on a rule card read on its own, and 'z' names no program. In neuron_k1.c, neuron_k2.c and neuron_k3.c z prints -0.2, 1.7 and -0.6, so '%g rounds z ... and prints 0.6' doesn't hold for every program in the job. The values and passages are otherwise right for neuron.c; scope it to neuron.c.",
+   "evidence": [
+    "fact f.z",
+    "fact f.k1.z",
+    "fact f.k2.z",
+    "fact f.k3.z",
+    "passage sources/n2310-5.2.4.2.2-example2.txt"
+   ]
+  },
+  {
+   "id": "c.kzero",
+   "verdict": "accept",
+   "reason": "Maths: in neuron_k1.c z = -0.19999999999999984, printed -0.2, and fmax(0, z) = 0; line 1 still prints +1.2. Self-scoped by the w2 and b values.",
+   "evidence": [
+    "fact f.k1.t1",
+    "fact f.k1.z",
+    "fact f.k1.a"
+   ]
+  },
+  {
+   "id": "c.kformula",
+   "verdict": "accept",
+   "reason": "Scoped to the explorer; the computation follows neuron.c lines 8-14 in double, and fmax of a finite z equals max(0, z); the k1-k3 runs match the stated settings.",
+   "evidence": [
+    "program p1 lines 5-14",
+    "passage sources/n2310-7.12.12.2p3.txt",
+    "fact f.k1.z",
+    "fact f.k2.z",
+    "fact f.k3.z"
+   ]
+  },
+  {
+   "id": "c.kround",
+   "verdict": "reject",
+   "reason": "Justification has a false step: it says that because double_format.c prints FLT_RADIX 2 and DBL_MANT_DIG 53, double is binary64 'each result rounded to the nearest representable value'. Radix and significand digits don't establish the exponent range or the rounding mode. The claim text's values are right (I recomputed the grid: exactly four settings, (-2,-0.4), (-1.5,-0.6), (-1,-0.8) at 1.11022e-16 and (-0.5,-1) at 2.22045e-16).",
+   "evidence": [
+    "fact f.radix",
+    "fact f.mantdig",
+    "program p5"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "reject",
+   "reason": "Alt, read standalone: 'The numbers' names no program; double_format.c's numbers (FLT_RADIX 2, DBL_MANT_DIG 53, ...) are not toy values. Backing claim c.toy is rejected."
+  },
+  {
+   "id": "t.002",
+   "verdict": "reject",
+   "reason": "Alt on the still: 'The program ... prints them with %g or %+g' is false for double_format.c, which uses %d; same scope defect as c.toy."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Alt matches c.formula."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "Template rule card restates c.relu, which is true on its own."
+  },
+  {
+   "id": "t.089",
+   "verdict": "reject",
+   "reason": "Rule card r:c.round is read on its own; 'z' points at no program there, and in neuron_k1-k3 z prints -0.2, 1.7, -0.6, not 0.6. Same defect as c.round."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "Wrong-belief card: the belief is false (neuron.c has the negative term -0.4 yet a = 0.6) and it is shown for rejection."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Wrong-belief card: the bias is part of the sum on line 12; the belief is false and shown for rejection."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Template instance at the default setting matches neuron.c: z prints 0.6 and a prints 0.6."
+  },
+  {
+   "id": "t.093",
+   "verdict": "reject",
+   "reason": "Template, explorer: false mechanism. 0.8 × 1.5 = 1.2 rounded to the nearest double is 1.1999999999999999556, not 1.2000000000000002. The result comes from 0.8 first becoming 0.80000000000000004441, then the product of the doubles (1.20000000000000006661, an exact tie) rounding to even. Backing claim c.kround is also rejected."
+  },
+  {
+   "id": "t.094",
+   "verdict": "reject",
+   "reason": "Claim c.add: states z prints as 1.6; the run prints 0.6 (f.z). Wrong on card m:m.nobias, explorer step 3, qa and still."
+  },
+  {
+   "id": "t.095",
+   "verdict": "accept",
+   "reason": "Matches c.formula; true on the explorer and the still."
+  },
+  {
+   "id": "t.096",
+   "verdict": "accept",
+   "reason": "Matches c.kformula; shown only in the explorer's live section, where it is self-scoped."
+  },
+  {
+   "id": "t.097",
+   "verdict": "accept",
+   "reason": "Matches c.kzero and the neuron_k1.c output on card out:p2 and in the explorer."
+  },
+  {
+   "id": "t.098",
+   "verdict": "accept",
+   "reason": "Matches c.mul at explorer step 2 (state s1, lines 1-2 printed)."
+  },
+  {
+   "id": "t.099",
+   "verdict": "accept",
+   "reason": "Matches c.out; on card q:sc3 'Here' refers to the program on the card, and step 4 shows a = 0.6."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "Matches c.relu; true in every listed place."
+  },
+  {
+   "id": "t.101",
+   "verdict": "accept",
+   "reason": "Matches c.setup at explorer step 1 (state s0, lines 5-7)."
+  },
+  {
+   "id": "t.102",
+   "verdict": "accept",
+   "reason": "Matches c.sign at explorer step 2."
+  },
+  {
+   "id": "t.103",
+   "verdict": "reject",
+   "reason": "Claim text of c.toy on the still: unscoped 'The program' and 'the numbers' are false for double_format.c (%d, real format parameters)."
+  },
+  {
+   "id": "t.175",
+   "verdict": "accept",
+   "reason": "Chapter title 'Add' names sc4 (state s2, the sum line)."
+  },
+  {
+   "id": "t.176",
+   "verdict": "accept",
+   "reason": "Chapter title 'Gate' names sc5 (state s3, fmax and a = 0.6)."
+  },
+  {
+   "id": "t.177",
+   "verdict": "accept",
+   "reason": "Chapter title 'Multiply' names sc2 (state s1)."
+  },
+  {
+   "id": "t.178",
+   "verdict": "accept",
+   "reason": "'One neuron, three steps' matches the multiply, add, gate structure in c.formula and sc1's narration."
+  },
+  {
+   "id": "t.179",
+   "verdict": "accept",
+   "reason": "'Recap' fits sc6, whose narration restates the computation and its rounding."
+  },
+  {
+   "id": "t.180",
+   "verdict": "accept",
+   "reason": "'The question' names sc3 and does not give away the answer."
+  },
+  {
+   "id": "t.192",
+   "verdict": "accept",
+   "reason": "Lesson title doesn't overstate the lesson."
+  },
+  {
+   "id": "t.193",
+   "verdict": "accept",
+   "reason": "Shown labelled as a wrong belief; the belief is false (negative term -0.4, yet a = 0.6)."
+  },
+  {
+   "id": "t.194",
+   "verdict": "accept",
+   "reason": "Shown labelled as a wrong belief in the qa key; the belief is false."
+  },
+  {
+   "id": "t.195",
+   "verdict": "accept",
+   "reason": "Narration sc1 matches c.formula; fine in transcript.txt."
+  },
+  {
+   "id": "t.196",
+   "verdict": "accept",
+   "reason": "Narration sc1 matches c.setup and state s0."
+  },
+  {
+   "id": "t.197",
+   "verdict": "accept",
+   "reason": "Narration sc2 matches c.mul and the printed lines 1-2."
+  },
+  {
+   "id": "t.198",
+   "verdict": "accept",
+   "reason": "Narration sc2, scoped by 'Here', matches c.sign."
+  },
+  {
+   "id": "t.199",
+   "verdict": "accept",
+   "reason": "In captions and transcript.txt the question precedes it, and sc4/sc5 give z and a."
+  },
+  {
+   "id": "t.200",
+   "verdict": "reject",
+   "reason": "Narration sc4: says z prints as 1.6, but the sc4 state's output line 3 is 'b = -0.2  z = 0.6'. Wrong in captions.vtt, ive, qa and transcript.txt."
+  },
+  {
+   "id": "t.201",
+   "verdict": "accept",
+   "reason": "Narration sc5 matches c.relu."
+  },
+  {
+   "id": "t.202",
+   "verdict": "accept",
+   "reason": "Narration sc5 matches c.out and state s3's output a = 0.6."
+  },
+  {
+   "id": "t.203",
+   "verdict": "accept",
+   "reason": "Context sentence in sc6 (neuron.c, this platform): 0.8 × 1.5 and z are not exactly 1.2 and 0.6 in binary64; true in every listed place."
+  },
+  {
+   "id": "t.204",
+   "verdict": "accept",
+   "reason": "Context sentence in sc6: %g prints neuron.c's z as 0.6."
+  },
+  {
+   "id": "t.205",
+   "verdict": "accept",
+   "reason": "Narration matches c.formula and c.out; scoped by 'for these inputs'."
+  },
+  {
+   "id": "t.206",
+   "verdict": "accept",
+   "reason": "Option 0.8 is marked wrong and is wrong (a = 0.6)."
+  },
+  {
+   "id": "t.207",
+   "verdict": "accept",
+   "reason": "Option 0 is marked wrong and is wrong."
+  },
+  {
+   "id": "t.208",
+   "verdict": "accept",
+   "reason": "Option 0.6 is marked correct and matches f.a."
+  },
+  {
+   "id": "t.209",
+   "verdict": "accept",
+   "reason": "Prompt makes sense with or without options and doesn't give away the answer; the title and earlier narration don't state a."
+  },
+  {
+   "id": "t.210",
+   "verdict": "accept",
+   "reason": "Trace label fits s0 (lines 5-7)."
+  },
+  {
+   "id": "t.211",
+   "verdict": "accept",
+   "reason": "Trace label fits s1 (lines 8-11)."
+  },
+  {
+   "id": "t.212",
+   "verdict": "accept",
+   "reason": "Trace label fits s2 (lines 12-13)."
+  },
+  {
+   "id": "t.213",
+   "verdict": "accept",
+   "reason": "Trace label fits s3 (lines 14-15)."
+  }
+ ],
+ "overall": "reject"
+}

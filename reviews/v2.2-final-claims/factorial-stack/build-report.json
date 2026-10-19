@@ -1,0 +1,4136 @@
+{
+  "schema": "prax-teach/build-report@1",
+  "lesson": "factorial-stack",
+  "lesson_sha256": "c6f93a05f0d1498e669a7c9a1bc0d45cc472d0a381247cfbab9ca5fa722a9a05",
+  "status": "failed",
+  "started": "2026-10-19T13:59:00+0530",
+  "finished": "2026-10-19T14:02:19+0530",
+  "media": [
+    "still",
+    "explorer",
+    "qa",
+    "cards",
+    "video",
+    "ive"
+  ],
+  "entry": {
+    "skill_md": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/package/prax-teach/SKILL.md",
+    "skill_md_sha256": "3cf3812a14b36c1f00d437fcab714bf249bd76cf225c9041228d131e76fa550e",
+    "ptk": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/package/prax-teach/bin/ptk",
+    "registration": "none (direct path, D19.3)",
+    "shows": "build invoked via bin/ptk; does not show that SKILL.md was loaded"
+  },
+  "gates": [
+    {
+      "id": "values.expect",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "facts": 18,
+        "mismatches": 0
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.explorer",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 20,
+        "states": 7,
+        "against": "stepper.expected_view (facts, mech.shown_facts)",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.knob",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "kind": "calls",
+        "views_checked": 35,
+        "against": "captured facts and expect.py (values, calls); expect_neuron.py and the captured check runs (neuron)",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.prose-follows-state",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 20,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.a11y-csp-noscript",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "csp": "default-src 'none'; script-src 'sha256-B8SXnN1kD4flAI1kN4AXpZv6sh1QppcB6pEKYRocvrM='; style-src 'sha256-FlWG2dfk9o7wiuhL",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.layout",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "layouts": 28,
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ],
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.file-protocol",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "url": "file:///Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/explorer/index.html",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.layers-misconceptions-print",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "layers": 6,
+        "options": 3,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.page",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "problems": [],
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.cards",
+      "medium": "cards",
+      "status": "passed",
+      "measured": {
+        "cards": 6,
+        "misconception_cards": 4,
+        "apkg": "factorial-stack.apkg",
+        "problems": [],
+        "anki_import": "tests/test_cards.py::test_anki_import (not part of the build)"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.still",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "values_checked": 96,
+        "mismatches": [],
+        "files": [
+          "factorial-stack-wide-light.svg",
+          "factorial-stack-wide-dark.svg",
+          "factorial-stack-portrait-light.svg",
+          "factorial-stack-portrait-dark.svg"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.layout",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "views": {
+          "factorial-stack-wide-light.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "factorial-stack-wide-dark.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "factorial-stack-portrait-light.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          },
+          "factorial-stack-portrait-dark.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          }
+        },
+        "svg_problems": [],
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-light.png"
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-dark.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-light.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-dark.png"
+          }
+        ],
+        "min_text_px_at_display": 11.7,
+        "job_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.key-nodes",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "required": [
+          "code",
+          "note",
+          "output",
+          "panel"
+        ],
+        "problems": [],
+        "nodes": {
+          "factorial-stack-wide-light.svg": {
+            "panel": {
+              "left": 48,
+              "right": 588,
+              "top": 168.9,
+              "height": 442.5,
+              "width": 540
+            },
+            "output": {
+              "left": 644,
+              "right": 1105.6,
+              "top": 172.4,
+              "height": 146.2,
+              "width": 461.6
+            },
+            "code": {
+              "left": 644,
+              "right": 944.2,
+              "top": 346.4,
+              "height": 60,
+              "width": 300.2
+            },
+            "note": {
+              "left": 644,
+              "right": 1152,
+              "top": 418.9,
+              "height": 188.6,
+              "width": 508
+            }
+          },
+          "factorial-stack-wide-dark.svg": {
+            "panel": {
+              "left": 48,
+              "right": 588,
+              "top": 168.9,
+              "height": 442.5,
+              "width": 540
+            },
+            "output": {
+              "left": 644,
+              "right": 1105.6,
+              "top": 172.4,
+              "height": 146.2,
+              "width": 461.6
+            },
+            "code": {
+              "left": 644,
+              "right": 944.2,
+              "top": 346.4,
+              "height": 60,
+              "width": 300.2
+            },
+            "note": {
+              "left": 644,
+              "right": 1152,
+              "top": 418.9,
+              "height": 188.6,
+              "width": 508
+            }
+          },
+          "factorial-stack-portrait-light.svg": {
+            "panel": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 167.1,
+              "height": 389.4,
+              "width": 358.8
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 587.6,
+              "height": 216.1,
+              "width": 358.8
+            },
+            "code": {
+              "left": 15.6,
+              "right": 279,
+              "top": 825.8,
+              "height": 50.7,
+              "width": 263.4
+            },
+            "note": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 887.4,
+              "height": 240.8,
+              "width": 358.8
+            }
+          },
+          "factorial-stack-portrait-dark.svg": {
+            "panel": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 167.1,
+              "height": 389.4,
+              "width": 358.8
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 587.6,
+              "height": 216.1,
+              "width": 358.8
+            },
+            "code": {
+              "left": 15.6,
+              "right": 279,
+              "top": 825.8,
+              "height": 50.7,
+              "width": 263.4
+            },
+            "note": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 887.4,
+              "height": 240.8,
+              "width": 358.8
+            }
+          }
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.contrast",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "pairs_checked": 294,
+        "below_minimum": [],
+        "min_text_ratio": 4.67,
+        "min_rule_ratio": 3.71,
+        "dark_note_correction_delta_L": 16.8,
+        "note_correction_delta_L": {
+          "factorial-stack-wide-light.svg": 16.9,
+          "factorial-stack-wide-dark.svg": 16.8,
+          "factorial-stack-portrait-light.svg": 16.9,
+          "factorial-stack-portrait-dark.svg": 16.8
+        },
+        "token_pairs": 50,
+        "token_failures": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.ocr",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "cells": 12,
+        "digit_cells_lining_checked": 12,
+        "misread_or_not_lining": [],
+        "numeric_style_problems": [],
+        "engine": "tesseract 5.5.3"
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.fonts",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_bundled": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.alt-source",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "svgs": [
+          {
+            "svg": "factorial-stack-wide-light.svg",
+            "title": true,
+            "desc_chars": 242,
+            "source_link": true
+          },
+          {
+            "svg": "factorial-stack-wide-dark.svg",
+            "title": true,
+            "desc_chars": 242,
+            "source_link": true
+          },
+          {
+            "svg": "factorial-stack-portrait-light.svg",
+            "title": true,
+            "desc_chars": 242,
+            "source_link": true
+          },
+          {
+            "svg": "factorial-stack-portrait-dark.svg",
+            "title": true,
+            "desc_chars": 242,
+            "source_link": true
+          }
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.network",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.hyperframes-check",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "exit": 0,
+        "counts": {
+          "lint": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "runtime": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "layout": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "contrast": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "motion": {
+            "errors": 0,
+            "warnings": 0
+          }
+        },
+        "sandboxed": true,
+        "sub_compositions": 9,
+        "scenes": 9
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.scene-layout",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "scenes": {
+          "sc1": {
+            "mid": {
+              "state": "s0",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s0",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc2": {
+            "mid": {
+              "state": "s1",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s1",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc3": {
+            "mid": {
+              "state": "s2",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s2",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc4": {
+            "mid": {
+              "state": "s2",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output",
+                "question"
+              ]
+            },
+            "settled": {
+              "state": "s2",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output",
+                "question"
+              ]
+            }
+          },
+          "sc5": {
+            "mid": {
+              "state": "s3",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s3",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc6": {
+            "mid": {
+              "state": "s4",
+              "min_px": 13.47,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s4",
+              "min_px": 13.47,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc7": {
+            "mid": {
+              "state": "s5",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s5",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc8": {
+            "mid": {
+              "state": "s6",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s6",
+              "min_px": 13,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc9": {
+            "mid": {
+              "state": "s6",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s6",
+              "min_px": 15,
+              "empty_bottom_frac": 0.041,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          }
+        },
+        "problems": {},
+        "max_empty_bottom": 0.12,
+        "set_collisions": [],
+        "panel_layers": {
+          "sc1": {
+            "frames": 364,
+            "max_crossfade_s": 1.0
+          },
+          "sc2": {
+            "frames": 412,
+            "max_crossfade_s": 1.0
+          },
+          "sc3": {
+            "frames": 175,
+            "max_crossfade_s": 1.0
+          },
+          "sc4": {
+            "frames": 66,
+            "max_crossfade_s": 1.0
+          },
+          "sc5": {
+            "frames": 163,
+            "max_crossfade_s": 1.0
+          },
+          "sc6": {
+            "frames": 268,
+            "max_crossfade_s": 1.0
+          },
+          "sc7": {
+            "frames": 150,
+            "max_crossfade_s": 1.0
+          },
+          "sc8": {
+            "frames": 287,
+            "max_crossfade_s": 1.0
+          },
+          "sc9": {
+            "frames": 303,
+            "max_crossfade_s": 1.0
+          }
+        },
+        "value_chips": {
+          "sc6": {
+            "frames": 268,
+            "max_shown_s": 1.6
+          },
+          "sc7": {
+            "frames": 150,
+            "max_shown_s": 1.6
+          },
+          "sc8": {
+            "frames": 287,
+            "max_shown_s": 1.6
+          }
+        },
+        "snapshots": [
+          "video/work/snapshots/sc1-mid.png",
+          "video/work/snapshots/sc1-settled.png",
+          "video/work/snapshots/sc2-mid.png",
+          "video/work/snapshots/sc2-settled.png",
+          "video/work/snapshots/sc3-mid.png",
+          "video/work/snapshots/sc3-settled.png",
+          "video/work/snapshots/sc4-mid.png",
+          "video/work/snapshots/sc4-settled.png",
+          "video/work/snapshots/sc5-mid.png",
+          "video/work/snapshots/sc5-settled.png",
+          "video/work/snapshots/sc6-mid.png",
+          "video/work/snapshots/sc6-settled.png",
+          "video/work/snapshots/sc7-mid.png",
+          "video/work/snapshots/sc7-settled.png",
+          "video/work/snapshots/sc8-mid.png",
+          "video/work/snapshots/sc8-settled.png",
+          "video/work/snapshots/sc9-mid.png",
+          "video/work/snapshots/sc9-settled.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.morph-stable",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "morph_scenes": 0,
+        "note": "no program change in this lesson"
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.render-isolation",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "isolation": "sandbox-exec -f ptk/capture/sandbox.sb -D MODE=render",
+        "canaries": {
+          "dns": {
+            "inside_exit": 1,
+            "inside_error": "e/installs/python/3.13.16/lib/python3.13/socket.py\", line 983, in getaddrinfo\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\n               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsocket.gaierror: [Errno 8] nodename nor servname provided, or not known",
+            "blocked": true,
+            "control_exit": 1,
+            "control_reached_network": false
+          },
+          "https": {
+            "inside_exit": 6,
+            "inside_error": "curl: (6) Could not resolve host: example.com",
+            "blocked": true,
+            "control_exit": 6,
+            "control_reached_network": false
+          },
+          "child-connect": {
+            "inside_exit": 7,
+            "inside_error": "child-connect failed: [Errno 1] Operation not permitted",
+            "blocked": true,
+            "control_exit": 7,
+            "control_reached_network": false
+          }
+        },
+        "render_succeeded": true,
+        "denied_requests_in_render_log": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.video",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "values_checked": 91,
+        "mismatches": [],
+        "files": [
+          "sc1.html",
+          "sc2.html",
+          "sc3.html",
+          "sc4.html",
+          "sc5.html",
+          "sc6.html",
+          "sc7.html",
+          "sc8.html",
+          "sc9.html"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.media",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "video_h264_1920x1080": true,
+          "video_30fps": true,
+          "audio_aac": true,
+          "captions_track_in_mp4": true,
+          "chapters_in_mp4": true,
+          "captions_vtt": true,
+          "chapters_vtt": true,
+          "loudness_in_range": true,
+          "true_peak_ok": true,
+          "av_duration_match": true
+        },
+        "integrated_lufs": -16.0,
+        "true_peak_dbtp": -2.0,
+        "lra_lu": 2.4,
+        "video": {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "r_frame_rate": "30/1",
+          "pix_fmt": "yuv420p",
+          "duration": "109.600000"
+        },
+        "audio": {
+          "codec_name": "aac",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "109.599958"
+        },
+        "subtitle": "mov_text",
+        "chapters": 9,
+        "caption_cues": 13,
+        "chapter_cues": 9,
+        "duration": 109.6,
+        "thresholds": {
+          "lufs": [
+            -17.0,
+            -15.0
+          ],
+          "true_peak_max": -1.0
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.sync",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "cues": [
+          {
+            "cue": "sc1.0",
+            "cue_start": 0.8,
+            "speech_start": 0.818,
+            "start_delta": 0.018,
+            "cue_end": 9.0,
+            "speech_end": 8.945,
+            "end_delta": -0.055,
+            "words": 17,
+            "whisper_first_word": 1.08,
+            "whisper_last_word_end": 8.92
+          },
+          {
+            "cue": "sc1.1",
+            "cue_start": 9.3333,
+            "speech_start": 9.351,
+            "start_delta": 0.018,
+            "cue_end": 17.7667,
+            "speech_end": 17.731,
+            "end_delta": -0.036,
+            "words": 21,
+            "whisper_first_word": 9.52,
+            "whisper_last_word_end": 17.99
+          },
+          {
+            "cue": "sc2.0",
+            "cue_start": 18.5667,
+            "speech_start": 18.585,
+            "start_delta": 0.018,
+            "cue_end": 29.2,
+            "speech_end": 29.149,
+            "end_delta": -0.051,
+            "words": 23,
+            "whisper_first_word": 18.78,
+            "whisper_last_word_end": 29.5
+          },
+          {
+            "cue": "sc2.1",
+            "cue_start": 29.5333,
+            "speech_start": 29.548,
+            "start_delta": 0.015,
+            "cue_end": 38.4333,
+            "speech_end": 38.406,
+            "end_delta": -0.027,
+            "words": 19,
+            "whisper_first_word": 29.66,
+            "whisper_last_word_end": 39.05
+          },
+          {
+            "cue": "sc3.0",
+            "cue_start": 39.2333,
+            "speech_start": 39.251,
+            "start_delta": 0.018,
+            "cue_end": 47.2333,
+            "speech_end": 47.188,
+            "end_delta": -0.045,
+            "words": 16,
+            "whisper_first_word": 39.42,
+            "whisper_last_word_end": 47.89
+          },
+          {
+            "cue": "sc4.0",
+            "cue_start": 48.0333,
+            "speech_start": 48.053,
+            "start_delta": 0.02,
+            "cue_end": 50.5333,
+            "speech_end": 50.5,
+            "end_delta": -0.033,
+            "words": 6,
+            "whisper_first_word": 48.14,
+            "whisper_last_word_end": 51.19
+          },
+          {
+            "cue": "sc5.0",
+            "cue_start": 51.3333,
+            "speech_start": 51.334,
+            "start_delta": 0.001,
+            "cue_end": 58.6667,
+            "speech_end": 58.649,
+            "end_delta": -0.018,
+            "words": 18,
+            "whisper_first_word": 51.46,
+            "whisper_last_word_end": 59.3
+          },
+          {
+            "cue": "sc6.0",
+            "cue_start": 59.4667,
+            "speech_start": 59.485,
+            "start_delta": 0.018,
+            "cue_end": 72.1333,
+            "speech_end": 72.105,
+            "end_delta": -0.028,
+            "words": 27,
+            "whisper_first_word": 59.64,
+            "whisper_last_word_end": 72.7
+          },
+          {
+            "cue": "sc7.0",
+            "cue_start": 72.9333,
+            "speech_start": 72.952,
+            "start_delta": 0.019,
+            "cue_end": 79.6333,
+            "speech_end": 79.584,
+            "end_delta": -0.049,
+            "words": 15,
+            "whisper_first_word": 73.08,
+            "whisper_last_word_end": 80.04
+          },
+          {
+            "cue": "sc8.0",
+            "cue_start": 80.4333,
+            "speech_start": 80.452,
+            "start_delta": 0.019,
+            "cue_end": 86.1333,
+            "speech_end": 86.104,
+            "end_delta": -0.029,
+            "words": 14,
+            "whisper_first_word": 80.7,
+            "whisper_last_word_end": 86.2
+          },
+          {
+            "cue": "sc8.1",
+            "cue_start": 86.4667,
+            "speech_start": 86.486,
+            "start_delta": 0.019,
+            "cue_end": 93.9667,
+            "speech_end": 93.949,
+            "end_delta": -0.018,
+            "words": 19,
+            "whisper_first_word": 86.58,
+            "whisper_last_word_end": 94.16
+          },
+          {
+            "cue": "sc9.0",
+            "cue_start": 94.7667,
+            "speech_start": 94.785,
+            "start_delta": 0.018,
+            "cue_end": 102.9,
+            "speech_end": 102.859,
+            "end_delta": -0.041,
+            "words": 18,
+            "whisper_first_word": 94.88,
+            "whisper_last_word_end": 103.12
+          },
+          {
+            "cue": "sc9.1",
+            "cue_start": 103.2667,
+            "speech_start": 103.286,
+            "start_delta": 0.019,
+            "cue_end": 108.0,
+            "speech_end": 107.956,
+            "end_delta": -0.044,
+            "words": 10,
+            "whisper_first_word": 103.56,
+            "whisper_last_word_end": 109.6
+          }
+        ],
+        "mispronounced": [],
+        "max_abs_start_delta": 0.02,
+        "max_abs_end_delta": 0.055,
+        "non_code_wer": 0.0,
+        "wer_reference": "lexicon(text), the form the voice was given (round 18)",
+        "hand_respelled": [],
+        "ref_words": 206,
+        "hyp_words": 206,
+        "whisper": {
+          "model": "ggml-base.en.bin",
+          "model_sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002",
+          "wav": "speech-16k.wav",
+          "timestamps": "start = DTW token time (fallback segment offset), end = token end offset",
+          "boundaries": "onset/offset = nearest silencedetect edge (-40 dB, 0.12 s) around the whisper words"
+        },
+        "heard": "Main calls factorial of 3, and factorial calls itself with n minus 1 until n is 1. Each call to factorial gets its own n and its own r, drawn here as one frame on the call stack. Now factorial of 3 cannot finish line 7 until factorial of 2 returns a value. So its frame waits above the new one. The empty box after r equals 3 times stands for the value factorial of 2 has not returned yet. Then factorial of 2 calls factorial of 1, so 3 factorial frames now sit below main. The next scene answers this question. In factorial of 1, n greater than 1 is false, so r stays 1 and it returns 1. Each factorial return hands its value to the call that made it 1 frame up. Factorial of 2 gets 1 and returns 2 times 1 equals 2. Then factorial of 3 gets 2 and returns 3 times 2 equals 6 to main. Main stores the returned 6 in its own r, then prints main got 6. The calls start in the order 3, 2, 1, and they finish in the reverse order. 1, 2, 3. The stack column grows by one frame for each factorial call and shrinks by 1 for each return. Each factorial return value flows up to the frame above."
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.no-answer-leak",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc4",
+            "answer_cue": 51.3333,
+            "answer": [
+              {
+                "kind": "words",
+                "phrase": [
+                  "factorial",
+                  "1",
+                  "1"
+                ]
+              }
+            ],
+            "subject": [
+              "display",
+              "line",
+              "output",
+              "print",
+              "show"
+            ]
+          }
+        ],
+        "leaks": [],
+        "rule": "words answers as phrases anywhere; numeric answers only as the value in a sentence about the question's subject, not in code or line numbers"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.ive",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "values_checked": 90,
+        "mismatches": [],
+        "files": [
+          "states.vtt"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.pause-state",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "rule": "explorer == cue state, and explorer == state derived from the frame (a transition or answer cue may show a frame in mid-tween of the same program, between its state and the next); windows are half-open and a time under one frame before a boundary resolves to the later window",
+        "pauses_checked": 42,
+        "mismatches": [],
+        "chapter_jumps": [
+          {
+            "t": 0,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)"
+            ],
+            "origin_text": "From the film at 0:00",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 18.233,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)"
+            ],
+            "origin_text": "From the film at 0:18",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 38.867,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m3",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)"
+            ],
+            "origin_text": "From the film at 0:38",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 47.667,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s2",
+            "cue": "m6",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)"
+            ],
+            "origin_text": "From the film at 0:47",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 50.967,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s2",
+            "cue": "m6",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)"
+            ],
+            "origin_text": "From the film at 0:50",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 59.133,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s3",
+            "cue": "m8",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)",
+              "factorial(1) = 1"
+            ],
+            "origin_text": "From the film at 0:59",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 72.567,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s4",
+            "cue": "m10",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)",
+              "factorial(1) = 1",
+              "factorial(2) = 2"
+            ],
+            "origin_text": "From the film at 1:12",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 80.067,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s5",
+            "cue": "m12",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)",
+              "factorial(1) = 1",
+              "factorial(2) = 2",
+              "factorial(3) = 6"
+            ],
+            "origin_text": "From the film at 1:20",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 94.433,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s6",
+            "cue": "m14",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)",
+              "factorial(1) = 1",
+              "factorial(2) = 2",
+              "factorial(3) = 6",
+              "main got 6"
+            ],
+            "origin_text": "From the film at 1:34",
+            "border": "solid",
+            "current": "true"
+          }
+        ],
+        "chapter_mismatches": [],
+        "boundary_seeks": 91,
+        "boundary_mismatches": [],
+        "boundary_cases_strict_rule_gets_wrong": 50,
+        "frame_states": {
+          "m1@0.05": "s0",
+          "m1@0.2": "s0",
+          "m1@18.517": "s0",
+          "m2@18.617": "moving",
+          "m2@18.767": "moving",
+          "m2@20.45": "moving",
+          "m3@20.55": "s1",
+          "m3@20.7": "s1",
+          "m3@39.183": "s1",
+          "m4@39.283": "moving",
+          "m4@39.433": "moving",
+          "m4@39.95": "moving",
+          "m5@40.05": "s2",
+          "m5@40.2": "s2",
+          "m5@47.617": "s2",
+          "m6@47.717": "s2",
+          "m6@47.867": "s2",
+          "m6@51.283": "s2",
+          "m7@51.383": "moving",
+          "m7@51.533": "moving",
+          "m7@52.583": "moving",
+          "m8@52.683": "s3",
+          "m8@52.833": "s3",
+          "m8@59.417": "s3",
+          "m9@59.517": "moving",
+          "m9@59.667": "moving",
+          "m9@61.017": "moving",
+          "m10@61.117": "s4",
+          "m10@61.267": "s4",
+          "m10@72.883": "s4",
+          "m11@72.983": "moving",
+          "m11@73.133": "moving",
+          "m11@74.383": "moving",
+          "m12@74.483": "s5",
+          "m12@74.633": "s5",
+          "m12@80.383": "s5",
+          "m13@80.483": "moving",
+          "m13@80.633": "moving",
+          "m13@81.883": "moving",
+          "m14@81.983": "s6",
+          "m14@82.133": "s6",
+          "m14@109.55": "s6"
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.no-answer-leak",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checked_before": {
+          "ive-leak:m7": {
+            "hits": [],
+            "transcript_items": 6,
+            "t": 51.233,
+            "paused": true,
+            "mode": "explore",
+            "origin": "film",
+            "state": "s2",
+            "cue": "m6",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "enter factorial(3)",
+              "enter factorial(2)",
+              "enter factorial(1)"
+            ],
+            "origin_text": "From the film at 0:51",
+            "border": "solid"
+          }
+        },
+        "leaks": [],
+        "noscript_answers_heading_first": true,
+        "rule": "paused 0.1 s before each answer cue: no answer word in the DOM (noscript excluded), alt text, aria-label, title or the transcript so far; the noscript transcript sits after its 'contains the answers' heading"
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.controls",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "controls": {
+          "transcript_items_at_end": 13,
+          "seek_after_click": 0.8,
+          "caption_states": [
+            {
+              "shown": true,
+              "text": "main calls factorial(3), and factorial calls itself with n - 1 until n is 1.",
+              "visibility": "visible",
+              "w": 513.78125,
+              "h": 24.640625,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            },
+            {
+              "shown": false,
+              "text": "",
+              "visibility": "hidden",
+              "w": 0,
+              "h": 0,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "false"
+            },
+            {
+              "shown": true,
+              "text": "main calls factorial(3), and factorial calls itself with n - 1 until n is 1.",
+              "visibility": "visible",
+              "w": 513.78125,
+              "h": 24.640625,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            }
+          ],
+          "caption_second_cue": {
+            "shown": true,
+            "text": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1.",
+            "visibility": "visible",
+            "w": 425.109375,
+            "h": 24.640625,
+            "color": "rgb(23, 29, 41)",
+            "data_on": "true"
+          },
+          "caption_track_mode": "hidden",
+          "chapters": 9,
+          "readyState": 4,
+          "error": null
+        },
+        "captions": "ok",
+        "nav_events": 151,
+        "nav_actions": [
+          "chapter",
+          "explore",
+          "open",
+          "return",
+          "seek"
+        ],
+        "nav_not_navigation": [],
+        "nojs": {
+          "390": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc7.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc8.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc9.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 13
+          },
+          "1440": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc7.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc8.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc9.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 13
+          }
+        },
+        "nojs_shots": [
+          "shots/ive-nojs-390.png",
+          "shots/ive-nojs-1440.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.explore-return",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "film_follows_clock": true,
+          "explore_on_pause": true,
+          "live_edit_marked_yours": true,
+          "return_resumes_at_pause": true,
+          "return_shows_film_state": true,
+          "no_edit_after_return": true,
+          "live_model_builds": true
+        },
+        "mode": "knob",
+        "live_edit": true,
+        "live_model_error": null,
+        "declared_by": "figure.explore: the knob in EXPLORE",
+        "film": {
+          "t": 53.133,
+          "paused": true,
+          "mode": "film",
+          "origin": "film",
+          "state": "s3",
+          "cue": "m8",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "enter factorial(3)",
+            "enter factorial(2)",
+            "enter factorial(1)",
+            "factorial(1) = 1"
+          ],
+          "origin_text": "From the film at 0:53",
+          "border": "solid"
+        },
+        "explore": {
+          "t": 53.46345,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s3",
+          "cue": "m8",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "enter factorial(3)",
+            "enter factorial(2)",
+            "enter factorial(1)",
+            "factorial(1) = 1"
+          ],
+          "origin_text": "From the film at 0:53",
+          "border": "solid",
+          "returnTime": 53.46345,
+          "expected_cue": "m8"
+        },
+        "edited": {
+          "t": 53.46345,
+          "paused": true,
+          "mode": "explore",
+          "origin": "yours",
+          "state": null,
+          "cue": null,
+          "kind": "edit",
+          "edit": "n=1;step=3",
+          "program": "p2",
+          "output": [
+            "enter factorial(1)",
+            "factorial(1) = 1",
+            "main got 1"
+          ],
+          "origin_text": "Your edit, not in the film",
+          "border": "dashed"
+        },
+        "returned": {
+          "t": 53.524854,
+          "paused": false,
+          "mode": "film",
+          "origin": "film",
+          "state": "s3",
+          "cue": "m8",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "enter factorial(3)",
+            "enter factorial(2)",
+            "enter factorial(1)",
+            "factorial(1) = 1"
+          ],
+          "origin_text": "From the film at 0:53",
+          "border": "solid",
+          "return_position": 53.463,
+          "returnTime": 53.46345,
+          "film_cue": "m8",
+          "edits_left": 0
+        },
+        "repaused": {
+          "t": 53.526205,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s3",
+          "cue": "m8",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "enter factorial(3)",
+            "enter factorial(2)",
+            "enter factorial(1)",
+            "factorial(1) = 1"
+          ],
+          "origin_text": "From the film at 0:53",
+          "border": "solid",
+          "n_checked": null,
+          "brk_pressed": null
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.file-protocol",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "files": {
+          "protocol": "file:",
+          "tracks": [
+            {
+              "kind": "captions",
+              "mode": "hidden",
+              "cues": 13
+            },
+            {
+              "kind": "chapters",
+              "mode": "hidden",
+              "cues": 9
+            },
+            {
+              "kind": "metadata",
+              "mode": "hidden",
+              "cues": 14
+            }
+          ],
+          "track_src": [
+            "blob",
+            "blob",
+            "blob"
+          ],
+          "readyState": 4,
+          "error": null,
+          "duration": 109.6,
+          "h264": "probably"
+        },
+        "expected_cues": {
+          "captions": 13,
+          "chapters": 9,
+          "metadata": 14
+        },
+        "console_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.layout",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "key_nodes": [
+              "panel",
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-light.png",
+              "shots/ive-390-light-explore.png"
+            ]
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "key_nodes": [
+              "panel",
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-dark.png",
+              "shots/ive-390-dark-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "key_nodes": [
+              "panel",
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-light.png",
+              "shots/ive-1440-light-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "key_nodes": [
+              "panel",
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-dark.png",
+              "shots/ive-1440-dark-explore.png"
+            ]
+          }
+        ],
+        "errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.fonts",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_loaded": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.network",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.predict-gated",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc4",
+            "pause_at": 50.783,
+            "resume_at": 50.967,
+            "answer_at": 51.333,
+            "silence_before_pause": 0.25,
+            "silence_after_jump": 0.366,
+            "answer_follows_after": 0.8,
+            "question_wpm": [
+              144
+            ],
+            "question_line": "The next scene answers this question.",
+            "sealed_chapters": [
+              4,
+              7
+            ]
+          }
+        ],
+        "driven": {
+          "sc4@1440 (practice off)": {
+            "toggle": {
+              "visible": true,
+              "pressed": "false",
+              "practice": false
+            },
+            "modes": [
+              "film"
+            ],
+            "paused": false,
+            "t_end": 51.659,
+            "in_gap": []
+          },
+          "sc4@1440": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc4",
+              "t": 50.755489,
+              "paused": true,
+              "options": [
+                "factorial(3) = 6",
+                "factorial(1) = 1",
+                "enter factorial(0)"
+              ],
+              "chapters": [
+                "main calls factorial(3)",
+                "One frame per factorial call",
+                "Three factorial frames on main",
+                "The question",
+                "Opens after the answer",
+                "One frame up",
+                "Back to main",
+                "Opens after the answer",
+                "Recap"
+              ],
+              "panel": [
+                "f.call3",
+                "f.call2",
+                "f.call1"
+              ],
+              "plan": {
+                "scene": "sc4",
+                "prompt": "What is line 4 of the output?",
+                "options": [
+                  {
+                    "text": "factorial(3) = 6",
+                    "correct": false,
+                    "misconception": "factorial(3) was called first, so it prints its result first.",
+                    "correction": "The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3."
+                  },
+                  {
+                    "text": "factorial(1) = 1",
+                    "correct": true
+                  },
+                  {
+                    "text": "enter factorial(0)",
+                    "correct": false,
+                    "misconception": "The calls go on down to factorial(0) before any of them prints a result.",
+                    "correction": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1."
+                  }
+                ],
+                "pause_at": 50.783,
+                "q_end": 50.5333,
+                "resume_at": 50.967,
+                "answer_at": 51.333,
+                "verdict_until": 59.133,
+                "sealed": [
+                  4,
+                  7
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 50.755489,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 50.783,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 51.013971,
+              "t_later": 52.517671,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: factorial(3) = 6Not quite. That answer comes from a common wrong belief:factorial(3) was called first, so it prints its result first.What is actually true:The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3.",
+              "chapters": [
+                "main calls factorial(3)",
+                "One frame per factorial call",
+                "Three factorial frames on main",
+                "The question",
+                "The base case returns",
+                "One frame up",
+                "Back to main",
+                "main prints the result",
+                "Recap"
+              ],
+              "picked": {
+                "sc4": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc4-1440.png",
+              "shots/ive-after-pick-sc4-1440.png"
+            ]
+          },
+          "sc4@390 (practice off)": {
+            "toggle": {
+              "visible": true,
+              "pressed": "false",
+              "practice": false
+            },
+            "modes": [
+              "film"
+            ],
+            "paused": false,
+            "t_end": 51.68,
+            "in_gap": []
+          },
+          "sc4@390": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc4",
+              "t": 50.762227,
+              "paused": true,
+              "options": [
+                "factorial(3) = 6",
+                "factorial(1) = 1",
+                "enter factorial(0)"
+              ],
+              "chapters": [
+                "main calls factorial(3)",
+                "One frame per factorial call",
+                "Three factorial frames on main",
+                "The question",
+                "Opens after the answer",
+                "One frame up",
+                "Back to main",
+                "Opens after the answer",
+                "Recap"
+              ],
+              "panel": [
+                "f.call3",
+                "f.call2",
+                "f.call1"
+              ],
+              "plan": {
+                "scene": "sc4",
+                "prompt": "What is line 4 of the output?",
+                "options": [
+                  {
+                    "text": "factorial(3) = 6",
+                    "correct": false,
+                    "misconception": "factorial(3) was called first, so it prints its result first.",
+                    "correction": "The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3."
+                  },
+                  {
+                    "text": "factorial(1) = 1",
+                    "correct": true
+                  },
+                  {
+                    "text": "enter factorial(0)",
+                    "correct": false,
+                    "misconception": "The calls go on down to factorial(0) before any of them prints a result.",
+                    "correction": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1."
+                  }
+                ],
+                "pause_at": 50.783,
+                "q_end": 50.5333,
+                "resume_at": 50.967,
+                "answer_at": 51.333,
+                "verdict_until": 59.133,
+                "sealed": [
+                  4,
+                  7
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 50.762227,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 50.783,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 51.012137,
+              "t_later": 52.515136,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: factorial(3) = 6Not quite. That answer comes from a common wrong belief:factorial(3) was called first, so it prints its result first.What is actually true:The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3.",
+              "chapters": [
+                "main calls factorial(3)",
+                "One frame per factorial call",
+                "Three factorial frames on main",
+                "The question",
+                "The base case returns",
+                "One frame up",
+                "Back to main",
+                "main prints the result",
+                "Recap"
+              ],
+              "picked": {
+                "sc4": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc4-390.png",
+              "shots/ive-after-pick-sc4-390.png"
+            ]
+          }
+        },
+        "problems": [],
+        "rule": "practice mode off (the default, AC-6.8): the toggle is visible and off and the film plays through the question without stopping, its question narration asks for no prediction, and the next line follows within 1.0 s (no think gap in the MP4); practice mode on: the film stops within 0.12 s of the pause point, at most 0.6 s after the last spoken word, shows the storyboard's options, holds through a wait and a play(), keeps answer-stating chapter titles sealed, and resumes at the answer scene after a pick"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.mapping",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "texts": 228,
+        "teaching": 55,
+        "claim_mapped": 34,
+        "unmapped": [],
+        "rule": "every sentence equals a whole claim or narration sentence, or a typed chrome.json string"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.review",
+      "medium": "all",
+      "status": "failed",
+      "reason": "the 3 lesson reviewers disagree on 6 claim(s) or text(s) (AC-7.8)",
+      "measured": {
+        "lesson_jobs": [
+          {
+            "job": "job-9e25379dc3",
+            "overall": "reject",
+            "rejected_claims": [
+              {
+                "id": "c.setup",
+                "verdict": "reject",
+                "reason": "Claims class, scope: the sentence names no program, so it must hold for every program in the job, but main calls factorial(1), factorial(2), factorial(4) and factorial(5) in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c. It needs 'In factorial.c, ...'.",
+                "evidence": [
+                  "program p1 line 13",
+                  "program p4 line 13",
+                  "fact f.n4.out"
+                ]
+              },
+              {
+                "id": "c.depth",
+                "verdict": "reject",
+                "reason": "Claims class, scope and causal 'so': unscoped, and false in fact_n2.c, where factorial(2) calls factorial(1) yet only two factorial frames sit below main (fact_n4.c has four). The three-frame count holds only in factorial.c and the sentence doesn't say so.",
+                "evidence": [
+                  "fact f.n2.out",
+                  "fact f.n4.out",
+                  "fact f.call1"
+                ]
+              },
+              {
+                "id": "c.ret3",
+                "verdict": "reject",
+                "reason": "Claims class, scope: unscoped, and in fact_n4.c and fact_n5.c factorial(3) returns 6 to factorial(4), not to main. Only true of factorial.c, which the sentence doesn't name.",
+                "evidence": [
+                  "fact f.n4.out",
+                  "fact f.n5.out",
+                  "fact f.ret3"
+                ]
+              },
+              {
+                "id": "c.main",
+                "verdict": "reject",
+                "reason": "Claims class, scope: unscoped, and main gets 1, 2, 24 and 120 in the other four programs, so 'main stores the 6 ... prints main got 6' is true only of factorial.c, which it doesn't name.",
+                "evidence": [
+                  "fact f.l7",
+                  "fact f.n1.out",
+                  "fact f.n4.out"
+                ]
+              },
+              {
+                "id": "c.order",
+                "verdict": "reject",
+                "reason": "Claims class, scope: unscoped, and false in fact_n4.c (calls start 4, 3, 2, 1) and fact_n5.c; c.korder shows the author knew the order depends on n. Needs 'In factorial.c' or 'For factorial(3)'.",
+                "evidence": [
+                  "fact f.n4.out",
+                  "fact f.n5.out",
+                  "fact f.out"
+                ]
+              }
+            ],
+            "rejected_texts": [
+              {
+                "id": "t.001",
+                "verdict": "reject",
+                "reason": "Alt: it doesn't say what the still shows (program, output, notes); it restates the unscoped c.order claim. Alt text stands in for the figure, so it can't borrow factorial.c from it, and the order is false for fact_n4.c."
+              },
+              {
+                "id": "t.094",
+                "verdict": "reject",
+                "reason": "Misconception card, cards m:m.base: read on its own with no program, the 'wrong belief' is true for fact_n1.c, where the base case's 1 is exactly what main gets (main got 1), so the back's 'False.' is not true as worded."
+              },
+              {
+                "id": "t.099",
+                "verdict": "reject",
+                "reason": "Claim class, explorer/index.html step 3: same unscoped text as the rejected c.depth; the explorer also offers other values, and for n = 2 only two factorial frames sit below main."
+              },
+              {
+                "id": "t.103",
+                "verdict": "reject",
+                "reason": "Claim class, explorer/index.html step 7: same unscoped text as the rejected c.main; false for the explorer's other values (main gets 24 for n = 4)."
+              },
+              {
+                "id": "t.104",
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped text as the rejected c.order. On cards m:m.firstdone, read with no program, and on explorer/index.html, which offers other values, '3, 2, 1' is false for n = 4 or 5."
+              },
+              {
+                "id": "t.105",
+                "verdict": "reject",
+                "reason": "Claim class: same text as the rejected c.ret3. On cards m:m.once, read with no program, 'returns ... to main' is false for fact_n4.c and fact_n5.c."
+              },
+              {
+                "id": "t.106",
+                "verdict": "reject",
+                "reason": "Claim class, explorer/index.html step 1: same unscoped text as the rejected c.setup; main calls a different factorial value in the other four programs."
+              },
+              {
+                "id": "t.185",
+                "verdict": "reject",
+                "reason": "Chapter title, sc3: 'on main' reads as frames stacked on top of main, but the scene's own narration (t.209) and trace label (t.224) say the three factorial frames sit below main in this drawing; the title contradicts its scene."
+              },
+              {
+                "id": "t.208",
+                "verdict": "reject",
+                "reason": "Narration, transcript.txt: drops c.slot's qualifier 'In this lesson's drawing', so in the transcript, which shows no figure, 'The empty box after r = 3 *' points at nothing and doesn't say it is a drawing convention."
+              },
+              {
+                "id": "t.210",
+                "verdict": "reject",
+                "reason": "Narration, transcript.txt: the next scene in the transcript is the title 'The base case returns' plus t.211, which never states what output line 4 is, and the transcript shows no output, so 'The next scene answers this question' is false there."
+              },
+              {
+                "id": "t.216",
+                "verdict": "reject",
+                "reason": "Narration: drops two qualifiers from c.recap. 'for each return' loses 'factorial' (the printf calls return too and don't shrink the column), and with 'In this lesson's drawing' gone, 'The stack column' in transcript.txt names a figure that isn't shown."
+              }
+            ],
+            "reviewer": {
+              "host": "claude-code",
+              "agent": "claims reviewer subagent, rubric v4, job file only"
+            }
+          },
+          {
+            "job": "job-103b2447be",
+            "overall": "reject",
+            "rejected_claims": [
+              {
+                "id": "c.setup",
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c main calls factorial(1), (2), (4) and (5), not factorial(3). Needs 'In factorial.c' in its own text.",
+                "evidence": [
+                  "program p2 line 13",
+                  "program p4 line 13",
+                  "program p1 line 13"
+                ]
+              },
+              {
+                "id": "c.depth",
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope and causal word: 'factorial(2) calls factorial(1), so three factorial frames' is unscoped; in fact_n2.c factorial(2) calls factorial(1) with only two factorial frames below main, and in fact_n4.c there are four. The count follows only in factorial.c, which the sentence does not name.",
+                "evidence": [
+                  "fact f.n2.out",
+                  "fact f.n4.out",
+                  "fact f.call1"
+                ]
+              },
+              {
+                "id": "c.ret3",
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope: 'returns ... 6 to main' is unscoped and false in fact_n4.c and fact_n5.c, where factorial(3) returns 6 to factorial(4). Needs 'In factorial.c'.",
+                "evidence": [
+                  "fact f.n4.out",
+                  "fact f.n5.out",
+                  "fact f.ret3"
+                ]
+              },
+              {
+                "id": "c.main",
+                "verdict": "reject",
+                "reason": "Lens 1 / claim scope: unscoped 'prints main got 6' is false for the other programs in the job, which print main got 1, 2, 24 and 120.",
+                "evidence": [
+                  "fact f.l7",
+                  "fact f.n1.out",
+                  "fact f.n4.out"
+                ]
+              },
+              {
+                "id": "c.order",
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope: 'The calls start in the order 3, 2, 1' names no program and is false for fact_n1.c (one call), fact_n2.c (2, 1), fact_n4.c (4, 3, 2, 1) and fact_n5.c. True only for factorial.c, which it does not name.",
+                "evidence": [
+                  "fact f.out",
+                  "fact f.n2.out",
+                  "fact f.n4.out"
+                ]
+              }
+            ],
+            "rejected_texts": [
+              {
+                "id": "t.001",
+                "verdict": "reject",
+                "reason": "alt (still): same unscoped text as c.order, false for the other programs in the job; it also states a run fact instead of describing what the figure shows."
+              },
+              {
+                "id": "t.094",
+                "verdict": "reject",
+                "reason": "template, presents_misconception (cards m:m.base): the belief is not false as worded. In fact_n1.c the base case's 1 is exactly what comes back to main, so the card's 'False.' is wrong for a program in the job; the belief needs scoping to factorial(3)."
+              },
+              {
+                "id": "t.099",
+                "verdict": "reject",
+                "reason": "claim (explorer/index.html step 3): same text as c.depth; the explorer page also hosts the other programs in its try-another-value section, and in fact_n2.c the same call leaves two frames, not three. Needs its own scope."
+              },
+              {
+                "id": "t.103",
+                "verdict": "reject",
+                "reason": "claim (explorer/index.html step 7): same unscoped text as c.main; 'prints main got 6' is false for the other programs the explorer page also shows."
+              },
+              {
+                "id": "t.104",
+                "verdict": "reject",
+                "reason": "claim: same unscoped text as c.order; on cards m:m.firstdone, the explorer opening page and the still it reads as a general statement and is false for fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c."
+              },
+              {
+                "id": "t.105",
+                "verdict": "reject",
+                "reason": "claim: same text as c.ret3; on cards m:m.once, read on its own, 'returns ... 6 to main' is false for fact_n4.c and fact_n5.c, where factorial(3) returns to factorial(4)."
+              },
+              {
+                "id": "t.106",
+                "verdict": "reject",
+                "reason": "claim (explorer/index.html step 1): same text as c.setup; 'main calls factorial(3)' is unscoped and false for the other programs on the explorer page."
+              },
+              {
+                "id": "t.202",
+                "verdict": "reject",
+                "reason": "misconception (still, labelled as a wrong belief): same belief as t.094; it is true for fact_n1.c, where the base case's 1 is what main gets, so labelling it wrong without scope is not true as worded."
+              },
+              {
+                "id": "t.210",
+                "verdict": "reject",
+                "reason": "narration (transcript.txt): the next scene's transcript text is only the title 'The base case returns' and a line saying factorial(1) returns 1; it never states line 4 of the output. The answer exists only in the figure's output, so the line is false in transcript.txt."
+              },
+              {
+                "id": "t.216",
+                "verdict": "reject",
+                "reason": "narration: drops c.recap's qualifier 'factorial' before 'return'. 'shrinks by one for each return' also covers the seven printf returns, which take no frame off the drawn column, so the line says more than the claim."
+              }
+            ],
+            "reviewer": {
+              "host": "claude-code",
+              "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+            }
+          },
+          {
+            "job": "job-92c5b49474",
+            "overall": "reject",
+            "rejected_claims": [
+              {
+                "id": "c.setup",
+                "verdict": "reject",
+                "reason": "Claims class, scope: the sentence names no program, so it must hold for every program in the job, but in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c main calls factorial(1), (2), (4) and (5), not factorial(3). Needs 'In factorial.c, ...'.",
+                "evidence": [
+                  "program p2 line 13",
+                  "program p4 line 13",
+                  "program p1 lines 6-7, 13"
+                ]
+              },
+              {
+                "id": "c.ret3",
+                "verdict": "reject",
+                "reason": "Claims class, scope: names no program, and 'returns ... 6 to main' is false in fact_n4.c and fact_n5.c, where factorial(3) returns 6 to factorial(4) at line 7, not to main. Needs 'In factorial.c'.",
+                "evidence": [
+                  "fact f.n4.out",
+                  "program p4 line 13",
+                  "fact f.ret3"
+                ]
+              },
+              {
+                "id": "c.main",
+                "verdict": "reject",
+                "reason": "Claims class, scope: names no program, and in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c main stores 1, 2, 24 and 120 and prints main got 1, 2, 24, 120, not 6.",
+                "evidence": [
+                  "fact f.n1.out",
+                  "fact f.n4.out",
+                  "fact f.l7"
+                ]
+              },
+              {
+                "id": "c.order",
+                "verdict": "reject",
+                "reason": "Claims class, scope (the rubric's div.c/fdiv.c pattern): names no program, but in fact_n4.c the calls start 4, 3, 2, 1 and finish 1, 2, 3, 4, and in fact_n1.c there is one call. True only for factorial.c, which the sentence doesn't say.",
+                "evidence": [
+                  "fact f.n4.out",
+                  "fact f.n1.out",
+                  "fact f.out"
+                ]
+              }
+            ],
+            "rejected_texts": [
+              {
+                "id": "t.001",
+                "verdict": "reject",
+                "reason": "Alt class: same unscoped sentence as c.order, false for fact_n4.c (4, 3, 2, 1); it also states a rule rather than saying what the figure on the still shows."
+              },
+              {
+                "id": "t.103",
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.main; false for fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c, where main does not get 6."
+              },
+              {
+                "id": "t.104",
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.order; false for fact_n4.c and fact_n1.c. Breaks most clearly on cards m:m.firstdone, read on its own with no program."
+              },
+              {
+                "id": "t.105",
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.ret3; 'returns 6 to main' is false in fact_n4.c and fact_n5.c. Breaks on cards m:m.once, read on its own."
+              },
+              {
+                "id": "t.106",
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.setup; main calls factorial(3) only in factorial.c."
+              },
+              {
+                "id": "t.208",
+                "verdict": "reject",
+                "reason": "Narration drops c.slot's qualifier 'In this lesson's drawing', so in transcript.txt, which shows no figure, 'the empty box after r = 3 *' points at nothing."
+              },
+              {
+                "id": "t.210",
+                "verdict": "reject",
+                "reason": "Breaks in transcript.txt: the next scene there is only the title 'The base case returns' and 'it returns 1', which never state that output line 4 is factorial(1) = 1, so the transcript's next scene does not answer the question."
+              },
+              {
+                "id": "t.216",
+                "verdict": "reject",
+                "reason": "Drops c.recap's qualifier 'factorial' from 'each factorial return': read as worded, 'shrinks by one for each return' includes the seven printf returns, which never added a frame to the drawing."
+              }
+            ],
+            "reviewer": {
+              "host": "claude-code",
+              "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+            }
+          }
+        ],
+        "reviewers_required": 3,
+        "disagreements": [
+          {
+            "id": "c.depth",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope and causal 'so': unscoped, and false in fact_n2.c, where factorial(2) calls factorial(1) yet only two factorial frames sit below main (fact_n4.c has four). The three-frame count holds only in factorial.c and the sentence doesn't say so."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope and causal word: 'factorial(2) calls factorial(1), so three factorial frames' is unscoped; in fact_n2.c factorial(2) calls factorial(1) with only two factorial frames below main, and in fact_n4.c there are four. The count follows only in factorial.c, which the sentence does not name."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Context sentence: 'now' ties it to the moment shown, and its only place (explorer step 3, state s2 of factorial.c) shows main plus three factorial frames. Fact f.call1 matches."
+              }
+            ]
+          },
+          {
+            "id": "t.094",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Misconception card, cards m:m.base: read on its own with no program, the 'wrong belief' is true for fact_n1.c, where the base case's 1 is exactly what main gets (main got 1), so the back's 'False.' is not true as worded."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "template, presents_misconception (cards m:m.base): the belief is not false as worded. In fact_n1.c the base case's 1 is exactly what comes back to main, so the card's 'False.' is wrong for a program in the job; the belief needs scoping to factorial(3)."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Template presents_misconception m.base: the belief is false (main gets 6) and the card presents it to be rejected."
+              }
+            ]
+          },
+          {
+            "id": "t.099",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class, explorer/index.html step 3: same unscoped text as the rejected c.depth; the explorer also offers other values, and for n = 2 only two factorial frames sit below main."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "claim (explorer/index.html step 3): same text as c.depth; the explorer page also hosts the other programs in its try-another-value section, and in fact_n2.c the same call leaves two frames, not three. Needs its own scope."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Context sentence ('now') in explorer step 3, which shows state s2 with three factorial frames below main; matches c.depth."
+              }
+            ]
+          },
+          {
+            "id": "t.185",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Chapter title, sc3: 'on main' reads as frames stacked on top of main, but the scene's own narration (t.209) and trace label (t.224) say the three factorial frames sit below main in this drawing; the title contradicts its scene."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "chapter-title: sc3 state s2 shows three factorial frames stacked with main; count matches."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Chapter title: sc3 (state s2) shows three factorial frames stacked on main's; count matches."
+              }
+            ]
+          },
+          {
+            "id": "t.202",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Still, labelled as a wrong belief: the still shows factorial.c, where main gets 6, not the base case's 1, so the belief is false there and is shown as one to reject."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "misconception (still, labelled as a wrong belief): same belief as t.094; it is true for fact_n1.c, where the base case's 1 is what main gets, so labelling it wrong without scope is not true as worded."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Misconception m.base, labelled as a wrong belief on the still; the belief is false."
+              }
+            ]
+          },
+          {
+            "id": "t.208",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Narration, transcript.txt: drops c.slot's qualifier 'In this lesson's drawing', so in the transcript, which shows no figure, 'The empty box after r = 3 *' points at nothing and doesn't say it is a drawing convention."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "narration: states what the figure's empty box stands for in sc2, which matches c.slot and reads as a notation note in the transcript."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Narration drops c.slot's qualifier 'In this lesson's drawing', so in transcript.txt, which shows no figure, 'the empty box after r = 3 *' points at nothing."
+              }
+            ]
+          }
+        ],
+        "rejected": [
+          {
+            "id": "c.main",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: unscoped, and main gets 1, 2, 24 and 120 in the other four programs, so 'main stores the 6 ... prints main got 6' is true only of factorial.c, which it doesn't name."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Lens 1 / claim scope: unscoped 'prints main got 6' is false for the other programs in the job, which print main got 1, 2, 24 and 120."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: names no program, and in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c main stores 1, 2, 24 and 120 and prints main got 1, 2, 24, 120, not 6."
+              }
+            ]
+          },
+          {
+            "id": "c.order",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: unscoped, and false in fact_n4.c (calls start 4, 3, 2, 1) and fact_n5.c; c.korder shows the author knew the order depends on n. Needs 'In factorial.c' or 'For factorial(3)'."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope: 'The calls start in the order 3, 2, 1' names no program and is false for fact_n1.c (one call), fact_n2.c (2, 1), fact_n4.c (4, 3, 2, 1) and fact_n5.c. True only for factorial.c, which it does not name."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope (the rubric's div.c/fdiv.c pattern): names no program, but in fact_n4.c the calls start 4, 3, 2, 1 and finish 1, 2, 3, 4, and in fact_n1.c there is one call. True only for factorial.c, which the sentence doesn't say."
+              }
+            ]
+          },
+          {
+            "id": "c.ret3",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: unscoped, and in fact_n4.c and fact_n5.c factorial(3) returns 6 to factorial(4), not to main. Only true of factorial.c, which the sentence doesn't name."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope: 'returns ... 6 to main' is unscoped and false in fact_n4.c and fact_n5.c, where factorial(3) returns 6 to factorial(4). Needs 'In factorial.c'."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: names no program, and 'returns ... 6 to main' is false in fact_n4.c and fact_n5.c, where factorial(3) returns 6 to factorial(4) at line 7, not to main. Needs 'In factorial.c'."
+              }
+            ]
+          },
+          {
+            "id": "c.setup",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: the sentence names no program, so it must hold for every program in the job, but main calls factorial(1), factorial(2), factorial(4) and factorial(5) in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c. It needs 'In factorial.c, ...'."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c main calls factorial(1), (2), (4) and (5), not factorial(3). Needs 'In factorial.c' in its own text."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claims class, scope: the sentence names no program, so it must hold for every program in the job, but in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c main calls factorial(1), (2), (4) and (5), not factorial(3). Needs 'In factorial.c, ...'."
+              }
+            ]
+          },
+          {
+            "id": "t.001",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Alt: it doesn't say what the still shows (program, output, notes); it restates the unscoped c.order claim. Alt text stands in for the figure, so it can't borrow factorial.c from it, and the order is false for fact_n4.c."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "alt (still): same unscoped text as c.order, false for the other programs in the job; it also states a run fact instead of describing what the figure shows."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Alt class: same unscoped sentence as c.order, false for fact_n4.c (4, 3, 2, 1); it also states a rule rather than saying what the figure on the still shows."
+              }
+            ]
+          },
+          {
+            "id": "t.103",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class, explorer/index.html step 7: same unscoped text as the rejected c.main; false for the explorer's other values (main gets 24 for n = 4)."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "claim (explorer/index.html step 7): same unscoped text as c.main; 'prints main got 6' is false for the other programs the explorer page also shows."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.main; false for fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c, where main does not get 6."
+              }
+            ]
+          },
+          {
+            "id": "t.104",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped text as the rejected c.order. On cards m:m.firstdone, read with no program, and on explorer/index.html, which offers other values, '3, 2, 1' is false for n = 4 or 5."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "claim: same unscoped text as c.order; on cards m:m.firstdone, the explorer opening page and the still it reads as a general statement and is false for fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.order; false for fact_n4.c and fact_n1.c. Breaks most clearly on cards m:m.firstdone, read on its own with no program."
+              }
+            ]
+          },
+          {
+            "id": "t.105",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class: same text as the rejected c.ret3. On cards m:m.once, read with no program, 'returns ... to main' is false for fact_n4.c and fact_n5.c."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "claim: same text as c.ret3; on cards m:m.once, read on its own, 'returns ... 6 to main' is false for fact_n4.c and fact_n5.c, where factorial(3) returns to factorial(4)."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.ret3; 'returns 6 to main' is false in fact_n4.c and fact_n5.c. Breaks on cards m:m.once, read on its own."
+              }
+            ]
+          },
+          {
+            "id": "t.106",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class, explorer/index.html step 1: same unscoped text as the rejected c.setup; main calls a different factorial value in the other four programs."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "claim (explorer/index.html step 1): same text as c.setup; 'main calls factorial(3)' is unscoped and false for the other programs on the explorer page."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Claim class: same unscoped sentence as c.setup; main calls factorial(3) only in factorial.c."
+              }
+            ]
+          },
+          {
+            "id": "t.210",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Narration, transcript.txt: the next scene in the transcript is the title 'The base case returns' plus t.211, which never states what output line 4 is, and the transcript shows no output, so 'The next scene answers this question' is false there."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "narration (transcript.txt): the next scene's transcript text is only the title 'The base case returns' and a line saying factorial(1) returns 1; it never states line 4 of the output. The answer exists only in the figure's output, so the line is false in transcript.txt."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Breaks in transcript.txt: the next scene there is only the title 'The base case returns' and 'it returns 1', which never state that output line 4 is factorial(1) = 1, so the transcript's next scene does not answer the question."
+              }
+            ]
+          },
+          {
+            "id": "t.216",
+            "verdicts": [
+              {
+                "job": "job-9e25379dc3",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent, rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Narration: drops two qualifiers from c.recap. 'for each return' loses 'factorial' (the printf calls return too and don't shrink the column), and with 'In this lesson's drawing' gone, 'The stack column' in transcript.txt names a figure that isn't shown."
+              },
+              {
+                "job": "job-103b2447be",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "narration: drops c.recap's qualifier 'factorial' before 'return'. 'shrinks by one for each return' also covers the seven printf returns, which take no frame off the drawn column, so the line says more than the claim."
+              },
+              {
+                "job": "job-92c5b49474",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Drops c.recap's qualifier 'factorial' from 'each factorial return': read as worded, 'shrinks by one for each return' includes the seven printf returns, which never added a frame to the drawing."
+              }
+            ]
+          }
+        ],
+        "invalid": [],
+        "stale": [],
+        "missing": [],
+        "retrying": [],
+        "current_manifest_sha256": "1a1fac9a0f076b75bb4ecff5027c0bb20cba70847fe9fa76c8017be964c91507",
+        "rubric_version": "4",
+        "label": "LLM-reviewed finding, not a proof"
+      }
+    },
+    {
+      "id": "claims.sensitivity",
+      "medium": "all",
+      "status": "failed",
+      "reason": "catch or control rates below the E22 thresholds",
+      "measured": {
+        "value": {
+          "n": 4,
+          "caught": 4,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "claim": {
+          "n": 6,
+          "caught": 6,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "control": {
+          "n": 10,
+          "accepted": 0,
+          "schema_rejections": 0,
+          "rate": 0.0
+        },
+        "meets_thresholds": false,
+        "thresholds": {
+          "value": 1.0,
+          "claim": 0.9,
+          "control": 0.95
+        },
+        "mutations": 10,
+        "caught": 10,
+        "skipped": [],
+        "rows": [
+          {
+            "job": "job-f823c4a5c6",
+            "role": "control",
+            "pair": 1,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.185",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-a48f0e7416",
+            "role": "mutation",
+            "pair": 1,
+            "mutation": "m1.waits.order",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.waits",
+              "c.ret3",
+              "t.094",
+              "t.105",
+              "t.109",
+              "t.207",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-faee57d546",
+            "role": "control",
+            "pair": 2,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "c.pause",
+              "t.001",
+              "t.094",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-b97e3aac41",
+            "role": "mutation",
+            "pair": 2,
+            "mutation": "m2.frame.shared",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.frame",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.093",
+              "t.094",
+              "t.099",
+              "t.100",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.202",
+              "t.206",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-0cb39f827e",
+            "role": "control",
+            "pair": 3,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.185",
+              "t.202",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-9c6e59f98d",
+            "role": "mutation",
+            "pair": 3,
+            "mutation": "m3.unwind.wrong",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.unwind",
+              "t.094",
+              "t.108",
+              "t.185",
+              "t.202",
+              "t.208",
+              "t.210",
+              "t.212",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-e260c461a9",
+            "role": "control",
+            "pair": 4,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.099",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.202",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-2e21b90412",
+            "role": "mutation",
+            "pair": 4,
+            "mutation": "m4.base.condition",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.base",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "c.pause",
+              "t.001",
+              "t.094",
+              "t.097",
+              "t.098",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.185",
+              "t.202",
+              "t.204",
+              "t.208",
+              "t.210",
+              "t.211",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-3615940678",
+            "role": "control",
+            "pair": 5,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "c.pause",
+              "t.001",
+              "t.099",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.185",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-0b9006b604",
+            "role": "mutation",
+            "pair": 5,
+            "mutation": "m5.order.overbroad",
+            "kind": "overbroad",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.210",
+              "t.215",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-c515b842df",
+            "role": "control",
+            "pair": 6,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.099",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.185",
+              "t.202",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-94de8968d3",
+            "role": "mutation",
+            "pair": 6,
+            "mutation": "m6.frame.citation",
+            "kind": "wrong-citation",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.frame",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "c.pause",
+              "t.001",
+              "t.093",
+              "t.094",
+              "t.100",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.202",
+              "t.206",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-dae00812c2",
+            "role": "control",
+            "pair": 7,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.099",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.202",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-8354f16dd1",
+            "role": "mutation",
+            "pair": 7,
+            "mutation": "auto.value.c.waits.f.call3",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.waits",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "c.pause",
+              "t.001",
+              "t.094",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.109",
+              "t.202",
+              "t.207",
+              "t.210"
+            ]
+          },
+          {
+            "job": "job-e91428f126",
+            "role": "control",
+            "pair": 8,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.104",
+              "t.105",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-b0668267ee",
+            "role": "mutation",
+            "pair": 8,
+            "mutation": "auto.value.c.depth.f.call1",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.099",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.208",
+              "t.209",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-8f16965197",
+            "role": "control",
+            "pair": 9,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.frame",
+              "c.pause",
+              "t.001",
+              "t.185",
+              "t.208",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-478b47ff13",
+            "role": "mutation",
+            "pair": 9,
+            "mutation": "auto.value.c.base.f.ret1",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.depth",
+              "c.base",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "c.pause",
+              "t.001",
+              "t.094",
+              "t.098",
+              "t.099",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.185",
+              "t.208",
+              "t.210",
+              "t.211",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-efdb8eefca",
+            "role": "control",
+            "pair": 10,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.pause",
+              "t.210",
+              "t.216"
+            ]
+          },
+          {
+            "job": "job-0afb0f5b49",
+            "role": "mutation",
+            "pair": 10,
+            "mutation": "auto.value.c.unwind.f.ret2",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "c.unwind",
+              "c.ret3",
+              "c.main",
+              "c.order",
+              "t.001",
+              "t.094",
+              "t.103",
+              "t.104",
+              "t.105",
+              "t.106",
+              "t.108",
+              "t.202",
+              "t.210",
+              "t.212"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "claims.artifacts-unchanged",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "checked": 56,
+        "changed": []
+      },
+      "reason": ""
+    }
+  ],
+  "fallbacks": [],
+  "tools": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0",
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "whisper-cli": "usage: /opt/homebrew/bin/whisper-cli [options] file0 file1 ...",
+    "tesseract": "tesseract 5.5.3",
+    "node": "v24.22.0",
+    "hyperframes": "0.8.169",
+    "playwright": "1.63.0",
+    "python": "3.13.16",
+    "sandbox-exec": "/usr/bin/sandbox-exec"
+  },
+  "artifacts": [
+    {
+      "path": "still/factorial-stack-portrait-dark.png",
+      "bytes": 237725,
+      "sha256": "177d083b415f5b5f2a72081949ecefd800b1c2762989dd29ddd62ddb7e5856b8"
+    },
+    {
+      "path": "still/factorial-stack-portrait-dark.svg",
+      "bytes": 62616,
+      "sha256": "684a5fad9f33af2233f89090e5c94403318e90e52256c0dc9f2841dc76a61251"
+    },
+    {
+      "path": "still/factorial-stack-portrait-light.png",
+      "bytes": 234975,
+      "sha256": "fb9829c57a33a4b612c378bbc15bc71c35196c4a2474388a8f49bee51c590135"
+    },
+    {
+      "path": "still/factorial-stack-portrait-light.svg",
+      "bytes": 62617,
+      "sha256": "be61fe8fea8c1f8da6939bdd6cc7cf3c3b6f268178895108dfbbbbf934c1f341"
+    },
+    {
+      "path": "still/factorial-stack-wide-dark.png",
+      "bytes": 256378,
+      "sha256": "be0ff9ab42e6d989a1135b1eeb349a36118c8a00b06bd18eb817d262b84a679a"
+    },
+    {
+      "path": "still/factorial-stack-wide-dark.svg",
+      "bytes": 62893,
+      "sha256": "299f38ec6ae25e413135274c23a98c1b57fc86c7b60dd6abeabccaf00f6bfdd7"
+    },
+    {
+      "path": "still/factorial-stack-wide-light.png",
+      "bytes": 255801,
+      "sha256": "ccae35ad412fe50aa11afcc93983c35b11d5031df8f794efb1cba1bb1d1a3d46"
+    },
+    {
+      "path": "still/factorial-stack-wide-light.svg",
+      "bytes": 62894,
+      "sha256": "3205c534f361e3c4da3c68663d684d3759076164d9e6b63f587edb13ea0a13dc"
+    },
+    {
+      "path": "still/index.html",
+      "bytes": 820,
+      "sha256": "b70bc138d486c22619815dc2eb6a3a8f43319b3149a8aaa404bf83e621aa1d23"
+    },
+    {
+      "path": "video/captions.vtt",
+      "bytes": 1600,
+      "sha256": "8ef828fb2940b413043a15c9de188ee68d35b17925b25e3c2ec8285fb7395cfa"
+    },
+    {
+      "path": "video/chapters.vtt",
+      "bytes": 496,
+      "sha256": "266a679e63cd69bee2928c2f43133916d04a1b3fc5160a60f18582ccbb8318af"
+    },
+    {
+      "path": "video/composition/compositions/sc1.html",
+      "bytes": 17959,
+      "sha256": "f3d0a431b81decfb0df202e1cc5ad41b433a1801f91f59ff356a840ef4d1126f"
+    },
+    {
+      "path": "video/composition/compositions/sc2.html",
+      "bytes": 25733,
+      "sha256": "d1b596298e52f7afab7b9601a1e6f5ee6b263083aaaa0f13f50149adac4e545b"
+    },
+    {
+      "path": "video/composition/compositions/sc3.html",
+      "bytes": 27686,
+      "sha256": "584e7c19e1eaa0bd687e1f99b32a6873e539bf74b78d99a4756f0aeec3d0f36e"
+    },
+    {
+      "path": "video/composition/compositions/sc4.html",
+      "bytes": 23252,
+      "sha256": "e8134cca693a924016d2dc0e342d99aec83a55127625d91393bea83001f385dd"
+    },
+    {
+      "path": "video/composition/compositions/sc5.html",
+      "bytes": 31869,
+      "sha256": "198d4722c89b913d0907b2bc4f67c27d3f5a72bcfd6ab324e3ea0d0ae15a5643"
+    },
+    {
+      "path": "video/composition/compositions/sc6.html",
+      "bytes": 32582,
+      "sha256": "d5dfb2b35bb0e12db286017d2e0a3dc5f6938070e13bcdce9495396b28d8cd59"
+    },
+    {
+      "path": "video/composition/compositions/sc7.html",
+      "bytes": 29768,
+      "sha256": "33533205d8901d0909183c17542222f6fcc409c0147bf34fde4df5845e1eddab"
+    },
+    {
+      "path": "video/composition/compositions/sc8.html",
+      "bytes": 28185,
+      "sha256": "45fedef91a8a9e55b7447ff5e8ae44f0254300fe11fd0176d9b24989356aea13"
+    },
+    {
+      "path": "video/composition/compositions/sc9.html",
+      "bytes": 29009,
+      "sha256": "c70d2672ff61e3cdece03418c6cfd3cd6e8f2beaa9a13204370d2370e2e7f062"
+    },
+    {
+      "path": "video/composition/fonts/Caveat.woff2",
+      "bytes": 73380,
+      "sha256": "29791689b93416dd6ac7285999996569e250b841bb96a1df33d8accacd73d9e3"
+    },
+    {
+      "path": "video/composition/fonts/JetBrainsMono.woff2",
+      "bytes": 44712,
+      "sha256": "1d8a0d014d1aeff07f8a7b8a8a3f41f2878a2968c291e12b6a8b4eb947141a23"
+    },
+    {
+      "path": "video/composition/fonts/NunitoSans.woff2",
+      "bytes": 28712,
+      "sha256": "2827f778cbbbf51af671a8078606ea862c1a4a656529e86de8c6f8aef9e9155c"
+    },
+    {
+      "path": "video/composition/fonts/SourceSerif4-Roman.woff2",
+      "bytes": 186584,
+      "sha256": "4f8975136a23751d17aeeb04b5c77e6347ee7ba5909cc5e4ae7a56f01093325e"
+    },
+    {
+      "path": "video/composition/hyperframes.json",
+      "bytes": 31,
+      "sha256": "b48cb9c7270dfa06827c0552c6e6dbd120091650725255fda1df47b08f1547d4"
+    },
+    {
+      "path": "video/composition/index.html",
+      "bytes": 3171,
+      "sha256": "708f78d95353a2577377b8b68608f9eb42abc1cd2f20e333c2d82ea817e531cb"
+    },
+    {
+      "path": "video/composition/vendor/gsap.min.js",
+      "bytes": 72927,
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    },
+    {
+      "path": "video/lesson.mp4",
+      "bytes": 5611841,
+      "sha256": "aa87014dcbde8928c46ffdbd3cd7024d6728eb49cce42fce808ac39b47daf15b"
+    },
+    {
+      "path": "video/narration.wav",
+      "bytes": 21043270,
+      "sha256": "a8da47819456b8228896d1bc31ddec643c0d3bdd1e0a7976836bce43529eab7f"
+    },
+    {
+      "path": "video/timing.json",
+      "bytes": 11637,
+      "sha256": "5a5bc4db38208645a64cf7c593a6ec760118d7e759e5aaf2980ad33df454bc66"
+    },
+    {
+      "path": "video/transcript.txt",
+      "bytes": 1416,
+      "sha256": "f3b080efa64e039cca998f191a9d4702475aaa86b92fcd56f2361e2fddf4024f"
+    },
+    {
+      "path": "ive/captions.vtt",
+      "bytes": 1600,
+      "sha256": "8ef828fb2940b413043a15c9de188ee68d35b17925b25e3c2ec8285fb7395cfa"
+    },
+    {
+      "path": "ive/chapters.vtt",
+      "bytes": 496,
+      "sha256": "266a679e63cd69bee2928c2f43133916d04a1b3fc5160a60f18582ccbb8318af"
+    },
+    {
+      "path": "ive/cues.json",
+      "bytes": 21103,
+      "sha256": "208937b8d6f758f9c5c5eb7c2d36aa3165f4cb57ac161bcf0bae64338080ae0c"
+    },
+    {
+      "path": "ive/index.html",
+      "bytes": 139998,
+      "sha256": "e1f1a3dc9f3b881a85982cf3d96582428477c688917af46f534cb88c30f300af"
+    },
+    {
+      "path": "ive/ive-data.js",
+      "bytes": 174334,
+      "sha256": "b67c2d6fff8a0dd8e64a11eb61e3d10b6ebf6a68eda03c2989d04b769a42ef39"
+    },
+    {
+      "path": "ive/lesson.mp4",
+      "bytes": 5611841,
+      "sha256": "aa87014dcbde8928c46ffdbd3cd7024d6728eb49cce42fce808ac39b47daf15b"
+    },
+    {
+      "path": "ive/posters/sc1.jpg",
+      "bytes": 37152,
+      "sha256": "775a9289896ef42115ce4e0178115f030003593eb9e52babbb4faabe60aa786d"
+    },
+    {
+      "path": "ive/posters/sc2.jpg",
+      "bytes": 44584,
+      "sha256": "8c03d25dbd3cf14ab3b305e07ae955e5e7faf5aa254ce5fa071680ed5655c58e"
+    },
+    {
+      "path": "ive/posters/sc3.jpg",
+      "bytes": 49642,
+      "sha256": "8444c4c718ab0b8180c37b5bb4c1ee1702f12f9d19077e279280d868283e9ce1"
+    },
+    {
+      "path": "ive/posters/sc4.jpg",
+      "bytes": 54581,
+      "sha256": "4af50ba78d4e3522e1ee41aed53585ac13792613667ca6a7ff5513aa30a14b44"
+    },
+    {
+      "path": "ive/posters/sc5.jpg",
+      "bytes": 49785,
+      "sha256": "6dd0fad214fef3f484f510535d8a9c3c13802df747e734690ae13fb26f7e76f9"
+    },
+    {
+      "path": "ive/posters/sc6.jpg",
+      "bytes": 51988,
+      "sha256": "32348c51fc76396b1a3ad8f1b61ea2e5cbafa1160d0d8645bf0421bd642d41e3"
+    },
+    {
+      "path": "ive/posters/sc7.jpg",
+      "bytes": 49090,
+      "sha256": "e4b1e681c35150ec6512d8f867c045b270657b361f1a89a47f04cac1915272f1"
+    },
+    {
+      "path": "ive/posters/sc8.jpg",
+      "bytes": 44836,
+      "sha256": "e2918e00b3d28088dfa694ee04e0ff6d898dce105b59cb4cdac867e1e9514d2d"
+    },
+    {
+      "path": "ive/posters/sc9.jpg",
+      "bytes": 56800,
+      "sha256": "a20b13d6ffbd857ed7cb0ab1493b0c3c955456a145210640ac088c76cbd684d0"
+    },
+    {
+      "path": "ive/states.vtt",
+      "bytes": 12863,
+      "sha256": "513563d9168675ea99e44ec79b6e5a9e6f7ed429c2b4b0f7c2557f9361f5e02a"
+    },
+    {
+      "path": "explorer/domain.json",
+      "bytes": 5791,
+      "sha256": "fc36738a940f8b6e18eb68d80f59cbedeb5b758dbc591dc981cadead9eef4944"
+    },
+    {
+      "path": "explorer/index.html",
+      "bytes": 303987,
+      "sha256": "4eaea871add18fa7fd15e69020c7c817eb081d14a6cf511ffc7372836b378245"
+    },
+    {
+      "path": "explorer/texts.json",
+      "bytes": 8351,
+      "sha256": "5a6b9e4c3e1f2d91375aa1a4bab0c265ab6f83f8aeb0b1067854fbb3edde5ced"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 94003,
+      "sha256": "263b841e1a217fb0cff76721a15449e9e69e480687c8e1cd278dec1ae38bde22"
+    },
+    {
+      "path": "qa/texts.json",
+      "bytes": 6634,
+      "sha256": "cc837e18be6dfe30f8da957588c2cce4793d3c5e811ef4d7e86bb77651d0e8f1"
+    },
+    {
+      "path": "cards/cards.json",
+      "bytes": 2313,
+      "sha256": "13a8f83c09a2b81249f7e57bccbafe323f33fa9f59727a905f449dfab8539a42"
+    },
+    {
+      "path": "cards/factorial-stack.apkg",
+      "bytes": 57562,
+      "sha256": "1b3c541991ae0b6ed53fab44b784bc5f0702667fc92ba9faa861ea388cbff47a"
+    },
+    {
+      "path": "cards/factorial-stack.md",
+      "bytes": 1729,
+      "sha256": "3698610471caa18956019ef0c0d4916d262c5b74032bcb8c8255747ba199aabb"
+    },
+    {
+      "path": "cards/texts.json",
+      "bytes": 3305,
+      "sha256": "014222e04f15bc7ac11b44ca23068558c21b1b0368e4c470fddd9f8b93fdfd9d"
+    }
+  ],
+  "transitions": [
+    "draft",
+    "valid",
+    "captured",
+    "projected",
+    "claims-pending",
+    "failed"
+  ],
+  "error": null,
+  "sources": [
+    "sources/n2310-6.2.4p6.txt",
+    "sources/n2310-6.5.2.2p11.txt",
+    "sources/n2310-6.8.6.3p2.txt",
+    "sources/n2310-6.8.6.4p3.txt"
+  ],
+  "cleared": [
+    "claims-jobs",
+    "cards",
+    "explorer",
+    "ive",
+    "work/ive",
+    "qa",
+    "still",
+    "video"
+  ],
+  "capture": {
+    "programs": {
+      "p1": {
+        "ran": true,
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p2": {
+        "ran": true,
+        "stdout_sha256": "997672c0b23dc844221ac544475c3d35ee15b23bb7d7cd09b3fe26f7f755deb8",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p3": {
+        "ran": true,
+        "stdout_sha256": "0909ee1737b11f711b79e7f2f52b7ebbef37cfc223e03245850835debe9689ac",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p4": {
+        "ran": true,
+        "stdout_sha256": "7ae780ebf19b9b5c3c2926c16686deaa3a19d260c26eb79366e4a24d9115f02d",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p5": {
+        "ran": true,
+        "stdout_sha256": "13aeb7ec0c3fa9af3a4c4fe4bfdd5fc66ed7159f7171023a78e6ce2f76462709",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      }
+    },
+    "platform": {
+      "captured": true,
+      "os": "macOS 27.0.1",
+      "arch": "arm64",
+      "sizeof": {
+        "char": 1,
+        "short": 2,
+        "int": 4,
+        "long": 8,
+        "long long": 8,
+        "float": 4,
+        "double": 8,
+        "void*": 8
+      },
+      "char_signed": true,
+      "endianness": "little",
+      "libc": "libSystem (macOS 27.0.1)",
+      "compilers": {
+        "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+      },
+      "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+    }
+  },
+  "ptk": {
+    "version": "2.1.0-wp0",
+    "code_sha256": "8bd0fc72eaf9c2301e0f1b7448e9a2c16c312de7947ee864d2041fd22f6267e2"
+  },
+  "video": {
+    "theme": "dark",
+    "renderer": "hyperframes"
+  },
+  "tts": {
+    "engine": "kokoro-onnx 0.6.1 (Kokoro-82M v1.0)",
+    "voice": "af_heart",
+    "speed": 0.75,
+    "degraded": false,
+    "cache_inputs": {
+      "engine": "kokoro-onnx",
+      "engine_version": "0.6.1",
+      "model_sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5",
+      "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+      "voice": "af_heart",
+      "speed": 0.75,
+      "lang": "en-us",
+      "lexicon_version": "5"
+    },
+    "process_count": 0,
+    "model_loads": 0,
+    "synthesised_now": 0,
+    "cached": 13
+  },
+  "claims": {
+    "mode": "full",
+    "jobs": [
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-9e25379dc3.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-103b2447be.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-92c5b49474.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-a48f0e7416.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-f823c4a5c6.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-b97e3aac41.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-faee57d546.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-9c6e59f98d.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-0cb39f827e.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-2e21b90412.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-e260c461a9.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-0b9006b604.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-3615940678.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-94de8968d3.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-c515b842df.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-8354f16dd1.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-dae00812c2.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-b0668267ee.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-e91428f126.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-478b47ff13.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-8f16965197.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-0afb0f5b49.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-jobs/job-efdb8eefca.json"
+    ],
+    "reviews_dir": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/factorial-stack/build/claims-review",
+    "rubric": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/package/prax-teach/ptk/verify/rubric.md",
+    "job_tokens": {
+      "job-0afb0f5b49": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-0b9006b604": {
+        "job_tokens": 12543,
+        "with_rubric": 16056
+      },
+      "job-0cb39f827e": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-103b2447be": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-2e21b90412": {
+        "job_tokens": 12552,
+        "with_rubric": 16065
+      },
+      "job-3615940678": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-478b47ff13": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-8354f16dd1": {
+        "job_tokens": 12549,
+        "with_rubric": 16062
+      },
+      "job-8f16965197": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-92c5b49474": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-94de8968d3": {
+        "job_tokens": 12442,
+        "with_rubric": 15955
+      },
+      "job-9c6e59f98d": {
+        "job_tokens": 12547,
+        "with_rubric": 16060
+      },
+      "job-9e25379dc3": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-a48f0e7416": {
+        "job_tokens": 12543,
+        "with_rubric": 16056
+      },
+      "job-b0668267ee": {
+        "job_tokens": 12547,
+        "with_rubric": 16060
+      },
+      "job-b97e3aac41": {
+        "job_tokens": 12536,
+        "with_rubric": 16049
+      },
+      "job-c515b842df": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-dae00812c2": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-e260c461a9": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-e91428f126": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-efdb8eefca": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-f823c4a5c6": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      },
+      "job-faee57d546": {
+        "job_tokens": 12540,
+        "with_rubric": 16053
+      }
+    },
+    "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"
+  },
+  "seconds": 198.8,
+  "claims_checked": "2026-10-19T14:38:55+0530"
+}
