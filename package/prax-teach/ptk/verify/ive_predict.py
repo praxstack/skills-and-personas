@@ -181,7 +181,7 @@ def browser_jobs(url, q, titles, shots):
     return jobs
 
 
-def browser_check(lesson, data, plan_rows, ive_dir, run=None):
+def browser_check(lesson, data, plan_rows, ive_dir, run=None, shots=None):
     """Drive the built page. `run(jobs, work)` returns shoot results (default: verify.visual.shoot)."""
     if run is None:
         from .visual import shoot
@@ -189,7 +189,7 @@ def browser_check(lesson, data, plan_rows, ive_dir, run=None):
         def run(jobs, work):
             return shoot(jobs, work, lesson.sha256())
     ive_dir = Path(ive_dir)
-    shots = ive_dir.parent / "shots"
+    shots = Path(shots) if shots else ive_dir.parent / "shots"
     url = (ive_dir / "index.html").resolve().as_uri()
     sb = {s["id"]: s for s in lesson.data["storyboard"]}
     titles = [s["title"] for s in lesson.data["storyboard"]]
@@ -268,7 +268,7 @@ def default_problems(d, q):
     return v + ([f"the film played a silent think gap: {d['in_gap'][:3]}"] if d.get("in_gap") else [])
 
 
-def gate(lesson, ive_dir, browser=True, run=None):
+def gate(lesson, ive_dir, browser=True, run=None, shots=None):
     ive_dir = Path(ive_dir)
     if not (ive_dir / "ive-data.js").exists():
         return {"id": GATE_ID, "medium": "ive", "status": "not-run", "measured": {}, "reason": "no built IVE"}
@@ -280,7 +280,7 @@ def gate(lesson, ive_dir, browser=True, run=None):
                 "reason": "the storyboard has no question with options"}
     drove = {}
     if browser and not probs:
-        bp, drove = browser_check(lesson, data, rows, ive_dir, run)
+        bp, drove = browser_check(lesson, data, rows, ive_dir, run, shots=shots)
         probs += bp
     return {"id": GATE_ID, "medium": "ive", "status": "failed" if probs else ("passed" if browser else "not-run"),
             "measured": {"questions": rows, "driven": drove, "problems": probs[:30],

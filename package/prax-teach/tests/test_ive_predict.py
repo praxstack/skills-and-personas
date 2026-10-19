@@ -8,10 +8,12 @@ differ, a default film that stops, a practice toggle that is missing or on by de
 names it."""
 import copy
 import json
+import os
+import shutil
 
 from _util import V21
 from selftest_support import NotRun
-from ptk import model, text
+from ptk import host, model, text
 from ptk.verify import ive_predict as P
 
 LESSON = V21 / "lessons" / "one-byte-four-views"
@@ -154,7 +156,14 @@ def test_built_ive_stops_for_every_prediction():
         if not (ive / "ive-data.js").exists() or not P.page_data(ive).get("questions"):
             continue
         lesson = model.load(d)
-        g = P.gate(lesson, ive)
+        # Shots go to a scratch folder: the build's own shots/ are bound to the recorded design
+        # review, and rewriting them here broke test_design_verdicts_recorded (v2.2 bug fix).
+        scratch = host.state_path("tmp", f"ive-predict-shots-{d.name}-{os.getpid()}")
+        scratch.mkdir(parents=True, exist_ok=True)
+        try:
+            g = P.gate(lesson, ive, shots=scratch)
+        finally:
+            shutil.rmtree(scratch, ignore_errors=True)
         assert g["status"] == "passed", json.dumps(g["measured"]["problems"], indent=1)
         ran += 1
     if not ran:
