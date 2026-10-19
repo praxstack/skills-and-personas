@@ -215,3 +215,8 @@ switch-fallthrough was rebuilt with Part A and verified, 38 gates.
 - **Round A4 (Track A 3/5), started early for the same reason:** A5 + A6, checks and learner-state privacy (`v22/a56`).
 - **Round B0 (Track B 1/5):** the WP10 measurement checks, written before any visual change (`v22/b0`).
 - A3 (reviewer consistency) waits for A1 + A2, because it binds source excerpts to the restored claims.
+- **Merged into candidate/v2.2:** A5+A6 (`v22/a56`), A1+A2 (`v22/a12`), A4 round 1 (`v22/a4`), A3 (`v22/a3`), A4 round 2 (`v22/a4b`), B0 (`v22/b0`).
+- **Test-isolation bugs fixed by the orchestrator** (each made parallel runs fail spuriously): setup's `npm ci` on the shared tools (`7b5c366`); a fixed hosts folder (`9fa4588`); the built-IVE test rewriting build screenshots (`5402f3c`).
+- **B0 parked after two rounds.** Five blind spots are recorded in `reviews/b0-measures.md` and covered by manual adversarial inspection.
+- **Rounds used:** Track A 5 of 5 (A1+A2, A4 r1, A5+A6, A3, A4 r2); no spare left, so any Track A defect found by the full suite is reported, not fixed in a new round. Track B 2 of 5 (B0 r1, B0 r2).
+- **Now:** Track A measurement (main-tree rebuild plus the full claims suite with 3 lesson reviewers); B1+B2 (`v22/b12`, Track B 3/5).
