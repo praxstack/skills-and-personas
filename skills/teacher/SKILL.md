@@ -85,20 +85,20 @@ Then find the tool that runs here:
 
 ```sh
 python3 scripts/find_tool.py --job change --job cause            # best first, with what's missing
-python3 scripts/find_tool.py --job structure --medium still --net --have mcp:excalidraw
+python3 scripts/find_tool.py --job structure --medium still --have mcp:excalidraw
 ```
 
 The registry (`assets/registry.json`) maps jobs to 45 tools and host surfaces, and links each to official docs in the teach-pro-max registry. If the best tool is missing, offer to install it or take the next one, and say what was traded away. [references/TOOL-DISCOVERY.md](references/TOOL-DISCOVERY.md).
 
 ## Deliver the requested formats
 
-Write one sourced lesson with `window.LESSON`; qualitative lessons use a selection/context model, not invented measurements. Build the explorer with `skills/explorable/scripts/build.py`, narrate it with `scripts/narrate.py`, then run `node skills/explorable/scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. This exports an editable still and PNG, layered Q&A, contextual flashcards, a complete no-JavaScript lesson and an interactive video with the same live explorer. Keep outputs outside this skill. See [references/ARTIFACT-EXPORTS.md](references/ARTIFACT-EXPORTS.md).
+Write one sourced lesson with `window.LESSON`; qualitative lessons use a selection/context model, not invented measurements. Build the explorer with `skills/explorable/scripts/build.py`, narrate it with `skills/explorable/scripts/narrate.py`, then run `node skills/explorable/scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. This exports an editable still and PNG, layered Q&A, contextual flashcards, a complete no-JavaScript lesson and an interactive video with the same live explorer. Keep outputs outside this skill. See [references/ARTIFACT-EXPORTS.md](references/ARTIFACT-EXPORTS.md).
 
 Sources are `sources: [{title, url, note}]` on the lesson. Tie claims to their example, assumptions and limits; include the necessary context on standalone cards. Source links support qualitative facts, while computed quantities come from a checked model. Never manufacture numbers to make a humanities topic fit a chart.
 
 ## Make it look like a lesson
 
-Every visual uses the `lesson-notebook` style by default: quad-ruled paper (a chalkboard automatically in dark mode), a red margin rule, the book's serif for explanations, a typewriter voice for computed numbers, and the coach's handwriting for notes, circles and arrows, drawn live by a pen (its chalk or pencil sound is off unless the learner turns it on). Narration is a natural neural voice, never a robotic one. The house rules are in `skills/lesson-notebook/SKILL.md`; the voice and sound choices, with sources, are in [references/VOICE-AND-SOUND.md](references/VOICE-AND-SOUND.md). Change the look only when the learner asks or the project has its own design system.
+Use a figure-led reading layout by default: a wide mechanism, restrained paper background, readable explanatory type and consistent semantic colors. The `lesson-notebook` pen, handwriting, grid and chalkboard are available when they help explain or match the learner's requested style; they are not a decorative quota. Prefer a supported local neural voice for narration and check the actual output, captions and pacing; disclose an unavailable review or fallback. See `skills/lesson-notebook/SKILL.md` and [references/VOICE-AND-SOUND.md](references/VOICE-AND-SOUND.md). The learner's current aesthetic direction and project design system take priority.
 
 Patterns borrowed from the best learning products (manipulate-first problems, separate outline, lesson and notes panes, bite-size steps, roadmaps): [references/DESIGN-INSPIRATION.md](references/DESIGN-INSPIRATION.md).
 
