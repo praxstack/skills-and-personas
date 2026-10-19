@@ -249,14 +249,16 @@ EXTRACT_JS = r"""(opts) => {
   const eop = (el) => { let o = 1; for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
       const s = getComputedStyle(e);
       if (s.display === 'none' || s.visibility === 'hidden' || s.visibility === 'collapse') return 0;
-      o *= parseFloat(s.opacity); if (e.tagName === 'svg' && !e.parentElement) break; } return o; };
+      o *= parseFloat(s.opacity); } return o; };
+  const alpha = (c) => { if (!c || c === 'none' || c === 'transparent') return 0; const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return 1;
+    const p = m[1].split(/[ ,\/]+/).filter(Boolean); return p.length > 3 ? parseFloat(p[3]) : 1; };
   const R = (v) => Math.round(v * 10) / 10;
   const box = (b) => [R(b.x), R(b.y), R(b.width), R(b.height)];
   const dataOf = (el) => { const o = {}; for (const a of el.attributes) if (a.name.startsWith('data-')) o[a.name.slice(5)] = a.value; return o; };
   const near = (el, attr) => { const c = el.closest('[' + attr + ']'); return c ? c.getAttribute(attr) : null; };
   const conts = { fig: [], mech: [], part: [] };
   const idx = (el, sel, arr) => { const c = el.closest(sel); if (!c) return null; let i = arr.indexOf(c); if (i < 0) { arr.push(c); i = arr.length - 1; } return i; };
-  const SKIP = 'defs, marker, clipPath, mask, symbol, pattern, script, style, noscript, template, title, desc, head';
+  const SKIP = 'defs, marker, clipPath, mask, symbol, pattern, script, style, noscript, template, title, desc, head, metadata';
   const items = [];
   const common = (el) => ({
     fig: idx(el, '[data-role="figure"]', conts.fig), mech: idx(el, '[data-role="mechanism"]', conts.mech),
@@ -264,8 +266,15 @@ EXTRACT_JS = r"""(opts) => {
     fact: near(el, 'data-fact') || near(el, 'data-m'), claim: near(el, 'data-claim') || near(el, 'data-claims'),
     chrome: near(el, 'data-chrome'), label: near(el, 'data-label'), role: near(el, 'data-role'),
     misc: near(el, 'data-misconception'), question: near(el, 'data-question'), srcline: near(el, 'data-src-line'),
+    fromfact: near(el, 'data-from-fact'), tick: !!el.closest('[data-tick][data-axis]'),
     code: !!el.closest('[data-code], code, pre, .src, [data-key="code"]'), d: dataOf(el) });
-  const ctmScale = (el) => { const m = el.getScreenCTM && el.getScreenCTM(); return m ? Math.hypot(m.a, m.b) : 1; };
+  // rendered scale: CSS transforms and zoom on every HTML ancestor, rotation-safe (square root of the determinant)
+  const cssScale = (el) => { let s = 1; for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
+      if (e instanceof SVGElement && e.ownerSVGElement) continue;
+      const cs = getComputedStyle(e);
+      if (cs.transform && cs.transform !== 'none') { const m = new DOMMatrix(cs.transform); s *= Math.sqrt(Math.abs(m.a * m.d - m.b * m.c)); }
+      const z = parseFloat(cs.zoom); if (z && z !== 1) s *= z; } return s; };
+  const svgScale = (el) => { const m = el.getScreenCTM && el.getScreenCTM(); return m ? Math.sqrt(Math.abs(m.a * m.d - m.b * m.c)) : 1; };
   const blockText = (el) => { for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
       const d = getComputedStyle(e).display;
       if (e.tagName === 'text' || /block|flex|grid|list-item|table-cell|table-caption/.test(d)) return (e.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 400); }
@@ -276,21 +285,46 @@ EXTRACT_JS = r"""(opts) => {
     const o = eop(el); if (o < 0.02) continue;
     const cs = getComputedStyle(el), b = el.getBoundingClientRect();
     const sw = parseFloat(cs.strokeWidth) || 0;
-    const fillOn = cs.fill && cs.fill !== 'none' && parseFloat(cs.fillOpacity) > 0;
-    const strokeOn = cs.stroke && cs.stroke !== 'none' && sw > 0 && parseFloat(cs.strokeOpacity) > 0;
-    if (!fillOn && !strokeOn && el.tagName !== 'image' && el.tagName !== 'use') continue;
+    const fa = cs.fill && cs.fill !== 'none' ? alpha(cs.fill) * parseFloat(cs.fillOpacity) : 0;
+    const sa = cs.stroke && cs.stroke !== 'none' && sw > 0 ? alpha(cs.stroke) * parseFloat(cs.strokeOpacity) : 0;
+    if (!fa && !sa && el.tagName !== 'image' && el.tagName !== 'use') continue;
     if (b.width <= 0 && b.height <= 0) continue;
     const bb = [b.x, b.y, Math.max(b.width, sw), Math.max(b.height, sw)];
-    items.push({ k: 'shape', tag: el.tagName, b: bb.map(R), o: R(o), fill: fillOn ? cs.fill : null, stroke: strokeOn ? cs.stroke : null, ...common(el) });
+    items.push({ k: 'shape', tag: el.tagName, b: bb.map(R), o: R(o * Math.max(fa, sa, el.tagName === 'image' || el.tagName === 'use' ? 1 : 0)),
+                 fill: fa ? cs.fill : null, stroke: sa ? cs.stroke : null, ...common(el) });
   }
-  // SVG text
+  // SVG text: one item per drawn line (tspans on several baselines are several lines)
   for (const el of document.querySelectorAll('text')) {
     if (el.closest(SKIP)) continue;
     const o = eop(el); if (o < 0.02) continue;
-    const t = (el.textContent || '').replace(/\s+/g, ' ').trim(); if (!t) continue;
-    const cs = getComputedStyle(el), b = el.getBoundingClientRect();
-    items.push({ k: 'text', tag: 'text', t, b: box(b), o: R(o), ff: cs.fontFamily, px: R(parseFloat(cs.fontSize) * ctmScale(el)),
-                 block: t, ...common(el) });
+    const full = (el.textContent || '').replace(/\s+/g, ' ').trim(); if (!full) continue;
+    const cs = getComputedStyle(el), px = R(parseFloat(cs.fontSize) * svgScale(el));
+    const segs = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const r = document.createRange(); r.selectNodeContents(n);
+      const q = [...r.getClientRects()].filter((x) => x.width && x.height);
+      if (!q.length) continue;
+      const x0 = Math.min(...q.map((x) => x.left)), y0 = Math.min(...q.map((x) => x.top));
+      const x1 = Math.max(...q.map((x) => x.right)), y1 = Math.max(...q.map((x) => x.bottom));
+      const pcs = getComputedStyle(n.parentElement);
+      segs.push({ t: n.textContent, b: [x0, y0, x1, y1], px: R(parseFloat(pcs.fontSize) * svgScale(n.parentElement)), col: pcs.fill });
+    }
+    const lines = [];
+    for (const g of segs) {
+      const h = g.b[3] - g.b[1];
+      const ln = lines.find((l) => Math.abs(l.b[1] - g.b[1]) < 0.5 * h);
+      if (ln) { ln.t += g.t; ln.b = [Math.min(ln.b[0], g.b[0]), Math.min(ln.b[1], g.b[1]), Math.max(ln.b[2], g.b[2]), Math.max(ln.b[3], g.b[3])]; ln.px = Math.max(ln.px, g.px); }
+      else lines.push({ ...g });
+    }
+    if (lines.length <= 1) {
+      items.push({ k: 'text', tag: 'text', t: full, b: box(el.getBoundingClientRect()), o: R(o * alpha(cs.fill) * parseFloat(cs.fillOpacity)), ff: cs.fontFamily, px,
+                   col: cs.fill, block: full, ...common(el) });
+    } else {
+      for (const l of lines) items.push({ k: 'text', tag: 'text', t: l.t.replace(/\s+/g, ' ').trim(), b: [l.b[0], l.b[1], l.b[2] - l.b[0], l.b[3] - l.b[1]].map(R),
+                                          o: R(o * alpha(cs.fill) * parseFloat(cs.fillOpacity)), ff: cs.fontFamily, px: l.px, col: l.col, block: full, line_of: lines.length, ...common(el) });
+    }
   }
   // HTML text (own text nodes), media
   for (const el of (document.body ? document.body.querySelectorAll('*') : [])) {
@@ -307,23 +341,32 @@ EXTRACT_JS = r"""(opts) => {
     for (const n of own) { const r = document.createRange(); r.selectNodeContents(n);
       for (const q of r.getClientRects()) { if (!q.width || !q.height) continue; x0 = Math.min(x0, q.left); y0 = Math.min(y0, q.top); x1 = Math.max(x1, q.right); y1 = Math.max(y1, q.bottom); } }
     if (x1 <= x0) continue;
-    const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
-    const sc = el.offsetWidth > 0 ? eb.width / el.offsetWidth : 1;
+    const cs = getComputedStyle(el);
     items.push({ k: 'text', tag: el.tagName.toLowerCase(), t: own.map((n) => n.textContent).join(' ').replace(/\s+/g, ' ').trim(),
-                 b: [x0, y0, x1 - x0, y1 - y0].map(R), o: R(o), ff: cs.fontFamily, px: R(parseFloat(cs.fontSize) * sc),
-                 block: blockText(el), ...common(el) });
+                 b: [x0, y0, x1 - x0, y1 - y0].map(R), o: R(o * alpha(cs.color)), ff: cs.fontFamily, px: R(parseFloat(cs.fontSize) * cssScale(el)),
+                 col: cs.color, block: blockText(el), ...common(el) });
   }
   // the containers named by the contract (figure, mechanism, parts), whether or not anything inside is painted
   for (const el of document.querySelectorAll('[data-role="figure"]')) idx(el, '[data-role="figure"]', conts.fig);
   for (const el of document.querySelectorAll('[data-role="mechanism"]')) idx(el, '[data-role="mechanism"]', conts.mech);
   for (const el of document.querySelectorAll('[data-role="mechanism"] [data-part]')) idx(el, '[data-part]', conts.part);
+  const ends = (el) => { const g = el.querySelector('line, path, polyline'); if (!g || !g.getScreenCTM) return null;
+    const m = g.getScreenCTM(); let a, z;
+    if (g.tagName === 'line') { a = new DOMPoint(g.x1.baseVal.value, g.y1.baseVal.value); z = new DOMPoint(g.x2.baseVal.value, g.y2.baseVal.value); }
+    else if (g.tagName === 'polyline') { const p = g.points; if (p.numberOfItems < 2) return null; a = new DOMPoint(p.getItem(0).x, p.getItem(0).y); z = new DOMPoint(p.getItem(p.numberOfItems - 1).x, p.getItem(p.numberOfItems - 1).y); }
+    else { const L = g.getTotalLength(); const p0 = g.getPointAtLength(0), p1 = g.getPointAtLength(L); a = new DOMPoint(p0.x, p0.y); z = new DOMPoint(p1.x, p1.y); }
+    a = a.matrixTransform(m); z = z.matrixTransform(m); return [[R(a.x), R(a.y)], [R(z.x), R(z.y)]]; };
   const desc = (arr) => arr.map((el) => ({ b: box(el.getBoundingClientRect()), o: R(eop(el)), d: dataOf(el),
-    mech: idx(el, '[data-role="mechanism"]', conts.mech), parent: el.parentElement ? idx(el.parentElement, '[data-part]', conts.part) : null }));
+    mech: idx(el, '[data-role="mechanism"]', conts.mech), infig: !!(el.parentElement && el.parentElement.closest('[data-role="figure"]')) || el.matches('[data-role="figure"] *'),
+    ends: el.dataset && el.dataset.part === 'return' ? ends(el) : null,
+    parent: el.parentElement ? idx(el.parentElement, '[data-part]', conts.part) : null }));
   const panels = [...document.querySelectorAll('[data-key="panel"]')].map((el) => ({ b: box(el.getBoundingClientRect()), o: R(eop(el)) }));
   const svg = document.documentElement.tagName === 'svg' ? document.documentElement : null;
   const vb = svg && svg.viewBox && svg.viewBox.baseVal ? [svg.viewBox.baseVal.width, svg.viewBox.baseVal.height] : null;
   const bg = document.getElementById('frame-bg');
-  return { W, H, scrollH: document.documentElement.scrollHeight, viewBox: vb,
+  const meta = [...document.querySelectorAll('metadata, desc, title')].map((e) => e.textContent).join(' ')
+    + ' ' + (document.documentElement.getAttribute('data-provenance') || '');
+  return { W, H, scrollH: document.documentElement.scrollHeight, viewBox: vb, meta,
            rendered: svg ? box(svg.getBoundingClientRect()) : null,
            ground: bg ? getComputedStyle(bg).fill : getComputedStyle(document.body || document.documentElement).backgroundColor,
            items, figures: desc(conts.fig), mechanisms: desc(conts.mech), parts: desc(conts.part), panels };
@@ -332,6 +375,127 @@ EXTRACT_JS = r"""(opts) => {
 
 def extract_step(opts=None, as_="m"):
     return {"eval": f"({EXTRACT_JS})({json.dumps(opts or {})})", "as": as_}
+
+
+# ---------------------------------------------------------------- coverage by pixel difference
+#
+# A marked group's coverage is what it actually paints: the page is shot with the group shown and again with it
+# hidden (opacity 0, no reflow), the two shots are compared, and the 20 px cells with any pixel that changed by
+# more than DIFF_LEVEL in a colour channel are counted after a one-cell dilation. Anything inside the group that
+# is drawn at under 0.3 effective opacity is hidden in both shots, so faint marks never count.
+
+DIFF_LEVEL = 12
+COVER_CELL = 20
+MIN_OPACITY = 0.3
+
+HIDE_LOW_JS = r"""(async (sel) => {
+  const alpha = (c) => { if (!c || c === 'none' || c === 'transparent') return 0; const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return 1;
+    const p = m[1].split(/[ ,\/]+/).filter(Boolean); return p.length > 3 ? parseFloat(p[3]) : 1; };
+  const eop = (el) => { let o = 1; for (let e = el; e && e.nodeType === 1; e = e.parentElement) o *= parseFloat(getComputedStyle(e).opacity); return o; };
+  const saved = window.__b0saved = window.__b0saved || [];
+  const set = (el, prop, v) => { saved.push([el, prop, el.style.getPropertyValue(prop), el.style.getPropertyPriority(prop)]); el.style.setProperty(prop, v, 'important'); };
+  let n = 0;
+  // an image that does not decode paints only the browser's broken-image icon: it never counts
+  const loads = (src) => new Promise((ok) => { if (!src) return ok(false); const i = new Image();
+    i.onload = () => ok(i.naturalWidth > 0); i.onerror = () => ok(false); i.src = src; setTimeout(() => ok(false), 3000); });
+  for (const g of document.querySelectorAll(sel)) for (const el of [g, ...g.querySelectorAll('image, img')]) {
+    if (el.tagName === 'image' && !(await loads(el.href && el.href.animVal))) { set(el, 'opacity', '0'); n++; }
+    if (el.tagName === 'IMG' && !(el.complete && el.naturalWidth > 0)) { set(el, 'opacity', '0'); n++; }
+  }
+  for (const g of document.querySelectorAll(sel)) for (const el of [g, ...g.querySelectorAll('*')]) {
+    const cs = getComputedStyle(el), o = eop(el);
+    if (el instanceof SVGElement && el.tagName !== 'g' && el.tagName !== 'svg') {
+      const paint = Math.max(cs.fill && cs.fill !== 'none' ? alpha(cs.fill) * parseFloat(cs.fillOpacity) : 0,
+                             cs.stroke && cs.stroke !== 'none' ? alpha(cs.stroke) * parseFloat(cs.strokeOpacity) : 0,
+                             el.tagName === 'image' || el.tagName === 'use' ? 1 : 0);
+      if (o * paint < 0.3) { set(el, 'opacity', '0'); n++; }
+    } else if (!(el instanceof SVGElement)) {
+      if (o < 0.3) { set(el, 'opacity', '0'); n++; continue; }
+      if (alpha(cs.backgroundColor) * o < 0.3) set(el, 'background-color', 'transparent');
+      if (alpha(cs.color) * o < 0.3) set(el, 'color', 'transparent');
+    }
+  }
+  return n;
+})"""
+HIDE_JS = r"""((sel) => { const saved = window.__b0saved = window.__b0saved || [];
+  for (const el of document.querySelectorAll(sel)) { saved.push([el, 'opacity', el.style.getPropertyValue('opacity'), el.style.getPropertyPriority('opacity')]);
+    el.style.setProperty('opacity', '0', 'important'); } return true; })"""
+RESTORE_JS = r"""(() => { const saved = window.__b0saved || [];
+  for (const [el, prop, v, pri] of saved.reverse()) { if (v) el.style.setProperty(prop, v, pri); else el.style.removeProperty(prop); }
+  window.__b0saved = []; return true; })"""
+
+
+def diff_steps(sel, a_png, b_png):
+    """Playwright steps: faint marks hidden, shot with the group, shot without it, every change undone."""
+    return [{"eval": f"{HIDE_LOW_JS}({json.dumps(sel)})", "as": f"low:{a_png}"}, {"shot": str(a_png)},
+            {"eval": f"{HIDE_JS}({json.dumps(sel)})", "as": f"hide:{a_png}"}, {"shot": str(b_png)},
+            {"eval": f"{RESTORE_JS}()", "as": f"show:{a_png}"}]
+
+
+def png_size(p):
+    head = Path(p).read_bytes()[16:24]
+    return int.from_bytes(head[:4], "big"), int.from_bytes(head[4:], "big")
+
+
+def diff_mask(a_png, b_png, out, level=DIFF_LEVEL):
+    """(w, h, gray raw) that is nonzero where the two shots differ by more than `level` in any channel."""
+    w, h = png_size(a_png)
+    lut = f"if(gt(val,{level}),255,0)"
+    host.run([host.which("ffmpeg"), "-v", "error", "-y", "-i", str(a_png), "-i", str(b_png), "-filter_complex",
+              f"[0:v]format=rgb24[a];[1:v]format=rgb24[b];[a][b]blend=all_mode=difference,lutrgb=r='{lut}':g='{lut}':b='{lut}',format=gray",
+              "-frames:v", "1", "-f", "rawvideo", str(out)], check=True, timeout=120)
+    data = Path(out).read_bytes()
+    if len(data) != w * h:
+        raise ValueError(f"diff mask has {len(data)} bytes, expected {w * h}")
+    return w, h, data
+
+
+def changed_cells(w, h, data, cell=COVER_CELL):
+    cols, rows = math.ceil(w / cell), math.ceil(h / cell)
+    hit = set()
+    for y in range(h):
+        row = data[y * w:(y + 1) * w]
+        if not row.strip(b"\0"):
+            continue
+        r = y // cell
+        for c in range(cols):
+            if (r, c) not in hit and row[c * cell:(c + 1) * cell].strip(b"\0"):
+                hit.add((r, c))
+    return hit, cols, rows
+
+
+def dilate(cells, cols, rows):
+    out = set()
+    for r, c in cells:
+        for dr in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                if 0 <= r + dr < rows and 0 <= c + dc < cols:
+                    out.add((r + dr, c + dc))
+    return out
+
+
+def diff_coverage(a_png, b_png, region=None):
+    """Share of the frame (or of `region`, an (x0, y0, x1, y1) box) whose 20 px cells the group visibly paints,
+    after a one-cell dilation. Also the raw changed-cell count and the painted box."""
+    tmp = Path(str(a_png) + ".mask")
+    try:
+        w, h, data = diff_mask(a_png, b_png, tmp)
+    finally:
+        tmp.unlink(missing_ok=True)
+    cells, cols, rows = changed_cells(w, h, data)
+    dil = dilate(cells, cols, rows)
+    if region:
+        r0, r1 = int(region[1] // COVER_CELL), int(math.ceil(region[3] / COVER_CELL))
+        c0, c1 = int(region[0] // COVER_CELL), int(math.ceil(region[2] / COVER_CELL))
+        total = max(1, (r1 - r0) * (c1 - c0))
+        n = sum(1 for r, c in dil if r0 <= r < r1 and c0 <= c < c1)
+    else:
+        total, n = cols * rows, len(dil)
+    painted = None
+    if cells:
+        painted = [min(c for _, c in cells) * COVER_CELL, min(r for r, _ in cells) * COVER_CELL,
+                   (max(c for _, c in cells) + 1) * COVER_CELL, (max(r for r, _ in cells) + 1) * COVER_CELL]
+    return {"coverage": round(n / total, 4), "changed_cells": len(cells), "painted_box": painted}
 
 
 def shoot(jobs, name, lesson_sha=None, timeout=1200):
@@ -351,51 +515,52 @@ def svg_size(path):
     return w, h
 
 
-def extract_svgs(paths, name):
-    """{path: extraction} for SVG files rendered at their natural size; plus outbound requests."""
+FIG_SEL = '[data-role="figure"]'
+MECH_SEL = '[data-role="mechanism"]'
+
+
+def extract_svgs(paths, name, diffs=(FIG_SEL, MECH_SEL)):
+    """{path: extraction} for SVG files rendered at their natural size, each with a pixel-difference coverage per
+    selector in `diffs` (m["diff"][selector]); plus outbound requests."""
+    shots = host.make_tmp(f"b0-{name}-shots-")
     jobs = []
-    for p in paths:
-        w, h = svg_size(p)
-        jobs.append({"id": str(p), "type": "script", "url": Path(p).resolve().as_uri(), "width": max(1, round(w)),
-                     "height": max(1, round(h)), "steps": [extract_step({"W": w, "H": h})]})
-    res = shoot(jobs, name)
-    out = {}
-    for r in res["results"]:
-        out[r["id"]] = (r.get("values") or {}).get("m") if r.get("ok") else {"error": (r.get("error") or "")[:500]}
+    try:
+        for k, p in enumerate(paths):
+            w, h = svg_size(p)
+            steps = [extract_step({"W": w, "H": h})]
+            for j, sel in enumerate(diffs):
+                steps += diff_steps(sel, shots / f"{k}-{j}-a.png", shots / f"{k}-{j}-b.png")
+            jobs.append({"id": str(p), "type": "script", "url": Path(p).resolve().as_uri(), "width": max(1, round(w)),
+                         "height": max(1, round(h)), "steps": steps})
+        res = shoot(jobs, name)
+        out = {}
+        for k, r in enumerate(res["results"]):
+            m = (r.get("values") or {}).get("m") if r.get("ok") else None
+            if not m:
+                out[r["id"]] = {"error": (r.get("error") or "no values")[:500]}
+                continue
+            m["diff"] = {sel: diff_coverage(shots / f"{k}-{j}-a.png", shots / f"{k}-{j}-b.png") for j, sel in enumerate(diffs)}
+            out[r["id"]] = m
+    finally:
+        shutil.rmtree(shots, ignore_errors=True)
     return out, res["outbound"]
 
 
 def is_ink(it, W, H):
-    """Drawn content, as opposed to a background: text, media, and painted shapes, except a fill-only rect larger
-    than 10% of the canvas (a card or ground) or one filled with the ground colour."""
-    if it.get("o", 1) < 0.05:
+    """Drawn content, as opposed to a background: text, media, and painted shapes drawn at 0.3 opacity or more,
+    except a fill-only shape larger than 10% of the canvas (a card or ground)."""
+    if it.get("o", 1) < MIN_OPACITY:
         return False
     if it["k"] in ("text", "media"):
         return True
-    if it["tag"] == "rect" and not it.get("stroke"):
-        if it["b"][2] * it["b"][3] > 0.10 * W * H:
-            return False
+    if not it.get("stroke") and it["b"][2] * it["b"][3] > 0.10 * W * H:
+        return False
     return True
 
 
 def ink_boxes(m, pred=None):
     W, H = m["W"], m["H"]
     return [it["b"] for it in m["items"] if is_ink(it, W, H) and (pred is None or pred(it))]
-
-
-def group_coverage(m, key):
-    """Union of the hulls of the painted content of each visible container of one kind ('fig' or 'mech'),
-    clipped to the canvas, as a share of the canvas."""
-    W, H = m["W"], m["H"]
-    hulls = []
-    conts = m["figures"] if key == "fig" else m["mechanisms"]
-    for i, c in enumerate(conts):
-        if c.get("o", 1) < 0.05:
-            continue
-        h = hull([clip(b, W, H) for b in ink_boxes(m, lambda it, i=i: it.get(key) == i)])
-        if h:
-            hulls.append(h)
-    return round(rect_union_area(hulls) / (W * H), 4), [[round(v) for v in h] for h in hulls]
 
 
 def panel_coverage(m):

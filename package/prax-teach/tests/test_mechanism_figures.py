@@ -71,14 +71,43 @@ def _center(b):
     return (b[0] + b[2] / 2, b[1] + b[3] / 2)
 
 
-def check_values(items, ctx):
-    """Every drawn value inside the mechanism equals its capture. Returns (checked, problems)."""
+NUM = re.compile(r"(?<![\w.])[-+\u2212]?\d+(?:\.\d+)?(?![\w]|\.\d)")
+
+
+def _visible_value(it, m):
+    """A value really drawn: >= 0.3 opacity, >= 6 px, inside the canvas, not painted in the ground colour."""
+    b, W, H = it["b"], m["W"], m["H"]
+    on = b[0] >= -0.5 and b[1] >= -0.5 and b[0] + b[2] <= W + 0.5 and b[1] + b[3] <= H + 0.5
+    return it.get("o", 1) >= _b0.MIN_OPACITY and (it.get("px") or 0) >= 6 and on and it.get("col") != m.get("ground")
+
+
+def check_values(items, ctx, m=None):
+    """Every value inside the mechanism is drawn visibly and equals its capture, and every number drawn there is
+    bound: data-fact (exact value), data-from-fact (each number appears in that fact's captured value),
+    data-src-line (each number appears in that source line), or an axis tick (data-tick inside data-axis).
+    Returns (checked, problems)."""
     n, bad = 0, []
+    src = (ctx["sources"].get((ctx["fig"] or {}).get("program"), "") or "").split("\n")
     for it in items:
+        if it["k"] != "text":
+            continue
         fid = _own_fact(it)
-        if it["k"] != "text" or not fid or it.get("o", 1) < 0.05:
+        if not fid:
+            nums = NUM.findall(it["t"])
+            if not nums or it.get("o", 1) < _b0.MIN_OPACITY or it.get("tick"):
+                continue
+            ff, sl = it.get("fromfact"), it.get("srcline")
+            pool = None
+            if ff and ctx["facts"].get(ff) is not None:
+                pool = NUM.findall(ctx["facts"][ff])
+            elif sl and sl.isdigit() and 0 < int(sl) <= len(src):
+                pool = NUM.findall(src[int(sl) - 1])
+            if pool is None or any(x not in pool for x in nums):
+                bad.append({"kind": "unbound-number", "text": it["t"][:60], "from_fact": ff, "src_line": sl})
             continue
         n += 1
+        if m is not None and not _visible_value(it, m):
+            bad.append({"kind": "value-not-visible", "fact": fid, "shown": it["t"], "opacity": it.get("o"), "px": it.get("px")})
         if fid not in ctx["facts"]:
             bad.append({"kind": "unknown-fact", "fact": fid, "shown": it["t"]})
             continue
@@ -97,7 +126,9 @@ def _own_fact(it):
 
 
 def _drawn_facts(items):
-    return {_own_fact(it) for it in items if it["k"] == "text" and _own_fact(it) and it.get("o", 1) >= 0.05}
+    """Facts carried by drawn text (an empty element with data-fact draws nothing and counts for nothing)."""
+    return {_own_fact(it) for it in items if it["k"] == "text" and _own_fact(it) and it["t"].strip()
+            and it.get("o", 1) >= _b0.MIN_OPACITY}
 
 
 # ---------------------------------------------------------------- per kind
@@ -150,7 +181,7 @@ def check_control_path(m, mi, ctx):
     if enter != [want["enter"]]:
         probs.append({"kind": "enter", "want": want["enter"], "drawn": enter})
     falls = sorted(line(j) for j in by.get("fall", []))
-    if not set(want["fall"]) <= set(falls):
+    if sorted(want["fall"]) != falls:
         probs.append({"kind": "fall", "want": want["fall"], "drawn": falls})
     leave = [line(j) for j in by.get("leave", [])]
     if leave != [want["leave"]]:
@@ -162,9 +193,14 @@ def check_control_path(m, mi, ctx):
                        for p in (parts[j] for j in by["path"])])
         ye = _center(parts[by["enter"][0]]["b"])[1]
         yl = _center(parts[by["leave"][0]]["b"])[1]
+        eb, lb = parts[by["enter"][0]]["b"], parts[by["leave"][0]]["b"]
+        top, bottom = min(eb[1], lb[1]) - 6, max(eb[1] + eb[3], lb[1] + lb[3]) + 6
         if not (pb[1] - 6 <= min(ye, yl) and pb[3] + 6 >= max(ye, yl)):
             probs.append({"kind": "path-does-not-span", "path_y": [round(pb[1]), round(pb[3])],
                           "enter_y": round(ye), "leave_y": round(yl)})
+        if pb[1] < top or pb[3] > bottom:
+            probs.append({"kind": "path-outside-enter-leave", "path_y": [round(pb[1]), round(pb[3])],
+                          "allowed_y": [round(top), round(bottom)]})
     drawn = _drawn_facts([it for it in m["items"] if it.get("mech") == mi])
     missing = [f for f in ctx["final"].get("output", []) if f not in drawn]
     if missing:
@@ -217,8 +253,7 @@ def check_stack_column(m, mi, ctx):
         rf = rets.get(call_txt)
         ret_of[c] = rf
         rparts = [k for k in inside[j] if parts[k]["d"].get("part") == "ret"]
-        rfacts = {parts[k]["d"].get("fact") for k in rparts} | _drawn_facts(
-            _items_in(m, set().union(*(inside[k] for k in rparts)) if rparts else set()))
+        rfacts = _drawn_facts(_items_in(m, set().union(*(inside[k] for k in rparts)) if rparts else set()))
         if not rf or rf not in rfacts:
             probs.append({"kind": "frame-ret", "call": c, "want": rf, "drawn": sorted(x for x in rfacts if x)})
     fb = {c: parts[j]["b"] for c, j in frames.items() if c in want}
@@ -231,8 +266,9 @@ def check_stack_column(m, mi, ctx):
             if ox < 0.5 * min(A[2], B[2]) or oy > 2:
                 probs.append({"kind": "frames-not-a-column", "a": a, "b": b, "x_overlap": round(ox), "y_overlap": round(oy)})
     ys = [_center(fb[c])[1] for c in names]
-    if len(ys) >= 2 and not (all(b > a for a, b in zip(ys, ys[1:])) or all(b < a for a, b in zip(ys, ys[1:]))):
-        probs.append({"kind": "frames-not-in-depth-order", "order": names, "y_centers": [round(y) for y in ys]})
+    if len(ys) >= 2 and not all(b > a for a, b in zip(ys, ys[1:])):
+        probs.append({"kind": "stack-direction", "rule": "each caller sits above its callee (main at the top)",
+                      "order": names, "y_centers": [round(y) for y in ys]})
     returns = [parts[j] for j in inside if parts[j]["d"].get("part") == "return"]
     for i, callee in enumerate(calls):
         caller = calls[i - 1] if i else "main"
@@ -245,6 +281,13 @@ def check_stack_column(m, mi, ctx):
             rb = hit[0]["b"]
             if rb[1] > y1 or rb[1] + rb[3] < y0:
                 probs.append({"kind": "return-not-between-frames", "from": callee, "to": caller})
+            ends = hit[0].get("ends")
+            cy, ky = _center(fb[caller])[1], _center(fb[callee])[1]
+            if not ends:
+                probs.append({"kind": "return-has-no-line", "from": callee, "to": caller})
+            elif not (ends[1][1] < ends[0][1] - 2 and abs(ends[1][1] - cy) < abs(ends[0][1] - cy)
+                      and abs(ends[0][1] - ky) < abs(ends[1][1] - ky)):
+                probs.append({"kind": "return-not-flowing-up", "from": callee, "to": caller, "ends": ends})
         if caller in frames and ret_of.get(callee) and ret_of[callee] not in _drawn_facts(_items_in(m, inside[frames[caller]])):
             probs.append({"kind": "return-value-not-in-caller", "from": callee, "to": caller, "fact": ret_of.get(callee)})
     return probs, {"calls": calls, "returns": ret_of}
@@ -288,7 +331,7 @@ def check_bytes(m, mi, ctx):
                 off = int(parts[k]["d"].get("offset"))
             except (TypeError, ValueError):
                 off = None
-            fid = parts[k]["d"].get("fact") or next(iter(_drawn_facts(its)), None)
+            fid = next(iter(_drawn_facts(its)), None)
             cap = _byte(ctx["facts"].get(fid) or "") if fid else None
             if val is None or off is None:
                 probs.append({"kind": "byte-unreadable", "var": gname, "text": _text(its), "offset": parts[k]["d"].get("offset")})
@@ -337,32 +380,59 @@ CHECKS = {"control-path": check_control_path, "stack-column": check_stack_column
           "neuron": check_neuron}
 
 
-def evaluate(m, kind, ctx, structure=True):
-    """One rendered artifact: the first visible mechanism of `kind`. Returns a result dict with problems."""
+MIN_MECH_STILL = 0.25  # share of the still's canvas the mechanism must visibly paint
+
+
+def kind_sel(kind):
+    return f'[data-role="mechanism"][data-kind="{kind}"]'
+
+
+def evaluate(m, kind, ctx, structure=True, min_paint=None):
+    """One rendered artifact. Every visible mechanism has its values checked and its numbers bound; every
+    mechanism of `kind` must also pass the kind's structure, sit on the canvas inside a data-role="figure"
+    element, and (with min_paint) visibly paint at least that share of the canvas (pixel difference)."""
     if not m or m.get("error"):
         return {"problems": [{"kind": "render-failed", "error": (m or {}).get("error")}]}
-    vis = [i for i, c in enumerate(m["mechanisms"]) if c.get("o", 1) >= 0.05]
+    W, H = m["W"], m["H"]
+    vis = [i for i, c in enumerate(m["mechanisms"]) if c.get("o", 1) >= _b0.MIN_OPACITY]
     mine = [i for i in vis if m["mechanisms"][i]["d"].get("kind") == kind]
     res = {"mechanisms_found": [m["mechanisms"][i]["d"].get("kind") for i in vis]}
     if not mine:
         res["problems"] = [{"kind": "no-mechanism", "want": kind, "found": res["mechanisms_found"]}]
         return res
-    mi = mine[0]
-    n, bad = check_values([it for it in m["items"] if it.get("mech") == mi], ctx)
-    probs = list(bad)
-    if not n:
-        probs.append({"kind": "no-values-drawn"})
-    if structure:
-        sp, info = CHECKS[kind](m, mi, ctx)
-        probs += sp
-        res["expected"] = info
+    probs, n = [], 0
+    for mi in vis:
+        c = m["mechanisms"][mi]
+        k, bad = check_values([it for it in m["items"] if it.get("mech") == mi], ctx, m)
+        n += k
+        probs += [{**b, "mechanism": mi} for b in bad]
+        if mi not in mine:
+            continue
+        if not k:
+            probs.append({"kind": "no-values-drawn", "mechanism": mi})
+        b = c["b"]
+        inside = _b0.clip(b, W, H)
+        area = b[2] * b[3]
+        if not area or not inside or (inside[2] - inside[0]) * (inside[3] - inside[1]) < 0.95 * area:
+            probs.append({"kind": "mechanism-off-canvas", "mechanism": mi, "box": b})
+        if not c.get("infig"):
+            probs.append({"kind": "mechanism-not-in-figure", "mechanism": mi})
+        if structure:
+            sp, info = CHECKS[kind](m, mi, ctx)
+            probs += [{**x, "mechanism": mi} for x in sp]
+            res["expected"] = info
+    paint = (m.get("diff") or {}).get(kind_sel(kind))
+    if min_paint is not None:
+        res["painted"] = paint
+        if not paint or paint["coverage"] < min_paint:
+            probs.append({"kind": "mechanism-too-small", "coverage": (paint or {}).get("coverage"), "min": min_paint})
     res.update({"values_checked": n, "problems": probs})
     return res
 
 
 def evaluate_stills(svgs, kind, ctx):
-    ext, outbound = _b0.extract_svgs(svgs, "mech")
-    out = {str(p.name): evaluate(ext.get(str(p)), kind, ctx) for p in svgs}
+    ext, outbound = _b0.extract_svgs(svgs, "mech", diffs=(kind_sel(kind),))
+    out = {str(p.name): evaluate(ext.get(str(p)), kind, ctx, min_paint=MIN_MECH_STILL) for p in svgs}
     probs = [{**pr, "svg": n} for n, r in out.items() for pr in r["problems"]]
     if outbound:
         probs.append({"kind": "outbound-request", "requests": outbound[:5]})
@@ -399,7 +469,7 @@ def test_fixture_good_mechanisms_pass():
 
 FAIL_EXPECT = {
     "control-path": {"enter", "leave", "value-differs"},
-    "stack-column": {"frames-not-a-column", "return-missing", "frame-ret"},
+    "stack-column": {"frames-not-a-column", "return-missing", "frame-ret", "stack-direction"},
     "bytes": {"bytes-wrong", "low-byte-mark", "byte-differs-from-capture"},
     "neuron": {"panel-facts-missing", "panels", "value-differs"},
 }
@@ -417,6 +487,35 @@ def test_fixture_bad_mechanisms_fail():
     _out, probs = _fixture_case("bytes", "none.svg")
     assert {p["kind"] for p in probs} == {"no-mechanism"}, probs
     return got
+
+
+EXTRA_FAILS = {
+    ("control-path", "fail-path.svg"): {"fall", "path-outside-enter-leave"},   # an extra fall, a path past the break
+    ("bytes", "faint-tiny.svg"): {"value-not-visible", "mechanism-too-small"},   # right bytes, drawn at 0.1 and 20%
+}
+
+
+def test_fixture_tightened_rules_fail():
+    """The rules added after the independent review each catch their own crafted case."""
+    got = {}
+    for (kind, name), want in EXTRA_FAILS.items():
+        _out, probs = _fixture_case(kind, name)
+        kinds = {p["kind"] for p in probs}
+        assert want <= kinds, (kind, name, sorted(kinds), probs[:6])
+        got[f"{kind}/{name}"] = sorted(kinds)
+    return got
+
+
+def test_fixture_adversarial_stack_fails():
+    """The review's crafted stack: empty ret groups with data-fact, main at the bottom, returns flowing down, an
+    unmarked "n = 1", no figure around it, and a second mechanism drawing 7 for factorial(3). Every one fails."""
+    d, ctx = _fixture("stack-column")
+    _out, probs = evaluate_stills([_b0.FIXTURES / "adversarial" / "mech-stack-attr.svg"], "stack-column", ctx)
+    kinds = {p["kind"] for p in probs}
+    want = {"frame-ret", "stack-direction", "return-not-flowing-up", "unbound-number", "mechanism-not-in-figure",
+            "value-differs"}
+    assert want <= kinds, (sorted(kinds), probs[:8])
+    return sorted(kinds)
 
 
 # ---------------------------------------------------------------- the built lessons
