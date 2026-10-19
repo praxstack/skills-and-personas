@@ -2,6 +2,7 @@
 alone passes ticks that are all shifted by the same amount; the bar ends and the gate dot are data marks whose
 values come from the facts' independent expectations, and they must sit where the ticks put those values."""
 import re
+import shutil
 
 from _util import V21
 from selftest_support import NotRun
@@ -71,6 +72,13 @@ def test_ticks_bound_without_data_marks():
     if not all(f.get("value") for f in lesson.data["facts"]):
         raise NotRun("neuron not captured yet")
     tmp = host.make_tmp("axis-bare-")
+    try:
+        return _bare(lesson, tmp)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _bare(lesson, tmp):
     src = _no_anchors(still.render(lesson, "wide", "dark", fonts.tokens()))
     assert "data-axis-anchor" not in src and src.count('data-label="axis-tick"') == 6
     bare = tmp / "bare.svg"
