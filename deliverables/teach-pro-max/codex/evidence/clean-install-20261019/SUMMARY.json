@@ -1,0 +1,55 @@
+{
+  "status": "CLEAN_INSTALL_TRIAL_PASSED_AFTER_PROVISIONING_REPAIR",
+  "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "pack_commit": "4f50ca992a39b44dfcecb40a21f8169410cab80f",
+  "trial_type": "Fresh downloaded source/review archives and project prefix on same macOS arm64 host; not a clean VM or cross-platform proof.",
+  "downloads_hash_matched": true,
+  "installer_cases": 9,
+  "vendor_problems": 0,
+  "fresh_explorers": 3,
+  "fresh_narrated_six_format_lessons": 1,
+  "course_lessons": 2,
+  "fresh_flow_checks": {
+    "passed": 65,
+    "total": 65
+  },
+  "mixed_export_checks": {
+    "passed": 173,
+    "total": 173,
+    "scope": "Fresh language six-format bundle plus two downloaded published bundles, using fresh Chromium/Node. All three root explorers and the course were rebuilt."
+  },
+  "framework": {
+    "command_exit": 0,
+    "fast_ran": 66,
+    "fast_passed": 63,
+    "initial_skipped": 3,
+    "supplemental_original_repo_lint_passed": 1,
+    "remaining_inapplicable_site_tests": 2,
+    "practice_browser_checks": 59,
+    "actual_animation_video_export": true
+  },
+  "narration": {
+    "duration_seconds": 57.58,
+    "fps": 24,
+    "resolution": "1280x720",
+    "integrated_lufs": -16.7,
+    "true_peak_db": -2.7,
+    "speech_content_recall": "82/82; 100%",
+    "subjective_listening": "NOT_RUN"
+  },
+  "archived_source_files_unchanged": 2342,
+  "candidate_or_governing_changes": false,
+  "active_skill_links_changed": false,
+  "trial_failure_preserved": "First fresh narration failed when an ASR model cache link escaped the cloned cache. Blob materialized with matching SHA256; original narrator rerun passed. First failed render and receipt retained.",
+  "harness_failure_preserved": "First retry wrapper had an undefined installed variable and did not invoke the product. Corrected wrapper and original NameError log retained.",
+  "release_ready": false,
+  "remaining_critical": [
+    "E03-MEDIA",
+    "E04-MEDIA",
+    "E07-MEDIA",
+    "E08-MEDIA"
+  ],
+  "reason": "Actual listening verdicts absent. Fresh probe explicitly reports unsupported audio input.",
+  "human_visual_feedback": "Positive acceptance of viewed work recorded; no invented per-video listening verdicts.",
+  "optional_c_adapter": "Unchanged, separate, unaccepted; its original failures remain recorded."
+}

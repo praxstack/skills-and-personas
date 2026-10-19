@@ -1,0 +1,12 @@
+{
+  "release_tag": "teach-pro-max-v3-review-20261019",
+  "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "asset": {
+    "name": "prax-teach-v3-clean-install-evidence.zip",
+    "bytes": 17465751,
+    "sha256": "0f07164553c8abb107b62a5ea439da3e6bbd3aa752de1c24755dd69cc2b87d09",
+    "files": 104,
+    "url": "https://github.com/praxstack/skills-and-personas/releases/download/teach-pro-max-v3-review-20261019/prax-teach-v3-clean-install-evidence.zip"
+  },
+  "scope": "Follow-up evidence only. Original review/source assets and tag unchanged. This hash receipt is outside its archive. Runtime weights/environments excluded."
+}

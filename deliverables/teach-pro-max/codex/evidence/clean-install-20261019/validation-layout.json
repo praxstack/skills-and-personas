@@ -1,0 +1,15 @@
+{
+  "source": "Downloaded source archive; no skill code edits",
+  "review": "Downloaded review archive, APFS copy; raw downloads untouched",
+  "fresh_explorers": [
+    "voice-and-focus",
+    "base-rates",
+    "diffusion"
+  ],
+  "fresh_full_six_format_case": "voice-and-focus; link after narration/export completes",
+  "reused_exports": [
+    "base-rates bundle",
+    "diffusion bundle"
+  ],
+  "original_diagnostics": "Unchanged check_exports.mjs and check_flow.mjs from published review, run from recreated repository layout."
+}

@@ -1,0 +1,10 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "python": "Python 3.12.15",
+  "node": "v26.12.0",
+  "playwright": "1.63.0",
+  "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+  "model_setup": "Kokoro and ASR model bytes reused from local cache, SHA checked; Python, Node and Chromium provisioned fresh. No original narrator clips reused.",
+  "machine_boundary": "Fresh prefix and packages on the same macOS arm64 host; not a different physical machine, VM, Windows or Linux trial."
+}

@@ -29,3 +29,7 @@ Three public non-C lessons—language, probability and diffusion—each have a m
 Codex CLI settings are separately applied and tested. Arbitrary new message-box borders/header are not established supported settings. The report contains a backup and rollback route.
 
 Sources/metadata are committed; new rendered media and C working fixtures are GitHub prerelease assets. No historical archive migration, history rewriting or install is implied. `RELEASE-ASSETS.json` lives outside the archives it hashes. See `REPRODUCE.md`, `IMPLEMENTATION.md`, `governance/FREEZE.md` and the raw receipts for exact scope.
+
+## Approved follow-up review
+
+Prax accepted the viewed visuals and approved the final reviews. The [fresh install/build trial](evidence/clean-install-20261019/REPORT.md) now passes, with its provisioning failure and recovery preserved. It regenerated three explorers, a two-lesson course and one fully narrated six-format lesson. No product or governing change was needed. The runtime again refused audio input; four explicit listening verdicts remain requested and no listening pass has been invented.

@@ -1,0 +1,51 @@
+[
+  {
+    "name": "fresh-narration",
+    "argv": [
+      "python3",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/explorable/scripts/narrate.py",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/explorer.html",
+      "-o",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/lesson.mp4",
+      "--engine",
+      "kokoro",
+      "--speed",
+      "0.85",
+      "--fps",
+      "24"
+    ],
+    "exit_code": 0,
+    "seconds": 103.131,
+    "log": "fresh-narration.log"
+  },
+  {
+    "name": "six-format-export",
+    "argv": [
+      "node",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/explorable/scripts/bundle_lesson.mjs",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/explorer.html",
+      "--out",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/bundle",
+      "--video",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/lesson.mp4",
+      "--timing",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/lesson.timing.json"
+    ],
+    "exit_code": 0,
+    "seconds": 2.266,
+    "log": "six-format-export.log"
+  },
+  {
+    "name": "fresh-ive-qa",
+    "argv": [
+      "node",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/visual-qa/scripts/check_page.mjs",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/bundle/interactive-video.html",
+      "--out",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/ive-qa"
+    ],
+    "exit_code": 0,
+    "seconds": 5.127,
+    "log": "fresh-ive-qa.log"
+  }
+]

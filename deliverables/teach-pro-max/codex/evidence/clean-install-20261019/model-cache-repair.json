@@ -1,0 +1,10 @@
+{
+  "cause": "APFS clone preserved a nested link to the original cache-wide blob store; that store was intentionally not cloned. Isolated model.bin was consequently missing.",
+  "responsibility": "Trial provisioning error; no product source/gate change.",
+  "repair": "Materialized only the referenced model blob from the resolved local model source; source and destination SHA256 matched.",
+  "sha256": "2a166925539a16005f14ff328359f9b9adb9dc4fb631bb3b227526862e93e2ef",
+  "bytes": 145216508,
+  "old_link_target": "../../blobs/fb/fbdbb36cc3abbe07a49292568b524d2749f5b4fc679a07c496c340a347c01718",
+  "preserved_failed_render": "outputs/voice-and-focus/first-attempt/",
+  "recovery_count": 1
+}
