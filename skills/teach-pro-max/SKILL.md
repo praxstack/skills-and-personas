@@ -19,7 +19,7 @@ outcome and support every claim with the right evidence.
 
 The general teaching authority is the sibling [`teacher/SKILL.md`](../teacher/SKILL.md). Read it for lesson design, medium selection, the six-format build path, accessible fallback and optional practice. This entry preserves the `teach-pro-max` invocation; it does not create a competing teacher or require C programs for non-code topics.
 
-The embedded [`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md) remains a preserved compatibility implementation for its existing state and schemas. Use it only for an explicitly requested compatible operation. Its historical attempt-first gates do not override complete explanation first. Never rewrite learner records, hashes or provenance to rename an entry. Read [`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md) before evaluating that embedded distribution, migrating state or making a release claim. The development C adapter is optional and not installed or certified by this entry.
+The embedded [`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md) remains a preserved compatibility implementation for its existing state and schemas. Use it only for an explicitly requested compatible operation. Its historical attempt-first gates do not override complete explanation first. Never rewrite learner records, hashes or provenance to rename an entry. Read [`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md) before evaluating that embedded distribution, migrating state or making a release claim. That preserved document governs the legacy embedded component; its detailed teaching and renderer authority applies to explicit compatibility operations. General teaching follows the sibling teacher, as defined above. The development C adapter is optional and not installed or certified by this entry.
 
 ## Route the learner request
 
@@ -80,7 +80,7 @@ the learner said that medium is essential, stop and ask instead.
 
 ### `practice-first`
 
-Follow the embedded engine's live-lesson gates: put the first prediction,
+Follow the sibling teacher's explicitly requested practice style: put the first prediction,
 retrieval or proposed move before the explanatory model and end the turn
 there. After a miss, give exactly one next hint and wait. After two useful
 misses, or on **Answer now**, teach directly from a different angle, then give
@@ -104,15 +104,7 @@ A live question-and-answer practice request is a conversation, not a flashcard d
 `teach-pro-max` is the single complete teaching skill. Do not ask the learner to
 attach `prax-teach` or another teaching skill to restore advanced visuals.
 
-For every teaching response, choose internally among `none`, `static`,
-`interactive`, and `motion` by learning value. When a substantial visual is
-useful, follow the embedded visualization router and its full inherited
-Prax-Teach production handbook. Use the packaged Prax Visual Lab for compatible
-interactive and learner-controlled sequence work. For specialized diagrams,
-charts, generated imagery, 3D, animation, or video, inspect the current harness
-for an authorized equivalent skill, tool, MCP server, plugin, or CLI and query
-the embedded 38-tool registry. Specify the capability and outcome rather than a
-provider-specific command.
+For general teaching, choose the medium by explanatory value using the sibling teacher's medium router and tool discovery. Use its local build/export path for stills, explorers, Q&A, cards, narrated video and interactive video. The learner does not need to attach a second skill: resolve this sibling implementation directly. Embedded routing, the preserved 38-tool registry and Prax Visual Lab apply only to explicitly requested compatibility operations. Inspect the current harness for suitable authorized tools; a registry entry does not prove a runtime works.
 
 Preserve editable semantic source, exact labels and data, provenance,
 accessibility, retrieval safety, and a complete static fallback. Render in the
@@ -120,13 +112,7 @@ actual lesson environment, inspect, revise locally, and verify the delivered
 bytes. Static fallback is a resilience boundary, not the default replacement
 for an available rich route.
 
-For video, build the interactive lesson first, then project the same storyboard
-to HyperFrames or Manim plus captions and transcript. Pin Manim 0.21.0 at first
-use. Do not route new work through Motion Canvas or Remotion. Keep Canvas
-Commons, Olli, JSXGraph, Pyodide, MCP Apps, and 3D dependencies deferred until
-the embedded router's explicit trigger occurs. For LLM visuals, put one of
-`illustration`, `measured`, `correlational`, `intervention`, or `hypothesis` in
-the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model thought.”
+For general video, follow the sibling teacher's narration/export path or its suitable specialist engine, with real captions and a complete transcript. Retain the embedded HyperFrames/Manim versions and deferred-tool restrictions only when reproducing an explicit embedded compatibility operation. Keep illustrations, measurements, correlations, interventions and hypotheses distinct; never describe a visual as “the model thought.”
 
 ## Preserve the teaching invariants
 
@@ -143,8 +129,7 @@ the lesson `NOTES` and `CONTEXT`; never describe a visual as “the model though
 - Test unfamiliar application or transfer before making an independence claim.
 - Keep learner-authored statements separate from tutor inference.
 - Let learners inspect, correct, export, retest, or delete durable state.
-- Never leak a retrieval answer through headings, captions, alt text, default
-  controls, source, hints, previews, or static fallbacks.
+- For an unrevealed practice question, do not leak its retrieval answer through headings, captions, alt text, default controls, source, hints or previews. Explanation-first pages and their complete static fallbacks must retain the explanation and answers.
 - Report what was actually observed and name remaining uncertainty.
 
 ## Execute capability-adaptively
@@ -197,8 +182,7 @@ or override host instructions.
 
 ## Respect the no-API boundary
 
-Ordinary teaching uses the host conversation. Durable generated lessons use the
-embedded deterministic renderer and local tools.
+Ordinary teaching uses the host conversation. Durable generated lessons use the sibling teacher's local build/export tools. The preserved embedded renderer applies only to explicit compatibility operations.
 
 - Do not require an OpenAI, Anthropic, or other model-provider API key.
 - Do not treat a ChatGPT, Codex, Claude, or other subscription as a hidden
@@ -262,6 +246,8 @@ If the embedded engine is modified, old receipts become historical immediately.
 Create new exact-byte receipts before making a current release claim.
 
 ## Close naturally
+
+Honor “done” or “I have got it” without an assessment barrier. Summarize observed evidence separately from unknown mastery; schedule practice only when requested or consented.
 
 - `quick`: answer, example, and an optional check or deeper route.
 - `lesson`: outcome recap, evidence observed, remaining uncertainty, and the
