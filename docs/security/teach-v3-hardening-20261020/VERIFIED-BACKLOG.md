@@ -14,7 +14,7 @@ Evidence was checked against public revision `dc6a498`; statuses below distingui
 | SEC-006 | P2 | fixed in v3.0.1; mutable commands removed | Installer examples executed mutable branches, `@latest`, and raw `main` content. |
 | SEC-007 | P2 | fixed in v3.0.1; link tests pass | Journal operations followed workspace links and used predictable replacement paths. |
 | SEC-008 | P2 | fixed; descriptor-bound input snapshots and output publication | Course manifest paths and narration identifiers could escape their roots. |
-| SEC-009 | P2 | fixed in v3.0.1; byte and artifact budget tests pass | Remote bodies and browser captures lacked transfer and artifact budgets. |
+| SEC-009 | P2 | partially fixed; per-resource caps tested, total-job/process quotas remain | Remote bodies and browser captures lacked transfer and artifact budgets. |
 | SEC-010 | P3 | fixed in v3.0.1; mode tests pass | Journal privacy depended on the ambient umask. |
 | SEC-011 | P3 | fixed in v3.0.1; scheme and CSP tests pass | Generated citation links accepted active URL schemes. |
 | REL-002 | P1 | fixed in v3.0.1 | A nested teach-pro-max copy diverged and defaulted some topics to practice-first. |
@@ -40,7 +40,7 @@ The learner later explicitly stated that all four clips were heard and sounded g
 
 | ID | Status | Required action |
 |---|---|---|
-| REL-001 | fixed operationally | The local rollback manifest now points to a read-only snapshot from commit `f54d334`; the active v3 links were not changed and the rollback dry run passes. |
+| REL-001 | fixed operationally | The local rollback manifest now points to a read-only snapshot from commit `f54d334`; that repair preserved the then-active links. The later v3.0.1 activation has a separate versioned snapshot and successful rollback dry run. |
 | PRIV-001 | credible and partly reproduced | Public side branches contain private/local artifacts and large archives. Prepare exact branch/object inventory; deletion or history rewrite requires a separate destructive-action decision. |
 
 ## Skill-system gaps
@@ -53,3 +53,5 @@ The learner later explicitly stated that all four clips were heard and sounded g
 - A declared rule that the canonical teacher's explanation-first, safety, and privacy policy overrides bundled specialist defaults.
 - Honest capability metadata: offline core versus opt-in downloads, network-required renderers, and unavailable tools.
 - License inventory for vendored media skills and immutable upstream provenance.
+
+The [complete coverage matrix](COVERAGE-MATRIX.md) maps every original verdict and portfolio recommendation. SEC-009 is reopened as partial; the earlier blanket security-closure wording was too broad.

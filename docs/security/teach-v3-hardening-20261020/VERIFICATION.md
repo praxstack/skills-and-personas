@@ -102,3 +102,7 @@ v3.0.0 and its historical artifacts remain available for rollback.
 
 Public-history removal and broad portfolio redesign remain outside this patch.
 No evaluator thresholds or private holdout inputs changed.
+
+## Coverage correction
+
+The broader review is not fully closed. SEC-009 has tested per-resource caps but lacks total-job quotas and browser-process resource ceilings. Whole hostile-course isolation and portfolio recommendations also remain. See [the complete matrix](COVERAGE-MATRIX.md); the existing focused passes do not certify these missing controls.
