@@ -35,8 +35,13 @@ const page = await context.newPage();
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
-await page.goto(url);
+// This frozen regression exercises explicitly requested practice. Default
+// explanation-first behavior is checked independently by the v3 evaluator.
+await page.goto(`${url}?practice=1`);
 await page.waitForFunction(() => window.__explorable);
+// Persistence is exercised only with an explicit user opt-in on newer engines.
+const remember = page.getByRole("checkbox", { name: "Remember progress on this device" });
+if (await remember.count()) await remember.check();
 
 const steps = await page.evaluate(() => window.LESSON.steps.map((s) => ({ title: s.title, ask: s.ask ? { kind: s.ask.kind, n: s.ask.options?.length } : null, alts: (s.alts || []).length, line: s.line !== undefined, hasCode: Boolean(window.LESSON.code) })));
 check("lesson has steps", steps.length > 0);
