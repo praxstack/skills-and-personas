@@ -162,3 +162,17 @@ The small "teaching" text is now 4+ word chrome headings such as "ADD / FOLLOW T
 | P2.11 | Size rule needed markup | Code and output are also found by monospace text; chrome and label marks no longer exempt prose; text size is now correct under scale, viewBox, zoom and rotation (the reviewer's page is a fixture). |
 | P2.12 | IVE part tested nothing | Not-run with no controls or no assertions, failed when the explorer binds and the IVE does not. |
 | P2.13 | Missing checks | Added: every lexicon token used, portrait carries the same figure, provenance off the picture, fold re-measured after one interaction. |
+
+## Parked after round 2 (orchestrator, 2026-10-19)
+
+B0 used both of its rounds (FREEZE-v2: at most 2 per deliverable). The second independent review (files in `$PTK_STATE/review-b0/r2`) confirmed every round-1 hole closed and found five new ones. They are parked, not fixed, and recorded here as known blind spots:
+
+1. **Coverage counts fill-only cards and dilates sparse marks.** A blank full-canvas card scores 100%; a 3 px dot lattice scores 96%. Applies to stills and the video mechanism check.
+2. **Generated text escapes the caption check.** A stale sentence in CSS `::before { content }` passes, because the check reads `textContent`.
+3. **A faint texture hides empty space.** A 12 px checker of 14 grey levels drops an empty half-frame from 58% to 0.08%.
+4. **Values just outside the mechanism are unchecked.** A wrong value placed inside the figure but outside the mechanism passes.
+5. **Widely spaced code escapes.** A 4-line C block at 2.6× line spacing passes the code-block rule.
+
+**Mitigation:** every Track B review and the final verification must inspect the built stills, explorers, IVE pages and sampled video frames for exactly these five tricks, and report each as found or not found. Prax's visual verdict stays the final gate.
+
+**Rules stricter than the spec, kept as written** (not loosened): spoken numbers must be captured values or source literals; any non-monospace text of 4+ words must be ≥ 28 px in video; the portrait must draw every fact the wide still draws. If one of these blocks good work, it is reported, not weakened.
