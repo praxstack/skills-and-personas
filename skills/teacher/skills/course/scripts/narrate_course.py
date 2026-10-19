@@ -25,7 +25,7 @@ HERE = Path(__file__).resolve().parent
 EXP = HERE.parent.parent / "explorable" / "scripts"
 sys.path.insert(0, str(HERE))
 from build_course import logical_path  # noqa: E402
-from safe_course import validate_course_manifest  # noqa: E402
+from safe_course import validate_course_manifest, snapshot_course, publish_bound_file  # noqa: E402
 
 
 def main() -> int:
@@ -44,6 +44,20 @@ def main() -> int:
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         raise SystemExit(f"unsafe course manifest in {a.course}: {exc}")
     a.course = validated.root
+    original = validated.root
+    output = original / "videos"
+    output.mkdir(mode=0o700, exist_ok=True)
+    with snapshot_course(original) as private:
+        a.course = private
+        result = narrate_snapshot(a)
+        for artifact in (private / "videos").glob("*"):
+            if artifact.is_file() and artifact.suffix in {".mp4", ".vtt", ".png", ".json", ".wav"}:
+                publish_bound_file(output, artifact.name, artifact)
+        return result
+
+
+def narrate_snapshot(a) -> int:
+    validated = validate_course_manifest(a.course)
     meta = validated.data
     shared = [x for path in validated.shared for x in ("--include", str(path))]
     out_dir = a.course / "videos"

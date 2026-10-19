@@ -8,12 +8,12 @@ Evidence was checked against public revision `dc6a498`; statuses below distingui
 |---|---:|---|---|
 | SEC-001 | P1 | fixed in candidate; focused exploit and control tests pass | Public video upload accepted unconfined lesson paths and followed links. |
 | SEC-002 | P1 | fixed in candidate; static sink removed | Skillpack health actions reached shell `eval`. |
-| SEC-003 | P1 | default path fixed; portable hostile-code sandbox still open | Routine lesson validation executed authored JS, Python, and C/C++ on the host. |
+| SEC-003 | P1 | fixed; default structural path plus disposable Docker code-checker adapter | Routine lesson validation executed authored JS, Python, and C/C++ on the host. |
 | SEC-004 | P1 | fixed in candidate; exact-host tests pass | Domainless cookie dictionaries could be sent to arbitrary resource hosts. |
-| SEC-005 | P2 | mitigated; DNS-rebinding-resistant transport still open | Resource enrichment permitted private-network and metadata requests and unchecked redirects. |
+| SEC-005 | P2 | fixed; connection-time numeric-IP enforcement, including browser HTTP broker | Resource enrichment permitted private-network and metadata requests and unchecked redirects. |
 | SEC-006 | P2 | fixed in candidate; mutable commands removed | Installer examples executed mutable branches, `@latest`, and raw `main` content. |
 | SEC-007 | P2 | fixed in candidate; link tests pass | Journal operations followed workspace links and used predictable replacement paths. |
-| SEC-008 | P2 | fixed for traversal and links; concurrent swap hardening remains | Course manifest paths and narration identifiers could escape their roots. |
+| SEC-008 | P2 | fixed; descriptor-bound input snapshots and output publication | Course manifest paths and narration identifiers could escape their roots. |
 | SEC-009 | P2 | fixed in candidate; byte and artifact budget tests pass | Remote bodies and browser captures lacked transfer and artifact budgets. |
 | SEC-010 | P3 | fixed in candidate; mode tests pass | Journal privacy depended on the ambient umask. |
 | SEC-011 | P3 | fixed in candidate; scheme and CSP tests pass | Generated citation links accepted active URL schemes. |
@@ -45,11 +45,11 @@ The learner later explicitly stated that all four clips were heard and sounded g
 
 ## Skill-system gaps
 
-- One sandbox contract for all lesson code execution.
+- Bundled checker sandbox delivered. Whole untrusted-course rendering still requires an external restricted environment; the review gate stays closed by default.
 - One safe-fetch library for URL schemes, DNS/IP policy, redirect revalidation, credentials, and byte budgets.
 - One safe-path/private-file library for containment, link rejection, descriptor binding, and modes.
 - Reproducible release generation so aliases, manifests, ZIPs, source, and skills.sh instructions cannot drift.
-- CI for lint, duplicate-name detection, distribution integrity, safe archives, focused security regressions, and clean standalone installs.
+- Focused security CI delivered. Broader portfolio lint and duplicate-name cleanup remain separate work.
 - A declared rule that the canonical teacher's explanation-first, safety, and privacy policy overrides bundled specialist defaults.
 - Honest capability metadata: offline core versus opt-in downloads, network-required renderers, and unavailable tools.
 - License inventory for vendored media skills and immutable upstream provenance.

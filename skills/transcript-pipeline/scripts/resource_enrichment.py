@@ -29,6 +29,67 @@ from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.connection import HTTPConnection, HTTPSConnection
+from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
+
+
+class PublicConnectionMixin:
+    """Resolve once, inspect every answer, then connect to numeric addresses only.
+
+    Keep self.host unchanged for HTTP Host, TLS SNI and certificate verification.
+    No process-global resolver hooks and no second hostname lookup at connect.
+    """
+    def _new_conn(self):
+        answers = socket.getaddrinfo(self.host, self.port, type=socket.SOCK_STREAM)
+        if not answers or any(not _public_ip(row[4][0]) for row in answers):
+            raise ValueError("connection target has a non-public DNS answer")
+        last_error = None
+        for family, kind, protocol, _, address in answers:
+            sock = socket.socket(family, kind, protocol)
+            try:
+                sock.settimeout(self.timeout)
+                for option in self.socket_options or []:
+                    sock.setsockopt(*option)
+                sock.connect(address)  # numeric sockaddr from the checked result
+                return sock
+            except OSError as exc:
+                sock.close()
+                last_error = exc
+        raise OSError("could not connect to a validated public address") from last_error
+
+
+class PublicHTTPConnection(PublicConnectionMixin, HTTPConnection):
+    pass
+
+
+class PublicHTTPSConnection(PublicConnectionMixin, HTTPSConnection):
+    pass
+
+
+class PublicHTTPPool(HTTPConnectionPool):
+    ConnectionCls = PublicHTTPConnection
+
+
+class PublicHTTPSPool(HTTPSConnectionPool):
+    ConnectionCls = PublicHTTPSConnection
+
+
+class PublicNetworkAdapter(HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        super().init_poolmanager(*args, **kwargs)
+        self.poolmanager.pool_classes_by_scheme = {
+            "http": PublicHTTPPool, "https": PublicHTTPSPool,
+        }
+
+    def proxy_manager_for(self, *args, **kwargs):
+        raise ValueError("resource fetching does not allow proxy transports")
+
+    def send(self, request, **kwargs):
+        validate_remote_url(request.url, resolve_dns=False)
+        if kwargs.get("proxies"):
+            raise ValueError("resource fetching does not allow proxy transports")
+        return super().send(request, **kwargs)
 
 
 DEFAULT_ROOT = Path.cwd()
@@ -103,6 +164,8 @@ def parse_manifest(session_dir: Path) -> list[ResourceItem]:
 def _new_session() -> requests.Session:
     session = requests.Session()
     session.trust_env = False
+    session.mount("https://", PublicNetworkAdapter())
+    session.mount("http://", PublicNetworkAdapter())
     session.headers.update({"User-Agent": "Mozilla/5.0"})
     return session
 
@@ -272,6 +335,71 @@ def _browser_request_allowed(url: str) -> bool:
         return True
     except Exception:
         return False
+
+
+def new_public_browser_context(playwright, state=None, executable_path=None):
+    browser = playwright.chromium.launch(headless=True, executable_path=executable_path, args=[
+        "--proxy-server=http://127.0.0.1:9", "--proxy-bypass-list=<-loopback>",
+        "--host-resolver-rules=MAP * ~NOTFOUND", "--disable-quic",
+        "--force-webrtc-ip-handling-policy=disable_non_proxied_udp",
+    ])
+    context = browser.new_context(storage_state=state, service_workers="block",
+                                  viewport={"width": 1440, "height": 1200})
+    if not hasattr(context, "route_web_socket"):
+        browser.close()
+        raise RuntimeError("Canva capture requires Playwright WebSocket blocking support")
+    # A route with no connect_to_server() is a local sink: no upstream
+    # socket is opened. Avoid a synchronous close inside the WS dispatch.
+    context.route_web_socket("**/*", lambda ws: ws.on_message(lambda message: None))
+    install_browser_transport(context)
+    return browser, context
+
+
+def provider_https_origin(url: str, provider: str) -> bool:
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower().rstrip(".")
+    return (parsed.scheme == "https" and parsed.port in {None, 443}
+            and (host == provider or host.endswith("." + provider)))
+
+
+def install_browser_transport(context):
+    broker = _new_session()
+    remaining = [100 * 1024 * 1024]
+    context.on("close", lambda: broker.close())
+
+    def fulfill_public(route):
+        try:
+            request = route.request
+            target = validate_remote_url(request.url)
+            if remaining[0] <= 0:
+                raise ValueError("browser transfer budget exhausted")
+            headers = {k: v for k, v in request.all_headers().items()
+                       if k.lower() not in {"host", "connection", "content-length", "accept-encoding"}}
+            host = (urlparse(target).hostname or "").lower().rstrip(".")
+            if not provider_https_origin(target, "canva.com"):
+                headers = {k: v for k, v in headers.items()
+                           if k.lower() not in {"cookie", "authorization"}}
+            post = request.post_data_buffer
+            if post and len(post) > MAX_HTTP_BYTES:
+                raise ValueError("browser request body exceeds byte budget")
+            # Browser storage owns cookies. Do not let the HTTP broker grow a
+            # second jar that can attach cookies after the header filter.
+            broker.cookies.clear()
+            response = broker.request(request.method, target, headers=headers,
+                                      data=post, stream=True,
+                                      allow_redirects=False, timeout=30)
+            try:
+                body = read_limited_body(response, min(MAX_HTTP_BYTES, remaining[0]))
+                remaining[0] -= len(body)
+                response_headers = {k: v for k, v in response.headers.items()
+                                    if k.lower() not in {"content-encoding", "transfer-encoding", "content-length"}}
+                route.fulfill(status=response.status_code, headers=response_headers, body=body)
+            finally:
+                response.close()
+        except Exception:
+            route.abort("blockedbyclient")
+
+    context.route("**/*", fulfill_public)
 
 
 def extract_html_title(text: str) -> str | None:
@@ -598,25 +726,20 @@ def enrich_canva(
             return fallback
 
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            # Browser sockets have no usable proxy or DNS route. All HTTP(S)
+            # responses are fulfilled by the pinned public-only Python transport.
             state = sanitize_playwright_state(playwright_storage_state, "canva.com")
-            context = browser.new_context(storage_state=state, viewport={"width": 1440, "height": 1200})
+            browser, context = new_public_browser_context(p, state)
             page = context.new_page()
-            page.route(
-                "**/*",
-                lambda route: route.continue_()
-                if _browser_request_allowed(route.request.url)
-                else route.abort("blockedbyclient"),
-            )
             target = validate_remote_url(item.url)
             target_host = (urlparse(target).hostname or "").lower().rstrip(".")
-            if target_host != "canva.com" and not target_host.endswith(".canva.com"):
-                raise ValueError("authenticated Canva capture requires a canva.com URL")
+            if not provider_https_origin(target, "canva.com"):
+                raise ValueError("authenticated Canva capture requires a canva.com HTTPS origin on port 443")
             page.goto(target, wait_until="networkidle", timeout=90000)
             page.wait_for_timeout(2000)
 
             final_host = (urlparse(page.url).hostname or "").lower().rstrip(".")
-            if final_host != "canva.com" and not final_host.endswith(".canva.com"):
+            if not provider_https_origin(page.url, "canva.com"):
                 raise ValueError("authenticated Canva capture redirected outside canva.com")
             height = page.evaluate("Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)")
             if int(height or 0) > MAX_BROWSER_PAGE_HEIGHT:

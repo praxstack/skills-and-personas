@@ -13,25 +13,9 @@ from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 try:
-    import requests  # noqa: F401
+    import requests
 except ImportError:
-    class CookieJar:
-        def __init__(self):
-            self.values = []
-
-        def set(self, *args, **kwargs):
-            self.values.append((args, kwargs))
-
-    class Session:
-        def __init__(self):
-            self.cookies = CookieJar()
-            self.headers = {}
-            self.trust_env = True
-
-    requests_stub = types.ModuleType("requests")
-    requests_stub.Session = Session
-    requests_stub.Response = object
-    sys.modules["requests"] = requests_stub
+    raise unittest.SkipTest("requests is required for transport security tests")
 
 SPEC = importlib.util.spec_from_file_location("resource_enrichment", HERE / "resource_enrichment.py")
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -92,6 +76,34 @@ class FakeNotionSession:
 
 
 class ResourceSecurityTests(unittest.TestCase):
+    def test_connection_uses_checked_numeric_address_without_second_lookup(self):
+        public = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("8.8.8.8", 443))]
+        private = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", 443))]
+        with mock.patch.object(MODULE.socket, "getaddrinfo", side_effect=[public, private]) as dns:
+            with mock.patch.object(MODULE.socket, "socket") as sock:
+                connection = MODULE.PublicHTTPSConnection("example.test", port=443, timeout=5)
+                connection._new_conn()
+                sock.return_value.connect.assert_called_once_with(("8.8.8.8", 443))
+                self.assertEqual(dns.call_count, 1)
+                self.assertEqual(connection.host, "example.test")
+
+    def test_transport_rejects_rebinding_before_opening_socket(self):
+        private = [(socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("::1", 443, 0, 0))]
+        with mock.patch.object(MODULE.socket, "getaddrinfo", return_value=private):
+            with mock.patch.object(MODULE.socket, "socket") as sock:
+                with self.assertRaises(ValueError):
+                    MODULE.PublicHTTPSConnection("example.test", port=443, timeout=5)._new_conn()
+                sock.assert_not_called()
+
+    def test_adapter_used_for_both_schemes_and_no_proxy_bypass(self):
+        session = MODULE._new_session()
+        for scheme in ("http://", "https://"):
+            adapter = session.get_adapter(scheme)
+            self.assertIsInstance(adapter, MODULE.PublicNetworkAdapter)
+            with self.assertRaises(ValueError):
+                adapter.proxy_manager_for("http://localhost:8080")
+        self.assertFalse(session.trust_env)
+
     def test_private_and_active_urls_are_rejected(self):
         for url in (
             "file:///etc/passwd",
@@ -140,6 +152,9 @@ class ResourceSecurityTests(unittest.TestCase):
         self.assertTrue(first.closed)
 
     def test_authenticated_session_cannot_change_origin(self):
+        self.assertTrue(MODULE.provider_https_origin("https://www.canva.com/path", "canva.com"))
+        self.assertFalse(MODULE.provider_https_origin("http://www.canva.com/path", "canva.com"))
+        self.assertFalse(MODULE.provider_https_origin("https://www.canva.com:8443/path", "canva.com"))
         redirect = FakeResponse(status=302, headers={"location": "https://8.8.4.4/other"}, redirect=True)
         session = FakeSession([redirect])
         session._credential_host = "8.8.8.8"

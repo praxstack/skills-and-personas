@@ -49,7 +49,7 @@ sys.path.insert(0, str(SKILLS / "lesson-notebook" / "scripts"))
 sys.path.insert(0, str(SKILLS / "explorable" / "scripts"))
 import bundle  # noqa: E402
 import build as explorable_build  # noqa: E402
-from safe_course import optional_confined_file, validate_course_manifest  # noqa: E402
+from safe_course import optional_confined_file, validate_course_manifest, private_course_inputs  # noqa: E402
 
 ENGINE = HERE.parent / "assets" / "engine"
 ANIM = SKILLS / "concept-animation" / "scripts"
@@ -125,6 +125,7 @@ def video_route(template: str, course_id: str, lesson_id: str) -> str:
     return template.replace("{course}", course_id).replace("{lesson}", lesson_id)
 
 
+@private_course_inputs
 def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: dict | None = None, base: str = "", root: str = "", video_url: str = "", trust_authored_code: bool = False) -> dict:
     """base: URL path this course's folder is served at ('' for relative links);
     root: the URL path of the catalog that holds it (for prerequisite links);

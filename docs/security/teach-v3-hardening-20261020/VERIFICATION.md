@@ -6,7 +6,7 @@ Product patch: `4e5cd3b`
 
 ## Passed
 
-- 71 teacher Python tests passed; 4 environment-specific tests skipped.
+- 71 teacher Python tests ran: 67 passed and 4 environment-specific tests skipped.
 - The browser run passed 59 interaction checks and all 18 paper, chalkboard,
   desktop, phone, and reduced-motion visual runs.
 - A 28-second, 1280 by 720 H.264 animation rendered at 24 fps. Video QA found
@@ -28,20 +28,46 @@ denied Chromium's Mach rendezvous service. The same frozen suite passed when
 rerun outside that sandbox with the installed local Chromium. No dependency was
 downloaded for the rerun.
 
-## Not certified yet
+## Continuation verification
 
-- `SEC-005`: URL, IP, redirect, credential, and size controls are present, but
-  Requests and Chromium still resolve DNS when they connect. A hostile DNS
-  server could change its answer after validation. A hardened transport must
-  pin the checked address or enforce the policy at connection time.
-- `SEC-003`: untrusted code no longer executes by default. The explicit trust
-  path still runs reviewed code on the host; the repository does not yet ship
-  a portable OS sandbox for hostile lessons.
-- `SEC-008`: traversal, absolute paths, symlinks, hard links, ownership, and
-  suffixes are checked. Course build inputs are not yet descriptor-bound from
-  validation through every downstream renderer, so a concurrent file swap is
-  still a proof gap.
-- Release ZIPs and skills.sh still describe v3.0.0. They should be regenerated
-  only after this candidate is accepted; the published tag stays immutable.
-- Public side-branch cleanup is planned separately because it deletes refs or
-  rewrites history.
+The remaining SEC-003, SEC-005 and SEC-008 implementation work is complete:
+
+- 8 real Docker sandbox tests pass: legitimate Python/C++, host-file/env/network
+  isolation, infinite JavaScript, outer deadline, memory/process/output budgets,
+  missing-image failure. The reviewed ARM64 image ID is
+  `sha256:c3adc592ed3413a4e7d4e9496911f317e223efb5d86712a18cb2286231c79a6a`.
+- 11 transport regressions pass, including a resolver that changes public to
+  private, numeric-address-only connect, mixed DNS answers and proxy rejection.
+  A real HTTPS request to example.com returned 200 with TLS checking enabled.
+- A real Chromium test passes: brokered public HTML works, a localhost fetch
+  fails, WebSocket upstream connections are isolated. Service workers are
+  disabled and browser sockets have no usable DNS/proxy route.
+- 7 safe-course tests pass, including replacement of the original after snapshot,
+  directory replacement after open, output symlink replacement, and video
+  manifests beside linked courses.
+- The unchanged full browser/video suite passes again: 59 interactions, 18
+  visual runs, 673 rendered frames at 24 fps, and video QA with no black/frozen
+  spans and captions present. The animation export has no audio; it is not a
+  new narration-listening test.
+- Fresh read-only bypass review found a linked-course manifest regression and
+  a browser credential-origin gap. Both were fixed; final review reported no
+  remaining concrete findings. It did not independently rerun Docker/browser.
+
+Initial sandbox tests could not mount macOS private temp folders. Those attack
+results were discarded until legitimate controls passed using a private,
+VM-accessible staging directory. The first WebSocket browser test deadlocked
+in Playwright's synchronous close callback; the corrected local-sink handler
+passes. These were product/test integration failures, not accepted passes.
+
+## Limits and release status
+
+The sandbox is for executable lesson examples. Whole third-party course
+rendering still needs a separately restricted environment; no trust gate was
+removed. Containers rely on a trusted daemon/image and runtime/kernel security.
+Authenticated Canva capture was not tested against a live personal account.
+The request broker is covered by deterministic tests and real Chromium controls.
+
+Public side-branch cleanup remains separate because it deletes refs or rewrites
+history. The frozen quality evaluator and historical evidence were not changed.
+Release packaging verification is recorded with the new release manifest;
+v3.0.0 and its historical artifacts remain available for rollback.

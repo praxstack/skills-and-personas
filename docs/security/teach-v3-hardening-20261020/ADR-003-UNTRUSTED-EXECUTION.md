@@ -28,9 +28,10 @@ a command timeout is not a sandbox.
 - Routine validation no longer silently runs authored Python, C++, or lesson
   JavaScript on the host.
 - Reviewed first-party course workflows need one explicit flag.
-- Fully automated hostile-content validation remains a product gap until the
-  repository ships and tests a portable sandbox adapter or a declarative
-  lesson format.
+- The bundled Docker adapter now isolates the whole code checker, including
+  JavaScript loading, compilation and program execution. Its setup and limits
+  are documented in the explorable sandbox guide. Whole untrusted-course
+  rendering remains behind the external-sandbox/review boundary.
 
 ## Rejected alternatives
 

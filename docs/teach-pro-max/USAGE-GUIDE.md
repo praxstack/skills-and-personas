@@ -16,7 +16,7 @@ For both names, install both skills together:
 npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
 ```
 
-The compatibility entry requires the sibling teacher. Installing only `teach-pro-max` is not the recommended general-teaching installation.
+Installing `teach-pro-max` alone is supported: it uses its bundled compatibility engine when the sibling teacher is absent. Installing both selects the general teacher.
 
 Select your agent interactively, or target a project-local Codex install explicitly:
 
@@ -75,6 +75,8 @@ The normal order is a complete explanation followed by optional practice. Explic
 
 ## Review the evidence
 
-The accepted general source is `0d20ff7722910d12256240af0897070255cfc4f3`. Its published skill trees match the tested source byte-for-byte. The fixed routing set passed 24/24, and the eight-subject end-to-end evaluation passed 56/56 after human listening acceptance. Controls are separately 8/8 valid accepted and 8/8 intended invalid propositions identified. See [the accepted report](../../deliverables/teach-pro-max/codex/evidence/private-evaluation/candidate4-accepted-redacted-report.json).
+The original general baseline is `0d20ff7722910d12256240af0897070255cfc4f3`. Its fixed routing set reported 24/24; the eight-subject evaluation reported 52/56 automated criteria plus four human listening approvals. The v3.0.1 source adds separately tested security and packaging fixes; it does not rerun or improve that frozen score. Controls are separately 8/8 valid accepted and 8/8 intended invalid propositions identified. See [the accepted report](../../deliverables/teach-pro-max/codex/evidence/private-evaluation/candidate4-accepted-redacted-report.json).
 
 [Real lesson downloads](https://github.com/praxstack/skills-and-personas/releases) include three non-C exemplars in six formats and a connected course. The private evaluation prompts remain private. Historical receipts preserve failures and the original 52/56 result before listening acceptance; baseline end-to-end improvement and superior human learning were not established. The optional C adapter's development status does not block general teaching.
+
+Untrusted executable examples can use the [bundled Docker checker](../../skills/teacher/skills/explorable/references/SANDBOX.md). It requires explicit setup and fails closed when unavailable. Reviewed course builds copy descriptor-checked inputs into private snapshots before extraction, rendering or testing.

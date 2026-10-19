@@ -48,6 +48,15 @@ def main() -> int:
 
 
 def check(a: argparse.Namespace, out: Path) -> int:
+    from safe_course import snapshot_course
+    import copy
+    with snapshot_course(a.course) as snapshot:
+        private = copy.copy(a)
+        private.course = snapshot
+        return check_snapshot(private, out)
+
+
+def check_snapshot(a: argparse.Namespace, out: Path) -> int:
     import build_course  # noqa: E402
 
     data = build_course.build_course(a.course, out, trust_authored_code=a.trust_authored_code)

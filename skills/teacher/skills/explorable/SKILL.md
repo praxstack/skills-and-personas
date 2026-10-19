@@ -28,7 +28,7 @@ Use `--fragment` when publishing to a host that wraps pages (Claude artifacts). 
 `test_lesson.mjs`, `check_page.mjs`, narration, and `bundle_lesson.mjs` load the
 lesson in Chromium and execute its JavaScript. Run them only for a lesson and
 includes you have reviewed and chosen to trust. Chromium is part of the render
-pipeline, not a hostile-code sandbox; use an external restricted sandbox for
+pipeline, not a hostile-code sandbox; use the [bundled checker sandbox](references/SANDBOX.md) or an external restricted environment for
 third-party material.
 
 ## The lesson file
@@ -62,7 +62,7 @@ window.LESSON = {
 ### More lesson fields
 
 - `hook`: HTML shown above step 1 under "Why this mattered": the stakes or the story (who needed this, what broke without it). Short.
-- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide, in a Web Worker with a Stop button and a 10 s limit, so an endless loop never freezes the lesson) where the host allows it, and every panel shows what the model says the program prints for the current inputs. The default `check_code.mjs` invocation is structural and reports code as unverified. Only after reviewing every lesson/include, pass `--trust-authored-code` to compile and run both languages. Prefer an external restricted sandbox for third-party material.
+- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide, in a Web Worker with a Stop button and a 10 s limit, so an endless loop never freezes the lesson) where the host allows it, and every panel shows what the model says the program prints for the current inputs. The default `check_code.mjs` invocation is structural and reports code as unverified. Only after reviewing every lesson/include, pass `--trust-authored-code` to compile and run both languages. For third-party executable examples, use `--sandbox --sandbox-image sha256:...`; see [sandbox setup](references/SANDBOX.md).
 - `ask: { kind: "explain", q, model, points: [...] }`: the learner writes the idea in their own words first, then sees the teacher's version and ticks the key points they covered. The text goes into the report so the teacher can correct it.
 - Shared course code: put the model in one file that sets `window.Something` and build with `--include course.model.js` (also for `check_code.mjs`).
 - `figure.narrowText`: text scale on narrow screens (default 1). Raise it until `visual-qa` stops flagging figure text under 11px.
