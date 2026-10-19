@@ -23,7 +23,7 @@ The embedded [`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SK
 
 ## Route the learner request
 
-Use the embedded engine's modes:
+Use these compatible mode names for the general teacher; they do not require the embedded engine or its C-specific schemas:
 
 | Mode | Use when | Default persistence |
 |---|---|---|
@@ -98,6 +98,8 @@ engine command. Without consent, honor the pin for the current conversation
 only.
 
 ## Make visualization first-class
+
+A live question-and-answer practice request is a conversation, not a flashcard deck. Export cards or a Q&A reference only when that artifact is requested. For general artifact creation, follow the sibling teacher's medium router and `references/ARTIFACT-EXPORTS.md`; embedded compatibility operations remain explicitly separate.
 
 `teach-pro-max` is the single complete teaching skill. Do not ask the learner to
 attach `prax-teach` or another teaching skill to restore advanced visuals.

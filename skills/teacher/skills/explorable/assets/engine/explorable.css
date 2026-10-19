@@ -123,3 +123,31 @@
 
 .xp-consent input[type=checkbox]{width:24px;height:24px;flex:0 0 24px;accent-color:var(--blue)}
 .xp-consent{min-height:44px}
+
+/* Figure-led reading view. Keep the mechanism wide; notes follow it.
+   Export stages retain their own composition and existing frame geometry. */
+:root:not([data-film-export])[data-teaching-style="visual-explain"] body { background-image: none; }
+:root:not([data-film-export])[data-teaching-style="visual-explain"] body::before { display: none; }
+.xp-layout { grid-template-columns: 11rem minmax(0, 1fr); gap: 2rem; }
+.xp-margin { grid-column: 2; position: static; grid-template-columns: repeat(auto-fit,minmax(16rem,1fr)); border-top: 1px solid var(--rule-soft); padding-top: 1.5rem; }
+.xp-figure { padding: 1rem; }
+.xp-head-tools .nb-btn, .xp-controls, .xp-lookfor .nb-hand { font-family: var(--font-book); }
+@media (max-width:1080px) {
+ .xp-layout { grid-template-columns: minmax(0,1fr); }
+ .xp-main { grid-row: 1; }
+ .xp-outline, .xp-margin { grid-column: 1; }
+ .xp-outline { grid-row: 2; }
+}
+@media (max-width:760px) {
+ .xp-head { padding-block: .75rem; gap: .65rem; }
+ .xp-head-text { gap: .4rem; }
+ .xp-head h1 { font-size: 1.8rem; line-height:1.12; text-wrap:pretty; }
+ .xp-sub { font-size: 1rem; line-height:1.45; }
+ .xp-head-tools { gap: .25rem .5rem; }
+ .xp-head-tools .nb-btn { font-size: .85rem; min-height:40px; padding: .3rem .55rem; }
+ .xp-consent { padding:0; }
+ .xp-layout { margin-top:1rem; gap:1.5rem; }
+ .xp-step { gap:.75rem; }
+ .xp-figure { padding:.5rem; }
+ .xp-margin { grid-template-columns:minmax(0,1fr); }
+}
