@@ -263,7 +263,7 @@ EXTRACT_JS = r"""(opts) => {
     part: idx(el, '[data-part]', conts.part), key: near(el, 'data-key'),
     fact: near(el, 'data-fact') || near(el, 'data-m'), claim: near(el, 'data-claim') || near(el, 'data-claims'),
     chrome: near(el, 'data-chrome'), label: near(el, 'data-label'), role: near(el, 'data-role'),
-    misc: near(el, 'data-misconception'), srcline: near(el, 'data-src-line'),
+    misc: near(el, 'data-misconception'), question: near(el, 'data-question'), srcline: near(el, 'data-src-line'),
     code: !!el.closest('[data-code], code, pre, .src, [data-key="code"]'), d: dataOf(el) });
   const ctmScale = (el) => { const m = el.getScreenCTM && el.getScreenCTM(); return m ? Math.hypot(m.a, m.b) : 1; };
   const blockText = (el) => { for (let e = el; e && e.nodeType === 1; e = e.parentElement) {

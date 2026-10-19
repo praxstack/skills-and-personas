@@ -75,10 +75,10 @@ def check_values(items, ctx):
     """Every drawn value inside the mechanism equals its capture. Returns (checked, problems)."""
     n, bad = 0, []
     for it in items:
-        if it["k"] != "text" or not it.get("fact") or it.get("o", 1) < 0.05:
+        fid = _own_fact(it)
+        if it["k"] != "text" or not fid or it.get("o", 1) < 0.05:
             continue
         n += 1
-        fid = it["fact"]
         if fid not in ctx["facts"]:
             bad.append({"kind": "unknown-fact", "fact": fid, "shown": it["t"]})
             continue
@@ -90,8 +90,14 @@ def check_values(items, ctx):
     return n, bad
 
 
+def _own_fact(it):
+    """The fact an element itself carries (data-fact on the element whose text is the value). A data-fact or
+    data-m on an enclosing group does not make every label inside it a value."""
+    return (it.get("d") or {}).get("fact")
+
+
 def _drawn_facts(items):
-    return {it["fact"] for it in items if it["k"] == "text" and it.get("fact") and it.get("o", 1) >= 0.05}
+    return {_own_fact(it) for it in items if it["k"] == "text" and _own_fact(it) and it.get("o", 1) >= 0.05}
 
 
 # ---------------------------------------------------------------- per kind

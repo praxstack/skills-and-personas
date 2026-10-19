@@ -1,0 +1,16 @@
+{
+ "fps": 30,
+ "duration": 2.0,
+ "scenes": [
+  {
+   "id": "sc1",
+   "start": 0.0,
+   "end": 2.0,
+   "duration": 2.0,
+   "shown": 0.0
+  }
+ ],
+ "mechanism_scenes": [
+  "sc1"
+ ]
+}
