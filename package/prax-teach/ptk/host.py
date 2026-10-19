@@ -639,13 +639,36 @@ def _espeak_short_path(venv):
     data.symlink_to(short)
 
 
+def _npm_tree_current(tools):
+    """True when the installed tree already matches the pinned lock, so setup can leave it alone.
+    `npm ci` deletes node_modules first, which pulled the tools out from under concurrent builds."""
+    for f in ("package.json", "package-lock.json"):
+        if not (tools / f).is_file() or (tools / f).read_bytes() != (PKG / "node" / f).read_bytes():
+            return False
+    if not (tools / "node_modules" / ".package-lock.json").is_file():
+        return False
+    lock = json.loads((PKG / "node" / "package-lock.json").read_text())
+    for key, meta in lock.get("packages", {}).items():
+        if not key or meta.get("link"):
+            continue
+        pj = tools / key / "package.json"
+        if not pj.is_file():
+            if meta.get("optional"):
+                continue  # optional packages for other platforms are never installed
+            return False
+        if json.loads(pj.read_text()).get("version") != meta.get("version"):
+            return False
+    return True
+
+
 def _setup_npm(item):
     from . import node
     tools = state_path("tools", "node")
     tools.mkdir(parents=True, exist_ok=True)
-    for f in ("package.json", "package-lock.json"):
-        shutil.copyfile(PKG / "node" / f, tools / f)
-    node.npm(["ci", "--no-fund", "--no-audit"], cwd=tools)
+    if not _npm_tree_current(tools):
+        for f in ("package.json", "package-lock.json"):
+            shutil.copyfile(PKG / "node" / f, tools / f)
+        node.npm(["ci", "--no-fund", "--no-audit"], cwd=tools)
     lock = json.loads((tools / "package-lock.json").read_text())
     pkgs = [{"name": k.replace("node_modules/", ""), "version": v.get("version"), "url": v.get("resolved"),
              "integrity": v.get("integrity")} for k, v in lock.get("packages", {}).items() if k]
