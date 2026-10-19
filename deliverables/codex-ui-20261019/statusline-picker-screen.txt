@@ -1,0 +1,40 @@
+
+  >_ OpenAI Codex (v0.163.0)
+     /tmp
+  permissions: YOLO mode
+
+  To get started, describe a task or try one of these commands:
+
+  /init - create an AGENTS.md file with instructions for Codex
+  /status - show current session configuration
+  /permissions - choose what Codex is allowed to do
+  /model - choose what model and reasoning effort to use
+  /review - review any changes and find issues
+
+
+
+
+
+
+
+
+
+
+
+
+  Configure Status Line
+  Select which items to display in the status line.
+
+  Type to search
+
+› [x] Use theme colors      Apply colors from the active /theme
+  ───────────────────────
+  [x] model-with-reasoning  Current model name with reasoning level
+  [x] context-remaining     Percentage of context window remaining (omitted when unknown)
+  [x] five-hour-limit       Remaining usage on the primary usage limit (omitted when unavailable)
+  [x] weekly-limit          Remaining usage on the weekly usage limit (omitted when unavailable)
+  [x] git-branch            Current Git branch (omitted when unavailable)
+  [ ] model                 Current model name
+↓
+  GPT-6.1-Sol high · Context 100% left · weekly 72% left · feat/awesome-feature
+  space toggle · ←/→ reorder · enter save · esc cancel
