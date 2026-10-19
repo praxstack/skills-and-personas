@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560" data-theme="dark">
+<title>Fixture still</title><desc>A synthetic still for the AC-10.1 measure.</desc>
+<rect id="frame-bg" x="0" y="0" width="1200" height="560" fill="#101828"/>
+<g fill="#edf1f7"><text x="48" y="56" font-family="'Nunito Sans', sans-serif" font-size="30">A figure-led still</text>
+<g data-role="figure">
+  <rect x="48" y="90" width="340" height="400" rx="16" fill="none" stroke="#7c6fd6" stroke-width="3"/>
+  <text x="70" y="140" font-family="'JetBrains Mono', monospace" font-size="28">0.8 x 1.5</text>
+  <line x1="400" y1="290" x2="560" y2="290" stroke="#7c6fd6" stroke-width="4"/>
+  <circle cx="760" cy="290" r="150" fill="none" stroke="#3aa58a" stroke-width="4"/>
+  <text x="720" y="300" font-family="'JetBrains Mono', monospace" font-size="40">0.6</text>
+  <path d="M950,480 L1150,100" stroke="#3aa58a" stroke-width="4" fill="none"/>
+</g>
+<text x="48" y="535" font-family="'Nunito Sans', sans-serif" font-size="16">Values from a captured run of neuron.c.</text></g>
+</svg>

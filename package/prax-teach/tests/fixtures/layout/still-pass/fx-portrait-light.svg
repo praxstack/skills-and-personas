@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" width="400" height="800" data-theme="light">
+<title>Fixture still</title><desc>A synthetic still for the AC-10.1 measure.</desc>
+<rect id="frame-bg" x="0" y="0" width="400" height="800" fill="#f7f4ee"/>
+<g fill="#1d2433"><g data-role="figure"><rect x="20" y="80" width="360" height="600" rx="16" fill="none" stroke="#7c6fd6" stroke-width="3"/>
+<text x="40" y="140" font-family="'JetBrains Mono', monospace" font-size="28">0.6</text></g>
+<text x="20" y="720" font-family="'JetBrains Mono', monospace" font-size="14">int main(void) {</text>
+<text x="20" y="740" font-family="'JetBrains Mono', monospace" font-size="14">double z = t1 + t2 + b;</text>
+<text x="20" y="760" font-family="'JetBrains Mono', monospace" font-size="14">printf("a = %g\n", a);</text></g>
+</svg>
