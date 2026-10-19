@@ -1,0 +1,3476 @@
+{
+  "schema": "prax-teach/build-report@1",
+  "lesson": "one-byte-four-views",
+  "lesson_sha256": "c98e9f41dc25a388928b0020f1b1a5214c7a06c21b891f82f3d5bd078b2b23d5",
+  "status": "failed",
+  "started": "2026-10-19T07:24:35+0530",
+  "finished": "2026-10-19T07:27:09+0530",
+  "media": [
+    "still",
+    "explorer",
+    "qa",
+    "cards",
+    "video",
+    "ive"
+  ],
+  "entry": {
+    "skill_md": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/package/prax-teach/SKILL.md",
+    "skill_md_sha256": "3cf3812a14b36c1f00d437fcab714bf249bd76cf225c9041228d131e76fa550e",
+    "ptk": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/package/prax-teach/bin/ptk",
+    "registration": "none (direct path, D19.3)",
+    "shows": "build invoked via bin/ptk; does not show that SKILL.md was loaded"
+  },
+  "gates": [
+    {
+      "id": "values.expect",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "facts": 31,
+        "mismatches": 0
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.explorer",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 17,
+        "states": 6,
+        "against": "stepper.expected_view (facts, mech.shown_facts)",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.knob",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "kind": "values",
+        "views_checked": 4,
+        "against": "captured facts and expect.py (values, calls); expect_neuron.py and the captured check runs (neuron)",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.prose-follows-state",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 17,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.a11y-csp-noscript",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "csp": "default-src 'none'; script-src 'sha256-fbYWi0kS5MFSpEJEIlKMLZayagTrq1wWS7v8trm5orU='; style-src 'sha256-Lew5l1yIBkk+QPzy",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.layout",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "layouts": 24,
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ],
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.file-protocol",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "url": "file:///Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/explorer/index.html",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.layers-misconceptions-print",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "layers": 6,
+        "options": 3,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.page",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "problems": [],
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.cards",
+      "medium": "cards",
+      "status": "passed",
+      "measured": {
+        "cards": 9,
+        "misconception_cards": 2,
+        "apkg": "one-byte-four-views.apkg",
+        "problems": [],
+        "anki_import": "tests/test_cards.py::test_anki_import (not part of the build)"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.still",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "values_checked": 84,
+        "mismatches": [],
+        "files": [
+          "one-byte-four-views-wide-light.svg",
+          "one-byte-four-views-wide-dark.svg",
+          "one-byte-four-views-portrait-light.svg",
+          "one-byte-four-views-portrait-dark.svg"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.layout",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "views": {
+          "one-byte-four-views-wide-light.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "one-byte-four-views-wide-dark.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "one-byte-four-views-portrait-light.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          },
+          "one-byte-four-views-portrait-dark.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          }
+        },
+        "svg_problems": [],
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-light.png"
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-dark.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-light.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-dark.png"
+          }
+        ],
+        "min_text_px_at_display": 11.38,
+        "job_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.key-nodes",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "required": [
+          "code",
+          "note",
+          "output",
+          "panel"
+        ],
+        "problems": [],
+        "nodes": {
+          "one-byte-four-views-wide-light.svg": {
+            "code": {
+              "left": 64,
+              "right": 664,
+              "top": 267.1,
+              "height": 528.2,
+              "width": 600
+            },
+            "panel": {
+              "left": 704,
+              "right": 1136,
+              "top": 266.6,
+              "height": 598.5,
+              "width": 432
+            },
+            "note": {
+              "left": 704,
+              "right": 1121.2,
+              "top": 897.6,
+              "height": 137.5,
+              "width": 417.2
+            },
+            "output": {
+              "left": 64,
+              "right": 664,
+              "top": 835.3,
+              "height": 286,
+              "width": 600
+            }
+          },
+          "one-byte-four-views-wide-dark.svg": {
+            "code": {
+              "left": 64,
+              "right": 664,
+              "top": 267.1,
+              "height": 528.2,
+              "width": 600
+            },
+            "panel": {
+              "left": 704,
+              "right": 1136,
+              "top": 266.6,
+              "height": 598.5,
+              "width": 432
+            },
+            "note": {
+              "left": 704,
+              "right": 1121.2,
+              "top": 897.6,
+              "height": 137.5,
+              "width": 417.2
+            },
+            "output": {
+              "left": 64,
+              "right": 664,
+              "top": 835.3,
+              "height": 286,
+              "width": 600
+            }
+          },
+          "one-byte-four-views-portrait-light.svg": {
+            "code": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 273.5,
+              "height": 352.2,
+              "width": 358.8
+            },
+            "panel": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 654.1,
+              "height": 578.2,
+              "width": 358.8
+            },
+            "note": {
+              "left": 15.6,
+              "right": 356.7,
+              "top": 1261.7,
+              "height": 112,
+              "width": 341.1
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 1398,
+              "height": 227.8,
+              "width": 358.8
+            }
+          },
+          "one-byte-four-views-portrait-dark.svg": {
+            "code": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 273.5,
+              "height": 352.2,
+              "width": 358.8
+            },
+            "panel": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 654.1,
+              "height": 578.2,
+              "width": 358.8
+            },
+            "note": {
+              "left": 15.6,
+              "right": 356.7,
+              "top": 1261.7,
+              "height": 112,
+              "width": 341.1
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 1398,
+              "height": 227.8,
+              "width": 358.8
+            }
+          }
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.contrast",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "pairs_checked": 556,
+        "below_minimum": [],
+        "min_text_ratio": 4.67,
+        "min_rule_ratio": 3.71,
+        "dark_note_correction_delta_L": 16.8,
+        "note_correction_delta_L": {
+          "one-byte-four-views-wide-light.svg": 16.9,
+          "one-byte-four-views-wide-dark.svg": 16.8,
+          "one-byte-four-views-portrait-light.svg": 16.9,
+          "one-byte-four-views-portrait-dark.svg": 16.8
+        },
+        "token_pairs": 50,
+        "token_failures": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.ocr",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "cells": 28,
+        "digit_cells_lining_checked": 26,
+        "misread_or_not_lining": [],
+        "numeric_style_problems": [],
+        "engine": "tesseract 5.5.3"
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.fonts",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_bundled": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.alt-source",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "svgs": [
+          {
+            "svg": "one-byte-four-views-wide-light.svg",
+            "title": true,
+            "desc_chars": 252,
+            "source_link": true
+          },
+          {
+            "svg": "one-byte-four-views-wide-dark.svg",
+            "title": true,
+            "desc_chars": 252,
+            "source_link": true
+          },
+          {
+            "svg": "one-byte-four-views-portrait-light.svg",
+            "title": true,
+            "desc_chars": 252,
+            "source_link": true
+          },
+          {
+            "svg": "one-byte-four-views-portrait-dark.svg",
+            "title": true,
+            "desc_chars": 252,
+            "source_link": true
+          }
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.network",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.hyperframes-check",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "exit": 0,
+        "counts": {
+          "lint": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "runtime": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "layout": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "contrast": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "motion": {
+            "errors": 0,
+            "warnings": 0
+          }
+        },
+        "sandboxed": true,
+        "sub_compositions": 8,
+        "scenes": 8
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.scene-layout",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "scenes": {
+          "sc1": {
+            "mid": {
+              "state": "s0",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s0",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc2": {
+            "mid": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc3": {
+            "mid": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output",
+                "question"
+              ]
+            },
+            "settled": {
+              "state": "s1",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output",
+                "question"
+              ]
+            }
+          },
+          "sc4": {
+            "mid": {
+              "state": "s2",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s2",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc5": {
+            "mid": {
+              "state": "s3",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s3",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc6": {
+            "mid": {
+              "state": "s4",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s4",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc7": {
+            "mid": {
+              "state": "s5",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s5",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          },
+          "sc8": {
+            "mid": {
+              "state": "s4",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            },
+            "settled": {
+              "state": "s4",
+              "min_px": 12,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "panel",
+                "output"
+              ]
+            }
+          }
+        },
+        "problems": {},
+        "max_empty_bottom": 0.12,
+        "set_collisions": [],
+        "panel_layers": {
+          "sc1": {
+            "frames": 281,
+            "max_crossfade_s": 1.0
+          },
+          "sc2": {
+            "frames": 379,
+            "max_crossfade_s": 1.0
+          },
+          "sc3": {
+            "frames": 56,
+            "max_crossfade_s": 1.0
+          },
+          "sc4": {
+            "frames": 412,
+            "max_crossfade_s": 1.0
+          },
+          "sc5": {
+            "frames": 180,
+            "max_crossfade_s": 1.0
+          },
+          "sc6": {
+            "frames": 343,
+            "max_crossfade_s": 1.0
+          },
+          "sc7": {
+            "frames": 233,
+            "max_crossfade_s": 1.0
+          },
+          "sc8": {
+            "frames": 464,
+            "max_crossfade_s": 1.0
+          }
+        },
+        "value_chips": {},
+        "snapshots": [
+          "video/work/snapshots/sc1-mid.png",
+          "video/work/snapshots/sc1-settled.png",
+          "video/work/snapshots/sc2-mid.png",
+          "video/work/snapshots/sc2-settled.png",
+          "video/work/snapshots/sc3-mid.png",
+          "video/work/snapshots/sc3-settled.png",
+          "video/work/snapshots/sc4-mid.png",
+          "video/work/snapshots/sc4-settled.png",
+          "video/work/snapshots/sc5-mid.png",
+          "video/work/snapshots/sc5-settled.png",
+          "video/work/snapshots/sc6-mid.png",
+          "video/work/snapshots/sc6-settled.png",
+          "video/work/snapshots/sc7-mid.png",
+          "video/work/snapshots/sc7-settled.png",
+          "video/work/snapshots/sc8-mid.png",
+          "video/work/snapshots/sc8-settled.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.morph-stable",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "morph_scenes": 0,
+        "note": "no program change in this lesson"
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.render-isolation",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "isolation": "sandbox-exec -f ptk/capture/sandbox.sb -D MODE=render",
+        "canaries": {
+          "dns": {
+            "inside_exit": 1,
+            "inside_error": "e/installs/python/3.13.16/lib/python3.13/socket.py\", line 983, in getaddrinfo\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\n               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsocket.gaierror: [Errno 8] nodename nor servname provided, or not known",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          },
+          "https": {
+            "inside_exit": 6,
+            "inside_error": "curl: (6) Could not resolve host: example.com",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          },
+          "child-connect": {
+            "inside_exit": 7,
+            "inside_error": "child-connect failed: [Errno 1] Operation not permitted",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          }
+        },
+        "render_succeeded": true,
+        "denied_requests_in_render_log": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.video",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "values_checked": 112,
+        "mismatches": [],
+        "files": [
+          "sc1.html",
+          "sc2.html",
+          "sc3.html",
+          "sc4.html",
+          "sc5.html",
+          "sc6.html",
+          "sc7.html",
+          "sc8.html"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.media",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "video_h264_1920x1080": true,
+          "video_30fps": true,
+          "audio_aac": true,
+          "captions_track_in_mp4": true,
+          "chapters_in_mp4": true,
+          "captions_vtt": true,
+          "chapters_vtt": true,
+          "loudness_in_range": true,
+          "true_peak_ok": true,
+          "av_duration_match": true
+        },
+        "integrated_lufs": -16.0,
+        "true_peak_dbtp": -2.0,
+        "lra_lu": 2.6,
+        "video": {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "r_frame_rate": "30/1",
+          "pix_fmt": "yuv420p",
+          "duration": "117.533333"
+        },
+        "audio": {
+          "codec_name": "aac",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "117.533271"
+        },
+        "subtitle": "mov_text",
+        "chapters": 8,
+        "caption_cues": 15,
+        "chapter_cues": 8,
+        "duration": 117.533333,
+        "thresholds": {
+          "lufs": [
+            -17.0,
+            -15.0
+          ],
+          "true_peak_max": -1.0
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.sync",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "cues": [
+          {
+            "cue": "sc1.0",
+            "cue_start": 0.8,
+            "speech_start": 0.811,
+            "start_delta": 0.011,
+            "cue_end": 3.1,
+            "speech_end": 3.057,
+            "end_delta": -0.043,
+            "words": 8,
+            "whisper_first_word": 0.84,
+            "whisper_last_word_end": 3.05
+          },
+          {
+            "cue": "sc1.1",
+            "cue_start": 3.4667,
+            "speech_start": 3.486,
+            "start_delta": 0.019,
+            "cue_end": 13.6,
+            "speech_end": 13.565,
+            "end_delta": -0.035,
+            "words": 26,
+            "whisper_first_word": 3.76,
+            "whisper_last_word_end": 13.98
+          },
+          {
+            "cue": "sc2.0",
+            "cue_start": 14.4,
+            "speech_start": 14.418,
+            "start_delta": 0.018,
+            "cue_end": 21.0,
+            "speech_end": 20.949,
+            "end_delta": -0.051,
+            "words": 18,
+            "whisper_first_word": 14.68,
+            "whisper_last_word_end": 21.15
+          },
+          {
+            "cue": "sc2.1",
+            "cue_start": 21.3333,
+            "speech_start": 21.353,
+            "start_delta": 0.02,
+            "cue_end": 32.6,
+            "speech_end": 32.566,
+            "end_delta": -0.034,
+            "words": 23,
+            "whisper_first_word": 21.38,
+            "whisper_last_word_end": 33.24
+          },
+          {
+            "cue": "sc3.0",
+            "cue_start": 33.4,
+            "speech_start": 33.416,
+            "start_delta": 0.016,
+            "cue_end": 35.3667,
+            "speech_end": 35.321,
+            "end_delta": -0.046,
+            "words": 6,
+            "whisper_first_word": 33.46,
+            "whisper_last_word_end": 36.01
+          },
+          {
+            "cue": "sc4.0",
+            "cue_start": 36.1667,
+            "speech_start": 36.184,
+            "start_delta": 0.017,
+            "cue_end": 45.0,
+            "speech_end": 44.97,
+            "end_delta": -0.03,
+            "words": 24,
+            "whisper_first_word": 36.22,
+            "whisper_last_word_end": 45.2
+          },
+          {
+            "cue": "sc4.1",
+            "cue_start": 45.3333,
+            "speech_start": 45.352,
+            "start_delta": 0.019,
+            "cue_end": 56.0333,
+            "speech_end": 55.984,
+            "end_delta": -0.049,
+            "words": 29,
+            "whisper_first_word": 45.58,
+            "whisper_last_word_end": 56.47
+          },
+          {
+            "cue": "sc5.0",
+            "cue_start": 56.8333,
+            "speech_start": 56.853,
+            "start_delta": 0.02,
+            "cue_end": 65.0333,
+            "speech_end": 64.985,
+            "end_delta": -0.048,
+            "words": 19,
+            "whisper_first_word": 57.08,
+            "whisper_last_word_end": 65.64
+          },
+          {
+            "cue": "sc6.0",
+            "cue_start": 65.8333,
+            "speech_start": 65.853,
+            "start_delta": 0.02,
+            "cue_end": 75.8667,
+            "speech_end": 75.811,
+            "end_delta": -0.056,
+            "words": 29,
+            "whisper_first_word": 65.94,
+            "whisper_last_word_end": 76.04
+          },
+          {
+            "cue": "sc6.1",
+            "cue_start": 76.2333,
+            "speech_start": 76.247,
+            "start_delta": 0.014,
+            "cue_end": 82.1667,
+            "speech_end": 82.112,
+            "end_delta": -0.055,
+            "words": 20,
+            "whisper_first_word": 76.34,
+            "whisper_last_word_end": 82.72
+          },
+          {
+            "cue": "sc7.0",
+            "cue_start": 82.9667,
+            "speech_start": 82.984,
+            "start_delta": 0.017,
+            "cue_end": 89.7,
+            "speech_end": 89.677,
+            "end_delta": -0.023,
+            "words": 18,
+            "whisper_first_word": 83.14,
+            "whisper_last_word_end": 89.88
+          },
+          {
+            "cue": "sc7.1",
+            "cue_start": 90.0667,
+            "speech_start": 90.083,
+            "start_delta": 0.016,
+            "cue_end": 93.8667,
+            "speech_end": 93.811,
+            "end_delta": -0.056,
+            "words": 13,
+            "whisper_first_word": 90.2,
+            "whisper_last_word_end": 94.15
+          },
+          {
+            "cue": "sc8.0",
+            "cue_start": 94.6667,
+            "speech_start": 94.684,
+            "start_delta": 0.017,
+            "cue_end": 104.4333,
+            "speech_end": 104.393,
+            "end_delta": -0.04,
+            "words": 24,
+            "whisper_first_word": 94.78,
+            "whisper_last_word_end": 104.6
+          },
+          {
+            "cue": "sc8.1",
+            "cue_start": 104.7667,
+            "speech_start": 104.786,
+            "start_delta": 0.019,
+            "cue_end": 112.6,
+            "speech_end": 112.57,
+            "end_delta": -0.03,
+            "words": 19,
+            "whisper_first_word": 104.84,
+            "whisper_last_word_end": 112.84
+          },
+          {
+            "cue": "sc8.2",
+            "cue_start": 112.9333,
+            "speech_start": 112.952,
+            "start_delta": 0.019,
+            "cue_end": 115.9333,
+            "speech_end": 115.878,
+            "end_delta": -0.055,
+            "words": 10,
+            "whisper_first_word": 113.02,
+            "whisper_last_word_end": 116.2
+          }
+        ],
+        "mispronounced": [],
+        "max_abs_start_delta": 0.02,
+        "max_abs_end_delta": 0.056,
+        "non_code_wer": 0.0332,
+        "wer_reference": "lexicon(text), the form the voice was given (round 18)",
+        "hand_respelled": [],
+        "ref_words": 241,
+        "hyp_words": 238,
+        "whisper": {
+          "model": "ggml-base.en.bin",
+          "model_sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002",
+          "wav": "speech-16k.wav",
+          "timestamps": "start = DTW token time (fallback segment offset), end = token end offset",
+          "boundaries": "onset/offset = nearest silencedetect edge (-40 dB, 0.12 s) around the whisper words"
+        },
+        "heard": "The program stores 66 in the int A. Is an int 4 bytes on this machine. 66 fits in its low byte. 0 1 0 0 0 0 1 0, which is hex 42. Percent D formats an int as a signed decimal number. So for a equals 66 it gives 66. The cast to unsigned converts 66 to unsigned int. 66 is representable there. So the value stays 66 and percent U gives 66. The next scene answers this question. The cast to double converts the value 66 to the double 66.0. On this machine that doubles bits are not the bits of a. Percent F prints a finite double with six digits after the decimal point when no precision is given. So it prints 66 followed by a point and 6 zeroes. Percent C converts the int 66 to unsigned car and writes that character. In ASCII code 66 is B. In views C percent F receives the double that the cast to double made, not of itself. So printf does not reinterpret the bits of a for percent F. On this machine the last line prints that doubles own bits in hex. They are not the bits of a. Without the cast printf gets the int aware percent F needs a double and the behavior is undefined. So U B dot C is compiled for its warning and never run. With percent D percent U percent F and percent C the value stays 66. Percent C writes it as the character with code 66. The cast to unsigned keeps A's bits too, since 66 has the same representation in int and unsigned int. The cast to double changes the type and the bits."
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.no-answer-leak",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc3",
+            "answer_cue": 36.1667,
+            "answer": [
+              {
+                "kind": "number",
+                "value": "66"
+              }
+            ],
+            "subject": [
+              "display",
+              "double",
+              "output",
+              "print",
+              "printf",
+              "show",
+              "write"
+            ]
+          }
+        ],
+        "leaks": [],
+        "rule": "words answers as phrases anywhere; numeric answers only as the value in a sentence about the question's subject, not in code or line numbers"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.ive",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "values_checked": 136,
+        "mismatches": [],
+        "files": [
+          "states.vtt"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.pause-state",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "rule": "explorer == cue state, and explorer == state derived from the frame (a transition or answer cue may show a frame in mid-tween of the same program, between its state and the next); windows are half-open and a time under one frame before a boundary resolves to the later window",
+        "pauses_checked": 39,
+        "mismatches": [],
+        "chapter_jumps": [
+          {
+            "t": 0,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42"
+            ],
+            "origin_text": "From the film at 0:00",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 14.067,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42"
+            ],
+            "origin_text": "From the film at 0:14",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 33.033,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66"
+            ],
+            "origin_text": "From the film at 0:33",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 35.833,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66"
+            ],
+            "origin_text": "From the film at 0:35",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 56.467,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s2",
+            "cue": "m6",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66",
+              "66.000000"
+            ],
+            "origin_text": "From the film at 0:56",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 65.467,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s3",
+            "cue": "m8",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66",
+              "66.000000",
+              "B"
+            ],
+            "origin_text": "From the film at 1:05",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 82.633,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s4",
+            "cue": "m10",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66",
+              "66.000000",
+              "B",
+              "0x4050800000000000"
+            ],
+            "origin_text": "From the film at 1:22",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 94.333,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s4",
+            "cue": "m13",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66",
+              "66.000000",
+              "B",
+              "0x4050800000000000"
+            ],
+            "origin_text": "From the film at 1:34",
+            "border": "solid",
+            "current": "true"
+          }
+        ],
+        "chapter_mismatches": [],
+        "boundary_seeks": 84,
+        "boundary_mismatches": [],
+        "boundary_cases_strict_rule_gets_wrong": 46,
+        "frame_states": {
+          "m1@0.05": "s0",
+          "m1@0.2": "s0",
+          "m1@14.35": "s0",
+          "m2@14.45": "moving",
+          "m2@14.6": "moving",
+          "m2@15.483": "moving",
+          "m3@15.583": "s1",
+          "m3@15.733": "s1",
+          "m3@32.983": "s1",
+          "m4@33.083": "s1",
+          "m4@33.233": "s1",
+          "m4@36.117": "s1",
+          "m5@36.217": "moving",
+          "m5@36.367": "moving",
+          "m5@36.883": "moving",
+          "m6@36.983": "s2",
+          "m6@37.133": "s2",
+          "m6@56.783": "s2",
+          "m7@56.883": "moving",
+          "m7@57.033": "moving",
+          "m7@57.55": "moving",
+          "m8@57.65": "s3",
+          "m8@57.8": "s3",
+          "m8@65.783": "s3",
+          "m9@65.883": "moving",
+          "m9@66.033": "moving",
+          "m9@67.417": "moving",
+          "m10@67.517": "s4",
+          "m10@67.667": "s4",
+          "m10@82.917": "s4",
+          "m11@83.017": "moving",
+          "m11@83.167": "moving",
+          "m11@83.683": "moving",
+          "m12@83.783": "s5",
+          "m12@83.933": "s5",
+          "m12@94.283": "s5",
+          "m13@94.383": "s4",
+          "m13@94.533": "s4",
+          "m13@117.483": "s4"
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.no-answer-leak",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checked_before": {
+          "ive-leak:m5": {
+            "hits": [],
+            "transcript_items": 5,
+            "t": 36.067,
+            "paused": true,
+            "mode": "explore",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "01000010",
+              "0x42",
+              "66",
+              "66"
+            ],
+            "origin_text": "From the film at 0:36",
+            "border": "solid"
+          }
+        },
+        "leaks": [],
+        "noscript_answers_heading_first": true,
+        "rule": "paused 0.1 s before each answer cue: no answer word in the DOM (noscript excluded), alt text, aria-label, title or the transcript so far; the noscript transcript sits after its 'contains the answers' heading"
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.controls",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "controls": {
+          "transcript_items_at_end": 15,
+          "seek_after_click": 0.8,
+          "caption_states": [
+            {
+              "shown": true,
+              "text": "The program stores 66 in the int a.",
+              "visibility": "visible",
+              "w": 262.0625,
+              "h": 24.640625,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            },
+            {
+              "shown": false,
+              "text": "",
+              "visibility": "hidden",
+              "w": 0,
+              "h": 0,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "false"
+            },
+            {
+              "shown": true,
+              "text": "The program stores 66 in the int a.",
+              "visibility": "visible",
+              "w": 262.0625,
+              "h": 24.640625,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            }
+          ],
+          "caption_second_cue": {
+            "shown": true,
+            "text": "%c converts the int 66 to unsigned char and writes that character. In ASCII, code 66 is B.",
+            "visibility": "visible",
+            "w": 670.484375,
+            "h": 24.640625,
+            "color": "rgb(23, 29, 41)",
+            "data_on": "true"
+          },
+          "caption_track_mode": "hidden",
+          "chapters": 8,
+          "readyState": 4,
+          "error": null
+        },
+        "captions": "ok",
+        "nav_events": 140,
+        "nav_actions": [
+          "chapter",
+          "explore",
+          "open",
+          "return",
+          "seek"
+        ],
+        "nav_not_navigation": [],
+        "nojs": {
+          "390": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc7.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc8.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 15
+          },
+          "1440": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc7.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc8.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 15
+          }
+        },
+        "nojs_shots": [
+          "shots/ive-nojs-390.png",
+          "shots/ive-nojs-1440.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.explore-return",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "film_follows_clock": true,
+          "explore_on_pause": true,
+          "step_back_marked": true,
+          "return_resumes_at_pause": true,
+          "return_shows_film_state": true,
+          "no_edit_after_return": true
+        },
+        "mode": "step",
+        "live_edit": false,
+        "live_model_error": null,
+        "declared_by": "figure.panel (step-through, no live edit)",
+        "film": {
+          "t": 16.033,
+          "paused": true,
+          "mode": "film",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "01000010",
+            "0x42",
+            "66",
+            "66"
+          ],
+          "origin_text": "From the film at 0:16",
+          "border": "solid"
+        },
+        "explore": {
+          "t": 16.360363,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "01000010",
+            "0x42",
+            "66",
+            "66"
+          ],
+          "origin_text": "From the film at 0:16",
+          "border": "solid",
+          "returnTime": 16.360363,
+          "expected_cue": "m3"
+        },
+        "edited": {
+          "t": 16.360363,
+          "paused": true,
+          "mode": "explore",
+          "origin": "step",
+          "state": "s0",
+          "cue": "m2",
+          "kind": "transition",
+          "edit": "step=m2",
+          "program": "p1",
+          "output": [
+            "01000010",
+            "0x42"
+          ],
+          "origin_text": "An earlier step of the film, not the paused frame",
+          "border": "dashed"
+        },
+        "returned": {
+          "t": 16.426825,
+          "paused": false,
+          "mode": "film",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "01000010",
+            "0x42",
+            "66",
+            "66"
+          ],
+          "origin_text": "From the film at 0:16",
+          "border": "solid",
+          "return_position": 16.36,
+          "returnTime": 16.360363,
+          "film_cue": "m3",
+          "edits_left": 0
+        },
+        "repaused": {
+          "t": 16.428113,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s1",
+          "cue": "m3",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "01000010",
+            "0x42",
+            "66",
+            "66"
+          ],
+          "origin_text": "From the film at 0:16",
+          "border": "solid",
+          "n_checked": null,
+          "brk_pressed": null
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.file-protocol",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "files": {
+          "protocol": "file:",
+          "tracks": [
+            {
+              "kind": "captions",
+              "mode": "hidden",
+              "cues": 15
+            },
+            {
+              "kind": "chapters",
+              "mode": "hidden",
+              "cues": 8
+            },
+            {
+              "kind": "metadata",
+              "mode": "hidden",
+              "cues": 13
+            }
+          ],
+          "track_src": [
+            "blob",
+            "blob",
+            "blob"
+          ],
+          "readyState": 4,
+          "error": null,
+          "duration": 117.533333,
+          "h264": "probably"
+        },
+        "expected_cues": {
+          "captions": 15,
+          "chapters": 8,
+          "metadata": 13
+        },
+        "console_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.layout",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-light.png",
+              "shots/ive-390-light-explore.png"
+            ]
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-dark.png",
+              "shots/ive-390-dark-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-light.png",
+              "shots/ive-1440-light-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "key_nodes": [
+              "code",
+              "panel",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-dark.png",
+              "shots/ive-1440-dark-explore.png"
+            ]
+          }
+        ],
+        "errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.fonts",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_loaded": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.network",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.predict-gated",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc3",
+            "pause_at": 35.617,
+            "resume_at": 35.833,
+            "answer_at": 36.167,
+            "silence_before_pause": 0.25,
+            "silence_after_jump": 0.334,
+            "answer_follows_after": 0.8,
+            "question_wpm": [
+              183
+            ],
+            "question_line": "The next scene answers this question.",
+            "sealed_chapters": [
+              3,
+              7
+            ]
+          }
+        ],
+        "driven": {
+          "sc3@1440 (practice off)": {
+            "toggle": {
+              "visible": true,
+              "pressed": "false",
+              "practice": false
+            },
+            "modes": [
+              "film"
+            ],
+            "paused": false,
+            "t_end": 36.509,
+            "in_gap": []
+          },
+          "sc3@1440": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc3",
+              "t": 35.589124,
+              "paused": true,
+              "options": [
+                "0.000000",
+                "66.000000",
+                "66"
+              ],
+              "chapters": [
+                "The int and its low byte",
+                "Two integer views",
+                "The question",
+                "Opens after the answer",
+                "A character view",
+                "The double's own bits",
+                "Without the cast",
+                "Opens after the answer"
+              ],
+              "panel": [
+                "f.bits",
+                "f.hex",
+                "f.d",
+                "f.u"
+              ],
+              "plan": {
+                "scene": "sc3",
+                "prompt": "What does printf(\"%f\\n\", (double)a) print?",
+                "options": [
+                  {
+                    "text": "0.000000",
+                    "correct": false,
+                    "misconception": "(double)a keeps the bits of a, so %f reads 66's bits as a double and prints 0.000000.",
+                    "correction": "In views.c, %f receives the double that (double)a made, not a itself, so printf does not reinterpret the bits of a for %f."
+                  },
+                  {
+                    "text": "66.000000",
+                    "correct": true
+                  },
+                  {
+                    "text": "66",
+                    "correct": false,
+                    "misconception": "%f prints a whole number with no decimal places when the value is whole.",
+                    "correction": "%f prints a finite double with six digits after the decimal point when no precision is given, so it prints 66.000000."
+                  }
+                ],
+                "pause_at": 35.617,
+                "q_end": 35.3667,
+                "resume_at": 35.833,
+                "answer_at": 36.167,
+                "verdict_until": 56.467,
+                "sealed": [
+                  3,
+                  7
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 35.589124,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 35.617,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 35.87977,
+              "t_later": 37.382633,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: 0.000000Not quite. That answer comes from a common wrong belief:(double)a keeps the bits of a, so %f reads 66's bits as a double and prints 0.000000.What is actually true:In views.c, %f receives the double that (double)a made, not a itself, so printf does not reinterpret the bits of a for %f.",
+              "chapters": [
+                "The int and its low byte",
+                "Two integer views",
+                "The question",
+                "What %f receives",
+                "A character view",
+                "The double's own bits",
+                "Without the cast",
+                "Recap"
+              ],
+              "picked": {
+                "sc3": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc3-1440.png",
+              "shots/ive-after-pick-sc3-1440.png"
+            ]
+          },
+          "sc3@390 (practice off)": {
+            "toggle": {
+              "visible": true,
+              "pressed": "false",
+              "practice": false
+            },
+            "modes": [
+              "film"
+            ],
+            "paused": false,
+            "t_end": 36.509,
+            "in_gap": []
+          },
+          "sc3@390": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc3",
+              "t": 35.604129,
+              "paused": true,
+              "options": [
+                "0.000000",
+                "66.000000",
+                "66"
+              ],
+              "chapters": [
+                "The int and its low byte",
+                "Two integer views",
+                "The question",
+                "Opens after the answer",
+                "A character view",
+                "The double's own bits",
+                "Without the cast",
+                "Opens after the answer"
+              ],
+              "panel": [
+                "f.bits",
+                "f.hex",
+                "f.d",
+                "f.u"
+              ],
+              "plan": {
+                "scene": "sc3",
+                "prompt": "What does printf(\"%f\\n\", (double)a) print?",
+                "options": [
+                  {
+                    "text": "0.000000",
+                    "correct": false,
+                    "misconception": "(double)a keeps the bits of a, so %f reads 66's bits as a double and prints 0.000000.",
+                    "correction": "In views.c, %f receives the double that (double)a made, not a itself, so printf does not reinterpret the bits of a for %f."
+                  },
+                  {
+                    "text": "66.000000",
+                    "correct": true
+                  },
+                  {
+                    "text": "66",
+                    "correct": false,
+                    "misconception": "%f prints a whole number with no decimal places when the value is whole.",
+                    "correction": "%f prints a finite double with six digits after the decimal point when no precision is given, so it prints 66.000000."
+                  }
+                ],
+                "pause_at": 35.617,
+                "q_end": 35.3667,
+                "resume_at": 35.833,
+                "answer_at": 36.167,
+                "verdict_until": 56.467,
+                "sealed": [
+                  3,
+                  7
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 35.604129,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 35.617,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 35.871948,
+              "t_later": 37.37499,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: 0.000000Not quite. That answer comes from a common wrong belief:(double)a keeps the bits of a, so %f reads 66's bits as a double and prints 0.000000.What is actually true:In views.c, %f receives the double that (double)a made, not a itself, so printf does not reinterpret the bits of a for %f.",
+              "chapters": [
+                "The int and its low byte",
+                "Two integer views",
+                "The question",
+                "What %f receives",
+                "A character view",
+                "The double's own bits",
+                "Without the cast",
+                "Recap"
+              ],
+              "picked": {
+                "sc3": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc3-390.png",
+              "shots/ive-after-pick-sc3-390.png"
+            ]
+          }
+        },
+        "problems": [],
+        "rule": "practice mode off (the default, AC-6.8): the toggle is visible and off and the film plays through the question without stopping, its question narration asks for no prediction, and the next line follows within 1.0 s (no think gap in the MP4); practice mode on: the film stops within 0.12 s of the pause point, at most 0.6 s after the last spoken word, shows the storyboard's options, holds through a wait and a play(), keeps answer-stating chapter titles sealed, and resumes at the answer scene after a pick"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.mapping",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "texts": 248,
+        "teaching": 62,
+        "claim_mapped": 43,
+        "unmapped": [],
+        "rule": "every sentence equals a whole claim or narration sentence, or a typed chrome.json string"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.review",
+      "medium": "all",
+      "status": "failed",
+      "reason": "the 3 lesson reviewers disagree on 1 claim(s) or text(s) (AC-7.8)",
+      "measured": {
+        "lesson_jobs": [
+          {
+            "job": "job-a947d1a25e",
+            "overall": "reject",
+            "rejected_claims": [
+              {
+                "id": "c.fprint",
+                "verdict": "reject",
+                "reason": "Sentence class (claim): 'so it prints 66.000000' names no program or value, and the rule cards (cards r:c.fprint, cards m:m.nodecimals) show it on its own; views_200.c's %f prints 200.000000. It needs scope such as 'for (double)a with a = 66' or 'in views.c'.",
+                "evidence": [
+                  "fact f.f",
+                  "fact f.v200.f",
+                  "passage sources/n2310-7.21.6.1p8-f.txt"
+                ]
+              },
+              {
+                "id": "c.recap",
+                "verdict": "reject",
+                "reason": "Caveat dropped (explanation lens): '(double)a changes the type and the bits' is a representation statement with no 'on this machine'; C17 does not fix double's encoding, and c.cast and t.229 both keep that qualifier.",
+                "evidence": [
+                  "fact f.dbits",
+                  "passage sources/n2310-6.2.5p9.txt"
+                ]
+              }
+            ],
+            "rejected_texts": [
+              {
+                "id": "t.088",
+                "verdict": "reject",
+                "reason": "cards r:c.fprint: read alone, 'so it prints 66.000000' has no program or value; views_200.c prints 200.000000."
+              },
+              {
+                "id": "t.097",
+                "verdict": "reject",
+                "reason": "cards m:m.nodecimals: the back is read alone and 'so it prints 66.000000' has no scope; same flaw as c.fprint."
+              },
+              {
+                "id": "t.105",
+                "verdict": "reject",
+                "reason": "cards q:sc3: '(double)a changes the type and the bits' drops the 'on this machine' caveat (c.recap)."
+              },
+              {
+                "id": "t.238",
+                "verdict": "reject",
+                "reason": "Narration in sc8 (captions, transcript, ive, qa): 'changes ... the bits' drops 'on this machine'; double's encoding is not fixed by C17."
+              }
+            ],
+            "reviewer": {
+              "host": "claude-code",
+              "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+            }
+          },
+          {
+            "job": "job-81315c73f4",
+            "overall": "reject",
+            "rejected_claims": [
+              {
+                "id": "c.fprint",
+                "verdict": "reject",
+                "reason": "Explanation, scope: the conclusion 'so it prints 66.000000' names no program or value, so it reads as a statement about %f in general, yet in this job %f also prints 200.000000, -1.000000 and 321.000000 (p3-p5). It needs 'for the double 66.0' or 'in views.c'. The rule half is supported by the passage.",
+                "evidence": [
+                  "passage sources/n2310-7.21.6.1p8-f.txt",
+                  "fact f.f",
+                  "fact f.v200.f",
+                  "fact f.vm1.f",
+                  "fact f.v321.f"
+                ]
+              },
+              {
+                "id": "c.recap",
+                "verdict": "reject",
+                "reason": "Implementation-defined honesty / dropped caveat: '(double)a changes the type and the bits' states a representation fact with no platform scope; the double's bit pattern is platform-specific, which c.cast and c.dbits mark with 'On this machine' and this sentence drops. The rest (values stay 66, 6.2.5p9 same representation for (unsigned)a) is correct.",
+                "evidence": [
+                  "passage sources/n2310-6.2.5p9.txt",
+                  "passage sources/n2310-6.3.1.4p2.txt",
+                  "fact f.dbits"
+                ]
+              }
+            ],
+            "rejected_texts": [
+              {
+                "id": "t.088",
+                "verdict": "reject",
+                "reason": "cards r:c.fprint: read on its own, 'so it prints 66.000000' names no program or value; same scope gap as c.fprint."
+              },
+              {
+                "id": "t.097",
+                "verdict": "reject",
+                "reason": "cards m:m.nodecimals: the correction on the back of a stand-alone card says 'so it prints 66.000000' with no program or value on the card to refer to; maps to the rejected c.fprint."
+              },
+              {
+                "id": "t.105",
+                "verdict": "reject",
+                "reason": "cards q:sc3: '(double)a changes the type and the bits' drops the 'on this machine' platform scope (c.recap rejected)."
+              },
+              {
+                "id": "t.238",
+                "verdict": "reject",
+                "reason": "captions.vtt/transcript.txt/ive/qa: '(double)a changes the type and the bits' is a representation claim with no 'on this machine' scope; the double's bits are platform-specific (c.recap rejected)."
+              }
+            ],
+            "reviewer": {
+              "host": "claude-code",
+              "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+            }
+          },
+          {
+            "job": "job-43425d4567",
+            "overall": "reject",
+            "rejected_claims": [
+              {
+                "id": "c.fprint",
+                "verdict": "reject",
+                "reason": "Explanation/scope (Claims class): 'so it prints 66.000000' names no program and no value of a. The job's other programs print 200.000000, -1.000000 and 321.000000 with %f. This is the rubric's 'so it prints 3' worked example. It needs 'for a = 66' or 'in views.c', the way c.d has it.",
+                "evidence": [
+                  "fact f.f",
+                  "fact f.v200.f",
+                  "fact f.vm1.f",
+                  "fact f.v321.f",
+                  "passage sources/n2310-7.21.6.1p8-f.txt"
+                ]
+              },
+              {
+                "id": "c.recap",
+                "verdict": "reject",
+                "reason": "Explanation, caveat dropped: '(double)a changes the type and the bits' states a floating representation fact with no platform scope. Its justification ('its bits on this machine are 0x4050800000000000') and c.cast/c.dbits all scope it to this machine, and this sentence drops that.",
+                "evidence": [
+                  "fact f.dbits",
+                  "passage sources/n2310-6.2.5p9.txt",
+                  "passage sources/n2310-6.3.1.4p2.txt"
+                ]
+              }
+            ],
+            "rejected_texts": [
+              {
+                "id": "t.088",
+                "verdict": "reject",
+                "reason": "Template on rule card r:c.fprint, read on its own. 'so it prints 66.000000' names no program or value, and the job's other programs print other %f values. Same defect as c.fprint."
+              },
+              {
+                "id": "t.097",
+                "verdict": "reject",
+                "reason": "Claim text of c.fprint. On cards m:m.nodecimals, read on its own, 'so it prints 66.000000' has no program or value of a to point at. Same scope defect as c.fprint."
+              },
+              {
+                "id": "t.105",
+                "verdict": "reject",
+                "reason": "Claim text of c.recap on cards q:sc3. '(double)a changes the type and the bits' drops the 'on this machine' scope for the double's representation."
+              },
+              {
+                "id": "t.230",
+                "verdict": "reject",
+                "reason": "Narration with no context pointer. 'so it prints 66.000000' is the unscoped instance from c.fprint, with no program or value of a in the sentence. An unscoped rule needs its own scope even inside a scene."
+              },
+              {
+                "id": "t.238",
+                "verdict": "reject",
+                "reason": "Narration, in captions, transcript.txt, IVE and Q&A: '(double)a changes the type and the bits' drops the 'on this machine' scope that c.cast, c.dbits and t.229/t.233 keep for the double's representation."
+              }
+            ],
+            "reviewer": {
+              "host": "claude-code",
+              "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+            }
+          }
+        ],
+        "reviewers_required": 3,
+        "disagreements": [
+          {
+            "id": "t.230",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "In sc4 it follows t.229 (the double 66.0) and the state shows views.c line 13 and 66.000000, so 'it' is scoped in every place it appears."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "accept",
+                "reason": "Context sentence in sc4: the preceding line t.229 and state s2 give the double 66.0, so 'it prints 66.000000' is true in captions, transcript, ive and qa."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Narration with no context pointer. 'so it prints 66.000000' is the unscoped instance from c.fprint, with no program or value of a in the sentence. An unscoped rule needs its own scope even inside a scene."
+              }
+            ]
+          }
+        ],
+        "rejected": [
+          {
+            "id": "c.fprint",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Sentence class (claim): 'so it prints 66.000000' names no program or value, and the rule cards (cards r:c.fprint, cards m:m.nodecimals) show it on its own; views_200.c's %f prints 200.000000. It needs scope such as 'for (double)a with a = 66' or 'in views.c'."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Explanation, scope: the conclusion 'so it prints 66.000000' names no program or value, so it reads as a statement about %f in general, yet in this job %f also prints 200.000000, -1.000000 and 321.000000 (p3-p5). It needs 'for the double 66.0' or 'in views.c'. The rule half is supported by the passage."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Explanation/scope (Claims class): 'so it prints 66.000000' names no program and no value of a. The job's other programs print 200.000000, -1.000000 and 321.000000 with %f. This is the rubric's 'so it prints 3' worked example. It needs 'for a = 66' or 'in views.c', the way c.d has it."
+              }
+            ]
+          },
+          {
+            "id": "c.recap",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Caveat dropped (explanation lens): '(double)a changes the type and the bits' is a representation statement with no 'on this machine'; C17 does not fix double's encoding, and c.cast and t.229 both keep that qualifier."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Implementation-defined honesty / dropped caveat: '(double)a changes the type and the bits' states a representation fact with no platform scope; the double's bit pattern is platform-specific, which c.cast and c.dbits mark with 'On this machine' and this sentence drops. The rest (values stay 66, 6.2.5p9 same representation for (unsigned)a) is correct."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Explanation, caveat dropped: '(double)a changes the type and the bits' states a floating representation fact with no platform scope. Its justification ('its bits on this machine are 0x4050800000000000') and c.cast/c.dbits all scope it to this machine, and this sentence drops that."
+              }
+            ]
+          },
+          {
+            "id": "t.088",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "cards r:c.fprint: read alone, 'so it prints 66.000000' has no program or value; views_200.c prints 200.000000."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "cards r:c.fprint: read on its own, 'so it prints 66.000000' names no program or value; same scope gap as c.fprint."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Template on rule card r:c.fprint, read on its own. 'so it prints 66.000000' names no program or value, and the job's other programs print other %f values. Same defect as c.fprint."
+              }
+            ]
+          },
+          {
+            "id": "t.097",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "cards m:m.nodecimals: the back is read alone and 'so it prints 66.000000' has no scope; same flaw as c.fprint."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "cards m:m.nodecimals: the correction on the back of a stand-alone card says 'so it prints 66.000000' with no program or value on the card to refer to; maps to the rejected c.fprint."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Claim text of c.fprint. On cards m:m.nodecimals, read on its own, 'so it prints 66.000000' has no program or value of a to point at. Same scope defect as c.fprint."
+              }
+            ]
+          },
+          {
+            "id": "t.105",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "cards q:sc3: '(double)a changes the type and the bits' drops the 'on this machine' caveat (c.recap)."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "cards q:sc3: '(double)a changes the type and the bits' drops the 'on this machine' platform scope (c.recap rejected)."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Claim text of c.recap on cards q:sc3. '(double)a changes the type and the bits' drops the 'on this machine' scope for the double's representation."
+              }
+            ]
+          },
+          {
+            "id": "t.238",
+            "verdicts": [
+              {
+                "job": "job-a947d1a25e",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "Narration in sc8 (captions, transcript, ive, qa): 'changes ... the bits' drops 'on this machine'; double's encoding is not fixed by C17."
+              },
+              {
+                "job": "job-81315c73f4",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "claims reviewer subagent (Opus 5.5), rubric v4, job file only"
+                },
+                "verdict": "reject",
+                "reason": "captions.vtt/transcript.txt/ive/qa: '(double)a changes the type and the bits' is a representation claim with no 'on this machine' scope; the double's bits are platform-specific (c.recap rejected)."
+              },
+              {
+                "job": "job-43425d4567",
+                "reviewer": {
+                  "host": "claude-code",
+                  "agent": "independent claims reviewer subagent (rubric v4, job file only)"
+                },
+                "verdict": "reject",
+                "reason": "Narration, in captions, transcript.txt, IVE and Q&A: '(double)a changes the type and the bits' drops the 'on this machine' scope that c.cast, c.dbits and t.229/t.233 keep for the double's representation."
+              }
+            ]
+          }
+        ],
+        "invalid": [],
+        "stale": [],
+        "missing": [],
+        "retrying": [],
+        "current_manifest_sha256": "2bdf716b3f31541fc55cfcdf0bf5d549f55bb79dfeafef49b25d3c508546752e",
+        "rubric_version": "4",
+        "label": "LLM-reviewed finding, not a proof"
+      }
+    },
+    {
+      "id": "claims.sensitivity",
+      "medium": "all",
+      "status": "failed",
+      "reason": "catch or control rates below the E22 thresholds",
+      "measured": {
+        "value": {
+          "n": 4,
+          "caught": 4,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "claim": {
+          "n": 6,
+          "caught": 6,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "control": {
+          "n": 10,
+          "accepted": 0,
+          "schema_rejections": 0,
+          "rate": 0.0
+        },
+        "meets_thresholds": false,
+        "thresholds": {
+          "value": 1.0,
+          "claim": 0.9,
+          "control": 0.95
+        },
+        "mutations": 10,
+        "caught": 10,
+        "skipped": [],
+        "rows": [
+          {
+            "job": "job-f4c44ac7a6",
+            "role": "control",
+            "pair": 1,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "t.088",
+              "t.097"
+            ]
+          },
+          {
+            "job": "job-d5d6e20952",
+            "role": "mutation",
+            "pair": 1,
+            "mutation": "m1.cast.samebits",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.fprint",
+              "c.samebits",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.106",
+              "t.232",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-82ae9caa0e",
+            "role": "control",
+            "pair": 2,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.fprint",
+              "c.dbits",
+              "t.088",
+              "t.097"
+            ]
+          },
+          {
+            "job": "job-9a0843a0ea",
+            "role": "mutation",
+            "pair": 2,
+            "mutation": "m2.u.overbroad",
+            "kind": "overbroad",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.u",
+              "c.fprint",
+              "t.088",
+              "t.097",
+              "t.108",
+              "t.227"
+            ]
+          },
+          {
+            "job": "job-b439127880",
+            "role": "control",
+            "pair": 3,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-d625ea2722",
+            "role": "mutation",
+            "pair": 3,
+            "mutation": "m3.fprint.digits",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.fprint",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.230",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-c015eed3ed",
+            "role": "control",
+            "pair": 4,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-a013c378ab",
+            "role": "mutation",
+            "pair": 4,
+            "mutation": "m4.char.citation",
+            "kind": "wrong-citation",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.fprint",
+              "c.char",
+              "t.088",
+              "t.097"
+            ]
+          },
+          {
+            "job": "job-2d8d662151",
+            "role": "control",
+            "pair": 5,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-70d226b026",
+            "role": "mutation",
+            "pair": 5,
+            "mutation": "m5.ub.dishonest",
+            "kind": "ub-dishonest",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.fprint",
+              "c.ub",
+              "c.ubnorun",
+              "c.recap",
+              "t.088",
+              "t.089",
+              "t.097",
+              "t.105",
+              "t.109",
+              "t.110",
+              "t.234",
+              "t.235",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-05e00808e2",
+            "role": "control",
+            "pair": 6,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.fprint",
+              "c.dbits",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-9f3a073afc",
+            "role": "mutation",
+            "pair": 6,
+            "mutation": "m6.byte.hex",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.byte",
+              "c.fprint",
+              "c.dbits",
+              "t.088",
+              "t.092",
+              "t.097",
+              "t.225"
+            ]
+          },
+          {
+            "job": "job-e3f305c11c",
+            "role": "control",
+            "pair": 7,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.setup",
+              "c.fprint",
+              "c.dbits",
+              "c.recap",
+              "t.088",
+              "t.096",
+              "t.097",
+              "t.105",
+              "t.107",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-c2d9ff58c7",
+            "role": "mutation",
+            "pair": 7,
+            "mutation": "auto.value.c.byte.f.isize",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.byte",
+              "t.092",
+              "t.225"
+            ]
+          },
+          {
+            "job": "job-edf86f4546",
+            "role": "control",
+            "pair": 8,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "t.088",
+              "t.097"
+            ]
+          },
+          {
+            "job": "job-97004c82c5",
+            "role": "mutation",
+            "pair": 8,
+            "mutation": "auto.value.c.d.f.d",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.d",
+              "c.fprint",
+              "t.087",
+              "t.088",
+              "t.095",
+              "t.097",
+              "t.226"
+            ]
+          },
+          {
+            "job": "job-ae6b25a767",
+            "role": "control",
+            "pair": 9,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "c.recap",
+              "t.088",
+              "t.097",
+              "t.105",
+              "t.238"
+            ]
+          },
+          {
+            "job": "job-c6c66b94e4",
+            "role": "mutation",
+            "pair": 9,
+            "mutation": "auto.value.c.u.f.u",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.u",
+              "c.fprint",
+              "t.088",
+              "t.097",
+              "t.108",
+              "t.227"
+            ]
+          },
+          {
+            "job": "job-b408876f84",
+            "role": "control",
+            "pair": 10,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.fprint",
+              "t.088",
+              "t.097"
+            ]
+          },
+          {
+            "job": "job-660d87eb44",
+            "role": "mutation",
+            "pair": 10,
+            "mutation": "auto.value.c.cast.f.dbits",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.cast",
+              "c.fprint",
+              "c.recap",
+              "t.002",
+              "t.088",
+              "t.093",
+              "t.097",
+              "t.105",
+              "t.238"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "claims.artifacts-unchanged",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "checked": 54,
+        "changed": []
+      },
+      "reason": ""
+    }
+  ],
+  "fallbacks": [],
+  "tools": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0",
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "whisper-cli": "usage: /opt/homebrew/bin/whisper-cli [options] file0 file1 ...",
+    "tesseract": "tesseract 5.5.3",
+    "node": "v24.22.0",
+    "hyperframes": "0.8.169",
+    "playwright": "1.63.0",
+    "python": "3.13.16",
+    "sandbox-exec": "/usr/bin/sandbox-exec"
+  },
+  "artifacts": [
+    {
+      "path": "still/index.html",
+      "bytes": 844,
+      "sha256": "386428abd95e0562cbc99bb12c5d6eea0dee32f6e0155c5da8ed340972894fde"
+    },
+    {
+      "path": "still/one-byte-four-views-portrait-dark.png",
+      "bytes": 448721,
+      "sha256": "63aa109f2866409dda96849102633121fe9e0387770481c0b27af1729e0b52af"
+    },
+    {
+      "path": "still/one-byte-four-views-portrait-dark.svg",
+      "bytes": 88030,
+      "sha256": "a150a84c60e12496c26ff9779f2dd2ed131a9ab2219539821f3d87bd60eff448"
+    },
+    {
+      "path": "still/one-byte-four-views-portrait-light.png",
+      "bytes": 444883,
+      "sha256": "aa2eb25428793dd9e5840d3fc269b5a000211819d4f3e4c42ff63222edaa8a65"
+    },
+    {
+      "path": "still/one-byte-four-views-portrait-light.svg",
+      "bytes": 88031,
+      "sha256": "5f71368340931cbc7c654e27bad618b1e8973533e642ad8037140f5d89f7e987"
+    },
+    {
+      "path": "still/one-byte-four-views-wide-dark.png",
+      "bytes": 507328,
+      "sha256": "dfda69220eb345a8281fb6b8d650f94a768bfa601f6bcc6a620451b99cc1f92d"
+    },
+    {
+      "path": "still/one-byte-four-views-wide-dark.svg",
+      "bytes": 87618,
+      "sha256": "0f37cfc16c46e3bb79feef5e4a80a5a458f4df8c421ae4615dea4f33e9fd7c89"
+    },
+    {
+      "path": "still/one-byte-four-views-wide-light.png",
+      "bytes": 504017,
+      "sha256": "b8fda6cb2324534fb611a1cd865236ac3a5767675d9cc354fb95c76129f9876f"
+    },
+    {
+      "path": "still/one-byte-four-views-wide-light.svg",
+      "bytes": 87619,
+      "sha256": "1a4a5e232f58b7a7697d148e6a5ac83cb7e70513cee6cc6c2d46ac49b68201b6"
+    },
+    {
+      "path": "video/captions.vtt",
+      "bytes": 1895,
+      "sha256": "12e1ddc1f30bf533fcf9a95ffed365510e05857878443e2fbbc893ccd24e2c1e"
+    },
+    {
+      "path": "video/chapters.vtt",
+      "bytes": 422,
+      "sha256": "aaceea934f6b1d279930bfacc2af3c7d941cb3d1f81607440dcc75b68dc93dc6"
+    },
+    {
+      "path": "video/composition/compositions/sc1.html",
+      "bytes": 17950,
+      "sha256": "feb7185c0320e047920a088c52f4ba328cb8c03cca9b4fe8fe471dc0ce82662a"
+    },
+    {
+      "path": "video/composition/compositions/sc2.html",
+      "bytes": 23870,
+      "sha256": "b5497abf7db6fc9996953fe06c6a41aa6bcdbc754aae89e7bb023b4ee5e6570a"
+    },
+    {
+      "path": "video/composition/compositions/sc3.html",
+      "bytes": 20526,
+      "sha256": "f1e441e6af94be06bead3f33801921ea26d3208930042040bf44888f12af78bb"
+    },
+    {
+      "path": "video/composition/compositions/sc4.html",
+      "bytes": 26080,
+      "sha256": "412cd07230a75082f298bdaa78ce9e88c6cca04dc0c74b853c8ac997f2d4385d"
+    },
+    {
+      "path": "video/composition/compositions/sc5.html",
+      "bytes": 28171,
+      "sha256": "6852a4f1cc9cf63d30ba275b0fb7f51098fcc8eadf4f716d48508f0bb63e183f"
+    },
+    {
+      "path": "video/composition/compositions/sc6.html",
+      "bytes": 31291,
+      "sha256": "7471cd988d2caabb2abaf656f88cd209bfe23852b191419f7dc01ed2793f197f"
+    },
+    {
+      "path": "video/composition/compositions/sc7.html",
+      "bytes": 30012,
+      "sha256": "6e6e16972c559cbf6b444ae73a6b1d6a5064be360ad5d4e03c9e2d9f696aebbe"
+    },
+    {
+      "path": "video/composition/compositions/sc8.html",
+      "bytes": 23789,
+      "sha256": "5d545e9ff69c20dd4238e3b2ed4910cebeaac2c1a0ee94138483f2b5da206366"
+    },
+    {
+      "path": "video/composition/fonts/Caveat.woff2",
+      "bytes": 73380,
+      "sha256": "29791689b93416dd6ac7285999996569e250b841bb96a1df33d8accacd73d9e3"
+    },
+    {
+      "path": "video/composition/fonts/JetBrainsMono.woff2",
+      "bytes": 44712,
+      "sha256": "1d8a0d014d1aeff07f8a7b8a8a3f41f2878a2968c291e12b6a8b4eb947141a23"
+    },
+    {
+      "path": "video/composition/fonts/NunitoSans.woff2",
+      "bytes": 28712,
+      "sha256": "2827f778cbbbf51af671a8078606ea862c1a4a656529e86de8c6f8aef9e9155c"
+    },
+    {
+      "path": "video/composition/fonts/SourceSerif4-Roman.woff2",
+      "bytes": 186584,
+      "sha256": "4f8975136a23751d17aeeb04b5c77e6347ee7ba5909cc5e4ae7a56f01093325e"
+    },
+    {
+      "path": "video/composition/hyperframes.json",
+      "bytes": 31,
+      "sha256": "b48cb9c7270dfa06827c0552c6e6dbd120091650725255fda1df47b08f1547d4"
+    },
+    {
+      "path": "video/composition/index.html",
+      "bytes": 2974,
+      "sha256": "52882b09699e7a04503a4ef233a2e5ae434248049a49bddd7ad300efd0db5fe5"
+    },
+    {
+      "path": "video/composition/vendor/gsap.min.js",
+      "bytes": 72927,
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    },
+    {
+      "path": "video/lesson.mp4",
+      "bytes": 5320949,
+      "sha256": "4e9ac78ef40f7bb10ffbc89726c565b5359b96ee2a7e592df1c6d480a688aaac"
+    },
+    {
+      "path": "video/narration.wav",
+      "bytes": 22566466,
+      "sha256": "dd36b72b5ed5ad91b6008de26d45ba5ee3b6f818982186de8730894856c00e8e"
+    },
+    {
+      "path": "video/timing.json",
+      "bytes": 12553,
+      "sha256": "7775099d767c72725a369ec7abf4c7a9312f13b233c1001f3c9d2a46599903b7"
+    },
+    {
+      "path": "video/transcript.txt",
+      "bytes": 1595,
+      "sha256": "bd9329bb297fc8278931446e245b9c34cf7ab375fe8fbda1670bff2e67ecd201"
+    },
+    {
+      "path": "ive/captions.vtt",
+      "bytes": 1895,
+      "sha256": "12e1ddc1f30bf533fcf9a95ffed365510e05857878443e2fbbc893ccd24e2c1e"
+    },
+    {
+      "path": "ive/chapters.vtt",
+      "bytes": 422,
+      "sha256": "aaceea934f6b1d279930bfacc2af3c7d941cb3d1f81607440dcc75b68dc93dc6"
+    },
+    {
+      "path": "ive/cues.json",
+      "bytes": 25131,
+      "sha256": "1d8271b5cd9dcd5409ff8a862766d9f17c1046629e35d1ee30d7609d108ddd9f"
+    },
+    {
+      "path": "ive/index.html",
+      "bytes": 122546,
+      "sha256": "3666cd58ea67edec186bf91518b6af5e2fcd80db7d3e637a79f42791e31e4f03"
+    },
+    {
+      "path": "ive/ive-data.js",
+      "bytes": 152714,
+      "sha256": "94be9d4a5249fb31a7c29de5b280ef4fb731e59b5a8dabf773fb828ca02da2dd"
+    },
+    {
+      "path": "ive/lesson.mp4",
+      "bytes": 5320949,
+      "sha256": "4e9ac78ef40f7bb10ffbc89726c565b5359b96ee2a7e592df1c6d480a688aaac"
+    },
+    {
+      "path": "ive/posters/sc1.jpg",
+      "bytes": 29349,
+      "sha256": "189fc0a7a1f5bd9d7a8154b493541e937886e6d11caf1b4d7d2f1f93effe409d"
+    },
+    {
+      "path": "ive/posters/sc2.jpg",
+      "bytes": 34502,
+      "sha256": "f2816253f6ac46f3c71befdf5b476fa9a391e0725e8a9a33699c1e729cf50470"
+    },
+    {
+      "path": "ive/posters/sc3.jpg",
+      "bytes": 39796,
+      "sha256": "efdf923095f9a2c45ef47e8f94de20493a72f6b993567775ae9cb04ad139fb7d"
+    },
+    {
+      "path": "ive/posters/sc4.jpg",
+      "bytes": 42116,
+      "sha256": "0c16d9e1d6c2e0abc71c72d60e9a0265d9f12229e1fe1884bd31b03c8991a142"
+    },
+    {
+      "path": "ive/posters/sc5.jpg",
+      "bytes": 44056,
+      "sha256": "074a05b694d83c0979d18e6f6f01d9fd77b633e64b48e6f71274ecbefd576842"
+    },
+    {
+      "path": "ive/posters/sc6.jpg",
+      "bytes": 46848,
+      "sha256": "c0bdd2515271793eaafc775c3954faf19717eeee72b61d1088d45d3171911dbc"
+    },
+    {
+      "path": "ive/posters/sc7.jpg",
+      "bytes": 49133,
+      "sha256": "f4d08920597f4e6beca8bb6c0492fa8457cce4861d7f507e89eaea2e12b90fe8"
+    },
+    {
+      "path": "ive/posters/sc8.jpg",
+      "bytes": 44389,
+      "sha256": "d1a5cda0a666e2ea68c3f229c05c46f6314bbd1af38836f5e66153efef9db0f7"
+    },
+    {
+      "path": "ive/states.vtt",
+      "bytes": 15374,
+      "sha256": "a3565629544179ef11cb5de79279b739033cf337317f39c5b04b9cb85cca4fee"
+    },
+    {
+      "path": "explorer/domain.json",
+      "bytes": 6216,
+      "sha256": "9b0a12e86fa47358b83abb38b4f79bc07b0911039f78fa68e627d61196708311"
+    },
+    {
+      "path": "explorer/index.html",
+      "bytes": 241606,
+      "sha256": "04b11d3066fc61b6e0852ba975588652558ced861e6281ea417e663b8346198a"
+    },
+    {
+      "path": "explorer/texts.json",
+      "bytes": 10251,
+      "sha256": "86bc31ba3ecb8c1d42af1edf0a82ceed30ac2fbbd9364c0755ad4b5cc8b21253"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 94537,
+      "sha256": "ee2c6827c7479737ac390474fa2e1a3e5b90d0ae9942bdaa09430b0487843888"
+    },
+    {
+      "path": "qa/texts.json",
+      "bytes": 7359,
+      "sha256": "da252a0b02224b8833aa3534d128ec64af0e79fc4179b63d50b8b7cba3712f1c"
+    },
+    {
+      "path": "cards/cards.json",
+      "bytes": 4684,
+      "sha256": "93799266313dace82965166807f58a291a24886c1f493f5164b0c1c499797c6a"
+    },
+    {
+      "path": "cards/one-byte-four-views.apkg",
+      "bytes": 69850,
+      "sha256": "df7471d9d1fcd0970a9098d9af77ae38f21d9bfdc8f80ab6494c7a4e7bd0deff"
+    },
+    {
+      "path": "cards/one-byte-four-views.md",
+      "bytes": 4692,
+      "sha256": "762a718b491ecf5f0844d0b60c75e319bb556a4948e84c6b00bddac77965913f"
+    },
+    {
+      "path": "cards/texts.json",
+      "bytes": 5846,
+      "sha256": "1eb71d964316629a3850c3996f91ee7938fc1f5f42fe9abb3b40b1e6dc3275db"
+    }
+  ],
+  "transitions": [
+    "draft",
+    "valid",
+    "captured",
+    "projected",
+    "claims-pending",
+    "failed"
+  ],
+  "error": null,
+  "sources": [
+    "sources/n2310-5.2.4.2.2-example2.txt",
+    "sources/n2310-6.2.5p9.txt",
+    "sources/n2310-6.2.6.2p1.txt",
+    "sources/n2310-6.2.6.2p2.txt",
+    "sources/n2310-6.3.1.3p1.txt",
+    "sources/n2310-6.3.1.3p2.txt",
+    "sources/n2310-6.3.1.4p2.txt",
+    "sources/n2310-6.5.2.2p7.txt",
+    "sources/n2310-7.21.6.1p8-c.txt",
+    "sources/n2310-7.21.6.1p8-d.txt",
+    "sources/n2310-7.21.6.1p8-f.txt",
+    "sources/n2310-7.21.6.1p8-u.txt",
+    "sources/n2310-7.21.6.1p9.txt"
+  ],
+  "cleared": [
+    "claims-jobs",
+    "cards",
+    "explorer",
+    "ive",
+    "work/ive",
+    "qa",
+    "still",
+    "video"
+  ],
+  "capture": {
+    "programs": {
+      "p1": {
+        "ran": true,
+        "stdout_sha256": "d4af24e8be3706ca59c029b1d0d3b5b9a1db4d86f725b7e3b4e1c068a6329a2d",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p2": {
+        "ran": false,
+        "stdout_sha256": null,
+        "sanitizers": "not run (ub)",
+        "diagnostics": {
+          "clang": "ub.c:5:20: warning: format specifies type 'double' but the argument has type 'int' [-Wformat]\n    5 |     printf(\"%f\\n\", a);\n      |             ~~     ^\n      |             %d\n1 warning generated.",
+          "gcc-16": "ub.c: In function 'main':\nub.c:5:14: warning: format '%f' expects argument of type 'double', but argument 2 has type 'int' [-Wformat=]\n    5 |     printf(\"%f\\n\", a);\n      |             ~^     ~\n      |              |     |\n      |              |     int\n      |              double\n      |             %d"
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p3": {
+        "ran": true,
+        "stdout_sha256": "74bf01ecabd54a4baa74d6350dc685d6017dfc26bebd80f77388081fb1db198a",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p4": {
+        "ran": true,
+        "stdout_sha256": "9deae0ed22ce3117cb2605831a12a2fe74a76343723d23aa6a15c83d9a94ed26",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p5": {
+        "ran": true,
+        "stdout_sha256": "acc64cc0dc96a51609c01276b1e6e404061fb5c17e9e6c2d9e6902192d2031b8",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p6": {
+        "ran": true,
+        "stdout_sha256": "d3a961504359fb96607bb69f8e1588f68f09bdd728ae2bd9901fe848be214937",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      }
+    },
+    "platform": {
+      "captured": true,
+      "os": "macOS 27.0.1",
+      "arch": "arm64",
+      "sizeof": {
+        "char": 1,
+        "short": 2,
+        "int": 4,
+        "long": 8,
+        "long long": 8,
+        "float": 4,
+        "double": 8,
+        "void*": 8
+      },
+      "char_signed": true,
+      "endianness": "little",
+      "libc": "libSystem (macOS 27.0.1)",
+      "compilers": {
+        "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+      },
+      "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+    }
+  },
+  "ptk": {
+    "version": "2.1.0-wp0",
+    "code_sha256": "c285769ed0ab8e60878259506e58ad5ea16a24a323818ba11ea1c0e78f5f9cdf"
+  },
+  "video": {
+    "theme": "dark",
+    "renderer": "hyperframes"
+  },
+  "tts": {
+    "engine": "kokoro-onnx 0.6.1 (Kokoro-82M v1.0)",
+    "voice": "af_heart",
+    "speed": 0.9,
+    "degraded": false,
+    "cache_inputs": {
+      "engine": "kokoro-onnx",
+      "engine_version": "0.6.1",
+      "model_sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5",
+      "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+      "voice": "af_heart",
+      "speed": 0.9,
+      "lang": "en-us",
+      "lexicon_version": "4"
+    },
+    "process_count": 0,
+    "model_loads": 0,
+    "synthesised_now": 0,
+    "cached": 15
+  },
+  "claims": {
+    "mode": "full",
+    "jobs": [
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-a947d1a25e.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-81315c73f4.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-43425d4567.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-d5d6e20952.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-f4c44ac7a6.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-9a0843a0ea.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-82ae9caa0e.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-d625ea2722.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-b439127880.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-a013c378ab.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-c015eed3ed.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-70d226b026.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-2d8d662151.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-9f3a073afc.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-05e00808e2.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-c2d9ff58c7.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-e3f305c11c.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-97004c82c5.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-edf86f4546.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-c6c66b94e4.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-ae6b25a767.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-660d87eb44.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-jobs/job-b408876f84.json"
+    ],
+    "reviews_dir": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/one-byte-four-views/build/claims-review",
+    "rubric": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/package/prax-teach/ptk/verify/rubric.md",
+    "job_tokens": {
+      "job-05e00808e2": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-2d8d662151": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-43425d4567": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-660d87eb44": {
+        "job_tokens": 20727,
+        "with_rubric": 24240
+      },
+      "job-70d226b026": {
+        "job_tokens": 20736,
+        "with_rubric": 24249
+      },
+      "job-81315c73f4": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-82ae9caa0e": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-97004c82c5": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-9a0843a0ea": {
+        "job_tokens": 20715,
+        "with_rubric": 24228
+      },
+      "job-9f3a073afc": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-a013c378ab": {
+        "job_tokens": 20712,
+        "with_rubric": 24225
+      },
+      "job-a947d1a25e": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-ae6b25a767": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-b408876f84": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-b439127880": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-c015eed3ed": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-c2d9ff58c7": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-c6c66b94e4": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-d5d6e20952": {
+        "job_tokens": 20745,
+        "with_rubric": 24258
+      },
+      "job-d625ea2722": {
+        "job_tokens": 20728,
+        "with_rubric": 24241
+      },
+      "job-e3f305c11c": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-edf86f4546": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      },
+      "job-f4c44ac7a6": {
+        "job_tokens": 20740,
+        "with_rubric": 24253
+      }
+    },
+    "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"
+  },
+  "seconds": 153.9,
+  "claims_checked": "2026-10-19T07:51:06+0530"
+}
