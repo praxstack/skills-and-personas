@@ -138,5 +138,10 @@ class ClaimsUnmapped(GateError):
     pass
 
 
+class SourceExcerptMissing(GateError):
+    """AC-7.7: a claim cites an outside document whose passage is not stored under the lesson's sources/, or a
+    quote is not in its stored passage."""
+
+
 class GateFailed(GateError):
     pass

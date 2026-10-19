@@ -30,7 +30,9 @@ def _fixture(path):
 
 
 def staging(name):
-    d = host.state_path("agent-tests", "claims", name)
+    """Per rubric version (v2.2 A3), so a rubric bump writes fresh jobs beside an older run's reviews instead of
+    deleting them: those reviews stay as evidence of what the older rubric produced."""
+    d = host.state_path("agent-tests", "claims", f"rubric-v{claims.RUBRIC_VERSION}", name)
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -44,7 +46,7 @@ def slice_lesson():
 
 
 def slice_snapshot():
-    """A frozen copy of the switch slice (lesson.json, programs, mutations.json) for the rates suite, so
+    """A frozen copy of the switch slice (lesson.json, programs, mutations.json, sources) for the rates suite, so
     the measurement doesn't move while other packages edit the slice. Texts come from the model.
     Delete the snapshot folder to re-measure against the current slice."""
     snap = staging("snapshots/switch-fallthrough")
@@ -53,6 +55,9 @@ def slice_snapshot():
         for p in (SLICE / "programs").glob("*.c"):
             (snap / "programs" / p.name).write_text(p.read_text())
         (snap / "mutations.json").write_text((SLICE / "mutations.json").read_text())
+        (snap / "sources").mkdir(exist_ok=True)
+        for p in (SLICE / "sources").glob("*.txt"):
+            (snap / "sources" / p.name).write_text(p.read_text())
         (snap / "lesson.json").write_text((SLICE / "lesson.json").read_text())
     lesson = _fixture(snap)
     return lesson, claims.texts_from_model(lesson)
@@ -77,7 +82,8 @@ def same_bits_lesson():
                              "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
                              "clause": "§7.21.6.1 ¶8",
                              "quote": "f,F A double argument representing a floating-point number is converted to "
-                                      "decimal notation in the style [−]ddd.ddd"}]
+                                      "decimal notation in the style [−]ddd.ddd",
+                             "excerpts": ["sources/n2310-7.21.6.1p8-f.txt"]}]
     for sc in data["storyboard"]:
         sc["narration"] = [dict(n, text=SAME_BITS) if n["claims"] == ["c.cast"] else n for n in sc["narration"]]
     lesson = FixtureLesson(base.path, data)
