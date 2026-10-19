@@ -1,7 +1,7 @@
 // WP6 browser checks of the built IVE, opened from disk (file://) in Chrome.
 // Usage: node tests/test_ive.mjs <spec.json> <out.json>   (run by tests/test_ive.py through ptk's node env)
 // spec: {url, drive, boundaries: [{t, expected}], answers: [{cue, start, words}], counts: {captions, chapters, metadata},
-//        film_t, domain, repeats}
+//        film_t, domain, repeats, questions: [{scene, pause_at, resume_at, answer_at, options, wrong}], sealed_text}
 // Each named check writes {ok, detail} to out.json; the Python side asserts them.
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -156,6 +156,76 @@ await check('film_explore_return', async () => {
       && repaused.brk === spec.film_brk,
   };
   return { ok: Object.values(checks).every(Boolean), detail: { checks, film, explore, edited, returned, repaused }, live, events };
+});
+
+// AC-6.8: by default the film plays through each question and explains; it never stops for a prediction.
+// The practice-mode toggle is visible and off.
+await check('explanation_first_default', async () => {
+  const res = [];
+  for (const q of spec.questions) {
+    const { ctx, page } = await open();
+    const r = await run(page, `const v = D.v(), I = window.__ptkIve, b = document.getElementById('practice');
+      const vis = !!b && b.offsetParent !== null && b.getBoundingClientRect().width > 0 && !b.hidden;
+      const toggle = { visible: vis, pressed: b && b.getAttribute('aria-pressed'), practice: I.practice() };
+      await D.seek(${Math.max(0, q.pause_at - 2)}); const p = v.play(); if (p && p.catch) p.catch(() => {});
+      const modes = new Set(), samples = []; let paused = false;
+      for (let i = 0; i < 160 && v.currentTime < ${q.answer_at} + 0.3; i++) {
+        await D.sleep(50); modes.add(I.mode()); samples.push(Math.round(v.currentTime * 1000) / 1000);
+        if (v.paused && !v.ended) paused = true; }
+      const chapters = [...document.querySelectorAll('#chapters .ttl')].map((e) => e.textContent);
+      v.pause();
+      return { toggle, modes: [...modes], paused, t_end: samples[samples.length - 1],
+               in_gap: samples.filter((t) => t > ${q.pause_at} + 0.3 && t < ${q.resume_at} - 0.1), chapters };`);
+    await ctx.close();
+    res.push({ scene: q.scene, ...r });
+  }
+  const ok = res.length > 0 && res.every((r) => r.toggle.visible && r.toggle.pressed === 'false' && r.toggle.practice === false
+    && !r.modes.includes('ask') && !r.paused && r.t_end >= spec.questions.find((q) => q.scene === r.scene).answer_at
+    && !r.in_gap.length && !r.chapters.includes(spec.sealed_text));
+  return { ok, detail: res };
+});
+
+// AC-6.8: with practice mode turned on, the film stops at the question, holds through a wait and a play(),
+// shows the options, and resumes at the answer scene after a pick; turning practice off releases the hold
+await check('practice_mode_pauses', async () => {
+  const res = [];
+  for (const q of spec.questions) {
+    const { ctx, page } = await open();
+    const r = await run(page, `const v = D.v(), I = window.__ptkIve, b = document.getElementById('practice');
+      b.click(); await D.sleep(30); const on = { pressed: b.getAttribute('aria-pressed'), practice: I.practice() };
+      await D.seek(${Math.max(0, q.pause_at - 2)}); let p = v.play(); if (p && p.catch) p.catch(() => {});
+      for (let i = 0; i < 120 && I.mode() !== 'ask'; i++) await D.sleep(50);
+      await D.sleep(150); const stopped = { mode: I.mode(), t: v.currentTime, paused: v.paused,
+        options: [...document.querySelectorAll('#state .opt')].map((e) => e.textContent) };
+      await D.sleep(1500); p = v.play(); if (p && p.catch) p.catch(() => {}); await D.sleep(500);
+      const held = { mode: I.mode(), t: v.currentTime, paused: v.paused };
+      const wrong = [...document.querySelectorAll('#state .opt')][${q.wrong}];
+      const pl = D.once(v, 'playing', 4000); wrong.click(); await pl; await D.sleep(120);
+      const picked = { mode: I.mode(), t: v.currentTime, paused: v.paused,
+        verdict: (document.querySelector('#state .verdict') || {}).getAttribute ? document.querySelector('#state .verdict').getAttribute('data-verdict') : null };
+      v.pause(); return { on, stopped, held, picked };`);
+    await ctx.close();
+    const second = await open();
+    const off = await run(second.page, `const v = D.v(), I = window.__ptkIve, b = document.getElementById('practice');
+      b.click(); await D.seek(${Math.max(0, q.pause_at - 2)}); let p = v.play(); if (p && p.catch) p.catch(() => {});
+      for (let i = 0; i < 120 && I.mode() !== 'ask'; i++) await D.sleep(50);
+      const asked = I.mode(); b.click(); await D.sleep(30); p = v.play(); if (p && p.catch) p.catch(() => {});
+      for (let i = 0; i < 80 && v.currentTime < ${q.answer_at} + 0.2; i++) await D.sleep(50);
+      const out = { asked, mode: I.mode(), t: v.currentTime, pressed: b.getAttribute('aria-pressed') }; v.pause(); return out;`);
+    await second.ctx.close();
+    res.push({ scene: q.scene, ...r, off });
+  }
+  const ok = res.length > 0 && res.every((r) => {
+    const q = spec.questions.find((x) => x.scene === r.scene);
+    return r.on.pressed === 'true' && r.on.practice === true
+      && r.stopped.mode === 'ask' && r.stopped.paused && Math.abs(r.stopped.t - q.pause_at) <= 0.12
+      && JSON.stringify(r.stopped.options) === JSON.stringify(q.options)
+      && r.held.mode === 'ask' && r.held.paused && Math.abs(r.held.t - r.stopped.t) <= 0.05
+      && r.picked.mode === 'film' && !r.picked.paused && r.picked.t >= q.resume_at - 0.05 && r.picked.t <= q.resume_at + 0.6
+      && !!r.picked.verdict
+      && r.off.asked === 'ask' && r.off.mode === 'film' && r.off.pressed === 'false' && r.off.t >= q.answer_at;
+  });
+  return { ok, detail: res };
 });
 
 // AC-6.7: from file://, every track loads (as blob: tracks), the MP4 decodes, nothing is fetched, no console errors

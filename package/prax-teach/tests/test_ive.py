@@ -8,7 +8,7 @@ from _util import SLICE
 from selftest_support import NotRun
 from ptk import errors, host, model, node, text
 from ptk.project import explorer, ive
-from ptk.verify import media, visual
+from ptk.verify import ive_predict, media, visual
 
 IVE = SLICE / "build" / "ive"
 _RUN = {}
@@ -34,7 +34,12 @@ def _spec(lesson, timing, cue_list):
             "counts_by_kind": counts, "first_caption": timing["cues"][0]["start"], "repeats": 5,
             "film_t": round(film["start"] + 0.5, 3), "film_n": film["state"]["vars"][live["var"]],
             "film_brk": "true" if film["state"]["program"] == live["alt"] else "false",
-            "domain": live["domain"], "yours_text": text.ui("ive_yours")}
+            "domain": live["domain"], "yours_text": text.ui("ive_yours"),
+            "questions": [{"scene": q["scene"], "pause_at": q["pause_at"], "resume_at": q["resume_at"],
+                           "answer_at": q["answer_at"], "options": [o["text"] for o in q["options"]],
+                           "wrong": next((k for k, o in enumerate(q["options"]) if not o["correct"]), 0)}
+                          for q in ive_predict.page_data(IVE).get("questions") or []],
+            "sealed_text": text.ui("ive_chapter_sealed")}
 
 
 def _run():
@@ -142,6 +147,24 @@ def test_navigation_events_only():
            or set(e) != set(schema["required"]) or "attempt" in json.dumps(e)]
     assert not bad, bad[:3]
     return {"events": len(ev["nav"]), "actions": sorted({e["action"] for e in ev["nav"]})}
+
+
+def test_explanation_first_default():
+    """AC-6.8: by default the film plays through each question and explains: it never enters the prediction stop
+    and never pauses, skips the silent think gap, and the answer-stating chapter titles open once the answer has
+    played. The practice-mode toggle is visible and off."""
+    out, c = _check("explanation_first_default")
+    assert out["spec"]["questions"], "the slice IVE has no question to play through"
+    return {"browser": out["browser"], "played_through": [{k: r[k] for k in ("scene", "modes", "paused", "t_end")}
+                                                          for r in c["detail"]]}
+
+
+def test_practice_mode_pauses():
+    """AC-6.8: with the practice toggle on, the film stops at the question, holds through a wait and a play(), shows
+    the storyboard's options and resumes at the answer scene after a pick; turning practice off releases the hold."""
+    out, c = _check("practice_mode_pauses")
+    return {"browser": out["browser"], "stopped_at": [round(r["stopped"]["t"], 3) for r in c["detail"]],
+            "resumed_at": [round(r["picked"]["t"], 3) for r in c["detail"]]}
 
 
 def test_file_protocol():
