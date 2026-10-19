@@ -1,5 +1,6 @@
-/* Q&A expander: one prediction, then layers that open in order. Print and no-JS show everything. */
+/* Q&A expander: the question, then layers that open in order, then an optional check. Print and no-JS show everything. */
 .qa{padding-block:2rem 0;display:grid;gap:1.5rem;max-width:56rem}
+.practice{display:grid;gap:1rem;padding-block:1rem}
 .qcard{display:grid;gap:1rem}
 .qtext{font-family:var(--display-font);font-weight:var(--display-weight);font-size:calc(1.5rem * var(--display-scale));line-height:1.3;max-width:34ch}
 .code{font-family:var(--code-font);font-weight:var(--code-weight);font-size:clamp(11px,2.9vw,.875rem);line-height:1.55;padding:.75rem 0}

@@ -2,8 +2,9 @@
 schedule from measured durations, WebVTT captions + chapters, LUFS normalisation, sandboxed render, mux.
 
 Timeline rule (AC-5.3, E17, D18.2):
-    segment n starts after segment n-1 ends + gap (0.35 s in a scene, 0.8 s across scenes,
-    plus a 3 s think pause after a question scene); durations are measured from the trimmed audio.
+    segment n starts after segment n-1 ends + gap (0.35 s in a scene, 0.8 s across scenes, a
+    question scene included: explanation first, so the answer follows the question at the normal pace
+    and no think pause is baked into the MP4); durations are measured from the trimmed audio.
     A scene's state change starts at its last segment's start (`reveal`) and is settled when its
     drawing ends (`shown`). The IVE uses `shown`, never a time inside the tween. A change of
     program starts MORPH_LEAD after the scene start with a diff of the two programs, then draws the
@@ -30,10 +31,10 @@ from ..text import esc
 
 FPS = 30
 W, H = 1920, 1080
-# THINK: the plain MP4 gives 3.8 s (GAP_SCENE + THINK) under a bar that empties (8 s made whisper drop the next
-# lines, round 18); the IVE stops at the
-# question instead and jumps over this gap after a pick (ive.question_plan), so it is never dead air there
-LEAD, GAP_IN, GAP_SCENE, THINK, TAIL, SCENE_LEAD = 0.8, 0.35, 0.8, 3.0, 1.6, 0.35
+# No think gap (SPEC v1.4, AC-6.8): v2.1 held 3.8 s on a bar after each question. Now the answer scene follows
+# at GAP_SCENE like any other; the IVE's practice mode pauses the player itself at the question
+# (ive.question_plan), so no silence is baked into the MP4 for it.
+LEAD, GAP_IN, GAP_SCENE, TAIL, SCENE_LEAD = 0.8, 0.35, 0.8, 1.6, 0.35
 SETTLE = 0.5
 MINUS = "\u2212"
 KEYWORDS = {"int", "switch", "case", "break", "return", "void", "char", "default"}
@@ -62,7 +63,7 @@ def schedule(lesson, measured):
     scenes = {sc["id"]: sc for sc in lesson.data["storyboard"]}
     for s in segs:
         if prev_scene is not None:
-            t += GAP_IN if s["scene"] == prev_scene else GAP_SCENE + (THINK if "question" in scenes[prev_scene] else 0)
+            t += GAP_IN if s["scene"] == prev_scene else GAP_SCENE
         start = _frame(t)
         end = _frame(start + dur[s["id"]])
         cues.append({**s, "start": start, "end": end, "seconds": dur[s["id"]]})
@@ -326,7 +327,7 @@ def _layout(lesson):
       │                         │ │ or the│      └───────────────────┘ └───────────────────┘
       └─────────────────────────┘ └ quest.┘
     Code and output are secondary: a narrower gutter and smaller rows; a question card takes the output's
-    place, so the panel stays on screen while the learner predicts.
+    place, so the panel stays on screen while the question is on screen.
     """
     panel = (lesson.data.get("figure") or {}).get("panel")
     mode = None if not panel else ("side" if panel["kind"] == "stack" or panel["place"] == "side" else "hero")
@@ -629,16 +630,13 @@ def scene_html(lesson, scene, index, count, timing):
     panel_w = L["side_w"]
     panel_h = L["card_h"] - panel_top
     nt = ty["note"]
-    think = None
     if q:
-        # the options, as in the Q&A and the IVE, and a bar that empties over the think gap (round 18)
+        # the question and its options, as in the Q&A and the IVE; the answer scene follows at the normal pace
         opts = "".join(f'<p class="qopt" data-option="{esc(sid)}.{k}">{esc(o["text"])}</p>'
                        for k, o in enumerate(q.get("options") or []))
-        q_end = max((c["end"] for c in timing["cues"] if c["scene"] == sid), default=scene["start"]) - scene["start"]
-        think = (round(q_end + 0.1, 3), round(max(0.5, scene["duration"] - q_end - 0.5), 3))
         side = (f'<div class="panel qcard" data-key="question"><p class="qlabel" data-chrome="question_label">'
                 f'{esc(text.ui("question_label"))}</p><p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p>'
-                f'<div class="qopts">{opts}</div><div class="thinkbar"><div class="thinkfill"></div></div></div>')
+                f'<div class="qopts">{opts}</div></div>')
     elif mode is None:
         sizes = tuple(round(x * nt["scale"]) for x in (64, 58, 52, 48, 44))
         note_px = _fit(nt["key"], claims[note_claim]["text"], panel_w - 84, panel_h - 76, 1.18, sizes)
@@ -850,8 +848,6 @@ def scene_html(lesson, scene, index, count, timing):
 .qopts {{ display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:18px; }}
 .qopt {{ margin:0; padding:6px 18px; border:2px solid {t['rule']}; border-radius:12px; background:{t['surface']};
   font:{vt['weight']} 28px/1.3 {vt['family']}; color:{t['ink']}; white-space:pre; }}
-.thinkbar {{ position:absolute; left:28px; right:28px; bottom:18px; height:6px; border-radius:3px; background:{t['highlight']}; overflow:hidden; }}
-.thinkfill {{ position:absolute; inset:0; background:{t['note']}; transform-origin:0 50%; }}
 {panel_css}
 .footrule {{ position:absolute; left:{MX}px; right:{MX}px; top:{H - BOTTOM + 22}px; height:2px; background:{t['rule']}; opacity:.6; }}
 .foot {{ position:absolute; right:{MX}px; top:{H - BOTTOM + 36}px; margin:0; font:400 20px/1.2 {ct['family']}; letter-spacing:.06em; color:{t['label']}; }}
@@ -906,7 +902,6 @@ def scene_html(lesson, scene, index, count, timing):
     tl.add(d, R);
     {f"tl.set(q('.rows[data-set=\"old\"]'), {{ opacity: 0 }}, {swap});" if morph else ""}
     {f"tl.set(q('.rows[data-set=\"cur\"]'), {{ opacity: 1 }}, {swap});" if morph else ""}
-    {f"tl.fromTo(q('.thinkfill'), {{ scaleX: 1 }}, {{ scaleX: 0, duration: {think[1]}, ease: 'none' }}, {think[0]});" if think else ""}
     tl.set({{}}, {{}}, {scene['duration']:.3f});
     window.__timelines["{sid}"] = tl;
   }})();

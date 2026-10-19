@@ -837,7 +837,7 @@
    {
     "rank": 1,
     "id": "predict-gated-html",
-    "title": "Predict-gated layered HTML page with misconception routing",
+    "title": "Layered HTML walkthrough with an optional misconception-routed check",
     "needs": [
      "ptk",
      "node",

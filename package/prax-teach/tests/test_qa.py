@@ -1,4 +1,5 @@
-"""WP4 Q&A expander: AC-4.3. Layers open in order, each wrong option routes to its named
+"""WP4 Q&A expander: AC-4.3, explanation first (SPEC v1.4, AC-1.3). Layers open in order with no answer
+needed, the optional self-check sits after the last layer, each wrong option routes to its named
 misconception and that misconception's correction claim, and print expands every layer.
 Each property is also shown to fail on a tampered copy of the page."""
 from functools import lru_cache
@@ -50,10 +51,14 @@ def test_layers_misconceptions_print():
     swapped = _variant(lambda s: s.replace(row, f'data-misconception="{a["id"]}">{esc(b["statement"])}</span>'))
     bad = qa.check_layers(lesson, m, swapped)
     assert any(f"does not name misconception {a['id']}" in p for p in bad), f"misrouted option passed: {bad[:3]}"
-    # negative 2: every layer may open before the prediction
-    loose = _variant(lambda s: s.replace("var ready = i === 1 ? answered : prevOpen;", "var ready = true;"))
+    # negative 2: every layer may open at once, out of order
+    loose = _variant(lambda s: s.replace("var ready = prevOpen;", "var ready = true;"))
     bad = qa.check_layers(lesson, m, loose)
-    assert any("before a prediction" in p or "out of order" in p for p in bad), f"out-of-order layers passed: {bad[:3]}"
+    assert any("out of order" in p for p in bad), f"out-of-order layers passed: {bad[:3]}"
+    # negative 2b: the v2.1 barrier, where layer 2 waits for an answer, fails (explanation first)
+    gated = _variant(lambda s: s.replace("var ready = prevOpen;", "var ready = i === 1 ? answered : prevOpen;"))
+    bad = qa.check_layers(lesson, m, gated)
+    assert any("without an answer" in p for p in bad), f"a layer gated on an answer passed: {bad[:3]}"
     # negative 3: print no longer expands the closed layers
     noprint = _variant(lambda s: s.replace("html.js .layer .layer-body,html.js .key li{display:grid!important}", ""))
     bad = qa.check_layers(lesson, m, noprint)
@@ -61,9 +66,25 @@ def test_layers_misconceptions_print():
     return {"layers": len(m["layers"]) + 1, "options": len(m["options"]), "wrong_routed": [o["misconception"]["id"] for o in wrong]}
 
 
+def test_explanation_first_practice_after():
+    """SPEC v1.4: the walkthrough opens with no answer, and the self-check is after the last layer, labelled
+    optional. A page whose check sits before the walkthrough fails."""
+    lesson, m, page = _built()
+    rec = kit.drive("qa", page)
+    pr = rec["sequence"][0]["snap"]["practice"]
+    assert pr["exists"] and pr["afterLayers"] and pr["label"] == qa.text.ui("qa_practice"), pr
+    assert not [p for p in qa.check_layers(lesson, m, rec) if "practice" in p or "without an answer" in p]
+    src = page.read_text()
+    i, j = src.index('<section class="practice"'), src.index("</section>") + len("</section>")
+    sec = src[i:j]
+    first = _variant(lambda s: s.replace(sec, "").replace('<ol class="layers">', sec + '<ol class="layers">'))
+    bad = qa.check_layers(lesson, m, first)
+    assert any("practice" in p and "after" in p for p in bad), bad[:3]
+
+
 def test_sealed_titles_wait_for_the_answer():
-    """Round 18, review X2: a layer title that states the open question's answer is hidden until the learner
-    answers, checked in the rendered DOM, and a page that shows it fails."""
+    """Round 18, review X2, explanation first: a layer title that states the open question's answer is hidden
+    until its layer opens (or an answer is checked), checked in the rendered DOM, and a page that shows it fails."""
     lesson, m, page = _built()
     sealed = [L["title"] for L in m["layers"] if L["sealed"]]
     assert sealed, "the switch lesson should seal at least one title"

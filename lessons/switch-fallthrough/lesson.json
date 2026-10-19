@@ -1063,7 +1063,7 @@
     },
     {
       "id": "sc2",
-      "title": "Predict",
+      "title": "The question",
       "state": "s0",
       "question": {
         "prompt": "n is 2 and case 2 has no break. What does the program print?",
