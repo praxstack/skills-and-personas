@@ -24,9 +24,10 @@ later window, because browsers round seek targets:
     ──── window k-1 ────┤◀ 1 frame ▶│──── window k ────
                         └─ resolves to k ─┘
 
-Explanation first (AC-6.8): by default the film plays through each question and explains; at the
-pause point it skips the silent think gap. The prediction stop (ASK) runs only when the learner turns
-on the visible "Practice mode" toggle, which is off when the page opens.
+Explanation first (AC-6.8): by default the film plays through each question and explains; the MP4
+has no think gap, so the answer follows at the normal pace. The prediction stop (ASK) runs only when
+the learner turns on the visible "Practice mode" toggle, which is off when the page opens; the page
+pauses the player itself there, never by silence baked into the MP4.
 
 FILM / EXPLORE / RETURN (AC-6.6): in FILM the panel follows the cue at currentTime. Pausing or
 "Pause and explore" enters EXPLORE, seeded at the film's state; steps and live edits there are
@@ -144,9 +145,9 @@ def question_plan(lesson, timing, cue_list):
     """Where the film waits for a prediction in practice mode (round 18, review X1; AC-6.8). Per question
     scene with options:
 
-        q narration ─────────┤ pause_at ── practice mode: waits for a pick ──▶ resume_at (answer scene start) ─▶ answer_at
-                               (q end + PAUSE_AFTER)   default: jumps on at once     so the think gap of the
-                                                                                     plain MP4 is never heard
+        q narration ─────────┤ pause_at ── practice mode: the page pauses the player until a pick ──▶ resume_at ─▶ answer_at
+                               (q end + PAUSE_AFTER)   default: plays straight on      (answer scene start, about
+                                                                                        0.2 s later: no think gap)
     `sealed` lists the chapter indices whose titles state the answer (seal.py); the page shows a neutral
     placeholder for them until the question is answered or the film has passed `answer_at`."""
     out = []

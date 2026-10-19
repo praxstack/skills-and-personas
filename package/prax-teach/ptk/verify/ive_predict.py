@@ -1,10 +1,10 @@
 r"""IVE prediction gate: explanation first by default (AC-6.8), the prediction stop in practice mode (review X1).
 
 By default (the page opens with the "Practice mode" toggle off) the film plays through each question:
-it never stops for a prediction and skips the silent think gap between pause_at and resume_at.
-With the toggle on:
+it never stops for a prediction, and the MP4 itself has no think gap (the answer scene follows the
+question at the normal scene pace). With the toggle on, the player pauses itself:
 
-    question scene narration ──"…pick one…"──┤ q_end
+    question scene narration ──"…answers this question."──┤ q_end
                                                ├─ ≤ 0.6 s ─┤ pause_at: the film stops here, options on screen
                                                             │   play() does nothing until a pick
                                                             │   no answer anywhere: sealed chapter titles show
@@ -15,12 +15,14 @@ With the toggle on:
 Two halves, both reading the built artifacts only (never the projector's internals):
 
 static   ive-data.js `questions` against the storyboard and captions.vtt: every question with options is
-         gated, its options are the storyboard's, the last line before the pause invites the pick and is
-         spoken at a calm pace, and the film is silent for at most MAX_SILENCE before the pause and after
-         the jump (an ungated 3.8 s gap after "Pause here and predict" is what the review heard).
+         gated, its options are the storyboard's, the question narration never asks the learner to predict,
+         pick, choose or commit (that is the default film; the invitation is the practice-mode hint on the
+         page) and is spoken at a calm pace, the film is silent for at most MAX_SILENCE before the pause
+         and after the jump, and the next line follows the question within MAX_ANSWER_GAP (no think gap:
+         v2.1 baked 3.8 s of silence under a bar into the MP4).
 browser  the page from file://, driven in Chromium, in two jobs per width:
          ive-explain  practice off (as opened): the toggle is visible and off; play through the question
-                      and check the film never stops or pauses, skips the think gap and reaches the answer.
+                      and check the film never stops or pauses, plays no silent gap and reaches the answer.
          ive-predict  turn the toggle on, play into the question, wait for the stop, hold (wait, then try
                       play()), check the options, the sealed chapter titles and the absence of the answer,
                       take a screenshot, pick a wrong option, check the verdict and that the film resumes
@@ -40,7 +42,8 @@ GATE_ID = "ive.predict-gated"
 MAX_SILENCE = 0.6       # seconds of dead air allowed on each side of the pause
 MAX_WPM = 205           # the question line at a calm pace: the review measured 220; Kokoro reads about 195 at speed 0.9
 PAUSE_TOL = 0.12        # where the film stops, against pause_at
-INVITE = re.compile(r"\b(pick|choose|commit)\b", re.I)
+MAX_ANSWER_GAP = 1.0    # question's last word to the next line: the normal 0.8 s scene gap plus a margin
+BARRIER = re.compile(r"\b(predict\w*|pick|choose|commit|guess)\b", re.I)
 
 
 def page_data(ive_dir):
@@ -80,8 +83,9 @@ def static_check(lesson, data, captions):
             probs.append(f"{sc['id']}: no caption for the question scene")
             continue
         last = max(mine, key=lambda c: c["end"])
-        if not INVITE.search(last["text"]):
-            probs.append(f"{sc['id']}: the line before the pause does not invite a pick: {last['text']!r}")
+        asks = [c["text"] for c in mine if BARRIER.search(c["text"])]
+        if asks:
+            probs.append(f"{sc['id']}: the question narration asks for a prediction in the default film: {asks[0]!r}")
         wpm = [round(_words(c["text"]) / max(c["end"] - c["start"], 0.01) * 60) for c in mine]
         if max(wpm) > MAX_WPM:
             probs.append(f"{sc['id']}: question narration at {max(wpm)} wpm (max {MAX_WPM})")
@@ -92,11 +96,15 @@ def static_check(lesson, data, captions):
             probs.append(f"{sc['id']}: {before} s between the last spoken word and the pause (allowed 0..{MAX_SILENCE})")
         if not 0 <= after <= MAX_SILENCE:
             probs.append(f"{sc['id']}: {after} s of silence after the jump to the answer (max {MAX_SILENCE})")
+        follow = round(nxt["start"] - last["end"], 3) if nxt else 0.0
+        if follow > MAX_ANSWER_GAP:
+            probs.append(f"{sc['id']}: a {follow} s think gap after the question in the MP4 (max {MAX_ANSWER_GAP})")
         if not p["pause_at"] < p["resume_at"] <= p["answer_at"]:
             probs.append(f"{sc['id']}: pause {p['pause_at']}, resume {p['resume_at']}, answer {p['answer_at']} out of order")
         rows.append({"scene": sc["id"], "pause_at": p["pause_at"], "resume_at": p["resume_at"],
                      "answer_at": p["answer_at"], "silence_before_pause": before, "silence_after_jump": after,
-                     "question_wpm": wpm, "invite": last["text"], "sealed_chapters": p.get("sealed", [])})
+                     "answer_follows_after": follow, "question_wpm": wpm, "question_line": last["text"],
+                     "sealed_chapters": p.get("sealed", [])})
     return probs, rows
 
 
@@ -257,7 +265,7 @@ def default_problems(d, q):
     v += [] if "ask" not in (d.get("modes") or []) and not d.get("paused") else \
         [f"the film stopped for a prediction with practice mode off (modes {d.get('modes')}, paused {d.get('paused')})"]
     v += [] if (d.get("t_end") or 0) >= q["answer_at"] else [f"the film did not play on to the answer ({d.get('t_end')})"]
-    return v + ([f"the film played the silent think gap: {d['in_gap'][:3]}"] if d.get("in_gap") else [])
+    return v + ([f"the film played a silent think gap: {d['in_gap'][:3]}"] if d.get("in_gap") else [])
 
 
 def gate(lesson, ive_dir, browser=True, run=None):
@@ -277,7 +285,8 @@ def gate(lesson, ive_dir, browser=True, run=None):
     return {"id": GATE_ID, "medium": "ive", "status": "failed" if probs else ("passed" if browser else "not-run"),
             "measured": {"questions": rows, "driven": drove, "problems": probs[:30],
                          "rule": "practice mode off (the default, AC-6.8): the toggle is visible and off and the film plays "
-                                 "through the question without stopping or the think gap; practice mode on: the film stops "
+                                 "through the question without stopping, its question narration asks for no prediction, and the next "
+                                 f"line follows within {MAX_ANSWER_GAP} s (no think gap in the MP4); practice mode on: the film stops "
                                  f"within {PAUSE_TOL} s of the pause point, at most {MAX_SILENCE} s after "
                                  "the last spoken word, shows the storyboard's options, holds through a wait and a play(), "
                                  "keeps answer-stating chapter titles sealed, and resumes at the answer scene after a pick"},

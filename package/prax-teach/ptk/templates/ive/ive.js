@@ -6,9 +6,9 @@
   //    ▲  the panel follows the film's cue    │ seeded at the film's state; edits marked as yours │
   //    └──────────────────────────────────────┴── a seek while exploring re-seeds at the new time ┘
   //
-  // Explanation first (AC-6.8): by default the film plays through each question and explains. At the pause
-  // point it jumps over the silent think gap to the answer scene and never stops. The options sit beside
-  // the film; a pick is optional.
+  // Explanation first (AC-6.8): by default the film plays through each question and explains, straight on
+  // into the answer scene (the MP4 has no think gap) and never stops. The options sit beside the film; a
+  // pick is optional.
   // ASK, practice mode only (round 18; off by default, the visible "Practice mode" toggle turns it on):
   // playing into a question's pause point (its last spoken word + 0.25 s) stops the film and shows the
   // same options as the Q&A. Play holds until the learner picks; a pick shows the verdict and jumps to
@@ -140,8 +140,8 @@
       if (q) { startAsk(q); return; }
       for (var i = 0; i < Q.length; i++) {
         var a = Q[i];
-        // past the pause point with nothing to wait for (answered, or practice off): skip the think gap
-        if ((picked[a.scene] || !practice) && t >= a.pause_at && t < a.resume_at - 0.1) { quiet = true; v.currentTime = a.resume_at; break; }
+        // practice mode, already answered: go on to the answer scene as a pick does
+        if (practice && picked[a.scene] && t >= a.pause_at && t < a.resume_at - 0.1) { quiet = true; v.currentTime = a.resume_at; break; }
       }
     }
     window.requestAnimationFrame(tick);
