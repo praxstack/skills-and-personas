@@ -210,7 +210,7 @@ await check('practice_mode_pauses', async () => {
       b.click(); await D.seek(${Math.max(0, q.pause_at - 2)}); let p = v.play(); if (p && p.catch) p.catch(() => {});
       for (let i = 0; i < 120 && I.mode() !== 'ask'; i++) await D.sleep(50);
       const asked = I.mode(); b.click(); await D.sleep(30); p = v.play(); if (p && p.catch) p.catch(() => {});
-      for (let i = 0; i < 80 && v.currentTime < ${q.answer_at} + 0.2; i++) await D.sleep(50);
+      for (let i = 0; i < 240 && v.currentTime < ${q.answer_at} + 0.2; i++) await D.sleep(50);
       const out = { asked, mode: I.mode(), t: v.currentTime, pressed: b.getAttribute('aria-pressed') }; v.pause(); return out;`);
     await second.ctx.close();
     res.push({ scene: q.scene, ...r, off });

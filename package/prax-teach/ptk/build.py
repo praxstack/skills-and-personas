@@ -417,7 +417,7 @@ def _project_and_verify(lesson, build_dir, media, rep, go, video_theme=None, ren
             r = ive.project(lesson, build_dir / "ive", build_dir / "video", timing)
             gates.append(values.gate(lesson, "ive", [("vtt", build_dir / "ive" / "states.vtt")]))
             gates += visual.ive_gates(lesson, build_dir / "ive", r["cues"], timing)
-            from .verify import ive_predict  # round 18: the film stops for the prediction (review X1)
+            from .verify import ive_predict  # AC-6.8: plays through by default; stops in practice mode (X1)
             gates.append(ive_predict.gate(lesson, build_dir / "ive"))
     return gates, degraded
 

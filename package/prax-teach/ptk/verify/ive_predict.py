@@ -1,4 +1,8 @@
-r"""IVE prediction gate (round 18, review X1): the film stops for the learner's prediction.
+r"""IVE prediction gate: explanation first by default (AC-6.8), the prediction stop in practice mode (review X1).
+
+By default (the page opens with the "Practice mode" toggle off) the film plays through each question:
+it never stops for a prediction and skips the silent think gap between pause_at and resume_at.
+With the toggle on:
 
     question scene narration ──"…pick one…"──┤ q_end
                                                ├─ ≤ 0.6 s ─┤ pause_at: the film stops here, options on screen
@@ -14,10 +18,13 @@ static   ive-data.js `questions` against the storyboard and captions.vtt: every 
          gated, its options are the storyboard's, the last line before the pause invites the pick and is
          spoken at a calm pace, and the film is silent for at most MAX_SILENCE before the pause and after
          the jump (an ungated 3.8 s gap after "Pause here and predict" is what the review heard).
-browser  the page from file://, driven in Chromium: play into the question, wait for the stop, hold
-         (wait, then try play()), check the options, the sealed chapter titles and the absence of the
-         answer, take a screenshot, pick a wrong option, check the verdict and that the film resumes at
-         the answer scene and the titles open.
+browser  the page from file://, driven in Chromium, in two jobs per width:
+         ive-explain  practice off (as opened): the toggle is visible and off; play through the question
+                      and check the film never stops or pauses, skips the think gap and reaches the answer.
+         ive-predict  turn the toggle on, play into the question, wait for the stop, hold (wait, then try
+                      play()), check the options, the sealed chapter titles and the absence of the answer,
+                      take a screenshot, pick a wrong option, check the verdict and that the film resumes
+                      at the answer scene and the titles open.
 
 `python -m ptk.verify.ive_predict <lesson dir>` runs both and prints the gate (exit 1 when it fails).
 """
@@ -112,15 +119,36 @@ const panel = [...new Set([...document.querySelectorAll('#state .mechbox [data-m
 """
 
 
+def _explain_job(url, q, w, ready, drive, start):
+    """Practice off, as the page opens: the film plays through the question without stopping."""
+    steps = [ready, drive,
+             {**_js("const v = D.v(), b = document.getElementById('practice'); "
+                    "const vis = !!b && !b.hidden && b.offsetParent !== null && b.getBoundingClientRect().width > 0; "
+                    "const toggle = {visible: vis, pressed: b && b.getAttribute('aria-pressed'), practice: I.practice ? I.practice() : null}; "
+                    f"await D.seek({start:.3f}); const r = v.play(); if (r && r.catch) r.catch(() => {{}}); "
+                    "const modes = new Set(), ts = []; let paused = false; "
+                    f"for (let i = 0; i < 200 && v.currentTime < {q['answer_at'] + 0.3:.3f}; i++) {{ await D.sleep(50); "
+                    "modes.add(I.mode()); ts.push(Math.round(v.currentTime * 1000) / 1000); if (v.paused && !v.ended) paused = true; } "
+                    f"const in_gap = ts.filter((t) => t > {q['pause_at'] + 0.3:.3f} && t < {q['resume_at'] - 0.1:.3f}); v.pause(); "
+                    "return {toggle, modes: [...modes], paused, t_end: ts[ts.length - 1], in_gap};"), "as": "default"}]
+    return {"id": f"ive-explain:{q['scene']}:{w}", "type": "script", "url": url, "width": w,
+            "height": 900 if w > 400 else 844, "steps": steps}
+
+
 def browser_jobs(url, q, titles, shots):
-    """One job per width: play into the question, hold, pick a wrong option (or the only one), resume."""
+    """Two jobs per width: the default film plays through; with the practice toggle on, play into the
+    question, hold, pick a wrong option (or the only one), resume."""
     wrong = next((k for k, o in enumerate(q["options"]) if not o["correct"]), 0)
     start = max(0.0, q["pause_at"] - 3.0)
     ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
     drive = {"eval": (Path(__file__).resolve().parents[1] / "templates" / "ive" / "drive.js").read_text(), "as": "drive"}
     jobs = []
     for w in (1440, 390):
+        jobs.append(_explain_job(url, q, w, ready, drive, start))
         steps = [ready, drive,
+                 {**_js("document.getElementById('practice').click(); const b = document.getElementById('practice'); await D.sleep(30); "
+                        "return {pressed: b && b.getAttribute('aria-pressed'), practice: I.practice ? I.practice() : null};"),
+                  "as": "practice_on"},
                  {**_js(f"await D.seek({start:.3f}); const p = I.questions().find((x) => x.scene === {json.dumps(q['scene'])}); "
                         "const v = D.v(); const r = v.play(); if (r && r.catch) r.catch(() => {}); "
                         "for (let i = 0; i < 300 && I.mode() !== 'ask'; i++) await D.sleep(50); "
@@ -166,14 +194,22 @@ def browser_check(lesson, data, plan_rows, ive_dir, run=None):
     res = run(jobs, ive_dir.parent / "work" / "ive-predict")
     out = {}
     for r in res["results"]:
-        _kind, scene, w = r["id"].split(":")
+        kind, scene, w = r["id"].split(":")
         q = next(x for x in data["questions"] if x["scene"] == scene)
         V = r.get("values") or {}
         s, h, pr, pk = (V.get(k) or {} for k in ("stopped", "held", "play_refused", "picked"))
-        tag = f"{scene}@{w}"
+        tag = f"{scene}@{w}" + (" (practice off)" if kind == "ive-explain" else "")
         if not r.get("ok"):
             probs.append(f"{tag}: the driver failed: {r.get('error', '')[:300]}")
             continue
+        if kind == "ive-explain":
+            dp = default_problems(V.get("default") or {}, q)
+            probs += [f"{tag}: {p}" for p in dp]
+            out[tag] = V.get("default") or {}
+            continue
+        on = V.get("practice_on") or {}
+        if on.get("pressed") != "true" or on.get("practice") is not True:
+            probs.append(f"{tag}: the practice toggle did not turn practice mode on: {on}")
         if s.get("mode") != "ask" or not s.get("paused"):
             probs.append(f"{tag}: the film did not stop for the prediction (mode {s.get('mode')}, paused {s.get('paused')})")
         if s.get("t") is None or abs(s["t"] - q["pause_at"]) > PAUSE_TOL:
@@ -213,6 +249,17 @@ def browser_check(lesson, data, plan_rows, ive_dir, run=None):
     return probs, out
 
 
+def default_problems(d, q):
+    """AC-6.8, practice off: the toggle is visible and off, and the film plays through the question."""
+    t = d.get("toggle") or {}
+    v = [] if t.get("visible") and t.get("pressed") == "false" and t.get("practice") is False else \
+        [f"the practice toggle is not visible and off when the page opens: {t}"]
+    v += [] if "ask" not in (d.get("modes") or []) and not d.get("paused") else \
+        [f"the film stopped for a prediction with practice mode off (modes {d.get('modes')}, paused {d.get('paused')})"]
+    v += [] if (d.get("t_end") or 0) >= q["answer_at"] else [f"the film did not play on to the answer ({d.get('t_end')})"]
+    return v + ([f"the film played the silent think gap: {d['in_gap'][:3]}"] if d.get("in_gap") else [])
+
+
 def gate(lesson, ive_dir, browser=True, run=None):
     ive_dir = Path(ive_dir)
     if not (ive_dir / "ive-data.js").exists():
@@ -229,7 +276,9 @@ def gate(lesson, ive_dir, browser=True, run=None):
         probs += bp
     return {"id": GATE_ID, "medium": "ive", "status": "failed" if probs else ("passed" if browser else "not-run"),
             "measured": {"questions": rows, "driven": drove, "problems": probs[:30],
-                         "rule": f"the film stops within {PAUSE_TOL} s of the pause point, at most {MAX_SILENCE} s after "
+                         "rule": "practice mode off (the default, AC-6.8): the toggle is visible and off and the film plays "
+                                 "through the question without stopping or the think gap; practice mode on: the film stops "
+                                 f"within {PAUSE_TOL} s of the pause point, at most {MAX_SILENCE} s after "
                                  "the last spoken word, shows the storyboard's options, holds through a wait and a play(), "
                                  "keeps answer-stating chapter titles sealed, and resumes at the answer scene after a pick"},
             "reason": "; ".join(probs[:3])[:500] if probs else ("" if browser else "browser half not run")}
