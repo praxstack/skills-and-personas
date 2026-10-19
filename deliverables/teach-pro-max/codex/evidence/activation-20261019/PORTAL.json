@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "links": 39,
+      "missing": [],
+      "accepted_visible": true,
+      "e2e_visible": true,
+      "no_overflow": true,
+      "passed": true
+    },
+    {
+      "width": 390,
+      "links": 39,
+      "missing": [],
+      "accepted_visible": true,
+      "e2e_visible": true,
+      "no_overflow": true,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

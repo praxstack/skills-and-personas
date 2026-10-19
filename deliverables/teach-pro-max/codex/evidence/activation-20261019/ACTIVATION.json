@@ -1,0 +1,144 @@
+{
+  "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "source_files_verified": 2342,
+  "accepted_report_sha256": "1f24117a7e66b957dafc6fa5566bdecc9d433f94cc8581c22f35d6c8c581a1c4",
+  "human_verdict": "I listened to all four. They sound good.",
+  "release_root": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7",
+  "runtime_env": "/Users/prax/.local/share/prax-teach/runtime/v3/env.sh",
+  "changes": [
+    {
+      "path": "/Users/prax/.agents/skills/teacher",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher"
+      }
+    },
+    {
+      "path": "/Users/prax/.agents/skills/teach-pro-max",
+      "before": {
+        "kind": "symlink",
+        "target": "/Users/prax/Developer/skills-and-personas-recovery-20261016/skills/teach-pro-max"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+      }
+    },
+    {
+      "path": "/Users/prax/.codex/skills/teacher",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teacher"
+      }
+    },
+    {
+      "path": "/Users/prax/.claude/skills/teacher",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teacher"
+      }
+    },
+    {
+      "path": "/Users/prax/.hermes/skills/teacher",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teacher"
+      }
+    },
+    {
+      "path": "/Users/prax/.pi/agent/skills/teacher",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teacher"
+      }
+    },
+    {
+      "path": "/Users/prax/.pi/agent/skills/teach-pro-max",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teach-pro-max"
+      }
+    },
+    {
+      "path": "/Users/prax/.config/opencode/skills/teacher",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teacher"
+      }
+    },
+    {
+      "path": "/Users/prax/.config/opencode/skills/teach-pro-max",
+      "before": {
+        "kind": "missing"
+      },
+      "after": {
+        "kind": "symlink",
+        "target": "/Users/prax/.agents/skills/teach-pro-max"
+      }
+    }
+  ],
+  "host_roots": {
+    "agents": "/Users/prax/.agents/skills",
+    "codex": "/Users/prax/.codex/skills",
+    "claude": "/Users/prax/.claude/skills",
+    "cursor": "/Users/prax/.cursor/skills",
+    "hermes": "/Users/prax/.hermes/skills",
+    "pi": "/Users/prax/.pi/agent/skills",
+    "opencode": "/Users/prax/.config/opencode/skills"
+  },
+  "phase": "activated",
+  "host_resolution_verified": {
+    "agents": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    },
+    "codex": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    },
+    "claude": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    },
+    "cursor": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    },
+    "hermes": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    },
+    "pi": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    },
+    "opencode": {
+      "teacher": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher",
+      "teach-pro-max": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max"
+    }
+  },
+  "backup": "/Users/prax/.local/state/prax-teach/activation-20261019T174522Z",
+  "rollback": "/Users/prax/.local/state/prax-teach/activation-20261019T174522Z/rollback.py",
+  "scope": "General teacher and compatible entry only. Existing C pack, unrelated skills and host sessions preserved."
+}

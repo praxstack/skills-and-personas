@@ -1,7 +1,7 @@
 {
   "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
-  "release_ready": false,
-  "installed": false,
+  "release_ready": true,
+  "installed": true,
   "governing_version": "general-v3.1-20261019",
   "candidate_cap": 8,
   "completed_candidates": 4,
@@ -68,14 +68,19 @@
     "intended_error_identified": 8,
     "total": 8
   },
-  "remaining_critical": [
-    "E03-MEDIA",
-    "E04-MEDIA",
-    "E07-MEDIA",
-    "E08-MEDIA"
-  ],
-  "remaining_reason": "Actual human listening NOT_RUN; automated loudness, speech alignment and stream checks do not replace it.",
+  "remaining_critical": [],
+  "remaining_reason": null,
   "optional_c_product": "4a834ac",
   "optional_c_accepted": false,
-  "frozen_gates_changed_during_candidates": false
+  "frozen_gates_changed_during_candidates": false,
+  "human_acceptance": {
+    "verdict": "I listened to all four. They sound good.",
+    "e2e_passed": 56,
+    "e2e_total": 56,
+    "report": "evidence/private-evaluation/candidate4-accepted-redacted-report.json",
+    "report_sha256": "1f24117a7e66b957dafc6fa5566bdecc9d433f94cc8581c22f35d6c8c581a1c4",
+    "construction_receipts_preserved": true
+  },
+  "activation": "evidence/activation-20261019/ACTIVATION.json",
+  "accepted_component": "General teacher and compatible teach-pro-max entry; optional C adapter excluded"
 }

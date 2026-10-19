@@ -1,0 +1,15 @@
+{
+  "release_tag": "teach-pro-max-v3-review-20261019",
+  "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "general_accepted": true,
+  "general_activated_locally": true,
+  "optional_C_accepted": false,
+  "accepted_report_sha256": "1f24117a7e66b957dafc6fa5566bdecc9d433f94cc8581c22f35d6c8c581a1c4",
+  "asset": {
+    "name": "prax-teach-v3-accepted-general-receipt.zip",
+    "bytes": 11812,
+    "sha256": "7d5eb9d41c219bd6ebcebdf210694ea320f3330cd9b4a332318648af9d656901",
+    "files": 13
+  },
+  "scope": "Receipt outside the archive it hashes. Earlier assets/tag and governing evaluator remain unchanged."
+}
