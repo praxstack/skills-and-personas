@@ -1,0 +1,68 @@
+{
+  "checked": "2026-10-19T19:16:20.704358+05:30",
+  "source": "evaluation archive/v2.2-smoke (local preserved evidence; no rebuild)",
+  "canonical_lessons_verified": 6,
+  "artifact_hashes_verified": 83,
+  "automatic_pass_claims_pending": 4,
+  "failed": 2,
+  "lessons": [
+    {
+      "lesson": "factorial3-ive",
+      "report_sha256": "359b643c8744bf91645e2905ea82dee211e1166f0f30ba74a510daa49a48fce5",
+      "canonical_lesson_hash_matches": true,
+      "status": "claims-pending",
+      "automatic_passes": 20,
+      "failed_gate_ids": [],
+      "artifact_hashes_verified": 38
+    },
+    {
+      "lesson": "int-promotion-cards",
+      "report_sha256": "891ab0099a6f23d0bfc8c9a1f16f7ee926ac297c7fab3afcd9efb09b7c54e9d8",
+      "canonical_lesson_hash_matches": true,
+      "status": "claims-pending",
+      "automatic_passes": 3,
+      "failed_gate_ids": [],
+      "artifact_hashes_verified": 4
+    },
+    {
+      "lesson": "sizeof-array-pointer",
+      "report_sha256": "22fca6eef0fc11f25ad36db15b9c48a998aa639aad9718e6f8e21ecd5239adab",
+      "canonical_lesson_hash_matches": true,
+      "status": "claims-pending",
+      "automatic_passes": 4,
+      "failed_gate_ids": [],
+      "artifact_hashes_verified": 2
+    },
+    {
+      "lesson": "struct-padding",
+      "report_sha256": "1de64c8ebc5762d513aff4df4eb8a3c070aad53101782854e9d31d4bcf6377ff",
+      "canonical_lesson_hash_matches": true,
+      "status": "failed",
+      "automatic_passes": 1,
+      "failed_gate_ids": [],
+      "artifact_hashes_verified": 0
+    },
+    {
+      "lesson": "sum-loop-trace",
+      "report_sha256": "aa4fbfe6804a26e5a2163f57a6cd84e59a6eeec509deeab47788b042a94f4123",
+      "canonical_lesson_hash_matches": true,
+      "status": "failed",
+      "automatic_passes": 17,
+      "failed_gate_ids": [
+        "video.hyperframes-check",
+        "video.scene-layout",
+        "ive.pause-state"
+      ],
+      "artifact_hashes_verified": 36
+    },
+    {
+      "lesson": "twos-complement-char",
+      "report_sha256": "fd83ce48e76b24df0de90dd44737b42eb7517a5036624f0e0a72e388bc9f3369",
+      "canonical_lesson_hash_matches": true,
+      "status": "claims-pending",
+      "automatic_passes": 8,
+      "failed_gate_ids": [],
+      "artifact_hashes_verified": 3
+    }
+  ]
+}

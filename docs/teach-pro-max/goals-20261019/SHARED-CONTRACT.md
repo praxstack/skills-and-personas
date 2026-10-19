@@ -2,7 +2,7 @@
 
 Status: proposed goal brief. No implementation goal is armed by publishing this file. It does not approve a new iteration budget, install anything, or amend an existing frozen evaluator.
 
-Read ORCHESTRATION.md first for the selected architecture, parallel sequencing and proposed 3-round C / 8-round general caps. This brief supplies the common invariants.
+Read COUNTERS-RESOLUTION.md for factual corrections, then ORCHESTRATION.md for the selected architecture, parallel sequencing and unapproved C 3-or-4 / general 8-round proposals. This brief supplies the common invariants.
 
 ## Product Manager
 
@@ -16,7 +16,7 @@ Read `archive/teach-pro-max-evolution-20261019/README.md` and `REVIEW.md`, then 
 
 Before candidate edits, record the exact baseline commits, current accepted version, artifact inventories, mutable/protected paths, evaluator versions, withheld cases, thresholds, approved iteration budget, two-no-gain stop rule and rollback commands. Freeze evaluator changes in a separate, human-approved governing version. Implementation never edits that version to accommodate failures. Keep receipts outside the bytes they attest to. Reuse the historical baseline and Atlas, and keep old failures visible.
 
-The existing v2.2 budget is exhausted. Approval for a new run must be explicit. Do not infer it from this prompt-drafting/preservation task. The proposed caps are now 3 C rounds and 8 general rounds, following the later Claude plan. They are recommendations, not an authorization. A missing budget or required governing approval is a blocker to implementation, not permission to invent one.
+The existing v2.2 budget is exhausted. Approval for a new run must be explicit. Do not infer it from this prompt-drafting/preservation task. The original proposals were 3 C rounds and 8 general rounds; the later counter proposes 4 C rounds. These remain recommendations, not an authorization. A missing budget or required governing approval is a blocker to implementation, not permission to invent one.
 
 ## Ownership and sequencing
 
@@ -47,3 +47,7 @@ Commit named paths on the owner's branch. Verify the remote branch SHA after an 
 ## Stop rule
 
 Use the newly approved finite budget. A round is one completed implementation candidate followed by an independent run of the frozen acceptance matrix. Gain means at least one previously failing release-required criterion passes on the evaluator's withheld cases, with no protected regression against the original or current accepted baseline. The evaluator reports criterion IDs/statuses and bounded findings, not withheld prompts; it records every use of the bank. A unit-test count, changed evaluator, screenshot-only opinion or known-case fix alone is not gain. Before implementation, the governing-only freeze records the exact criteria, withheld cases, runner, owner and evaluation schedule for each track. If those are not ready, prepare them without starting candidate work. Two consecutive rounds without gain stop the track; progress counters never reset on resume. Stop also at the approved cap or when a required human decision blocks progress. Preserve the work and unmet criteria. Stopping is not completion.
+
+## Clarifications after independent counters
+
+Fresh withheld cases remain outside the public repository and every public archive, release and bundle; only digests and redacted results are published. Existing scoring denominators and target-ID mutation rules stay unchanged unless a separately approved evaluator version changes them. Independent adjudication labels do not exclude inconvenient control outcomes. The C cap is unresolved between the original 3-round proposal and Claude's later 4-round proposal; no approval is inferred. Privacy stays in scope and actual nonsynced fixture placement is required before testing.

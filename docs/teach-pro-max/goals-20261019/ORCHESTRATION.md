@@ -2,11 +2,13 @@
 
 19 October 2026. Owner: Codex, integration/orchestration. This is the final recommended direction for the next run, not an assertion that the run or its budgets have been approved. It resolves conflicts between the two goal plans. It changes no existing frozen evaluator, implementation or installation.
 
+Read [COUNTERS-RESOLUTION.md](COUNTERS-RESOLUTION.md) for verified factual corrections. Additional reviews are leads; they do not automatically change this plan or approve its budgets.
+
 ## Decision
 
 Improve the general teacher already in `skills/teacher/` and reconcile the compatible `teach-pro-max` entry. Keep the v2.2 C compiler as an optional adapter. Do not build the general teacher by extending the C-only schema, and do not add another competing teacher.
 
-C repairs and general integration may proceed in parallel after their governing contract and finite budgets are approved. The general track does not wait for C acceptance and does not branch from the C release tag. C acceptance gates integration of that adapter, not progress on the general teacher.
+C repairs and general integration may proceed in parallel after their governing contract and finite budgets are approved. The general track does not wait for C acceptance and does not branch from the C release tag. C acceptance gates integration of that adapter, not progress on the general teacher. The additional reviews do not change this ownership or sequencing.
 
 ## Verified preservation and baselines
 
@@ -16,7 +18,7 @@ C repairs and general integration may proceed in parallel after their governing 
 - Other saved work: `candidate/media-routing-20261018` = f4485c46 and `feat/visual-intuition` = 410ee17e. Saved does not mean reviewed or accepted; do not merge these blindly.
 - Milestones `prax-teach-v2.1-rc1`, `prax-teach-freeze-v2` and `prax-teach-v2.2-rc1` exist remotely.
 
-Both preservation efforts are useful. Claude pushed navigable evaluation history and the other sessions' commits. Codex also pushed selected actual output archives and source snapshots. Not all original scratch outputs exist: the cited six-request smoke worktree remains missing. The archive README explains retained content and exclusions. Publicly disclosed old test prompts are regression cases, not a new hidden test.
+Both preservation efforts are useful. Claude pushed navigable evaluation history and the other sessions' commits. Codex also pushed selected actual output archives and source snapshots. The smoke worktree was deleted, but its sibling archive/v2.2-smoke preserves all six sources/reports and 83/83 recorded artifacts; the earlier missing-evidence statement is retracted. The archive README explains retained content and exclusions. Publicly disclosed old test prompts are regression cases, not a new hidden test.
 
 ## Product Manager: keep and change from Claude's proposal
 
@@ -42,7 +44,7 @@ First milestone is one fresh qualitative non-programming lesson, through the nor
 
 Once that milestone works, complete three fresh non-C exemplar lessons, each in the six named formats: one calculation/math topic, one science/process topic, and one qualitative history/language topic. The first qualitative milestone counts as one of the three. This adopts Claude's proposed coverage while staging it, rather than stopping after the earlier one-example pilot. Existing components can satisfy this without a new universal compiler.
 
-Keep Claude's proposed independent bank of at least 24 routing requests and 8 scoped end-to-end requests across at least 6 non-C subjects. Include qualitative subjects. Each end-to-end request asks for the medium its explanatory job needs, not necessarily six formats per request. Seal the cases before candidate work and have the independent evaluator retain them. Scores are diagnostics; all cases designated release-critical must pass, and that designation cannot change after results.
+Keep Claude's proposed independent bank of at least 24 routing requests and 8 scoped end-to-end requests across at least 6 non-C subjects. Include qualitative subjects. Each end-to-end request asks for the medium its explanatory job needs, not necessarily six formats per request. Keep new case bodies outside the public repository and its archives/releases/bundles, in private evaluator-owned storage; publish only the digest, version and redacted results. Seal the cases before candidate work and have the independent evaluator retain them. Scores are diagnostics; all cases designated release-critical must pass, and that designation cannot change after results.
 
 Resolve the current teacher's contradictory 'question before answer', project-pinned practice and explanation-first instructions across actual chat and artifact paths. Native host teaching must remain possible without the C compiler, paid APIs or subagents. No single public-name change is assumed; keep compatible invocations and document one teaching authority.
 
@@ -71,7 +73,7 @@ Agree the smallest adapter input/output contract before integration. Treat C out
 
 ### C candidate
 
-- Four full-suite builds verified with existing value/claim/control thresholds and 3/3 lesson job acceptance; genuinely valid controls are adjudicated separately from flawed unchanged text.
+- Four full-suite builds verified with existing value/claim/control thresholds and 3/3 lesson job acceptance. Preserve all control jobs in the frozen denominator; adjudicate content defects/false rejections/disagreement separately. Any new scoring or control-eligibility rule needs a separately approved evaluator version before the C run.
 - Selftest has zero failures; Anki import is the explicit approved not-run. Required live jobs are completed and scored, not merely queued.
 - Independent numeric/wording/rendered audit has no remaining P0/P1 correctness finding. Claim justifications and standalone material are in scope.
 - Struct still and loop video reproducers pass applicable automatic checks, with actual output and raw reports retained. Do not silently infer a new lesson's claims acceptance from automatic gates.
@@ -86,7 +88,7 @@ Receipts bind exact commits, lesson hashes and output inventories. Preserve raw 
 
 Recommended caps, taken from Claude's proposal rather than treated as already approved:
 
-- C: at most 3 implementation rounds.
+- C: the prior proposal is at most 3 implementation rounds. Claude now proposes 4; neither is approved. Do not drop privacy to force the smaller estimate. A verified nonsynced test/state root is required before any tests.
 - General: at most 8 implementation rounds, with a review of the first non-code milestone before expanding scope.
 - Both: at most two consecutive no-gain candidates. Stop at either limit, retain the candidate and report unmet criteria. Resuming a session does not reset counts. Initial inventory and the final read-only verification are identified separately; repeated repair builds cannot be hidden as review work.
 
