@@ -145,5 +145,5 @@ def test_wide_notes_numbered_and_column_filled():
                 top = min(float(el.get("y")) for el in mech_el.iter(f"{SVG_NS}text") if el.get("y"))
                 first_note = next(el for el in root.iter(f"{SVG_NS}text") if el.get("data-claim") == notes[0]["claim"])
                 ny = float(first_note.get("y") or first_note[0].get("y"))
-                assert abs(ny - top) <= 48, f"{theme}: the first note starts {ny - top:.0f} px from the figure top"
+                assert 0 <= ny - top <= 48, f"{theme}: the first note starts {ny - top:.0f} px below the figure top"
     return {"notes": len(notes)}
