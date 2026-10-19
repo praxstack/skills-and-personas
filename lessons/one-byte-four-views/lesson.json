@@ -1,7 +1,7 @@
 {
   "schema": "prax-teach/lesson@1",
   "id": "one-byte-four-views",
-  "title": "One value, four printf conversions",
+  "title": "One int in memory, seven printf lines",
   "topic": "printf conversions",
   "language": "c",
   "request": "Teach me how printf shows the same int with %d, %u, %f and %c, as all six media.",
@@ -1220,6 +1220,9 @@
         "f.isize",
         "f.bits",
         "f.hex"
+      ],
+      "needs_hedge": [
+        "on this machine"
       ]
     },
     {
@@ -2046,7 +2049,7 @@
       ],
       "narration": [
         {
-          "text": "The program stores 66 in the int a.",
+          "text": "The program declares an int, a, and stores 66 in it.",
           "claims": [
             "c.setup"
           ]
@@ -2136,7 +2139,7 @@
       "ask": "Which value reaches printf for %f, and how is it shown?",
       "narration": [
         {
-          "text": "(double)a converts the value 66 to the double 66.0. On this machine, that double's bits are not the bits of a.",
+          "text": "(double)a converts the value 66 to a double with the same value. That double's bits are not the bits of a.",
           "claims": [
             "c.cast"
           ]
@@ -2192,7 +2195,7 @@
           ]
         },
         {
-          "text": "On this machine, the last line prints that double's own bits, in hex. They are not the bits of a.",
+          "text": "The last output line shows that double's own bits, in hex.",
           "claims": [
             "c.dbits"
           ]
@@ -2245,7 +2248,7 @@
           ]
         },
         {
-          "text": "(double)a changes the type and the bits.",
+          "text": "(double)a changes both the type and the bits.",
           "claims": [
             "c.recap"
           ]
@@ -2264,7 +2267,7 @@
   "figure": {
     "misconception": "m.samebits",
     "kind": "code-trace",
-    "title_claim": "c.cast",
+    "title_claim": "c.samebits",
     "program": "p1",
     "states": [
       "s0",
@@ -2338,8 +2341,7 @@
           "f.mem.d7"
         ],
         "claims": [
-          "c.mem",
-          "c.dmem"
+          "c.mem"
         ]
       }
     },

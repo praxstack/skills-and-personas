@@ -1472,21 +1472,22 @@
       ],
       "narration": [
         {
-          "text": "On this machine, where double is binary64, 0.8 × 1.5 is not exactly 1.2, and z is not exactly 0.6, which has no exact double form.",
+          "text": "Here double is binary64, so 0.8 × 1.5 is not exactly 1.2, and z is not exactly 0.6.",
           "claims": [
             "c.round"
           ]
         },
         {
-          "text": "%g rounds z to 6 significant digits and prints 0.6.",
+          "text": "%g rounds z and prints 0.6.",
           "claims": [
             "c.round"
           ]
         },
         {
-          "text": "This neuron multiplies each input by its weight, adds the bias, then gates the sum with ReLU.",
+          "text": "Multiply, add the bias, then let ReLU gate the sum: for these inputs, a prints as 0.6.",
           "claims": [
-            "c.formula"
+            "c.formula",
+            "c.out"
           ]
         }
       ],

@@ -1115,7 +1115,7 @@
           ]
         },
         {
-          "text": "With n = 2, that is case 2, which prints two.",
+          "text": "With n = 2, the matching label is case 2, which prints two.",
           "claims": [
             "c.fall"
           ]
@@ -1142,7 +1142,7 @@
           ]
         },
         {
-          "text": "So the switch falls through into case 3, and prints three.",
+          "text": "So execution falls through into case 3, which prints three.",
           "claims": [
             "c.fall"
           ]
@@ -1206,7 +1206,7 @@
           ]
         },
         {
-          "text": "Compiled by gcc-16 with -Wextra, fallthrough.c gets a warning that the statements on lines 7 and 9 may fall through, and with_break.c gets none.",
+          "text": "With -Wextra, GCC warns that the statements on line 7 and line 9 of fallthrough.c may fall through, and it gives with_break.c no warning.",
           "claims": [
             "c.warn"
           ]
@@ -1239,7 +1239,7 @@
           ]
         },
         {
-          "text": "For into_break.c, gcc-16 with -Wextra still warns at line 7, where case 1 falls into case 2, but says nothing at line 9, where case 2 falls into a case that only breaks.",
+          "text": "For into_break.c, GCC still warns at line 7, where case 1 falls into case 2, but says nothing at line 9, where case 2 falls into a case that only breaks.",
           "claims": [
             "c.silent"
           ]
