@@ -1,0 +1,128 @@
+{
+  "created": "2026-10-19T17:38:21.720562+05:30",
+  "candidate_commit": "a38becaee4e63b455105c394f825bce0fde420fa",
+  "general_teacher_remote_base": "e1d196e74ed88df3f5cdce8a06390331f9862300",
+  "files": [
+    {
+      "path": "LOCAL-CHECKPOINT.json",
+      "bytes": 434195,
+      "sha256": "26d183138a1096e19600c600117a475c7f8ed97c83ed61845075c9eab4585d7e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3342,
+      "sha256": "b8416ac6d3562851d19b5b2f75a026985f9c7ddb518c83c7471f3459e0541acf"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 12450,
+      "sha256": "682f02199c3ca411eb0cac98af11e7c36bd2ae1c4212491ee0359b9d1bf159ae"
+    },
+    {
+      "path": "accepted-general-source.tar.gz",
+      "bytes": 3657482,
+      "sha256": "96010fd823d99dfa82817ca1469cc5af418f3205b48f43fc6636da3844026d91"
+    },
+    {
+      "path": "candidate-source.tar.gz",
+      "bytes": 2370305,
+      "sha256": "a36f064cbe799265da4f50a82bf38d96b130b5314f3d4fdf78c623ff630ca5a6"
+    },
+    {
+      "path": "neuron-atlas-production.tar.gz",
+      "bytes": 29268143,
+      "sha256": "a468da4dc01827d1d7d068a4f2c950e702c1eec34482c4a2264a2eb286cc414f"
+    },
+    {
+      "path": "prax-teach-v2-clean-install.zip",
+      "bytes": 4873404,
+      "sha256": "c4827533185ad7db90aaf3af25edd97f6cf9d3a8b3e868a1b683ef3ba552205f"
+    },
+    {
+      "path": "restore.py",
+      "bytes": 1178,
+      "sha256": "74be50345d2a88ecd5c7014ff435e060a2a317cfbe952db26c4e3ef8c571e191"
+    },
+    {
+      "path": "reviews-and-research.tar.gz",
+      "bytes": 1336598,
+      "sha256": "b77a2246bb2b80e9369b70d6bd7216061b5c6cc64f7a6a2c7ba34589c65f9d9c"
+    },
+    {
+      "path": "teach-pro-max-source.tar.gz",
+      "bytes": 2930334,
+      "sha256": "07b4feb8aaab3c937d83c4c4a90eecb5e36d4285c13400b9f13e16178d5a56a6"
+    },
+    {
+      "path": "v2.1-rc1.tar.gz.part001",
+      "bytes": 50331648,
+      "sha256": "4b6c51fddbdc7aedb8acea75d2800f72c47082dc75747659356aceff6ed7a8cd"
+    },
+    {
+      "path": "v2.1-rc1.tar.gz.part002",
+      "bytes": 50331648,
+      "sha256": "c7ef7922124442ba9ce8c2825113768ad614f5121a700a70ef73a51f1f6fcfcb"
+    },
+    {
+      "path": "v2.1-rc1.tar.gz.part003",
+      "bytes": 50331648,
+      "sha256": "b0c013a523f35585fc3530fa031b7e4e4a34435017b77b58c544c84c305a6f5c"
+    },
+    {
+      "path": "v2.1-rc1.tar.gz.part004",
+      "bytes": 28861653,
+      "sha256": "3105c9a1e49b87d52b2a02ccc9a71f19b9c35511134454cdf5c2ae2d2a59b3e1"
+    },
+    {
+      "path": "v2.2-final.tar.gz.part001",
+      "bytes": 50331648,
+      "sha256": "2efc0b362ca112962deac807a5c2205f8bc75896f7bfe5685d77b3bf0ea20a26"
+    },
+    {
+      "path": "v2.2-final.tar.gz.part002",
+      "bytes": 50331648,
+      "sha256": "654e227c0487e2fb9257d75ea91be90c036088fee8bad16057f84017a0b2c370"
+    },
+    {
+      "path": "v2.2-final.tar.gz.part003",
+      "bytes": 50331648,
+      "sha256": "61e299fb3fe29373ed40a9c99d67320343fec852d46fdd2d2031aa250104c602"
+    },
+    {
+      "path": "v2.2-final.tar.gz.part004",
+      "bytes": 50331648,
+      "sha256": "5ae2f7ed5f7561f5de7da539d47324ba324212bd6011e9680ef13464d2ce8b74"
+    },
+    {
+      "path": "v2.2-final.tar.gz.part005",
+      "bytes": 50331648,
+      "sha256": "b86f5a6a531f94afd8ccd412744e9bf24dd6869296937e0d2e355ab1865bbdf6"
+    },
+    {
+      "path": "v2.2-final.tar.gz.part006",
+      "bytes": 1726073,
+      "sha256": "af6f711e15355e1843e6596857994dff552432d2d36091ffe0fdceedbbcbba30"
+    },
+    {
+      "path": "v2.2-source.bundle",
+      "bytes": 3076733,
+      "sha256": "09b66673a4a47b6779a935018901732b855eb15b1e0afd490a1c052381daefd5"
+    },
+    {
+      "path": "verify.py",
+      "bytes": 820,
+      "sha256": "b01465dc71708ca9cbf5a4b64fcd05e40f265ee90a49e828ef6c071c7d91bda9"
+    }
+  ],
+  "secret_scan": {
+    "candidate_history_commits": 216,
+    "source_snapshot_findings": 2,
+    "reviewed_false_positives": [
+      "package/prax-teach/tests/test_model.py:115 sizeof.int128 platform key",
+      "reviews/wp2-review.md:20 sizeof.int128 platform key"
+    ],
+    "accepted_general_source": 0,
+    "teach_pro_max_source": 0,
+    "atlas_source": 0
+  }
+}
