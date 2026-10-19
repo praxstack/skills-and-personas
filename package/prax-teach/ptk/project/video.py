@@ -361,13 +361,16 @@ def _layout(lesson, scene=None):
         L.update(card_w=760, side_x=MX + 760 + 48, side_w=W - MX - (MX + 760 + 48))
     if mode == "side" and panel["kind"] == "stack":
         # the stack: the column holds the stack and, under its last frame, the output; the code fills the right
-        cx = 1186
+        # B5: the code gets the width its longest line and three output badges need at ~26 px (it was 16 px), and the
+        # rail room for the recursion's nested jumps on both sides
+        cx = 900
+        L["font_cap"] = 23  # the frames' labels sit in call-fact groups, which count as output: code stays under them
         n_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
         L.update(code_x=cx, code_top=STOP, card_w=SX1 - cx, card_h=SBOT - STOP, side_x=SX0, side_w=cx - 24 - SX0,
                  side_top=STOP, side_h=SBOT - STOP, out_h=64 + -(-max(n_out, 2) // 2) * 58, line_cap=46,
                  panel_box=(SX0, STOP, cx - 24 - SX0, SBOT - STOP),
                  q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
-                 num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=14)
+                 num_x=40, rail_x=112, src_x=166, bulge=62, bulge_right=34, head=(12, 7), row_pad=14)
     elif mode == "side":
         # views: the panel's column is as wide as the drawing at its largest; the code and the output get the rest
         cx = 972
@@ -474,7 +477,7 @@ def _film_sizes(lesson, L, pw, ph, width, states=None):
         code = min(base["code"], L["font"] / k)
         sizes = {"head": round(head, 2), "label": round(max(base["label"], code, L["font"] / (lab_scale * k)), 2),
                  "code": round(code, 2),
-                 "chip": round(max(base["chip"], code * 1.08), 2)}
+                 "chip": round(max(base["chip"], code * 1.08), 2), "other_run": True}
     return sizes, k
 
 
@@ -605,15 +608,24 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
     drawn_run = [n for n in drawn_path if n in top]
     old_segs = {(a, b) for a, b, _k in rail.segments(drawn_run)}
     segs, heads = [], []
+    # each jump in its own lane, so a recursive path's calls, returns and skips never cross (B5); a lone jump keeps the
+    # full bulge
+    lanes = rail.jump_lanes(run)
+    deep = {sd: max([ln for s_, ln in lanes.values() if s_ == sd] + [1]) for sd in (-1, 1)}
     for a, b, kind in rail.segments(run):
         drawn = (a, b) in old_segs
         if kind == "run":
             d = f"M{RAIL_X},{cy[a]:.1f} L{RAIL_X},{cy[b]:.1f}"
         else:
-            d = (f"M{RAIL_X},{cy[a]:.1f} C{RAIL_X - BULGE},{cy[a]:.1f} {RAIL_X - BULGE},{cy[b]:.1f} "
-                 f"{RAIL_X - 9},{cy[b]:.1f}")
+            side, lane = lanes[(a, b)]
+            reach = BULGE if side < 0 else L.get("bulge_right", BULGE * 0.8)
+            bx = RAIL_X + side * reach * lane / deep[side]
+            hl, hw = L.get("head", (18, 10))
+            tip, back = RAIL_X + side * 6, RAIL_X + side * (6 + hl)
+            d = (f"M{RAIL_X},{cy[a]:.1f} C{bx:.1f},{cy[a]:.1f} {bx:.1f},{cy[b]:.1f} "
+                 f"{RAIL_X + side * 9},{cy[b]:.1f}")
             heads.append(f'<path class="head{"" if drawn else " new"}" {S} data-seg="{a}-{b}" '
-                         f'd="M{RAIL_X - 24},{cy[b] - 10:.1f} L{RAIL_X - 6},{cy[b]:.1f} L{RAIL_X - 24},{cy[b] + 10:.1f} Z"/>')
+                         f'd="M{back},{cy[b] - hw:.1f} L{tip},{cy[b]:.1f} L{back},{cy[b] + hw:.1f} Z"/>')
         segs.append(f'<path class="seg{"" if drawn else " new"}" {S} data-seg="{a}-{b}" data-kind="{kind}" pathLength="1" d="{d}"/>')
     dots = [f'<circle class="dot{"" if n in drawn_path else " new"}" {S} data-line="{n}" cx="{RAIL_X}" cy="{cy[n]:.1f}" r="8"/>'
             for n in dict.fromkeys(run)]  # one dot per line, however often the path passes it

@@ -563,8 +563,9 @@ def _side(svg, flow, lesson, g, kind, x, y, w, wide):
             bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"] * 0.95)
             y = flow.emit(x, y + 22 + bpx, claims[cmp["claim"]]["text"], bfont, bpx, bpx * 1.4, t["ink_soft"],
                           ("claim", cmp["claim"]), w, weight=bweight) + 4
+            # the comparison at a readable size (review B1+B2: its code was 13 px)
             y += mech.draw(svg, lesson, cmp["state"], x, y, w, "portrait", flow, key=False, kind="control-path",
-                           only_ran=True, head=False)
+                           only_ran=True, head=False, sizes={"code": 15.5} if wide else None)
             svg.close()
         return y
     if kind == "stack":
@@ -676,8 +677,10 @@ def _neuron_band(svg, flow, lesson, g, x, y, w, wide):
     badges = [(k, n["line"]) for k, n in enumerate(notes, 1)]
     if wide:
         lw = (w - g["col_gap"]) * 0.52
-        y1 = _code_strip(svg, lesson, fig["program"], [n["line"] for n in notes], x, y, lw, g["code"], badges=badges)
-        y1 = _output_grid(svg, dict(g, out=g["out"] * 0.86, out_gap=8), lesson, final, x, y1 + 6, lw)
+        # a slim band (review B1+B2): the three panels carry the picture, the band only names the lines and the output
+        y1 = _code_strip(svg, lesson, fig["program"], [n["line"] for n in notes], x, y, lw, g["code"] * 0.9,
+                         badges=badges)
+        y1 = _output_grid(svg, dict(g, out=g["out"] * 0.8, out_gap=6), lesson, final, x, y1 + 2, lw)
         rx = x + lw + g["col_gap"]
         y2 = _notes(svg, flow, lesson, notes, rx, y - 4, x + w - rx, dict(g, note=g["note"] * 0.9), belief=True)
         svg.close()  # the caption reads the figure from under the output; it is not part of the figure
@@ -724,7 +727,8 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     final = fig["states"][-1]
     svg.open(data_role="figure")
     if kind == "neuron":
-        h = mech.draw(svg, lesson, final, X0, y, X1 - X0, layout, flow, states=fig["states"], mark=True)
+        h = mech.draw(svg, lesson, final, X0, y, X1 - X0, layout, flow, states=fig["states"], mark=True,
+                      sizes={"other_run": True})
         y += h + (26 if wide else 22)
         svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
         y = _neuron_band(svg, flow, lesson, g, X0, y + 6, X1 - X0, wide)
@@ -737,7 +741,10 @@ def build_svg(lesson, layout, theme, tokens, math=None):
             side_els = svg.els[m0:]  # measured first (the figure fits its height), written after it
             del svg.els[m0:]
             h = mech.draw(svg, lesson, final, X0, y, mw, layout, flow, states=fig["states"], mark=True,
-                          only="memory" if kind == "views" else None, code_key=kind != "stack", fit_h=side_end - y)
+                          only="memory" if kind == "views" else None, code_key=kind != "stack",
+                          # the path keeps its own row pitch (review B1+B2: rows stretched to fill read as spaced code)
+                          fit_h=None if kind == "control-path" else side_end - y,
+                          sizes={"code": 16.6} if kind == "control-path" else None)
             h = _under_mech(svg, flow, lesson, g, kind, X0, y + h, mw) - y
             _figure_badges(svg, lesson, kind)
             svg.els += side_els

@@ -33,6 +33,7 @@ data-m="<fact id>".
     neuron  three panels, as in the accepted Neuron Atlas still (D20.1):
             MULTIPLY: input × weight = signed term │ ADD: bars along a number line │ GATE: ReLU graph + output
 """
+import math
 import re
 
 from .. import fonts, text
@@ -317,8 +318,10 @@ def _mem_row(c, x, y, w, var, ctype, fids, size_fid, low_offset=None):
     y += S["label"]
     lab = text.ui("mem_row", var=var, ctype=ctype, n=c.val(size_fid))
     font, px, weight, _caps, spacing = svg.role("label", S["label"])
+    svg.open(data_m=size_fid)  # the size is the platform fact sizeof(<ctype>): the narration's "4 bytes" is drawn here
     svg.text(x, y, lab, font, px, t["label"], ("chrome", "mem_row"), weight=weight,  # quotes code: never upper-cased
              spacing=spacing, extra={"data-from-fact": size_fid})
+    svg.close()
     y += 12
     vfont, vpx, vweight, _c, _s = svg.role("value", min(S["value"], cw * 0.46))
     svg.open(data_part="bytes", data_var=var)
@@ -359,6 +362,7 @@ def _low_byte(c, x, y, w, v, label_first=False, scale=None):
     gap = round(vpx * 0.22, 1)
     bits = c.val(v["bits"])
     bx, base = x, y + vpx + 8
+    c.tape_at = (bx, base + 20)  # where the tape's first bar starts: the leader from the low byte's cell ends here
     spans = "".join(f'<tspan fill="{t["note"] if b == "1" else t["label"]}">{b}</tspan>' for b in bits)
     svg.text(bx, base, bits, vfont, vpx, t["ink"], ("fact", v["bits"]), weight=vweight, ocr=bits, raw=spans,
              extra={"letter-spacing": f"{gap:.2f}"})
@@ -409,6 +413,17 @@ def _memory(c, x, y, w):
             _low_byte(c, row["right"] + 30 * S["k"], row["top"] - S["label"] - 14, room, v, label_first=True,
                       scale=min(1.08, room / (9.6 * S["value"])))
             bits_done = True
+            # a leader from the low byte's cell to its tape (review B1+B2): under the cells, clear of the offsets
+            lo = 0 if little else n - 1
+            gap_ = 6 * S["k"]
+            cw_ = (row["right"] - x - (n - 1) * gap_) / n
+            lx = x + lo * (cw_ + gap_) + cw_ * 0.5
+            ly = row["bottom"] + 4
+            tx, ty = c.tape_at
+            c.group(v["bits"])
+            svg.path(f"M{lx:.1f},{row['bottom']:.1f} V{ly:.1f} H{tx - 14:.1f} V{ty:.1f}", t["note"], 1.6)
+            _curve_arrow(c, (tx - 14, ty), (tx - 10, ty), (tx - 7, ty), (tx - 4, ty), t["note"], 1.6)
+            svg.close()
         y = row["y"]
     if c.on(v["bits"]) and not bits_done:
         y = _low_byte(c, x, y, w, v)
@@ -544,23 +559,28 @@ def _stack_geom(c, w):
     return fh, 14, gl, gr, w - gl - gr
 
 
-def _stack_frame(c, x, fy, bw, fh, fr, idx, sid, status, rid, ret_shown):
+def _stack_frame(c, x, fy, bw, fh, fr, idx, sid, status, rid, ret_shown, popped=False):
     """One frame of the stack column (AC-10.2 stack-column): data-part frame with data-call (its call fact, or main),
     its call, its own n and r, and (ret_shown) a data-part ret with the value it returns. Returns (slot geometry,
-    centre of the returned value)."""
+    centre of the returned value). `popped` (the whole-run column): the call has returned and its frame is gone from
+    the stack; it is drawn dashed and tagged popped (review B1+B2)."""
     svg, t, S = c.svg, c.t, c.S
     pid = c.lesson.state(sid)["state"]["program"]
     vars_on = bool(c.lesson.data["figure"]["panel"].get("vars"))
     returning = status == "returning"
     c.group(fr.get("ret") if returning else fr.get("call"), data_part="frame", data_call=fr.get("call") or "main")
-    dash = ' stroke-dasharray="6 5"' if returning else ""
+    dash = ' stroke-dasharray="6 5"' if returning or popped else ""
     fill = t["note_tint"] if status == "running" else (t["surface"] if status in ("waiting", "done") else t["ground"])
     edge = t["rule"] if status in ("waiting", "done") else t["note"]
     svg.raw(f'<rect id="{rid}" data-role="frame" x="{x:.1f}" y="{fy:.1f}" width="{bw:.1f}" height="{fh}" rx="10" '
             f'fill="{fill}" stroke="{edge}" stroke-width="1.5"{dash}/>')
     ty = fy + (S["value"] * 1.25 if vars_on else fh / 2 + S["value"] * 0.33)
     if fr.get("call"):
-        c.value(x + 16, ty, fr["call"], color=t["ink"], size=S["value"] * 0.8, inside=rid, ocr=False)
+        cw_ = c.value(x + 16, ty, fr["call"], color=t["ink"], size=S["value"] * 0.8, inside=rid, ocr=False)
+        ret_w = (fonts.width("mono", S["value"], c.val(fr["ret"])) + 10 + c.label_w("frame_returns")
+                 if ret_shown and fr.get("ret") else 0)
+        if popped and x + 16 + cw_ + 14 + c.label_w("frame_popped") + 14 <= x + bw - 16 - ret_w:  # room on its title row
+            c.label(x + 16 + cw_ + 14, ty - 2, "frame_popped", color=t["label"], inside=rid)
     else:
         c.code(x + 16, ty, fr["fn"], pid, size=S["value"] * 0.8, inside=rid)
     ret_at = None
@@ -619,13 +639,16 @@ def _return_arrow(c, ax, y_from, slot, caller_y, callee_call, caller_call, gr):
 def _stack_head(c, x, y, w):
     y += c.lsize("stack_label")
     c.label(x, y, "stack_label")
-    need = c.label_w("stack_label") + c.label_w("stack_order") + 24
+    # the film (own_depth) says the order in three words, so it stays a small label on the heading's line instead of
+    # a sentence that must read at 28 px and wraps as a big caps line (B5)
+    key = "stack_order_short" if c.S.get("own_depth") else "stack_order"
+    need = c.label_w("stack_label") + c.label_w(key) + 24
     if c.layout != "wide" or need > w:  # no room for both on one line
-        y += c.lsize("stack_order") * 1.4
-        c.label(x, y, "stack_order", max_w=w)
-        y += (c.lines_drawn - 1) * c.lsize("stack_order") * 1.04 * 1.25
+        y += c.lsize(key) * 1.4
+        c.label(x, y, key, max_w=w)
+        y += (c.lines_drawn - 1) * c.lsize(key) * 1.04 * 1.25
     else:
-        c.label(x + w, y, "stack_order", anchor="end")
+        c.label(x + w, y, key, anchor="end")
     return y + 16
 
 
@@ -705,7 +728,7 @@ def _stack_run(c, x, y, w, fit_h=None):
     slots = {}
     for i, (fr, sid, j) in enumerate(rows):
         rid = f"frame-{c.layout}-run-{i}"
-        slot, _r = _stack_frame(c, fx, tops[i], bw, fh, fr, j, sid, "done", rid, True)
+        slot, _r = _stack_frame(c, fx, tops[i], bw, fh, fr, j, sid, "done", rid, True, popped=bool(fr.get("call")))
         slots[i] = slot
     for i in range(1, len(rows)):
         _call_arrow(c, fx, tops[i - 1] + fh * 0.5, tops[i] + fh * 0.3)
@@ -794,14 +817,21 @@ def _control_path(c, x, y, w, only_ran=False, head=True, fit_h=None):
         for k, n in enumerate(r["lines"]):
             s_ = src[n - 1].strip()
             rid = f"cp-{c.layout}-{c.sid}-{n}"
-            tw = fonts.width("mono", size, s_) + 20
+            # a row merges several source lines: each later chip carries its own line number at its left (review B1+B2:
+            # the gutter showed only the first line of a merged row)
+            own = max(11.6, round(num * 0.86, 2)) if k else 0
+            own_w = fonts.width("mono", own, str(n)) + 8 if k else 0
+            tw = fonts.width("mono", size, s_) + 20 + own_w
             part = {"data_part": "label", "data_line": n} if r["kind"] == "case" and k == 0 else {}
             svg.open(**part)
             dash = "" if on else ' stroke-dasharray="4 4"'
             svg.raw(f'<rect id="{rid}" x="{cx:.1f}" y="{tops[i]:.1f}" width="{tw:.1f}" height="{ch}" rx="7" '
                     f'fill="{t["highlight"] if on and n in path else "none"}" stroke="{t["note"] if on and n in path else t["rule"]}" '
                     f'stroke-width="1.3"{dash}/>')
-            tx = cx + 10
+            tx = cx + 10 + own_w
+            if k:
+                svg.text(cx + 9, mid(i) + own * 0.35, str(n), "mono", own, t["label"], ("label", "line-number"),
+                         inside=rid, extra={"data-line": n, "data-axis": "source-line", "data-tick": n})
             if k == 0:  # the row's first line number, in the gutter (a ruler of source lines)
                 gid = f"cpg-{c.layout}-{c.sid}-{n}"
                 gx = cx0 - 12
@@ -893,6 +923,52 @@ def rail_print(src, path, outputs):
 
 # ---------------------------------------------------------------- neuron
 
+def _wiring(c, P, cx, cw, by, row, tone, scale=1.0):
+    """Before the sum exists (B5): the neuron's wiring in the Add column, on the rows its bars will take. Each input in
+    a pill with its weight on the edge to the adding node, the bias on its own edge, and z leaving towards the gate.
+    Every number is the input's, weight's or bias's own fact."""
+    svg, t, S = c.svg, c.t, c.S
+    vs = S["value"] * 0.8 * scale
+    vfont, vpx, vweight, _c, _s = svg.role("value", vs)
+    ys = [by + k * row + S["value"] for k in range(len(P["terms"]) + 1)]
+    sx, sy, sr = cx + cw * 0.74, ys[len(ys) // 2], S["value"] * 0.8 * scale
+    lp = (S["chip"] + 2) * scale
+    lab_w = max(fonts.width("mono", lp, text.ui("neuron_x", i=k + 1)) for k in range(len(P["terms"]))) + 10
+    rows = [(tm["x"], tm["w"], text.ui("neuron_x", i=k + 1), "neuron_x") for k, tm in enumerate(P["terms"])]
+    rows.append((P["bias"], None, text.ui("neuron_term_bias"), "neuron_term_bias"))
+    for (fid, wid, lab, key), yk in zip(rows, ys):
+        c.group(fid)
+        svg.text(cx, yk + lp * 0.35, lab, "mono", lp, t["label"], ("chrome", key))
+        pw = fonts.width(vfont, vpx, c.val(fid), weight=vweight) + 22
+        px0 = cx + lab_w
+        rid = f"wire-{c.layout}-{c.sid}-{fid}"
+        svg.raw(f'<rect id="{rid}" x="{px0:.1f}" y="{yk - vpx * 0.9:.1f}" width="{pw:.1f}" height="{vpx * 1.8:.1f}" rx="{vpx * 0.9:.1f}" '
+                f'fill="{t["note_tint"]}" stroke="{t["rule"]}" stroke-width="1.2"/>')
+        c.value(px0 + pw / 2, yk + vpx * 0.36, fid, size=vs, color=tone(fid) if wid is None else t["ink"], anchor="middle",
+                inside=rid, ocr=False)
+        ex0 = px0 + pw + 4
+        # the edge to the adding node, ending on its rim
+        ang = math.atan2(sy - yk, sx - ex0)
+        tip = (sx - math.cos(ang) * (sr + 3), sy - math.sin(ang) * (sr + 3))
+        _curve_arrow(c, (ex0, yk), (ex0 + (tip[0] - ex0) / 3, yk + (tip[1] - yk) / 3),
+                     (ex0 + 2 * (tip[0] - ex0) / 3, yk + 2 * (tip[1] - yk) / 3), tip, t["label"], 1.8)
+        svg.close()
+        if wid:  # the weight, on its edge just after the input
+            c.group(wid)
+            svg.text(ex0 + 6, yk - 10, text.ui("times"), "mono", vs * 0.9, t["label"], ("chrome", "times"))
+            c.value(ex0 + 6 + fonts.width("mono", vs * 0.9, text.ui("times")) + 6, yk - 10, wid, size=vs * 0.9,
+                    color=tone(wid), ocr=False)
+            svg.close()
+    svg.raw(f'<circle data-role="path" cx="{sx:.1f}" cy="{sy:.1f}" r="{sr:.1f}" fill="{t["surface"]}" '
+            f'stroke="{t["value"]}" stroke-width="2.2"/>')
+    svg.text(sx, sy + S["value"] * 0.3 * scale, text.ui("neuron_add"), "mono", S["value"] * 0.85 * scale, t["value"],
+             ("chrome", "neuron_add"), anchor="middle")
+    ox = cx + cw - 6
+    _curve_arrow(c, (sx + sr + 3, sy), (sx + sr + 12, sy), (ox - 10, sy), (ox, sy), t["value"], 2.2)
+    svg.text((sx + sr + ox) / 2, sy - 12, text.ui("axis_z"), "mono", lp, t["label"], ("chrome", "axis_z"),
+             anchor="middle")
+
+
 def _neuron(c, x, y, w):
     svg, t, S, lesson = c.svg, c.t, c.S, c.lesson
     P = lesson.data["figure"]["panel"]
@@ -968,6 +1044,9 @@ def _neuron(c, x, y, w):
     X = lambda v: cx + 10 + (v - lo) / (hi - lo) * (cw - 20)  # noqa: E731
     row = S["value"] * 1.9
     by = yy + 30
+    wired = not c.on(P["sum"]) and all(c.on(tm["x"]) for tm in P["terms"]) and c.on(P["bias"])
+    if wired:  # the wiring takes the column; the number line comes with the bars, when there is a sum to follow
+        _wiring(c, P, cx, cw, by, row * 1.85, tone, scale=1.45)
     for k, (fid, (a, b)) in enumerate(zip(terms, ends)):
         # a bar starts where the one before it ends, and the bars are the adding step: they appear with the sum
         # (round 18: during Multiply they gave the sum away by geometry, ahead of the Add scene)
@@ -999,13 +1078,23 @@ def _neuron(c, x, y, w):
                     f'stroke="{t["label"]}" stroke-width="1" stroke-dasharray="3 4"/>')
         svg.close()
     ay = by + len(terms) * row + 10
-    svg.line(cx + 10, ay, cx + cw - 10, ay, t["rule"], 1.2)
     ffont, fpx, _w, _c, _s = svg.role("foot", S["label"])
-    for v in (lo, 0.0, hi):
+    if not wired:
+        svg.line(cx + 10, ay, cx + cw - 10, ay, t["rule"], 1.2)
+    for v in (() if wired else (lo, 0.0, hi)):
         svg.line(X(v), ay - 5, X(v), ay + 5, t["rule"], 1.2)
         lab = f"{v:g}".replace("-", "−")
         svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle",
                  extra={"data-axis": "add", "data-tick": f"{v:g}"})
+    if all(c.on(f) for f in terms) and c.on(P["sum"]):
+        # z marked on the axis: the endpoint of the last bar, dropped onto the number line (review B1+B2)
+        zv = number(c.val(P["sum"]))
+        c.group(P["sum"])
+        svg.raw(f'<line data-role="guide" x1="{X(zv):.1f}" y1="{by + (len(terms) - 1) * row + S["value"]:.1f}" '
+                f'x2="{X(zv):.1f}" y2="{ay:.1f}" stroke="{t["note"]}" stroke-width="1.4" stroke-dasharray="3 4"/>')
+        svg.line(X(zv), ay - 7, X(zv), ay + 7, t["note"], 2.4, role="path")
+        c.value(X(zv), ay + 22, P["sum"], size=fpx * 1.1, color=t["note"], anchor="middle", ocr=False)
+        svg.close()
     yy = ay + 42
     if all(c.on(f) for f in terms) and c.on(P["sum"]):
         # z = t1 t2 b: the sum written out from the terms it adds
@@ -1058,6 +1147,34 @@ def _neuron(c, x, y, w):
         svg.raw(f'<circle data-role="path" data-axis-anchor="gate-z" data-anchor="{P["sum"]}" cx="{GX(z):.1f}" '
                 f'cy="{GY(a):.1f}" r="7" fill="{t["value"]}"/>')
         svg.close()
+        # z = 0.6 marked on the z axis, and the output on the a axis (review B1+B2)
+        c.group(P["sum"])
+        svg.line(GX(z), gy0 - 6, GX(z), gy0 + 6, t["note"], 2.4, role="path")
+        c.value(GX(z), gy0 + 22, P["sum"], size=fpx * 1.1, color=t["note"], anchor="middle", ocr=False)
+        svg.close()
+        if c.on(P["out"]):
+            c.group(P["out"])
+            svg.line(GX(0) - 6, GY(a), GX(0) + 6, GY(a), t["note"], 2.4, role="path")
+            c.value(GX(0) - 10, GY(a) + fpx * 0.4, P["out"], size=fpx * 1.1, color=t["note"], anchor="end", ocr=False)
+            svg.close()
+        # the other side of the gate, from a captured run: the explorer's check program whose z is negative, drawn as
+        # a hollow point on the flat part with its printed a (B5: the narration's "a z of 0 or less gives 0")
+        neg = None
+        for ck in ((lesson.data["figure"].get("explore") or {}).get("checks") or []):
+            fz, fa = (ck.get("facts") or {}).get("z"), (ck.get("facts") or {}).get("a")
+            m = re.search(r"\bz = (\S+)", c.val(fz)) if fz in c.facts else None
+            if m and fa in c.facts and number(m.group(1)) < 0 and zlo <= number(m.group(1)):
+                neg = (number(m.group(1)), fz, fa)
+                break
+        # only where no sentence reads "a = ..." as live state (the still and the film; the explorer and the IVE bind
+        # their captions to the drawn a, and this a belongs to another run)
+        if neg and c.S.get("other_run"):
+            zk, fz, fa = neg
+            c.group(fa)
+            svg.raw(f'<circle data-role="path" data-from-fact="{fz}" cx="{GX(zk):.1f}" cy="{gy0:.1f}" r="6" '
+                    f'fill="none" stroke="{t["value"]}" stroke-width="2.2"/>')
+            c.value(GX(zk) - 10, gy0 - 12, fa, size=fpx * 1.05, color=t["ink_soft"], anchor="end", ocr=False)
+            svg.close()
     yy = gy0 + 44
     if P.get("gate"):
         ln = P["gate"]["line"]
