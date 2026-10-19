@@ -2,9 +2,10 @@
 
 By default the film plays through each question and explains (AC-6.8); with the practice-mode toggle on,
 it stops for the prediction (review X1). The static half reads ive-data.js and captions.vtt; the browser
-half drives the built page in both modes. Each unit test plants one defect (no pause plan, "Pause here and
-predict" with no invitation, a 3.8 s silent gap, 220 wpm, options that differ, a default film that stops,
-a practice toggle that is missing or on by default) and checks the gate names it."""
+half drives the built page in both modes. Each unit test plants one defect (no pause plan, a question line
+that asks for a prediction in the default film, a 3.8 s think gap baked into the MP4, 220 wpm, options that
+differ, a default film that stops, a practice toggle that is missing or on by default) and checks the gate
+names it."""
 import copy
 import json
 
@@ -21,7 +22,7 @@ def _fixture():
     sc = next(s for s in lesson.data["storyboard"] if s.get("question"))
     opts = [{"text": o["text"], "correct": o["correct"]} for o in sc["question"]["options"]]
     caps = [{"id": f"{sc['id']}.0", "start": 10.0, "end": 15.0,
-             "text": "Which answer do you predict? Pick one of the three before the answer plays."},
+             "text": "The next scene answers this question."},
             {"id": "next.0", "start": 15.6, "end": 18.0, "text": "The next line."}]
     data = {"questions": [{"scene": sc["id"], "options": opts, "pause_at": 15.25, "resume_at": 15.3,
                            "answer_at": 17.0, "sealed": []}]}
@@ -49,9 +50,25 @@ def test_static_fails_on_the_old_line_and_its_silence():
     data["questions"][0].update(pause_at=16.5, resume_at=16.55)
     caps[1]["start"] = 16.8
     probs, _ = P.static_check(lesson, data, caps)
-    assert any("does not invite a pick" in p for p in probs), probs
+    assert any("asks for a prediction in the default film" in p for p in probs), probs
     assert any("wpm" in p for p in probs), probs
     assert any("between the last spoken word and the pause" in p for p in probs), probs
+
+
+def test_static_fails_on_the_v21_invite_line():
+    """The v2.1 question line invited a pick before the answer; the default film must not (SPEC v1.4)."""
+    lesson, data, caps, _sc = _fixture()
+    caps[0]["text"] = "Which answer do you predict? Pick one of the three before the answer plays."
+    probs, _ = P.static_check(lesson, data, caps)
+    assert any("asks for a prediction in the default film" in p for p in probs), probs
+
+
+def test_static_fails_on_a_think_gap():
+    """The plain MP4 held 3.8 s on a bar after each question; the answer must follow at a normal pace."""
+    lesson, data, caps, _sc = _fixture()
+    caps[1]["start"] = caps[0]["end"] + 3.8
+    probs, _ = P.static_check(lesson, data, caps)
+    assert any("think gap" in p for p in probs), probs
 
 
 def test_static_fails_when_options_differ():

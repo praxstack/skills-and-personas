@@ -3,7 +3,7 @@ import json
 import re
 import shutil
 
-from _util import SLICE
+from _util import SLICE, V21
 from selftest_support import NotRun
 from ptk import errors, host, model, tts
 from ptk.project import video
@@ -286,3 +286,22 @@ def test_morph_keeps_frame_steady():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return {"sampled": g["measured"]["frames_sampled"], "fixture": sorted(kinds)}
+
+
+def test_no_think_gap_after_a_question():
+    """SPEC v1.4 (AC-6.8, FREEZE-v2 item 5): in the plain MP4 the answer follows the question at the normal
+    scene pace. The v2.1 schedule held 3.8 s on a bar after each question scene; the IVE's practice mode
+    pauses the player itself instead. The question card carries no countdown bar."""
+    for d in sorted((V21 / "lessons").iterdir()):
+        if not (d / "lesson.json").exists():
+            continue
+        lesson = model.load(d)
+        segs = video.segments_of(lesson)
+        timing = video.schedule(lesson, [{"id": s["id"], "seconds": 2.0} for s in segs])
+        q_scenes = {s["id"] for s in timing["scenes"] if s.get("question")}
+        assert q_scenes, d.name
+        for a, b in zip(timing["cues"], timing["cues"][1:]):
+            if a["scene"] in q_scenes and b["scene"] != a["scene"]:
+                gap = round(b["start"] - a["end"], 3)
+                assert gap <= video.GAP_SCENE + 1 / video.FPS, (d.name, a["id"], b["id"], gap)
+    assert "thinkbar" not in (host.PKG / "ptk" / "project" / "video.py").read_text()

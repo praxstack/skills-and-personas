@@ -232,3 +232,91 @@ def test_no_predict_first_default():
             ("practice" not in ft["instruction"].lower())
     assert not problems, problems
     return {"files": len(NO_PREDICT_FILES), "drifted_caught": len(drifted)}
+
+
+# ---------------------------------------------------------------- explanation first in the artifacts (SPEC v1.4)
+
+# A sentence that asks the learner to predict, pick, choose, guess or commit, or to try before the answer.
+BARRIER = [
+    r"\bpredict(?:s|ed|ing|ion|ions)?\b",
+    r"\b(?:pick|picks|choose|chooses|commit|commits|guess|guesses)\b",
+    r"\bbefore (?:you )?(?:read|see|watch|reveal|open)\b",
+    r"\b(?:answer|try|attempt)\b[^.?!\n]{0,30}\bfirst\b",
+    r"\b(?:think|pause) (?:here|first|about it)\b",
+]
+# chrome.json strings shown only in a practice mode or in the optional check placed after the explanation.
+# Each entry names where it appears; anything not listed here is default text and must hold no barrier.
+PRACTICE_ONLY = {
+    "qa_choose": "legend of the options: the Q&A's optional self-check after the last layer, and the IVE practice-mode options",
+    "ive_ask_hint": "IVE, shown only while the film is stopped in practice mode (mode 'ask')",
+    "ive_mode_label_ask": "IVE mode label, only in practice mode (mode 'ask')",
+    "ive_mode_ask": "IVE mode line, only in practice mode (mode 'ask')",
+    "ive_your_pick": "IVE verdict line, only after a practice-mode pick",
+    "card_print": "flashcards, a practice artifact the learner opens on purpose",
+    "card_true_false": "flashcards, a practice artifact the learner opens on purpose",
+}
+# The no-JS notes are default text with no exemption: they must say what is shown, never to predict first.
+NOSCRIPT_KEYS = ("qa_noscript", "s_noscript", "x_noscript", "noscript")
+
+
+def _barriers(text, label="<text>"):
+    low = text.lower()
+    return [f"{label}: {m.group(0)!r} in {text!r}" for p in BARRIER for m in re.finditer(p, low)]
+
+
+def _default_texts():
+    """(label, text) for every default artifact string: lesson storyboard titles, question prompts, scene
+    asks and narration; every chrome.json string not in PRACTICE_ONLY; the Q&A page's visible text."""
+    from ptk import errors, model, text
+    from ptk.project import qa
+    out = []
+    lessons = sorted(p.parent for p in (host.PKG.parent.parent / "lessons").glob("*/lesson.json"))
+    for d in lessons:
+        lesson = model.load(d)
+        for sc in lesson.data["storyboard"]:
+            out.append((f"{d.name}:{sc['id']}.title", sc["title"]))
+            if sc.get("ask"):
+                out.append((f"{d.name}:{sc['id']}.ask", sc["ask"]))
+            if sc.get("question"):
+                out.append((f"{d.name}:{sc['id']}.question", sc["question"]["prompt"]))
+            out += [(f"{d.name}:{sc['id']}.{i}", n["text"]) for i, n in enumerate(sc["narration"])]
+        try:
+            m = qa.model(lesson)
+        except errors.ModelReferenceError:  # a lesson with no question options has no Q&A page
+            continue
+        practice = re.compile(r'<section class="practice".*?</section>', re.S)
+        body = practice.sub("", qa._body(lesson, m))
+        visible = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", body))
+        out.append((f"{d.name}:qa page (outside the optional check)", visible))
+    for k, v in json.loads(text.CHROME.read_text())["strings"].items():
+        if k not in PRACTICE_ONLY:
+            out.append((f"chrome:{k}", v))
+    return lessons, out
+
+
+def test_no_prediction_barrier_in_default_artifacts():
+    """SPEC v1.4 (FREEZE-v2 item 5, AC-1.3, AC-6.8): a complete explanation first. No default artifact text
+    (storyboard titles and narration, the Q&A page, explorer and stepper notes, IVE default strings, no-JS
+    text, chrome.json) tells the learner to predict, pick, choose or commit before the answer. Practice-only
+    strings are allowed and listed in PRACTICE_ONLY. The lint first proves it catches the v2.1 leftovers."""
+    caught = ["Predict", "Predict this step, then reveal it.",
+              "Without JavaScript every layer is shown at once. Predict each one before you read it.",
+              "Which answer do you predict? Pick one of the three before the answer plays.",
+              "Pause here and predict the output before you go on.", "Answer the layer above first.",
+              "Choose one, then commit."]
+    for s in caught:
+        assert _barriers(s), f"the lint missed: {s!r}"
+    for s in ("The question", "The next scene answers this question.", "Check yourself (optional)",
+              "Without JavaScript every layer and the answer key are shown at once."):
+        assert not _barriers(s), _barriers(s)
+    from ptk import text
+    strings = json.loads(text.CHROME.read_text())["strings"]
+    problems = [f"PRACTICE_ONLY names {k!r}, which chrome.json does not have" for k in PRACTICE_ONLY if k not in strings]
+    problems += [f"no-JS key {k!r} is exempted" for k in NOSCRIPT_KEYS if k in PRACTICE_ONLY]
+    problems += [f"no-JS key {k!r} missing from chrome.json" for k in NOSCRIPT_KEYS if k not in strings]
+    lessons, texts = _default_texts()
+    assert len(lessons) == 4, [d.name for d in lessons]
+    for label, t in texts:
+        problems += _barriers(t, label)
+    assert not problems, problems
+    return {"texts": len(texts), "lessons": len(lessons), "practice_only": sorted(PRACTICE_ONLY)}
