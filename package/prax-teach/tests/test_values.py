@@ -23,3 +23,14 @@ def test_alt_output_sentence_is_value_checked():
         return {"values_checked": n}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_binary64_float_h_is_the_ieee_double():
+    """The <float.h> expectation for a binary64 double agrees with this Python's float (an IEEE 754 double)."""
+    import sys
+
+    from ptk import expect
+    fi = sys.float_info
+    names = ("FLT_RADIX", "DBL_MANT_DIG", "DBL_MIN_EXP", "DBL_MAX_EXP")
+    assert [expect.binary64_float_h(n) for n in names] == [str(v) for v in (fi.radix, fi.mant_dig, fi.min_exp,
+                                                                              fi.max_exp)]

@@ -167,6 +167,18 @@ def neuron_relu(xs, ws, b):
     return printf_g(z if z > 0.0 else 0.0)
 
 
+# ---- the double format a lesson's claims assume ----
+#
+# The <float.h> values of an IEC 60559 binary64 double (C17 5.2.4.2.2 EXAMPLE 2). A lesson that says
+# "double is binary64 on this machine" expects these; a platform with another double format fails capture.
+BINARY64_FLOAT_H = {"FLT_RADIX": 2, "DBL_MANT_DIG": 53, "DBL_MIN_EXP": -1021, "DBL_MAX_EXP": 1024}
+
+
+def binary64_float_h(name):
+    """printf("%d", <name>) on a platform whose double is IEC 60559 binary64."""
+    return str(BINARY64_FLOAT_H[name])
+
+
 # ---- switch statement semantics (C17 6.8.4.2, 6.8.1, 6.8.6.4) ----
 #
 # cases: [{"label": int | "default", "out": [str, ...], "brk": bool}, ...] in source order.
@@ -204,6 +216,7 @@ FUNCTIONS = {
     "factorial_event": factorial_event, "factorial_stdout": factorial_stdout, "printf_g": printf_g,
     "neuron_term": neuron_term, "neuron_sum": neuron_sum, "neuron_relu": neuron_relu,
     "neuron_term_line": neuron_term_line, "neuron_sum_line": neuron_sum_line, "neuron_relu_line": neuron_relu_line,
+    "binary64_float_h": binary64_float_h,
 }
 # Functions that take the captured platform as their first argument; `args` omits it. Empty on
 # purpose: an expectation read from the capture can never disagree with it (review WP2 P2-5).
