@@ -1,0 +1,31 @@
+{
+  "url": "https://github.com/praxstack/skills-and-personas/releases/tag/teach-pro-max-v3-review-20261019",
+  "release_id": 417537817,
+  "prerelease": true,
+  "tag": "teach-pro-max-v3-review-20261019",
+  "tag_commit": "38790ca821ef0ff0c9093aaeacc22e9e70fc6d0b",
+  "assets": [
+    {
+      "name": "prax-teach-v3-review.zip",
+      "bytes": 118692093,
+      "github_digest": "sha256:047e340be15f887a36f478d726d7eeae284f50914d58834e79d42ea9569db143",
+      "matched": true
+    },
+    {
+      "name": "prax-teach-v3-source.tar.gz",
+      "bytes": 9333184,
+      "github_digest": "sha256:037281d1e6e76ddc209fdaeb4a0d96b29dc8a6ba5d1339af3b179d32d0d518ea",
+      "matched": true
+    },
+    {
+      "name": "candidate1-working-fixtures.tar.gz",
+      "bytes": 104391797,
+      "github_digest": "sha256:e56cb927c233fb1cb3b7ea7c78479f40e7cb397e08c8827838e35534118f4f93",
+      "matched": true
+    }
+  ],
+  "manifest_github_digest": "sha256:fbae39a068381dc80122ab6a7ff590aa31f0fd8d28eaa03b85d2b4663e96e8e7",
+  "all_matched": true,
+  "first_create_attempt": "GitHub rejected abbreviated target_commitish before release creation; retry with the full pushed SHA succeeded. No tag replacement or force push.",
+  "scope": "Remote asset byte counts and GitHub SHA256 digests match local archives. This receipt is outside the archives it attests to."
+}
