@@ -21,6 +21,21 @@ CODEX = shutil.which("codex") or os.path.expanduser("~/.local/bin/codex")
 HERMES_AGENT = Path(os.path.expanduser("~/.hermes/hermes-agent"))
 
 
+_RUN_ROOT = []
+
+
+def _hosts(*parts):
+    """A hosts root of this run's own, removed at exit. A fixed $PTK_STATE/hosts let two selftest runs
+    rewrite each other's throwaway HOMEs mid-test (v2.2 bug fix)."""
+    if not _RUN_ROOT:
+        import atexit
+        import secrets
+        root = host.state_path("hosts", f"run-{os.getpid()}-{secrets.token_hex(4)}")
+        _RUN_ROOT.append(root)
+        atexit.register(shutil.rmtree, root, True)
+    return _RUN_ROOT[0].joinpath(*parts)
+
+
 def _real_fingerprint():
     """Names, link targets and mtimes of the real host skill dirs (read-only)."""
     home = Path(os.path.expanduser("~"))
@@ -39,7 +54,7 @@ def _real_fingerprint():
 
 
 def _tree():
-    res = package.build(out=host.state_path("hosts", "tree", "prax-teach"))
+    res = package.build(out=_hosts("tree", "prax-teach"))
     assert res["packaged"], res
     return Path(res["out"])
 
@@ -85,7 +100,7 @@ def _count(name, home, cwd):
 def test_one_entry_per_host():
     before = _real_fingerprint()
     tree = _tree()
-    root = host.state_path("hosts")
+    root = _hosts()
     fake_v2 = package.write_fake_v2(root / "v2-fixture")
     result = {}
     for name in package.HOSTS:
@@ -144,7 +159,7 @@ def test_install_rollback():
     from ptk.state import schema2
     before_real = _real_fingerprint()
     tree = _tree()
-    root = host.state_path("hosts")
+    root = _hosts()
     fake_v2 = package.write_fake_v2(root / "v2-fixture")
     result = {}
     for name in package.HOSTS:
@@ -238,7 +253,7 @@ def test_install_and_rollback_cli_throwaway_home():
     from test_state import digests, materialize
     before_real = _real_fingerprint()
     tree = _tree()
-    root = host.state_path("hosts")
+    root = _hosts()
     fake_v2 = package.write_fake_v2(root / "v2-fixture")
     home = package.make_home(root / "cli" / "home", fake_v2)
     link = home / package.V2_LINK
