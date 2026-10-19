@@ -1,0 +1,21 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §6.5.2.2 ¶6
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §6.5.2.2 ¶6
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 4463-4467, 4483-4491 of that text (the lines between them, page header, footer or footnotes, left out)
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage.
+---
+6   If the expression that denotes the called function has a type that does not include a prototype, the
+    integer promotions are performed on each argument, and arguments that have type float are
+    promoted to double. These are called the default argument promotions. If the number of arguments
+    does not equal the number of parameters, the behavior is undefined. If the function is defined with
+    a type that includes a prototype, and either the prototype ends with an ellipsis (, ...) or the types
+
+     of the arguments after promotion are not compatible with the types of the parameters, the behavior
+     is undefined. If the function is defined with a type that does not include a prototype, and the types
+     of the arguments after promotion are not compatible with those of the parameters after promotion,
+     the behavior is undefined, except for the following cases:
+
+       — one promoted type is a signed integer type, the other promoted type is the corresponding
+         unsigned integer type, and the value is representable in both types;
+
+       — both types are pointers to qualified or unqualified versions of a character type or void.
