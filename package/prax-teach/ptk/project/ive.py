@@ -93,7 +93,8 @@ def _listing(lesson, pid):
 
 
 def _claim_rows(lesson, cids):
-    return [{"id": c, "text": lesson.claim(c)["text"], "facts": lesson.claim(c).get("facts") or []} for c in cids]
+    """A knob sentence for the page: its text, and the captured check facts it is held to (knob.captured_claim)."""
+    return [{"id": c, "text": lesson.claim(c)["text"], "facts": knob.captured_claim(lesson, c)} for c in cids]
 
 
 def knob_model(lesson):

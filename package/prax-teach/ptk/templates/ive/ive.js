@@ -326,7 +326,7 @@
         });
       });
     } else {
-      var fs = el('fieldset', 'seg'); fs.id = 'knob-v'; fs.setAttribute('data-state-var', KN.var);
+      var fs = el('fieldset', 'seg'); fs.id = 'knob-v';
       fs.appendChild(el('legend', 'lbl', KN.label));
       var opts = el('div', 'opts');
       KN.values.forEach(function (v) {
@@ -349,6 +349,17 @@
     } else document.querySelectorAll('#knob-v input').forEach(function (r) { r.disabled = lk; r.checked = r.value === e.v; });
   }
 
+  // the drawn copy is cropped to its drawing, so the mechanism fills the panel's width (on a phone, the first screen)
+  function fitMech(mb) {
+    mb.querySelectorAll('svg.mech').forEach(function (svg) {
+      if (!svg.getClientRects().length) return;  // the copy for another width or colour scheme
+      var g = svg.querySelector('[data-role="mechanism"]') || svg, b;
+      try { b = g.getBBox(); } catch (e) { return; }
+      if (!b || !b.width || !b.height) return;
+      svg.setAttribute('viewBox', [b.x - 6, b.y - 6, b.width + 12, b.height + 12].map(function (x) { return x.toFixed(1); }).join(' '));
+      svg.removeAttribute('width'); svg.removeAttribute('height');
+    });
+  }
   // ---- render the panel
   function render(V) {
     var xp = $('xp'), box = $('state');
@@ -453,7 +464,7 @@
     if (qFirst) { box.appendChild(qFirst); }
     if (kv) box.appendChild(kv);
     box.appendChild(stage);
-    if (mb) box.insertBefore(mb, box.firstChild);
+    if (mb) { box.insertBefore(mb, box.firstChild); fitMech(mb); }
   }
 
   function verdict(q, i) {

@@ -369,10 +369,12 @@ def _layout(lesson, scene=None):
                  q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=14)
     elif mode == "side":
-        cx = 1186
+        # views: the panel's column is as wide as the drawing at its largest; the code and the output get the rest
+        cx = 972
         n_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
         oh = 64 + max(n_out, 2) * 40
         ch = SBOT - STOP - 24 - oh
+        L["font_cap"] = 18  # the panel's smallest printed value (the double's bits) stays at least this large
         L.update(code_x=cx, code_top=STOP, card_w=SX1 - cx, card_h=ch, side_x=cx, side_w=SX1 - cx, side_top=STOP + ch + 24,
                  side_h=oh, panel_box=(SX0, STOP, cx - 24 - SX0, SBOT - STOP),
                  q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
@@ -428,7 +430,7 @@ def _layout(lesson, scene=None):
     L["badge"] = int(min(40, line_h - 4))
     # the longest line, its output-step badges and the tag column must fit the card
     fit = (L["card_w"] - L["src_x"] - 40 - per_line * (L["badge"] + 6)) / (longest * 0.6)
-    L.update(line_h=line_h, font=int(min(36, line_h * 0.64, fit)))
+    L.update(line_h=line_h, font=int(min(36, line_h * 0.64, fit, L.get("font_cap", 99))))
     max_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
     L["max_out"] = max(max_out, 1)
     return L
@@ -709,7 +711,10 @@ def scene_html(lesson, scene, index, count, timing):
         morph_js += [
             # the old path's lines and tags go; its dots and output-step badges stay with their rows (they pair the
             # output, which stays on screen through the diff, with the lines that printed it) until the diff ends
-            f"d.to(q('.seg{O}, .head{O}, .tag{O}, .badge{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
+            f"d.to(q('.seg{O}, .head{O}, .badge{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
+            # the old rows' tags stay beside their rows (they slide with them) until the new path starts, so the
+            # code card never stands half empty mid-diff (B3, AC-10.3 pixel check)
+            f"d.to(q('.tag{O}'), {{ opacity: 0, duration: 0.25 }}, {MORPH - 0.25:.2f});",
             f"d.to(q('.hl'), {{ opacity: 0, duration: 0.25 }}, 0);",
             # the output, the gutter and the file name stay on screen through the diff (WP9 Part A)
             f"d.fromTo(q('.band.minus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.05);",
@@ -717,6 +722,7 @@ def scene_html(lesson, scene, index, count, timing):
             f"d.to(q('.ln[data-gone]'), {{ color: '{t['correction']}', duration: 0.2 }}, 0.05);",
             # a removed row fades while the rows below close over it, so no hole opens
             f"d.to(q('.ln[data-gone], .band.minus'), {{ opacity: 0, duration: 0.6, ease: 'none' }}, 0.45);",
+            *[f"d.to(q('.tag{O}[data-line=\"{n}\"]'), {{ opacity: 0, duration: 0.6, ease: 'none' }}, 0.45);" for n in removed],
             f"d.to(q('.ln{O}[data-to]'), {{ color: '{t['label']}', duration: 0.3 }}, 0.45);",
             f"d.to(q('.ln{O} .no1.moves'), {{ opacity: 0, duration: 0.3 }}, 0.45);",
         ]
@@ -724,7 +730,8 @@ def scene_html(lesson, scene, index, count, timing):
             dy = gc["top"][n_new] - go["top"][n_old]
             if abs(dy) > 0.01:
                 morph_js.append(f"d.to(q('.ln{O}[data-line=\"{n_old}\"], .dot{O}[data-line=\"{n_old}\"], "
-                                f".ostep{O}[data-line=\"{n_old}\"]'), {{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
+                                f".ostep{O}[data-line=\"{n_old}\"], .tag{O}[data-line=\"{n_old}\"]'), "
+                                f"{{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
         morph_js += [
             # a moving row's number cross-fades while it slides; an added row fills its slot as the slot opens
             f"d.fromTo(q('.ln{O} .no2'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.45);",
@@ -857,7 +864,7 @@ def scene_html(lesson, scene, index, count, timing):
         px, py, pw, ph = L["q_panel_box"] if q else L["panel_box"]
         PK = 2.0
         fit = 'preserveAspectRatio="xMidYMid meet"'
-        kw = dict(width=round(pw / PK - 8), fit_h=round(ph / PK - 8), height=round(ph / PK - 8), notes=False, mark=True,
+        kw = dict(width=round(pw / PK - 8), fit_h=round(ph / PK - 8), height=round(ph / PK - 8), notes=False, mark=False,
                   kind="control-path")
         sizes = None
         for _ in range(3):  # the figure's own scale in its box: its 4-word heading reads at >= 28 px
@@ -902,7 +909,7 @@ def scene_html(lesson, scene, index, count, timing):
                                f'height:{(h_ + 8) * k_:.1f}px"')
         cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme,
                                             attrs=f'class="mlayer mcur" {fit} {lbox(film_k, h1)}', notes=False, states=st_,
-                                            mark=True, width=pw_, sizes=sizes)
+                                            mark=False, width=pw_, sizes=sizes)
         layers = cur_svg
         has_before = replay and scene["before"] != scene["state"]
         bsizes, k0 = sizes, film_k
@@ -911,7 +918,7 @@ def scene_html(lesson, scene, index, count, timing):
                                     extra=None if stack else {"pending": True}, kmax=kmax)
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme,
                                                 attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit} '
-                                                f'{lbox(k0, _h0)}', notes=False, width=pw_, mark=True, sizes=bsizes)
+                                                f'{lbox(k0, _h0)}', notes=False, width=pw_, mark=False, sizes=bsizes)
             layers = bef_svg + cur_svg
         if stack:
             # the output stands on the column's floor and grows upward as lines are printed
@@ -950,15 +957,15 @@ def scene_html(lesson, scene, index, count, timing):
         if recap:
             # a summary of the stack is the whole run, step by step (the still's strip), not the last state alone
             cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
-                                                notes=False, states=lesson.data["figure"]["states"], mark=True,
+                                                notes=False, states=lesson.data["figure"]["states"], mark=False,
                                                 width=pw_, sizes=sizes)
         else:
             cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
-                                                height=mh, notes=False, width=pw_, mark=True, sizes=sizes)
+                                                height=mh, notes=False, width=pw_, mark=False, sizes=sizes)
         layers = cur_svg
         if replay and scene["before"] != scene["state"]:
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}',
-                                                height=mh, notes=False, width=pw_, mark=True, sizes=sizes)
+                                                height=mh, notes=False, width=pw_, mark=False, sizes=sizes)
             layers = bef_svg + cur_svg
         chips = ""
         if replay and scene["before"] != scene["state"]:

@@ -111,15 +111,24 @@ def _radios(name, values, first):
                    f'<span>{esc(v)}</span></label>' for v in values)
 
 
+def captured_claim(lesson, cid):
+    """The facts of a knob sentence that describes a captured check run (figure.explore.checks), not the setting on
+    screen: it is marked data-captured with them (AC-10.4), so it is held to those runs' numbers, never to the live
+    state. Every other knob sentence is compared with what is drawn. [] when it is not one."""
+    sp = spec(lesson) or {}
+    check_facts = {f for c in sp.get("checks", []) for f in c["facts"].values()}
+    facts = lesson.claim(cid).get("facts") or []
+    return facts if facts and set(facts) <= check_facts else []
+
+
 def _claims_html(lesson, cids):
-    """The knob's fixed sentences. A sentence about captured runs (a claim bound to facts) is marked
-    data-captured with those facts (AC-10.4): it describes the runs, not the live setting, and every number in it
-    is one of theirs."""
+    """The knob's fixed sentences; one about a captured check run is marked data-captured (captured_claim)."""
     from .stepper import nobr
     out = []
     for c in cids:
         cl = lesson.claim(c)
-        cap = f' data-captured="{" ".join(cl["facts"])}"' if cl.get("facts") else ""
+        cf = captured_claim(lesson, c)
+        cap = f' data-captured="{" ".join(cf)}"' if cf else ""
         out.append(f'<p data-claim="{c}"{cap}>{nobr(cl["text"])}</p>')
     return "".join(out)
 
