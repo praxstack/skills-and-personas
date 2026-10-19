@@ -11,8 +11,9 @@
 Formats by extension: .mmd/.mermaid, .d2, .dot/.gv, .puml/.plantuml,
 .vl.json (Vega-Lite), .bpmn, .excalidraw, .svg (already drawn).
 Engines, in order: a local CLI if installed (mmdc, d2, dot, plantuml), then
-Kroki (https://kroki.io, or $KROKI_URL for a self-hosted one). --offline
-forbids the network. The notebook look is the default: Mermaid gets
+Kroki only when --allow-network is supplied (https://kroki.io, or $KROKI_URL
+for a self-hosted one). Network rendering sends the diagram source to that
+service. The notebook look is the default: Mermaid gets
 look=handDrawn, D2 gets sketch mode, and the page uses the lesson-notebook
 style. --plain turns the hand-drawn look off.
 """
@@ -81,7 +82,7 @@ def local_render(kind: str, src: str, hand: bool) -> str | None:
         res = subprocess.run(cmd, capture_output=True, text=True)
         if res.returncode or not out.exists():
             print(f"local {cmd[0]} failed: {(res.stderr or res.stdout).strip()[:300]}", file=sys.stderr)
-            return None  # let Kroki try, unless --offline
+            return None  # the caller decides whether a network fallback is allowed
         return out.read_text()
 
 
@@ -98,7 +99,7 @@ def kroki_render(kind: str, src: str, hand: bool) -> str:
         raise SystemExit(f"couldn't reach {base} ({e.reason}). Install a local CLI or set KROKI_URL.")
 
 
-def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str, str]:
+def render(path: Path, *, hand: bool = True, allow_network: bool = False) -> tuple[str, str]:
     kind = kind_of(path)
     src = path.read_text()
     if kind == "svg":
@@ -108,8 +109,11 @@ def render(path: Path, *, hand: bool = True, offline: bool = False) -> tuple[str
     svg = local_render(kind, src, hand)
     if svg:
         return svg, "local"
-    if offline:
-        raise SystemExit(f"no local renderer for {kind} and --offline is set")
+    if not allow_network:
+        raise SystemExit(
+            f"no local renderer for {kind}; install one locally or explicitly pass "
+            "--allow-network to send the diagram source to KROKI_URL"
+        )
     return kroki_render(kind, src, hand), "kroki"
 
 
@@ -298,14 +302,19 @@ def main() -> int:
     ap.add_argument("--look-for", default="")
     ap.add_argument("--step", action="append", default=[], help="a numbered walk-through step (repeatable)")
     ap.add_argument("--plain", action="store_true", help="no hand-drawn look")
-    ap.add_argument("--offline", action="store_true")
+    ap.add_argument("--allow-network", action="store_true",
+                    help="allow sending diagram source to KROKI_URL when no local renderer is available")
+    ap.add_argument("--offline", action="store_true",
+                    help="deprecated compatibility flag; local-only is already the default")
     ap.add_argument("--fragment", action="store_true")
     a = ap.parse_args()
     if not a.out and not a.page:
         ap.error("give -o for the SVG, --page for the explained page, or both")
     if a.page and not a.claim:
         ap.error("--page needs --claim: every figure has to say something")
-    svg, engine = render(a.source, hand=not a.plain, offline=a.offline)
+    if a.allow_network and a.offline:
+        ap.error("--allow-network and --offline cannot be used together")
+    svg, engine = render(a.source, hand=not a.plain, allow_network=a.allow_network)
     if a.out:
         a.out.write_text(svg)
         print(f"wrote {a.out} ({engine})")

@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -154,7 +155,7 @@ class Registry(unittest.TestCase):
                 self.assertTrue((ROOT / skill).is_file(), f"{t['id']}: {skill}")
 
     def test_refs_point_into_teach_pro_max_registry(self):
-        tpm = json.loads((SKILLS / "teach-pro-max/references/prax-teach-v2/references/visualization-tool-registry.json").read_text())
+        tpm = json.loads((ROOT.parent / "teach-pro-max/references/prax-teach-v2/references/visualization-tool-registry.json").read_text())
         known = {t["id"] for t in tpm["tools"]}
         for t in self.reg["tools"]:
             if "ref" in t:
@@ -201,6 +202,9 @@ class Scripts(unittest.TestCase):
                 r = run(s, *args, cwd=Path(tmp))
                 self.assertEqual(r.returncode, 0, r.stderr)
             j = json.loads((Path(tmp) / ".teacher/journal.json").read_text())
+            self.assertEqual((Path(tmp) / ".teacher").stat().st_mode & 0o777, 0o700)
+            self.assertEqual((Path(tmp) / ".teacher/journal.json").stat().st_mode & 0o777, 0o600)
+            self.assertEqual((Path(tmp) / ".teacher/JOURNAL.md").stat().st_mode & 0o777, 0o600)
             self.assertFalse(j["threads"]["t"]["recall"][0]["demonstrated"], "same-session answers don't count")
             out = run(s, "resume", cwd=Path(tmp)).stdout
             self.assertIn("point one", out)
@@ -254,6 +258,52 @@ class Scripts(unittest.TestCase):
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists(), "the default folder goes once empty")
 
+    def test_series_rejects_linked_journal_directory_and_files(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            victim = base / "victim"
+            victim.mkdir()
+            (base / ".teacher").symlink_to(victim, target_is_directory=True)
+            r = run(s, "init", "--learner", "L", "--goal", "g", cwd=base)
+            self.assertNotEqual(r.returncode, 0)
+            self.assertFalse((victim / "journal.json").exists())
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            r = run(s, "init", "--learner", "L", "--goal", "g", cwd=base)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            victim = base / "victim.json"
+            victim.write_text("private")
+            journal = base / ".teacher/journal.json"
+            journal.unlink()
+            journal.symlink_to(victim)
+            self.assertNotEqual(run(s, "status", cwd=base).returncode, 0)
+            self.assertNotEqual(run(s, "forget", "--yes", cwd=base).returncode, 0)
+            self.assertEqual(victim.read_text(), "private")
+
+    def test_series_rejects_hard_linked_state(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            state = base / "state.json"
+            state.write_text('{"version": 1}')
+            journal_dir = base / ".teacher"
+            journal_dir.mkdir()
+            os.link(state, journal_dir / "journal.json")
+            self.assertNotEqual(run(s, "status", cwd=base).returncode, 0)
+
+    def test_series_refuses_to_chmod_a_nonprivate_custom_directory(self):
+        s = str(ROOT / "scripts/series.py")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "shared"
+            root.mkdir(mode=0o755)
+            before = stat.S_IMODE(root.stat().st_mode)
+            r = run(s, "--dir", str(root), "init", "--learner", "P", "--goal", "G")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("use a private 0700 directory", r.stderr)
+            self.assertEqual(stat.S_IMODE(root.stat().st_mode), before)
+
     def test_vendor_sync_keeps_unrecorded_edits(self):
         sys.path.insert(0, str(ROOT / "scripts"))
         import vendor  # type: ignore
@@ -264,7 +314,7 @@ class Scripts(unittest.TestCase):
             (root / "up/s").mkdir()
             (root / "up/s/SKILL.md").write_text("a\n")
             subprocess.run(["git", "-C", str(root / "up"), "add", "."], check=True)
-            subprocess.run(["git", "-C", str(root / "up"), "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x"], check=True)
+            subprocess.run(["git", "-C", str(root / "up"), "-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", "commit", "-qm", "x"], check=True)
             skills, manifest = root / "skills", root / "VENDOR.json"
             old = (vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES, vendor.FILES)
             vendor.SKILLS, vendor.MANIFEST, vendor.ENTRIES = skills, manifest, {"s": ("up", "s", "x", "MIT")}
@@ -300,7 +350,7 @@ class Scripts(unittest.TestCase):
             (root / "s").mkdir()
             (root / "s/SKILL.md").write_text("a\n")
             subprocess.run(["git", "-C", str(root), "add", "."], check=True)
-            subprocess.run(["git", "-C", str(root), "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "x"], check=True)
+            subprocess.run(["git", "-C", str(root), "-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", "commit", "-qm", "x"], check=True)
             self.assertFalse(vendor.git_dirty(root, "s"))
             (root / "s/SKILL.md").write_text("edited\n")
             self.assertTrue(vendor.git_dirty(root, "s"))
@@ -472,7 +522,7 @@ class Builds(unittest.TestCase):
                                        (["--brand", "Ada & Co"], '<p class="nb-label">Ada &amp; Co</p>', "<title>Ada &amp; Co Courses</title>"),
                                        (["--brand", ""], None, "<title>Courses</title>"))):
                 out = Path(tmp) / f"out{i}"
-                r = run(script, "--catalog", str(src), "-o", str(out), *args)
+                r = run(script, "--catalog", str(src), "--trust-authored-code", "-o", str(out), *args)
                 self.assertEqual(r.returncode, 0, r.stderr)
                 page = (out / "index.html").read_text()
                 self.assertNotIn("<!--<script>", (out / "one/index.html").read_text(), "course text can't change how the inline script parses")
@@ -498,8 +548,8 @@ class Builds(unittest.TestCase):
                                                            "lessons": [{"id": f"{cid}-a", "file": "lessons/a.lesson.js", "title": "A", "needs": []}]}))
             script = str(SKILLS / "course/scripts/build_course.py")
             rel, absolute = Path(tmp) / "rel", Path(tmp) / "abs"
-            self.assertEqual(run(script, "--catalog", str(src), "-o", str(rel)).returncode, 0)
-            r = run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses")
+            self.assertEqual(run(script, "--catalog", str(src), "--trust-authored-code", "-o", str(rel)).returncode, 0)
+            r = run(script, "--catalog", str(src), "--trust-authored-code", "-o", str(absolute), "--base", "/courses")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn('href="two/index.html"', (rel / "index.html").read_text())
             self.assertIn('"video": "videos/two-a.mp4"', (rel / "two/index.html").read_text())
@@ -511,7 +561,7 @@ class Builds(unittest.TestCase):
                 self.assertIn(frag, page)
             # links.json adds a card for a standalone lesson page, escaped, after the courses
             (src / "links.json").write_text(json.dumps([{"href": "/lessons/x", "title": "X <b>", "subtitle": "s", "level": "l", "meta": "1 lesson"}]))
-            self.assertEqual(run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses").returncode, 0)
+            self.assertEqual(run(script, "--catalog", str(src), "--trust-authored-code", "-o", str(absolute), "--base", "/courses").returncode, 0)
             cat = (absolute / "index.html").read_text()
             self.assertIn('<a class="cs-title" href="/lessons/x">X &lt;b&gt;</a>', cat)
             self.assertLess(cat.index('href="/courses/two"'), cat.index('href="/lessons/x"'))
@@ -519,14 +569,14 @@ class Builds(unittest.TestCase):
             for bad in ([{"href": "javascript:alert(1)", "title": "x"}], [{"title": "no href"}], {"href": "/x", "title": "x"},
                         [{"href": "//evil.example/x", "title": "x"}], [{"href": "/\\evil.example", "title": "x"}]):
                 (src / "links.json").write_text(json.dumps(bad))
-                r = run(script, "--catalog", str(src), "-o", str(absolute), "--base", "/courses")
+                r = run(script, "--catalog", str(src), "--trust-authored-code", "-o", str(absolute), "--base", "/courses")
                 self.assertNotEqual(r.returncode, 0, bad)
                 self.assertIn("links.json", r.stderr)
             # links.json alone (no course.json folders) is a whole catalog too
             only = Path(tmp) / "only"
             only.mkdir()
             (only / "links.json").write_text(json.dumps([{"href": "/lessons/x", "title": "X"}]))
-            r = run(script, "--catalog", str(only), "-o", str(Path(tmp) / "only-out"))
+            r = run(script, "--catalog", str(only), "--trust-authored-code", "-o", str(Path(tmp) / "only-out"))
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn('href="/lessons/x"', (Path(tmp) / "only-out/index.html").read_text())
 
@@ -577,7 +627,7 @@ class Builds(unittest.TestCase):
             self.assertIsNone(build_course.resolve_video(d, "one", "one-c", manifest), "an empty manifest entry is no video")
             self.assertIsNone(build_course.resolve_video(d, "one", "one-a", {"one/one-a.mp4": "http://insecure/x.mp4"}))
             (d / "videos/one-a.mp4").write_bytes(b"")
-            self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("local", d / "videos/one-a.mp4"), "the local file wins")
+            self.assertEqual(build_course.resolve_video(d, "one", "one-a", manifest), ("local", (d / "videos/one-a.mp4").resolve()), "the local file wins")
             # A local MP4 that isn't the uploaded one (re-rendered or remuxed, not republished) is flagged.
             self.assertIn("publish:videos", build_course.unpublished_change(d, "one", "one-a", manifest), "the URL has no digest")
             digest = hashlib.sha256(b"").hexdigest()[:8]
@@ -586,16 +636,16 @@ class Builds(unittest.TestCase):
             self.assertIsNone(build_course.unpublished_change(d, "one", "one-b", manifest), "no local file, nothing to compare")
 
             out = Path(tmp) / "out"
-            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "--trust-authored-code", "-o", str(out), "--base", "/courses")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertTrue((out / "one/videos/one-a.mp4").exists(), "a local MP4 is copied")
             (d / "videos/one-a.mp4").unlink()  # published, so the local file goes
             (d / "videos/one-c.mp4").write_bytes(b"")  # a later lesson fails: a video without captions
-            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "--trust-authored-code", "-o", str(out), "--base", "/courses")
             self.assertNotEqual(r.returncode, 0)
             self.assertTrue((out / "one/videos/one-a.mp4").exists(), "a failed build keeps what the old index links")
             (d / "videos/one-c.mp4").unlink()
-            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(out), "--base", "/courses")
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "--trust-authored-code", "-o", str(out), "--base", "/courses")
             self.assertEqual(r.returncode, 0, r.stderr)
             page = (out / "one/index.html").read_text()
             lessons = {l["id"]: l for l in json.loads(re.search(r"window\.COURSE = (.*?);\n", page).group(1))["lessons"]}
@@ -610,7 +660,7 @@ class Builds(unittest.TestCase):
             self.assertIn("1 narrated videos", (out / "index.html").read_text())
             # --video-url sends Blob videos through the host's own route; captions don't change.
             routed = Path(tmp) / "routed"
-            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(routed), "--base", "/courses", "--video-url", "/api/watch?v={course}/{lesson}")
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "--trust-authored-code", "-o", str(routed), "--base", "/courses", "--video-url", "/api/watch?v={course}/{lesson}")
             self.assertEqual(r.returncode, 0, r.stderr)
             page = (routed / "one/index.html").read_text()
             lessons = {l["id"]: l for l in json.loads(re.search(r"window\.COURSE = (.*?);\n", page).group(1))["lessons"]}
@@ -620,9 +670,9 @@ class Builds(unittest.TestCase):
             self.assertNotIn("video", lessons["one-b"])
             # A video without captions fails the build instead of shipping without a track.
             (d / "videos/one-a.vtt").unlink()
-            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "-o", str(Path(tmp) / "out2"))
+            r = run(str(SKILLS / "course/scripts/build_course.py"), "--catalog", str(src), "--trust-authored-code", "-o", str(Path(tmp) / "out2"))
             self.assertNotEqual(r.returncode, 0)
-            self.assertIn("one/one-a: the lesson has a video but no captions", r.stderr)
+            self.assertIn("one/one-a: the lesson has a video but no safe captions file", r.stderr)
 
     def test_course_pages_link_the_site_icon(self):
         sys.path.insert(0, str(SKILLS / "course/scripts"))
@@ -724,7 +774,21 @@ class Builds(unittest.TestCase):
             lesson.write_text('window.LESSON = { title: "X", code: { js: "console.log(1)", expect: () => "1" } };\n')
             r = subprocess.run(["node", str(SKILLS / "explorable/scripts/check_code.mjs"), str(lesson)], capture_output=True, text=True)
             self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-            self.assertIn("shown, not checked", r.stdout)
+            self.assertIn("UNVERIFIED", r.stdout)
+
+    def test_code_check_does_not_execute_authored_javascript_by_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            marker = Path(tmp) / "executed"
+            lesson = Path(tmp) / "x.lesson.js"
+            lesson.write_text(
+                "this.constructor.constructor('return process')().mainModule.require('fs')"
+                f".writeFileSync({json.dumps(str(marker))}, 'bad');\n"
+                "window.LESSON = { title: 'X', code: { python: 'print(1)' } };\n"
+            )
+            r = subprocess.run(["node", str(SKILLS / "explorable/scripts/check_code.mjs"), str(lesson)], capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+            self.assertIn("UNVERIFIED", r.stdout)
+            self.assertFalse(marker.exists())
 
     def test_python_worker_runs_one_job_at_a_time(self):
         # Two runs posted together share one Pyodide: the second must wait for the first.
@@ -779,7 +843,7 @@ console.log(JSON.stringify({ before, after: timers.length }));
         lesson = ROOT.parent / "courses/ai-math/lessons/01-vectors-dot-product.lesson.js"
         with tempfile.TemporaryDirectory() as tmp:
             os.symlink(node, Path(tmp) / "node")  # a PATH with node but no g++ or python3
-            r = subprocess.run([node, str(SKILLS / "explorable/scripts/check_code.mjs"), str(lesson), "--include", str(lesson.parent.parent / "aimath.model.js")],
+            r = subprocess.run([node, str(SKILLS / "explorable/scripts/check_code.mjs"), str(lesson), "--include", str(lesson.parent.parent / "aimath.model.js"), "--trust-authored-code"],
                                capture_output=True, text=True, env={**os.environ, "PATH": tmp})
             self.assertEqual(r.returncode, 1, r.stdout)
             self.assertIn("nothing ran", r.stdout)
@@ -827,6 +891,23 @@ console.log(JSON.stringify({ before, after: timers.length }));
             self.assertNotIn("alert(1)", page)
             self.assertNotIn("onclick", page)
             self.assertIn('aria-label="A box"', page)
+
+    def test_diagram_network_fallback_requires_explicit_opt_in(self):
+        from unittest import mock
+
+        sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
+        import render  # type: ignore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "x.mmd"
+            source.write_text("flowchart LR; A-->B\n")
+            with mock.patch.object(render, "local_render", return_value=None), \
+                    mock.patch.object(render, "kroki_render", return_value="<svg/>") as kroki:
+                with self.assertRaises(SystemExit):
+                    render.render(source)
+                kroki.assert_not_called()
+                self.assertEqual(render.render(source, allow_network=True), ("<svg/>", "kroki"))
+                kroki.assert_called_once()
 
     def test_diagram_sanitizer_strips_active_content(self):
         sys.path.insert(0, str(SKILLS / "explain-diagram/scripts"))
@@ -998,12 +1079,13 @@ class Captions(unittest.TestCase):
             root = Path(tmp) / "c"
             (root / "videos").mkdir(parents=True)
             (root / "course.json").write_text(json.dumps({"id": "c", "lessons": [{"id": "l1", "file": "l1.lesson.js"}]}))
+            (root / "l1.lesson.js").write_text("window.LESSON = {};\n")
             (root / "videos" / "l1.mp4").write_bytes(b"")
             (root / "videos" / "l1.vtt").write_text("WEBVTT\n")
             (Path(tmp) / "videos.json").write_text(json.dumps({"c/l1.mp4": "https://example.com/l1.abc.mp4"}))
             for flags, runs in [([], 0), (["--remux"], 2), (["--force"], 2)]:
                 ok = subprocess.CompletedProcess([], 0, "", "")
-                with mock.patch.object(sys, "argv", ["narrate_course.py", str(root), *flags]), \
+                with mock.patch.object(sys, "argv", ["narrate_course.py", str(root), "--trust-authored-code", *flags]), \
                         mock.patch.object(course.subprocess, "run", return_value=ok) as run, \
                         contextlib.redirect_stdout(io.StringIO()):
                     self.assertEqual(course.main(), 0)
@@ -1015,7 +1097,7 @@ class Captions(unittest.TestCase):
             (root / "videos" / "l1.vtt").unlink()
             for flags in ([], ["--remux"]):
                 out = io.StringIO()
-                with mock.patch.object(sys, "argv", ["narrate_course.py", str(root), *flags]), \
+                with mock.patch.object(sys, "argv", ["narrate_course.py", str(root), "--trust-authored-code", *flags]), \
                         mock.patch.object(course.subprocess, "run") as run, contextlib.redirect_stdout(out):
                     self.assertEqual(course.main(), 1, flags)
                 run.assert_not_called()

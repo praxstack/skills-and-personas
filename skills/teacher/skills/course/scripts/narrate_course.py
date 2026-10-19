@@ -25,6 +25,7 @@ HERE = Path(__file__).resolve().parent
 EXP = HERE.parent.parent / "explorable" / "scripts"
 sys.path.insert(0, str(HERE))
 from build_course import logical_path  # noqa: E402
+from safe_course import validate_course_manifest  # noqa: E402
 
 
 def main() -> int:
@@ -34,10 +35,20 @@ def main() -> int:
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--board", choices=["paper", "chalk"], default="paper")
     ap.add_argument("--remux", action="store_true", help="remake only the sound of every existing video, keeping its picture (no --force needed)")
+    ap.add_argument("--trust-authored-code", action="store_true", help="after review, allow lesson JavaScript to run in the renderer")
     a = ap.parse_args()
-    meta = json.loads((a.course / "course.json").read_text())
-    shared = [x for s in meta.get("shared", []) for x in ("--include", str(a.course / s))]
+    if not a.trust_authored_code:
+        raise SystemExit("refusing to render authored lesson JavaScript; review it, then pass --trust-authored-code")
+    try:
+        validated = validate_course_manifest(a.course)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"unsafe course manifest in {a.course}: {exc}")
+    a.course = validated.root
+    meta = validated.data
+    shared = [x for path in validated.shared for x in ("--include", str(path))]
     out_dir = a.course / "videos"
+    if out_dir.is_symlink():
+        raise SystemExit(f"unsafe video output directory: {out_dir} is a link")
     out_dir.mkdir(exist_ok=True)
     manifest_file = logical_path(a.course).parent / "videos.json"  # like build_course.load_manifest
     published = json.loads(manifest_file.read_text()) if manifest_file.exists() else {}
@@ -70,7 +81,7 @@ def main() -> int:
             continue
         with tempfile.TemporaryDirectory() as tmp:
             page = Path(tmp) / f"{lesson['id']}.html"
-            r = subprocess.run([sys.executable, str(EXP / "build.py"), str(a.course / lesson["file"]), *shared, "-o", str(page)], capture_output=True, text=True)
+            r = subprocess.run([sys.executable, str(EXP / "build.py"), str(validated.lessons[lesson["id"]]), *shared, "-o", str(page)], capture_output=True, text=True)
             if r.returncode:
                 print(f"FAIL {lesson['id']}: build\n{r.stderr}")
                 bad += 1

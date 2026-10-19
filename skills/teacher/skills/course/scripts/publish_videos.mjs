@@ -16,10 +16,10 @@
 // manifest is rewritten after every upload, so an interrupted run keeps what
 // it finished. --dry-run lists what would be uploaded and needs no token.
 
-import { readFile, writeFile, rename, stat, readdir } from "node:fs/promises";
-import { existsSync, createReadStream, realpathSync } from "node:fs";
+import { readFile, writeFile, rename, stat, readdir, open, realpath } from "node:fs/promises";
+import { existsSync, realpathSync, constants } from "node:fs";
 import { createHash } from "node:crypto";
-import { join, resolve, dirname } from "node:path";
+import { join, resolve, dirname, relative, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // The site's courses/: the one beside the engine when it sits at <site>/teacher/,
@@ -41,9 +41,44 @@ export function parseArgs(argv) {
   return a;
 }
 
-export async function sha8(file) {
+const SAFE_ID = /^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,126}[A-Za-z0-9])?$/;
+
+export function requireSafeId(value, label) {
+  if (typeof value !== "string" || !SAFE_ID.test(value) || value.includes("..")) {
+    throw new Error(`${label} must be a portable identifier (letters, digits, dot, dash or underscore)`);
+  }
+  return value;
+}
+
+function requireInside(root, target, label) {
+  const rel = relative(root, target);
+  if (!rel || rel === ".." || rel.startsWith(`..${process.platform === "win32" ? "\\" : "/"}`) || isAbsolute(rel)) {
+    throw new Error(`${label} escapes its declared root`);
+  }
+}
+
+async function openBoundRegularFile(root, file) {
+  const canonical = await realpath(file);
+  requireInside(root, canonical, "video file");
+  const noFollow = constants.O_NOFOLLOW || 0;
+  const handle = await open(file, constants.O_RDONLY | noFollow);
+  try {
+    const [opened, named] = await Promise.all([handle.stat(), stat(canonical)]);
+    if (!opened.isFile()) throw new Error("video input must be a regular file");
+    if (opened.nlink !== 1) throw new Error("video input must not be a hard link");
+    if (opened.dev !== named.dev || opened.ino !== named.ino) {
+      throw new Error("video input changed while it was being validated");
+    }
+    return { handle, size: opened.size };
+  } catch (error) {
+    await handle.close();
+    throw error;
+  }
+}
+
+export async function sha8(handle) {
   const h = createHash("sha256");
-  for await (const chunk of createReadStream(file)) h.update(chunk);
+  for await (const chunk of handle.createReadStream({ start: 0, autoClose: false })) h.update(chunk);
   return h.digest("hex").slice(0, 8);
 }
 
@@ -59,18 +94,39 @@ export function isCurrent(url, v) {
 // Every lesson video found under root: { key, pathname, file, size, digest }.
 export async function findVideos(coursesDir, root) {
   const out = [];
-  for (const dir of (await readdir(coursesDir, { withFileTypes: true })).filter((d) => d.isDirectory()).map((d) => d.name).sort()) {
-    const meta = join(coursesDir, dir, "course.json");
-    if (!existsSync(meta)) continue;
-    const course = JSON.parse(await readFile(meta, "utf8"));
-    for (const lesson of course.lessons) {
-      const file = join(root, dir, "videos", `${lesson.id}.mp4`);
-      if (!existsSync(file)) continue;
-      const digest = await sha8(file);
-      out.push({ key: `${course.id}/${lesson.id}.mp4`, pathname: `courses/${course.id}/${lesson.id}.${digest}.mp4`, file, size: (await stat(file)).size, digest });
+  const coursesRoot = await realpath(coursesDir);
+  const videosRoot = await realpath(root);
+  try {
+    for (const entry of (await readdir(coursesDir, { withFileTypes: true })).filter((d) => d.isDirectory()).sort((a, b) => a.name.localeCompare(b.name))) {
+      const dir = requireSafeId(entry.name, "course directory");
+      const courseDir = await realpath(join(coursesDir, dir));
+      requireInside(coursesRoot, courseDir, "course directory");
+      const meta = join(courseDir, "course.json");
+      if (!existsSync(meta)) continue;
+      const course = JSON.parse(await readFile(meta, "utf8"));
+      const courseId = requireSafeId(course.id, "course id");
+      if (!Array.isArray(course.lessons)) throw new Error(`course ${courseId} must have a lessons array`);
+      for (const lesson of course.lessons) {
+        const lessonId = requireSafeId(lesson?.id, `lesson id in ${courseId}`);
+        const file = join(videosRoot, dir, "videos", `${lessonId}.mp4`);
+        if (!existsSync(file)) continue;
+        const { handle, size } = await openBoundRegularFile(videosRoot, file);
+        const digest = await sha8(handle);
+        out.push({
+          key: `${courseId}/${lessonId}.mp4`,
+          pathname: `courses/${courseId}/${lessonId}.${digest}.mp4`,
+          file,
+          handle,
+          size,
+          digest,
+        });
+      }
     }
+    return out;
+  } catch (error) {
+    await Promise.allSettled(out.map((video) => video.handle.close()));
+    throw error;
   }
-  return out;
 }
 
 async function main() {
@@ -102,33 +158,37 @@ async function main() {
   let uploaded = 0;
   let skipped = 0;
   let bytes = 0;
-  for (const v of videos) {
-    const mb = (v.size / 1e6).toFixed(1);
-    if (isCurrent(manifest[v.key], v)) {
-      console.log(`skip   ${v.key} (${mb} MB, ${v.digest} already on Blob)`);
-      skipped++;
-      continue;
-    }
-    if (a.dryRun) {
-      console.log(`upload ${v.key} (${mb} MB) -> ${v.pathname}`);
+  try {
+    for (const v of videos) {
+      const mb = (v.size / 1e6).toFixed(1);
+      if (isCurrent(manifest[v.key], v)) {
+        console.log(`skip   ${v.key} (${mb} MB, ${v.digest} already on Blob)`);
+        skipped++;
+        continue;
+      }
+      if (a.dryRun) {
+        console.log(`upload ${v.key} (${mb} MB) -> ${v.pathname}`);
+        uploaded++;
+        bytes += v.size;
+        continue;
+      }
+      const blob = await put(v.pathname, v.handle.createReadStream({ start: 0, autoClose: false }), {
+        access: "public",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: "video/mp4",
+        cacheControlMaxAge: YEAR,
+        multipart: v.size > 50e6,
+        token,
+      });
+      manifest[v.key] = blob.url;
+      await save();
+      console.log(`ok     ${v.key} (${mb} MB) ${blob.url}`);
       uploaded++;
       bytes += v.size;
-      continue;
     }
-    const blob = await put(v.pathname, createReadStream(v.file), { // streamed, so a big film isn't held in memory
-      access: "public",
-      addRandomSuffix: false, // the digest in the pathname already makes it unique
-      allowOverwrite: true, // same pathname means same bytes, so a rerun after a crash is harmless
-      contentType: "video/mp4",
-      cacheControlMaxAge: YEAR,
-      multipart: v.size > 50e6,
-      token,
-    });
-    manifest[v.key] = blob.url;
-    await save();
-    console.log(`ok     ${v.key} (${mb} MB) ${blob.url}`);
-    uploaded++;
-    bytes += v.size;
+  } finally {
+    await Promise.allSettled(videos.map((video) => video.handle.close()));
   }
   if (!a.dryRun) await save();
   const verb = a.dryRun ? "would upload" : "uploaded";

@@ -27,6 +27,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import secrets
+import stat
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,10 +37,91 @@ from pathlib import Path
 SPACING = [1, 3, 6]
 LEVELS = ["L0", "L1", "L2", "L3", "L4"]
 LEVEL_NAMES = {"L0": "intuition", "L1": "mechanism", "L2": "formal model", "L3": "edge cases and limits", "L4": "transfer"}
+PRIVATE_DIR_MODE = 0o700
+PRIVATE_FILE_MODE = 0o600
 
 
 def now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def _private_dir(root: Path, *, create: bool) -> int:
+    """Open a learner-owned journal directory without following its final link."""
+    created = False
+    if create:
+        try:
+            os.mkdir(root, PRIVATE_DIR_MODE)
+            created = True
+        except FileExistsError:
+            pass
+    try:
+        named = os.lstat(root)
+    except FileNotFoundError:
+        raise SystemExit(f"no journal in {root}")
+    if stat.S_ISLNK(named.st_mode) or not stat.S_ISDIR(named.st_mode):
+        raise SystemExit(f"unsafe journal directory: {root} must be a real directory, not a link")
+    if hasattr(os, "getuid") and named.st_uid != os.getuid():
+        raise SystemExit(f"unsafe journal directory: {root} is owned by another user")
+    current_mode = stat.S_IMODE(named.st_mode)
+    if current_mode != PRIVATE_DIR_MODE and not (created or root.name == ".teacher"):
+        raise SystemExit(
+            f"unsafe journal directory: {root} has mode {current_mode:o}; "
+            "use a private 0700 directory instead"
+        )
+    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(root, flags)
+    opened = os.fstat(fd)
+    if (opened.st_dev, opened.st_ino) != (named.st_dev, named.st_ino):
+        os.close(fd)
+        raise SystemExit(f"unsafe journal directory: {root} changed while it was opened")
+    if stat.S_IMODE(opened.st_mode) != PRIVATE_DIR_MODE:
+        os.fchmod(fd, PRIVATE_DIR_MODE)
+    return fd
+
+
+def _read_private(dir_fd: int, name: str) -> str | None:
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(name, flags, dir_fd=dir_fd)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise SystemExit(f"unsafe journal file {name}: {exc.strerror}")
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+            raise SystemExit(f"unsafe journal file {name}: expected one private regular file")
+        if hasattr(os, "getuid") and info.st_uid != os.getuid():
+            raise SystemExit(f"unsafe journal file {name}: owned by another user")
+        os.fchmod(fd, PRIVATE_FILE_MODE)
+        with os.fdopen(fd, "r", encoding="utf-8", closefd=False) as stream:
+            return stream.read()
+    finally:
+        os.close(fd)
+
+
+def _write_private(dir_fd: int, name: str, content: str) -> None:
+    # Refuse an unsafe existing entry before replacing it. os.replace replaces
+    # a link itself, but failing closed exposes workspace tampering to the user.
+    _read_private(dir_fd, name)
+    temp_name = f".{name}.{os.getpid()}.{secrets.token_hex(8)}.tmp"
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(temp_name, flags, PRIVATE_FILE_MODE, dir_fd=dir_fd)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", closefd=False) as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(fd)
+        os.replace(temp_name, name, src_dir_fd=dir_fd, dst_dir_fd=dir_fd)
+        os.fsync(dir_fd)
+    except BaseException:
+        try:
+            os.unlink(temp_name, dir_fd=dir_fd)
+        except FileNotFoundError:
+            pass
+        raise
+    finally:
+        os.close(fd)
 
 
 class Journal:
@@ -45,7 +129,18 @@ class Journal:
         self.root = root
         self.file = root / "journal.json"
         try:
-            self.data: dict = json.loads(self.file.read_text()) if self.file.exists() else {}
+            try:
+                root_fd = _private_dir(root, create=False)
+            except SystemExit:
+                if root.exists() or root.is_symlink():
+                    raise
+                self.data = {}
+                return
+            try:
+                raw = _read_private(root_fd, "journal.json")
+            finally:
+                os.close(root_fd)
+            self.data: dict = json.loads(raw) if raw is not None else {}
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
             raise SystemExit(f"{self.file} can't be read ({e}); fix it, or delete the journal with: series.py forget --yes")
 
@@ -68,12 +163,13 @@ class Journal:
         return self.data["session"]
 
     def save(self) -> None:
-        self.root.mkdir(parents=True, exist_ok=True)
         self.data["updated"] = now()
-        tmp = self.file.with_suffix(".tmp")
-        tmp.write_text(json.dumps(self.data, indent=2, ensure_ascii=False) + "\n")
-        tmp.replace(self.file)
-        (self.root / "JOURNAL.md").write_text(self.markdown())
+        root_fd = _private_dir(self.root, create=True)
+        try:
+            _write_private(root_fd, "journal.json", json.dumps(self.data, indent=2, ensure_ascii=False) + "\n")
+            _write_private(root_fd, "JOURNAL.md", self.markdown())
+        finally:
+            os.close(root_fd)
 
     # ---- views ----
     @staticmethod
@@ -191,21 +287,23 @@ def main() -> int:
     if a.cmd == "forget":
         if not a.yes:
             raise SystemExit("this deletes the journal; run again with --yes once the learner has confirmed")
-        # Before the journal is read: a corrupt journal.json can still be deleted.
-        journal = a.dir / "journal.json"
-        if not journal.is_file():
-            raise SystemExit(f"no journal in {a.dir}; nothing deleted")
-        # Delete only the files this script writes, never the folder's other contents.
-        # journal.json goes last, so a forget that stops partway can be run again.
-        md = a.dir / "JOURNAL.md"
+        root_fd = _private_dir(a.dir, create=False)
         try:
-            ours = md.read_text(errors="replace").startswith("# Learning journal:")
-        except (FileNotFoundError, IsADirectoryError):
-            ours = False
-        except OSError as e:  # there but unreadable: stop before deleting anything, or the forget is half done
-            raise SystemExit(f"can't read {md} ({e.strerror}); nothing deleted")
-        for f in (a.dir / "journal.tmp", *([md] if ours else []), journal):
-            f.unlink(missing_ok=True)
+            journal = _read_private(root_fd, "journal.json")
+            if journal is None:
+                raise SystemExit(f"no journal in {a.dir}; nothing deleted")
+            try:
+                md = _read_private(root_fd, "JOURNAL.md")
+            except SystemExit as exc:
+                raise SystemExit(f"{exc}; nothing deleted") from None
+            ours = bool(md and md.startswith("# Learning journal:"))
+            if ours:
+                os.unlink("JOURNAL.md", dir_fd=root_fd)
+            # journal.json goes last, so an interrupted forget remains retryable.
+            os.unlink("journal.json", dir_fd=root_fd)
+            os.fsync(root_fd)
+        finally:
+            os.close(root_fd)
         if a.dir.name == ".teacher":  # only the default folder is ours; a --dir folder belongs to the caller
             try:
                 a.dir.rmdir()

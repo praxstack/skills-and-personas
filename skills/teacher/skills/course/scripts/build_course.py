@@ -49,13 +49,17 @@ sys.path.insert(0, str(SKILLS / "lesson-notebook" / "scripts"))
 sys.path.insert(0, str(SKILLS / "explorable" / "scripts"))
 import bundle  # noqa: E402
 import build as explorable_build  # noqa: E402
+from safe_course import optional_confined_file, validate_course_manifest  # noqa: E402
 
 ENGINE = HERE.parent / "assets" / "engine"
 ANIM = SKILLS / "concept-animation" / "scripts"
 
 
-def extract(course_dir: Path) -> dict:
-    out = subprocess.run(["node", str(HERE / "extract.mjs"), str(course_dir)], capture_output=True, text=True)
+def extract(course_dir: Path, trust_authored_code: bool = False) -> dict:
+    cmd = ["node", str(HERE / "extract.mjs"), str(course_dir)]
+    if trust_authored_code:
+        cmd.append("--trust-authored-code")
+    out = subprocess.run(cmd, capture_output=True, text=True)
     if out.returncode:
         raise SystemExit(f"extract failed for {course_dir}:\n{out.stderr}")
     return json.loads(out.stdout)
@@ -89,8 +93,8 @@ def load_manifest(course_dir: Path) -> dict:
 def resolve_video(course_dir: Path, course_id: str, lesson_id: str, manifest: dict) -> tuple[str, str | Path] | None:
     """Where a lesson's narrated video comes from: ("local", path) when the MP4 is on
     disk, else ("url", url) from the manifest, else None (no video button)."""
-    local = course_dir / "videos" / f"{lesson_id}.mp4"
-    if local.exists():
+    local = optional_confined_file(course_dir, Path("videos") / f"{lesson_id}.mp4", "lesson video")
+    if local is not None:
         return ("local", local)
     url = (manifest.get(f"{course_id}/{lesson_id}.mp4") or "").strip()
     return ("url", url) if url.startswith("https://") else None
@@ -102,9 +106,9 @@ def unpublished_change(course_dir: Path, course_id: str, lesson_id: str, manifes
     <lesson-id>.<sha8>.mp4), so the site would serve the old video next to the
     new captions until publish:videos runs again. None when they match, or
     when there's no local MP4 or no URL to compare."""
-    local = course_dir / "videos" / f"{lesson_id}.mp4"
+    local = optional_confined_file(course_dir, Path("videos") / f"{lesson_id}.mp4", "lesson video")
     url = (manifest.get(f"{course_id}/{lesson_id}.mp4") or "").strip()
-    if not local.exists() or not url:
+    if local is None or not url:
         return None
     h = hashlib.sha256()
     with local.open("rb") as f:
@@ -121,21 +125,28 @@ def video_route(template: str, course_id: str, lesson_id: str) -> str:
     return template.replace("{course}", course_id).replace("{lesson}", lesson_id)
 
 
-def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: dict | None = None, base: str = "", root: str = "", video_url: str = "") -> dict:
+def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: dict | None = None, base: str = "", root: str = "", video_url: str = "", trust_authored_code: bool = False) -> dict:
     """base: URL path this course's folder is served at ('' for relative links);
     root: the URL path of the catalog that holds it (for prerequisite links);
     video_url: a --video-url template for Blob-hosted videos ('' for the Blob URL)."""
     base, root = norm_base(base), norm_base(root)
-    data = extract(course_dir)
+    try:
+        validated = validate_course_manifest(course_dir)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"unsafe course manifest in {course_dir}: {exc}")
+    course_dir = validated.root
+    data = extract(course_dir, trust_authored_code)
+    if data.get("id") != validated.data.get("id") or {row.get("id") for row in data.get("lessons", [])} != set(validated.lessons):
+        raise SystemExit(f"{course_dir}: extracted course identity differs from the validated manifest")
     for ident in [data.get("id", "course"), *(l["id"] for l in data["lessons"])]:
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", str(ident)):
             raise SystemExit(f"{course_dir}: id {ident!r} may use only letters, digits, - and _ (it becomes a file name)")
     out.mkdir(parents=True, exist_ok=True)
-    shared = [course_dir / s for s in data.get("shared", [])]
+    shared = list(validated.shared)
     manifest = load_manifest(course_dir)
     stale = []
     for lesson in data["lessons"]:
-        src = course_dir / lesson["file"]
+        src = validated.lessons[lesson["id"]]
         page = f"{lesson['id']}.html"
         if lesson["kind"] == "animation":
             r = subprocess.run([sys.executable, str(ANIM / "build.py"), str(src), "-o", str(out / page), *(["--fragment"] if fragment else []), *[x for f in shared for x in ("--include", str(f))]], capture_output=True, text=True)
@@ -159,9 +170,9 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
                 lesson["video"] = video_route(video_url, data["id"], lesson["id"]) if video_url else where
             # Captions stay same-origin even when the video is on Blob. A video
             # without them isn't offered: narrate.py writes the .vtt beside the MP4.
-            vtt = course_dir / "videos" / f"{lesson['id']}.vtt"
-            if not vtt.exists():
-                raise SystemExit(f"{data['id']}/{lesson['id']}: the lesson has a video but no captions at {vtt}")
+            vtt = optional_confined_file(course_dir, Path("videos") / f"{lesson['id']}.vtt", "video captions")
+            if vtt is None:
+                raise SystemExit(f"{data['id']}/{lesson['id']}: the lesson has a video but no safe captions file")
             shutil.copy2(vtt, out / "videos" / vtt.name)
             lesson["captions"] = f"{base}videos/{vtt.name}"
     data["prereqTitles"] = titles or {}
@@ -195,16 +206,21 @@ CATALOG_CSS = ENGINE / "course.css"
 DEFAULT_BRAND = "Kai Mori"
 
 
-def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "", brand: str = DEFAULT_BRAND, video_url: str = "") -> None:
+def build_catalog(root: Path, out: Path, fragment: bool = False, base: str = "", brand: str = DEFAULT_BRAND, video_url: str = "", trust_authored_code: bool = False) -> None:
     """brand: the name over the catalog and in its title ("" for none)."""
     base = norm_base(base)
-    dirs = sorted(d for d in root.iterdir() if (d / "course.json").exists())
-    metas = {d.name: json.loads((d / "course.json").read_text()) for d in dirs}
+    root = root.resolve(strict=True)
+    dirs = sorted(d for d in root.iterdir() if d.is_dir() and not d.is_symlink() and (d / "course.json").exists())
+    try:
+        checked = {d: validate_course_manifest(d) for d in dirs}
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"unsafe course in catalog {root}: {exc}")
+    metas = {d.name: checked[d].data for d in dirs}
     titles = {m["id"]: m["title"] for m in metas.values()}
     built = []
     for d in dirs:
         cid = metas[d.name]["id"]
-        data = build_course(d, out / cid, fragment, titles, base=f"{base}{cid}/" if base else "", root=base, video_url=video_url)
+        data = build_course(d, out / cid, fragment, titles, base=f"{base}{cid}/" if base else "", root=base, video_url=video_url, trust_authored_code=trust_authored_code)
         built.append(data)
         print(f"built {data['id']}: {len(data['lessons'])} lessons")
     # Courses a learner should take first come first; each card links both ways.
@@ -285,11 +301,12 @@ def main() -> int:
     ap.add_argument("--brand", default=DEFAULT_BRAND, help=f"with --catalog: the name over the catalog page (default: {DEFAULT_BRAND}; \"\" for none)")
     ap.add_argument("--video-url", default="", help='URL template for Blob-hosted videos, e.g. "/api/watch?v={course}/{lesson}" (default: the Blob URL)')
     ap.add_argument("--icon", default="", help="URL of an SVG site icon to link from every page, e.g. /favicon.svg")
+    ap.add_argument("--trust-authored-code", action="store_true", help="after review, allow lesson JavaScript to execute during extraction")
     a = ap.parse_args()
     if a.catalog:
-        build_catalog(a.course, a.out, a.fragment, a.base, a.brand, a.video_url)
+        build_catalog(a.course, a.out, a.fragment, a.base, a.brand, a.video_url, a.trust_authored_code)
     else:
-        data = build_course(a.course, a.out, a.fragment, base=a.base, root=a.root, video_url=a.video_url)
+        data = build_course(a.course, a.out, a.fragment, base=a.base, root=a.root, video_url=a.video_url, trust_authored_code=a.trust_authored_code)
         print(f"built {data['id']}: {len(data['lessons'])} lessons into {a.out}")
     if a.icon and not a.fragment:
         add_icon(a.out, a.icon)

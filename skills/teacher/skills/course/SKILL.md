@@ -23,10 +23,16 @@ Each `lessons[]` entry: `id` (letters, digits, `-` and `_`; it becomes a file na
 
 ## Build and test
 
+Course lessons are executable JavaScript. The builder validates every manifest
+path first and refuses to execute lesson code unless the caller passes
+`--trust-authored-code` after reviewing all lesson and shared files. Third-party
+courses need an external restricted sandbox; the flag is a trust decision, not
+a sandbox.
+
 ```sh
-python3 scripts/build_course.py courses/segment-tree -o site/segment-tree     # one course
-python3 scripts/build_course.py --catalog courses -o site                      # every course plus a catalog page
-python3 scripts/test_course.py courses/segment-tree                            # code, interactions and looks of every lesson, then the course page
+python3 scripts/build_course.py courses/segment-tree -o site/segment-tree --trust-authored-code     # one reviewed course
+python3 scripts/build_course.py --catalog courses -o site --trust-authored-code                      # reviewed catalog
+python3 scripts/test_course.py courses/segment-tree --trust-authored-code       # reviewed code, interactions and looks, then the course page
 ```
 
 `--fragment` builds pages for hosts that wrap them (Claude artifacts). Pages are single files and work from disk. For a web host, pass `--base /courses/` (the URL path the output folder is served at): links become root-absolute, so they still work when the host serves `/courses/ai-math/` as `/courses/ai-math` (clean URLs, no trailing slash, as on Vercel).

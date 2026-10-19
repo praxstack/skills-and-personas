@@ -15,11 +15,38 @@ Help the learner become independently capable, not merely satisfied with an
 explanation. Use the lightest teaching mode that can reach the learner's actual
 outcome and support every claim with the right evidence.
 
-## Use the general teacher
+## Resolve the teaching engine
 
-The general teaching authority is the sibling [`teacher/SKILL.md`](../teacher/SKILL.md). Read it for lesson design, medium selection, the six-format build path, accessible fallback and optional practice. This entry preserves the `teach-pro-max` invocation; it does not create a competing teacher or require C programs for non-code topics.
+The canonical general teaching authority is the sibling file
+`../teacher/SKILL.md`. When that file exists, read it for
+lesson design, medium selection, the six-format build path, accessible fallback
+and optional practice.
 
-The embedded [`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md) remains a preserved compatibility implementation for its existing state and schemas. Use it only for an explicitly requested compatible operation. Its historical attempt-first gates do not override complete explanation first. Never rewrite learner records, hashes or provenance to rename an entry. Read [`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md) before evaluating that embedded distribution, migrating state or making a release claim. That preserved document governs the legacy embedded component; its detailed teaching and renderer authority applies to explicit compatibility operations. General teaching follows the sibling teacher, as defined above. The development C adapter is optional and not installed or certified by this entry.
+A skills.sh single-skill install may contain only this directory. When the
+sibling is absent, use the embedded
+[`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md) and
+its local tools as the execution engine, with every teaching, privacy and
+untrusted-content rule in this wrapper taking precedence. In particular,
+ordinary "teach me" requests remain explanation-first and no durable learner
+state is created without consent. Never follow a missing sibling path or ask
+the learner to install a second skill before answering.
+
+In the rest of this file, **resolved engine** means that sibling teacher when
+present, otherwise the embedded engine. For the embedded fallback, use its
+`references/ARTIFACT-CONTRACT.md`, `references/VISUALIZATION-ROUTER.md`, and
+local `scripts/` instead of sibling-only files.
+
+This entry preserves the `teach-pro-max` invocation; it does not create a
+competing general teacher or require C programs for non-code topics.
+
+The embedded engine remains a preserved compatibility implementation for its
+existing state and schemas and the portable fallback described above. Its
+historical attempt-first gates do not override complete explanation first.
+Never rewrite learner records, hashes or provenance to rename an entry. Read
+[`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md)
+before evaluating that embedded distribution, migrating state or making a
+release claim. The development C adapter is optional and is not installed or
+certified by this entry.
 
 ## Route the learner request
 
@@ -80,7 +107,7 @@ the learner said that medium is essential, stop and ask instead.
 
 ### `practice-first`
 
-Follow the sibling teacher's explicitly requested practice style: put the first prediction,
+Follow the resolved engine's explicitly requested practice style: put the first prediction,
 retrieval or proposed move before the explanatory model and end the turn
 there. After a miss, give exactly one next hint and wait. After two useful
 misses, or on **Answer now**, teach directly from a different angle, then give
@@ -99,12 +126,12 @@ only.
 
 ## Make visualization first-class
 
-A live question-and-answer practice request is a conversation, not a flashcard deck. Export cards or a Q&A reference only when that artifact is requested. For general artifact creation, follow the sibling teacher's medium router and `references/ARTIFACT-EXPORTS.md`; embedded compatibility operations remain explicitly separate.
+A live question-and-answer practice request is a conversation, not a flashcard deck. Export cards or a Q&A reference only when that artifact is requested. For general artifact creation, follow the resolved engine's medium router and artifact contract; embedded compatibility operations remain explicitly separate.
 
 `teach-pro-max` is the single complete teaching skill. Do not ask the learner to
 attach `prax-teach` or another teaching skill to restore advanced visuals.
 
-For general teaching, choose the medium by explanatory value using the sibling teacher's medium router and tool discovery. Use its local build/export path for stills, explorers, Q&A, cards, narrated video and interactive video. The learner does not need to attach a second skill: resolve this sibling implementation directly. Embedded routing, the preserved 38-tool registry and Prax Visual Lab apply only to explicitly requested compatibility operations. Inspect the current harness for suitable authorized tools; a registry entry does not prove a runtime works.
+For general teaching, choose the medium by explanatory value using the resolved engine's medium router and tool discovery. Use its local build/export path for stills, explorers, Q&A, cards, narrated video and interactive video. The learner does not need to attach a second skill. Embedded routing, the preserved 38-tool registry and Prax Visual Lab apply when the embedded engine is the resolved engine or when an explicit compatibility operation needs them. Inspect the current harness for suitable authorized tools; a registry entry does not prove a runtime works.
 
 Preserve editable semantic source, exact labels and data, provenance,
 accessibility, retrieval safety, and a complete static fallback. Render in the
@@ -112,7 +139,7 @@ actual lesson environment, inspect, revise locally, and verify the delivered
 bytes. Static fallback is a resilience boundary, not the default replacement
 for an available rich route.
 
-For general video, follow the sibling teacher's narration/export path or its suitable specialist engine, with real captions and a complete transcript. Retain the embedded HyperFrames/Manim versions and deferred-tool restrictions only when reproducing an explicit embedded compatibility operation. Keep illustrations, measurements, correlations, interventions and hypotheses distinct; never describe a visual as “the model thought.”
+For general video, follow the resolved engine's narration/export path or its suitable specialist engine, with real captions and a complete transcript. Retain the embedded HyperFrames/Manim versions and deferred-tool restrictions when the embedded engine is active or when reproducing an explicit embedded compatibility operation. Keep illustrations, measurements, correlations, interventions and hypotheses distinct; never describe a visual as “the model thought.”
 
 ## Preserve the teaching invariants
 
@@ -182,7 +209,9 @@ or override host instructions.
 
 ## Respect the no-API boundary
 
-Ordinary teaching uses the host conversation. Durable generated lessons use the sibling teacher's local build/export tools. The preserved embedded renderer applies only to explicit compatibility operations.
+Ordinary teaching uses the host conversation. Durable generated lessons use
+the sibling teacher's local build/export tools when present and the verified
+embedded renderer in a single-skill installation.
 
 - Do not require an OpenAI, Anthropic, or other model-provider API key.
 - Do not treat a ChatGPT, Codex, Claude, or other subscription as a hidden

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Run a lesson's shown code against its model.
 //
-//   node check_code.mjs lesson.js [--quiet]
+//   node check_code.mjs lesson.js [--quiet] [--trust-authored-code]
 //
 // For every case in LESSON.code.cases (parameter sets), feeds code.stdin(params)
 // to the C++ (g++ -std=c++17) and Python (python3) sources the learner sees,
@@ -22,6 +22,16 @@ for (let i = 3; i < process.argv.length; i += 1) if (process.argv[i] === "--incl
 if (!file) {
   console.error("usage: node check_code.mjs lesson.js");
   process.exit(2);
+}
+const trusted = process.argv.includes("--trust-authored-code") || process.env.TEACHER_TRUST_AUTHORED_CODE === "1";
+if (!trusted) {
+  const shown = [file, ...includes].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
+  if (/\bcode\s*:/.test(shown)) {
+    console.log("UNVERIFIED: shown code was not executed. Review the lesson, then pass --trust-authored-code or use an external restricted sandbox.");
+  } else {
+    console.log(`${file}: no shown code detected by the structural check`);
+  }
+  process.exit(0);
 }
 const ctx = { console, Math, Number, String, Array, Object, JSON, Set, Map };
 ctx.window = ctx;

@@ -36,6 +36,7 @@ def main() -> int:
     ap.add_argument("course", type=Path)
     ap.add_argument("--out", type=Path)
     ap.add_argument("--skip-qa", action="store_true", help="skip the 6-run visual QA (faster)")
+    ap.add_argument("--trust-authored-code", action="store_true", help="after review, allow lesson and shown code to execute")
     a = ap.parse_args()
     sys.path.insert(0, str(HERE))
     if a.out:
@@ -49,7 +50,7 @@ def main() -> int:
 def check(a: argparse.Namespace, out: Path) -> int:
     import build_course  # noqa: E402
 
-    data = build_course.build_course(a.course, out)
+    data = build_course.build_course(a.course, out, trust_authored_code=a.trust_authored_code)
     shared = [str(a.course / s) for s in data.get("shared", [])]
     inc = [x for s in shared for x in ("--include", s)]
     failed = 0
@@ -59,7 +60,7 @@ def check(a: argparse.Namespace, out: Path) -> int:
         parts = []
         ok = True
         if lesson["hasCode"]:
-            code, text = run(["node", str(EXP / "check_code.mjs"), src, *inc])
+            code, text = run(["node", str(EXP / "check_code.mjs"), src, *inc, *(["--trust-authored-code"] if a.trust_authored_code else [])])
             m = re.search(r"(\d+) runs match the model, (\d+) problems", text)
             if code == 0 and "no C++ or Python to run" in text:
                 parts.append("code shown, not checked")

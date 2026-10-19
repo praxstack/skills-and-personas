@@ -816,10 +816,17 @@ Use this only when the human explicitly wants installation or when missing skill
 
 ### 10.1 gstack
 
-Generic install/detect:
+Install only a reviewed immutable revision. Replace the placeholder with the
+full commit ID recorded in the review receipt; do not use a branch name:
 
 ```bash
-git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/gstack
+GSTACK_COMMIT='REPLACE_WITH_FULL_REVIEWED_GSTACK_COMMIT'
+test "${#GSTACK_COMMIT}" -eq 40
+git init ~/gstack
+git -C ~/gstack remote add origin https://github.com/garrytan/gstack.git
+git -C ~/gstack fetch --depth 1 origin "$GSTACK_COMMIT"
+git -C ~/gstack checkout --detach FETCH_HEAD
+test "$(git -C ~/gstack rev-parse HEAD)" = "$GSTACK_COMMIT"
 cd ~/gstack
 ./setup
 ```
@@ -855,9 +862,10 @@ For other agents, prefer their plugin/extension marketplace or read/import the r
 
 ### 10.3 Matt Pocock skills
 
-```bash
-npx skills@latest add mattpocock/skills
-```
+Do not execute `@latest`. Download a reviewed, exact package version, verify its
+published integrity and the SHA-256 recorded in the review receipt, inspect its
+contents, then execute the verified local tarball. If no reviewed version and
+digest are available, stop and ask the human to approve a review first.
 
 Then run the setup skill if available:
 
@@ -869,13 +877,21 @@ If slash commands are unavailable, read/import the installed skill Markdown file
 
 ### 10.4 llm-council-plus
 
-Local app:
+Local app: replace the placeholder with the full reviewed commit ID and verify
+the detached checkout before installing dependencies. Commit dependency locks
+alongside the review receipt; do not install from a moving branch.
 
 ```bash
-git clone https://github.com/jacob-bd/llm-council-plus.git
+COUNCIL_COMMIT='REPLACE_WITH_FULL_REVIEWED_COUNCIL_COMMIT'
+test "${#COUNCIL_COMMIT}" -eq 40
+git init llm-council-plus
+git -C llm-council-plus remote add origin https://github.com/jacob-bd/llm-council-plus.git
+git -C llm-council-plus fetch --depth 1 origin "$COUNCIL_COMMIT"
+git -C llm-council-plus checkout --detach FETCH_HEAD
+test "$(git -C llm-council-plus rev-parse HEAD)" = "$COUNCIL_COMMIT"
 cd llm-council-plus
 uv sync
-cd frontend && npm install
+cd frontend && npm ci
 cd ..
 ./start.sh
 ```
@@ -897,8 +913,8 @@ Direct REST/API skill mode where supported:
 
 ```bash
 mkdir -p ~/.claude/skills/llm-council-api
-curl -o ~/.claude/skills/llm-council-api/SKILL.md \
-  https://raw.githubusercontent.com/jacob-bd/llm-council-plus/main/skills/llm-council-api/SKILL.md
+install -m 0644 skills/llm-council-api/SKILL.md \
+  ~/.claude/skills/llm-council-api/SKILL.md
 ```
 
 For non-Claude hosts, adapt this as:

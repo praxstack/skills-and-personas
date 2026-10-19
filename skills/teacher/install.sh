@@ -98,6 +98,9 @@ install_into() {
   if [ "$SUBSKILLS" = 1 ]; then
     for sub in "$SRC"/skills/*/; do
       sub="${sub%/}"
+      # Public compatibility aliases are installed explicitly from their
+      # top-level entry. Never shadow them with a bundled copy.
+      [ "$(basename "$sub")" = "teach-pro-max" ] && continue
       [ -f "$sub/SKILL.md" ] && place "$sub" "$base" "$(basename "$sub")"
     done
   fi
