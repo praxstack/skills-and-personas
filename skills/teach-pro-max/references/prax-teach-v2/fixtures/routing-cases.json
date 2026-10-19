@@ -126,6 +126,46 @@
       },
       "id": "polite-engineering-curriculum-parser",
       "request": "Could you please refactor the curriculum parser and update its tests"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "lesson",
+        "persistence": false,
+        "requested_medium": "video"
+      },
+      "id": "explainer-video-is-teaching",
+      "request": "Make me a two-minute video explaining how a neuron fires"
+    },
+    {
+      "expected": {
+        "action": "teach",
+        "mode": "lesson",
+        "persistence": false,
+        "requested_medium": "audio"
+      },
+      "id": "narrated-animation-is-teaching",
+      "request": "Create a narrated animation that teaches how a TCP handshake works"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false,
+        "requested_medium": null
+      },
+      "id": "promo-video-stays-ordinary",
+      "request": "Make a promo video for the product launch"
+    },
+    {
+      "expected": {
+        "action": "ordinary_task",
+        "mode": null,
+        "persistence": false,
+        "requested_medium": null
+      },
+      "id": "video-player-feature-stays-ordinary",
+      "request": "Build a video player component for the app"
     }
   ],
   "schema_version": "1",
@@ -157,6 +197,28 @@
       "id": "sequence-static-sufficient",
       "job": "Show a three-step state transition where labeled small multiples are sufficient",
       "static_sufficient": true
+    },
+    {
+      "expected_route": "motion",
+      "id": "explainer-video-is-motion",
+      "job": "A short explainer video of how a neuron fires"
+    },
+    {
+      "expected_route": "motion",
+      "id": "animated-clip-is-motion",
+      "job": "An animated clip showing stack frames pushing and popping"
+    },
+    {
+      "expected_narration": true,
+      "expected_route": "none",
+      "id": "narration-does-not-force-motion",
+      "job": "Listen to a narrated walkthrough of the water cycle"
+    },
+    {
+      "expected_narration": false,
+      "expected_route": "static",
+      "id": "still-diagram-is-static",
+      "job": "See a still diagram of the TCP handshake"
     }
   ]
 }

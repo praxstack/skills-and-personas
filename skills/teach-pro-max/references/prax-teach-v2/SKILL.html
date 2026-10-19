@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="SKILL.md">
-  <meta name="source-sha256" content="41f373f0b019b8170a349015753dfa8507a396f7b11c31c2a77f8ff8b1d9198f">
+  <meta name="source-sha256" content="4ec467c147a36461bbd74fa3d0525a28ee597aa22c6471f86fa3248c3601e40e">
   <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/3.0.0">
@@ -201,7 +201,7 @@ capture, deterministic rebuild, correction/version invalidation, scoped physical
 deletion, learner export, and a pinned real FSRS adapter. If an executable
 dependency is unavailable, report that boundary; do not simulate its behavior.</p>
 <h2 id="route-visuals-by-learning-job">Route visuals by learning job</h2>
-<p>For every teaching response, explicitly decide internally among <code>none</code>, <code>static</code>, <code>interactive</code>, and <code>motion</code>.</p>
+<p>For every teaching response, explicitly decide internally among <code>none</code>, <code>static</code>, <code>interactive</code>, and <code>motion</code>. An explicit request for an explainer video or animation is a <code>motion</code> job. Decide narration separately: a request to listen or hear a voice-over adds a speech layer over the chosen route and never replaces the visible explanation.</p>
 <p>Use a visual only when it materially helps the learner see, compare, predict, manipulate, or watch a relevant change. Prefer the smallest accurate representation. Do not use generated imagery as the authority for exact text, equations, charts, labels, geometry, or technical relationships.</p>
 <p>Sequence alone does not require animation or interaction: a labeled static state table may be clearer. Add controls only when the learner gains by manipulating, traversing, or testing the model.</p>
 <p>Read <a href="./references/VISUALIZATION-ROUTER.html">references/VISUALIZATION-ROUTER.md</a>
@@ -214,7 +214,7 @@ renderer for exact static lessons and the separately versioned, tested Prax
 Visual Lab for interactive state, parameter, comparison, hint, and
 learner-controlled sequence work. For any subject outside its implemented lessons, inspect the current host for
 authorized drawing, animation, interaction or video capabilities and query the
-bundled 38-tool registry. A small editable task-specific HTML/CSS/JS artifact
+bundled 41-tool registry. A small editable task-specific HTML/CSS/JS artifact
 using existing browser capabilities is a supported host route after content,
 control and accessibility checks. It is separate from sanitized Markdown and
 needs a complete canonical static companion; do not call it packaged-runtime
@@ -268,7 +268,7 @@ field-accessibility claim.</p>
 </main>
   <footer>
     Canonical source: <a href="./SKILL.md">SKILL.md</a><br>
-    SHA-256: <code>41f373f0b019b8170a349015753dfa8507a396f7b11c31c2a77f8ff8b1d9198f</code><br>
+    SHA-256: <code>4ec467c147a36461bbd74fa3d0525a28ee597aa22c6471f86fa3248c3601e40e</code><br>
     Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/3.0.0<br>

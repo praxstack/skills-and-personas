@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="VISUAL-RUNTIME.md">
-  <meta name="source-sha256" content="cba7286d4cce3eca736f256133bc8723442735f5619fd3ee6b243bf334df2217">
+  <meta name="source-sha256" content="af6542fa3b31177ae6a4b0f5adbad9961bf531bb5834ac510df20416d5155c5a">
   <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/3.0.0">
@@ -63,6 +63,10 @@ footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--
   <main id="main-content"><h1 id="prax-visual-lab">Prax Visual Lab</h1>
 <p>The runtime is a separately versioned, zero-dependency ES-module/Web-Component package. Shared components are <code>prax-state-stepper</code>, <code>prax-parameter-lab</code>, <code>prax-compare-views</code>, <code>prax-hint-engine</code>, and <code>prax-receipt-panel</code>. Lesson specs are declarative JSON; pure domain modules provide exact transitions and structural graders. Every interactive lesson ships a semantic static sequence and print/no-script route.</p>
 <p>The implemented browser lesson and route binding currently cover Python floating point. Rubik's moves and lost-update lesson plans do not establish implemented browser delivery. Motion is optional and reduced motion removes transitions. Deliberate learner actions produce local receipts; parameter changes update the comparison and receipt through the shared session rather than an isolated control. No receipt is uploaded automatically. Imported receipts are untrusted input: action identifiers must belong to the lesson and observations and learner-authored evidence must remain objects. The floating-point Python and browser models are checked against one independently specified literal vector file.</p>
+<p>Open the built lab over HTTP, for example <code>python3 -m http.server --bind 127.0.0.1 8765</code> run from <code>runtime/prax-visual-lab/dist</code>. Browsers refuse
+ES-module scripts on <code>file://</code> pages, so a double-clicked <code>index.html</code> shows
+only the static sequence. That static sequence is the intended no-script
+fallback, not the interactive lesson.</p>
 <p>The visual router treats this packaged runtime as the default direct delivery
 surface only when an <code>interactive</code> or learner-controlled <code>motion</code> job binds to
 an implemented lesson capability. An unbound packaged job falls back to static in route metadata. Independently
@@ -111,7 +115,7 @@ practice creates no scored observation or review rating.</p>
 </main>
   <footer>
     Canonical source: <a href="./VISUAL-RUNTIME.md">VISUAL-RUNTIME.md</a><br>
-    SHA-256: <code>cba7286d4cce3eca736f256133bc8723442735f5619fd3ee6b243bf334df2217</code><br>
+    SHA-256: <code>af6542fa3b31177ae6a4b0f5adbad9961bf531bb5834ac510df20416d5155c5a</code><br>
     Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/3.0.0<br>

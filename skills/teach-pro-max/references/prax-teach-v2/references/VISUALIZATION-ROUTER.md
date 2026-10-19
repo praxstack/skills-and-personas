@@ -8,9 +8,10 @@
 4. [Optional Flint chart backend](#optional-flint-chart-backend)
 5. [Visual brief](#visual-brief)
 6. [Accuracy and source rules](#accuracy-and-source-rules)
-7. [Accessibility](#accessibility)
-8. [Retrieval safety](#retrieval-safety)
-9. [Verification](#verification)
+7. [Narration and audio](#narration-and-audio)
+8. [Accessibility](#accessibility)
+9. [Retrieval safety](#retrieval-safety)
+10. [Verification](#verification)
 
 ## Decision rule
 
@@ -23,7 +24,11 @@ Choose internally:
 - `none` when prose, code, or a table is already sufficient;
 - `static` for structure, comparison, hierarchy, space, exact labels, or a worked state;
 - `interactive` when the learner benefits from changing, testing, filtering, traversing, or predicting;
-- `motion` when order, causality, transformation, accumulation, synchronization, or changing state is the concept.
+- `motion` when order, causality, transformation, accumulation, synchronization, or changing state is the concept, or when the learner explicitly asks for an explainer video or animation.
+
+A request to listen, hear a voice-over or have the lesson read aloud is a
+narration request. It is reported separately as `narration.requested` and
+never changes the visual route by itself; see [Narration and audio](#narration-and-audio).
 
 Start with the smallest accurate medium. Media availability is not a reason to use it.
 
@@ -52,6 +57,7 @@ registry:
 python3 scripts/find_visualization_tool.py --route interaction
 python3 scripts/find_visualization_tool.py --route change-over-time
 python3 scripts/find_visualization_tool.py --route mathematics
+python3 scripts/find_visualization_tool.py --route narration
 ```
 
 Use the closest authorized equivalent capability; do not require a particular
@@ -66,7 +72,7 @@ of that missing medium. Limit the same artifact/tool path to two repair attempts
 
 ### Binding selection policy
 
-- Keep the 38-tool registry in Prax-Teach and query it; do not copy it into a
+- Keep the 41-tool registry in Prax-Teach and query it; do not copy it into a
   course or lesson.
 - Build the complete bounded visual explanation first, in the media that serve it. One storyboard may then project to
   standalone HTML, HyperFrames or Manim, captions, transcript, and chapters.
@@ -159,6 +165,29 @@ applicable, keyboard access, reduced motion, and a complete static equivalent.
 Build the whole bounded explanation before delivery unless layered delivery was
 requested. Add a purposeful contrast and formal bridge when they aid understanding;
 state analogy limits and distinguish interpretation from physical mechanism.
+
+## Narration and audio
+
+Narration is a delivery layer, never the explanation. The executable router
+reports `narration.requested` separately from `route`: a request to listen,
+hear a voice-over or have the lesson read aloud does not turn `none` into
+`motion`, and a video request does not imply a voice track.
+
+When narration is requested, or clearly helps (eyes-busy learning, a long
+motion sequence, a stated accessibility preference), query
+`python3 scripts/find_visualization_tool.py --route narration` and choose the
+smallest suitable authorized capability: in-page Web Speech synthesis for an
+HTML lesson, a local neural model such as HyperFrames TTS for a rendered video
+track, or the host operating system's synthesizer for drafts. Keep the
+narration script as the editable source beside the audio, and keep the spoken
+words identical to the visible transcript and captions.
+
+Do not route lesson text through a remote speech service without disclosing
+the data egress. The explanation must never depend on audio: with scripts
+disabled, audio muted or a screen reader in use, the complete lesson must
+still be present. Verify generated audio with `ffprobe` and by listening to a
+sample against the transcript. Decide the visual route first; narration tools
+never change a `none` decision.
 
 ## Presentation default
 

@@ -101,6 +101,16 @@ class VisualizationRegistryTests(unittest.TestCase):
                 selected = {tool["id"] for tool in json.loads(result.stdout)}
                 self.assertTrue(required <= selected)
 
+    def test_narration_route_offers_local_speech_without_forcing_motion(self) -> None:
+        result = self.run_cli("--route", "narration", "--json", "--limit", "100")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        selected = {tool["id"] for tool in json.loads(result.stdout)}
+        self.assertTrue(
+            {"web-speech-api", "hyperframes-tts", "macos-say", "ffmpeg"} <= selected
+        )
+        for tool_id in ("web-speech-api", "hyperframes-tts", "macos-say"):
+            self.assertNotIn("change-over-time", self.by_id[tool_id]["routes"])
+
     def test_retired_engine_remains_inspectable_by_exact_name(self) -> None:
         result = self.run_cli("motion-canvas", "--json", "--limit", "1")
         self.assertEqual(result.returncode, 0, result.stderr)

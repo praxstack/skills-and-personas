@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="VISUALIZATION-ROUTER.md">
-  <meta name="source-sha256" content="52f692b5a00d0a3c065c574308e75d147c83f705c5b03798739519b00d0259ed">
+  <meta name="source-sha256" content="e336a362571ae784f0a56bbb162c5b1651625dc38edce023686261ade3d6adf9">
   <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/3.0.0">
@@ -69,6 +69,7 @@ footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--
 <li><a href="#optional-flint-chart-backend">Optional Flint chart backend</a></li>
 <li><a href="#visual-brief">Visual brief</a></li>
 <li><a href="#accuracy-and-source-rules">Accuracy and source rules</a></li>
+<li><a href="#narration-and-audio">Narration and audio</a></li>
 <li><a href="#accessibility">Accessibility</a></li>
 <li><a href="#retrieval-safety">Retrieval safety</a></li>
 <li><a href="#verification">Verification</a></li>
@@ -83,8 +84,11 @@ footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--
 <li><code>none</code> when prose, code, or a table is already sufficient;</li>
 <li><code>static</code> for structure, comparison, hierarchy, space, exact labels, or a worked state;</li>
 <li><code>interactive</code> when the learner benefits from changing, testing, filtering, traversing, or predicting;</li>
-<li><code>motion</code> when order, causality, transformation, accumulation, synchronization, or changing state is the concept.</li>
+<li><code>motion</code> when order, causality, transformation, accumulation, synchronization, or changing state is the concept, or when the learner explicitly asks for an explainer video or animation.</li>
 </ul>
+<p>A request to listen, hear a voice-over or have the lesson read aloud is a
+narration request. It is reported separately as <code>narration.requested</code> and
+never changes the visual route by itself; see <a href="#narration-and-audio">Narration and audio</a>.</p>
 <p>Start with the smallest accurate medium. Media availability is not a reason to use it.</p>
 <p>Sequence or causality makes motion <em>eligible</em>, not mandatory. First test whether a labeled state table, small multiples, or learner-predicted next step communicates the relationship with less overhead.</p>
 <p><code>route</code> records the representation best suited to the learning job. The
@@ -105,6 +109,7 @@ registry:</p>
 <pre><code class="language-bash">python3 scripts/find_visualization_tool.py --route interaction
 python3 scripts/find_visualization_tool.py --route change-over-time
 python3 scripts/find_visualization_tool.py --route mathematics
+python3 scripts/find_visualization_tool.py --route narration
 </code></pre>
 <p>Use the closest authorized equivalent capability; do not require a particular
 agent brand or hardcode <code>codex exec</code>, <code>claude -p</code>, or another provider command.
@@ -117,7 +122,7 @@ requested medium is essential, pause instead; a fallback never counts as deliver
 of that missing medium. Limit the same artifact/tool path to two repair attempts.</p>
 <h3 id="binding-selection-policy">Binding selection policy</h3>
 <ul>
-<li>Keep the 38-tool registry in Prax-Teach and query it; do not copy it into a
+<li>Keep the 41-tool registry in Prax-Teach and query it; do not copy it into a
 course or lesson.</li>
 <li>Build the complete bounded visual explanation first, in the media that serve it. One storyboard may then project to
 standalone HTML, HyperFrames or Manim, captions, transcript, and chapters.</li>
@@ -241,6 +246,25 @@ applicable, keyboard access, reduced motion, and a complete static equivalent.
 Build the whole bounded explanation before delivery unless layered delivery was
 requested. Add a purposeful contrast and formal bridge when they aid understanding;
 state analogy limits and distinguish interpretation from physical mechanism.</p>
+<h2 id="narration-and-audio">Narration and audio</h2>
+<p>Narration is a delivery layer, never the explanation. The executable router
+reports <code>narration.requested</code> separately from <code>route</code>: a request to listen,
+hear a voice-over or have the lesson read aloud does not turn <code>none</code> into
+<code>motion</code>, and a video request does not imply a voice track.</p>
+<p>When narration is requested, or clearly helps (eyes-busy learning, a long
+motion sequence, a stated accessibility preference), query
+<code>python3 scripts/find_visualization_tool.py --route narration</code> and choose the
+smallest suitable authorized capability: in-page Web Speech synthesis for an
+HTML lesson, a local neural model such as HyperFrames TTS for a rendered video
+track, or the host operating system's synthesizer for drafts. Keep the
+narration script as the editable source beside the audio, and keep the spoken
+words identical to the visible transcript and captions.</p>
+<p>Do not route lesson text through a remote speech service without disclosing
+the data egress. The explanation must never depend on audio: with scripts
+disabled, audio muted or a screen reader in use, the complete lesson must
+still be present. Verify generated audio with <code>ffprobe</code> and by listening to a
+sample against the transcript. Decide the visual route first; narration tools
+never change a <code>none</code> decision.</p>
 <h2 id="presentation-default">Presentation default</h2>
 <p>Use AskTheMove warm paper <code>#fbfaf4</code>, ink <code>#171d29</code>, explanatory blue <code>#1f48ae</code>
 and correction red <code>#c92324</code>; words must carry each color's meaning too. Serif
@@ -392,7 +416,7 @@ until then EG-03 remains parked.</p>
 </main>
   <footer>
     Canonical source: <a href="./VISUALIZATION-ROUTER.md">VISUALIZATION-ROUTER.md</a><br>
-    SHA-256: <code>52f692b5a00d0a3c065c574308e75d147c83f705c5b03798739519b00d0259ed</code><br>
+    SHA-256: <code>e336a362571ae784f0a56bbb162c5b1651625dc38edce023686261ade3d6adf9</code><br>
     Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/3.0.0<br>

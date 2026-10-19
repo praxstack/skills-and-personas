@@ -1955,12 +1955,26 @@ def validate_legacy_asset_provenance(root: Path) -> tuple[int, list[str]]:
     tools = (
         registry_document.get("tools") if isinstance(registry_document, dict) else None
     )
+    registry_tests = root / "scripts/test_visualization_registry.py"
+    actual_test_count = (
+        len(
+            re.findall(
+                r"^\s+def test_",
+                registry_tests.read_text(encoding="utf-8"),
+                re.MULTILINE,
+            )
+        )
+        if registry_tests.is_file()
+        else None
+    )
     if (
         not isinstance(registry, dict)
-        or registry.get("expected_tool_count") != 38
-        or registry.get("test_count") != 12
         or not isinstance(tools, list)
-        or len(tools) != 38
+        or not tools
+        or registry.get("expected_tool_count") != len(tools)
+        or registry.get("query_check_expected") != f"registry valid: {len(tools)} tools"
+        or actual_test_count is None
+        or registry.get("test_count") != actual_test_count
     ):
         errors.append(f"{relative}: registry/test count receipt is invalid")
     return 1, errors

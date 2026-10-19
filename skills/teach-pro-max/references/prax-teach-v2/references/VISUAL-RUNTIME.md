@@ -4,6 +4,12 @@ The runtime is a separately versioned, zero-dependency ES-module/Web-Component p
 
 The implemented browser lesson and route binding currently cover Python floating point. Rubik's moves and lost-update lesson plans do not establish implemented browser delivery. Motion is optional and reduced motion removes transitions. Deliberate learner actions produce local receipts; parameter changes update the comparison and receipt through the shared session rather than an isolated control. No receipt is uploaded automatically. Imported receipts are untrusted input: action identifiers must belong to the lesson and observations and learner-authored evidence must remain objects. The floating-point Python and browser models are checked against one independently specified literal vector file.
 
+Open the built lab over HTTP, for example `python3 -m http.server --bind
+127.0.0.1 8765` run from `runtime/prax-visual-lab/dist`. Browsers refuse
+ES-module scripts on `file://` pages, so a double-clicked `index.html` shows
+only the static sequence. That static sequence is the intended no-script
+fallback, not the interactive lesson.
+
 The visual router treats this packaged runtime as the default direct delivery
 surface only when an `interactive` or learner-controlled `motion` job binds to
 an implemented lesson capability. An unbound packaged job falls back to static in route metadata. Independently

@@ -49,6 +49,11 @@ class VisualRoutingTest(unittest.TestCase):
             result = self.run_cli(*args)
             self.assertEqual(result["route"], case["expected_route"], case["id"])
             self.assertIn(result["route"], {"none", "static", "interactive", "motion"})
+            self.assertEqual(
+                result["narration"]["requested"],
+                case.get("expected_narration", False),
+                case["id"],
+            )
             self.assertTrue(result["reason"])
             if result["route"] != "none":
                 self.assertTrue(result["fallback"])

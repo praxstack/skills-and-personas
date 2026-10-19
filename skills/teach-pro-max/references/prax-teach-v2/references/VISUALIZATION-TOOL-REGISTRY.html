@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="source-path" content="VISUALIZATION-TOOL-REGISTRY.md">
-  <meta name="source-sha256" content="e6fe26230685f87d5914491a1a450b0b16d53a90e0a1ed653a84ee199c42f98a">
+  <meta name="source-sha256" content="15112277a93626226e06409c6c92e67f44865e16408a0114eedc72f1247477d2">
   <meta name="generated-at" content="2026-08-04T12:00:00.000Z">
   <meta name="renderer-version" content="prax-teach-markdown/2.2.0">
   <meta name="template-version" content="prax-teach-lesson/3.0.0">
@@ -68,6 +68,7 @@ footer { padding:1.2rem 0 2.5rem; border-top:1px solid var(--line); color:var(--
 python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py "math animation"
 python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --route structure
 python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --route interaction
+python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --route narration
 python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --list
 python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --check
 </code></pre>
@@ -241,6 +242,10 @@ python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --check
 <td>Media encoding/inspection</td>
 <td>FFmpeg</td>
 </tr>
+<tr>
+<td>Narration or voice-over</td>
+<td>Web Speech API in the page, HyperFrames TTS (Kokoro) for video tracks, macOS <code>say</code> for drafts</td>
+</tr>
 </tbody></table></div>
 <h2 id="verified-first-party-agent-integrations">Verified First-Party Agent Integrations</h2>
 <div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable table"><table>
@@ -292,6 +297,11 @@ python &lt;prax-teach-skill-dir&gt;/scripts/find_visualization_tool.py --check
 <td>Probe current host at query time</td>
 </tr>
 <tr>
+<td>HyperFrames TTS</td>
+<td>Kokoro-82M local model inside the official CLI</td>
+<td>Probe current host at query time</td>
+</tr>
+<tr>
 <td>OpenAI image generation</td>
 <td>Built-in image-generation tool</td>
 <td>Available when exposed by the runtime</td>
@@ -336,6 +346,11 @@ the current user's standard agent-skill directories and reports
 <td>HyperFrames Three.js adapter</td>
 <td><code>hyperframes-animation/adapters/three.md</code></td>
 <td><code>local-vetted</code></td>
+</tr>
+<tr>
+<td>HyperFrames CLI, including local TTS</td>
+<td><code>hyperframes-cli/SKILL.md</code></td>
+<td><code>first-party-agent-integration</code></td>
 </tr>
 </tbody></table></div>
 <p>Do not misroute:</p>
@@ -382,7 +397,7 @@ FFmpeg is not a core Manim prerequisite.</li>
 </main>
   <footer>
     Canonical source: <a href="./VISUALIZATION-TOOL-REGISTRY.md">VISUALIZATION-TOOL-REGISTRY.md</a><br>
-    SHA-256: <code>e6fe26230685f87d5914491a1a450b0b16d53a90e0a1ed653a84ee199c42f98a</code><br>
+    SHA-256: <code>15112277a93626226e06409c6c92e67f44865e16408a0114eedc72f1247477d2</code><br>
     Generated: 2026-08-04T12:00:00.000Z<br>
     Renderer: prax-teach-markdown/2.2.0<br>
     Template: prax-teach-lesson/3.0.0<br>

@@ -11,6 +11,7 @@ python <prax-teach-skill-dir>/scripts/find_visualization_tool.py mermaid
 python <prax-teach-skill-dir>/scripts/find_visualization_tool.py "math animation"
 python <prax-teach-skill-dir>/scripts/find_visualization_tool.py --route structure
 python <prax-teach-skill-dir>/scripts/find_visualization_tool.py --route interaction
+python <prax-teach-skill-dir>/scripts/find_visualization_tool.py --route narration
 python <prax-teach-skill-dir>/scripts/find_visualization_tool.py --list
 python <prax-teach-skill-dir>/scripts/find_visualization_tool.py --check
 ```
@@ -86,6 +87,7 @@ Pin a reviewed version or commit, test it in isolation, and compare its output w
 | Sourced photography | Wikimedia Commons, Unsplash |
 | Multi-language rendering gateway | Kroki |
 | Media encoding/inspection | FFmpeg |
+| Narration or voice-over | Web Speech API in the page, HyperFrames TTS (Kokoro) for video tracks, macOS `say` for drafts |
 
 ## Verified First-Party Agent Integrations
 
@@ -99,6 +101,7 @@ Pin a reviewed version or commit, test it in isolation, and compare its output w
 | dotLottie | Lottie Creator MCP and official motion-design skill | Upstream, not installed |
 | Remotion | Official skills and Codex plugin | Upstream, not installed; MCP is deprecated |
 | HyperFrames | Official agent skill suite | Probe current host at query time |
+| HyperFrames TTS | Kokoro-82M local model inside the official CLI | Probe current host at query time |
 | OpenAI image generation | Built-in image-generation tool | Available when exposed by the runtime |
 
 Remote MCPs can transmit lesson content or diagrams. Record the data-egress boundary and prefer local rendering for sensitive material.
@@ -118,6 +121,7 @@ the current user's standard agent-skill directories and reports
 | Manim production | `manim-video/SKILL.md` | `local-vetted` |
 | HyperFrames routing and rendering | `hyperframes/SKILL.md` | `first-party-agent-integration` |
 | HyperFrames Three.js adapter | `hyperframes-animation/adapters/three.md` | `local-vetted` |
+| HyperFrames CLI, including local TTS | `hyperframes-cli/SKILL.md` | `first-party-agent-integration` |
 
 Do not misroute:
 

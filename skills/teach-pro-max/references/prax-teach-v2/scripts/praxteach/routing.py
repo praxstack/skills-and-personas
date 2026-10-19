@@ -105,6 +105,24 @@ INTERACTIVE_VISUAL_PATTERNS = (
 MOTION_VISUAL_PATTERNS = (
     r"\bwatch\b.*\b(?:change|interleave|transform|move|accumulate|synchroni[sz]e)\b",
     r"\b(?:over time|interleav|synchroni[sz]|animation|animate|causal sequence)\b",
+    r"\b(?:video|film|clip|screencast|animated|motion graphics?)\b",
+)
+NARRATION_PATTERNS = (
+    r"\bnarrat(?:e|ed|es|ion|or)\b",
+    r"\bvoice-?over\b",
+    r"\b(?:read|say)\b.{0,24}\b(?:aloud|out loud)\b",
+    r"\b(?:listen|audio|spoken|speech|text-to-speech|tts|podcast)\b",
+)
+MEDIA_EXPLAINER_PATTERNS = (
+    (
+        r"\b(?:video|animation|animated|explainer|screencast|audio|narration|narrated|podcast|voice-?over)\b"
+        r"[^.;?!]{0,40}?\b(?:explaining|teaching|that\s+(?:explains|teaches)|to\s+(?:explain|teach)|(?:on|about|of)\s+how)\b"
+    ),
+)
+REQUESTED_MEDIUM_PATTERNS = (
+    ("audio", r"\b(?:audio|narrat(?:ed|ion)|podcast|voice-?over|spoken|read aloud)\b"),
+    ("video", r"\b(?:video|film|screencast|clip)\b"),
+    ("animation", r"\b(?:animation|animated)\b"),
 )
 STATIC_VISUAL_PATTERNS = (
     r"\b(?:compare|comparison|distribution|hierarchy|structure|architecture|diagram|graph|chart|map)\b",
@@ -124,9 +142,22 @@ def _teaching_artifact(request: str) -> str | None:
     return match.group("artifact").lower() if match else None
 
 
+def _requested_medium(request: str) -> str | None:
+    """Name an explicitly requested delivery medium without changing the mode."""
+
+    for medium, pattern in REQUESTED_MEDIUM_PATTERNS:
+        if re.search(pattern, request, flags=re.IGNORECASE):
+            return medium
+    return None
+
+
 def _explicit_teaching_requested(request: str) -> bool:
     """Require an affirmative learning phrase, preserving positive mixed work."""
 
+    if _matches(MEDIA_EXPLAINER_PATTERNS, request):
+        # "a video explaining how X works" names a teaching deliverable, not a
+        # product asset; the medium is recorded separately as requested_medium.
+        return True
     for pattern in EXPLICIT_TEACHING_INTENT_PATTERNS:
         for match in re.finditer(pattern, request, flags=re.IGNORECASE):
             if not re.search(
@@ -489,6 +520,25 @@ def route_request(
     normalized = " ".join(request.split())
     if not normalized:
         raise ValueError("request must not be empty")
+    decision = _route_request_mode(
+        normalized,
+        answer_now=answer_now,
+        demote=demote,
+        explicit_mode=explicit_mode,
+    )
+    decision["requested_medium"] = (
+        _requested_medium(normalized) if decision["action"] != "ordinary_task" else None
+    )
+    return decision
+
+
+def _route_request_mode(
+    normalized: str,
+    *,
+    answer_now: bool,
+    demote: bool,
+    explicit_mode: str | None,
+) -> dict[str, Any]:
 
     if answer_now or _matches(ANSWER_PATTERNS, normalized):
         return {
@@ -581,6 +631,7 @@ def route_visual(
         raise ValueError("visual job must not be empty")
     if force is not None and force not in {"none", "static", "interactive", "motion"}:
         raise ValueError("forced visual route is invalid")
+    narration_requested = _matches(NARRATION_PATTERNS, normalized)
 
     if force is not None:
         route = force
@@ -675,6 +726,14 @@ def route_visual(
         "flint_required": False,
         "retrieval_safety": retrieval_safety,
         "requested_medium": media[route],
+        "narration": {
+            "requested": narration_requested,
+            "surface": "host-speech-capability" if narration_requested else None,
+            "fallback": (
+                "Complete transcript and captions in reading order; "
+                "narration never replaces the visible explanation."
+            ),
+        },
         "runtime_requirement": (
             None
             if delivery_supported

@@ -171,7 +171,7 @@ dependency is unavailable, report that boundary; do not simulate its behavior.
 
 ## Route visuals by learning job
 
-For every teaching response, explicitly decide internally among `none`, `static`, `interactive`, and `motion`.
+For every teaching response, explicitly decide internally among `none`, `static`, `interactive`, and `motion`. An explicit request for an explainer video or animation is a `motion` job. Decide narration separately: a request to listen or hear a voice-over adds a speech layer over the chosen route and never replaces the visible explanation.
 
 Use a visual only when it materially helps the learner see, compare, predict, manipulate, or watch a relevant change. Prefer the smallest accurate representation. Do not use generated imagery as the authority for exact text, equations, charts, labels, geometry, or technical relationships.
 
@@ -188,7 +188,7 @@ renderer for exact static lessons and the separately versioned, tested Prax
 Visual Lab for interactive state, parameter, comparison, hint, and
 learner-controlled sequence work. For any subject outside its implemented lessons, inspect the current host for
 authorized drawing, animation, interaction or video capabilities and query the
-bundled 38-tool registry. A small editable task-specific HTML/CSS/JS artifact
+bundled 41-tool registry. A small editable task-specific HTML/CSS/JS artifact
 using existing browser capabilities is a supported host route after content,
 control and accessibility checks. It is separate from sanitized Markdown and
 needs a complete canonical static companion; do not call it packaged-runtime
