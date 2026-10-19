@@ -42,7 +42,7 @@ try{
    if(api.setParams)api.setParams(api.paramsAt?api.paramsAt(i):Object.assign({},...Object.entries(window.LESSON.params||{}).map(([k,p])=>({[k]:p.value})),...window.LESSON.steps.slice(0,i+1).map(s=>s.set||{})));
    if(a!==null){const patch=window.LESSON.steps[i].alts[a].set||{};if(!api.setParams&&Object.keys(patch).length)throw new Error('Alternate figure export requires __explorable.setParams');api.setParams?.({...api.state.params,...patch})}
   },[index,altIndex]);
-  await screen.waitForTimeout(40);
+  await screen.waitForTimeout(40);await screen.evaluate(()=>document.fonts.ready);
   return screen.evaluate(i=>{
    const L=window.LESSON,p={...window.__explorable.state.params},state=L.model(p),svg=document.querySelector('.xp-figure svg');
    if(!svg)throw new Error('The explorer did not render its mechanism figure.');
@@ -50,6 +50,19 @@ try{
    const props=['color','fill','fill-opacity','stroke','stroke-width','stroke-opacity','stroke-dasharray','stroke-dashoffset','stroke-linecap','stroke-linejoin','opacity','font-family','font-size','font-weight','font-style','text-anchor','dominant-baseline','letter-spacing','paint-order','visibility'];
    nodes.forEach((node,j)=>{const cs=getComputedStyle(node);for(const prop of props)copies[j].style.setProperty(prop,cs.getPropertyValue(prop));copies[j].style.animation='none';copies[j].style.transition='none'});
    const vb=(svg.getAttribute('viewBox')||'0 0 640 380').split(/[ ,]+/).map(Number);
+   // Reject visibly clipped input instead of exporting a misleading figure.
+   // This authoring preflight is not an independent factual/acceptance review.
+   const rootMatrix=svg.getCTM(),clipped=[];
+   if(!rootMatrix)throw new Error('The figure has no measurable SVG viewport.');
+   for(const text of svg.querySelectorAll('text')){
+    if(text.closest('defs,symbol,clipPath,mask'))continue;const cs=getComputedStyle(text);if(cs.display==='none'||cs.visibility==='hidden')continue;
+    const b=text.getBBox(),matrix=text.getCTM();if(!b.width||!b.height||!matrix)continue;
+    const m=rootMatrix.inverse().multiply(matrix);
+    const corners=[[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]].map(([x,y])=>new DOMPoint(x,y).matrixTransform(m));
+    if(corners.some(q=>q.x<vb[0]-1||q.y<vb[1]-1||q.x>vb[0]+vb[2]+1||q.y>vb[1]+vb[3]+1))clipped.push(text.textContent.trim());
+   }
+   if(clipped.length)throw new Error(`Step ${i+1} has clipped SVG text: ${clipped.slice(0,5).join(' | ')}. Wrap or reposition the source labels and export again.`);
+
    clone.setAttribute('xmlns','http://www.w3.org/2000/svg');clone.setAttribute('width',String(vb[2]));clone.setAttribute('height',String(vb[3]));
    const defs=document.createElementNS('http://www.w3.org/2000/svg','defs'),style=document.createElementNS('http://www.w3.org/2000/svg','style');
    // Preserve embedded local fonts for editable SVGs; no remote font URLs.

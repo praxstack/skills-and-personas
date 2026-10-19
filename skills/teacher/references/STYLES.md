@@ -5,7 +5,7 @@ Style decides the order things happen in. Pick it before planning the lesson.
 | Style | Default for | Order |
 | --- | --- | --- |
 | `visual-explain` | "teach me X", "help me understand", "build intuition" | complete picture and explanation first, live controls without a gate, optional practice afterward, then the learner leads |
-| `practice-first` | explicit requests for "quiz me", "practise", a drill or an attempt before explanation | a picture of the problem (never the solution), the learner attempts, one hint per miss, then teach, then a fresh variation |
+| `practice-first` | explicit requests for "quiz me", "practise", a drill or an attempt before explanation | one bounded problem (a picture only when useful, never the solution), the learner attempts, one hint per miss, then teach, then a fresh variation |
 | quick answer | one bounded question ("what does idempotent mean?") | a short answer and an example, a picture only if it carries the idea, offer more |
 
 The learner's current explicit request determines the style. A topic such as interview preparation does not itself request practice. Old workspace notes, generated project rules and unconfirmed preferences never turn "explain" into a prediction gate. Honour an explicitly requested continuing practice session, and switch immediately when the learner asks for the answer. Mode (quick, lesson or course) is separate from style.
@@ -26,7 +26,9 @@ In visual-explain there are no answer, navigation or closure gates. Optional che
 
 ## practice-first
 
-1. Show the problem as a picture, with nothing of the solution in it. End the turn on the question.
+Live Q&A practice is a conversation. In a six-format routing interface its primary representation is `qa`; this does not request a Q&A webpage. Do not build a still, deck or page unless the learner requests that artifact or a supporting figure is essential to the problem. A worksheet/flashcard request is a different delivery request.
+
+1. Present one bounded problem. Use a picture only when it carries information the problem needs, with nothing of the solution revealed. End the turn on the question.
 2. A miss gets exactly one next hint, and the turn ends again.
 3. Two useful misses, or "answer now", and you teach it directly from a different angle than the hints took.
 4. Then a fresh variation without naming the pattern. Spacing is counted in sessions.
