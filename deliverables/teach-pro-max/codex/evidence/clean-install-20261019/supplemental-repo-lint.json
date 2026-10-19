@@ -1,0 +1,13 @@
+{
+  "source_commit": "4f50ca992a39b44dfcecb40a21f8169410cab80f",
+  "source_path": "new-skills/_audit/lint.py",
+  "sha256": "bce7b20d033d7a311e94300b96a90d342a8cf47af0bd0132ee98e22a5e228ef6",
+  "reason": "Standalone source archive intentionally omits repository-only lint dependency; original skipped test executed separately with exact same-commit linter. No skill/test/checker source changed.",
+  "argv": [
+    "/private/tmp/prax-teach-clean-install-mvjgt745/runtime/venv/bin/python",
+    "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/scripts/tests/test_teacher.py",
+    "SkillFormat.test_repo_lint_on_native_skills",
+    "-v"
+  ],
+  "exit_code": 0
+}

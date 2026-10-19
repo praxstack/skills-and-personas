@@ -1,0 +1,184 @@
+[
+  {
+    "name": "install-dry",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/dry-test/skills",
+      "--dry-run"
+    ],
+    "exit_code": 0,
+    "seconds": 0.039,
+    "log": "install-dry.log"
+  },
+  {
+    "name": "install-link",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills"
+    ],
+    "exit_code": 0,
+    "seconds": 0.058,
+    "log": "install-link.log"
+  },
+  {
+    "name": "install-idempotent",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills"
+    ],
+    "exit_code": 0,
+    "seconds": 0.049,
+    "log": "install-idempotent.log"
+  },
+  {
+    "name": "install-copy",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/copy-test/skills",
+      "--copy"
+    ],
+    "exit_code": 0,
+    "seconds": 1.953,
+    "log": "install-copy.log"
+  },
+  {
+    "name": "uninstall-copy",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/copy-test/skills",
+      "--uninstall"
+    ],
+    "exit_code": 0,
+    "seconds": 0.415,
+    "log": "uninstall-copy.log"
+  },
+  {
+    "name": "preserve-foreign",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/foreign-test/skills"
+    ],
+    "exit_code": 0,
+    "seconds": 0.057,
+    "log": "preserve-foreign.log"
+  },
+  {
+    "name": "preserve-foreign-uninstall",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/foreign-test/skills",
+      "--uninstall"
+    ],
+    "exit_code": 0,
+    "seconds": 0.036,
+    "log": "preserve-foreign-uninstall.log"
+  },
+  {
+    "name": "uninstall-link",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills",
+      "--uninstall"
+    ],
+    "exit_code": 0,
+    "seconds": 0.057,
+    "log": "uninstall-link.log"
+  },
+  {
+    "name": "install-for-build",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/install.sh",
+      "--dir",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills"
+    ],
+    "exit_code": 0,
+    "seconds": 0.067,
+    "log": "install-for-build.log"
+  },
+  {
+    "name": "vendor-verify",
+    "argv": [
+      "python3",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/scripts/vendor.py",
+      "verify"
+    ],
+    "exit_code": 0,
+    "seconds": 0.959,
+    "log": "vendor-verify.log"
+  },
+  {
+    "name": "build-voice-and-focus",
+    "argv": [
+      "python3",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/explorable/scripts/build.py",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/review/lessons/voice-and-focus/source/lesson.lesson.js",
+      "-o",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/explorer.html"
+    ],
+    "exit_code": 0,
+    "seconds": 0.134,
+    "log": "build-voice-and-focus.log"
+  },
+  {
+    "name": "build-base-rates",
+    "argv": [
+      "python3",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/explorable/scripts/build.py",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/review/lessons/base-rates/source/lesson.lesson.js",
+      "-o",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/base-rates/explorer.html"
+    ],
+    "exit_code": 0,
+    "seconds": 0.109,
+    "log": "build-base-rates.log"
+  },
+  {
+    "name": "build-diffusion",
+    "argv": [
+      "python3",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/explorable/scripts/build.py",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/review/lessons/diffusion/source/lesson.lesson.js",
+      "-o",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/diffusion/explorer.html"
+    ],
+    "exit_code": 0,
+    "seconds": 0.13,
+    "log": "build-diffusion.log"
+  },
+  {
+    "name": "fresh-narration",
+    "argv": [
+      "python3",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/project/.agents/skills/teacher/skills/explorable/scripts/narrate.py",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/explorer.html",
+      "-o",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/outputs/voice-and-focus/lesson.mp4",
+      "--engine",
+      "kokoro",
+      "--speed",
+      "0.85",
+      "--fps",
+      "24"
+    ],
+    "exit_code": 1,
+    "seconds": 147.332,
+    "log": "fresh-narration.log"
+  }
+]

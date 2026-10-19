@@ -1,0 +1,334 @@
+{
+  "checks": [
+    {
+      "id": "voice-and-focus:default-next-0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:complete-explanation-0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:default-next-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:complete-explanation-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:default-next-2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:complete-explanation-2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:default-next-3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:complete-explanation-3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:ephemeral-no-progress-write",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:ephemeral-reload",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:consented-resume",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:withdrawal-removes-local-progress",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explicit-practice-lock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:exit-practice-link",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:exit-opens-next",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:no-page-errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:default-next-0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:complete-explanation-0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:default-next-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:complete-explanation-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:default-next-2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:complete-explanation-2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:default-next-3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:complete-explanation-3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:ephemeral-no-progress-write",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:ephemeral-reload",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:consented-resume",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:withdrawal-removes-local-progress",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explicit-practice-lock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:exit-practice-link",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:exit-opens-next",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:no-page-errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:default-next-0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:complete-explanation-0",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:default-next-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:complete-explanation-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:default-next-2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:complete-explanation-2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:default-next-3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:complete-explanation-3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:ephemeral-no-progress-write",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:ephemeral-reload",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:consented-resume",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:withdrawal-removes-local-progress",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explicit-practice-lock",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:exit-practice-link",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:exit-opens-next",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:no-page-errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "course:two-connected-lessons",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "course:no-consent-no-write",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "course:no-consent-no-restoration",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "course:consented-resume",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "course:withdrawal-removes-local-state",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "passed": 65,
+  "failed": 0,
+  "limitations": [
+    "Local browser state only; no assertion about external copies or human learning."
+  ]
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "fresh-regression",
+    "argv": [
+      "bash",
+      "/private/tmp/prax-teach-clean-install-mvjgt745/source/skills/teacher/scripts/tests/run_all.sh"
+    ],
+    "exit_code": 0,
+    "seconds": 123.268,
+    "log": "fresh-regression.log"
+  }
+]

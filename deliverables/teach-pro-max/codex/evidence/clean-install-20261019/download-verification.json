@@ -1,0 +1,18 @@
+{
+  "checks": [
+    {
+      "name": "prax-teach-v3-source.tar.gz",
+      "sha256": "037281d1e6e76ddc209fdaeb4a0d96b29dc8a6ba5d1339af3b179d32d0d518ea",
+      "bytes": 9333184,
+      "matched": true
+    },
+    {
+      "name": "prax-teach-v3-review.zip",
+      "sha256": "047e340be15f887a36f478d726d7eeae284f50914d58834e79d42ea9569db143",
+      "bytes": 118692093,
+      "matched": true
+    }
+  ],
+  "zip_crc": true,
+  "source_tar_entries": 2878
+}
