@@ -1,39 +1,32 @@
-r"""Still projector: a code-trace figure as SVG, wide (1200) and portrait (400), light and dark, plus 2x PNG.
+r"""Still projector: one landscape, figure-led picture (AC-10.1) and a portrait for phones, light and dark, plus 2x PNG.
 
-Wide wireframe (viewBox 1200 x H), both themes:
+Wide wireframe (viewBox 1200 x H, W >= 1.5 H), both themes, in the Neuron Atlas manner (one calm figure, panels
+split by thin rules, no cards):
 +--------------------------------------------------------------------------+
 | C · SWITCH STATEMENT                                    kicker           |
 | <lesson title>                                          display          |
-| <figure.title_claim>                                    body, wrapped    |
+| <figure.title_claim>                                    body             |
 |--------------------------------------------------------------------------|
-| THE PROGRAM                           fallthrough.c                      |
-| ┌──────────────────────────────────────────┐   notes (note role), each   |
-| │ 4  int n = 2;              ●             │   at the line it explains   |
-| │ 5  switch (n) {            ●─╮           │   — c.match                 |
-| │ 6    case 1:               │ │  skipped  │   — c.labels                |
-| │ 8    case 2:               ◀─╯ enters    │   — c.break                 |
-| │ 9      puts("two");        ●  [no break] │                             |
-| │12      break;              ●─╮ leaves    │                             |
-| │16  puts("done");           ◀─╯           │                             |
-| └──────────────────────────────────────────┘  data-key="code" / "note"  |
-| OUTPUT          │ <compare claim>                                        |
-| 1 two           │ ┌ with_break.c ─────────┐   1 two                      |
-| 2 three         │ │ 8 case 2: ... 10 break│   2 done                     |
-| 3 done          │ │ ... 17 puts("done")   │                              |
-|  data-key=output│ └───────────────────────┘   data-key="compare"         |
+| [data-role="figure"]                                                      |
+|  ┌ the mechanism (data-role="mechanism") ┐   output · numbered notes ·    |
+|  │ switch: the path through the cases    │   the comparison program       |
+|  │ factorial: the stack column           │   (a stack or bytes lesson: the |
+|  │ one-byte: the bytes in memory         │   output of the run, the note   |
+|  │ neuron: multiply · add · gate (full   │   lines of the program)         |
+|  └ width, with a band of code, output and notes under it)                 |
 | <caption claims>                                                         |
-| provenance · source link                                                 |
+| source link (provenance lives in <metadata> and the alt text, never on   |
+| the picture)                                                             |
 +--------------------------------------------------------------------------+
-Portrait (400 wide) stacks the same parts; notes become numbered badges listed under the code.
+Portrait (400 wide) stacks the same parts, so it draws the same facts.
 
-Mechanism, not metrics (D20.5): each output (a summary) sits next to the path that produced it; the
-comparison program shows its own path, not only its output.
+Mechanism, not metrics (D20.5): each output sits beside the step or frame that produced it.
 
-Sources: every value comes from facts (data-fact, inside a data-state container whose fact order the
-values gate checks), every sentence from claims (data-claim) or templates/chrome.json (data-chrome),
-code text is data-code with data-src-line, line numbers are data-label with data-line. Colours and type
-come from tokens.json by role (references/STYLE.md); nothing here names a hex value or a family.
-Math in a claim, written \( ... \), goes through MathJax tex2svg (node/tex2svg.mjs) into a scaled <g>.
+Sources: every value comes from facts (data-fact, inside a data-state container whose fact order the values gate
+checks), every sentence from claims (data-claim) or templates/chrome.json (data-chrome), code text is data-code with
+data-src-line, line numbers are data-label with data-line. No more than two program lines stand together, so the
+still holds no code block. Colours and type come from tokens.json by role (references/STYLE.md); nothing here names
+a hex value or a family. Math in a claim, written \( ... \), goes through MathJax tex2svg into a scaled <g>.
 """
 import hashlib
 import json
@@ -50,14 +43,13 @@ MONO_ADV = 0.6  # advance width per em of the bundled mono font
 MATH_RE = re.compile(r"\\\((.+?)\\\)", re.S)
 
 LAYOUTS = {
-    "wide": dict(W=1200, X0=64, X1=1136, kicker=13, title=44, dek=19, code=17, code_lh=31, gutter=84, code_w=680,
-                 code_w_side=600,
-                 note=23, out=26, out_gap=16, label=12.5, caption=20, foot=12.5, tag=12.5, mini=15, mini_lh=26,
-                 mini_gutter=78, col_gap=40, out_w=300),
-    "portrait": dict(W=400, X0=16, X1=384, kicker=12, title=30, dek=16, code=13, code_lh=23, gutter=58, code_w=368,
-                     note=19, out=21, out_gap=12, label=12, caption=16.5, foot=12, tag=12, mini=12.5, mini_lh=21,
-                     mini_gutter=60, col_gap=0, out_w=368),
+    "wide": dict(W=1200, X0=48, X1=1152, kicker=13, title=38, dek=18, label=12.5, caption=17, foot=12.5, note=19,
+                 out=24, out_gap=12, code=15, col_gap=56),
+    "portrait": dict(W=400, X0=16, X1=384, kicker=12, title=28, dek=16, label=12, caption=15.5, foot=12, note=18,
+                     out=21, out_gap=10, code=13, col_gap=0),
 }
+# the mechanism's share of the wide figure, by panel kind (the rest is the side column)
+MECH_W = {"control-path": 680, "stack": 540, "views": 640}
 
 
 # ---------------------------------------------------------------- SVG writer
@@ -335,101 +327,6 @@ class Flow:
         return y
 
 
-# ---------------------------------------------------------------- code panel
-
-def _code_spans(line_text, t):
-    """Escape a code line into tspans: keywords bold, string literals soft."""
-    out = []
-    for tok in re.findall(r'"[^"]*"|[A-Za-z_]\w*|\s+|.', line_text):
-        if tok.startswith('"'):
-            out.append(f'<tspan fill="{t["ink_soft"]}">{esc(tok)}</tspan>')
-        elif tok in KEYWORDS:
-            out.append(f'<tspan font-weight="700">{esc(tok)}</tspan>')
-        else:
-            out.append(esc(tok))
-    return "".join(out)
-
-
-def code_panel(svg, lesson, pid, run, shown, x, y, w, size, lh, gutter, rid, ocr_group, tags_on, wide,
-               badges=None, nested=False, arcs=True):
-    """A program listing with its executed path. Returns (height, {line: baseline y}). A listing nested in
-    a filled panel is inset on the ground colour with no border, so cards never sit inside cards."""
-    t = svg.t
-    src = lesson.program_source(pid).split("\n")
-    pad = 20 if wide else 18  # keeps the first line number's OCR crop clear of the card's rounded corner
-    h = pad * 2 + len(shown) * lh - lh * 0.25
-    inset = nested and svg.frame["panel_fill"]
-    svg.rect(x, y, w, h, t["ground"] if inset else t["surface"], rx=12 if wide else 10, rid=rid,
-             stroke=t["rule"] if svg.frame["card_border"] and not inset else None, sw=1)
-    rail_x = x + gutter - (12 if wide else 9)
-    code_x = x + gutter + (8 if wide else 4)
-    charw = size * MONO_ADV
-    num_size = max(12, round(size - 3, 1))
-    ys = {}
-    base = y + pad + size * 0.8
-    lo, hi = min(run), max(run)
-    ends = {}
-    for i, n in enumerate(shown):
-        ly = base + i * lh
-        ys[n] = ly
-        s = src[n - 1]
-        indent = len(s) - len(s.lstrip(" "))
-        is_exec = n in run
-        if is_exec and s.strip():
-            svg.rect(code_x - 6 + indent * charw, ly - size * 0.95, len(s.strip()) * charw + 12, lh - 4,
-                     t["highlight"], rx=5)
-        svg.text(x + (32 if wide else 24), ly, str(n), "mono", num_size, t["faint"], ("label", "line-number"),
-                 anchor="end", inside=rid, ocr=str(n), ocr_group=ocr_group, extra={"data-line": n})
-        if s.strip():
-            color = t["ink"] if is_exec or n < lo or n > hi else t["label"]
-            svg.text(code_x + indent * charw, ly, s.strip(), "mono", size, color, ("code", pid), inside=rid,
-                     raw=_code_spans(s.strip(), t), extra={"data-src-line": n})
-            ends[n] = code_x + (indent + len(s.strip())) * charw
-    # the path: dots on executed lines, straight runs, arcs with an arrowhead for jumps
-    cy = lambda n: ys[n] - size * 0.33
-    vis = [n for n in run if n in ys]
-    # a recursive run passes the same lines again and again; its jump arcs only tangle (review round 17), so a
-    # path that repeats lines is drawn as dots on the executed lines, and the stack strip carries the order
-    for a, b, kind in (rail.segments(vis) if arcs and len(vis) == len(set(vis)) else []):
-        if kind == "run":
-            svg.line(rail_x, cy(a), rail_x, cy(b), t["note"], 2.5, role="path")
-        else:
-            bulge = rail_x - (20 if wide else 14)
-            svg.path(f"M{rail_x:.1f},{cy(a):.1f} C{bulge:.1f},{cy(a):.1f} {bulge:.1f},{cy(b):.1f} "
-                     f"{rail_x - 4:.1f},{cy(b):.1f}", t["note"], 2.5, marker=True)
-    for n in vis:
-        svg.circle(rail_x, cy(n), 4 if wide else 3, t["note"])
-    # badges for notes (portrait), placed just after the code on their line
-    for k, n in (badges or []):
-        if n in ys:
-            bx = ends.get(n, code_x) + 8
-            svg.rect(bx, cy(n) - 10, 20, 20, t["note"], rx=10, rid=f"{rid}-badge{k}")
-            svg.text(bx + 10, cy(n) + 4.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"), weight=700,
-                     anchor="middle", inside=f"{rid}-badge{k}")
-            ends[n] = bx + 20
-    # tags, right-aligned inside the card, only where they clear the code
-    tfont, tsize, tweight, _c, _s = svg.role("tag", max(12, round(size * 0.74, 1)))
-    tag_x = x + w - (14 if wide else 10)
-    if tags_on:
-        for n, key, tone in rail.tags(src, vis, shown):
-            label = text.ui(key)
-            if ends.get(n, code_x) + 14 > tag_x - fonts.width(tfont, tsize, label, weight=tweight):
-                continue
-            svg.text(tag_x, ys[n], label, tfont, tsize, t["note"] if tone == "path" else t["label"], ("chrome", key),
-                     anchor="end", inside=rid, weight=tweight, tone="note" if tone == "path" else None)
-    nb = rail.nobreak_after(src, vis)
-    if nb and nb in ys:
-        label = text.ui("no_break")
-        pw = fonts.width(tfont, tsize, label, weight=700) + 18
-        py = ys[nb] + lh * 0.5 - 1
-        px = tag_x - pw
-        svg.rect(px, py - tsize * 1.05, pw, tsize * 1.75, t["correction_tint"], rx=9, rid=f"{rid}-nobreak",
-                 stroke=t["correction"], sw=1.2, role="pill")
-        svg.text(px + pw / 2, py + tsize * 0.32, label, tfont, tsize, t["correction"], ("chrome", "no_break"),
-                 weight=700, anchor="middle", inside=f"{rid}-nobreak", tone="correction")
-    return h, ys
-
-
 # ---------------------------------------------------------------- figure
 
 def _label(svg, x, y, s, size, src, color=None, anchor="start", inside=None):
@@ -475,20 +372,49 @@ def _output_list(svg, g, x, y, fids, facts, rid, group, max_w=None):
     return y
 
 
-def _notes(svg, flow, lesson, notes, x, y, w, g):
-    """Numbered notes, each with the badge its line carries in the code card. Returns the y after them."""
+def _notes(svg, flow, lesson, notes, x, y, w, g, belief=False):
+    """Numbered notes, each with the badge its line carries. With `belief`, the note whose claim corrects the figure's
+    misconception sits in a wrong-belief callout under the belief it corrects. Returns the y after them."""
     t = svg.t
     claims = lesson.by_id("claims")
+    fig = lesson.data["figure"]
+    mis = {m["id"]: m for m in lesson.data.get("misconceptions", [])}.get(fig.get("misconception")) if belief else None
     nfont, npx, nweight, _c, _s = svg.role("note", g["note"])
     nlh = npx * (1.35 if nfont == "hand" else 1.42)
     svg.open(data_key="note")
     y += npx * 0.9
     for k, note in enumerate(notes, 1):
-        svg.rect(x, y - 15, 20, 20, t["note"], rx=10, rid=f"badge-n{k}")
-        svg.text(x + 10, y - 0.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"), weight=700,
+        box = mis and mis["correction"] == note["claim"]
+        if box:
+            pad = 14
+            i0 = svg.mark()
+            top = y - npx * 0.9 + 4
+            _label(svg, x + pad, top + pad + 10, text.ui("wrong_belief"), g["label"], ("chrome", "wrong_belief"),
+                   color=t["correction"], inside="belief-card")
+            svg.els[-1] = svg.els[-1].replace("<text ", '<text data-tone="correction" ', 1)
+            bfont, bpx, bweight, _c2, _s2 = svg.role("body", g["note"] * 0.95)
+            yy = top + pad + 22 + bpx
+            m0 = svg.mark()
+            for ln in fonts.wrap(bfont, bpx, mis["statement"], w - 2 * pad, weight=bweight):
+                svg.text(x + pad, yy, ln, bfont, bpx, t["ink"], ("misconception", mis["id"]), weight=bweight,
+                         inside="belief-card")
+                yy += bpx * 1.4
+            svg.merge(m0)
+            y, x_, w_ = yy + 6, x + pad, w - 2 * pad
+        else:
+            x_, w_ = x, w
+        svg.rect(x_, y - 15, 20, 20, t["note"], rx=10, rid=f"badge-n{k}")
+        svg.text(x_ + 10, y - 0.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"), weight=700,
                  anchor="middle", inside=f"badge-n{k}")
-        y = flow.emit(x + 30, y, claims[note["claim"]]["text"], nfont, npx, nlh, t["note"],
-                      ("claim", note["claim"]), w - 30, weight=nweight, tone="note") + 8
+        y = flow.emit(x_ + 30, y, claims[note["claim"]]["text"], nfont, npx, nlh, t["note"],
+                      ("claim", note["claim"]), w_ - 30, weight=nweight, tone="note", inside="belief-card" if box else None) + 8
+        if box:
+            h = y - nlh + npx * 0.35 + 14 - top
+            mark = svg.mark()
+            svg.rect(x, top, w, h, t["correction_tint"], rx=12, rid="belief-card", stroke=t["correction"], sw=1.2,
+                     role="pill")
+            svg.els.insert(i0, svg.els.pop(mark))
+            y = top + h + npx * 1.6
     svg.close()
     return y - nlh
 
@@ -525,79 +451,242 @@ def _output_card(svg, g, lesson, state_id, x, y, w):
     return h
 
 
-def _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w=None, col_x=None):
-    """The comparison program: its claim, its listing with its own path, and its output. Returns the y after it."""
+def _code_strip(svg, lesson, pid, lines, x, y, w, size, badges=None):
+    """At most two program lines, each with its line number and (badges) the number of the note that explains it,
+    under a small label. Never a listing: AC-10.1 allows no code block. Returns the y after it."""
+    t = svg.t
+    assert len(lines) <= 2, "a still shows at most two program lines together"
+    src = lesson.program_source(pid).split("\n")
+    num = max(12, round(size * 0.8, 1))
+    lh = round(size * 2.1, 1)
+    svg.open(data_key="code")
+    y += size
+    for n in lines:
+        s_ = src[n - 1].strip()
+        rid = f"strip-{pid}-{n}"
+        nw = fonts.width("mono", num, str(n))
+        tw = 14 + nw + 12 + fonts.width("mono", size, s_) + 14
+        svg.rect(x, y - size * 1.25, tw, size * 1.9, t["highlight"], rx=6, rid=rid)
+        svg.text(x + 14 + nw, y, str(n), "mono", num, t["label"], ("label", "line-number"), anchor="end", inside=rid,
+                 extra={"data-line": n})
+        svg.text(x + 14 + nw + 12, y, s_, "mono", size, t["ink"], ("code", pid), inside=rid, extra={"data-src-line": n})
+        k = next((k for k, ln in (badges or []) if ln == n), None)
+        if k is not None and x + tw + 30 <= x + w:
+            svg.rect(x + tw + 8, y - size * 0.95, 20, 20, t["note"], rx=10, rid=f"{rid}-badge")
+            svg.text(x + tw + 18, y - size * 0.95 + 14.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"),
+                     weight=700, anchor="middle", inside=f"{rid}-badge")
+        y += lh
+    svg.close()
+    return y - lh + size * 0.9
+
+
+def _labelled_outputs(svg, g, lesson, sid, x, y, w):
+    """The output of `sid`, numbered, each line labelled with the conversion that printed it (its printf's format and
+    argument, both program text). Returns the y after it."""
+    t = svg.t
+    st = lesson.state(sid)["state"]
+    facts = lesson.by_id("facts")
+    src = lesson.program_source(st["program"]).split("\n")
+    made = rail.print_lines(src, st.get("path", []), [text.display(facts[f]) for f in st["output"]]) or []
+    vfont, vpx, vweight, _c, _s = svg.role("value", round(g["out"] * 0.86, 2))
+    cs = round(g["code"] * 0.92, 2)
+    g = dict(g, out_gap=g["out_gap"] * 0.7)
+    lab_w = 0
+    rows = []
+    for fid, n in zip(st["output"], made):
+        m = re.search(r'printf\("([^"]*?)(?:\\n)?"\s*,\s*(.+)\)\s*;', src[n - 1])
+        spec = re.findall(r"%[#0-9.]*[a-z]+", m.group(1))[0] if m else ""
+        arg = m.group(2).strip() if m else ""
+        rows.append((fid, spec, arg, n))
+        lab_w = max(lab_w, fonts.width("mono", cs, f"{spec}  {arg}"))
+    i_out = svg.mark()
+    svg.open(data_key="output", data_state=sid)
+    _label(svg, x, y + 16, text.ui("prints_label", file=lesson.program(st["program"])["path"].split("/")[-1]), g["label"],
+           ("chrome", "prints_label"), inside="out-card")
+    yy = y + 36 + vpx * 0.8
+    step = vpx + g["out_gap"]
+    vx = x + 28 + lab_w + 46  # room for a note badge between the label and the value
+    widest = max(fonts.width(vfont, vpx, text.display(facts[f]), weight=vweight) for f in st["output"])
+    if vx + widest > x + w - 4:
+        vpx = round(vpx * (x + w - 4 - vx) / widest, 2)
+    badge = {n["line"]: k for k, n in enumerate(lesson.data["figure"].get("notes", []), 1)}
+    for k, (fid, spec, arg, line) in enumerate(rows, 1):
+        val = text.display(facts[fid])
+        svg.text(x, yy, str(k), "mono", max(14, g["label"]), t["faint"], ("label", "output-step"), inside="out-card",
+                 ocr=str(k), ocr_group="out-steps")
+        if spec:
+            svg.text(x + 28, yy, spec, "mono", cs, t["note"], ("code", st["program"]), inside="out-card")
+            svg.text(x + 28 + fonts.width("mono", cs, spec + "  "), yy, arg, "mono", cs, t["label"], ("code", st["program"]),
+                     inside="out-card")
+        svg.text(vx, yy, val, vfont, vpx, t["value"], ("fact", fid), weight=vweight, inside="out-card", ocr=val,
+                 ocr_group="out", raw=text.tight_points(val))
+        if line in badge:  # the note that explains this line of output
+            bx = vx - 34
+            svg.rect(bx, yy - vpx * 0.78, 20, 20, t["note"], rx=10, rid=f"out-badge{badge[line]}")
+            svg.text(bx + 10, yy - vpx * 0.78 + 14.5, str(badge[line]), "mono", 12, t["surface"], ("label", "note-badge"),
+                     weight=700, anchor="middle", inside=f"out-badge{badge[line]}")
+        yy += step
+    svg.close()
+    h = yy - step - y + vpx * 0.3 + 6
+    _place_panels(svg, [(i_out, x - 6, y, w + 6, "out-card")], [h])
+    return y + h
+
+
+def _caption(svg, flow, lesson, g, x, y, w):
     t = svg.t
     claims = lesson.by_id("claims")
-    facts = lesson.by_id("facts")
-    inset = 22 if svg.frame["panel_fill"] else 0
-    top = inset or 6
-    _vf, vpx, _vw, _c, _s = svg.role("value", g["out"])
-    ffont, fpx, _w, _c, _s = svg.role("foot", g["label"])
-    cstate_id = cmp["state"]
-    cst = lesson.state(cstate_id)["state"]
-    crun = cst.get("path", [])
-    csrc = lesson.program_source(cmp["program"]).split("\n")
-    cfirst = rail.enter_line(csrc, crun) or rail.listing(lesson, cmp["program"])[0]
-    # every line the comparison adds is on screen, with the two lines above it for context (round 18: the
-    # break added after case 1 sat above the listing, so the learner never saw it)
-    import difflib
-    base_src = lesson.program_source(lesson.data["figure"]["program"]).split("\n")
-    added = [j + 1 for op, _i1, _i2, j1, j2 in difflib.SequenceMatcher(a=base_src, b=csrc, autojunk=False).get_opcodes()
-             if op in ("insert", "replace") for j in range(j1, j2)]
-    cfirst = max(1, min([cfirst] + [n - 2 for n in added]))
-    cshown = list(range(cfirst, max(crun) + 1))
-    if svg.frame["panel_divider"]:
-        svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
-    cw = X1 - X0
-    bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"])
-    svg.open(data_key="compare", data_state=cstate_id)
-    i_cmp = svg.mark()
-    yy = flow.emit(X0 + inset, y + top + bpx * 0.95, claims[cmp["claim"]]["text"], bfont, bpx, bpx * 1.42,
-                   t["ink_soft"], ("claim", cmp["claim"]), cw - 2 * inset, weight=bweight, inside="cmp-card")
-    yy += 2
-    fname2 = lesson.program(cmp["program"])["path"].split("/")[-1]
-    svg.text(X0 + inset, yy, fname2, ffont, fpx, t["label"], ("label", "program-file"), inside="cmp-card")
-    yy += 10
-    mini_w = (code_w or 480) - 2 * inset if wide else cw - 2 * inset
-    mh, _ys2 = code_panel(svg, lesson, cmp["program"], crun, cshown, X0 + inset, yy, mini_w, g["mini"],
-                          g["mini_lh"], g["mini_gutter"], "cmp-code", "gutter-cmp", True, wide, nested=True)
-    # wide: the output sits in the same column as the program's output above, so the two compare by eye
-    lx, ly = (col_x or X0 + inset + mini_w + 40, yy + 18) if wide else (X0 + inset, yy + mh + 30)
-    _label(svg, lx, ly, text.ui("output_label"), g["label"], ("chrome", "output_label"), inside="cmp-card")
-    list_end = _output_list(svg, g, lx, ly + 20 + vpx * 0.8, cst["output"], facts, "cmp-card", "cmp")
-    svg.close()
-    cmp_h = max(yy + mh, list_end - g["out_gap"] - vpx * 0.8 + vpx * 0.3) + top - y
-    _place_panels(svg, [(i_cmp, X0, y, cw, "cmp-card")], [cmp_h])
-    return y + cmp_h
+    cfont, cpx, cweight, _c, _s = svg.role("caption", g["caption"])
+    for cid in lesson.data["figure"].get("caption_claims", []):
+        y = flow.emit(x, y, claims[cid]["text"], cfont, cpx, cpx * 1.38, t["ink_soft"], ("claim", cid), w, weight=cweight)
+        y += 4
+    return y
 
 
-def _wrong_belief(svg, flow, lesson, g, wide, mid, X0, X1, y):
-    """A callout: the wrong belief in the learner's words, then the claim that corrects it. Returns the y after it."""
+def _side(svg, flow, lesson, g, kind, x, y, w, wide):
+    """What sits beside the mechanism (wide) or under it (portrait): the output, the notes, the comparison, the
+    program lines the notes explain. Returns the y after it."""
+    fig = lesson.data["figure"]
     t = svg.t
-    m = lesson.by_id("misconceptions")[mid]
-    pad = 20 if wide else 14
-    i0 = svg.mark()
-    _label(svg, X0 + pad, y + pad + 10, text.ui("wrong_belief"), g["label"], ("chrome", "wrong_belief"),
-           color=t["correction"], inside="belief-card")
-    svg.els[-1] = svg.els[-1].replace("<text ", '<text data-tone="correction" ', 1)
-    bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"])
-    yy = y + pad + 22 + bpx
-    m0 = svg.mark()
-    for ln in fonts.wrap(bfont, bpx, m["statement"], X1 - X0 - 2 * pad, weight=bweight):
-        svg.text(X0 + pad, yy, ln, bfont, bpx, t["ink"], ("misconception", mid), weight=bweight, inside="belief-card")
-        yy += bpx * 1.42
-    svg.merge(m0)
-    nfont, npx, nweight, _c, _s = svg.role("note", g["note"])
-    yy = flow.emit(X0 + pad, yy + 6, lesson.claim(m["correction"])["text"], nfont, npx, npx * 1.38, t["note"],
-                   ("claim", m["correction"]), X1 - X0 - 2 * pad, weight=nweight, inside="belief-card", tone="note")
-    h = yy - npx * 1.38 + pad + 4 - y
-    mark = svg.mark()
-    svg.rect(X0, y, X1 - X0, h, t["correction_tint"], rx=12, rid="belief-card", stroke=t["correction"], sw=1.2,
-             role="pill")
-    box = svg.els.pop(mark)
-    svg.els.insert(i0, box)
+    final = fig["states"][-1]
+    notes = fig.get("notes", [])
+    claims = lesson.by_id("claims")
+    if kind == "control-path":
+        # the output is drawn in the path figure, beside the rows that printed it
+        if notes:
+            y = _notes(svg, flow, lesson, notes, x, y, w, g) + (26 if wide else 22)
+        cmp = fig.get("compare")
+        if cmp:
+            svg.line(x, y - 12, x + w, y - 12, t["rule"], 1)
+            svg.open(data_key="compare")
+            fname = lesson.program(cmp["program"])["path"].split("/")[-1]
+            _label(svg, x, y + 12, text.ui("compare_label", file=fname), g["label"], ("chrome", "compare_label"))
+            bfont, bpx, bweight, _c, _s = svg.role("body", g["dek"] * 0.95)
+            y = flow.emit(x, y + 22 + bpx, claims[cmp["claim"]]["text"], bfont, bpx, bpx * 1.4, t["ink_soft"],
+                          ("claim", cmp["claim"]), w, weight=bweight) + 4
+            y += mech.draw(svg, lesson, cmp["state"], x, y, w, "portrait", flow, key=False, kind="control-path",
+                           only_ran=True, head=False)
+            svg.close()
+        return y
+    if kind == "stack":
+        if wide:
+            y = _output_grid(svg, dict(g, out=g["out"] * 0.78), lesson, final, x, y, w, by_column=True) + 18
+        else:
+            y = _output_card_at(svg, g, lesson, final, x, y, w)
+    elif kind == "views":
+        y = _labelled_outputs(svg, g, lesson, final, x, y, w) + 14
+    lines = [n["line"] for n in notes]
+    if kind == "stack" and lines:
+        y = _code_strip(svg, lesson, fig["program"], lines, x, y + 8, w, g["code"],
+                        badges=[(k, n["line"]) for k, n in enumerate(notes, 1)]) + 10
+    if notes and kind != "neuron":
+        y = _notes(svg, flow, lesson, notes, x, y, w, g, belief=kind == "stack")
+    ub = (fig.get("panel") or {}).get("ub")
+    if kind == "views" and ub:
+        y += 30
+        svg.line(x, y - 16, x + w, y - 16, t["correction"], 1.2)
+        usrc = lesson.program_source(ub["program"]).split("\n")
+        fname = lesson.program(ub["program"])["path"].split("/")[-1]
+        ffont, fpx, _w, _c, _s = svg.role("foot", g["label"])
+        svg.text(x, y, fname, ffont, fpx, t["label"], ("label", "program-file"))
+        lfont, lpx, lweight, caps, spacing = svg.role("label", g["label"])
+        lab = text.ui("lane_undefined")
+        svg.text(x + w, y, lab.upper() if caps else lab, lfont, lpx, t["correction"], ("chrome", "lane_undefined"),
+                 weight=lweight, spacing=spacing, anchor="end", tone="correction")
+        y += g["code"] * 1.6
+        svg.text(x, y, usrc[ub["line"] - 1].strip(), "mono", g["code"], t["correction"], ("code", ub["program"]),
+                 extra={"data-src-line": ub["line"]})
+        nfont, npx, nweight, _c, _s = svg.role("note", g["note"] * 0.85)
+        y = flow.emit(x, y + npx * 1.5, claims[ub["claim"]]["text"], nfont, npx, npx * 1.4, t["correction"],
+                      ("claim", ub["claim"]), w, weight=nweight, tone="correction")
+    return y
+
+
+def _figure_badges(svg, lesson, kind):
+    """Note badges on the path figure, beside the row each note is about. They are annotations over the figure, written
+    outside the mechanism's group: a note number is not a value of the mechanism (AC-10.2)."""
+    if kind != "control-path":
+        return
+    t = svg.t
+    at = (getattr(svg, "mech_anchors", None) or {}).get("badge", {})
+    for k, note in enumerate(lesson.data["figure"].get("notes", []), 1):
+        if note["line"] not in at:
+            continue
+        x, y = at[note["line"]]
+        rid = f"fig-badge{k}"
+        svg.rect(x + 8, y - 10, 20, 20, t["note"], rx=10, rid=rid)
+        svg.text(x + 18, y + 4.5, str(k), "mono", 12, t["surface"], ("label", "note-badge"), weight=700, anchor="middle",
+                 inside=rid)
+
+
+def _under_mech(svg, flow, lesson, g, kind, x, y, w):
+    """Under a views lesson's memory figure: the claims that read it (prose, not part of the drawn mechanism)."""
+    if kind != "views":
+        return y
+    t = svg.t
+    claims = lesson.by_id("claims")
+    nfont, npx, nweight, _c, _s = svg.role("note", g["note"] * 0.9)
+    for cid in (lesson.data["figure"]["panel"].get("memory") or {}).get("claims", []):
+        y = flow.emit(x, y + npx * 1.3, claims[cid]["text"], nfont, npx, npx * 1.4, t["note"], ("claim", cid), w,
+                      weight=nweight, tone="note") - npx * 1.4 + 6
+    return y
+
+
+def _output_card_at(svg, g, lesson, sid, x, y, w):
+    return y + _output_card(svg, g, lesson, sid, x, y, w) + 18
+
+
+def _output_grid(svg, g, lesson, sid, x, y, w, cols=2, by_column=False):
+    """The output of `sid`, numbered, in `cols` columns, read row by row (a short output under a hero panel) or, with
+    by_column, down each column in turn (a long output). Returns the y after it."""
+    t = svg.t
+    facts = lesson.by_id("facts")
+    fids = lesson.state(sid)["state"]["output"]
+    vfont, vpx, vweight, _c, _s = svg.role("value", g["out"])
+    cw = w / cols
+    widest = max(fonts.width(vfont, vpx, text.display(facts[f]), weight=vweight) for f in fids)
+    if widest > cw - 40:
+        vpx = round(max(13.0, vpx * (cw - 40) / widest), 2)
+    i_out = svg.mark()
+    svg.open(data_key="output", data_state=sid)
+    _label(svg, x, y + 16, text.ui("output_label"), g["label"], ("chrome", "output_label"), inside="out-card")
+    yy = y + 36 + vpx * 0.8
+    nrows = -(-len(fids) // cols)
+    for k, fid in enumerate(fids):
+        col, row = (k // nrows, k % nrows) if by_column else (k % cols, k // cols)
+        cx = x + col * cw
+        val = text.display(facts[fid])
+        ry = yy + row * (vpx + g["out_gap"])
+        svg.text(cx, ry, str(k + 1), "mono", max(14, g["label"]), t["faint"], ("label", "output-step"), inside="out-card",
+                 ocr=str(k + 1), ocr_group=f"out-steps-{col}")
+        svg.text(cx + 28, ry, val, vfont, vpx, t["value"], ("fact", fid), weight=vweight, inside="out-card", ocr=val,
+                 ocr_group=f"out-{col}", raw=text.tight_points(val))
+    svg.close()
+    rows = -(-len(fids) // cols)
+    h = 36 + vpx * 0.8 + (rows - 1) * (vpx + g["out_gap"]) + vpx * 0.3 + 6
+    _place_panels(svg, [(i_out, x, y, w, "out-card")], [h])
     return y + h
+
+
+def _neuron_band(svg, flow, lesson, g, x, y, w, wide):
+    """Under the neuron's three panels: the two program lines the notes explain and the output (left), the notes
+    (right); stacked on a phone."""
+    fig = lesson.data["figure"]
+    notes = fig.get("notes", [])
+    final = fig["states"][-1]
+    badges = [(k, n["line"]) for k, n in enumerate(notes, 1)]
+    if wide:
+        lw = (w - g["col_gap"]) * 0.52
+        y1 = _code_strip(svg, lesson, fig["program"], [n["line"] for n in notes], x, y, lw, g["code"], badges=badges)
+        y1 = _output_grid(svg, dict(g, out=g["out"] * 0.86, out_gap=8), lesson, final, x, y1 + 6, lw)
+        rx = x + lw + g["col_gap"]
+        y2 = _notes(svg, flow, lesson, notes, rx, y - 4, x + w - rx, dict(g, note=g["note"] * 0.9), belief=True)
+        svg.close()  # the caption reads the figure from under the output; it is not part of the figure
+        y1 = _caption(svg, flow, lesson, dict(g, caption=g["caption"] * 0.92), x, y1 + 24, lw)
+        svg.open(data_role="figure")
+        return max(y1, y2)
+    y = _code_strip(svg, lesson, fig["program"], [n["line"] for n in notes], x, y, w, g["code"], badges=badges) + 14
+    y = _output_card_at(svg, g, lesson, final, x, y, w)
+    return _notes(svg, flow, lesson, notes, x, y, w, g, belief=True)
 
 
 def build_svg(lesson, layout, theme, tokens, math=None):
@@ -609,101 +698,67 @@ def build_svg(lesson, layout, theme, tokens, math=None):
     fig = lesson.data["figure"]
     W, X0, X1 = g["W"], g["X0"], g["X1"]
     claims = lesson.by_id("claims")
-    facts = lesson.by_id("facts")
 
     # ---------- header ----------
-    y = 64 if wide else 42
+    y = 42 if wide else 42
     font, px, weight, caps, spacing = svg.role("kicker", g["kicker"])
     kicker = text.kicker(lesson)
     svg.text(X0, y, kicker.upper() if caps else kicker, font, px, t["note"], ("chrome", "kicker"), weight=weight,
              spacing=spacing, tone="note")
     font, px, weight, _c, _s = svg.role("display", g["title"])
-    y += px * (1.12 if wide else 1.25) + 4
+    y += px * (1.1 if wide else 1.25) + 4
     m0 = svg.mark()
     for ln in fonts.wrap(font, px, lesson.data["title"], X1 - X0, weight=weight):
         svg.text(X0, y, ln, font, px, t["ink"], ("label", "title"), weight=weight)
         y += px * 1.2
     svg.merge(m0)
     font, px, weight, _c, _s = svg.role("body", g["dek"])
-    y += 4
-    y = flow.emit(X0, y, claims[fig["title_claim"]]["text"], font, px, px * 1.42, t["ink_soft"],
+    y = flow.emit(X0, y + 2, claims[fig["title_claim"]]["text"], font, px, px * 1.42, t["ink_soft"],
                   ("claim", fig["title_claim"]), X1 - X0, weight=weight)
-    y += 8
+    y -= 4
     svg.line(X0, y, X1, y, t["rule"], 1)
-    y += 34 if wide else 28
+    y += 26 if wide else 26
 
-    # ---------- a hero panel spans the width above the program ----------
-    panel = fig.get("panel")
-    final_state = fig["states"][-1]
-    if panel and panel["place"] == "hero":
-        y += mech.draw(svg, lesson, final_state, X0, y, X1 - X0, layout, flow, states=fig["states"]) + (34 if wide else 26)
-        svg.line(X0, y - 18, X1, y - 18, t["rule"], 1)
-        y += 20 if wide else 16
-
-    # ---------- the program ----------
-    states = [lesson.state(s) for s in fig["states"]]
-    run = rail.executed(s["state"].get("path", []) for s in states)
-    src_lines = lesson.program_source(fig["program"]).split("\n")
-    first, last = rail.listing(lesson, fig["program"])
-    shown = list(range(first, (last if lesson.program(fig["program"]).get("show") else max(run)) + 1))
-    prog = lesson.program(fig["program"])
-    side = bool(panel and panel["place"] == "side")
-    code_w = (g["code_w_side"] if side else g["code_w"]) if wide else g["code_w"]
-    longest = max(len(src_lines[n - 1].rstrip()) for n in shown)
-    csize = round(min(g["code"], (code_w - g["gutter"] - (24 if wide else 16)) / (longest * MONO_ADV)), 2)
-    clh = round(g["code_lh"] * csize / g["code"], 2)
-    _label(svg, X0, y, text.ui("code_label"), g["label"], ("chrome", "code_label"))
-    fname = prog["path"].split("/")[-1]
-    ffont, fpx, _w, _c, _s = svg.role("foot", g["label"])
-    svg.text(X0 + code_w, y, fname, ffont, fpx, t["label"], ("label", "program-file"), anchor="end")
-    y += 14
-    notes = fig.get("notes", [])
-    svg.open(data_key="code")
-    recursive = any(len(s["state"].get("path", [])) != len(set(s["state"].get("path", []))) for s in states)
-    card_h, ys = code_panel(svg, lesson, fig["program"], run, shown, X0, y, code_w, csize, clh,
-                            g["gutter"], "code-card", "gutter", True, wide,
-                            badges=[(k, n["line"]) for k, n in enumerate(notes, 1)], arcs=not recursive)
+    # ---------- the figure: the mechanism, and beside it (wide) or under it (portrait) what it explains ----------
+    kind = mech.panel_kind(lesson)
+    final = fig["states"][-1]
+    svg.open(data_role="figure")
+    if kind == "neuron":
+        h = mech.draw(svg, lesson, final, X0, y, X1 - X0, layout, flow, states=fig["states"], mark=True)
+        y += h + (26 if wide else 22)
+        svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
+        y = _neuron_band(svg, flow, lesson, g, X0, y + 6, X1 - X0, wide)
+    else:
+        mw = MECH_W[kind] if wide else X1 - X0
+        if wide:
+            sx = X0 + mw + g["col_gap"]
+            m0 = svg.mark()
+            side_end = _side(svg, flow, lesson, g, kind, sx, y, X1 - sx, wide)
+            side_els = svg.els[m0:]  # measured first (the figure fits its height), written after it
+            del svg.els[m0:]
+            h = mech.draw(svg, lesson, final, X0, y, mw, layout, flow, states=fig["states"], mark=True,
+                          only="memory" if kind == "views" else None, code_key=kind != "stack", fit_h=side_end - y)
+            h = _under_mech(svg, flow, lesson, g, kind, X0, y + h, mw) - y
+            _figure_badges(svg, lesson, kind)
+            svg.els += side_els
+            svg.line(sx - g["col_gap"] / 2, y, sx - g["col_gap"] / 2, max(y + h, side_end), t["rule"], 1)
+            y = max(y + h, side_end)
+        else:
+            h = mech.draw(svg, lesson, final, X0, y, mw, layout, flow, states=fig["states"], mark=True,
+                          only="memory" if kind == "views" else None, code_key=kind != "stack")
+            h = _under_mech(svg, flow, lesson, g, kind, X0, y + h, mw) - y
+            _figure_badges(svg, lesson, kind)
+            y += h + 26
+            svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
+            y = _side(svg, flow, lesson, g, kind, X0, y + 6, X1 - X0, wide)
     svg.close()
-    card_top, card_bottom = y, y + card_h
+    y += (8 if kind == "neuron" else 26) if wide else 22
 
-    # ---------- beside the program (wide) or under it (portrait): panel, numbered notes, output ----------
-    col_x = X0 + code_w + g["col_gap"] if wide else X0
-    col_w = X1 - col_x
-    col_y = card_top if wide else card_bottom + 30
-    if side:
-        col_y += mech.draw(svg, lesson, final_state, col_x, col_y, col_w, layout, flow, states=fig["states"]) + (30 if wide else 26)
-    if notes:
-        col_y = _notes(svg, flow, lesson, notes, col_x, col_y, col_w, g) + (24 if wide else 22)
-    out_h = _output_height(svg, g, lesson, final_state)
-    in_col = not wide or col_y + out_h <= card_bottom + 40
-    out_x, out_y, out_w = (col_x, col_y, col_w) if in_col else (X0, card_bottom + 40, code_w)
-    out_h = _output_card(svg, g, lesson, final_state, out_x, out_y, out_w)
-    y = max(card_bottom, out_y + out_h) + (44 if wide else 36)
-    if not wide:
-        y = out_y + out_h + 36
-
-    # ---------- the comparison program, with its own path and output (mechanism, not metrics) ----------
-    cmp = fig.get("compare")
-    if cmp:
-        y = _compare(svg, flow, lesson, g, wide, cmp, X0, X1, y, code_w, col_x + (22 if svg.frame["panel_fill"] else 0)) + 40
-    # ---------- a common wrong belief, and the claim that corrects it ----------
-    if fig.get("misconception"):
-        y = _wrong_belief(svg, flow, lesson, g, wide, fig["misconception"], X0, X1, y) + 34
-
-    # ---------- caption + provenance ----------
-    cfont, cpx, cweight, _c, _s = svg.role("caption", g["caption"])
-    for cid in fig.get("caption_claims", []):
-        y = flow.emit(X0, y, claims[cid]["text"], cfont, cpx, cpx * 1.38, t["ink"], ("claim", cid), X1 - X0,
-                      weight=cweight)
-        y += 6
-    y += 10
-    svg.line(X0, y - 16, X1, y - 16, t["rule"], 1)
-    prov = text.provenance(lesson)
-    m0 = svg.mark()
-    for ln in fonts.wrap(ffont, g["foot"], prov, X1 - X0):
-        svg.text(X0, y + 4, ln, ffont, g["foot"], t["label"], ("chrome", "provenance"))
-        y += g["foot"] * 1.5
-    svg.merge(m0)
+    # ---------- caption and the source link (provenance lives in <metadata>, off the picture) ----------
+    if not (wide and kind == "neuron"):  # the neuron's caption sits in its band, under the output
+        y = _caption(svg, flow, lesson, g, X0, y, X1 - X0)
+    ffont, fpx, _w, _c, _s = svg.role("foot", g["foot"])
+    prog = lesson.program(fig["program"])
     src_path = f"lessons/{lesson.id}/{prog['path']}"
     svg.raw(f'<a href="../../{esc(prog["path"])}" data-role="source">')
     m0 = svg.mark()
@@ -712,7 +767,7 @@ def build_svg(lesson, layout, theme, tokens, math=None):
         y += g["foot"] * 1.5
     svg.merge(m0)
     svg.raw("</a>")
-    height = y + (24 if wide else 16)
+    height = y + (20 if wide else 16)
     return svg, height
 
 
@@ -740,6 +795,7 @@ def render(lesson, layout, theme, tokens, math=None):
             f'data-layout="{layout}" data-lesson="{esc(lesson.id)}" data-lesson-sha256="{lesson.sha256()}">\n'
             f'<title id="fig-title" data-label="title">{esc(lesson.data["title"])}</title>\n'
             f'<desc id="fig-desc" data-alt="1">{esc(alt_text(lesson))}</desc>\n'
+            f'<metadata data-provenance="{esc(text.provenance(lesson))}">{esc(text.provenance(lesson))}</metadata>\n'
             f'<defs><style>{css}</style>'
             f'<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" '
             f'orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{t["note"]}"/></marker></defs>\n'

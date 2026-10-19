@@ -16,12 +16,14 @@ BYTE = V21 / "lessons" / "one-byte-four-views"
 
 
 def test_call_steps_for_factorial_3():
+    """Frames are listed main first, each call after its caller: the explorer draws the stack the way the still and the
+    film do (AC-10.2, main at the top and each call below its caller)."""
     got = [(s["printed"][-1], [(f["label"], f["status"], f["n"], f["r"], f["slot"]) for f in s["frames"]])
            for s in knob.expected_calls(3)]
-    assert got[1][1] == [("factorial(2)", "running", "2", "r = ?", False), ("factorial(3)", "waiting", "3", "r = 3 *", True),
-                         ("main", "waiting", None, "r =", True)]
-    assert got[4] == ("factorial(2) = 2", [("factorial(2)", "returning", "2", "r = 2 * 1", False),
-                                          ("factorial(3)", "waiting", "3", "r = 3 *", True), ("main", "waiting", None, "r =", True)])
+    assert got[1][1] == [("main", "waiting", None, "r =", True), ("factorial(3)", "waiting", "3", "r = 3 *", True),
+                         ("factorial(2)", "running", "2", "r = ?", False)]
+    assert got[4] == ("factorial(2) = 2", [("main", "waiting", None, "r =", True), ("factorial(3)", "waiting", "3", "r = 3 *", True),
+                                          ("factorial(2)", "returning", "2", "r = 2 * 1", False)])
     assert got[6] == ("main got 6", [("main", "running", None, "r = 6", False)])
 
 

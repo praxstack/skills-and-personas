@@ -81,6 +81,18 @@
         "gcc-16": ""
       },
       "source_sha256": "77889ecd8bf8ff1a4b8133e61c216d1ef9fffe18a2a3b64e4fc0635005c8efd1"
+    },
+    {
+      "id": "p7",
+      "path": "programs/bytes.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "7379a8acc8c51e6dd2550922d98879e072873be5d3ff1c0b4645fe1443696895"
     }
   ],
   "facts": [
@@ -811,6 +823,351 @@
         "runs": 2,
         "sandbox": "sandbox-exec MODE=run"
       }
+    },
+    {
+      "id": "f.mem.a0",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 1,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "int",
+          66,
+          0,
+          "little"
+        ]
+      },
+      "value": "42",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.a1",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 2,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "int",
+          66,
+          1,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.a2",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 3,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "int",
+          66,
+          2,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.a3",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 4,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "int",
+          66,
+          3,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d0",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 5,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          0,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d1",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 6,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          1,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d2",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 7,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          2,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d3",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 8,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          3,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d4",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 9,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          4,
+          "little"
+        ]
+      },
+      "value": "00",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d5",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 10,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          5,
+          "little"
+        ]
+      },
+      "value": "80",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d6",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 11,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          6,
+          "little"
+        ]
+      },
+      "value": "50",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mem.d7",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 12,
+        "field": 2
+      },
+      "expect": {
+        "fn": "object_byte",
+        "args": [
+          "double",
+          66,
+          7,
+          "little"
+        ]
+      },
+      "value": "40",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.endian",
+      "program": "p7",
+      "kind": "value",
+      "select": {
+        "stream": "platform",
+        "key": "endianness"
+      },
+      "expect": {
+        "value": "little",
+        "reviewed": true
+      },
+      "value": "little",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 bytes.c && ./p7 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "94102704e1be4e8e6a8f5712c0e5a37c33f15067fc6c367ce820144deb25b1b4",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
     }
   ],
   "claims": [
@@ -1368,6 +1725,89 @@
         "f.vm1.f",
         "f.v321.f"
       ]
+    },
+    {
+      "id": "c.mem",
+      "kind": "mechanism",
+      "text": "In memory, a is 4 bytes: 42 00 00 00, from the lowest address up. This machine stores the low byte first, so 0x42 sits at the lowest address.",
+      "justification": "bytes.c copies a into unsigned char ab[sizeof a] with memcpy (line 9), which C17 6.2.6.1p4 calls the object representation, and prints each byte with %02x from index 0 (the lowest address) up (lines 11-12). The run printed 42, 00, 00, 00. Byte order is implementation-defined (6.2.6.1p2); the captured platform probe reports little-endian and sizeof(int) 4, so the least significant byte, 0x42, comes first.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.6.1 ¶4",
+          "quote": "The value may be copied into an object of type unsigned char [n] (e.g., by memcpy); the resulting set of bytes is called the object representation of the value.",
+          "excerpts": [
+            "sources/n2310-6.2.6.1p4.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.6.1 ¶2",
+          "quote": "objects are composed of contiguous sequences of one or more bytes, the number, order, and encoding of which are either explicitly specified or implementation-defined.",
+          "excerpts": [
+            "sources/n2310-6.2.6.1p2.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/bytes.c",
+          "clause": "stdout lines 1-12"
+        },
+        {
+          "title": "captured platform facts",
+          "clause": "endianness, sizeof.int"
+        }
+      ],
+      "facts": [
+        "f.mem.a0",
+        "f.mem.a1",
+        "f.mem.a2",
+        "f.mem.a3",
+        "f.isize",
+        "f.endian"
+      ]
+    },
+    {
+      "id": "c.dmem",
+      "kind": "mechanism",
+      "text": "(double)a is a new object with 8 bytes of its own: 00 00 00 00 00 80 50 40. Read from the highest address down, they are 0x4050800000000000.",
+      "justification": "bytes.c stores (double)a in d (line 6), copies d into unsigned char db[sizeof d] with memcpy (line 10) and prints each byte with %02x from index 0 up (lines 13-14): 00 00 00 00 00 80 50 40. Reversed, from index 7 down to 0, that is 40 50 80 00 00 00 00 00, the same bits views.c prints with %#llx as 0x4050800000000000 (fact f.dbits). sizeof(double) is 8 (f.dsize).",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.6.1 ¶4",
+          "quote": "The value may be copied into an object of type unsigned char [n] (e.g., by memcpy); the resulting set of bytes is called the object representation of the value.",
+          "excerpts": [
+            "sources/n2310-6.2.6.1p4.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/bytes.c",
+          "clause": "stdout lines 1-12"
+        },
+        {
+          "title": "captured run of programs/views.c",
+          "clause": "stdout line 7"
+        },
+        {
+          "title": "captured platform facts",
+          "clause": "sizeof.double"
+        }
+      ],
+      "facts": [
+        "f.mem.d0",
+        "f.mem.d1",
+        "f.mem.d2",
+        "f.mem.d3",
+        "f.mem.d4",
+        "f.mem.d5",
+        "f.mem.d6",
+        "f.mem.d7",
+        "f.dbits",
+        "f.dsize"
+      ]
     }
   ],
   "misconceptions": [
@@ -1407,7 +1847,11 @@
       },
       "reveals": [
         "f.bits",
-        "f.hex"
+        "f.hex",
+        "f.mem.a0",
+        "f.mem.a1",
+        "f.mem.a2",
+        "f.mem.a3"
       ]
     },
     {
@@ -1471,7 +1915,15 @@
       },
       "reveals": [
         "f.f",
-        "f.dbits"
+        "f.dbits",
+        "f.mem.d0",
+        "f.mem.d1",
+        "f.mem.d2",
+        "f.mem.d3",
+        "f.mem.d4",
+        "f.mem.d5",
+        "f.mem.d6",
+        "f.mem.d7"
       ]
     },
     {
@@ -1866,6 +2318,29 @@
         "line": 5,
         "claim": "c.ub",
         "after": "s5"
+      },
+      "memory": {
+        "program": "p7",
+        "int": [
+          "f.mem.a0",
+          "f.mem.a1",
+          "f.mem.a2",
+          "f.mem.a3"
+        ],
+        "double": [
+          "f.mem.d0",
+          "f.mem.d1",
+          "f.mem.d2",
+          "f.mem.d3",
+          "f.mem.d4",
+          "f.mem.d5",
+          "f.mem.d6",
+          "f.mem.d7"
+        ],
+        "claims": [
+          "c.mem",
+          "c.dmem"
+        ]
       }
     },
     "caption_claims": [],

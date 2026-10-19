@@ -1077,6 +1077,41 @@
                 }
               },
               "description": "stack: every frame shows its own parameter (the argument in its call fact) and result variable (unset, a slot waiting for the call on its call line, or the value it received), derived from facts and the program source."
+            },
+            "memory": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "program",
+                "int",
+                "double"
+              ],
+              "description": "views: the bytes of the value's int object and of (double)value in memory, one captured fact per byte from the lowest address up (data-part byte cells of the bytes mechanism, AC-10.2).",
+              "properties": {
+                "program": {
+                  "$ref": "#/$defs/ref"
+                },
+                "int": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/ref"
+                  }
+                },
+                "double": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/ref"
+                  }
+                },
+                "claims": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
             }
           }
         },

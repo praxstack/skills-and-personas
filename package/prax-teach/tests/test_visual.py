@@ -125,7 +125,8 @@ def test_no_overflow_min_size():
         port = next(s for s in svgs if "-portrait-light" in s)
         src = (out / port).read_text()
         fx = {
-            "small": re.sub(r'font-size="12"( fill="[^"]+" data-chrome="provenance")', r'font-size="9"\1', src, count=1),
+            # provenance left the picture (AC-10.1, it lives in <metadata>): the source link is the small text now
+            "small": re.sub(r'font-size="12"( fill="[^"]+" data-chrome="source_link")', r'font-size="9"\1', src, count=1),
             "overflow": re.sub(r'(data-fact="f\.p1\.l3"[^>]*>)done<', r"\1done done done done done done<", src, count=1),
             "offscreen": src.replace('<g data-key="compare"', '<g transform="translate(260 0)" data-key="compare"', 1),
             "tall": src.replace('<g data-key="code"', '<g transform="translate(0 -1800) scale(1 3)" data-key="code"', 1),

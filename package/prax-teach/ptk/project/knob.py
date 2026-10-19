@@ -59,7 +59,8 @@ def _prov(lesson, pid):
 
 def stack_steps(lines):
     """[{"line": k, "printed": [...], "frames": [{"label", "status", "n", "r", "slot", "ret"}]}] after each line,
-    top frame first. A frame's r: "r = ?" before its call returns; "r = 3 *" plus an empty slot while it waits
+    main first, each call after its caller (drawn top-down, as the still and the film draw the stack, AC-10.2).
+    A frame's r: "r = ?" before its call returns; "r = 3 *" plus an empty slot while it waits
     for the call on its call line; "r = 2 * 1" once the value has landed (one line after the callee printed
     its result, when the callee's frame is gone); the base case shows its result. main waits with "r =" and a
     slot until factorial(n) has returned."""
@@ -82,7 +83,7 @@ def stack_steps(lines):
             frames[-1].update(status="returning", ret=m.group(3))
         if MAIN.match(ln):
             frames[0]["status"] = "running"
-        out.append({"line": k, "printed": list(printed), "frames": [_view(f) for f in reversed(frames)]})
+        out.append({"line": k, "printed": list(printed), "frames": [_view(f) for f in frames]})
     return out
 
 

@@ -5,7 +5,7 @@
    "id": "m1.waits.order",
    "kind": "false-mechanism",
    "target": "c.waits",
-   "find": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+   "find": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits above the new one.",
    "replace": "factorial(3) finishes line 7 first and then calls factorial(2), so its frame is gone before the new one starts.",
    "why_false": "The multiplication needs the call's value, which exists only after factorial(2) returns (6.8.6.4p3)."
   },
@@ -21,9 +21,9 @@
    "id": "m3.unwind.wrong",
    "kind": "false-mechanism",
    "target": "c.unwind",
-   "find": "Each factorial return hands its value to the call that made it, one frame down.",
+   "find": "Each factorial return hands its value to the call that made it, one frame up.",
    "replace": "Each factorial return hands its value straight to main, skipping the frames in between.",
-   "why_false": "A return gives its value to its caller (6.8.6.4p3), which is the frame below."
+   "why_false": "A return gives its value to its caller (6.8.6.4p3), which is the frame above it in the drawing."
   },
   {
    "id": "m4.base.condition",

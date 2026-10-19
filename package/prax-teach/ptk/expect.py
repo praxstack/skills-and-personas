@@ -84,6 +84,23 @@ def double_bits_hex(value):
     return "0x" + format(struct.unpack(">Q", struct.pack(">d", float(value)))[0], "x")
 
 
+OBJECT_FORMATS = {"int": ("i", 4), "double": ("d", 8)}  # 32-bit two's complement int; IEEE 754 binary64 double
+
+
+def object_byte(ctype, value, offset, order):
+    """printf("%02x") of byte `offset` (0 = the lowest address) of the object representation of `value` stored in
+    a `ctype` object (C17 6.2.6.1p4: the bytes memcpy copies into unsigned char[n]), in the declared byte order
+    `order` ("little": least significant byte first). int is 32-bit two's complement, double is binary64."""
+    import struct
+    fmt, size = OBJECT_FORMATS[ctype]
+    if order not in ("little", "big"):
+        raise ValueError(f"byte order {order!r} is not little or big")
+    if not 0 <= int(offset) < size:
+        raise ValueError(f"offset {offset} is outside a {size}-byte {ctype}")
+    raw = struct.pack(("<" if order == "little" else ">") + fmt, int(value) if ctype == "int" else float(value))
+    return format(raw[int(offset)], "02x")
+
+
 def call_label(fn, arg):
     """How a call is written: call_label("factorial", 2) -> "factorial(2)"."""
     return f"{fn}({int(arg)})"
@@ -216,7 +233,7 @@ FUNCTIONS = {
     "factorial_event": factorial_event, "factorial_stdout": factorial_stdout, "printf_g": printf_g,
     "neuron_term": neuron_term, "neuron_sum": neuron_sum, "neuron_relu": neuron_relu,
     "neuron_term_line": neuron_term_line, "neuron_sum_line": neuron_sum_line, "neuron_relu_line": neuron_relu_line,
-    "binary64_float_h": binary64_float_h,
+    "binary64_float_h": binary64_float_h, "object_byte": object_byte,
 }
 # Functions that take the captured platform as their first argument; `args` omits it. Empty on
 # purpose: an expectation read from the capture can never disagree with it (review WP2 P2-5).
