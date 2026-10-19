@@ -842,6 +842,13 @@ def scene_html(lesson, scene, index, count, timing):
         note_px = _fit(nt["key"], claims[note_claim]["text"], panel_w - 84, (panel_h - 76) * 0.66, 1.18, sizes)
         side = (f'<div class="panel notecard" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
                 f'style="font-size:{note_px}px">{esc(claims[note_claim]["text"])}</p></div>')
+    elif mode == "path" and morph:
+        # a change of program in the path layout (the recap returns to the figure's program): the note states the
+        # new program's behaviour once the diff is complete, in the header band where the change card stood (WP6)
+        qx_ = L["q_box"][0]
+        npx = _fit(nt["key"], claims[note_claim]["text"], SX1 - qx_ - 24, STOP - 24, 1.18, (34, 32, 30, 28))
+        side = (f'<div class="panel notecard pnote" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
+                f'style="font-size:{npx}px;line-height:1.18">{esc(claims[note_claim]["text"])}</p></div>')
     else:
         side = ""
     if morph and mode in (None, "path"):
@@ -1071,6 +1078,8 @@ def scene_html(lesson, scene, index, count, timing):
         ox, oy, ow, ohh = _out_rect(L)
         if mode == "path":
             out_css_v = (f".vars {{ left:{L['code_x'] + 4}px; top:{L['vars_top']}px; }}\n"
+                         f".panel.pnote {{ left:{L['q_box'][0]}px; top:12px; width:{SX1 - L['q_box'][0]}px; height:{STOP - 20}px; bottom:auto;"
+                         f" padding:4px 0 4px 24px; display:flex; align-items:center; }}\n"
                          f".panel.pchange {{ left:{L['q_box'][0]}px; top:12px; width:{SX1 - L['q_box'][0]}px; height:auto; bottom:auto;"
                          f" padding:6px 0 6px 24px; display:grid; grid-template-columns:auto 1fr; column-gap:24px; align-items:baseline; }}\n"
                          f".pchange .qlabel {{ margin:0; }} .pchange .files {{ margin:0; }} .pchange .dl {{ grid-column:1 / -1; margin:0; }}\n")
@@ -1220,7 +1229,7 @@ def scene_html(lesson, scene, index, count, timing):
     // over the first 0.4 s of the next scene); the code card and output stay, so nothing jumps
     tl.fromTo(q('.title'), {{ opacity: 0, y: 12 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, 0);
     tl.fromTo(q('.panel:not(.changecard)'), {{ opacity: 0, y: 10 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, {note_at:.3f});
-    {f"tl.fromTo(q('.changecard'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4, ease: 'power2.out' }}, 0.05); tl.to(q('.changecard'), {{ opacity: 0, duration: 0.3 }}, {(swap if mode == 'path' else note_at + 0.05):.3f});" if morph else ""}
+    {f"tl.fromTo(q('.changecard'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4, ease: 'power2.out' }}, 0.05); tl.to(q('.changecard'), {{ opacity: 0, duration: 0.3 }}, {note_at + 0.05:.3f});" if morph else ""}
     {f"tl.to(q('.title, .panel'), {{ opacity: 0, duration: 0.3, ease: 'power1.in' }}, {scene['duration'] - 0.3:.3f});" if index + 1 < count else ""}
     if (q('.out-new').length) tl.set(q('.out-new'), {{ opacity: 0 }}, 0);
     if (q('.ln.exec-new').length) tl.set(q('.ln.exec-new'), {{ color: '{t['label']}' }}, 0);
