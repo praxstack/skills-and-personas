@@ -47,6 +47,8 @@ html[data-ive-mode="explore"] .mode .tagm{color:var(--surface);background:var(--
 .ln .no{text-align:end;color:var(--faint);font-size:.75rem}
 .ln .body{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1rem .5rem;min-width:0}
 .ln .src{white-space:pre;font-family:inherit}
+/* B5: a line longer than the panel (views_321.c line 7) wraps inside it, its continuation hung under the code */
+.code .ln .src{white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;max-width:100%;padding-left:2ch;text-indent:-2ch}
 .ln.ran{color:var(--ink)}
 .ln.ran .no{color:var(--note);font-weight:700}
 .ln.cur{background:var(--highlight);box-shadow:inset 4px 0 0 var(--note)}

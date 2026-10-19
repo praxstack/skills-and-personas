@@ -128,8 +128,17 @@ def whisper_words(media, work):
                 cur["text"] += tx
                 cur["end"] = round(max(t1, cur["start"]), 3)
     words = [w for w in words if re.search(r"[A-Za-z0-9]", w["text"])]
+    words = clamp_to_audio(words, float(probe(wav)["format"]["duration"]))
     return words, {"model": "ggml-base.en.bin", "model_sha256": host.sha256_file(model), "wav": wav.name,
                    "timestamps": "start = DTW token time (fallback segment offset), end = token end offset"}
+
+
+def clamp_to_audio(words, duration):
+    """No word ends after the audio does (B5): whisper.cpp can give the last token of its last 30 s window that window's
+    end as its own, seconds past the end of the audio, where no silence can hold it (measured: 112.2 s in a 108.67 s
+    film). The end is clamped to the audio's duration; starts are left alone."""
+    d = round(duration, 3)
+    return [{**w, "end": min(w["end"], d)} if w["end"] > d else w for w in words]
 
 
 def wer(ref, hyp):

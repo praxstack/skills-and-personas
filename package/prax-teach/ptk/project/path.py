@@ -35,6 +35,22 @@ def segments(run):
     return [(a, b, "run" if b == a + 1 else "jump") for a, b in zip(run, run[1:])]
 
 
+def jump_lanes(run):
+    """{(a, b): (side, lane)} for every jump of a run, so the arcs never cross (B5: a recursive path's calls, returns
+    and skips tangled on one shared bulge). A jump spans the lines between its ends. Jumps go on the left of the rail,
+    each one lane further out than every jump nested inside it; a jump that partly overlaps a left jump (neither
+    holds the other) goes on the right, laned the same way. side is -1 (left) or 1 (right); lane counts from 1."""
+    spans = sorted({(min(a, b), max(a, b)) for a, b, k in segments(run) if k == "jump"}, key=lambda s: (s[1] - s[0], s))
+    cross = lambda p, q: p[0] < q[0] < p[1] < q[1] or q[0] < p[0] < q[1] < p[1]  # noqa: E731
+    inside = lambda p, q: q[0] <= p[0] and p[1] <= q[1] and p != q  # p nested in q  # noqa: E731
+    placed = {}
+    for sp in spans:
+        side = -1 if not any(cross(sp, o) for o, (sd, _l) in placed.items() if sd == -1) else 1
+        lane = 1 + max([ln for o, (sd, ln) in placed.items() if sd == side and inside(o, sp)] + [0])
+        placed[sp] = (side, lane)
+    return {(a, b): placed[(min(a, b), max(a, b))] for a, b, k in segments(run) if k == "jump"}
+
+
 def nobreak_after(src_lines, run):
     """The executed line after which execution runs straight into a case label, or None."""
     for a, b, kind in segments(run):

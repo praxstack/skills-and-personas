@@ -15,7 +15,7 @@ from . import errors, host, node, text
 
 LEXICON = host.PKG / "lexicon" / "c.json"
 VOICE = "af_heart"
-SPEED = 0.9  # round 18: slower than 1.0 (the review measured up to 236 wpm there); 0.82 made whisper timings drift
+SPEED = 0.75  # B5 (AC-10.5): measured from the film audio, 0.9 ran up to 221 wpm on short lines. 0.7 is slower still, but whisper then misheard code tokens and lost cue sync, and the IVE question drive ran past its window; 0.75 with the tightest short lines reworded keeps every line under 170
 SAY_VOICE = "Samantha"
 
 

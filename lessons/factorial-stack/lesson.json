@@ -1213,7 +1213,7 @@
           ]
         },
         {
-          "text": "Each call to factorial gets its own n and its own r. This lesson draws each call to factorial as a frame on the call stack.",
+          "text": "Each call to factorial gets its own n and its own r, drawn here as one frame on the call stack.",
           "claims": [
             "c.frame"
           ]
@@ -1237,7 +1237,7 @@
           ]
         },
         {
-          "text": "In this lesson's drawing, the empty box after r = 3 * stands for the value factorial(2) has not returned yet.",
+          "text": "The empty box after r = 3 * stands for the value factorial(2) has not returned yet.",
           "claims": [
             "c.slot"
           ]
@@ -1376,7 +1376,7 @@
       ],
       "narration": [
         {
-          "text": "main stores the 6 in its own r and prints main got 6.",
+          "text": "main stores the returned 6 in its own r, then prints main got 6.",
           "claims": [
             "c.main"
           ]
@@ -1407,7 +1407,7 @@
       ],
       "narration": [
         {
-          "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return.",
+          "text": "The stack column grows by one frame for each factorial call and shrinks by one for each return.",
           "claims": [
             "c.recap"
           ]
@@ -1427,7 +1427,7 @@
   "figure": {
     "misconception": "m.base",
     "kind": "code-trace",
-    "title_claim": "c.frame",
+    "title_claim": "c.order",
     "program": "p1",
     "states": [
       "s0",
@@ -1456,9 +1456,7 @@
         "result": "r"
       }
     },
-    "caption_claims": [
-      "c.order"
-    ],
+    "caption_claims": [],
     "explore": {
       "kind": "calls",
       "var": "n",
