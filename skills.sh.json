@@ -1,0 +1,14 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "groupings": [
+    {
+      "title": "Visual teaching",
+      "description": "A general explanation-first visual teacher, plus its compatible Teach Pro Max invocation.",
+      "skills": [
+        "teacher",
+        "teach-pro-max"
+      ]
+    }
+  ],
+  "notGrouped": "bottom"
+}

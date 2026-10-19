@@ -19,7 +19,7 @@ The canonical, production-ready portfolio lives in `new-skills/` — 38 skills t
 |---|---|
 | `new-skills/` | **Canonical portfolio** — 38 production-ready skills, each a directory with SKILL.md + references/ |
 | `new-skills/_audit/` | Audit trail — inventory, judge rubric scores, lint report, smoke-test report, council review, code-review report, session log, reusable tooling (lint.py, fix_lint_issues.py, smoke_test.py, install.sh, check_links.py, pytest suite) |
-| `skills/` | Original skills — superseded by `new-skills/` but preserved for reference and as the source material for several `new-skills/` entries |
+| `skills/` | The accepted visual teaching distribution and original skill sources; the separate curated portfolio remains in `new-skills/` |
 | `skills/teach-pro-max/` | Public, skills.sh-discoverable adaptive teaching system with runtime tools, schemas, tests, and optional integrations |
 | `skills/teacher/` | Standalone visual teacher for any host: picks the medium (hand-drawn diagrams, explorables, animations, narrated video), re-explains on confusion, vendors its video and teaching skills |
 | `docs/teach-pro-max/` | Teach Pro Max research dossier, historical evidence, original release archives, and source manifest |
@@ -36,31 +36,32 @@ The canonical, production-ready portfolio lives in `new-skills/` — 38 skills t
 | `opencode-setup/` | OpenCode configuration |
 | `SAFETY.md` | Mental-health content scope, crisis resources, instrument attribution |
 
-## Teach Pro Max
+## Visual teaching: Teacher and Teach Pro Max
 
-`teach-pro-max` is the public distribution of the evidence-oriented teaching
-system developed in the repository's Prax Teach research work. It supports
-quick explanations, focused lessons, and consent-based multi-session courses;
-preserves attempt-before-answer and progressive-hint behavior; tracks evidence
-instead of unsupported mastery labels; creates accessible Markdown/HTML
-artifacts; and includes deterministic learner-state, scheduling, evaluation,
-export, visualization-routing, Flint, and SkillOpt tooling.
+`teacher` is the accepted general visual teacher. It gives the complete explanation first, then offers optional practice. It produces mechanism-led stills, interactive explorers, layered Q&A, flashcards, narrated video and interactive video from one sourced lesson model. Courses can resume with explicit consent; a complete static explanation remains available.
 
-Install only this skill:
+Install the standalone teacher:
 
 ```bash
-npx skills add praxstack/skills-and-personas --skill teach-pro-max
+npx skills add praxstack/skills-and-personas --skill teacher
 ```
 
-- [Installable skill](skills/teach-pro-max/SKILL.md)
-- [Detailed usage guide](docs/teach-pro-max/USAGE-GUIDE.md) ([visual HTML](docs/teach-pro-max/USAGE-GUIDE.html))
-- [Cross-harness persona](personas/teach-pro-max-agent-persona/README.md)
-- [Research and evidence archive](docs/teach-pro-max/README.md)
-- [skills.sh page](https://skills.sh/praxstack/skills-and-personas/teach-pro-max)
+To retain the `teach-pro-max` invocation, install both entries together. That compatibility entry delegates general teaching to its sibling `teacher`:
 
-The historical receipts in `docs/teach-pro-max/` bind the original candidate
-bytes. They establish lineage, not a fresh release receipt for the renamed
-public package and not proof of superior human learning.
+```bash
+npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
+```
+
+Ask your agent: `Use teacher to explain how a neuron becomes a neural network, with a visual mechanism and an interactive example.` Request the formats you want. Practice and persistent learner records require explicit requests/consent.
+
+- [Teacher source](skills/teacher/SKILL.md) · [compatible entry](skills/teach-pro-max/SKILL.md)
+- [Installation, prerequisites and usage](docs/teach-pro-max/USAGE-GUIDE.md)
+- [Public downloads](https://github.com/praxstack/skills-and-personas/releases) · [accepted evaluation](deliverables/teach-pro-max/codex/evidence/private-evaluation/candidate4-accepted-redacted-report.json)
+- [Teacher on skills.sh](https://skills.sh/praxstack/skills-and-personas/teacher) · [Teach Pro Max on skills.sh](https://skills.sh/praxstack/skills-and-personas/teach-pro-max)
+
+The fixed general evaluation passed 24/24 routing cases and 56/56 end-to-end criteria after the learner accepted all four required recordings. Valid-control acceptance and planted-error detection are separate receipts. These results do not certify human learning gains, every optional renderer, or world-best quality. The development C adapter remains separate and unaccepted.
+
+The complete skill sources and supporting files are public under the repository license, with bundled third-party notices retained. Runtime packages and voice/browser model downloads are separate prerequisites. Historical development archives and failed attempts are preserved; current acceptance does not rewrite them.
 
 ## Additional public skills
 
