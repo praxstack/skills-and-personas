@@ -5,7 +5,7 @@
    "id": "m1.cast.samebits",
    "kind": "false-mechanism",
    "target": "c.samebits",
-   "find": "printf does not reinterpret the bits of a for %f. It receives the double that (double)a made.",
+   "find": "%f receives the double that (double)a made, not a itself, so printf does not reinterpret the bits of a for %f.",
    "replace": "printf never changes the bits; the format string only decides how to read them, so %f reads a's own bits as a double.",
    "why_false": "With (double)a the argument is a new double 66.0 (6.3.1.4p2); printf receives that value, not a's int bits."
   },
