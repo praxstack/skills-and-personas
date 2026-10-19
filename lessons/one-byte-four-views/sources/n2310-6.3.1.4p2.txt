@@ -1,0 +1,10 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §6.3.1.4 ¶2
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §6.3.1.4 ¶2
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 3098-3101 of that text
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage.
+---
+2   When a value of integer type is converted to a real floating type, if the value being converted can
+    be represented exactly in the new type, it is unchanged. If the value being converted is in the
+    range of values that can be represented but cannot be represented exactly, the result is either the
+    nearest higher or nearest lower representable value, chosen in an implementation-defined manner.

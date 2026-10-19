@@ -34,7 +34,10 @@
      "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
      "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
      "clause": "§7.21.6.1 ¶9",
-     "quote": "If any argument is not the correct type for the corresponding conversion specification, the behavior is undefined."
+     "quote": "If any argument is not the correct type for the corresponding conversion specification, the behavior is undefined.",
+     "excerpts": [
+      "sources/n2310-7.21.6.1p9.txt"
+     ]
     }
    ],
    "why_false": "The %c conversion is described in 7.21.6.1p8; paragraph 9 is about wrong argument types."

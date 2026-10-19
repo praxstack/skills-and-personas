@@ -563,7 +563,10 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.8.4.2 ¶5",
-          "quote": "If a converted value matches that of the promoted controlling expression, control jumps to the statement following the matched case label."
+          "quote": "If a converted value matches that of the promoted controlling expression, control jumps to the statement following the matched case label.",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt"
+          ]
         }
       ]
     },
@@ -577,7 +580,10 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.8.1 ¶4",
-          "quote": "Labels in themselves do not alter the flow of control, which continues unimpeded across them."
+          "quote": "Labels in themselves do not alter the flow of control, which continues unimpeded across them.",
+          "excerpts": [
+            "sources/n2310-6.8.1p4.txt"
+          ]
         }
       ]
     },
@@ -590,7 +596,11 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4"
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt",
+            "sources/n2310-6.8.1p4.txt"
+          ]
         },
         {
           "title": "captured run of programs/fallthrough.c",
@@ -612,7 +622,10 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.8.6.3 ¶2",
-          "quote": "A break statement terminates execution of the smallest enclosing switch or iteration statement."
+          "quote": "A break statement terminates execution of the smallest enclosing switch or iteration statement.",
+          "excerpts": [
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
         }
       ]
     },
@@ -640,7 +653,10 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.6.3 ¶2"
+          "clause": "§6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
         },
         {
           "title": "captured run of programs/with_break.c",
@@ -673,7 +689,12 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2"
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt",
+            "sources/n2310-6.8.1p4.txt",
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
         }
       ]
     },
@@ -687,7 +708,10 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.8.4.2 ¶5",
-          "quote": "If no converted case constant expression matches and there is no default label, no part of the switch body is executed."
+          "quote": "If no converted case constant expression matches and there is no default label, no part of the switch body is executed.",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt"
+          ]
         }
       ]
     },
@@ -701,18 +725,27 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.8 ¶2",
-          "quote": "Except as indicated, statements are executed in sequence."
+          "quote": "Except as indicated, statements are executed in sequence.",
+          "excerpts": [
+            "sources/n2310-6.8p2.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§6.8.4.2 ¶4",
-          "quote": "A switch statement causes control to jump to, into, or past the statement that is the switch body, depending on the value of a controlling expression, and on the presence of a default label and the values of any case labels on or in the switch body."
+          "quote": "A switch statement causes control to jump to, into, or past the statement that is the switch body, depending on the value of a controlling expression, and on the presence of a default label and the values of any case labels on or in the switch body.",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p4.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.4 (syntax)"
+          "clause": "§6.8.4 (syntax)",
+          "excerpts": [
+            "sources/n2310-6.8.4-syntax.txt"
+          ]
         },
         {
           "title": "programs/fallthrough.c",
@@ -734,13 +767,19 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.6.3 ¶2"
+          "clause": "§6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
         },
         {
           "title": "GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)",
           "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
           "clause": "-Wimplicit-fallthrough=n",
-          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra."
+          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra.",
+          "excerpts": [
+            "sources/gcc16-man-wimplicit-fallthrough.txt"
+          ]
         }
       ]
     },
@@ -758,7 +797,10 @@
           "title": "GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)",
           "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
           "clause": "-Wimplicit-fallthrough=n",
-          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra."
+          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra.",
+          "excerpts": [
+            "sources/gcc16-man-wimplicit-fallthrough.txt"
+          ]
         },
         {
           "title": "programs/fallthrough.c",
@@ -776,7 +818,12 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2"
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt",
+            "sources/n2310-6.8.1p4.txt",
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
         },
         {
           "title": "programs/into_break.c",

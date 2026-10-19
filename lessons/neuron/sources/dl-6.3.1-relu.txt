@@ -1,0 +1,7 @@
+document: Goodfellow, Bengio and Courville, Deep Learning (MIT Press, 2016)
+clause: §6.3.1 Rectified Linear Units and Their Generalizations, its heading and first sentence
+taken_from: a local PDF copy of the book (801 pages, sha256 880b976d7951de257e9c43b02910fe1b7500cab93be7e9a9883fc80950eff762), text by pdftotext version 26.10.0 -layout, PDF page 209, printed page 193
+note: Only the section heading and the defining sentence are stored. pdftotext keeps the fi ligature and spaces the formula as 'g (z ) = max{0, z }'.
+---
+6.3.1    Rectiﬁed Linear Units and Their Generalizations
+Rectiﬁed linear units use the activation function g (z ) = max{0, z }.
