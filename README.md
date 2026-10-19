@@ -46,7 +46,7 @@ Install the standalone teacher:
 npx skills add praxstack/skills-and-personas --skill teacher
 ```
 
-To retain the `teach-pro-max` invocation, install both entries together. That compatibility entry delegates general teaching to its sibling `teacher`:
+To retain the `teach-pro-max` invocation, install both entries together. That compatibility entry uses its sibling `teacher` when present and a bundled engine when installed alone:
 
 ```bash
 npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
@@ -57,11 +57,11 @@ Ask your agent: `Use teacher to explain how a neuron becomes a neural network, w
 - [Publication and anonymous-download verification](deliverables/teach-pro-max/codex/evidence/publication-20261020/REPORT.md)
 - [Teacher source](skills/teacher/SKILL.md) · [compatible entry](skills/teach-pro-max/SKILL.md)
 - [Installation, prerequisites and usage](docs/teach-pro-max/USAGE-GUIDE.md)
-- [v3.0.0 source ZIP](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/prax-teach-v3.0.0-source.zip) · [real lesson ZIP](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/prax-teach-v3.0.0-lessons.zip) · [SHA256 checksums](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/SHA256SUMS)
+- [v3.0.1 source ZIP](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.1/prax-teach-v3.0.1-source.zip) · [real lesson ZIP](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/prax-teach-v3.0.0-lessons.zip) · [SHA256 checksums](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.1/SHA256SUMS)
 - [Public downloads](https://github.com/praxstack/skills-and-personas/releases) · [accepted evaluation](deliverables/teach-pro-max/codex/evidence/private-evaluation/candidate4-accepted-redacted-report.json)
 - [Teacher on skills.sh](https://skills.sh/praxstack/skills-and-personas/teacher) · [Teach Pro Max on skills.sh](https://skills.sh/praxstack/skills-and-personas/teach-pro-max)
 
-The fixed general evaluation passed 24/24 routing cases and 56/56 end-to-end criteria after the learner accepted all four required recordings. Valid-control acceptance and planted-error detection are separate receipts. These results do not certify human learning gains, every optional renderer, or world-best quality. The development C adapter remains separate and unaccepted.
+The original fixed general evaluation reported 24/24 routing cases, 52/56 automated end-to-end criteria, and four additional human listening approvals. The v3.0.1 security patch has separate regression evidence in [the hardening report](docs/security/teach-v3-hardening-20261020/VERIFICATION.md); it does not claim a new held-out quality improvement. Valid-control acceptance and planted-error detection are separate receipts. These results do not certify human learning gains, every optional renderer, or world-best quality. The development C adapter remains separate and unaccepted.
 
 The complete skill sources and supporting files are public under the repository license, with bundled third-party notices retained. Runtime packages and voice/browser model downloads are separate prerequisites. Historical development archives and failed attempts are preserved; current acceptance does not rewrite them.
 

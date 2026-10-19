@@ -2,7 +2,7 @@
 
 The general teacher is accepted and activated locally. Product source `0d20ff7` is unchanged. Final general acceptance is **56/56 E2E**, **24/24 routing**, **8/8 valid controls accepted** and **8/8 intended invalid propositions detected**. Prax listened to all four required recordings and accepted them. [Activation and rollback](evidence/activation-20261019/REPORT.md) · [Accepted report](evidence/private-evaluation/candidate4-accepted-redacted-report.json).
 
-Use `teacher` or the compatible `teach-pro-max` entry on the next turn. The persistent local rendering environment is `/Users/prax/.local/share/prax-teach/runtime/v3/env.sh`; source it only for a teaching command/session. The unfinished C development adapter remains separate and unaccepted.
+Use `teacher` or the compatible `teach-pro-max` entry on the next turn. The persistent local rendering environment is `~/.local/share/prax-teach/runtime/v3/env.sh`; source it only for a teaching command/session. The unfinished C development adapter remains separate and unaccepted.
 
 ## Preserved distribution and construction history
 

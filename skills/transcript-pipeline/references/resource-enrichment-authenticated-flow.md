@@ -33,6 +33,13 @@ Output artifacts:
 
 4. Generic links
 - HTML snapshot + title extraction
+- Requests are credential-free unless `--cookies-json` supplies an exact-host
+  cookie list for that same host. Dictionary-form/domainless cookie files are
+  rejected.
+- HTTP(S) targets are checked before every request and redirect. Loopback,
+  private, link-local, reserved, multicast and metadata destinations are
+  rejected.
+- HTML/PDF/browser artifacts have fixed transfer, page-height and disk limits.
 
 ## Commands
 
@@ -76,6 +83,9 @@ python3 scripts/resource_enrichment.py --all-sessions
 - Notion API v3 endpoint used here is unofficial and may change.
 - Canva export controls are dynamic UI flows; script captures authenticated page content and screenshots, not guaranteed design-export PDFs.
 - For locked/private resources without valid auth, report will record fallback behavior and failure notes.
+- `--cookies-json` accepts a JSON list of cookie objects with `name`, `value`,
+  and an exact `domain` without a leading dot. Each domain gets an isolated
+  session; cookies are never installed in the generic public-fetch session.
 
 ## Report Schema (per session)
 

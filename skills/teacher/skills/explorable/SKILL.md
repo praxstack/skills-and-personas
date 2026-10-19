@@ -18,11 +18,18 @@ The learner sees the complete mechanism and explanation, then can manipulate the
 ```sh
 python3 scripts/build.py assets/examples/seasons.lesson.js -o seasons.html        # one file, opens anywhere
 node scripts/test_lesson.mjs seasons.html                                  # drives every step in Chromium
-node scripts/check_code.mjs lesson.js --include course.model.js            # when the lesson shows code
+node scripts/check_code.mjs lesson.js --include course.model.js            # structural check; does not execute authored code
+node scripts/check_code.mjs lesson.js --include course.model.js --trust-authored-code  # only after reviewing/trusting every input
 node ../visual-qa/scripts/check_page.mjs seasons.html --eval "window.__explorable.check()"
 ```
 
 Use `--fragment` when publishing to a host that wraps pages (Claude artifacts). Open the screenshots before showing the learner anything.
+
+`test_lesson.mjs`, `check_page.mjs`, narration, and `bundle_lesson.mjs` load the
+lesson in Chromium and execute its JavaScript. Run them only for a lesson and
+includes you have reviewed and chosen to trust. Chromium is part of the render
+pipeline, not a hostile-code sandbox; use the [bundled checker sandbox](references/SANDBOX.md) or an external restricted environment for
+third-party material.
 
 ## The lesson file
 
@@ -55,7 +62,7 @@ window.LESSON = {
 ### More lesson fields
 
 - `hook`: HTML shown above step 1 under "Why this mattered": the stakes or the story (who needed this, what broke without it). Short.
-- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide, in a Web Worker with a Stop button and a 10 s limit, so an endless loop never freezes the lesson) where the host allows it, and every panel shows what the model says the program prints for the current inputs. `node scripts/check_code.mjs lesson.js` compiles and runs both languages on every case and fails if either disagrees with `expect`.
+- `code`: `{ title, cpp, python, stdin(params), expect(params), cases: [params...] }`. Mark lines with a trailing `//@id` (C++) or `#@id` (Python). A step with `line: "id"` (or `line: (p, s) => "id"`) shows the panel with that line lit. The Code tab shows the whole program; Python runs in the browser (Pyodide, in a Web Worker with a Stop button and a 10 s limit, so an endless loop never freezes the lesson) where the host allows it, and every panel shows what the model says the program prints for the current inputs. The default `check_code.mjs` invocation is structural and reports code as unverified. Only after reviewing every lesson/include, pass `--trust-authored-code` to compile and run both languages. For third-party executable examples, use `--sandbox --sandbox-image sha256:...`; see [sandbox setup](references/SANDBOX.md).
 - `ask: { kind: "explain", q, model, points: [...] }`: the learner writes the idea in their own words first, then sees the teacher's version and ticks the key points they covered. The text goes into the report so the teacher can correct it.
 - Shared course code: put the model in one file that sets `window.Something` and build with `--include course.model.js` (also for `check_code.mjs`).
 - `figure.narrowText`: text scale on narrow screens (default 1). Raise it until `visual-qa` stops flagging figure text under 11px.
@@ -85,4 +92,4 @@ Examples: `assets/examples/seasons.lesson.js` (Earth science, no code).
 
 ## Six formats from one lesson
 
-Add `sources: [{title, url, note}]` and an honest `limits` statement to source-grounded lessons. Build the explorer, render narrated video, then use `node scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. The exporter produces editable still/PNG, Q&A, cards, static fallback and interactive video. Real video and matching timing/captions are required for the video explorer; missing media is not silently labelled complete.
+Add `sources: [{title, url, note}]` and an honest `limits` statement to source-grounded lessons. After reviewing the executable lesson, build the explorer, render narrated video, then use `node scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. The exporter produces editable still/PNG, Q&A, cards, static fallback and interactive video. Real video and matching timing/captions are required for the video explorer; missing media is not silently labelled complete.

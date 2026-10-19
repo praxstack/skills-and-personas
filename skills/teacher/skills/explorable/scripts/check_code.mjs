@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Run a lesson's shown code against its model.
 //
-//   node check_code.mjs lesson.js [--quiet]
+//   node check_code.mjs lesson.js [--quiet] [--trust-authored-code]
 //
 // For every case in LESSON.code.cases (parameter sets), feeds code.stdin(params)
 // to the C++ (g++ -std=c++17) and Python (python3) sources the learner sees,
@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import vm from "node:vm";
+import { fileURLToPath } from "node:url";
 
 const file = process.argv[2];
 const includes = [];
@@ -23,11 +24,31 @@ if (!file) {
   console.error("usage: node check_code.mjs lesson.js");
   process.exit(2);
 }
+if (process.argv.includes("--sandbox")) {
+  const value = (flag) => { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : undefined; };
+  const image = value("--sandbox-image");
+  if (!image) { console.error("--sandbox requires --sandbox-image sha256:<reviewed-local-image-id>"); process.exit(2); }
+  const args = [fileURLToPath(new URL("./sandbox_code.py", import.meta.url)), file, "--image", image];
+  for (const include of includes) args.push("--include", include);
+  if (value("--docker-context")) args.push("--docker-context", value("--docker-context"));
+  const result = spawnSync("python3", args, { stdio: "inherit", timeout: 120000 });
+  process.exit(result.status ?? 2);
+}
+const trusted = process.argv.includes("--trust-authored-code") || process.env.TEACHER_TRUST_AUTHORED_CODE === "1";
+if (!trusted) {
+  const shown = [file, ...includes].map((path) => readFileSync(resolve(path), "utf8")).join("\n");
+  if (/\bcode\s*:/.test(shown)) {
+    console.log("UNVERIFIED: shown code was not executed. Review the lesson, then pass --trust-authored-code or use an external restricted sandbox.");
+  } else {
+    console.log(`${file}: no shown code detected by the structural check`);
+  }
+  process.exit(0);
+}
 const ctx = { console, Math, Number, String, Array, Object, JSON, Set, Map };
 ctx.window = ctx;
 vm.createContext(ctx);
-for (const inc of includes) vm.runInContext(readFileSync(resolve(inc), "utf8"), ctx, { filename: inc });
-vm.runInContext(readFileSync(resolve(file), "utf8"), ctx, { filename: file });
+for (const inc of includes) vm.runInContext(readFileSync(resolve(inc), "utf8"), ctx, { filename: inc, timeout: 5000 });
+vm.runInContext(readFileSync(resolve(file), "utf8"), ctx, { filename: file, timeout: 5000 });
 const L = ctx.window.LESSON;
 if (!L?.code) {
   console.log(`${file}: no code to check`);
@@ -52,7 +73,7 @@ if (code.cpp) {
   if (!have("g++")) skipped.push("C++ (no g++)");
   else {
     writeFileSync(join(dir, "main.cpp"), strip(code.cpp));
-    const c = spawnSync("g++", ["-std=c++17", "-O2", "-o", join(dir, "main"), join(dir, "main.cpp")], { encoding: "utf8" });
+    const c = spawnSync("g++", ["-std=c++17", "-O2", "-o", join(dir, "main"), join(dir, "main.cpp")], { encoding: "utf8", timeout: 30000, maxBuffer: 1024 * 1024 });
     if (c.status !== 0) fails.push(`C++ does not compile:\n${c.stderr.slice(0, 1200)}`);
     else cppBin = join(dir, "main");
   }

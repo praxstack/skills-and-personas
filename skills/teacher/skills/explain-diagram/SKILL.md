@@ -1,6 +1,6 @@
 ---
 name: explain-diagram
-description: Draw a still figure that proves one claim, how parts connect, how a process flows, or how a subject is mapped out, and frame it with why it works, how it works and a look-for cue. Renders Mermaid, D2, Graphviz, PlantUML, Vega-Lite, BPMN and Excalidraw sources through a local CLI or Kroki, hand-drawn by default (Mermaid handDrawn, D2 sketch, Kalam labels), or uses hand-written SVG with lesson-notebook ink marks. Use when structure is the idea and nothing needs to move.
+description: Draw a still figure that proves one claim, how parts connect, how a process flows, or how a subject is mapped out, and frame it with why it works, how it works and a look-for cue. Renders Mermaid, D2, Graphviz, PlantUML, Vega-Lite, BPMN and Excalidraw sources locally by default, with an explicit opt-in Kroki fallback, hand-drawn by default (Mermaid handDrawn, D2 sketch, Kalam labels), or uses hand-written SVG with lesson-notebook ink marks. Use when structure is the idea and nothing needs to move.
 ---
 
 # Explain diagram
@@ -19,7 +19,7 @@ A diagram is an argument. Before drawing, write the one sentence it proves. If y
 | how ideas in a subject depend on each other | concept map or roadmap | D2 or Graphviz, left to right by prerequisite |
 | numbers to compare | chart | Vega-Lite (`.vl.json`) |
 | a precise physical or geometric picture | hand-written SVG | lesson-notebook classes and `ink.js` marks |
-| a sketch the learner should edit | Excalidraw | the host's Excalidraw MCP if it has one, or `.excalidraw` via Kroki |
+| a sketch the learner should edit | Excalidraw | the host's Excalidraw MCP if it has one, or `.excalidraw` via explicitly enabled Kroki |
 
 `python3 ../../scripts/find_tool.py --job structure --medium still --net` says which of these run on this host.
 
@@ -35,7 +35,7 @@ python3 scripts/render.py assets/examples/cache.mmd --page cache.html \
 node ../visual-qa/scripts/check_page.mjs cache.html
 ```
 
-`-o x.svg` writes just the SVG. `--plain` turns off the hand-drawn look. `--offline` refuses the network (local CLIs only). `KROKI_URL` points at a self-hosted Kroki. `--page` refuses to run without `--claim`.
+`-o x.svg` writes just the SVG. `--plain` turns off the hand-drawn look. Rendering is local-only by default. `--allow-network` explicitly permits sending the complete diagram source to Kroki when no local renderer is available; `KROKI_URL` selects that service. `--offline` remains as a compatibility spelling for the default. `--page` refuses to run without `--claim`.
 
 ## Annotation rules
 

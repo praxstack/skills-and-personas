@@ -5,25 +5,35 @@
 //
 //   node extract.mjs course-dir > course-data.json
 
-import { readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { realpathSync } from "node:fs";
+import { resolve } from "node:path";
 import vm from "node:vm";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const dir = resolve(process.argv[2] || ".");
-const course = JSON.parse(readFileSync(join(dir, "course.json"), "utf8"));
+if (!process.argv.includes("--trust-authored-code") && process.env.TEACHER_TRUST_AUTHORED_CODE !== "1") {
+  throw new Error("refusing to execute authored lesson JavaScript; review the course, then pass --trust-authored-code explicitly");
+}
+const dir = realpathSync(resolve(process.argv[2] || "."));
+const captured = spawnSync("python3", [fileURLToPath(new URL("./safe_course.py", import.meta.url)), dir], {
+  encoding: "utf8", timeout: 60000, maxBuffer: 128 * 1024 * 1024,
+});
+if (captured.status !== 0) throw new Error(`safe course snapshot failed: ${captured.stderr}`);
+const sources = JSON.parse(captured.stdout);
+const course = sources.course;
 const strip = (html) => String(html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
-function load(file) {
+function load(file, lessonId) {
   const ctx = { console, Math, Number, String, Array, Object, JSON, Set, Map, Infinity, NaN, isFinite, parseFloat, parseInt };
   ctx.window = ctx;
   vm.createContext(ctx);
-  for (const s of course.shared || []) vm.runInContext(readFileSync(join(dir, s), "utf8"), ctx, { filename: s });
-  vm.runInContext(readFileSync(join(dir, file), "utf8"), ctx, { filename: file });
+  for (const [index, source] of sources.shared.entries()) vm.runInContext(source, ctx, { filename: course.shared[index], timeout: 5000 });
+  vm.runInContext(sources.lessons[lessonId], ctx, { filename: file, timeout: 5000 });
   return ctx.window.LESSON || ctx.window.ANIMATION;
 }
 
 const lessons = course.lessons.map((meta) => {
-  const L = load(meta.file);
+  const L = load(meta.file, meta.id);
   const kind = meta.file.endsWith(".anim.js") ? "animation" : "explorable";
   const quiz = [];
   if (kind === "explorable") {

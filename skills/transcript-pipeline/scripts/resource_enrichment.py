@@ -17,19 +17,89 @@ It writes:
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import os
 import re
+import socket
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.connection import HTTPConnection, HTTPSConnection
+from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
 
 
-DEFAULT_ROOT = Path("/Users/praxlannister/Documents/Zoom")
+class PublicConnectionMixin:
+    """Resolve once, inspect every answer, then connect to numeric addresses only.
+
+    Keep self.host unchanged for HTTP Host, TLS SNI and certificate verification.
+    No process-global resolver hooks and no second hostname lookup at connect.
+    """
+    def _new_conn(self):
+        answers = socket.getaddrinfo(self.host, self.port, type=socket.SOCK_STREAM)
+        if not answers or any(not _public_ip(row[4][0]) for row in answers):
+            raise ValueError("connection target has a non-public DNS answer")
+        last_error = None
+        for family, kind, protocol, _, address in answers:
+            sock = socket.socket(family, kind, protocol)
+            try:
+                sock.settimeout(self.timeout)
+                for option in self.socket_options or []:
+                    sock.setsockopt(*option)
+                sock.connect(address)  # numeric sockaddr from the checked result
+                return sock
+            except OSError as exc:
+                sock.close()
+                last_error = exc
+        raise OSError("could not connect to a validated public address") from last_error
+
+
+class PublicHTTPConnection(PublicConnectionMixin, HTTPConnection):
+    pass
+
+
+class PublicHTTPSConnection(PublicConnectionMixin, HTTPSConnection):
+    pass
+
+
+class PublicHTTPPool(HTTPConnectionPool):
+    ConnectionCls = PublicHTTPConnection
+
+
+class PublicHTTPSPool(HTTPSConnectionPool):
+    ConnectionCls = PublicHTTPSConnection
+
+
+class PublicNetworkAdapter(HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        super().init_poolmanager(*args, **kwargs)
+        self.poolmanager.pool_classes_by_scheme = {
+            "http": PublicHTTPPool, "https": PublicHTTPSPool,
+        }
+
+    def proxy_manager_for(self, *args, **kwargs):
+        raise ValueError("resource fetching does not allow proxy transports")
+
+    def send(self, request, **kwargs):
+        validate_remote_url(request.url, resolve_dns=False)
+        if kwargs.get("proxies"):
+            raise ValueError("resource fetching does not allow proxy transports")
+        return super().send(request, **kwargs)
+
+
+DEFAULT_ROOT = Path.cwd()
+MAX_HTTP_BYTES = 10 * 1024 * 1024
+MAX_PDF_BYTES = 25 * 1024 * 1024
+MAX_REDIRECTS = 5
+MAX_BROWSER_HTML_BYTES = 10 * 1024 * 1024
+MAX_BROWSER_PAGE_HEIGHT = 20_000
+MAX_BROWSER_ARTIFACT_BYTES = 25 * 1024 * 1024
+MAX_NOTION_CHUNK_BYTES = 10 * 1024 * 1024
 
 
 @dataclass
@@ -63,12 +133,12 @@ def slug(value: str) -> str:
 
 
 def detect_provider(url: str) -> str:
-    host = urlparse(url).netloc.lower()
-    if "notion.so" in host:
+    host = (urlparse(url).hostname or "").lower().rstrip(".")
+    if host == "notion.so" or host.endswith(".notion.so"):
         return "notion"
-    if "canva.com" in host:
+    if host == "canva.com" or host.endswith(".canva.com"):
         return "canva"
-    if "drive.google.com" in host or "docs.google.com" in host:
+    if host in {"drive.google.com", "docs.google.com"}:
         return "google-drive"
     return "generic"
 
@@ -91,22 +161,245 @@ def parse_manifest(session_dir: Path) -> list[ResourceItem]:
     return items
 
 
-def load_cookies_into_session(session: requests.Session, cookies_json: Path) -> None:
+def _new_session() -> requests.Session:
+    session = requests.Session()
+    session.trust_env = False
+    session.mount("https://", PublicNetworkAdapter())
+    session.mount("http://", PublicNetworkAdapter())
+    session.headers.update({"User-Agent": "Mozilla/5.0"})
+    return session
+
+
+def load_cookie_sessions(cookies_json: Path) -> dict[str, requests.Session]:
+    """Load exact-host cookies into separate sessions.
+
+    A global cookie jar is unsafe because a manifest controls the destination.
+    Legacy dictionary-form files have no recipient host and are rejected.
+    """
     payload = json.loads(cookies_json.read_text(encoding="utf-8"))
     if isinstance(payload, dict):
-        for k, v in payload.items():
-            session.cookies.set(k, str(v))
-        return
-    if isinstance(payload, list):
-        for row in payload:
-            if not isinstance(row, dict):
-                continue
-            name = row.get("name")
-            value = row.get("value")
-            domain = row.get("domain")
-            path = row.get("path", "/")
-            if name and value:
-                session.cookies.set(str(name), str(value), domain=domain, path=path)
+        raise ValueError("dictionary cookie files are unsafe: every cookie needs an exact domain")
+    if not isinstance(payload, list):
+        raise ValueError("cookies JSON must be a list of domain-scoped cookie objects")
+    sessions: dict[str, requests.Session] = {}
+    for row in payload:
+        if not isinstance(row, dict):
+            raise ValueError("every cookie entry must be an object")
+        name = str(row.get("name", "")).strip()
+        value = row.get("value")
+        domain = str(row.get("domain", "")).strip().lower().rstrip(".")
+        path = str(row.get("path", "/"))
+        if not name or value is None or not domain or domain.startswith("."):
+            raise ValueError("every cookie needs a name, value, and exact domain without a leading dot")
+        if "/" in domain or "\\" in domain or ":" in domain:
+            raise ValueError(f"invalid cookie domain: {domain}")
+        session = sessions.setdefault(domain, _new_session())
+        setattr(session, "_credential_host", domain)
+        session.cookies.set(name, str(value), domain=domain, path=path, secure=True)
+    return sessions
+
+
+def _public_ip(address: str) -> bool:
+    ip = ipaddress.ip_address(address.split("%", 1)[0])
+    return not (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_multicast
+        or ip.is_reserved
+        or ip.is_unspecified
+    )
+
+
+def validate_remote_url(url: str, *, resolve_dns: bool = True) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"}:
+        raise ValueError("resource URL must use http or https")
+    if parsed.username or parsed.password:
+        raise ValueError("resource URL must not contain credentials")
+    host = (parsed.hostname or "").lower().rstrip(".")
+    if not host:
+        raise ValueError("resource URL has no host")
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    try:
+        literal = ipaddress.ip_address(host.split("%", 1)[0])
+    except ValueError:
+        literal = None
+    if literal is not None:
+        if not _public_ip(str(literal)):
+            raise ValueError("resource URL resolves to a non-public address")
+    elif resolve_dns:
+        answers = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+        if not answers:
+            raise ValueError("resource host did not resolve")
+        addresses = {row[4][0] for row in answers}
+        if any(not _public_ip(address) for address in addresses):
+            raise ValueError("resource host resolves to a non-public address")
+    return parsed.geturl()
+
+
+def read_limited_body(response: requests.Response, max_bytes: int) -> bytes:
+    """Read a streamed, decoded response without crossing the byte budget."""
+    length = response.headers.get("content-length")
+    if length:
+        try:
+            declared = int(length)
+        except ValueError:
+            declared = None
+        if declared is not None and declared > max_bytes:
+            response.close()
+            raise ValueError(f"resource exceeds {max_bytes} bytes")
+    chunks: list[bytes] = []
+    total = 0
+    for chunk in response.iter_content(chunk_size=64 * 1024):
+        if not chunk:
+            continue
+        total += len(chunk)
+        if total > max_bytes:
+            response.close()
+            raise ValueError(f"resource exceeds {max_bytes} bytes")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
+def fetch_limited(
+    session: requests.Session,
+    url: str,
+    *,
+    max_bytes: int = MAX_HTTP_BYTES,
+    timeout: int = 40,
+) -> tuple[requests.Response, bytes]:
+    """Fetch a public resource with manual, revalidated redirects and a decoded-byte budget."""
+    current = validate_remote_url(url)
+    seen: set[str] = set()
+    for _ in range(MAX_REDIRECTS + 1):
+        if current in seen:
+            raise ValueError("redirect loop")
+        seen.add(current)
+        credential_host = getattr(session, "_credential_host", None)
+        current_parts = urlparse(current)
+        if credential_host and (
+            (current_parts.hostname or "").lower().rstrip(".") != credential_host
+            or current_parts.scheme != "https"
+            or (current_parts.port not in {None, 443})
+        ):
+            raise ValueError("authenticated resource redirected outside its exact HTTPS origin")
+        response = session.get(current, timeout=timeout, allow_redirects=False, stream=True)
+        if response.is_redirect or response.is_permanent_redirect:
+            location = response.headers.get("location")
+            response.close()
+            if not location:
+                raise ValueError("redirect response has no location")
+            current = validate_remote_url(urljoin(current, location))
+            continue
+        body = read_limited_body(response, max_bytes)
+        response.url = current
+        return response, body
+    raise ValueError(f"resource exceeded {MAX_REDIRECTS} redirects")
+
+
+def response_text(response: requests.Response, body: bytes) -> str:
+    encoding = response.encoding or "utf-8"
+    return body.decode(encoding, errors="replace")
+
+
+def sanitize_playwright_state(path: Path, provider: str) -> dict[str, Any]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("Playwright storage state must be an object")
+
+    def allowed_host(host: str) -> bool:
+        host = host.lower().lstrip(".").rstrip(".")
+        return host == provider or host.endswith(f".{provider}")
+
+    cookies = [
+        row for row in payload.get("cookies", [])
+        if isinstance(row, dict) and allowed_host(str(row.get("domain", "")))
+    ]
+    origins = []
+    for row in payload.get("origins", []):
+        if not isinstance(row, dict):
+            continue
+        host = urlparse(str(row.get("origin", ""))).hostname or ""
+        if allowed_host(host):
+            origins.append(row)
+    return {"cookies": cookies, "origins": origins}
+
+
+def _browser_request_allowed(url: str) -> bool:
+    parsed = urlparse(url)
+    if parsed.scheme in {"data", "blob"}:
+        return len(url) <= MAX_HTTP_BYTES
+    try:
+        validate_remote_url(url)
+        return True
+    except Exception:
+        return False
+
+
+def new_public_browser_context(playwright, state=None, executable_path=None):
+    browser = playwright.chromium.launch(headless=True, executable_path=executable_path, args=[
+        "--proxy-server=http://127.0.0.1:9", "--proxy-bypass-list=<-loopback>",
+        "--host-resolver-rules=MAP * ~NOTFOUND", "--disable-quic",
+        "--force-webrtc-ip-handling-policy=disable_non_proxied_udp",
+    ])
+    context = browser.new_context(storage_state=state, service_workers="block",
+                                  viewport={"width": 1440, "height": 1200})
+    if not hasattr(context, "route_web_socket"):
+        browser.close()
+        raise RuntimeError("Canva capture requires Playwright WebSocket blocking support")
+    # A route with no connect_to_server() is a local sink: no upstream
+    # socket is opened. Avoid a synchronous close inside the WS dispatch.
+    context.route_web_socket("**/*", lambda ws: ws.on_message(lambda message: None))
+    install_browser_transport(context)
+    return browser, context
+
+
+def provider_https_origin(url: str, provider: str) -> bool:
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower().rstrip(".")
+    return (parsed.scheme == "https" and parsed.port in {None, 443}
+            and (host == provider or host.endswith("." + provider)))
+
+
+def install_browser_transport(context):
+    broker = _new_session()
+    remaining = [100 * 1024 * 1024]
+    context.on("close", lambda: broker.close())
+
+    def fulfill_public(route):
+        try:
+            request = route.request
+            target = validate_remote_url(request.url)
+            if remaining[0] <= 0:
+                raise ValueError("browser transfer budget exhausted")
+            headers = {k: v for k, v in request.all_headers().items()
+                       if k.lower() not in {"host", "connection", "content-length", "accept-encoding"}}
+            host = (urlparse(target).hostname or "").lower().rstrip(".")
+            if not provider_https_origin(target, "canva.com"):
+                headers = {k: v for k, v in headers.items()
+                           if k.lower() not in {"cookie", "authorization"}}
+            post = request.post_data_buffer
+            if post and len(post) > MAX_HTTP_BYTES:
+                raise ValueError("browser request body exceeds byte budget")
+            # Browser storage owns cookies. Do not let the HTTP broker grow a
+            # second jar that can attach cookies after the header filter.
+            broker.cookies.clear()
+            response = broker.request(request.method, target, headers=headers,
+                                      data=post, stream=True,
+                                      allow_redirects=False, timeout=30)
+            try:
+                body = read_limited_body(response, min(MAX_HTTP_BYTES, remaining[0]))
+                remaining[0] -= len(body)
+                response_headers = {k: v for k, v in response.headers.items()
+                                    if k.lower() not in {"content-encoding", "transfer-encoding", "content-length"}}
+                route.fulfill(status=response.status_code, headers=response_headers, body=body)
+            finally:
+                response.close()
+        except Exception:
+            route.abort("blockedbyclient")
+
+    context.route("**/*", fulfill_public)
 
 
 def extract_html_title(text: str) -> str | None:
@@ -175,7 +468,9 @@ def notion_load_page_chunks(
         "x-notion-active-user-header": active_user,
         "user-agent": "Mozilla/5.0",
     }
-    cookies = {"token_v2": token_v2}
+    session = _new_session()
+    setattr(session, "_credential_host", "www.notion.so")
+    session.cookies.set("token_v2", token_v2, domain="www.notion.so", path="/", secure=True)
     cursor: dict[str, Any] = {"stack": []}
     chunks: list[dict[str, Any]] = []
     notes: list[str] = []
@@ -188,9 +483,22 @@ def notion_load_page_chunks(
             "chunkNumber": idx,
             "verticalColumns": False,
         }
-        resp = requests.post(endpoint, headers=headers, cookies=cookies, json=payload, timeout=timeout)
-        resp.raise_for_status()
-        data = resp.json()
+        resp = session.post(
+            endpoint,
+            headers=headers,
+            json=payload,
+            timeout=timeout,
+            allow_redirects=False,
+            stream=True,
+        )
+        try:
+            if resp.is_redirect or resp.is_permanent_redirect:
+                raise ValueError("authenticated Notion API redirected; credentials were not forwarded")
+            body = read_limited_body(resp, MAX_NOTION_CHUNK_BYTES)
+            resp.raise_for_status()
+            data = json.loads(body)
+        finally:
+            resp.close()
         chunks.append(data)
 
         nxt = data.get("cursor")
@@ -275,19 +583,21 @@ def enrich_generic_http(
     session_dir: Path,
     resources_dir: Path,
     dry_run: bool,
+    authenticated: bool = False,
 ) -> EnrichmentResult:
     filename = f"{slug(item.name)}.html"
     out_path = resources_dir / filename
     try:
-        resp = session.get(item.url, timeout=40, allow_redirects=True)
-        title = extract_html_title(resp.text)
-        save_text(out_path, resp.text, dry_run=dry_run)
+        resp, body = fetch_limited(session, item.url)
+        text = response_text(resp, body)
+        title = extract_html_title(text)
+        save_text(out_path, text, dry_run=dry_run)
         return EnrichmentResult(
             name=item.name,
             url=item.url,
             provider=detect_provider(item.url),
             method="generic-http-fetch",
-            authenticated=False,
+            authenticated=authenticated,
             status="ok",
             http_status=resp.status_code,
             final_url=str(resp.url),
@@ -327,11 +637,11 @@ def enrich_google_drive(
 
     try:
         dl_url = f"https://drive.google.com/uc?export=download&id={file_id}"
-        resp = session.get(dl_url, timeout=60, allow_redirects=True)
+        resp, body = fetch_limited(session, dl_url, max_bytes=MAX_PDF_BYTES, timeout=60)
         ctype = resp.headers.get("content-type", "").lower()
-        if resp.status_code == 200 and ("pdf" in ctype or resp.content.startswith(b"%PDF")):
+        if resp.status_code == 200 and ("pdf" in ctype or body.startswith(b"%PDF")):
             pdf_path = resources_dir / f"{slug(item.name)}.pdf"
-            save_bytes(pdf_path, resp.content, dry_run=dry_run)
+            save_bytes(pdf_path, body, dry_run=dry_run)
             base.output_files.append(to_rel(pdf_path, session_dir))
             base.notes.append("Google Drive direct PDF export captured.")
         return base
@@ -416,15 +726,33 @@ def enrich_canva(
             return fallback
 
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(storage_state=str(playwright_storage_state))
+            # Browser sockets have no usable proxy or DNS route. All HTTP(S)
+            # responses are fulfilled by the pinned public-only Python transport.
+            state = sanitize_playwright_state(playwright_storage_state, "canva.com")
+            browser, context = new_public_browser_context(p, state)
             page = context.new_page()
-            page.goto(item.url, wait_until="networkidle", timeout=90000)
+            target = validate_remote_url(item.url)
+            target_host = (urlparse(target).hostname or "").lower().rstrip(".")
+            if not provider_https_origin(target, "canva.com"):
+                raise ValueError("authenticated Canva capture requires a canva.com HTTPS origin on port 443")
+            page.goto(target, wait_until="networkidle", timeout=90000)
             page.wait_for_timeout(2000)
 
+            final_host = (urlparse(page.url).hostname or "").lower().rstrip(".")
+            if not provider_https_origin(page.url, "canva.com"):
+                raise ValueError("authenticated Canva capture redirected outside canva.com")
+            height = page.evaluate("Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)")
+            if int(height or 0) > MAX_BROWSER_PAGE_HEIGHT:
+                raise ValueError(f"browser page exceeds {MAX_BROWSER_PAGE_HEIGHT}px height")
+
             html = page.content()
+            if len(html.encode("utf-8")) > MAX_BROWSER_HTML_BYTES:
+                raise ValueError(f"browser HTML exceeds {MAX_BROWSER_HTML_BYTES} bytes")
             save_text(html_path, html, dry_run=False)
-            page.screenshot(path=str(png_path), full_page=True)
+            page.screenshot(path=str(png_path), full_page=False)
+            if png_path.stat().st_size > MAX_BROWSER_ARTIFACT_BYTES:
+                png_path.unlink(missing_ok=True)
+                raise ValueError("browser screenshot exceeded artifact budget")
             fallback.output_files.extend([to_rel(html_path, session_dir), to_rel(png_path, session_dir)])
             fallback.method = "playwright-auth-capture"
             fallback.authenticated = True
@@ -433,7 +761,11 @@ def enrich_canva(
 
             try:
                 page.pdf(path=str(pdf_path), print_background=True)
-                fallback.output_files.append(to_rel(pdf_path, session_dir))
+                if pdf_path.stat().st_size > MAX_BROWSER_ARTIFACT_BYTES:
+                    pdf_path.unlink(missing_ok=True)
+                    fallback.notes.append("Page PDF exceeded the artifact budget and was removed.")
+                else:
+                    fallback.output_files.append(to_rel(pdf_path, session_dir))
             except Exception as pdf_exc:
                 fallback.notes.append(f"Page PDF generation unavailable: {pdf_exc}")
 
@@ -460,13 +792,34 @@ def enrich_session(
     if not dry_run:
         resources_dir.mkdir(parents=True, exist_ok=True)
 
-    session = requests.Session()
-    session.headers.update({"User-Agent": "Mozilla/5.0"})
-    if cookies_json:
-        load_cookies_into_session(session, cookies_json)
+    public_session = _new_session()
+    cookie_sessions = load_cookie_sessions(cookies_json) if cookies_json else {}
 
     results: list[EnrichmentResult] = []
     for item in resources:
+        # Validate before provider routing. The same policy is reapplied to
+        # every redirect inside fetch_limited.
+        try:
+            target = validate_remote_url(item.url)
+        except Exception as exc:
+            results.append(EnrichmentResult(
+                name=item.name,
+                url=item.url,
+                provider=detect_provider(item.url),
+                method="blocked-before-fetch",
+                authenticated=False,
+                status="error",
+                http_status=None,
+                final_url=None,
+                title=None,
+                output_files=[],
+                notes=[],
+                error=str(exc),
+            ))
+            continue
+        host = (urlparse(target).hostname or "").lower().rstrip(".")
+        session = cookie_sessions.get(host, public_session)
+        uses_cookie_session = host in cookie_sessions
         provider = detect_provider(item.url)
         if provider == "notion":
             res = enrich_notion(
@@ -502,6 +855,7 @@ def enrich_session(
                 session_dir=session_dir,
                 resources_dir=resources_dir,
                 dry_run=dry_run,
+                authenticated=uses_cookie_session,
             )
         results.append(res)
 

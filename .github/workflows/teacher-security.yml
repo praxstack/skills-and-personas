@@ -1,0 +1,30 @@
+name: Teacher security regressions
+on:
+  push:
+    paths: ['skills/teacher/**', 'skills/teach-pro-max/**', 'skills/transcript-pipeline/**', '.github/workflows/teacher-security.yml']
+  pull_request:
+    paths: ['skills/teacher/**', 'skills/teach-pro-max/**', 'skills/transcript-pipeline/**', '.github/workflows/teacher-security.yml']
+permissions:
+  contents: read
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Core and path regressions
+        run: |
+          python3 skills/teacher/scripts/tests/test_teacher.py
+          python3 -m unittest discover -s skills/teacher/skills/course/scripts -p test_safe_course.py -v
+          node --test skills/teacher/skills/course/scripts/publish_videos.test.mjs skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs
+          python3 skills/teach-pro-max/scripts/verify_distribution.py
+      - name: HTTP transport regressions
+        run: |
+          python3 -m venv "$RUNNER_TEMP/teacher-http"
+          "$RUNNER_TEMP/teacher-http/bin/pip" install requests==2.34.2
+          "$RUNNER_TEMP/teacher-http/bin/python" -m unittest discover -s skills/transcript-pipeline/scripts -p test_resource_enrichment.py -v
+      - name: Container isolation regressions
+        run: |
+          docker build -t teacher-code-sandbox:ci skills/teacher/skills/explorable/assets/sandbox
+          export TEACHER_SANDBOX_IMAGE="$(docker image inspect teacher-code-sandbox:ci --format '{{.Id}}')"
+          python3 skills/teacher/skills/explorable/scripts/test_sandbox_code.py -v

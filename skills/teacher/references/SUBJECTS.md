@@ -13,7 +13,7 @@ The loop never changes. What changes per subject is the model behind the picture
 
 - **Model**: the real algorithm, run on small inputs, with its state per step (the stack, the frontier, the pointers).
 - **First picture**: the data structure at one moment, then the step that changes it.
-- **Tools**: explorable whose figure is drawn from the running code's state; a code panel with the current line marked; practice-first for interview prep (algo-sensei, techtutor); concept-animation for one invariant holding as the loop runs.
+- **Tools**: explorable whose figure is drawn from the running code's state; a code panel with the current line marked; concept-animation for one invariant holding as the loop runs. Use algo-sensei or techtutor for interview practice only when the learner asks to practise or be quizzed; an interview topic alone remains explanation-first.
 - **Watch for**: pattern-matching a problem to a memorized template. Check with a variation that breaks the template.
 
 ## Systems, networking and ML
@@ -48,7 +48,7 @@ The loop never changes. What changes per subject is the model behind the picture
 
 - **Model**: the rule and its exceptions, or the sound and how it's made.
 - **First picture**: a sentence diagrammed, or the mouth position for a sound.
-- **Tools**: explain-diagram for structure; audio where the host can play it; practice-first with spaced recall for vocabulary and forms.
+- **Tools**: explain-diagram for structure; audio where the host can play it; optional spaced recall for vocabulary and forms after explanation, or practice-first only when the learner asks for it.
 - **Watch for**: translating word for word. Teach chunks in context.
 
 ## Music and art

@@ -160,14 +160,6 @@
       "tree_sha256": "20b6f9e99c66cf212fff70bf480287ed89b49480cceef25e717ed8f933b54255",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
-    "teach-pro-max": {
-      "files": 804,
-      "license": "MIT (repo)",
-      "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
-      "source_path": "skills/teach-pro-max",
-      "tree_sha256": "246229d64faf6fba7bcc5cdee8aa937d87d92cf16c6cdbd6ef50f1410c3c2dd4",
-      "upstream": "https://github.com/praxstack/skills-and-personas"
-    },
     "techtutor": {
       "files": 8,
       "license": "MIT (repo)",

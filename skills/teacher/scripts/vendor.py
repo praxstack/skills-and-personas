@@ -53,7 +53,6 @@ ENTRIES = {
             "handdrawn-js-video",
         ]
     },
-    "teach-pro-max": ("skills", "skills/teach-pro-max", SKILLS_REPO, "MIT (repo)"),
     "techtutor": ("skills", "new-skills/techtutor", SKILLS_REPO, "MIT (repo)"),
     "lecture-alchemist": ("skills", "new-skills/lecture-alchemist", SKILLS_REPO, "MIT (repo)"),
     "concept-cartographer": ("skills", "new-skills/concept-cartographer", SKILLS_REPO, "MIT (repo)"),
