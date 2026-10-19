@@ -451,7 +451,9 @@ PRACTICE_AFTER = {"mode": "lesson", "turns": EXPLAIN_GOOD["turns"][:1] + [
     S("attempt", "one, two, three, done", expect_class="correct"),
     T(["feedback", "consent"], f"Right. {FIX} Can I note this attempt as evidence?", classification="correct", feedback=FIX),
     S("consent-yes", "yes"),
-    T(["close"], "Noted. One attempt observed.", reason="learner-stop"),
+    T(["summary"], "Noted. One attempt observed."),
+    S("satisfied", "got it, thanks"),
+    T(["close"], "Good. The n = 1 case is observed.", reason="satisfied"),
 ], "events": [dict(EVIDENCE, after_turn=6, result="correct")]}
 
 

@@ -19,13 +19,20 @@ The checker does not take the tutor's word for the two judgement items of AC-1.6
   time and the attempted question's key; a line introducing the artifact), each in a form too
   small to carry a second correction.
 The opening question may hold neither a hint marker nor a correction claim from the lesson.
+A misconception's name goes inside the one feedback sentence (TEACHING.md); a naming sentence of its
+own is a second item and is rejected like any other.
+
+With no practice mode asked for (modes explain, lesson, full-pack), `check_explain_first` wants the
+complete explanation in the first turn, no question or prediction prompt before or inside it, and
+optional practice offered in one closing sentence (`practice_offer`). A question turn comes only after
+the learner takes up the offer (AC-1.6 v1.4).
 
 Transcript shape (written by a tutor agent, or scripted in tests):
-    {"mode": "predict-first|socratic|quiz|exam-drill|qa-expand",
-     "turns": [{"role": "tutor", "acts": ["question"|"feedback"|"artifact"|"consent"|"answer"|"layer"|"close"],
+    {"mode": "explain|lesson|full-pack|predict-first|socratic|quiz|exam-drill|qa-expand",
+     "turns": [{"role": "tutor", "acts": ["explanation"|"question"|"feedback"|"artifact"|"consent"|"answer"|"layer"|"close"],
                 "text": "...", "classification": "correct|partial|misconception:<id>|skipped|timeout",
                 "feedback": "the one hint or correction", "artifacts": [...], "states_shown": [...], ...mode fields},
-               {"role": "learner", "kind": "attempt|consent-yes|consent-no|expand|satisfied|stop|other",
+               {"role": "learner", "kind": "attempt|practice-yes|consent-yes|consent-no|expand|satisfied|stop|other",
                 "text": "...", "expect_class": "correct|partial|misconception:<id>|misconception:*"}],
      "events": [{"kind": "evidence", "after_turn": 3, "item": "...", "result": "...", "gap": "...",
                  "next_action": "...", "consent": true}]}
@@ -61,6 +68,8 @@ SEP = re.compile(r"\s*(?:\n|,|;|->|\u2192|\bthen\b|\band\b|\bfollowed by\b)\s*",
 KEYLINE = re.compile(r"^(?:the\s+)?(?:correct\s+|right\s+)?(?:answer|key|output)(?:\s+(?:is|was))?\s*[:\-]?\s*(.+?)[.!]?$", re.I)
 ARTIFACT = re.compile(r"\b(?:still|stills|trace|image|picture|figure|video|diagram|animation|cards|explorer|png)\b", re.I)
 CAUSAL = re.compile(r"\b(?:because|since|so|therefore|which means|that means)\b", re.I)
+PRACTICE_WORD = re.compile(r"\b(?:practi[cs]e|quiz|questions?|try|test|predict|drill|exercise|check yourself)\b", re.I)
+OFFER_WORDS = 30  # longest closing practice offer, in words
 NEW_NAME = 32  # longest new misconception name, in characters
 CAP = {"weakest item": 18, "next action": 25, "another-round offer": 15}
 
@@ -200,7 +209,8 @@ def feedback_unit(x, mode=None, prev=None):
         return v + _mode_extras(x, mode, prev)
     rest = [s for s in SENTENCE.split(text.replace(_prose(unit), " ", 1).strip()) if s.strip()]
     extra = [s for s in rest if not s.rstrip().endswith("?") and len(s.split()) > 4 and not VERDICT.match(s.strip())]
-    return v + [f"a second correction or explanation besides the one feedback item: {s[:60]!r}" for s in extra]
+    return v + [f"a second correction or explanation besides the one feedback item (a misconception's name goes "
+                f"inside the feedback sentence): {s[:60]!r}" for s in extra]
 
 
 def _sentences(text):
@@ -537,7 +547,50 @@ def check_qa_expand(t, lesson=None):
     return v
 
 
-MODE_CHECKS = {"predict-first": check_predict_first, "socratic": lambda t, lesson=None: [],
+# ---------------------------------------------------------------- explanation first (AC-1.6 v1.4)
+
+def _offer_problems(text, offer):
+    """The explanation turn must end on one sentence offering optional practice."""
+    if not offer:
+        return ["the explanation must close with one sentence offering optional practice (`practice_offer`)"]
+    v = [] if len(SENTENCE.split(offer)) == 1 and len(offer.split()) <= OFFER_WORDS else \
+        [f"the practice offer must be one sentence of at most {OFFER_WORDS} words"]
+    v += [] if text.endswith(offer) else ["the practice offer must be the closing sentence of the explanation turn"]
+    return v + ([] if PRACTICE_WORD.search(offer) else [f"the closing sentence does not offer practice: {offer[:60]!r}"])
+
+
+def explanation_problems(x, mode, lesson=None):
+    """The first turn is the complete explanation: no question or prediction prompt before or inside it, the
+    answer stated (when a lesson has an open question), the built artifact shown in a lesson, and one closing
+    sentence offering optional practice."""
+    text, offer = _prose(x.get("text", "")).strip(), _prose(x.get("practice_offer") or "").strip()
+    body = text[:-len(offer)] if offer and text.endswith(offer) else text
+    v = _offer_problems(text, offer)
+    v += [f"a question before or inside the explanation: {s[:60]!r}" for s in SENTENCE.split(body)
+          if "?" in s or IMPERATIVE.search(s)]
+    plans = reveal_plan(lesson) if lesson else []
+    answer = plans[0]["answer_lines"] if plans else []
+    v += [] if not answer or leaks(str(x.get("text", "")).replace("```", " "), answer) else \
+        [f"the explanation never states the answer ({', '.join(answer)}): it is not complete"]
+    needs_artifact = mode in ("lesson", "full-pack")
+    return v + (["a lesson turn must show the built artifact with the explanation"]
+                if needs_artifact and not x.get("artifacts") else [])
+
+
+def check_explain_first(t, lesson=None):
+    turns = t["turns"]
+    t0 = turns[0] if turns else {}
+    acts = t0.get("acts", [])
+    v = [] if "explanation" in acts and "question" not in acts else \
+        [f"first turn must be the explanation, not a question (acts {acts})"]
+    v += explanation_problems(t0, t.get("mode"), lesson)
+    taken = (_learner(t, "practice-yes") or [len(turns)])[0]
+    return v + [f"turn {i}: a question turn before the learner asked for practice" for i, x in _tutor(t)
+                if "question" in x.get("acts", []) and i < taken]
+
+
+MODE_CHECKS = {"explain": check_explain_first, "lesson": check_explain_first, "full-pack": check_explain_first,
+               "predict-first": check_predict_first, "socratic": lambda t, lesson=None: [],
                "quiz": check_quiz, "exam-drill": check_exam_drill, "qa-expand": check_qa_expand}
 
 
