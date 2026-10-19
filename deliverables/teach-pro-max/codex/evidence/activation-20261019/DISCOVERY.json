@@ -1,0 +1,132 @@
+{
+  "checks": [
+    {
+      "host": "agents",
+      "name": "teacher",
+      "path": "/Users/prax/.agents/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "agents",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.agents/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "codex",
+      "name": "teacher",
+      "path": "/Users/prax/.codex/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "codex",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.codex/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "claude",
+      "name": "teacher",
+      "path": "/Users/prax/.claude/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "claude",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.claude/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "cursor",
+      "name": "teacher",
+      "path": "/Users/prax/.cursor/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "cursor",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.cursor/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "hermes",
+      "name": "teacher",
+      "path": "/Users/prax/.hermes/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "hermes",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.hermes/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "pi",
+      "name": "teacher",
+      "path": "/Users/prax/.pi/agent/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "pi",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.pi/agent/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "opencode",
+      "name": "teacher",
+      "path": "/Users/prax/.config/opencode/skills/teacher/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teacher/SKILL.md",
+      "sha256": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    },
+    {
+      "host": "opencode",
+      "name": "teach-pro-max",
+      "path": "/Users/prax/.config/opencode/skills/teach-pro-max/SKILL.md",
+      "resolved": "/Users/prax/.local/share/prax-teach/releases/v3-0d20ff7/teach-pro-max/SKILL.md",
+      "sha256": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+      "declared_name_matches": true,
+      "matching_top_level_entries": 1
+    }
+  ],
+  "passed": true,
+  "scope": "14 direct skill entry checks across canonical root plus six configured consumer views. File discovery verified; no claim that every host ran a live model task."
+}

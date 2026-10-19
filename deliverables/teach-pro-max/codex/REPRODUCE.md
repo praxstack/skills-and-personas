@@ -1,4 +1,4 @@
-# Prax Teach — reproducible candidate, not installed
+# Prax Teach — reproducible accepted general teacher
 
 Open `index.html` to review the real outputs. Each lesson has a self-contained explorer, editable landscape SVG and PNG, explanation-first Q&A, contextual cards/TSV, actual Kokoro MP4/WebVTT and an interactive video. `static.html` and the explorer's noscript fallback contain the full explanation. Open from `file://`; no server is required. Source lessons are under `lessons/<slug>/source/lesson.lesson.js`.
 
@@ -42,7 +42,7 @@ The independent numerical auditor uses its source snapshots and a separate Pytho
 
 The private bank contains 24 routing cases, 8 scoped end-to-end requests across non-C subjects and 16 valid/invalid controls. Only hashes, neutral IDs and redacted results may be published. Its author did not classify its blind controls; a separate reviewer did. The public archived bank is regression data, not hidden evaluation.
 
-ASR establishes approximate words and timing, not voice pleasantness or human prosody. Responsive checks establish stated viewport behavior, not aesthetic approval or learning outcomes. The course's old 20/21 persistence diagnostic remains recorded alongside the new explicit-consent flow; it was not weakened. Neither candidate is installed.
+ASR establishes approximate words and timing, not voice pleasantness or human prosody. Responsive checks establish stated viewport behavior, not aesthetic approval or learning outcomes. The course's old 20/21 persistence diagnostic remains recorded alongside the new explicit-consent flow; it was not weakened. The exact general source is activated locally; the optional C development adapter is not installed.
 
 The C adapter is independently committed on `candidate/teach-c-adapter-20261019`; its `deliverables/teach-pro-max/claude/CANDIDATE1.md` lists actual failures and method conflicts. Synthetic claims unit tests do not establish four-lesson claims acceptance.
 

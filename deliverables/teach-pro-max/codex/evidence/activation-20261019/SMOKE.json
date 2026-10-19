@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "name": "vendor",
+      "exit_code": 0,
+      "argv": [
+        "python3",
+        "/Users/prax/.agents/skills/teacher/scripts/vendor.py",
+        "verify"
+      ],
+      "log": "vendor.log"
+    },
+    {
+      "name": "build",
+      "exit_code": 0,
+      "argv": [
+        "python3",
+        "/Users/prax/.agents/skills/teacher/skills/explorable/scripts/build.py",
+        "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/voice-and-focus/source/lesson.lesson.js",
+        "-o",
+        "/private/tmp/prax-teach-activation-smoke/lesson.html"
+      ],
+      "log": "build.log"
+    },
+    {
+      "name": "browser",
+      "exit_code": 0,
+      "argv": [
+        "node",
+        "/Users/prax/.agents/skills/teacher/skills/visual-qa/scripts/check_page.mjs",
+        "/private/tmp/prax-teach-activation-smoke/lesson.html",
+        "--out",
+        "/private/tmp/prax-teach-activation-smoke/screenshots"
+      ],
+      "log": "browser.log"
+    },
+    {
+      "name": "speech",
+      "exit_code": 0,
+      "argv": [
+        "python3",
+        "/Users/prax/.agents/skills/teacher/skills/visual-qa/scripts/check_speech.py",
+        "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/voice-and-focus/lesson.mp4",
+        "--json"
+      ],
+      "log": "speech.log"
+    },
+    {
+      "name": "rollback-dry-run",
+      "exit_code": 0,
+      "argv": [
+        "python3",
+        "/Users/prax/.local/state/prax-teach/activation-20261019T174522Z/rollback.py"
+      ],
+      "log": "rollback-dry-run.log"
+    }
+  ],
+  "passed": true,
+  "runtime": "/Users/prax/.local/share/prax-teach/runtime/v3",
+  "scope": "Actual activated source and persistent scoped runtime; all six page QA viewports, known public narration speech check, and rollback dry-run. Host skill path resolution verified; no live session restart or new CLI model request."
+}
