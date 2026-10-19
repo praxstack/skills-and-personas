@@ -185,11 +185,13 @@ def _after(lesson, sid, after):
 
 
 class Ctx:
-    def __init__(self, svg, lesson, sid, layout, flow=None, notes=True):
+    def __init__(self, svg, lesson, sid, layout, flow=None, notes=True, sizes=None):
         self.svg, self.lesson, self.sid, self.layout = svg, lesson, sid, layout
         self.notes = notes  # the film narrates the panel's claims, so its panel leaves their text out
         self.t = svg.t
-        self.S = SIZES[layout]
+        # sizes: the film's type sizes (B3): it scales the panel to fill the frame and needs labels at least as large
+        # as the code they sit beside, so it passes its own label/code/value sizes over the layout's
+        self.S = {**SIZES[layout], **(sizes or {})}
         self.facts = lesson.by_id("facts")
         self.claims = lesson.by_id("claims")
         self.shown = shown_facts(lesson, sid)
@@ -203,13 +205,27 @@ class Ctx:
     def on(self, fid):
         return fid in self.shown
 
+    def lsize(self, key, **kw):
+        """The layout size a label is drawn at: its heading size when it reads as a sentence (four or more words)."""
+        s = text.ui(key, **kw)
+        long_ = sum(1 for wd in s.split() if sum(ch.isalpha() for ch in wd) >= 2) >= 4
+        return self.S.get("head", self.S["label"]) if long_ else self.S["label"]
+
+    def label_w(self, key, keep_case=False, **kw):
+        font, px, weight, caps, spacing = self.svg.role("label", self.lsize(key, **kw))
+        s = text.ui(key, **kw)
+        s = s.upper() if caps and not keep_case else s
+        return fonts.width(font, px, s, weight=weight) + spacing * len(s)
+
     def label(self, x, y, key, anchor="start", color=None, inside=None, keep_case=False, **kw):
         """A chrome label. keep_case: a label that quotes code (%f, (double)a) is never upper-cased, since %F is
         another conversion."""
         svg = self.svg
-        font, px, weight, caps, spacing = svg.role("label", self.S["label"])
-        caps = caps and not keep_case
         s = text.ui(key, **kw)
+        # a label of four or more words is read as a sentence: the film draws it at its heading size (B3, >= 28 px)
+        long_ = sum(1 for wd in s.split() if sum(ch.isalpha() for ch in wd) >= 2) >= 4
+        font, px, weight, caps, spacing = svg.role("label", self.S.get("head", self.S["label"]) if long_ else self.S["label"])
+        caps = caps and not keep_case
         svg.text(x, y, s.upper() if caps else s, font, px, color or self.t["label"], ("chrome", key), weight=weight,
                  spacing=spacing, anchor=anchor, inside=inside)
         return fonts.width(font, px, s.upper() if caps else s, weight=weight) + spacing * len(s)
@@ -435,6 +451,13 @@ def _views(c, x, y, w):
     # one lane per conversion
     for lane in P["lanes"]:
         if not c.on(lane["fact"]):
+            if S.get("pending"):
+                # the film keeps every lane on screen from the start (B3): a conversion that has not run yet shows
+                # its line of code, dimmed, and no value; its value fades in when the line prints
+                y += 40
+                svg.line(x, y - 24, x + w, y - 24, t["rule"], 1)
+                y += S["code"] * 0.9
+                c.code(x, y, src[lane["line"] - 1].strip(), pid, lane["line"], color=t["label"])
             continue
         y += 40
         c.group(lane["fact"])
@@ -457,7 +480,7 @@ def _views(c, x, y, w):
         if code_w is not None and x + code_w + 26 + val_w <= x + w:
             # the output fits on the code line: arrow, then the value
             ax = x + code_w + 8
-            svg.text(ax, y, "\u2192", "mono", S["code"], t["label"], ("chrome", "arrow"))
+            svg.text(ax, y, "\u2192", "mono", max(S["code"], S["label"]), t["label"], ("chrome", "arrow"))
             c.value(x + w, y + 1, lane["fact"], anchor="end", ocr=c.layout == "wide")
         else:
             y += S["value"] * 1.35
@@ -532,7 +555,7 @@ def _stack_frame(c, x, fy, bw, fh, fr, idx, sid, status, rid, ret_shown):
     slot = None
     if vars_on:
         vy = fy + fh - S["value"] * 0.62
-        slot = _vars_row(c, x + 16, vy, x + bw - 16, sid, idx, S["code"], rid)
+        slot = _vars_row(c, x + 16, vy, x + bw - 16, sid, idx, S.get("var", S["code"]), rid)
     svg.close()
     return slot, ret_at
 
@@ -572,14 +595,11 @@ def _return_arrow(c, ax, y_from, slot, caller_y, callee_call, caller_call, gr):
 
 
 def _stack_head(c, x, y, w):
-    S = c.S
-    y += S["label"]
+    y += c.lsize("stack_label")
     c.label(x, y, "stack_label")
-    font, px, weight, caps, spacing = c.svg.role("label", S["label"])
-    need = sum(fonts.width(font, px, text.ui(k).upper(), weight=weight) + spacing * len(text.ui(k))
-               for k in ("stack_label", "stack_order")) + 24
+    need = c.label_w("stack_label") + c.label_w("stack_order") + 24
     if c.layout != "wide" or need > w:  # no room for both on one line
-        y += S["label"] * 1.6
+        y += c.lsize("stack_order") * 1.4
         c.label(x, y, "stack_order")
     else:
         c.label(x + w, y, "stack_order", anchor="end")
@@ -617,7 +637,8 @@ def _stack(c, x, y, w):
         _return_arrow(c, fx + bw + 6, tops[i] + fh * 0.5, slots.get(i - 1), tops[i - 1] + fh / 2,
                       frames[i].get("call"), frames[i - 1].get("call"), gr)
     c.anchors = {"rets": rets, "slots": {k: (v[0], v[1]) for k, v in slots.items()}}
-    y += depth * (fh + gap) - gap
+    # the film fits its camera to the state (B3): its column ends at the state's own last frame
+    y += (n if c.S.get("own_depth") else depth) * (fh + gap) - gap
     for cid in lesson.data["figure"]["panel"].get("claims", []):
         y = c.note(x, y + c.S["note"] * 2, cid, w)
     return y - y0 + 10
@@ -667,8 +688,10 @@ def _stack_run(c, x, y, w, fit_h=None):
         _call_arrow(c, fx, tops[i - 1] + fh * 0.5, tops[i] + fh * 0.3)
         _return_arrow(c, fx + bw + 6, tops[i] + fh * 0.62, slots.get(i - 1), tops[i - 1] + fh / 2,
                       rows[i][0].get("call"), rows[i - 1][0].get("call"), gr)
-    y = tops[-1] + fh + c.S["label"] + 10
+    y = tops[-1] + fh + c.lsize("stack_calls") + 10
     c.label(fx - gl + 2, y, "stack_calls", color=c.t["label"])
+    if c.label_w("stack_calls") + c.label_w("stack_returns") + 24 > w:  # no room for both on one line
+        y += c.lsize("stack_returns") * 1.5
     c.label(fx + bw + gr, y, "stack_returns", anchor="end", color=c.t["note"])
     return y + 4 - y0
 
@@ -858,6 +881,7 @@ def _neuron(c, x, y, w):
     cols = [(x + i * (cw + gap), y) for i in range(3)]
     col_h = 280 if wide else None
     big = S["big"]
+    ls = max(S["code"], S["label"] * 1.2)  # a row's label-to-value step (the film draws labels larger than its code)
     tone = lambda fid: t["note"] if number(c.val(fid)) >= 0 else t["correction"]  # noqa: E731
     heights = []
 
@@ -875,15 +899,15 @@ def _neuron(c, x, y, w):
                 break
             c.group(P["bias"])
             c.label(cx, yy, "neuron_bias")
-            c.label(cx, yy + S["code"] * 1.7, "neuron_added")
-            c.value(cx + cw, yy + S["code"] * 1.2, P["bias"], size=big, color=tone(P["bias"]), anchor="end")
+            c.label(cx, yy + ls * 1.7, "neuron_added")
+            c.value(cx + cw, yy + ls * 1.2, P["bias"], size=big, color=tone(P["bias"]), anchor="end")
             svg.close()
         else:
             if not c.on(tm["x"]):
                 break
             c.group(tm["x"])
             c.label(cx, yy, "neuron_input", i=i)
-            vy = yy + S["code"] * 1.7
+            vy = yy + ls * 1.7
             xw = c.value(cx, vy, tm["x"], size=S["value"] * 0.85, color=t["ink"], ocr=False)
             svg.text(cx + xw + 10, vy, text.ui("times"), "mono", S["value"] * 0.85, t["label"], ("chrome", "times"))
             c.value(cx + xw + 12 + S["value"] * 0.85 * MONO_ADV + 10, vy, tm["w"], size=S["value"] * 0.85, color=t["ink"],
@@ -891,9 +915,9 @@ def _neuron(c, x, y, w):
             svg.close()
             if c.on(tm["t"]):
                 c.group(tm["t"])
-                c.value(cx + cw, yy + S["code"] * 1.2, tm["t"], size=big, color=tone(tm["t"]), anchor="end")
+                c.value(cx + cw, yy + ls * 1.2, tm["t"], size=big, color=tone(tm["t"]), anchor="end")
                 svg.close()
-        yy += S["code"] * 1.7 + 18
+        yy += ls * 1.7 + 18
         svg.line(cx, yy, cx + cw, yy, t["rule"], 1)
     svg.close()
     heights.append(yy - cy)
@@ -1051,12 +1075,12 @@ def panel_kind(lesson):
 
 
 def draw(svg, lesson, sid, x, y, w, layout="wide", flow=None, key=True, states=None, notes=True, mark=False,
-         kind=None, code_key=False, only=None, only_ran=False, head=True, fit_h=None):
+         kind=None, code_key=False, only=None, only_ran=False, head=True, fit_h=None, sizes=None):
     """Draw the lesson's panel at trace state `sid`; returns its height. With `states` (the still, the film's
     summary), a stack panel draws the whole run as one column instead. `mark`: wrap it in the AC-10.2 mechanism
     markup (data-role="mechanism" data-kind=...), as the still and the film do."""
     kind = kind or panel_kind(lesson)
-    c = Ctx(svg, lesson, sid, layout, flow, notes)
+    c = Ctx(svg, lesson, sid, layout, flow, notes, sizes=sizes)
     c.code_key = code_key
     if key:
         svg.open(data_key="panel", data_state_panel=sid)
@@ -1094,19 +1118,20 @@ def page_place(lesson):
     return "side" if P["kind"] == "stack" else P["place"]
 
 
-def max_height(lesson, layout, notes=True, width=None):
+def max_height(lesson, layout, notes=True, width=None, sizes=None):
     """The tallest the panel gets over the trace, so every state can share one scale."""
     from . import still
     best = 0
     for st in lesson.data["trace"]:
         svg = still.Svg("light", fonts.tokens())
         w = width or WIDTHS[(layout, page_place(lesson))]
-        best = max(best, draw(svg, lesson, st["id"], 4, 4, w, layout, still.Flow(svg, {}), key=False, notes=notes))
+        best = max(best, draw(svg, lesson, st["id"], 4, 4, w, layout, still.Flow(svg, {}), key=False, notes=notes,
+                              sizes=sizes))
     return best
 
 
 def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="", height=None, notes=True, width=None,
-                 mark=False, kind=None):
+                 mark=False, kind=None, sizes=None, fit_h=None):
     """The panel at `sid` as one standalone <svg> for an HTML page or the video: (markup, fact ids drawn, chars).
     Colours and type come from `theme` (the page shows a light and a dark copy by colour scheme); fonts are the
     page's own @font-face families."""
@@ -1117,7 +1142,8 @@ def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="",
     flow = still.Flow(svg, {})
     kind = kind or panel_kind(lesson)
     w = width or (WIDTHS[(layout, "side")] if kind in ("stack", "control-path") else WIDTHS[(layout, page_place(lesson))])
-    h = draw(svg, lesson, sid, 4, 4, w, layout, flow, key=False, states=states, notes=notes, mark=mark, kind=kind)
+    h = draw(svg, lesson, sid, 4, 4, w, layout, flow, key=False, states=states, notes=notes, mark=mark, kind=kind,
+             sizes=sizes, fit_h=fit_h)
     body = "".join(svg.els)  # one line: the film's sub-compositions stay small (HyperFrames lint)
     facts = re.findall(r'data-fact="([^"]+)"', body)
     chars = "".join(svg.chars.values())
@@ -1134,13 +1160,13 @@ def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="",
 
 # ---------------------------------------------------------------- the return flow (round 18)
 
-def stack_anchors(lesson, sid, layout="wide", width=None):
+def stack_anchors(lesson, sid, layout="wide", width=None, sizes=None):
     """{"rets": {frame idx: (x, y)}, "slots": {frame idx: (x, y)}} of a stack panel at `sid`, in the
     coordinates svg_fragment draws (the panel at 4, 4)."""
     from . import still
     svg = still.Svg("light", fonts.tokens())
     svg.tight = False
-    c = Ctx(svg, lesson, sid, layout, still.Flow(svg, {}), notes=False)
+    c = Ctx(svg, lesson, sid, layout, still.Flow(svg, {}), notes=False, sizes=sizes)
     _stack(c, 4, 4, width or WIDTHS[(layout, page_place(lesson))])
     return c.anchors
 
