@@ -1,0 +1,25 @@
+{
+  "schema": "explorable-bundle/v1",
+  "title": "How a sentence changes its starting point while the participants and the underlying event remain exactly the same",
+  "input": "explorer.html",
+  "sourceSha256": "b290f4556a9e2a3282b38841d3f4b31a0e90b42d275f337204b38f39865bc06b",
+  "steps": 4,
+  "still": {
+    "step": 1,
+    "width": 1440,
+    "height": 900,
+    "editable": true
+  },
+  "video": null,
+  "formats": [
+    "explorer.html",
+    "still.svg",
+    "still.png",
+    "still.html",
+    "static.html",
+    "qa.html",
+    "cards.html",
+    "cards.tsv"
+  ],
+  "warnings": []
+}

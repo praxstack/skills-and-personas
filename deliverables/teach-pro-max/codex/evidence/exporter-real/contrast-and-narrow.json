@@ -1,0 +1,86 @@
+{
+  "checks": [
+    {
+      "scheme": "light",
+      "format": "static",
+      "minimum": 5.76634100963816,
+      "below45": []
+    },
+    {
+      "scheme": "light",
+      "format": "still",
+      "minimum": 5.76634100963816,
+      "below45": []
+    },
+    {
+      "scheme": "light",
+      "format": "qa",
+      "minimum": 5.76634100963816,
+      "below45": []
+    },
+    {
+      "scheme": "light",
+      "format": "cards",
+      "minimum": 6.071896783598501,
+      "below45": []
+    },
+    {
+      "scheme": "light",
+      "format": "interactive-video",
+      "minimum": 5.76634100963816,
+      "below45": []
+    },
+    {
+      "scheme": "dark",
+      "format": "static",
+      "minimum": 8.731154401841607,
+      "below45": []
+    },
+    {
+      "scheme": "dark",
+      "format": "still",
+      "minimum": 8.731154401841607,
+      "below45": []
+    },
+    {
+      "scheme": "dark",
+      "format": "qa",
+      "minimum": 8.731154401841607,
+      "below45": []
+    },
+    {
+      "scheme": "dark",
+      "format": "cards",
+      "minimum": 7.954622431574599,
+      "below45": []
+    },
+    {
+      "scheme": "dark",
+      "format": "interactive-video",
+      "minimum": 8.731154401841607,
+      "below45": []
+    }
+  ],
+  "narrow": [
+    {
+      "file": "step-1-narrow.svg",
+      "minimumFont": 16.1,
+      "overlappingRepeatedLabels": []
+    },
+    {
+      "file": "step-2-narrow.svg",
+      "minimumFont": 16.1,
+      "overlappingRepeatedLabels": []
+    },
+    {
+      "file": "step-3-narrow.svg",
+      "minimumFont": 16.1,
+      "overlappingRepeatedLabels": []
+    },
+    {
+      "file": "step-4-narrow.svg",
+      "minimumFont": 16.1,
+      "overlappingRepeatedLabels": []
+    }
+  ]
+}

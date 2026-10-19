@@ -1,0 +1,577 @@
+{
+  "version": "general-v3.1-20261019",
+  "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+  "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f",
+  "listening": {
+    "E03": "NOT_RUN: actual audio input unsupported; no human verdict supplied",
+    "E04": "NOT_RUN: actual audio input unsupported; no human verdict supplied",
+    "E07": "NOT_RUN: actual audio input unsupported; no human verdict supplied",
+    "E08": "NOT_RUN: actual audio input unsupported; no human verdict supplied"
+  },
+  "control_evidence": {
+    "classification": "16/16",
+    "valid": "8/8",
+    "invalid_target_detection": "8/8",
+    "invalid_value": "3/3",
+    "invalid_claim": "5/5",
+    "exact_target_adjudication_sha256": "81b8a3dce152fac1a69d789bd1cc067b2280aaae75ea2b9f98640484fdda0050"
+  },
+  "candidate_commit": "fa2fa358743e8fe3f9ce723df6bb9b215642315c",
+  "measurement_closed": true,
+  "routing": {
+    "criteria": [
+      {
+        "id": "R01",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R02",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R03",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R04",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R05",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R06",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R07",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R08",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R09",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R10",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R11",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R12",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R13",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R14",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R15",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R16",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R17",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R18",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R19",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R20",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R21",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R22",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R23",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R24",
+        "status": "PASS",
+        "release_critical": true
+      }
+    ],
+    "passed": 24,
+    "total": 24,
+    "diagnostic_accuracy": 1.0,
+    "diagnostic_85_percent": true,
+    "release_ready": true,
+    "version": "general-v3.1-20261019",
+    "label": "candidate3-fa2fa35",
+    "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+    "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f"
+  },
+  "e2e": {
+    "criteria": [
+      {
+        "id": "E01-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E03-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E04-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E04-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E07-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E08-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E08-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      }
+    ],
+    "passed": 50,
+    "total": 56,
+    "control_results": [
+      {
+        "id": "CTRL-01",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-02",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-03",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-04",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-05",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-06",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-07",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-08",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-09",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-10",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-11",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-12",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-13",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-14",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-15",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-16",
+        "status": "PASS"
+      }
+    ],
+    "control_denominator": 16,
+    "release_ready": false,
+    "version": "general-v3.1-20261019",
+    "label": "candidate3-fa2fa35-e2e",
+    "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+    "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f"
+  },
+  "release_accepted": false,
+  "comparisons": {
+    "original_baseline_routing": "23/24",
+    "candidate1_routing": "23/24",
+    "candidate2_routing": "23/24",
+    "candidate3_routing": "24/24",
+    "routing_gain_ids": [
+      "R06"
+    ],
+    "routing_regressions": [],
+    "original_baseline_e2e": "56 NOT_RUN; no original-baseline E2E improvement is claimed",
+    "candidate1_e2e_passed": 43,
+    "candidate2_e2e_passed": 46,
+    "candidate3_e2e_passed": 50,
+    "e2e_denominator": 56,
+    "previous_fail_now_pass_ids": [
+      "E01-UI",
+      "E03-UI",
+      "E05-UI",
+      "E07-UI"
+    ],
+    "previous_pass_now_fail_ids": [],
+    "attribution": {
+      "routing": "Generic SKILL/STYLES contradiction removed; fixed batch passes artifact-free QA contract.",
+      "footer_UI": "Normal host-authored narrow footer wrapping after C2 independent review; not fresh first-attempt transfer. All words retained, wide geometry unchanged.",
+      "caption_UI": "Generic reserved cue region below video replaces default native overlay; actual toggles/placement observed.",
+      "media": "All4 measured C2 movies and VTT/timing reused byte-identically after full cue/state and 9 sampled wide-frame equality per case; no new narration jobs or human listening."
+    },
+    "accepted_release_comparison": "No evaluated candidate has met all release-critical criteria. C3 is provisional while required human listening remains NOT_RUN."
+  },
+  "findings": {
+    "UI-CONTRAST": "E04-UI and E08-UI FAIL: unchanged check_page light-mode gate reports video element fallback text contrast1.31:1 vs required4.5. Independent visible geometry/caption repairs pass but do not override the fixed gate.",
+    "MEDIA-LISTEN": "Required E03/E04/E07/E08 MEDIA remain unmet because actual human listening is NOT_RUN. Automated ASR, levels, captions and actual playback are separate; no human verdict fabricated."
+  },
+  "independent_review": {
+    "receipt_sha256": "3fa6d1d50b6b3e955eec7fd85949131d8e538d1e2a9a0bd960f18e88c14eda69",
+    "bounded_correctness": "8/8",
+    "geometry_states": "48/48",
+    "bounded_visible_ui_fail_ids": [],
+    "fixed_gate_ui_fail_ids": [
+      "E04-UI",
+      "E08-UI"
+    ],
+    "listening": "NOT_RUN",
+    "scope": "Bounded repair and protected regression review, with preserved previous correctness judgments; not a new blind first-attempt content test."
+  },
+  "human_review": {
+    "path": "/Users/prax/.local/state/teach-pro-max-evaluator/v3-20261019/LISTEN-REVIEW.html",
+    "sha256": "e034465776ff8bb14f189c1a79a58facac1abc8bcab7f4fa576ad4bba66cf576",
+    "blank_verdicts": true,
+    "actual_listening_performed": false
+  },
+  "private_receipts": {
+    "e2e_dir": "/Users/prax/.local/state/teach-pro-max-evaluator/v3-20261019/runs/1792428851859544000-candidate3-fa2fa35-e2e",
+    "e2e_results_sha256": "b7c71dbb8fd2443fd12d1e3f2dcc064b646795042cd99ed495753be74e1fdd6e",
+    "routing_dir": "/Users/prax/.local/state/teach-pro-max-evaluator/v3-20261019/runs/1792428601738834000-candidate3-fa2fa35",
+    "routing_transport_sha256": "dded1aa3d3cb1a59c3a670ee86bbab024a8495e0bc4926c23325e2ab91f5e128",
+    "routing_prompt_context_sha256": "607448beadbb62f4a86a43349e90a02d2fefec16c36515d5123494488238ba95",
+    "manifest_sha256": "1f26395055fbfe1f5fdc3ee78a3f1cd6afd3f2a6d8da8e1bd16245caf5e040f8",
+    "review_sha256": "1be04ffcb01ae2157e61a3dc25e90b261a179ee6868d0deb6140ab09590bed16",
+    "media_reuse_summary_sha256": "5b2dc9f0a8fbead4af044d884e7960b7eebd03f2f3f667d98568ea5ca2d539bd",
+    "preserved_candidate2_listening_page": "/Users/prax/.local/state/teach-pro-max-evaluator/v3-20261019/LISTEN-REVIEW-candidate2.html",
+    "preserved_candidate2_listening_sha256": "7dce1a5f8e67e0a56d5d0710016df36e3011e38f5d15ea5bdf2d662a4d45ea98"
+  },
+  "artifact_seal_sha256": "7704f555af2fd3f9e446286f676df90289ac88f323ce0737100b19b223238aae"
+}

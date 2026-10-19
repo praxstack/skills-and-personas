@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "voice-and-focus",
+    "width": 1440,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/voice-and-focus/bundle/explorer.html",
+    "sha256": "5fc8c352fd10f6d0a810eb6481ac0ade6d01c54ae815b74dd989cc43ee462dc0",
+    "rangeControls": 1
+  },
+  {
+    "slug": "voice-and-focus",
+    "width": 390,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/voice-and-focus/bundle/explorer.html",
+    "sha256": "5fc8c352fd10f6d0a810eb6481ac0ade6d01c54ae815b74dd989cc43ee462dc0",
+    "rangeControls": 1
+  },
+  {
+    "slug": "base-rates",
+    "width": 1440,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/base-rates/bundle/explorer.html",
+    "sha256": "17e9b51c770f24cecc7c5f39ff6b54df4ad6af994fe71d759ea107ceb5cc1d57",
+    "rangeControls": 1
+  },
+  {
+    "slug": "base-rates",
+    "width": 390,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/base-rates/bundle/explorer.html",
+    "sha256": "17e9b51c770f24cecc7c5f39ff6b54df4ad6af994fe71d759ea107ceb5cc1d57",
+    "rangeControls": 1
+  },
+  {
+    "slug": "diffusion",
+    "width": 1440,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/diffusion/bundle/explorer.html",
+    "sha256": "d6aed03a1aae726412dcc7a7187adae7c0fb94b10eb1d820b1c614cdd8bb99c6",
+    "rangeControls": 2
+  },
+  {
+    "slug": "diffusion",
+    "width": 390,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/diffusion/bundle/explorer.html",
+    "sha256": "d6aed03a1aae726412dcc7a7187adae7c0fb94b10eb1d820b1c614cdd8bb99c6",
+    "rangeControls": 2
+  },
+  {
+    "slug": "atlas-reference",
+    "width": 1440,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/evidence/independent-content/atlas-reference/neuron-atlas-production/demo/index.html",
+    "sha256": "96141f2c9d238d3e64d3beaaecabc8bc9918f40c008e039cda67790ff80822de",
+    "rangeControls": 5
+  },
+  {
+    "slug": "atlas-reference",
+    "width": 390,
+    "path": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/evidence/independent-content/atlas-reference/neuron-atlas-production/demo/index.html",
+    "sha256": "96141f2c9d238d3e64d3beaaecabc8bc9918f40c008e039cda67790ff80822de",
+    "rangeControls": 5
+  }
+]

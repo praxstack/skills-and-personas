@@ -1,0 +1,30 @@
+[
+  {
+    "width": 1440,
+    "scheme": "light",
+    "explorerReady": true,
+    "loadingStatusHidden": true,
+    "realFigureVisibleAfterExplore": true
+  },
+  {
+    "width": 1440,
+    "scheme": "dark",
+    "explorerReady": true,
+    "loadingStatusHidden": true,
+    "realFigureVisibleAfterExplore": true
+  },
+  {
+    "width": 390,
+    "scheme": "light",
+    "explorerReady": true,
+    "loadingStatusHidden": true,
+    "realFigureVisibleAfterExplore": true
+  },
+  {
+    "width": 390,
+    "scheme": "dark",
+    "explorerReady": true,
+    "loadingStatusHidden": true,
+    "realFigureVisibleAfterExplore": true
+  }
+]

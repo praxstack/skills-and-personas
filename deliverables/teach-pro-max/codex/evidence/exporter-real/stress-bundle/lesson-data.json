@@ -1,0 +1,568 @@
+{
+  "id": "voice-and-focus-v3",
+  "title": "How a sentence changes its starting point while the participants and the underlying event remain exactly the same",
+  "subtitle": "See what English passive voice changes, and what it leaves intact.",
+  "subject": "Language · English grammar",
+  "limits": [
+    "This lesson uses ordinary past-simple transitive clauses. It does not cover every passive construction. Sentence topic is not the same as the only important or new information; context and stress also affect focus."
+  ],
+  "level": "intuition → mechanism",
+  "lang": "en",
+  "hook": "<p>You are writing about a bicycle. Starting with the bicycle keeps it as the thread of the story, even when somebody else does the work.</p>",
+  "params": {
+    "voice": {
+      "label": "Sentence voice",
+      "value": 0,
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    "agent": {
+      "label": "Name the doer in the passive",
+      "value": 1,
+      "min": 0,
+      "max": 1,
+      "step": 1
+    },
+    "example": {
+      "label": "Example",
+      "value": 0,
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  },
+  "sources": [
+    {
+      "title": "Synthetic long-reference layout fixture 1 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/1",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 2 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/2",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 3 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/3",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 4 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/4",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 5 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/5",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 6 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/6",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 7 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/7",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 8 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/8",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 9 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/9",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 10 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/10",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 11 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/11",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 12 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/12",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 13 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/13",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 14 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/14",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 15 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/15",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 16 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/16",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 17 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/17",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 18 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/18",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 19 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/19",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 20 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/20",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 21 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/21",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 22 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/22",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 23 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/23",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 24 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/24",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 25 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/25",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 26 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/26",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 27 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/27",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 28 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/28",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 29 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/29",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 30 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/30",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 31 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/31",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 32 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/32",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 33 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/33",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 34 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/34",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 35 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/35",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 36 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/36",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 37 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/37",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 38 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/38",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 39 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/39",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 40 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/40",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 41 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/41",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 42 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/42",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 43 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/43",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 44 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/44",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 45 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/45",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 46 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/46",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 47 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/47",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 48 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/48",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 49 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/49",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 50 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/50",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 51 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/51",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 52 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/52",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 53 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/53",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 54 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/54",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 55 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/55",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 56 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/56",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 57 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/57",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 58 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/58",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 59 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/59",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    },
+    {
+      "title": "Synthetic long-reference layout fixture 60 — reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title reference title ",
+      "url": "https://example.test/source/60",
+      "locator": "Layout-only reference metadata, not factual citations. Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator Long locator "
+    }
+  ],
+  "misconceptions": [],
+  "deeper": [],
+  "code": null,
+  "steps": [
+    {
+      "index": 0,
+      "id": "event",
+      "title": "Keep the participants and their event roles distinct from the subject and the first words of the sentence",
+      "say": "<p>In our example, Maya does the repairing and the bicycle is affected. Those are roles in the event. In the active sentence, Maya is also the grammatical subject.</p><p>Switch to passive. The bicycle becomes the subject. Maya is still the doer.</p>",
+      "sayText": "In our example, Maya does the repairing and the bicycle is affected. Those are roles in the event. In the active sentence, Maya is also the grammatical subject.Switch to passive. The bicycle becomes the subject. Maya is still the doer.",
+      "lookFor": "the coloured roles stay put while the sentence starts with a different participant",
+      "note": "Grammatical subject and doer are different roles.",
+      "sources": [],
+      "alts": [
+        {
+          "label": "Follow the event",
+          "say": "Imagine watching the repair with the sound off. Changing the sentence cannot change the person holding the tools.",
+          "set": {}
+        }
+      ],
+      "ask": {
+        "kind": "choice",
+        "q": "In 'The bicycle was repaired by Maya', who does the repairing?",
+        "why": "Maya remains the doer. The bicycle is the passive subject and the affected thing.",
+        "model": "",
+        "points": [],
+        "answerText": "Maya"
+      },
+      "figureWidth": 900,
+      "figureHeight": 430,
+      "figureLabel": "In a repair, Maya is the doer and the bicycle is affected. The selected active sentence is: Maya repaired the bicycle. The doer is named.",
+      "params": {
+        "voice": 0,
+        "agent": 1,
+        "example": 0
+      },
+      "state": {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": false,
+        "label": "a repair",
+        "includeAgent": true,
+        "sentence": "Maya repaired the bicycle.",
+        "startsWith": "Maya",
+        "pattern": "doer + past-tense verb + object",
+        "information": "The doer is named."
+      },
+      "readouts": [
+        [
+          "Starts with",
+          "Maya"
+        ],
+        [
+          "Information",
+          "The doer is named."
+        ]
+      ],
+      "answerText": "Maya",
+      "narrowFigure": "figures/step-1-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 590
+    },
+    {
+      "index": 1,
+      "id": "shape",
+      "title": "Change the sentence, not the event",
+      "say": "<p>These past-simple passives use <strong>was + past participle</strong>: was repaired, or was painted. A by-phrase can name the doer.</p>",
+      "sayText": "These past-simple passives use was + past participle: was repaired, or was painted. A by-phrase can name the doer.",
+      "lookFor": "",
+      "note": "Affected thing + was + past participle, with an optional by-phrase.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "Which is the passive of 'The team painted the gate'?",
+        "why": "'Was painted' is passive. Merely reversing the names changes who did what.",
+        "model": "",
+        "points": [],
+        "answerText": "The gate was painted by the team."
+      },
+      "figureWidth": 900,
+      "figureHeight": 430,
+      "figureLabel": "In a repair, Maya is the doer and the bicycle is affected. The selected passive sentence is: The bicycle was repaired by Maya. The doer is named.",
+      "params": {
+        "voice": 1,
+        "agent": 1,
+        "example": 0
+      },
+      "state": {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": true,
+        "label": "a repair",
+        "includeAgent": true,
+        "sentence": "The bicycle was repaired by Maya.",
+        "startsWith": "the bicycle",
+        "pattern": "affected thing + was + past participle",
+        "information": "The doer is named."
+      },
+      "readouts": [
+        [
+          "Starts with",
+          "the bicycle"
+        ],
+        [
+          "Information",
+          "The doer is named."
+        ]
+      ],
+      "answerText": "The gate was painted by the team.",
+      "narrowFigure": "figures/step-2-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 590
+    },
+    {
+      "index": 2,
+      "id": "omission",
+      "title": "Omitting the doer loses some information",
+      "say": "<p>'The bicycle was repaired' leaves the doer unstated. It can suit a story about the bicycle when who repaired it is unknown, obvious or unimportant.</p><p>That shorter sentence does not tell its reader that Maya did it.</p>",
+      "sayText": "'The bicycle was repaired' leaves the doer unstated. It can suit a story about the bicycle when who repaired it is unknown, obvious or unimportant.That shorter sentence does not tell its reader that Maya did it.",
+      "lookFor": "",
+      "note": "Unstated is not the same as nonexistent.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "Does 'The bicycle was repaired' identify Maya as the doer?",
+        "why": "The event has a doer, but the sentence does not identify them. Omission is not evidence that nobody acted.",
+        "model": "",
+        "points": [],
+        "answerText": "No"
+      },
+      "figureWidth": 900,
+      "figureHeight": 430,
+      "figureLabel": "In a repair, Maya is the doer and the bicycle is affected. The selected passive sentence is: The bicycle was repaired. Who did it is unstated.",
+      "params": {
+        "voice": 1,
+        "agent": 0,
+        "example": 0
+      },
+      "state": {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": true,
+        "label": "a repair",
+        "includeAgent": false,
+        "sentence": "The bicycle was repaired.",
+        "startsWith": "the bicycle",
+        "pattern": "affected thing + was + past participle",
+        "information": "Who did it is unstated."
+      },
+      "readouts": [
+        [
+          "Starts with",
+          "the bicycle"
+        ],
+        [
+          "Information",
+          "Who did it is unstated."
+        ]
+      ],
+      "answerText": "No",
+      "narrowFigure": "figures/step-3-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 590
+    },
+    {
+      "index": 3,
+      "id": "choice",
+      "title": "Choose the form that connects the story",
+      "say": "<p>If the gate is already your topic, 'The gate was painted' keeps that thread. If you are describing the team's work, the active sentence may fit better.</p><p>Passive is a choice about presentation. It is not automatically better, vaguer or more formal in every context.</p>",
+      "sayText": "If the gate is already your topic, 'The gate was painted' keeps that thread. If you are describing the team's work, the active sentence may fit better.Passive is a choice about presentation. It is not automatically better, vaguer or more formal in every context.",
+      "lookFor": "",
+      "note": "Use context, not a blanket ban on passive voice.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "explain",
+        "q": "How can two sentences describe the same event but start differently?",
+        "why": "",
+        "model": "The grammatical subject can change while event roles stay the same. A passive makes the affected thing the subject; an optional by-phrase names the doer.",
+        "points": [
+          "Separate subject from doer",
+          "Keep the event roles intact",
+          "Notice what an omitted doer leaves unstated"
+        ],
+        "answerText": ""
+      },
+      "figureWidth": 900,
+      "figureHeight": 430,
+      "figureLabel": "In a painting, The team is the doer and the gate is affected. The selected passive sentence is: The gate was painted by the team. The doer is named.",
+      "params": {
+        "voice": 1,
+        "agent": 1,
+        "example": 1
+      },
+      "state": {
+        "agent": "The team",
+        "action": "painted",
+        "patient": "the gate",
+        "active": "The team painted the gate.",
+        "passive": true,
+        "label": "a painting",
+        "includeAgent": true,
+        "sentence": "The gate was painted by the team.",
+        "startsWith": "the gate",
+        "pattern": "affected thing + was + past participle",
+        "information": "The doer is named."
+      },
+      "readouts": [
+        [
+          "Starts with",
+          "the gate"
+        ],
+        [
+          "Information",
+          "The doer is named."
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-4-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 590
+    }
+  ]
+}

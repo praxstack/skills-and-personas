@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "voice-and-focus",
+    "source_sha256": "5ca21be31970afc7f9f0c57d61860bff27990c95c064f57a4b80ca9abd9c07c1",
+    "prior_snapshot": "deliverables/teach-pro-max/codex/evidence/independent-content/snapshots/voice-and-focus.lesson.js",
+    "same_bytes": true
+  },
+  {
+    "slug": "base-rates",
+    "source_sha256": "1d02787fdb5f8dcb948086b910d585039fda0d53e07bfb557f2988bcfa54947c",
+    "prior_snapshot": "deliverables/teach-pro-max/codex/evidence/independent-content/snapshots/base-rates.corrected.lesson.js",
+    "same_bytes": true
+  },
+  {
+    "slug": "diffusion",
+    "source_sha256": "557b86ebe5ec5ad8c4656e32a75bf3314ef1bb50013f878615042681bf0f631d",
+    "prior_snapshot": "deliverables/teach-pro-max/codex/evidence/independent-content/snapshots/diffusion.corrected.lesson.js",
+    "same_bytes": true
+  }
+]

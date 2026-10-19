@@ -1,0 +1,12 @@
+{
+  "refs": {
+    "original": "e1d196e74ed88df3f5cdce8a06390331f9862300",
+    "current": "a064610f4cbe3bf32915a9fd570f8872433df4dd"
+  },
+  "teacher_trees": {
+    "original": "f6a2acb3fc206206c46952ab3db9806fd58111c3",
+    "current": "f6a2acb3fc206206c46952ab3db9806fd58111c3"
+  },
+  "byte_identical": true,
+  "scope": "Original and current general-teacher baselines have identical tracked teacher components. Native routing baseline therefore binds both identical contexts. No baseline end-to-end artifacts were run."
+}

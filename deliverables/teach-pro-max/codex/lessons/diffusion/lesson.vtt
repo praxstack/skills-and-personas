@@ -1,0 +1,21 @@
+WEBVTT
+
+1
+00:00:01.100 --> 00:00:13.130
+Particles can cross in either direction. In this simplified model, every particle has the same chance to cross. The more crowded side offers more crossing opportunities.
+
+2
+00:00:13.830 --> 00:00:27.519
+Expected traffic right is nine point six per tick, while traffic left is two point four. The difference is seven point two to the right. These are averages, not fractions of individual particles.
+
+3
+00:00:28.219 --> 00:00:44.465
+With an open barrier, the expected counts and opposing traffic become more alike. The concentration imbalance and expected net flow shrink together. Closing the barrier preserves an existing imbalance. The particle total stays fixed.
+
+4
+00:00:45.165 --> 00:00:58.494
+With thirty on each side, expected traffic is six in each direction. Net flow is zero, but particles can still cross both ways. Real trials fluctuate around these expectations.
+
+5
+00:00:59.194 --> 00:01:11.598
+Close the barrier and there is no exchange. This is different from an open barrier with balanced traffic. Neither situation means molecules stop moving inside the compartments.

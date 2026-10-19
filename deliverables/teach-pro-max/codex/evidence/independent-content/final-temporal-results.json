@@ -1,0 +1,69 @@
+[
+  {
+    "slug": "diffusion",
+    "video": "deliverables/teach-pro-max/codex/lessons/diffusion/lesson.mp4",
+    "videoSha256": "935c24d5f58dc0a711b432cb6de450f4a82af7d42bfac27cdf77b2c0dd088def",
+    "timing": {
+      "start": 44.464625,
+      "dur": 14.029333333333334,
+      "voiceAt": 45.164625,
+      "voiceDur": 12.429333333333334
+    },
+    "sourceSha256": "557b86ebe5ec5ad8c4656e32a75bf3314ef1bb50013f878615042681bf0f631d",
+    "frames": [
+      {
+        "label": "original-bad-position",
+        "at": 42.75,
+        "file": "final-diffusion-original-bad-position-42.750.png",
+        "sha256": "d9684c56f669cb364d0b61896d07f518971709f5384a3a909994f7dd576af8bb"
+      },
+      {
+        "label": "final-voice-plus-0.2",
+        "at": 45.364625000000004,
+        "file": "final-diffusion-final-voice-plus-0.2-45.365.png",
+        "sha256": "f2f288cb8d6512912afe355648378fe027ca61efe0fcd301bfd36dae1e4a7360"
+      }
+    ],
+    "independent_visual_judgment": "PASS at both sampled timestamps; not a full-frame/video certification",
+    "observed_final_state": {
+      "left": 30,
+      "right": 30,
+      "left_to_right": 6,
+      "right_to_left": 6,
+      "net": 0
+    }
+  },
+  {
+    "slug": "base-rates",
+    "video": "deliverables/teach-pro-max/codex/lessons/base-rates/lesson.mp4",
+    "videoSha256": "def27f5eaa093b69022ef18f13278bcb843ec5b501c8062db67c55fdd981da05",
+    "timing": {
+      "start": 49.77049999999999,
+      "dur": 13.500916666666667,
+      "voiceAt": 50.470499999999994,
+      "voiceDur": 11.900916666666667
+    },
+    "sourceSha256": "1d02787fdb5f8dcb948086b910d585039fda0d53e07bfb557f2988bcfa54947c",
+    "frames": [
+      {
+        "label": "original-bad-position",
+        "at": 48.7,
+        "file": "final-base-rates-original-bad-position-48.700.png",
+        "sha256": "76069734e3e7c3e1980ca7560636fe8991675382484c3e2f510f88209bf3f159"
+      },
+      {
+        "label": "final-voice-plus-0.2",
+        "at": 50.6705,
+        "file": "final-base-rates-final-voice-plus-0.2-50.670.png",
+        "sha256": "fa984417b6ad4efae4e8bf5668bd5e2abe7d5c3950a8eb84a54fe455cfa533b8"
+      }
+    ],
+    "independent_visual_judgment": "PASS at both sampled timestamps; not a full-frame/video certification",
+    "observed_final_state": {
+      "true_flags": 900,
+      "false_flags": 0,
+      "flagged": 900,
+      "defective_percent": 100
+    }
+  }
+]

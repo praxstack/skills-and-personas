@@ -2,11 +2,11 @@
   "dependencies": {
     "installed": {
       "fsrs": "6.3.1",
-      "node": "v22.23.1",
-      "npm": "10.9.8",
-      "python": "3.12.13",
+      "node": "v22.23.3",
+      "npm": "10.9.9",
+      "python": "3.12.15",
       "python_implementation": "CPython",
-      "ruff": "ruff 0.16.3"
+      "ruff": "ruff 0.17.1"
     },
     "locks": {
       "integrations/flint/package-lock.json": "8605e8bff36e1b6bf39f8dc349ad9d11a3d719d4c1f49ecab2a29aed3d2a1d8f",
@@ -20,7 +20,7 @@
   "gates": [
     {
       "command": [
-        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
         "-m",
         "unittest",
         "discover",
@@ -32,7 +32,7 @@
       ],
       "exit_code": 0,
       "name": "python-tests",
-      "output_sha256": "46a65c0acb7a879553d6e421eba45c74f4e2f9db1747e139173afc6052bc0136",
+      "output_sha256": "edcef2c7af28b90680e2ce4a39617cc237b907b4e3c6f8dd99fd27ba4f5f29b1",
       "output_tail": [
         "test_verifier_refuses_to_replace_a_symlink_output (test_zero_api_runtime.ZeroApiRuntimeTests.test_verifier_refuses_to_replace_a_symlink_output) ... ok",
         "test_visual_lesson_schema_matches_runtime_shape_boundaries (test_zero_api_runtime.ZeroApiRuntimeTests.test_visual_lesson_schema_matches_runtime_shape_boundaries) ... ok",
@@ -43,7 +43,7 @@
         "test_tracker_updates_the_repository_catalog_not_a_missing_copy (test_zero_api_tracker.ZeroApiTrackerTests.test_tracker_updates_the_repository_catalog_not_a_missing_copy) ... ok",
         "",
         "----------------------------------------------------------------------",
-        "Ran 238 tests in 75.280s",
+        "Ran 238 tests in 76.752s",
         "",
         "OK"
       ],
@@ -58,9 +58,9 @@
       ],
       "exit_code": 0,
       "name": "node-tests",
-      "output_sha256": "7ad5607ffcc4037c1e5bdf3d09b0edce1fd141e15c003edc3e9cf6409d0cb994",
+      "output_sha256": "bd28f969a08125ef0f4256c7dcc7ccda0b8b223de32eb5b3de2b60dc4df6d333",
       "output_tail": [
-        "  duration_ms: 95.577375",
+        "  duration_ms: 83.1285",
         "  type: 'test'",
         "  ...",
         "1..20",
@@ -71,19 +71,19 @@
         "# cancelled 0",
         "# skipped 0",
         "# todo 0",
-        "# duration_ms 2329.031791"
+        "# duration_ms 2007.779958"
       ],
       "policy_failures": [],
       "status": "passed"
     },
     {
       "command": [
-        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
         "scripts/test_visualization_registry.py"
       ],
       "exit_code": 0,
       "name": "visual-registry-tests",
-      "output_sha256": "052bc59ce8d63a25d282280b0650f4a7aaae780310b2e0ccb008a53a287cf29e",
+      "output_sha256": "b5b85bf91d33ebe2877e8b98dfb5028eb7fde2c28aad15fd73f9a80bcec580e4",
       "output_tail": [
         "test_ids_are_unique (__main__.VisualizationRegistryTests.test_ids_are_unique) ... ok",
         "test_official_resources_use_http (__main__.VisualizationRegistryTests.test_official_resources_use_http) ... ok",
@@ -94,7 +94,7 @@
         "test_visual_router_technologies_are_covered (__main__.VisualizationRegistryTests.test_visual_router_technologies_are_covered) ... ok",
         "",
         "----------------------------------------------------------------------",
-        "Ran 12 tests in 0.633s",
+        "Ran 12 tests in 0.232s",
         "",
         "OK"
       ],
@@ -103,7 +103,7 @@
     },
     {
       "command": [
-        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
         "scripts/find_visualization_tool.py",
         "--check"
       ],
@@ -134,17 +134,17 @@
     },
     {
       "command": [
-        "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+        "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
         "scripts/validate_workspace.py",
         "--json",
         "."
       ],
       "exit_code": 0,
       "name": "package-validator",
-      "output_sha256": "c4b8867c63e7beab3b53e00d2e94e23671205b1ec997c1ee9b9e5f540f084669",
+      "output_sha256": "98c95ce311c24c5f206c55e8cda6547284ab8aa5f16264d0932db313d106ba70",
       "output_tail": [
         "  \"mode\": \"full\",",
-        "  \"root\": \"/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2\",",
+        "  \"root\": \"/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2\",",
         "  \"security\": {",
         "    \"dangerous_tags\": 4,",
         "    \"duplicate_ids\": 0,",
@@ -207,16 +207,16 @@
   },
   "postflight_validation": {
     "command": [
-      "/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+      "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
       "scripts/validate_workspace.py",
       "--json",
       "."
     ],
     "exit_code": 0,
-    "output_sha256": "c4b8867c63e7beab3b53e00d2e94e23671205b1ec997c1ee9b9e5f540f084669",
+    "output_sha256": "98c95ce311c24c5f206c55e8cda6547284ab8aa5f16264d0932db313d106ba70",
     "output_tail": [
       "  \"mode\": \"full\",",
-      "  \"root\": \"/Users/prax/Developer/skills-and-personas/skills/teach-pro-max/references/prax-teach-v2\",",
+      "  \"root\": \"/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2\",",
       "  \"security\": {",
       "    \"dangerous_tags\": 4,",
       "    \"duplicate_ids\": 0,",
@@ -1622,7 +1622,7 @@
   "scientific_learning_claim_supported": false,
   "skillopt_source": {
     "commit": "e4ea6a6771e797ef820cdd8bfea64c57e0481065",
-    "path": "/Users/prax/Documents/Codex/2026-08-03/hey/work/dependencies/SkillOpt-v0.2.0",
+    "path": "/Users/prax/Developer/prax-teach-evaluation-20261016/dependencies/SkillOpt-v0.2.0",
     "tree": "5a603e937a20f1078059f94039a50028c022487a",
     "worktree_clean": true
   },

@@ -1,0 +1,99 @@
+{
+  "width": 1440,
+  "height": 900,
+  "figure": {
+    "x": 58,
+    "y": 204.41,
+    "width": 1324,
+    "height": 498.2600000000001
+  },
+  "title": {
+    "fontSize": 42,
+    "lines": 1
+  },
+  "references": 2,
+  "sourceRows": 1,
+  "textBounds": [
+    {
+      "part": "eyebrow",
+      "text": "Mathematics · conditional probability",
+      "x": 58,
+      "y": 28,
+      "width": 329.53125,
+      "height": 20
+    },
+    {
+      "part": "title",
+      "text": "A flag is not a verdict.",
+      "x": 57.671875,
+      "y": 70,
+      "width": 401.78125,
+      "height": 51
+    },
+    {
+      "part": "step-title",
+      "text": "Begin with the whole batch",
+      "x": 58,
+      "y": 141.66000366210938,
+      "width": 298.8125,
+      "height": 30
+    },
+    {
+      "part": "source-label",
+      "text": "Sources",
+      "x": 58,
+      "y": 851,
+      "width": 55.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[1]",
+      "x": 135.03125,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[2]",
+      "x": 168.71875,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "Full references ↗",
+      "x": 202.40625,
+      "y": 851,
+      "width": 118.375,
+      "height": 17
+    },
+    {
+      "part": "note",
+      "text": "A rare condition starts with a small group.",
+      "x": 57.859375,
+      "y": 810.8599853515625,
+      "width": 331.90625,
+      "height": 22
+    },
+    {
+      "part": "caption",
+      "text": "Of 10000 items, 100 are defective and 9900 sound. The detector flags 90 defective and 495 sound items, giving 585 flags. 15.4",
+      "x": 58,
+      "y": 730.6699829101562,
+      "width": 1276.421875,
+      "height": 29
+    },
+    {
+      "part": "caption",
+      "text": "percent of flagged items are defective.",
+      "x": 58,
+      "y": 760.5700073242188,
+      "width": 382.78125,
+      "height": 29
+    }
+  ],
+  "clippedText": 0
+}

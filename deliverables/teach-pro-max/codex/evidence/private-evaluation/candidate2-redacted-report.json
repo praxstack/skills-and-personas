@@ -1,0 +1,568 @@
+{
+  "version": "general-v3.1-20261019",
+  "candidate_commit": "3810ea4ac9ca882e0476d9de6a062dac5527c2d3",
+  "measurement_closed": true,
+  "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+  "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f",
+  "routing": {
+    "criteria": [
+      {
+        "id": "R01",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R02",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R03",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R04",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R05",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R06",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "R07",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R08",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R09",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R10",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R11",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R12",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R13",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R14",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R15",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R16",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R17",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R18",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R19",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R20",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R21",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R22",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R23",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "R24",
+        "status": "PASS",
+        "release_critical": true
+      }
+    ],
+    "passed": 23,
+    "total": 24,
+    "diagnostic_accuracy": 0.9583333333333334,
+    "diagnostic_85_percent": true,
+    "release_ready": false,
+    "version": "general-v3.1-20261019",
+    "label": "candidate2-3810ea4",
+    "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+    "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f"
+  },
+  "e2e": {
+    "criteria": [
+      {
+        "id": "E01-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E01-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E01-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E02-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E03-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E03-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E03-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E04-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E04-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E04-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E05-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E05-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-UI",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-MEDIA",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E06-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E07-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E07-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E07-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-AUTHOR",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-FACT",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-EXPLAIN",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-UI",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E08-MEDIA",
+        "status": "FAIL",
+        "release_critical": true
+      },
+      {
+        "id": "E08-FALLBACK",
+        "status": "PASS",
+        "release_critical": true
+      },
+      {
+        "id": "E08-CONSENT",
+        "status": "PASS",
+        "release_critical": true
+      }
+    ],
+    "passed": 46,
+    "total": 56,
+    "control_results": [
+      {
+        "id": "CTRL-01",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-02",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-03",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-04",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-05",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-06",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-07",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-08",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-09",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-10",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-11",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-12",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-13",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-14",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-15",
+        "status": "PASS"
+      },
+      {
+        "id": "CTRL-16",
+        "status": "PASS"
+      }
+    ],
+    "control_denominator": 16,
+    "release_ready": false,
+    "version": "general-v3.1-20261019",
+    "label": "candidate2-3810ea4-e2e",
+    "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+    "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f"
+  },
+  "comparisons": {
+    "original_baseline_routing": "23/24",
+    "candidate1_routing": "23/24",
+    "candidate2_routing": "23/24",
+    "routing_gain": false,
+    "routing_regression": false,
+    "original_baseline_e2e": "56 NOT_RUN; no original-baseline E2E improvement is claimed",
+    "candidate1_e2e_passed": 43,
+    "candidate2_e2e_passed": 46,
+    "e2e_denominator": 56,
+    "previous_fail_now_pass_ids": [
+      "E03-FACT",
+      "E04-AUTHOR",
+      "E07-AUTHOR"
+    ],
+    "previous_pass_now_fail_ids": [],
+    "attribution": {
+      "E03-FACT": "Normal host-authored output revision restored the omitted relationship; not a fresh first-attempt result.",
+      "E04-AUTHOR": "Generic mastering fix passed the unchanged loudness gate and allowed the required complete export; old picture packet stream reused exactly.",
+      "E07-AUTHOR": "Generic mastering fix passed the unchanged loudness gate and allowed the required complete export; authored-label geometry was rerendered."
+    }
+  },
+  "listening": {
+    "E03": "NOT_RUN: actual audio input unsupported; no human verdict supplied",
+    "E04": "NOT_RUN: actual audio input unsupported; no human verdict supplied",
+    "E07": "NOT_RUN: actual audio input unsupported; no human verdict supplied",
+    "E08": "NOT_RUN: actual audio input unsupported; no human verdict supplied"
+  },
+  "findings": {
+    "R06": "Live question/answer practice still routed to a static still as primary medium.",
+    "UI-FOOTER": "Five normal authored mobile SVG footers remain clipped by about8.65viewBox units: E01,E03,E05,E07,E08. Node-label repairs passed separately.",
+    "UI-CAPTIONS": "Default native caption blocks obscure lower video content in E04 and duplicate/obscure burned captions in E08. Actual IVE state-transfer/control/resume checks pass separately.",
+    "MEDIA-LISTEN": "All four automated narration/video/audio-level/ASR jobs pass, but actual human listening remains NOT_RUN; therefore required MEDIA criteria remain unmet."
+  },
+  "independent_review": {
+    "receipt_sha256": "8ed0c15a2a545377433bc16f4200fd13785c724499e7ab4728bdf5582ed61a7c",
+    "bounded_correctness": "8/8",
+    "node_label_states": "48/48",
+    "ui_fail_ids": [
+      "E01",
+      "E03",
+      "E04",
+      "E05",
+      "E07",
+      "E08"
+    ],
+    "listening": "NOT_RUN"
+  },
+  "control_evidence": {
+    "classification": "16/16",
+    "valid": "8/8",
+    "invalid_target_detection": "8/8",
+    "invalid_value": "3/3",
+    "invalid_claim": "5/5",
+    "exact_target_adjudication_sha256": "81b8a3dce152fac1a69d789bd1cc067b2280aaae75ea2b9f98640484fdda0050"
+  },
+  "human_review": {
+    "path": "/Users/prax/.local/state/teach-pro-max-evaluator/v3-20261019/LISTEN-REVIEW.html",
+    "sha256": "7dce1a5f8e67e0a56d5d0710016df36e3011e38f5d15ea5bdf2d662a4d45ea98",
+    "blank_verdicts": true,
+    "actual_listening_performed": false
+  },
+  "private_receipts": {
+    "e2e_dir": "/Users/prax/.local/state/teach-pro-max-evaluator/v3-20261019/runs/1792428262461430000-candidate2-3810ea4-e2e",
+    "e2e_results_sha256": "d6aa54c4f60edd1bbbeb5644796fdbd248ef832a762c5c205b3d686b5cc49578",
+    "routing_transport_sha256": "9eb01fd4aee7bc87dcff053d8fb110faf614aea176d6d76ffdb9fc1715f71572",
+    "routing_prompt_context_sha256": "f6437a3ed21be25b77eea2143a4a225feb7526dd514988c439b25b0896ef304e",
+    "manifest_sha256": "dab61c6493ddd8c6929866987472faa5cb3f554a0b9c2b5483da88dde450c093",
+    "review_sha256": "62b0067bc71a2d9676d5e2d4ac38ae9fc6ed7fc7b9f877f1af51bba6ed46cdf5"
+  }
+}

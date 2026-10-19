@@ -1,0 +1,24 @@
+{
+  "command": [
+    "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+    "scripts/verify.py",
+    "--level",
+    "full",
+    "--skillopt-source",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/dependencies/SkillOpt-v0.2.0",
+    "--json"
+  ],
+  "cwd": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2",
+  "local_path_prefix": [
+    "/Users/prax/.local/share/mise/installs/node/22.23.3/bin",
+    "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin"
+  ],
+  "started_at": "2026-10-19T16:18:22.959332+00:00",
+  "authorized_environment_reruns": 1,
+  "prior_failed_reruns_preserved": 1,
+  "release_manifest": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72",
+  "exit_code": 1,
+  "finished_at": "2026-10-19T16:20:34.251070+00:00",
+  "temporary_bridge_removed": true,
+  "runtime_target_preserved": true
+}

@@ -1,0 +1,67 @@
+{
+  "source": "skills/teacher/skills/explorable/scripts/bundle_templates.mjs",
+  "method": "Current exported stylesheet applied in Chromium. Video colors are computed; link color is read from the matching actual CSSOM video-a rule because a video-capable browser does not render or compute the fallback child. Contrast uses sRGB relative luminance.",
+  "limits": "Authored fallback-color verification, not native playback-control contrast, unsupported-browser rendering, field WCAG or full artifact regression.",
+  "checks": [
+    {
+      "width": 1440,
+      "colorScheme": "light",
+      "observed": {
+        "computedVideoBackground": "rgb(16, 24, 28)",
+        "computedVideoText": "rgb(247, 248, 242)",
+        "fallbackLinkDeclaration": "rgb(165, 234, 214)",
+        "fallbackLinkRule": "video a { color: rgb(165, 234, 214); }",
+        "nativeFallbackChildComputedColor": ""
+      },
+      "textContrast": 16.814651947464334,
+      "linkContrast": 13.117240089358626,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "width": 1440,
+      "colorScheme": "dark",
+      "observed": {
+        "computedVideoBackground": "rgb(16, 24, 28)",
+        "computedVideoText": "rgb(247, 248, 242)",
+        "fallbackLinkDeclaration": "rgb(165, 234, 214)",
+        "fallbackLinkRule": "video a { color: rgb(165, 234, 214); }",
+        "nativeFallbackChildComputedColor": ""
+      },
+      "textContrast": 16.814651947464334,
+      "linkContrast": 13.117240089358626,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "width": 390,
+      "colorScheme": "light",
+      "observed": {
+        "computedVideoBackground": "rgb(16, 24, 28)",
+        "computedVideoText": "rgb(247, 248, 242)",
+        "fallbackLinkDeclaration": "rgb(165, 234, 214)",
+        "fallbackLinkRule": "video a { color: rgb(165, 234, 214); }",
+        "nativeFallbackChildComputedColor": ""
+      },
+      "textContrast": 16.814651947464334,
+      "linkContrast": 13.117240089358626,
+      "threshold": 4.5,
+      "pass": true
+    },
+    {
+      "width": 390,
+      "colorScheme": "dark",
+      "observed": {
+        "computedVideoBackground": "rgb(16, 24, 28)",
+        "computedVideoText": "rgb(247, 248, 242)",
+        "fallbackLinkDeclaration": "rgb(165, 234, 214)",
+        "fallbackLinkRule": "video a { color: rgb(165, 234, 214); }",
+        "nativeFallbackChildComputedColor": ""
+      },
+      "textContrast": 16.814651947464334,
+      "linkContrast": 13.117240089358626,
+      "threshold": 4.5,
+      "pass": true
+    }
+  ]
+}

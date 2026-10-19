@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "full_gates_passed": 8,
+  "postflight_passed": true,
+  "python_tests": 238,
+  "node_tests": 20,
+  "node_skipped": 0,
+  "registry_tests": 12,
+  "registry_tools": 38,
+  "html_parity_pairs": 41,
+  "python_formatted_files": 58,
+  "trusted_macos_sandbox_tests_required": true,
+  "release_unchanged": true,
+  "release_manifest_sha256": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72",
+  "verification_script_sha256": "acf53a9345c127012bec3d7460c4dbe11b6513c18e708665611025154fcb2f87",
+  "locks_unchanged": true,
+  "runtime": {
+    "fsrs": "6.3.1",
+    "node": "v22.23.3",
+    "npm": "10.9.9",
+    "python": "3.12.15",
+    "python_implementation": "CPython",
+    "ruff": "ruff 0.17.1"
+  },
+  "runtime_layout": {
+    "path": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv",
+    "real_directory": true,
+    "symlink": false,
+    "git_ignored": true
+  },
+  "environment_only": true,
+  "preserved_prior_receipts": [
+    "before-full.json",
+    "after-full.json",
+    "before-bridge-full.json",
+    "final-full.json",
+    "before-real-venv-full.json"
+  ],
+  "current_receipt": "real-venv-full.json",
+  "human_learning_claim_supported": false,
+  "scientific_learning_claim_supported": false,
+  "evidence_sha256": {
+    "tracked-baseline-full.json": "febb8e56bf833b4a4e1aa42a3746a7280b586107635c274f75df3216887c37da",
+    "before-full.json": "b3fd35fc0aae20cf55e324c69b7df5d5f6a0bbbdb94ae68480cdd8deff27ddf5",
+    "after-full.json": "50555b1d97388a59dffb6e526305dda6515a0533248c6a38af7980788b929901",
+    "final-full.json": "b0874e49de17c5b04f817c350cba3ebe698e9d426abbbd158f59232ee0ea173b",
+    "real-venv-full.json": "95b2607dc4c2aea32a8c2ebe98507342382177b234db7f99744528b504224953",
+    "real-venv-full.log": "95b2607dc4c2aea32a8c2ebe98507342382177b234db7f99744528b504224953",
+    "real-venv-preflight.json": "0a6fec697c33b9f736174b5f055bc5cee5f557374fea135498cad46a5ec7e16f",
+    "real-venv-run-command.json": "1f214d7b49d1ab3d5d710dcfd9ba2cef4f063eee43556c63f026307679bb73f5"
+  }
+}

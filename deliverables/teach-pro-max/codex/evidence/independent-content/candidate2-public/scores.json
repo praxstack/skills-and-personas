@@ -1,0 +1,80 @@
+{
+  "reviewer": "/root/c_adapter_map",
+  "candidate": "public candidate2",
+  "source_commit": "3810ea4",
+  "independent": true,
+  "reference": {
+    "selected_atlas_looks": 9,
+    "selected_atlas_explanation": 9,
+    "evidence": "../VISUAL-REVIEW.md"
+  },
+  "ratings": [
+    {
+      "lesson": "voice-and-focus",
+      "medium": "explorer",
+      "widths": [
+        1440,
+        390
+      ],
+      "color_schemes": [
+        "light",
+        "dark"
+      ],
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true,
+      "candidate1_looks": 7,
+      "candidate1_explanation": 8
+    },
+    {
+      "lesson": "base-rates",
+      "medium": "explorer",
+      "widths": [
+        1440,
+        390
+      ],
+      "color_schemes": [
+        "light",
+        "dark"
+      ],
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true,
+      "candidate1_looks": 7,
+      "candidate1_explanation": 8
+    },
+    {
+      "lesson": "diffusion",
+      "medium": "explorer",
+      "widths": [
+        1440,
+        390
+      ],
+      "color_schemes": [
+        "light",
+        "dark"
+      ],
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true,
+      "candidate1_looks": 7,
+      "candidate1_explanation": 8
+    }
+  ],
+  "checks": {
+    "source_bytes_unchanged_from_previously_audited_final": true,
+    "all_step_geometry_cases": 48,
+    "document_horizontal_overflow_cases": 0,
+    "svg_text_overflow_cases": 0,
+    "diffusion_dots_each_measured_state": 60
+  },
+  "limitations": [
+    "Single-reviewer ordinal judgment; not user aesthetic approval.",
+    "One first-step range edit plus four chapter initial states per width/scheme; not exhaustive permitted-state UI coverage.",
+    "No fresh movie playback, audio listening or human-prosody judgment.",
+    "All-step bounds checks do not establish general accessibility or contrast conformance."
+  ]
+}

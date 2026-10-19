@@ -1,0 +1,21 @@
+WEBVTT
+
+1
+00:00:01.100 --> 00:00:10.984
+Imagine ten thousand items, with one percent defective. That is one hundred defective items and nine thousand nine hundred sound ones.
+
+2
+00:00:11.684 --> 00:00:23.046
+A ninety percent hit rate gives ninety true flags. A five percent false flag rate on the much larger sound group gives four hundred and ninety five false flags.
+
+3
+00:00:23.746 --> 00:00:35.336
+Now look only at the flagged group. Ninety out of five hundred and eighty five are defective, about fifteen point four percent. This is not the ninety percent hit rate.
+
+4
+00:00:36.036 --> 00:00:48.361
+Raise the defect rate while keeping the detector fixed. More of the flagged group is now truly defective. A flag's meaning depends on the population as well as the detector.
+
+5
+00:00:49.061 --> 00:01:01.862
+With no false flags, every flagged item is defective in this model. That still does not mean every defective item was found. Hit rate and the share among flags answer different questions.

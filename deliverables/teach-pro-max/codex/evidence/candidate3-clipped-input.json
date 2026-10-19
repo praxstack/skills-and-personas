@@ -1,0 +1,7 @@
+{
+  "expected": "reject actual off-viewport SVG text",
+  "exit_code": 1,
+  "output": "page.evaluate: Error: Step 1 has clipped SVG text: 01  KEEP THE TWO POPULATIONS SEPARATE | All items | 10,000 | Defective | 100. Wrap or reposition the source labels and export again.\n    at eval (eval at evaluate (:311:30), <anonymous>:19:28)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at capture (/Users/prax/Developer/teach-general-20261019/skills/teacher/skills/explorable/scripts/bundle_lesson.mjs:46:17)\n    at async file:///Users/prax/Developer/teach-general-20261019/skills/teacher/skills/explorable/scripts/bundle_lesson.mjs:76:14\n",
+  "caught_specific_error": true,
+  "scope": "Additional diagnostic; frozen evaluator unchanged."
+}

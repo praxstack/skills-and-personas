@@ -1,0 +1,32 @@
+{
+  "schema": "explorable-bundle/v1",
+  "title": "A flag is not a verdict.",
+  "input": "explorer.html",
+  "sourceSha256": "586e979adf4ae361dedbaca3d2325999846104a587a6f709ef44b9b23fe99810",
+  "steps": 4,
+  "still": {
+    "step": 1,
+    "width": 1440,
+    "height": 900,
+    "editable": true
+  },
+  "video": {
+    "scenes": 5,
+    "total": 64.07141666666666
+  },
+  "formats": [
+    "explorer.html",
+    "still.svg",
+    "still.png",
+    "still.html",
+    "static.html",
+    "qa.html",
+    "cards.html",
+    "cards.tsv",
+    "interactive-video.html",
+    "lesson.mp4",
+    "lesson.vtt",
+    "lesson.timing.json"
+  ],
+  "warnings": []
+}

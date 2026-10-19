@@ -1,0 +1,43 @@
+{
+  "bridge": {
+    "path": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv",
+    "target": "/private/tmp/prax-teach-v3-runtime/venvs/distribution",
+    "symlink": true,
+    "ignored_by_git": false,
+    "temporary": true,
+    "remove_link_only_after_rerun": true
+  },
+  "runtime_paths": [
+    {
+      "path": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python",
+      "exists": true,
+      "resolved": "/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/bin/python3.12"
+    },
+    {
+      "path": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/node_modules",
+      "exists": true,
+      "resolved": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/node_modules"
+    },
+    {
+      "path": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/integrations/flint/node_modules",
+      "exists": true,
+      "resolved": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/integrations/flint/node_modules"
+    },
+    {
+      "path": "/usr/bin/sandbox-exec",
+      "exists": true,
+      "resolved": "/usr/bin/sandbox-exec"
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "exists": true,
+      "resolved": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9"
+    }
+  ],
+  "python_probe": {
+    "exit_code": 0,
+    "stdout": "3.12.15 (main, Sep 30 2026, 22:04:19) [Clang 21.0.0 (clang-2100.3.34.2)]\nfsrs=6.3.1\nprefix=/private/tmp/prax-teach-v3-runtime/venvs/distribution\n"
+  },
+  "authorized_environment_repair": true,
+  "source_edits": false
+}

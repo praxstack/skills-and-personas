@@ -1,0 +1,38 @@
+{
+  "counts": {
+    "browser_inspection_receipts": 1,
+    "companion_pages": 41,
+    "forward_behavior_receipts": 1,
+    "html_pages": 44,
+    "independent_review_receipts": 3,
+    "integration_manifests": 3,
+    "json_files": 93,
+    "json_schemas": 10,
+    "jsonl_files": 4,
+    "legacy_asset_manifests": 1,
+    "markdown_files": 41,
+    "markdown_html_pairs": 41,
+    "negative_fixtures": 2,
+    "package_contracts": 1,
+    "release_status_ledgers": 1,
+    "schema_instances": 10,
+    "state_invariant_sets": 1,
+    "verification_receipts": 1,
+    "visual_verification_receipts": 4
+  },
+  "errors": [
+    "STATUS.json: criteria[22].evidence[0]: stale or invalid receipt: evidence/verification/full.json: status must be passed outside an active run",
+    "evidence/verification/full.json: status must be passed outside an active run"
+  ],
+  "mode": "full",
+  "root": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2",
+  "security": {
+    "dangerous_tags": 4,
+    "duplicate_ids": 0,
+    "event_attributes": 0,
+    "external_assets": 0,
+    "missing_image_alt": 0,
+    "unsafe_urls": 0
+  },
+  "status": "failed"
+}

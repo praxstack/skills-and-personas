@@ -1,0 +1,563 @@
+{
+  "width": 1440,
+  "height": 900,
+  "figure": {
+    "x": 58,
+    "y": 256.49,
+    "width": 1324,
+    "height": 430.08000000000004
+  },
+  "title": {
+    "fontSize": 42,
+    "lines": 2
+  },
+  "references": 60,
+  "sourceRows": 3,
+  "textBounds": [
+    {
+      "part": "eyebrow",
+      "text": "Language · English grammar",
+      "x": 58,
+      "y": 28,
+      "width": 257.296875,
+      "height": 20
+    },
+    {
+      "part": "title",
+      "text": "How a sentence changes its starting point while the participants and the",
+      "x": 58,
+      "y": 70,
+      "width": 1321.125,
+      "height": 51
+    },
+    {
+      "part": "title",
+      "text": "underlying event remain exactly the same",
+      "x": 58,
+      "y": 122.08000183105469,
+      "width": 766.453125,
+      "height": 51
+    },
+    {
+      "part": "step-title",
+      "text": "Keep the participants and their event roles distinct from the subject and the first words of the sentence",
+      "x": 58,
+      "y": 193.74000549316406,
+      "width": 1117.625,
+      "height": 30
+    },
+    {
+      "part": "source-label",
+      "text": "Sources",
+      "x": 58,
+      "y": 805,
+      "width": 55.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[1]",
+      "x": 135.03125,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[2]",
+      "x": 168.71875,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[3]",
+      "x": 202.40625,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[4]",
+      "x": 236.09375,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[5]",
+      "x": 269.78125,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[6]",
+      "x": 303.46875,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[7]",
+      "x": 337.15625,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[8]",
+      "x": 370.84375,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[9]",
+      "x": 404.53125,
+      "y": 805,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[10]",
+      "x": 438.21875,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[11]",
+      "x": 480.25,
+      "y": 805,
+      "width": 23.921875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[12]",
+      "x": 521.171875,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[13]",
+      "x": 563.203125,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[14]",
+      "x": 605.234375,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[15]",
+      "x": 647.265625,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[16]",
+      "x": 689.296875,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[17]",
+      "x": 731.328125,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[18]",
+      "x": 773.359375,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[19]",
+      "x": 815.390625,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[20]",
+      "x": 857.421875,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[21]",
+      "x": 899.453125,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[22]",
+      "x": 941.484375,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[23]",
+      "x": 983.515625,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[24]",
+      "x": 1025.546875,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[25]",
+      "x": 1067.578125,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[26]",
+      "x": 1109.609375,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[27]",
+      "x": 1151.640625,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[28]",
+      "x": 1193.671875,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[29]",
+      "x": 1235.703125,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[30]",
+      "x": 1277.734375,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[31]",
+      "x": 1319.765625,
+      "y": 805,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[32]",
+      "x": 58,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[33]",
+      "x": 100.03125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[34]",
+      "x": 142.0625,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[35]",
+      "x": 184.09375,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[36]",
+      "x": 226.125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[37]",
+      "x": 268.15625,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[38]",
+      "x": 310.1875,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[39]",
+      "x": 352.21875,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[40]",
+      "x": 394.25,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[41]",
+      "x": 436.28125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[42]",
+      "x": 478.3125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[43]",
+      "x": 520.34375,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[44]",
+      "x": 562.375,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[45]",
+      "x": 604.40625,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[46]",
+      "x": 646.4375,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[47]",
+      "x": 688.46875,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[48]",
+      "x": 730.5,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[49]",
+      "x": 772.53125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[50]",
+      "x": 814.5625,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[51]",
+      "x": 856.59375,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[52]",
+      "x": 898.625,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[53]",
+      "x": 940.65625,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[54]",
+      "x": 982.6875,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[55]",
+      "x": 1024.71875,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[56]",
+      "x": 1066.75,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[57]",
+      "x": 1108.78125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[58]",
+      "x": 1150.8125,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[59]",
+      "x": 1192.84375,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[60]",
+      "x": 1234.875,
+      "y": 828,
+      "width": 25.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "Full references ↗",
+      "x": 58,
+      "y": 851,
+      "width": 118.375,
+      "height": 17
+    },
+    {
+      "part": "note",
+      "text": "Grammatical subject and doer are different roles.",
+      "x": 58,
+      "y": 764.8599853515625,
+      "width": 386.21875,
+      "height": 22
+    },
+    {
+      "part": "caption",
+      "text": "the coloured roles stay put while the sentence starts with a different participant",
+      "x": 58,
+      "y": 714.5700073242188,
+      "width": 797.859375,
+      "height": 29
+    }
+  ],
+  "clippedText": 0
+}

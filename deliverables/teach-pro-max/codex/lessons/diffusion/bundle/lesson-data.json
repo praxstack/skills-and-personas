@@ -1,0 +1,354 @@
+{
+  "id": "diffusion-v3",
+  "title": "Two-way motion. One-way net flow.",
+  "subtitle": "Diffusion does not need particles to know which side is crowded.",
+  "subject": "Science · diffusion",
+  "limits": [
+    "Model assumptions: 60 independent particles, equal-volume well-mixed compartments and the same crossing probability in each direction per tick. Readouts are expectations across repeated trials, not measured integer counts. Dot counts show a rounded expected split while conserving 60; dots are not tracked trajectories. Ticks are model steps, not seconds. Real diffusion has spatial gradients, interactions and fluctuations."
+  ],
+  "level": "random motion → dynamic balance",
+  "lang": "en",
+  "hook": "<p>A dye can spread without a pump or a molecule deciding to move downhill. Compare traffic in both directions.</p>",
+  "params": {
+    "initialLeft": {
+      "label": "Starting particles on the left",
+      "value": 48,
+      "min": 0,
+      "max": 60,
+      "step": 1
+    },
+    "cross": {
+      "label": "Crossing chance per particle per tick",
+      "value": 0.2,
+      "min": 0,
+      "max": 0.5,
+      "step": 0.05
+    },
+    "ticks": {
+      "label": "Elapsed model ticks",
+      "value": 0,
+      "min": 0,
+      "max": 20,
+      "step": 1
+    }
+  },
+  "sources": [
+    {
+      "title": "OpenStax Biology · Passive transport",
+      "url": "https://openstax.org/books/biology/pages/5-2-passive-transport",
+      "locator": "Random molecular movement, concentration gradients and dynamic equilibrium."
+    },
+    {
+      "title": "OpenStax Chemistry · Diffusion",
+      "url": "https://openstax.org/books/chemistry-atoms-first/pages/8-4-effusion-and-diffusion-of-gases",
+      "locator": "Diffusion and its dependence on a concentration difference."
+    }
+  ],
+  "misconceptions": [],
+  "deeper": [],
+  "code": null,
+  "steps": [
+    {
+      "index": 0,
+      "id": "traffic",
+      "title": "Particles can cross either way",
+      "say": "<p>Give every particle the same 20% crossing chance. With 48 starting on the left, expected traffic to the right is 9.6 per tick. With 12 on the right, expected traffic left is 2.4.</p><p>The decimals are averages across many repetitions. A single trial has whole particles.</p>",
+      "sayText": "Give every particle the same 20% crossing chance. With 48 starting on the left, expected traffic to the right is 9.6 per tick. With 12 on the right, expected traffic left is 2.4.The decimals are averages across many repetitions. A single trial has whole particles.",
+      "lookFor": "",
+      "note": "Random motion is two-way, even with a gradient.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "In this symmetric-crossing model, can particles go right to left while the left is more crowded?",
+        "why": "Both directions remain possible. More particles starting on the left means more chances to cross right.",
+        "model": "",
+        "points": [],
+        "answerText": "Yes"
+      },
+      "figureWidth": 900,
+      "figureHeight": 470,
+      "figureLabel": "The equal-volume compartments contain an expected 48.00 particles on the left and 12.00 on the right. Expected crossings next tick are 9.60 left to right and 2.40 right to left. Net to the right is 7.20. Total remains 60.",
+      "params": {
+        "initialLeft": 48,
+        "cross": 0.2,
+        "ticks": 0
+      },
+      "state": {
+        "total": 60,
+        "left": 48,
+        "right": 12,
+        "leftToRight": 9.600000000000001,
+        "rightToLeft": 2.4000000000000004,
+        "net": 7.2,
+        "nextLeft": 40.8
+      },
+      "readouts": [
+        [
+          "Expected left",
+          "48.0"
+        ],
+        [
+          "Expected right",
+          "12.0"
+        ],
+        [
+          "Net to right per tick",
+          "7.20"
+        ]
+      ],
+      "answerText": "Yes",
+      "narrowFigure": "figures/step-1-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 650
+    },
+    {
+      "index": 1,
+      "id": "net",
+      "title": "The difference is the net flow",
+      "say": "<p>Subtract expected reverse traffic from forward traffic: 9.6 minus 2.4 gives a net 7.2 to the right. In equal volumes, the crowded side has the higher concentration.</p>",
+      "sayText": "Subtract expected reverse traffic from forward traffic: 9.6 minus 2.4 gives a net 7.2 to the right. In equal volumes, the crowded side has the higher concentration.",
+      "lookFor": "",
+      "note": "Net flow is a difference, not the only direction of motion.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "number",
+        "q": "For 48 left, 12 right and crossing chance 0.2, what is expected net traffic to the right per tick?",
+        "why": "Net to the right is 0.2 × 48 minus 0.2 × 12, which is 7.2.",
+        "model": "",
+        "points": [],
+        "answerText": "7.2"
+      },
+      "figureWidth": 900,
+      "figureHeight": 470,
+      "figureLabel": "The equal-volume compartments contain an expected 48.00 particles on the left and 12.00 on the right. Expected crossings next tick are 9.60 left to right and 2.40 right to left. Net to the right is 7.20. Total remains 60.",
+      "params": {
+        "initialLeft": 48,
+        "cross": 0.2,
+        "ticks": 0
+      },
+      "state": {
+        "total": 60,
+        "left": 48,
+        "right": 12,
+        "leftToRight": 9.600000000000001,
+        "rightToLeft": 2.4000000000000004,
+        "net": 7.2,
+        "nextLeft": 40.8
+      },
+      "readouts": [
+        [
+          "Expected left",
+          "48.0"
+        ],
+        [
+          "Expected right",
+          "12.0"
+        ],
+        [
+          "Net to right per tick",
+          "7.20"
+        ]
+      ],
+      "answerText": "7.2",
+      "narrowFigure": "figures/step-2-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 650
+    },
+    {
+      "index": 2,
+      "id": "relax",
+      "title": "An open barrier lets the imbalance shrink",
+      "say": "<p>With a positive crossing chance, advance the model ticks. As the expected counts approach each other, the difference between the crossing rates shrinks. At zero crossing chance the barrier is closed and the imbalance stays fixed. Each tick updates both compartments, conserving all 60 particles.</p>",
+      "sayText": "With a positive crossing chance, advance the model ticks. As the expected counts approach each other, the difference between the crossing rates shrinks. At zero crossing chance the barrier is closed and the imbalance stays fixed. Each tick updates both compartments, conserving all 60 particles.",
+      "lookFor": "",
+      "note": "With positive crossing chance, the imbalance fades as opposing traffic balances.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "explain",
+        "q": "Why does the expected net flow get smaller as the sides become similar?",
+        "why": "",
+        "model": "The per-particle chance is unchanged, but the numbers of particles available on each side become more similar. Opposing traffic therefore becomes more similar.",
+        "points": [
+          "Both directions still operate",
+          "Per-particle rule stays symmetric",
+          "Total particles are conserved"
+        ],
+        "answerText": ""
+      },
+      "figureWidth": 900,
+      "figureHeight": 470,
+      "figureLabel": "The equal-volume compartments contain an expected 31.40 particles on the left and 28.60 on the right. Expected crossings next tick are 6.28 left to right and 5.72 right to left. Net to the right is 0.56. Total remains 60.",
+      "params": {
+        "initialLeft": 48,
+        "cross": 0.2,
+        "ticks": 5
+      },
+      "state": {
+        "total": 60,
+        "left": 31.39968,
+        "right": 28.60032,
+        "leftToRight": 6.279936,
+        "rightToLeft": 5.720064000000001,
+        "net": 0.559872,
+        "nextLeft": 30.839808
+      },
+      "readouts": [
+        [
+          "Expected left",
+          "31.4"
+        ],
+        [
+          "Expected right",
+          "28.6"
+        ],
+        [
+          "Net to right per tick",
+          "0.56"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-3-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 650
+    },
+    {
+      "index": 3,
+      "id": "balance",
+      "title": "Balance does not mean motion stops",
+      "say": "<p>Start with 30 on each side. Expected crossings are 6 in each direction per tick, so net flow is zero. This is dynamic balance in the model.</p><p>Closing the barrier sets crossing chance to zero. That stops exchange through the barrier; it does not mean molecules stop moving within each side.</p>",
+      "sayText": "Start with 30 on each side. Expected crossings are 6 in each direction per tick, so net flow is zero. This is dynamic balance in the model.Closing the barrier sets crossing chance to zero. That stops exchange through the barrier; it does not mean molecules stop moving within each side.",
+      "lookFor": "",
+      "note": "Zero net change can hide continuing two-way activity.",
+      "sources": [],
+      "alts": [
+        {
+          "label": "Two doorways",
+          "say": "Imagine equal expected numbers entering and leaving a room. The expected headcount stays steady, even though people keep crossing.",
+          "set": {}
+        }
+      ],
+      "ask": {
+        "kind": "choice",
+        "q": "With equal concentrations and an open barrier, does zero expected net flow mean zero crossings?",
+        "why": "Equal expected traffic cancels in the net calculation, while crossings in both directions continue. Actual trials can fluctuate.",
+        "model": "",
+        "points": [],
+        "answerText": "No"
+      },
+      "figureWidth": 900,
+      "figureHeight": 470,
+      "figureLabel": "The equal-volume compartments contain an expected 30.00 particles on the left and 30.00 on the right. Expected crossings next tick are 6.00 left to right and 6.00 right to left. Net to the right is 0.00. Total remains 60.",
+      "params": {
+        "initialLeft": 30,
+        "cross": 0.2,
+        "ticks": 0
+      },
+      "state": {
+        "total": 60,
+        "left": 30,
+        "right": 30,
+        "leftToRight": 6,
+        "rightToLeft": 6,
+        "net": 0,
+        "nextLeft": 30
+      },
+      "readouts": [
+        [
+          "Expected left",
+          "30.0"
+        ],
+        [
+          "Expected right",
+          "30.0"
+        ],
+        [
+          "Net to right per tick",
+          "0.00"
+        ]
+      ],
+      "answerText": "No",
+      "narrowFigure": "figures/step-4-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 650
+    }
+  ],
+  "video": {
+    "scenes": [
+      {
+        "chapter": "Two-way traffic",
+        "say": "Particles can cross in either direction. In this simplified model, every particle has the same chance to cross. The more crowded side offers more crossing opportunities.",
+        "start": 0.4,
+        "dur": 12.72975,
+        "voiceAt": 1.1,
+        "voiceDur": 11.12975,
+        "params": {
+          "initialLeft": 48,
+          "cross": 0.2,
+          "ticks": 0
+        },
+        "step": 0
+      },
+      {
+        "chapter": "Net movement",
+        "say": "Expected traffic right is nine point six per tick, while traffic left is two point four. The difference is seven point two to the right. These are averages, not fractions of individual particles.",
+        "start": 13.12975,
+        "dur": 14.388916666666667,
+        "voiceAt": 13.829749999999999,
+        "voiceDur": 12.788916666666667,
+        "params": {
+          "initialLeft": 48,
+          "cross": 0.2,
+          "ticks": 0
+        },
+        "step": 0
+      },
+      {
+        "chapter": "An imbalance shrinks",
+        "say": "With an open barrier, the expected counts and opposing traffic become more alike. The concentration imbalance and expected net flow shrink together. Closing the barrier preserves an existing imbalance. The particle total stays fixed.",
+        "start": 27.518666666666668,
+        "dur": 16.945958333333333,
+        "voiceAt": 28.218666666666667,
+        "voiceDur": 15.345958333333334,
+        "params": {
+          "initialLeft": 48,
+          "cross": 0.2,
+          "ticks": 5
+        },
+        "step": 2
+      },
+      {
+        "chapter": "Dynamic balance",
+        "say": "With thirty on each side, expected traffic is six in each direction. Net flow is zero, but particles can still cross both ways. Real trials fluctuate around these expectations.",
+        "start": 44.464625,
+        "dur": 14.029333333333334,
+        "voiceAt": 45.164625,
+        "voiceDur": 12.429333333333334,
+        "params": {
+          "initialLeft": 30,
+          "cross": 0.2,
+          "ticks": 0
+        },
+        "step": 3
+      },
+      {
+        "chapter": "A closed barrier",
+        "say": "Close the barrier and there is no exchange. This is different from an open barrier with balanced traffic. Neither situation means molecules stop moving inside the compartments.",
+        "start": 58.49395833333333,
+        "dur": 13.104,
+        "voiceAt": 59.193958333333335,
+        "voiceDur": 11.504,
+        "params": {
+          "initialLeft": 30,
+          "cross": 0,
+          "ticks": 0
+        },
+        "step": 0
+      }
+    ],
+    "total": 72.39795833333334,
+    "captions": "WEBVTT\n\n1\n00:00:01.100 --> 00:00:13.130\nParticles can cross in either direction. In this simplified model, every particle has the same chance to cross. The more crowded side offers more crossing opportunities.\n\n2\n00:00:13.830 --> 00:00:27.519\nExpected traffic right is nine point six per tick, while traffic left is two point four. The difference is seven point two to the right. These are averages, not fractions of individual particles.\n\n3\n00:00:28.219 --> 00:00:44.465\nWith an open barrier, the expected counts and opposing traffic become more alike. The concentration imbalance and expected net flow shrink together. Closing the barrier preserves an existing imbalance. The particle total stays fixed.\n\n4\n00:00:45.165 --> 00:00:58.494\nWith thirty on each side, expected traffic is six in each direction. Net flow is zero, but particles can still cross both ways. Real trials fluctuate around these expectations.\n\n5\n00:00:59.194 --> 00:01:11.598\nClose the barrier and there is no exchange. This is different from an open barrier with balanced traffic. Neither situation means molecules stop moving inside the compartments.\n"
+  }
+}

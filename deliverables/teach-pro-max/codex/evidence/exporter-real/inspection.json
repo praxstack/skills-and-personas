@@ -1,0 +1,509 @@
+{
+  "passed": 104,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "voice-bundle no text clipped by canvas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "voice-bundle measured title/step separation",
+      "ok": true,
+      "detail": {
+        "x": 58,
+        "y": 204.41,
+        "width": 1324,
+        "height": 528.1600000000001
+      }
+    },
+    {
+      "name": "stress-bundle no text clipped by canvas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "stress-bundle measured title/step separation",
+      "ok": true,
+      "detail": {
+        "x": 58,
+        "y": 256.49,
+        "width": 1324,
+        "height": 430.08000000000004
+      }
+    },
+    {
+      "name": "stress title uses two measured rows",
+      "ok": true,
+      "detail": {
+        "fontSize": 42,
+        "lines": 2
+      }
+    },
+    {
+      "name": "60 references all rendered as clickable links",
+      "ok": true
+    },
+    {
+      "name": "complete source URLs in companion",
+      "ok": true
+    },
+    {
+      "name": "static 1440 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "static 1440 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "static 1440 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "still 1440 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "still 1440 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "still 1440 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "qa 1440 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "qa 1440 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "qa 1440 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "cards 1440 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "cards 1440 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "cards 1440 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "explorer 1440 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "explorer 1440 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 1440 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 1440 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 1440 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "no console/page errors 1440 light",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "static 1440 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "static 1440 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "static 1440 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "still 1440 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "still 1440 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "still 1440 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "qa 1440 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "qa 1440 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "qa 1440 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "cards 1440 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "cards 1440 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "cards 1440 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "explorer 1440 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "explorer 1440 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 1440 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 1440 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 1440 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "no console/page errors 1440 dark",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "static 390 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "static 390 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "static 390 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "still 390 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "still 390 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "still 390 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "qa 390 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "qa 390 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "qa 390 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "cards 390 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "cards 390 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "cards 390 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "explorer 390 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "explorer 390 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 390 light no overflow",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 390 light provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 390 light model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "no console/page errors 390 light",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "static 390 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "static 390 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "static 390 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "still 390 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "still 390 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "still 390 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "qa 390 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "qa 390 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "qa 390 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "cards 390 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "cards 390 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "cards 390 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "explorer 390 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "explorer 390 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 390 dark no overflow",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 390 dark provenance source link",
+      "ok": true
+    },
+    {
+      "name": "interactive-video 390 dark model limit disclosed",
+      "ok": true
+    },
+    {
+      "name": "no console/page errors 390 dark",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "step-1-narrow.svg narrow text within canvas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "step-2-narrow.svg narrow text within canvas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "step-3-narrow.svg narrow text within canvas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "step-4-narrow.svg narrow text within canvas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "actual voice video duration matches timing",
+      "ok": true
+    },
+    {
+      "name": "all real captions loaded",
+      "ok": true
+    },
+    {
+      "name": "real scene 0 actual model parameters",
+      "ok": true,
+      "detail": {
+        "expected": {
+          "voice": 0,
+          "agent": 1,
+          "example": 0
+        },
+        "actual": {
+          "voice": 0,
+          "agent": 1,
+          "example": 0
+        }
+      }
+    },
+    {
+      "name": "real scene 0 paused and playhead retained",
+      "ok": true
+    },
+    {
+      "name": "real scene 1 actual model parameters",
+      "ok": true,
+      "detail": {
+        "expected": {
+          "voice": 1,
+          "agent": 1,
+          "example": 0
+        },
+        "actual": {
+          "voice": 1,
+          "agent": 1,
+          "example": 0
+        }
+      }
+    },
+    {
+      "name": "real scene 1 paused and playhead retained",
+      "ok": true
+    },
+    {
+      "name": "real scene 2 actual model parameters",
+      "ok": true,
+      "detail": {
+        "expected": {
+          "voice": 1,
+          "agent": 1,
+          "example": 1
+        },
+        "actual": {
+          "voice": 1,
+          "agent": 1,
+          "example": 1
+        }
+      }
+    },
+    {
+      "name": "real scene 2 paused and playhead retained",
+      "ok": true
+    },
+    {
+      "name": "real scene 3 actual model parameters",
+      "ok": true,
+      "detail": {
+        "expected": {
+          "voice": 1,
+          "agent": 0,
+          "example": 0
+        },
+        "actual": {
+          "voice": 1,
+          "agent": 0,
+          "example": 0
+        }
+      }
+    },
+    {
+      "name": "real scene 3 paused and playhead retained",
+      "ok": true
+    },
+    {
+      "name": "real scene 4 actual model parameters",
+      "ok": true,
+      "detail": {
+        "expected": {
+          "voice": 1,
+          "agent": 0,
+          "example": 1
+        },
+        "actual": {
+          "voice": 1,
+          "agent": 0,
+          "example": 1
+        }
+      }
+    },
+    {
+      "name": "real scene 4 paused and playhead retained",
+      "ok": true
+    },
+    {
+      "name": "actual explorer controls change state",
+      "ok": true
+    },
+    {
+      "name": "actual video resumes without resetting",
+      "ok": true
+    },
+    {
+      "name": "actual playback speed updates",
+      "ok": true
+    },
+    {
+      "name": "actual captions toggle",
+      "ok": true
+    },
+    {
+      "name": "actual chapters keyboard operable",
+      "ok": true
+    },
+    {
+      "name": "static actual complete noJS explanation",
+      "ok": true
+    },
+    {
+      "name": "static actual noJS all figures",
+      "ok": true
+    },
+    {
+      "name": "explorer actual complete noJS explanation",
+      "ok": true
+    },
+    {
+      "name": "explorer actual noJS all figures",
+      "ok": true
+    }
+  ],
+  "findings": []
+}

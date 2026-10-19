@@ -1,0 +1,13 @@
+{
+  "real_venv": "/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv",
+  "is_dir": true,
+  "is_symlink": false,
+  "git_ignored": true,
+  "python_probe": "3.12.15 (main, Sep 30 2026, 22:04:19) [Clang 21.0.0 (clang-2100.3.34.2)]\n/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv\n",
+  "review_payload_check": {
+    "exit_code": 0,
+    "sha256": "7cf9995e3ff84bca35acf55d2e24fbc756628299d90d7de61a920da071255df6"
+  },
+  "release_manifest": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72",
+  "source_edits": false
+}
