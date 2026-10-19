@@ -14,13 +14,14 @@ import stat
 from pathlib import Path
 from typing import Any
 
-from .errors import ConfirmationRequired, SafetyError
+from .errors import ConfirmationRequired, ConsentRequired, SafetyError
 from .io import (
     LOCK_NAME,
     _open_flags,
     atomic_write,
     binding_at,
     ensure_binding,
+    metadata_writes_allowed,
     secure_workspace,
     workspace_generation_lock,
     workspace_lock,
@@ -88,6 +89,11 @@ def _lock_needs_rebind(workspace: Path, binding: str) -> bool:
 def rebind_workspace(path: str, *, confirm: bool) -> dict[str, Any]:
     workspace = secure_workspace(path, check_bindings=False)
     binding = ensure_binding(workspace / "state")
+    if binding is None and not metadata_writes_allowed():
+        raise ConsentRequired(
+            "this workspace has no learner binding and persistence consent is not active, so rebind cannot "
+            "create one; nothing was written"
+        )
     if binding is None:
         raise SafetyError(
             "this filesystem cannot store learner bindings; remove the extra hard links instead"

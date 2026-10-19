@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePath
 from typing import Any, BinaryIO
 
+from . import sync
 from .errors import SafetyError, StateNotFound, ValidationError
 
 PRIVATE_DIR_MODE = 0o700
@@ -46,15 +47,16 @@ class HardlinkAccepted(UserWarning):
 
 # Learner binding (D22.3, plan/PROTECTED-MAP.md): learner state binds content, not link counts.
 #
-# v2 refused any state file with st_nlink != 1. On macOS, backupd/revisiond give new files under ~/Developer
-# and the C study workspace a second link within seconds, so that rule made learner-state writes fail at
-# random. Accepting any same-owner link instead (the round-15 integration pass) let learner B's state,
-# hard-linked into learner A's workspace, be read and exported as A's.
+# v2 refused any state file with st_nlink != 1. Google Drive for desktop backs up ~/Developer and ~/Study and
+# hard-links each new file into <root>/.tmp.driveupload within about 1.5 s while it uploads it
+# (plan/EVIDENCE-HARDLINKS.md; see sync.py), so that rule made learner-state writes fail at random. Accepting
+# any same-owner link instead (the round-15 integration pass) let learner B's state, hard-linked into learner
+# A's workspace, be read and exported as A's.
 #
 # Now each workspace's state directory carries a random learner binding ("lw-" + 32 hex), and every state
 # file the engine writes carries the same binding on its inode, stamped on the fresh temporary file before
 # it is renamed into place. Both live in the extended attribute below. A hard link shares its inode, so it
-# shares the binding: a backup link to this learner's own file carries this workspace's binding and is read
+# shares the binding: a staging link to this learner's own file carries this workspace's binding and is read
 # with a warning; a link to another learner's file carries the other binding and is refused. Directories
 # cannot be hard-linked, so the state directory's binding cannot be aliased the same way.
 #
@@ -83,6 +85,56 @@ _XATTR_ABSENT = {
 }
 _STAMP_DENIED = {errno.EACCES, errno.EPERM, errno.EROFS}
 ANY_BINDING = "*"
+
+# D23.3 (AC-11.4): read-only commands write nothing, extended attributes included, when persistence consent is
+# absent or withdrawn. The CLI runs those commands inside read_only_access(), which turns this off unless the
+# workspace's learner.json shows active consent; ensure_binding, adoption and lock creation then write nothing.
+_METADATA_WRITES: ContextVar[bool] = ContextVar("prax_teach_metadata_writes", default=True)
+# The Drive root holding the workspace being validated, for the HardlinkAccepted warning (AC-11.2).
+_SYNC_LOCATION: ContextVar[sync.SyncedLocation | None] = ContextVar("prax_teach_sync_location", default=None)
+
+
+def metadata_writes_allowed() -> bool:
+    return _METADATA_WRITES.get()
+
+
+def consent_active(path: str | os.PathLike[str]) -> bool:
+    """Whether the workspace's state/learner.json shows active persistence consent. Read only; any doubt is False.
+
+    This only decides whether a read-only command may stamp bindings; secure_workspace still validates everything.
+    """
+
+    try:
+        descriptor = os.open(
+            Path(os.path.abspath(path)) / "state" / "learner.json",
+            _open_flags(os.O_RDONLY | getattr(os, "O_NONBLOCK", 0)),
+        )
+    except OSError:
+        return False
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            return False
+        data = os.read(descriptor, 1 << 20)
+    except OSError:
+        return False
+    finally:
+        os.close(descriptor)
+    try:
+        consent = json.loads(data.decode("utf-8")).get("consent")
+        return isinstance(consent, dict) and consent.get("persistent_state") is True
+    except (UnicodeDecodeError, ValueError, AttributeError):
+        return False
+
+
+@contextlib.contextmanager
+def read_only_access(path: str | os.PathLike[str]) -> Iterator[None]:
+    """Run a read-only command: no binding or lock is written unless persistence consent is active."""
+
+    token = _METADATA_WRITES.set(consent_active(path))
+    try:
+        yield
+    finally:
+        _METADATA_WRITES.reset(token)
 
 
 class _NoExtendedAttributes(Exception):
@@ -212,7 +264,7 @@ def ensure_binding(state_directory: int | Path) -> str | None:
     """
 
     current = read_binding(state_directory)
-    if current is not None:
+    if current is not None or not _METADATA_WRITES.get():
         return current
     try:
         _xattr_write(
@@ -248,7 +300,7 @@ def stamp_binding(descriptor: int, binding: str | None) -> None:
 def adopt_single_link(descriptor: int, binding: str | None) -> None:
     """Stamp an unbound file written by older code, but only while it has exactly one link."""
 
-    if binding is None or binding == ANY_BINDING:
+    if binding is None or binding == ANY_BINDING or not _METADATA_WRITES.get():
         return
     opened = os.fstat(descriptor)
     if opened.st_nlink == 1 and stat.S_ISREG(opened.st_mode) and read_binding(descriptor) is None:
@@ -298,8 +350,8 @@ def link_problem(
     if expected != ANY_BINDING and binding != expected:
         return "is a hardlink bound to another learner workspace"
     warnings.warn(
-        f"prax-teach state: {label} has {entry.st_nlink} hard links (macOS backup or versioning adds "
-        "them); read because it carries this learner workspace's binding",
+        f"prax-teach state: {label} has {entry.st_nlink} hard links ({sync.link_cause(_SYNC_LOCATION.get())}); "
+        "read because it carries this learner workspace's binding",
         HardlinkAccepted,
         stacklevel=2,
     )
@@ -830,7 +882,7 @@ def prepare_new_workspace(path: str | os.PathLike[str]) -> Path:
 def _adopt_by_path(path: Path, entry: os.stat_result, binding: str | None) -> None:
     """Stamp a single-link, unbound regular file found by path (legacy migration; see BINDING_ATTRIBUTE)."""
 
-    if binding is None or entry.st_nlink != 1 or not stat.S_ISREG(entry.st_mode):
+    if binding is None or entry.st_nlink != 1 or not stat.S_ISREG(entry.st_mode) or not _METADATA_WRITES.get():
         return
     try:
         descriptor = os.open(path, _open_flags(os.O_RDONLY | getattr(os, "O_NONBLOCK", 0)))
@@ -878,6 +930,7 @@ def secure_workspace(path: str | os.PathLike[str], *, check_bindings: bool = Tru
         raise SafetyError("state directory must have a private permission mode")
     if state.resolve(strict=True).parent != workspace:
         raise SafetyError("state directory escapes the learner workspace")
+    _SYNC_LOCATION.set(sync.detect(workspace))
     binding = ensure_binding(state)
     for name in REQUIRED_STATE_FILES:
         required = state / name
@@ -1334,7 +1387,17 @@ def _workspace_inode_lock(
 
     lock_path = contained_path(workspace, LOCK_NAME)
     descriptor: int | None = None
+    if not _METADATA_WRITES.get():
+        try:
+            lock_path.lstat()
+        except FileNotFoundError:
+            # A read-only command without consent never creates the lock; the caller already holds the parent
+            # generation lock, which serializes every operation on this workspace.
+            yield
+            return
     try:
+        if not _METADATA_WRITES.get():
+            raise FileExistsError(lock_path)
         descriptor = os.open(
             lock_path,
             _open_flags(os.O_RDWR | os.O_CREAT | os.O_EXCL),

@@ -57,7 +57,7 @@ def golden(ws):
 
 @contextlib.contextmanager
 def hardlink_guard():
-    """Kept for callers: a hard link macOS backup/versioning adds to a learner's own state file is accepted with a
+    """Kept for callers: a hard link Google Drive for desktop adds to a learner's own state file is accepted with a
     warning (PROTECTED-MAP, D22.3), so a hard-link refusal is a real failure and is not masked."""
     yield
 
@@ -282,7 +282,7 @@ def test_cross_learner_hardlink_refused():
 
 
 def test_backup_link_to_own_file_reads_with_warning():
-    """A backup-style extra link (what macOS backupd/revisiond add) to a learner's own state file and lock is read:
+    """A staging-style extra link (what Google Drive for desktop adds) to a learner's own state file and lock is read:
     show succeeds and prints one warning naming the file."""
     parent = _learners_parent("blink-")
     try:
@@ -402,7 +402,7 @@ def test_legacy_unbound_state_migrates():
         assert dry.code == 4 and "state/concepts.json" in dry.stderr, (dry.code, dry.stderr)
         done = state_cli("rebind", str(ws), "--confirm")
         assert done.code == 0, done.stderr
-        # MISSION.md and RESOURCES.md are listed too when macOS backup has linked them already
+        # MISSION.md and RESOURCES.md are listed too when Google Drive has linked them already
         assert "state/concepts.json" in json.loads(done.stdout)["rebound"], done.stdout
         # rebind copies onto a fresh inode: the old inode (still reachable through both outside links) keeps its
         # bytes and gets no binding, and the workspace file is a different inode. The rc1 check here was

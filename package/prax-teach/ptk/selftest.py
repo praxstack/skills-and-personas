@@ -52,6 +52,9 @@ def report_path(suite):
 
 
 def run(suite="auto", pattern=None):
+    # WP11: tests never look at a real Google Drive folder. Learner-state detection reads this list of fixture
+    # roots instead (empty: none), so a test that needs a Drive-backed folder builds its own fixture.
+    os.environ.setdefault("PRAX_TEACH_SYNC_ROOTS", "")
     for p in (str(host.PKG), str(TESTS)):
         if p not in sys.path:
             sys.path.insert(0, p)
