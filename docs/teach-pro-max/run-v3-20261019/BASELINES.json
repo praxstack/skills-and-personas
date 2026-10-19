@@ -1,0 +1,18 @@
+{
+  "skills/teacher": {
+    "files": 1534,
+    "tree_sha256": "80e0e59bdebafaa6304a79f4fb273bf30f95ca47e506282d9b78a912eea7f2f9"
+  },
+  "skills/teach-pro-max": {
+    "files": 804,
+    "tree_sha256": "447fc7cfed6a8292fc372e2e605fb8e43da53f31b829d87a5b552428b3c976f4"
+  },
+  "evaluator": {
+    "version": "general-v3.1-20261019",
+    "bank_sha256": "835da3cdc2e2925caf65b2ad57ee08d6068462715755647126d0d294a5d74144",
+    "runner_sha256": "71a53e239d4bed3def689c58a85873ec89214805b5ae7937e0251124fe1e5c1f",
+    "browser_sha256": "4b790da1cc90ad1815f97812d00747e4235376969cb2012792bb2daa0c52ab9d",
+    "policy_sha256": "83162b9c2dc78b28d9b3a8915f2c92fd7b7c60ceb046fe054a27e1a7da402a21"
+  },
+  "practice_regression_sha256": "023e6fab83c6479b9a4867a2cb6df6d2984dfa532d720cee608ee40446ea15f4"
+}
