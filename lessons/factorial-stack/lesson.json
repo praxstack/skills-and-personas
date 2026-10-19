@@ -700,12 +700,12 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "What do you predict? Choose your answer before the answer plays.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
+      "text": "The next scene answers this question.",
+      "justification": "Framing for the question scene sc4. The film shows the question and its choices, and video/transcript.txt prints the question just before this line. The film does not stop here; the answer appears in the next scene, sc5 (output line 4). Explanation comes first; a prediction pause runs only in a practice mode the learner turns on (SPEC v1.4 AC-6.8). The sentence states no fact about C.",
       "sources": [
         {
-          "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
-          "clause": "Teaching"
+          "title": "this lesson's storyboard",
+          "clause": "question scene sc4 and the next scene, sc5 (output line 4)"
         }
       ]
     },
@@ -1222,7 +1222,7 @@
     },
     {
       "id": "sc3",
-      "title": "Three frames deep",
+      "title": "Three factorial frames on main",
       "state": "s2",
       "key_nodes": [
         "code",
@@ -1268,7 +1268,7 @@
       },
       "narration": [
         {
-          "text": "What do you predict? Choose your answer before the answer plays.",
+          "text": "The next scene answers this question.",
           "claims": [
             "c.pause"
           ]
