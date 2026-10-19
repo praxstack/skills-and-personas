@@ -395,12 +395,21 @@ def _layout(lesson, scene=None):
                  q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=14)
     if mode:
-        # the question block's height: the prompt and its option chips at their sizes, wrapped to the block's width
-        qh = max([_q_height(lesson, sc, L["q_box"][2]) for sc in lesson.data["storyboard"] if sc.get("question")] + [0])
-        qh = max(qh, 96)
-        qx, _qy, qw, _qh = L["q_box"]
+        # the question: beside the scene title in the header band when it fits there (the mechanism keeps its whole
+        # box), else under the title, over the mechanism's column, which gives up that height
+        qs = [sc for sc in lesson.data["storyboard"] if sc.get("question")]
+        disp = fonts.tokens()["themes"][DEFAULT_THEME]["type"]["display"]["font"]
+        kick = fonts.width(fonts.tokens()["themes"][DEFAULT_THEME]["type"]["kicker"]["font"], 24,
+                           text.kicker(lesson).upper(), bold=True) * 1.15 + 160  # its letter spacing and the n / N count
+        tx = SX0 + max([fonts.width(disp, 48, sc["title"], bold=True) for sc in qs] + [kick]) + 64
+        beside = max([_q_height(lesson, sc, SX1 - tx) for sc in qs] + [0])
         bx, by, bw, bh = L["panel_box"]
-        L.update(q_box=(qx, 112, qw, qh), q_panel_box=(bx, max(by, 112 + qh + 16), bw, by + bh - max(by, 112 + qh + 16)))
+        if qs and beside <= STOP - 24:
+            L.update(q_box=(tx, 16, SX1 - tx, beside), q_panel_box=L["panel_box"])
+        else:
+            qx, _qy, qw, _qh = L["q_box"]
+            qh = max(max([_q_height(lesson, sc, qw) for sc in qs] + [0]), 96)
+            L.update(q_box=(qx, 112, qw, qh), q_panel_box=(bx, max(by, 112 + qh + 16), bw, by + bh - max(by, 112 + qh + 16)))
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
         if not panel and (mode == "path") != _path_scene(lesson, sc["state"]):
@@ -425,7 +434,7 @@ def _layout(lesson, scene=None):
     return L
 
 
-Q_PROMPT, Q_OPT = 36, 28  # px: the question's prompt (teaching text) and its options (values) in the film
+Q_PROMPT, Q_OPT = 32, 26  # px: the question's prompt (teaching text) and its options (values) in the film
 
 
 def _q_height(lesson, sc, width):
@@ -461,7 +470,8 @@ def _film_sizes(lesson, L, pw, ph, width, states=None):
         k = min(pw / (w + 8), ph / (mh + 8))
         head = max(base["label"], 29.0 / (lab_scale * k))
         code = min(base["code"], L["font"] / k)
-        sizes = {"head": round(head, 2), "label": round(max(base["label"], code), 2), "code": round(code, 2),
+        sizes = {"head": round(head, 2), "label": round(max(base["label"], code, L["font"] / (lab_scale * k)), 2),
+                 "code": round(code, 2),
                  "chip": round(max(base["chip"], code * 1.08), 2)}
     return sizes, k
 

@@ -217,18 +217,39 @@ class Ctx:
         s = s.upper() if caps and not keep_case else s
         return fonts.width(font, px, s, weight=weight) + spacing * len(s)
 
-    def label(self, x, y, key, anchor="start", color=None, inside=None, keep_case=False, **kw):
-        """A chrome label. keep_case: a label that quotes code (%f, (double)a) is never upper-cased, since %F is
-        another conversion."""
-        svg = self.svg
+    def label_lines(self, key, max_w=None, keep_case=False, **kw):
+        """The lines a label takes when it must fit max_w (one line when it fits, or without max_w)."""
+        font, px, weight, caps, spacing = self.svg.role("label", self.lsize(key, **kw))
         s = text.ui(key, **kw)
+        s = s.upper() if caps and not keep_case else s
+        wid = lambda t: fonts.width(font, px, t, weight=weight) + spacing * len(t)  # noqa: E731
+        if not max_w or wid(s) <= max_w:
+            return [s], px
+        lines, cur = [], ""
+        for wd in s.split():
+            trial = f"{cur} {wd}".strip()
+            if cur and wid(trial) > max_w:
+                lines.append(cur)
+                cur = wd
+            else:
+                cur = trial
+        return lines + ([cur] if cur else []), px
+
+    def label(self, x, y, key, anchor="start", color=None, inside=None, keep_case=False, max_w=None, **kw):
+        """A chrome label. keep_case: a label that quotes code (%f, (double)a) is never upper-cased, since %F is
+        another conversion. max_w: wrap onto more lines (one <text>, several tspans) rather than run past it; the
+        lines it took are in self.lines_drawn."""
+        svg = self.svg
         # a label of four or more words is read as a sentence: the film draws it at its heading size (B3, >= 28 px)
-        long_ = sum(1 for wd in s.split() if sum(ch.isalpha() for ch in wd) >= 2) >= 4
-        font, px, weight, caps, spacing = svg.role("label", self.S.get("head", self.S["label"]) if long_ else self.S["label"])
-        caps = caps and not keep_case
-        svg.text(x, y, s.upper() if caps else s, font, px, color or self.t["label"], ("chrome", key), weight=weight,
-                 spacing=spacing, anchor=anchor, inside=inside)
-        return fonts.width(font, px, s.upper() if caps else s, weight=weight) + spacing * len(s)
+        font, px, weight, caps, spacing = svg.role("label", self.lsize(key, **kw))
+        lines, _px = self.label_lines(key, max_w, keep_case=keep_case, **kw)
+        m0 = svg.mark()
+        for i, ln in enumerate(lines):
+            svg.text(x, y + i * px * 1.25, ln, font, px, color or self.t["label"], ("chrome", key), weight=weight,
+                     spacing=spacing, anchor=anchor, inside=inside)
+        svg.merge(m0)
+        self.lines_drawn = len(lines)
+        return max(fonts.width(font, px, ln, weight=weight) + spacing * len(ln) for ln in lines)
 
     def code(self, x, y, s, pid, line=None, size=None, color=None, anchor="start", inside=None):
         size = size or self.S["code"]
@@ -600,7 +621,8 @@ def _stack_head(c, x, y, w):
     need = c.label_w("stack_label") + c.label_w("stack_order") + 24
     if c.layout != "wide" or need > w:  # no room for both on one line
         y += c.lsize("stack_order") * 1.4
-        c.label(x, y, "stack_order")
+        c.label(x, y, "stack_order", max_w=w)
+        y += (c.lines_drawn - 1) * c.lsize("stack_order") * 1.04 * 1.25
     else:
         c.label(x + w, y, "stack_order", anchor="end")
     return y + 16
@@ -882,15 +904,18 @@ def _neuron(c, x, y, w):
     col_h = 280 if wide else None
     big = S["big"]
     ls = max(S["code"], S["label"] * 1.2)  # a row's label-to-value step (the film draws labels larger than its code)
+    heads = [c.label_lines(k, cw) for k in ("panel_multiply", "panel_add", "panel_gate")]
+    head_extra = max((len(ln) - 1) * px * 1.25 for ln, px in heads)  # extra head lines, the same in every column
+    head_b = max(S["label"], max(px for _ln, px in heads) / 1.04)  # the heads' first baseline (layout units)
     tone = lambda fid: t["note"] if number(c.val(fid)) >= 0 else t["correction"]  # noqa: E731
     heights = []
 
     # ---- multiply
     cx, cy = cols[0]
     svg.open(data_part="panel", data_panel="multiply")
-    yy = cy + S["label"]
-    c.label(cx, yy, "panel_multiply")
-    yy += 20
+    yy = cy + head_b
+    c.label(cx, yy, "panel_multiply", max_w=cw)
+    yy += 20 + head_extra
     rows = [(i, tm) for i, tm in enumerate(P["terms"], 1)] + [(0, None)]
     for i, tm in rows:
         yy += S["note"] * 1.6
@@ -927,8 +952,9 @@ def _neuron(c, x, y, w):
     if not wide:
         svg.line(x, cy - 20, x + w, cy - 20, t["rule"], 1)
     svg.open(data_part="panel", data_panel="add")
-    yy = cy + S["label"]
-    c.label(cx, yy, "panel_add")
+    yy = cy + head_b
+    c.label(cx, yy, "panel_add", max_w=cw)
+    yy += head_extra
     terms = [tm["t"] for tm in P["terms"]] + [P["bias"]]
     vals = [number(c.val(f)) for f in terms]
     ends, s = [], 0.0
@@ -1002,8 +1028,9 @@ def _neuron(c, x, y, w):
     if not wide:
         svg.line(x, cy - 20, x + w, cy - 20, t["rule"], 1)
     svg.open(data_part="panel", data_panel="gate")
-    yy = cy + S["label"]
-    c.label(cx, yy, "panel_gate")
+    yy = cy + head_b
+    c.label(cx, yy, "panel_gate", max_w=cw)
+    yy += head_extra
     zlo, zhi = -1.0, 1.5
     # one scale on both axes, so the slope of 1 reads as 1 (review: unequal scales made it read as about 0.4)
     gx0, gx1 = cx + 14, cx + cw - 24

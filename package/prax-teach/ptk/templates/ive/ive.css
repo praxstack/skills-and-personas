@@ -133,3 +133,24 @@ ol.chapters .ttl{font-family:var(--display-font);font-weight:600}
   .xside .q,.xside .prov,.xside .mechbox{grid-column:1 / -1}
 }
 @media print{.modebar,.tools,.film{display:none!important}}
+
+/* the knob in EXPLORE (AC-6.6): the learner's own value, drawn and explained from ptk's numbers */
+.kview{margin:0}
+.kstackbox{display:grid;gap:.5rem}
+.ksent{display:grid;gap:.5rem}
+.ksent p{max-width:60ch;font-size:.9375rem;line-height:1.5;color:var(--ink_soft)}
+.ksent .klive{color:var(--ink);font-weight:600}
+.knob-ctl,.livectl .kslider{grid-template-columns:auto minmax(6rem,14rem) 3.5rem}
+
+/* phones (B3, AC-10.3): the mechanism comes first, under a compact title; the film, its captions and its controls
+   follow. The figure is sized to the first screen, so it is in view at load and after Pause and explore */
+@media (max-width:759px){
+  .wrap{width:min(100% - 1rem,1240px);padding-block:.625rem 3rem}
+  .mast{padding-block:.25rem .625rem}
+  .mast h1{font-size:calc(1.5rem * var(--display-scale));margin-block:.25rem 0}
+  .ive{gap:1.25rem;padding-block:.5rem 0}
+  .ivegrid{grid-template-areas:"panel" "film" "chap" "tx";gap:1rem}
+  .xpanel{padding:.5rem .5rem .75rem;gap:.5rem}
+  .mechbox{padding:.125rem}
+  .mech{max-height:calc(100svh - 10.5rem);width:auto}
+}

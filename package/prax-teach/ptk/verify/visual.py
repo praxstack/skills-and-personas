@@ -505,13 +505,18 @@ def captions_ok(ctl, timing):
 
 
 def explore_mode(lesson):
-    """("step" | "live", live-model error or None), from what lesson.json declares (round-17 P2-2).
-    A lesson with a `figure.panel` declares a step-through IVE with no live editing. Any other lesson must have a
-    live model: if it fails to build, that is the lesson's error, never a quiet switch to step mode."""
+    """("live" | "knob" | "missing", error or None), from what lesson.json declares (round-17 P2-2).
+    SPEC v1.4 AC-6.6 (D23.5, stricter): every IVE offers a live control in EXPLORE; stepping back through the film
+    alone does not pass. A lesson with `figure.explore` edits its knob (knob.py: one value of a variable, or the
+    neuron's sliders); a panel lesson without one has no live control and fails ("missing"). Any other lesson must
+    have the switch live model: if it fails to build, that is the lesson's error, never a quiet switch to step mode."""
     from ..project import explorer as explorer_proj
     from ..project import ive as ive_proj
-    if "panel" in (lesson.data.get("figure") or {}):
-        return "step", None
+    fig = lesson.data.get("figure") or {}
+    if fig.get("explore"):
+        return ("knob", None) if ive_proj.knob_model(lesson) else ("knob", "the knob model did not build")
+    if "panel" in fig:
+        return "missing", "a panel lesson needs figure.explore: step-through alone is not a live control (D23.5)"
     try:
         explorer_proj.switch_model(lesson)
     except errors.ModelReferenceError as e:
@@ -528,13 +533,14 @@ def explore_checks(lesson, cue_list, ex):
     p4_state = next((c["state"] for c in cue_list if c["cue"] == p4.get("cue")), None)
     alt = ((lesson.data.get("figure") or {}).get("compare") or {}).get("program")
     mode, live_error = explore_mode(lesson)
-    marked = e2.get("origin") == ("yours" if mode == "live" else "step") and bool(e2.get("edit")) \
+    # a live edit is the learner's (origin "yours"), visibly marked, and changes what the panel shows
+    marked = e2.get("origin") == "yours" and bool(e2.get("edit")) \
         and e2.get("border") == "dashed" and e1.get("border") != "dashed" and e2.get("output") != e1.get("output")
     checks = {
         "film_follows_clock": f0.get("mode") == "film" and f0.get("origin") == "film",
         "explore_on_pause": e1.get("mode") == "explore" and e1.get("paused") is True and e1.get("origin") == "film"
         and e1.get("cue") == e1.get("expected_cue"),
-        ("live_edit_marked_yours" if mode == "live" else "step_back_marked"): marked,
+        "live_edit_marked_yours": marked and mode != "missing",
         "return_resumes_at_pause": r3.get("mode") == "film" and r3.get("paused") is False and rt is not None
         and r3.get("return_position") is not None and abs(r3["return_position"] - rt) < 0.002
         and rt - 0.001 <= r3.get("t", -1) < rt + 1.0,
@@ -543,13 +549,49 @@ def explore_checks(lesson, cue_list, ex):
         and p4.get("n_checked") in (None, p4_state["vars"].get(next(iter(p4_state["vars"]), ""), None))
         and p4.get("brk_pressed") in (None, "true" if p4_state["program"] == alt else "false"),
     }
-    if mode == "live":
-        checks["live_model_builds"] = live_error is None
-    measured = {"checks": checks, "mode": mode, "live_edit": mode == "live" and live_error is None,
+    checks["live_model_builds"] = live_error is None
+    measured = {"checks": checks, "mode": mode, "live_edit": mode in ("live", "knob") and live_error is None,
                 "live_model_error": live_error,
-                "declared_by": "figure.panel (step-through, no live edit)" if mode == "step" else "no figure.panel: live edit required",
+                "declared_by": {"knob": "figure.explore: the knob in EXPLORE", "live": "no figure.panel: the switch live model",
+                                "missing": "figure.panel without figure.explore: no live control (fails, D23.5)"}[mode],
                 "film": f0, "explore": e1, "edited": e2, "returned": r3, "repaused": p4}
     return checks, measured
+
+
+def explore_flow_job(cue_list, url, job_id="ive-explore", width=1440, height=1000):
+    """The FILM / EXPLORE / RETURN script (AC-6.6) the IVE gate and tests/test_ive.py run: play, pause into EXPLORE,
+    make one live edit, RETURN, pause again. explore_checks() judges what it returns."""
+    ready = {"waitFor": "window.__ptkReady && window.__ptkReady()", "timeout": 30000}
+    drive = {"eval": IVE_DRIVE.read_text(), "as": "drive"}
+    # the live controls unlock once the film has answered its last question (AC-6.3), so the flow pauses after that
+    last = max((i for i, c in enumerate(cue_list) if c["kind"] == "answer"), default=0)
+    film_cue = next((c for c in cue_list[max(1, last):] if c["kind"] == "state" and len(c["state"]["output"]) >= 2),
+                    next((c for c in cue_list[1:] if c["kind"] == "state" and len(c["state"]["output"]) >= 2), cue_list[-1]))
+    t_film = round(min(film_cue["start"] + 0.5, film_cue["end"] - 0.1), 3)
+    flow = [ready, drive,
+            {**_js(f"await D.seek({t_film}); return D.state();"), "as": "film"},
+            {**_js("const v = D.v(); await v.play(); await D.sleep(400); document.getElementById('explore').click(); "
+                   "await D.sleep(80); return {...D.state(), returnTime: window.__ptkIve.returnTime(), "
+                   "expected_cue: window.__ptkIve.resolve(window.__ptkIve.returnTime())};"), "as": "explore"},
+            # a live edit: the switch model (n = 3 and the break toggle), or the knob (another value, or the first
+            # slider moved one step); a page with no live control can only step back, which does not pass (D23.5)
+            {**_js("const r = document.querySelector('#live-n input[value=\"3\"]'); if (r) r.click(); "
+                   "const b = document.getElementById('live-brk'); if (b) b.click(); "
+                   "const k = [...document.querySelectorAll('#knobctl input[type=radio]')].find((x) => !x.checked); if (k) k.click(); "
+                   "const s = document.querySelector('#knobctl input[type=range]'); "
+                   "if (s) { s.value = String(+s.value > 0 ? +s.value - 1 : +s.value + 1); s.dispatchEvent(new Event('input', { bubbles: true })); } "
+                   "if (!r && !b && !k && !s) document.getElementById('prev').click(); await D.sleep(60); return D.state();"),
+             "as": "edited"},
+            {**_js("const v = D.v(); const p = D.once(v, 'playing'); document.getElementById('return').click(); await p; "
+                   "await D.sleep(150); const r = window.__ptkNav.filter((e) => e.action === 'return').pop(); "
+                   "return {...D.state(), return_position: r && r.position, returnTime: window.__ptkIve.returnTime(), "
+                   "film_cue: window.__ptkIve.resolve(v.currentTime), edits_left: document.querySelectorAll('[data-edit], .nval.changed').length};"),
+             "as": "returned"},
+            {**_js("const v = D.v(); v.pause(); await D.sleep(80); const brk = document.getElementById('live-brk'); "
+                   "const n = document.querySelector('#live-n input:checked'); "
+                   "return {...D.state(), n_checked: n && n.value, brk_pressed: brk && brk.getAttribute('aria-pressed')};"), "as": "repaused"},
+            {**_js("return window.__ptkNav;"), "as": "nav"}]
+    return {"id": job_id, "type": "script", "url": url, "width": width, "height": height, "steps": flow}
 
 
 def ive_gates(lesson, ive_dir, cue_list, timing):
@@ -586,27 +628,9 @@ def ive_gates(lesson, ive_dir, cue_list, timing):
             {**_js(f"return D.leak({json.dumps(words)});"), "as": "leak"},
             {"shot": str(shots / f"ive-before-answer-{c['cue']}.png"), "full": True}]})
     # FILM / EXPLORE / RETURN (AC-6.6), from a moment after every question is answered
+    jobs.append(explore_flow_job(cue_list, url))
     film_cue = next((c for c in cue_list[1:] if c["kind"] == "state" and len(c["state"]["output"]) >= 2), cue_list[-1])
-    t_film = round(min(film_cue["start"] + 0.5, film_cue["end"] - 0.1), 3)
-    flow = [ready, drive,
-            {**_js(f"await D.seek({t_film}); return D.state();"), "as": "film"},
-            {**_js("const v = D.v(); await v.play(); await D.sleep(400); document.getElementById('explore').click(); "
-                   "await D.sleep(80); return {...D.state(), returnTime: window.__ptkIve.returnTime(), "
-                   "expected_cue: window.__ptkIve.resolve(window.__ptkIve.returnTime())};"), "as": "explore"},
-            # a live edit where the lesson has one (the switch model); otherwise a step back through the film
-            {**_js("const r = document.querySelector('#live-n input[value=\"3\"]'); if (r) r.click(); "
-                   "const b = document.getElementById('live-brk'); if (b) b.click(); "
-                   "if (!r && !b) document.getElementById('prev').click(); await D.sleep(60); return D.state();"), "as": "edited"},
-            {**_js("const v = D.v(); const p = D.once(v, 'playing'); document.getElementById('return').click(); await p; "
-                   "await D.sleep(150); const r = window.__ptkNav.filter((e) => e.action === 'return').pop(); "
-                   "return {...D.state(), return_position: r && r.position, returnTime: window.__ptkIve.returnTime(), "
-                   "film_cue: window.__ptkIve.resolve(v.currentTime), edits_left: document.querySelectorAll('[data-edit], .nval.changed').length};"),
-             "as": "returned"},
-            {**_js("const v = D.v(); v.pause(); await D.sleep(80); const brk = document.getElementById('live-brk'); "
-                   "const n = document.querySelector('#live-n input:checked'); "
-                   "return {...D.state(), n_checked: n && n.value, brk_pressed: brk && brk.getAttribute('aria-pressed')};"), "as": "repaused"},
-            {**_js("return window.__ptkNav;"), "as": "nav"}]
-    jobs.append({"id": "ive-explore", "type": "script", "url": url, "width": 1440, "height": 1000, "steps": flow})
+    t_film = round(min(film_cue["start"] + 0.5, film_cue["end"] - 0.1), 3)  # the explore screenshots' moment
     # file:// (AC-6.7): every track loaded, the MP4 decodes
     jobs.append({"id": "ive-files", "type": "script", "url": url, "width": 1440, "height": 900, "steps": [
         ready, drive, {**_js("const v = D.v(); await D.seek(1.0); await D.frame(); return {protocol: location.protocol, "

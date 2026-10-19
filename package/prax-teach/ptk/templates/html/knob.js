@@ -95,6 +95,16 @@
     $('k-t2').className = row.t2f < 0 ? 'neg' : 'pos';
     $('k-bs').className = +row.b < 0 ? 'neg' : 'pos';
     $('k-a').className = row.af > 0 ? 'pos' : 'zero';
+    // the sentences under the panels, rebuilt from this row (AC-10.4): every value is a string ptk computed
+    var T = K.texts || {}, fill = function (s) {
+      return s.replace(/\{(\w+)\}/g, function (_, k) { return { w2: w, b: b, z: row.z, a: row.a }[k]; });
+    };
+    if (T.live && $('k-live')) $('k-live').textContent = fill(T.live);
+    if ($('k-tiny')) {
+      var tiny = row.zf !== 0 && Math.abs(row.zf) < 1e-9;
+      $('k-tiny').hidden = !(tiny && T.tiny);
+      $('k-tiny').textContent = tiny && T.tiny ? fill(T.tiny) : '';
+    }
     draw(row);
   }
   iw.addEventListener('input', update);

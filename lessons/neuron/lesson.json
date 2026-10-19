@@ -1157,8 +1157,8 @@
     {
       "id": "c.kformula",
       "kind": "mechanism",
-      "text": "In the explorer, w2 runs from -2 to 2 and b from -1 to 1 in steps of 0.1. At each setting, z = 0.8 × 1.5 + 0.4 × w2 + b, computed in double in neuron.c's order, and a = max(0, z).",
-      "justification": "figure.explore.sliders: w2 from -2.0 to 2.0 and b from -1.0 to 1.0, step 0.1, each slider value being the double nearest its decimal, so every input is finite and no NaN or infinity can arise. The explorer's values are computed by ptk/expect_neuron.py, which follows programs/neuron.c lines 5-14: t1 = 0.8 * 1.5, t2 = 0.4 * w2, z = t1 + t2 + b left to right in binary64 doubles, and a = fmax(0.0, z), which for a finite z is max(0, z) (7.12.12.2; at z = 0 both are 0). Copies of neuron.c compiled with (w2, b) = (-1, -1), (0.5, 0.3) and (-2, -1), programs/neuron_k1.c to neuron_k3.c, print z = -0.2, 1.7 and -0.6, as the explorer shows at those settings. The sentence is shown only in the live explorer, never on a static card.",
+      "text": "In the explorer, w2 runs from -2 to 2 and b from -1 to 1 in steps of 0.1. At each setting, z is computed as 0.8 × 1.5 + 0.4 × w2 + b in double, in neuron.c's order, and a is max(0, z).",
+      "justification": "figure.explore.sliders: w2 from -2.0 to 2.0 and b from -1.0 to 1.0, step 0.1, each slider value being the double nearest its decimal, so every input is finite and no NaN or infinity can arise. The explorer's values are computed by ptk/expect_neuron.py, which follows programs/neuron.c lines 5-14: t1 = 0.8 * 1.5, t2 = 0.4 * w2, z = t1 + t2 + b left to right in binary64 doubles, and a = fmax(0.0, z), which for a finite z is max(0, z) (7.12.12.2; at z = 0 both are 0). Copies of neuron.c compiled with (w2, b) = (-1, -1), (0.5, 0.3) and (-2, -1), programs/neuron_k1.c to neuron_k3.c, print z = -0.2, 1.7 and -0.6, as the explorer shows at those settings. The sentence is shown only in the live explorer and the IVE's explore panel, never on a static card; there the sentence 'With w2 = …, z prints as … and a prints as …' restates it for the slider setting on screen.",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -1178,6 +1178,27 @@
           "title": "captured runs of programs/neuron_k1.c, neuron_k2.c, neuron_k3.c",
           "clause": "stdout line 3"
         }
+      ]
+    },
+    {
+      "id": "c.kround",
+      "kind": "mechanism",
+      "text": "In binary64, 0.8 × 1.5 is the double 1.2000000000000002, not exactly 1.2, so at four explorer settings, such as w2 = -1 and b = -0.8, 0.8 × 1.5 + 0.4 × w2 + b does not come out at exactly 0: z prints as 1.11022e-16 or 2.22045e-16 instead.",
+      "justification": "double_format.c's captured run prints FLT_RADIX 2 and DBL_MANT_DIG 53, so double is the IEC 60559 binary64 format: a 53-bit significand, each result rounded to the nearest representable value. 0.8 is the double 0.80000000000000004441; 1.5 is exact; their product rounds to 1.20000000000000017764, which prints with 17 significant digits as 1.2000000000000002. ptk/expect_neuron.py repeats neuron.c's lines 8, 10 and 12 in that order: at (w2, b) = (-1, -0.8), t2 = 0.4 * -1 = -0.40000000000000002220, t1 + t2 = 0.80000000000000015543, and adding b = -0.80000000000000004441 gives 1.1102230246251565e-16, which %g prints as 1.11022e-16. The same holds at (-2, -0.4) and (-1.5, -0.6); at (-0.5, -1), z is 2.220446049250313e-16, printed 2.22045e-16. These are the only nonzero values of magnitude below 1e-9 on the explorer's grid. The explorer shows the sentence only at those settings.",
+      "sources": [
+        {
+          "title": "programs/neuron.c",
+          "url": "programs/neuron.c",
+          "clause": "lines 5-13"
+        },
+        {
+          "title": "captured run of programs/double_format.c",
+          "clause": "stdout lines 1-2"
+        }
+      ],
+      "facts": [
+        "f.radix",
+        "f.mantdig"
       ]
     }
   ],
