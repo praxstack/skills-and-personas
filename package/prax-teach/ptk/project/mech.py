@@ -381,7 +381,8 @@ def _memory(c, x, y, w):
             # the reading direction: from the highest address (the last cell) down to the lowest
             cw = (row["right"] - x - 7 * 6 * S["k"]) / 8
             ay = y + 4
-            svg.path(f"M{row['right'] - cw / 2:.1f},{ay:.1f} L{x + cw / 2:.1f},{ay:.1f}", t["note"], 2, marker=True)
+            x0_, x1_ = row["right"] - cw / 2, x + cw / 2
+            _curve_arrow(c, (x0_, ay), (x0_ - 10, ay), (x1_ + 10, ay), (x1_, ay), t["note"], 2)
             y += 8
             y += S["value"] * 0.9
             lw = c.label(x, y - 3, "mem_read_down")
@@ -534,11 +535,25 @@ def _stack_frame(c, x, fy, bw, fh, fr, idx, sid, status, rid, ret_shown):
     return slot, ret_at
 
 
+def _curve_arrow(c, p0, c1, c2, p1, color, sw):
+    """A curved shaft and its arrowhead, drawn as its own small triangle (no SVG marker: the film's layout audit
+    takes a marked shaft for an HTML connector). The shaft is the first path, so its ends are the curve's ends."""
+    import math
+    c.svg.path(f"M{p0[0]:.1f},{p0[1]:.1f} C{c1[0]:.1f},{c1[1]:.1f} {c2[0]:.1f},{c2[1]:.1f} {p1[0]:.1f},{p1[1]:.1f}",
+               color, sw)
+    ang = math.atan2(p1[1] - c2[1], p1[0] - c2[0])
+    L, W = 4 * sw, 2.2 * sw
+    tip = (p1[0] + math.cos(ang) * sw, p1[1] + math.sin(ang) * sw)
+    bx, by = tip[0] - math.cos(ang) * L, tip[1] - math.sin(ang) * L
+    ox, oy = -math.sin(ang) * W, math.cos(ang) * W
+    c.svg.raw(f'<path data-role="path" d="M{tip[0]:.1f},{tip[1]:.1f} L{bx + ox:.1f},{by + oy:.1f} L{bx - ox:.1f},{by - oy:.1f} Z" '
+              f'fill="{color}"/>')
+
+
 def _call_arrow(c, x, y_from, y_to):
     """The call going down the left rail: from the caller's frame to its callee's, one frame lower."""
-    t = c.t
-    c.svg.path(f"M{x:.1f},{y_from:.1f} C{x - 18 * c.S['k']:.1f},{y_from:.1f} {x - 18 * c.S['k']:.1f},{y_to:.1f} "
-               f"{x - 4:.1f},{y_to:.1f}", t["label"], 1.8, marker=True)
+    k = 18 * c.S["k"]
+    _curve_arrow(c, (x, y_from), (x - k, y_from), (x - k, y_to), (x - 6, y_to), c.t["label"], 1.8)
 
 
 def _return_arrow(c, ax, y_from, slot, caller_y, callee_call, caller_call, gr):
@@ -548,11 +563,9 @@ def _return_arrow(c, ax, y_from, slot, caller_y, callee_call, caller_call, gr):
     c.svg.open(data_part="return", data_from=callee_call, data_to=caller_call or "main")
     if slot:
         _cx, sy, sx_right, _sy, _sh = slot
-        c.svg.path(f"M{ax - 2:.1f},{y_from:.1f} C{ax + gr - 14:.1f},{y_from:.1f} {ax + gr - 14:.1f},{sy:.1f} "
-                   f"{sx_right + 6:.1f},{sy:.1f}", t["note"], 2.5, marker=True)
+        _curve_arrow(c, (ax - 2, y_from), (ax + gr - 14, y_from), (ax + gr - 14, sy), (sx_right + 9, sy), t["note"], 2.5)
     else:
-        c.svg.path(f"M{ax:.1f},{y_from:.1f} C{ax + gr - 14:.1f},{y_from:.1f} {ax + gr - 14:.1f},{caller_y:.1f} "
-                   f"{ax + 4:.1f},{caller_y:.1f}", t["note"], 2.5, marker=True)
+        _curve_arrow(c, (ax, y_from), (ax + gr - 14, y_from), (ax + gr - 14, caller_y), (ax + 7, caller_y), t["note"], 2.5)
     c.svg.close()
 
 
@@ -560,7 +573,10 @@ def _stack_head(c, x, y, w):
     S = c.S
     y += S["label"]
     c.label(x, y, "stack_label")
-    if c.layout != "wide":  # no room for both on one line
+    font, px, weight, caps, spacing = c.svg.role("label", S["label"])
+    need = sum(fonts.width(font, px, text.ui(k).upper(), weight=weight) + spacing * len(text.ui(k))
+               for k in ("stack_label", "stack_order")) + 24
+    if c.layout != "wide" or need > w:  # no room for both on one line
         y += S["label"] * 1.6
         c.label(x, y, "stack_order")
     else:
@@ -679,7 +695,8 @@ def path_marks(lesson, pid, path):
     labels = [cs["line"] for cs in lay["cases"]]
     entered = [n for n in path if n in labels]
     body = [n for n in path if lay["switch_line"] < n < lay["close_line"]]
-    return {"enter": entered[0] if entered else None, "fall": entered[1:], "leave": body[-1] if body else None}
+    left = any(n >= lay["close_line"] for n in path)  # control has gone past the switch
+    return {"enter": entered[0] if entered else None, "fall": entered[1:], "leave": body[-1] if body and left else None}
 
 
 def _control_path(c, x, y, w, only_ran=False, head=True, fit_h=None):
@@ -750,23 +767,21 @@ def _control_path(c, x, y, w, only_ran=False, head=True, fit_h=None):
     # the rail: dots on the rows that ran, jumps in and out, the path from enter to leave
     for i in ran:
         svg.circle(rail, mid(i), 5 if wide else 4, t["note"])
-    if marks["enter"] and marks["leave"]:
-        a, b = row_of[marks["enter"]], row_of[marks["leave"]]
+    if marks["enter"]:
+        # the path proper: from the label control enters to the line where it leaves (or, mid-run, to where it is)
+        a = row_of[marks["enter"]]
+        body = [i for i in ran if i >= a and rows[i]["kind"] != "tail"]
+        b = row_of[marks["leave"]] if marks["leave"] else max(body)
         svg.open(data_part="path")
         svg.line(rail, mid(a), rail, mid(b), t["note"], 4, role="path")
         svg.close()
+        bulge = rail - 18 * S["k"]
         if ran and ran[0] < a:
-            bulge = rail - 18 * S["k"]
-            svg.path(f"M{rail:.1f},{mid(ran[0]):.1f} C{bulge:.1f},{mid(ran[0]):.1f} {bulge:.1f},{mid(a):.1f} "
-                     f"{rail - 4:.1f},{mid(a):.1f}", t["note"], 2.5, marker=True)
+            _curve_arrow(c, (rail, mid(ran[0])), (bulge, mid(ran[0])), (bulge, mid(a)), (rail - 6, mid(a)), t["note"], 2.5)
         after = [i for i in ran if i > b]
-        if after:
-            bulge = rail - 18 * S["k"]
-            svg.path(f"M{rail:.1f},{mid(b):.1f} C{bulge:.1f},{mid(b):.1f} {bulge:.1f},{mid(after[0]):.1f} "
-                     f"{rail - 4:.1f},{mid(after[0]):.1f}", t["note"], 2.5, marker=True)
-    elif ran:
-        for p_, q_ in zip(ran, ran[1:]):
-            svg.line(rail, mid(p_), rail, mid(q_), t["note"], 2.5, role="path")
+        if after and marks["leave"]:
+            _curve_arrow(c, (rail, mid(b)), (bulge, mid(b)), (bulge, mid(after[0])), (rail - 6, mid(after[0])),
+                         t["note"], 2.5)
 
     tag_end, tag_at = {}, {}
 
