@@ -1,0 +1,21 @@
+{
+  "checked_utc": "2026-10-19T19:32:11Z",
+  "results": [
+    {
+      "name": "teacher",
+      "url": "https://www.skills.sh/praxstack/skills-and-personas/teacher?v=d2becc0",
+      "http_status": 200,
+      "available": true,
+      "new_wrapper_content": null,
+      "visible_excerpt": "teacher \u2014 praxstack/skills-and-personas Skills Packs Topics Official Audits Docs Navigate Packs Topics Official Audits Docs skills / praxstack / skills-and-personas / teacher teacher Installation Command Prompt $ npx skills add https://github.com/praxstack/skills-and-personas --skill teacher SKILL.md Teacher Teach so the idea clicks, then keep going until the learner says they're done. A lesson, a quiz score or a finished video is never the finish line. The learner's own \"I've got it\" is. Everything here is plain files and scripts. Nothing depends on one host. Where a host offers more (subagents, artifacts, an Excalidraw or video MCP), use it"
+    },
+    {
+      "name": "teach-pro-max",
+      "url": "https://www.skills.sh/praxstack/skills-and-personas/teach-pro-max?v=d2becc0",
+      "http_status": 200,
+      "available": true,
+      "new_wrapper_content": false,
+      "visible_excerpt": "teach-pro-max \u2014 praxstack/skills-and-personas Skills Packs Topics Official Audits Docs Navigate Packs Topics Official Audits Docs skills / praxstack / skills-and-personas / teach-pro-max teach-pro-max Installation Command Prompt $ npx skills add https://github.com/praxstack/skills-and-personas --skill teach-pro-max SKILL.md Teach Pro Max Help the learner become independently capable, not merely satisfied with an\nexplanation. Use the lightest teaching mode that can reach the learner's actual\noutcome and support every claim with the right evidence. Activate the embedded teaching engine Before teaching, read references/prax-teach-v2/SKILL.md com"
+    }
+  ]
+}

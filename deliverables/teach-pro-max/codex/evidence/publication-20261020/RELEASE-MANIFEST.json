@@ -1,0 +1,22 @@
+{
+  "tag": "prax-teach-v3.0.0",
+  "main_commit": "d2becc08c0a4271f7eb94ccc71fbcbb1fa4cfa4b",
+  "accepted_product_commit": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "accepted_source_files": 2342,
+  "assets": [
+    {
+      "name": "prax-teach-v3.0.0-source.zip",
+      "bytes": 11526242,
+      "sha256": "15a8289a357e01b918de70ceb38e0c695b39b11042fd6612b405be52a104846a",
+      "files": 2359
+    },
+    {
+      "name": "prax-teach-v3.0.0-lessons.zip",
+      "bytes": 95496631,
+      "sha256": "9e1c396525ef2171965acc9c7da24df388c397ad0215da72a00dd6291e64ff8d",
+      "files": 517
+    }
+  ],
+  "scope": "Complete general skill source/support files plus a separate current lesson showcase; no runtime/model weights or development C fixtures. Manifest outside ZIPs it hashes.",
+  "source_setup_links_verified": true
+}

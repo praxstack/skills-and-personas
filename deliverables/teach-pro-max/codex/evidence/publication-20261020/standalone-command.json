@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "npm",
+    "exec",
+    "--yes",
+    "--package=skills@1.7.2",
+    "--",
+    "skills",
+    "add",
+    "praxstack/skills-and-personas",
+    "--skill",
+    "teacher",
+    "--agent",
+    "codex",
+    "--yes",
+    "--copy",
+    "--json"
+  ],
+  "exit_code": 0,
+  "scope": "Legitimate standalone-teacher installation test, separate from the two-entry compatibility test. Passive observer captures public telemetry response, without altering requests or CLI files. No fake install event emitted."
+}

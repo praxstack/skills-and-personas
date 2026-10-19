@@ -1,0 +1,8 @@
+{
+  "event": {
+    "url": "https://www.skills.sh/tele/t?v=1.7.2&agent=codex&event=install&source=praxstack%2Fskills-and-personas&skills=teacher&agents=codex&skillFiles=%7B%22teacher%22%3A%22skills%2Fteacher%2FSKILL.md%22%7D",
+    "status": 200,
+    "body": ""
+  },
+  "interpretation": "Normal install telemetry accepted at HTTP200; does not itself establish public catalog visibility."
+}

@@ -1,0 +1,19 @@
+{
+  "cases": [
+    {
+      "case": "two-entry",
+      "files_compared": 2342,
+      "all_match_accepted": true,
+      "anonymous": true,
+      "cli": "skills@1.7.2"
+    },
+    {
+      "case": "standalone",
+      "files_compared": 1538,
+      "all_match_accepted": true,
+      "anonymous": true,
+      "cli": "skills@1.7.2"
+    }
+  ],
+  "scope": "Genuine public GitHub install tests in isolated projects. No user-wide skill install was changed. The standalone test used a passive network observer; its normal telemetry request returned HTTP200. No synthetic install event was sent."
+}

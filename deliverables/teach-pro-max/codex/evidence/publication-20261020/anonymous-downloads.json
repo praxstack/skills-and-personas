@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "name": "prax-teach-v3.0.0-source.zip",
+      "anonymous_http_download": true,
+      "bytes": 11526242,
+      "sha256_matched": true,
+      "zip_crc_passed": true,
+      "seconds": 3.1
+    },
+    {
+      "name": "prax-teach-v3.0.0-lessons.zip",
+      "anonymous_http_download": true,
+      "bytes": 95496631,
+      "sha256_matched": true,
+      "zip_crc_passed": true,
+      "seconds": 12.64
+    }
+  ],
+  "all_passed": true
+}

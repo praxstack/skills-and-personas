@@ -1,0 +1,44 @@
+{
+  "checks": [
+    {
+      "file": "source/docs/teach-pro-max/USAGE-GUIDE.html",
+      "width": 1440,
+      "missing": [],
+      "no_overflow": true,
+      "images_loaded": true,
+      "passed": true
+    },
+    {
+      "file": "source/docs/teach-pro-max/USAGE-GUIDE.html",
+      "width": 390,
+      "missing": [],
+      "no_overflow": true,
+      "images_loaded": true,
+      "passed": true
+    },
+    {
+      "file": "lessons/index.html",
+      "width": 1440,
+      "missing": [],
+      "no_overflow": true,
+      "images_loaded": true,
+      "passed": true
+    },
+    {
+      "file": "lessons/index.html",
+      "width": 390,
+      "missing": [],
+      "no_overflow": true,
+      "images_loaded": true,
+      "passed": true
+    },
+    {
+      "file": "downloaded lesson interactive video",
+      "duration": 57.583333,
+      "width": 1280,
+      "height": 720,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

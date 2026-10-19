@@ -54,8 +54,10 @@ npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
 
 Ask your agent: `Use teacher to explain how a neuron becomes a neural network, with a visual mechanism and an interactive example.` Request the formats you want. Practice and persistent learner records require explicit requests/consent.
 
+- [Publication and anonymous-download verification](deliverables/teach-pro-max/codex/evidence/publication-20261020/REPORT.md)
 - [Teacher source](skills/teacher/SKILL.md) · [compatible entry](skills/teach-pro-max/SKILL.md)
 - [Installation, prerequisites and usage](docs/teach-pro-max/USAGE-GUIDE.md)
+- [v3.0.0 source ZIP](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/prax-teach-v3.0.0-source.zip) · [real lesson ZIP](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/prax-teach-v3.0.0-lessons.zip) · [SHA256 checksums](https://github.com/praxstack/skills-and-personas/releases/download/prax-teach-v3.0.0/SHA256SUMS)
 - [Public downloads](https://github.com/praxstack/skills-and-personas/releases) · [accepted evaluation](deliverables/teach-pro-max/codex/evidence/private-evaluation/candidate4-accepted-redacted-report.json)
 - [Teacher on skills.sh](https://skills.sh/praxstack/skills-and-personas/teacher) · [Teach Pro Max on skills.sh](https://skills.sh/praxstack/skills-and-personas/teach-pro-max)
 

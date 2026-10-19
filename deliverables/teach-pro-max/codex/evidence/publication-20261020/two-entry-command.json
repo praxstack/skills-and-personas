@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "npm",
+    "exec",
+    "--yes",
+    "--package=skills@1.7.2",
+    "--",
+    "skills",
+    "add",
+    "praxstack/skills-and-personas",
+    "--skill",
+    "teacher",
+    "teach-pro-max",
+    "--agent",
+    "codex",
+    "--yes",
+    "--copy",
+    "--json"
+  ],
+  "exit_code": 0,
+  "credentials": "GitHub token variables absent, gh auth fallback disabled in this scoped process, Git global/system credentials disabled; no global config changed.",
+  "skills_cli": "1.7.2"
+}

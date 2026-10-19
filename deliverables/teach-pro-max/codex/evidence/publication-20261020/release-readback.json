@@ -1,0 +1,29 @@
+{
+  "url": "https://github.com/praxstack/skills-and-personas/releases/tag/prax-teach-v3.0.0",
+  "tag": "prax-teach-v3.0.0",
+  "draft": false,
+  "prerelease": false,
+  "assets": [
+    {
+      "name": "prax-teach-v3.0.0-lessons.zip",
+      "bytes": 95496631,
+      "sha256": "sha256:9e1c396525ef2171965acc9c7da24df388c397ad0215da72a00dd6291e64ff8d"
+    },
+    {
+      "name": "prax-teach-v3.0.0-source.zip",
+      "bytes": 11526242,
+      "sha256": "sha256:15a8289a357e01b918de70ceb38e0c695b39b11042fd6612b405be52a104846a"
+    },
+    {
+      "name": "RELEASE-MANIFEST.json",
+      "bytes": 817,
+      "sha256": "sha256:068f7308a600a1875e94de441883a29eaee1df6d8d9be0b354fc381e3938b21a"
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 191,
+      "sha256": "sha256:e02c044825b5fc00fcd06b7df1c0a7b0259ebffd8daa0dacec27224b7d2322f6"
+    }
+  ],
+  "zip_hashes_matched": true
+}
