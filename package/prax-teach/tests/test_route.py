@@ -113,37 +113,120 @@ def test_ordinary_tasks():
     return res
 
 
-def test_workspace_contract_wins():
-    """AC-1.3: a predict-first workspace gives mode=predict-first and a one-question first turn,
-    even when a medium is requested; the artifact comes after the attempt."""
+PRACTICE = {"predict-first", "socratic", "quiz", "exam-drill"}
+# Teaching requests with no practice words: none of them may start with a question in any workspace.
+PLAIN = ("Teach me pointers", "explain how a for loop works", "i dont get recursion :(",
+         "Teach me how a switch falls through as a narrated video", "make a narrated video on how unions share memory",
+         "teach me how the stack grows, interactive video pls", "can you make a diagram of how argv is laid out in memory",
+         "What does printf(\"%d\", 'A') print?", "explain how a switch statement falls through, with a video")
+SAME = ("intent", "mode", "media", "narration", "first_turn", "build_needed", "confidence")
+
+
+def test_explanation_first_in_every_workspace():
+    """AC-1.3 (v1.4): a teaching request gets the same explanation-first route in every workspace,
+    whatever AGENTS.md, MISSION.md or NOTES.md say. The first turn is never a question, and a requested
+    medium is built and shown with the explanation, not after an attempt."""
     res = _assert_all("contract", 10)
     root, dirs = _workspaces()
+    real = [C_WORKSPACE] * (C_WORKSPACE / "AGENTS.md").is_file()  # Prax's real C workspace, read-only
     try:
-        got = route.route("Teach me how a switch falls through as a narrated video", workspace_dir=dirs["predict"])
-        assert got["mode"] == "predict-first" and got["media"] == ["video"] and got["build_needed"] is True
-        ft = got["first_turn"]
-        assert ft["kind"] == "question" and ft["questions"] == 1 and ft["end_turn"] is True
-        assert ft["artifact"] == "after-attempt"
-        wc = got["workspace_contract"]
-        assert wc["mode"] == "predict-first" and wc["files"] == ["AGENTS.md"]
-        assert any("prediction" in e["text"] for e in wc["evidence"])
-        neg = route.route("Teach me pointers", workspace_dir=dirs["explain"])["workspace_contract"]
-        assert neg["mode"] == "explain-first", "'without prediction' must not read as predict-first"
+        for req in PLAIN:
+            base = route.route(req, workspace_dir=dirs["none"])
+            for ws in [*dirs.values(), *real]:
+                got = route.route(req, workspace_dir=ws)
+                assert {k: got[k] for k in SAME} == {k: base[k] for k in SAME}, (str(ws), req, got, base)
+                assert got["mode"] not in PRACTICE, (str(ws), req, got)
+                ft = got["first_turn"]
+                assert ft["kind"] != "question" and ft["questions"] == 0 and ft["artifact"] != "after-attempt", (req, ft)
+        video = route.route("Teach me how a switch falls through as a narrated video", workspace_dir=dirs["predict"])
+        assert video["mode"] == "lesson" and video["media"] == ["video"] and video["build_needed"] is True, video
+    finally:
+        shutil.rmtree(root)
+    for ws in real:
+        got = route.route("make a narrated video on how unions share memory", workspace_dir=ws)
+        assert got["mode"] == "lesson" and got["media"] == ["video"] and got["narration"] is True, got
+        res["real_c_workspace"] = got["mode"]
+    table = json.loads(route.RULES_PATH.read_text())
+    assert "workspace" not in table["precedence"], "workspace files may not propose a mode"
+    return res
+
+
+def test_workspace_conflict_reported():
+    """AC-1.3 (v1.4): when workspace files ask for prediction first, the route carries a
+    `workspace_conflict` note naming the file and line, and does not obey it."""
+    want = {"predict": ("AGENTS.md", 5), "notes": ("NOTES.md", 3), "socratic": ("MISSION.md", 3)}
+    root, dirs = _workspaces()
+    out = {}
+    try:
+        for name, (fname, line) in want.items():
+            got = route.route("Teach me how integer promotion works", workspace_dir=dirs[name])
+            wc = got["workspace_conflict"]
+            assert wc and wc["file"] == fname and wc["line"] == line, (name, got)
+            assert f"{fname}:{line}" in wc["where"] and f"{fname}:{line}" in wc["note"], wc
+            assert got["mode"] == "explain" and got["first_turn"]["questions"] == 0, got
+            out[name] = wc["where"]
+        for name in ("none", "explain"):
+            got = route.route("Teach me how integer promotion works", workspace_dir=dirs[name])
+            assert got["workspace_conflict"] is None, (name, got)
+        assert route.route("Teach me pointers", workspace_dir=dirs["explain"])["workspace_contract"]["asks"] == "explain-first", \
+            "'without prediction' must not read as predict-first"
+        task = route.route("Fix the off-by-one in basics.c", workspace_dir=dirs["predict"])
+        assert task["intent"] == "ordinary_task" and task["workspace_conflict"] is None, task
     finally:
         shutil.rmtree(root)
     if (C_WORKSPACE / "AGENTS.md").is_file():  # Prax's real C workspace, read-only
         real = route.route("Teach me how printf %d works as a narrated video", workspace_dir=C_WORKSPACE)
-        assert real["mode"] == "predict-first" and real["first_turn"]["questions"] == 1, real
-        res["real_c_workspace"] = sorted({e["file"] for e in real["workspace_contract"]["evidence"]})
-    return res
+        assert real["mode"] == "lesson" and real["first_turn"]["questions"] == 0, real
+        assert real["workspace_conflict"] and any(w.startswith("AGENTS.md:") for w in real["workspace_conflict"]["where"]), real
+        out["real_c_workspace"] = real["workspace_conflict"]["where"]
+    return out
 
 
-def test_answer_now_overrides_contract():
-    """AC-1.3 / D20.7: an explicit answer now, just explain or build the full course beats predict-first."""
+def test_practice_only_when_asked():
+    """AC-1.3 (v1.4): a prediction-first turn happens only when the request asks for a practice mode
+    (quiz, exam-drill, Socratic, "let me predict", "test me"), in any workspace."""
+    asked = {"quiz me on integer promotion": "quiz", "test me on pointers": "quiz",
+             "let me predict what printf(\"%c\", 66) prints": "predict-first",
+             "Socratic: walk me through recursion": "socratic",
+             "give me a timed GATE-style drill on sizeof": "exam-drill"}
+    root, dirs = _workspaces()
+    try:
+        for ws in dirs:
+            for req, mode in asked.items():
+                got = route.route(req, workspace_dir=dirs[ws])
+                assert got["mode"] == mode and got["first_turn"]["kind"] == "question", (ws, req, got)
+        practice_rows = [c for c in _cases() if c["expect"].get("mode") in PRACTICE]
+        for c in _cases():
+            if c["expect"].get("mode") not in PRACTICE:
+                none = route.route(c["request"], workspace_dir=dirs["none"])
+                got = route.route(c["request"], workspace_dir=dirs[c["workspace"] or "none"])
+                assert none["mode"] not in PRACTICE or got["mode"] == none["mode"], c["id"]
+                assert got["mode"] not in PRACTICE or none["mode"] in PRACTICE, (c["id"], "the workspace started practice")
+    finally:
+        shutil.rmtree(root)
+    return {"asked": len(asked), "practice_rows": len(practice_rows)}
+
+
+def test_answer_now_overrides_practice():
+    """AC-1.3 (v1.4): "answer now" or "just explain" ends questioning in any mode, also when the same
+    request asks for practice; "build the full course" is an explicit build."""
     res = _assert_all("override", 6)
     reqs = " | ".join(c["request"].lower() for c in _cases("override"))
     for phrase in ("answer now", "just explain", "full course"):
         assert phrase in reqs, f"no override case for {phrase!r}"
+    ends = {"quiz me on pointers. actually, answer now: what is a null pointer?": "quick",
+            "let me predict what this prints... no, just explain it": "explain",
+            "Socratic is fine but answer now: what does static do": "quick",
+            "test me on structs, actually just explain padding": "explain"}
+    root, dirs = _workspaces()
+    try:
+        for ws in dirs:
+            for req, mode in ends.items():
+                got = route.route(req, workspace_dir=dirs[ws])
+                assert got["mode"] == mode and got["first_turn"]["questions"] == 0, (ws, req, got)
+    finally:
+        shutil.rmtree(root)
+    res["ends_practice"] = len(ends)
     return res
 
 
@@ -160,7 +243,7 @@ def _cli_quick():
     assert res.code == 0, res.stderr[-800:]
     out = json.loads(res.stdout)
     assert out["mode"] == "quick" and out["build_needed"] is False and out["media"] == []
-    assert {"intent", "mode", "media", "workspace_contract", "first_turn", "build_needed"} <= set(out)
+    assert {"intent", "mode", "media", "workspace_contract", "workspace_conflict", "first_turn", "build_needed"} <= set(out)
     return {"exit": res.code, "mode": out["mode"]}
 
 
@@ -270,9 +353,11 @@ def test_confidence():
     for req, reason in low.items():
         got = _route(req)
         assert got["confidence"] == "low" and any(r.startswith(reason) for r in got["reasons"]), (req, got)
-    lost = _route("lets do a q&a session on pointers", "predict")
-    assert lost["mode"] == "predict-first" and lost["media"] == [] and lost["confidence"] == "low", lost
-    return {"high": len(high), "low": len(low) + 1}
+    for ws in ("predict", "notes", "socratic"):
+        led, plain = _route("lets do a q&a session on pointers", ws), _route("lets do a q&a session on pointers")
+        assert (led["mode"], led["media"], led["confidence"]) == (plain["mode"], plain["media"], plain["confidence"]), led
+        assert led["mode"] == "qa-expand" and led["media"] == [] and led["workspace_conflict"], led
+    return {"high": len(high), "low": len(low)}
 
 
 def test_heldback_report():
@@ -293,7 +378,7 @@ def test_workspace_negation_without_apostrophe():
         got = route.route("Teach me pointers", workspace_dir=ws)
     finally:
         shutil.rmtree(ws)
-    assert got["workspace_contract"]["mode"] == "explain-first" and got["mode"] == "explain", got
+    assert got["workspace_contract"]["asks"] == "explain-first" and got["mode"] == "explain", got
     return {"mode": got["mode"]}
 
 
@@ -341,7 +426,8 @@ def test_rule_table_and_complexity():
     table = json.loads(route.RULES_PATH.read_text())
     for key in ("intent_rules", "medium_rules", "mode_rules", "precedence", "first_turn", "workspace_contract"):
         assert key in table, key
-    assert table["precedence"].index("override") < table["precedence"].index("workspace") \
+    assert "workspace" not in table["precedence"], "workspace files may not propose a mode (AC-1.3 v1.4)"
+    assert table["precedence"].index("override") < table["precedence"].index("attempt") \
         < table["precedence"].index("media") < table["precedence"].index("intent")
     assert {r["medium"] for r in table["medium_rules"]} == set(table["media_order"])
     for stage, rules in table["mode_rules"].items():
