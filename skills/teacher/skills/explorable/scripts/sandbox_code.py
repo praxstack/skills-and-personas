@@ -51,7 +51,7 @@ def execute(lesson: Path, includes: list[Path], image: str, *, context: str | No
                    "--network=none", "--read-only", f"--user={os.getuid()}:{os.getgid()}",
                    "--cap-drop=ALL", "--security-opt=no-new-privileges", "--pids-limit=32",
                    "--memory=512m", "--memory-swap=512m", "--cpus=1",
-                   "--ulimit=nofile=64:64", "--ulimit=nproc=32:32",
+                   "--ulimit=nofile=64:64",
                    "--ulimit=fsize=16777216:16777216", "--ulimit=core=0:0",
                    "--tmpfs=/tmp:rw,nosuid,nodev,size=128m,mode=1777,exec",
                    "--mount", f"type=bind,src={root},dst=/input,readonly",

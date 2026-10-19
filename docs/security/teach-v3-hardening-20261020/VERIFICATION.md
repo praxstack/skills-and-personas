@@ -59,6 +59,11 @@ VM-accessible staging directory. The first WebSocket browser test deadlocked
 in Playwright's synchronous close callback; the corrected local-sink handler
 passes. These were product/test integration failures, not accepted passes.
 
+The first Linux CI run exposed a host-wide `RLIMIT_NPROC` conflict: the runner's
+other processes shared its UID, so Node could not start. The redundant per-user
+limit was removed. The container's cgroup PID limit remains 32; the fork test
+now checks that exact kernel limit before attempting process exhaustion.
+
 ## Limits and release status
 
 The sandbox is for executable lesson examples. Whole third-party course

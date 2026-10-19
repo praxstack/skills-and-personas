@@ -82,6 +82,9 @@ print('ok')
 
     def test_process_limit_prevents_fork_exhaustion(self):
         payload = """import subprocess
+from pathlib import Path
+limits = [Path('/sys/fs/cgroup/pids.max'), Path('/sys/fs/cgroup/pids/pids.max')]
+assert any(p.exists() and p.read_text().strip() == '32' for p in limits), 'container process cap missing'
 children=[]
 try:
     for _ in range(100):
