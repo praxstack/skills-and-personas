@@ -718,10 +718,11 @@ def _control_path(c, x, y, w, only_ran=False, head=True, fit_h=None):
     wide = c.layout == "wide"
     size = round(S["code"] * (1.2 if wide else 0.98), 2)
     rh = round(size * (3.15 if wide else 4.6), 1)
-    ch = round(size * 2.0, 1)
     num = max(11.6, round(size * 0.78, 2))
+    ch = round(size * 2.0, 1)
     rail = x + 12
-    cx0 = x + 34 * S["k"]
+    gut = fonts.width("mono", num, "88")  # the line-number gutter between the rail and the chips
+    cx0 = x + 34 * S["k"] + gut + 12
     y0 = y
     if head:
         y += S["label"]
@@ -747,7 +748,7 @@ def _control_path(c, x, y, w, only_ran=False, head=True, fit_h=None):
         for k, n in enumerate(r["lines"]):
             s_ = src[n - 1].strip()
             rid = f"cp-{c.layout}-{c.sid}-{n}"
-            tw = fonts.width("mono", size, s_) + (fonts.width("mono", num, str(n)) + 10 if k == 0 else 0) + 20
+            tw = fonts.width("mono", size, s_) + 20
             part = {"data_part": "label", "data_line": n} if r["kind"] == "case" and k == 0 else {}
             svg.open(**part)
             dash = "" if on else ' stroke-dasharray="4 4"'
@@ -755,10 +756,14 @@ def _control_path(c, x, y, w, only_ran=False, head=True, fit_h=None):
                     f'fill="{t["highlight"] if on and n in path else "none"}" stroke="{t["note"] if on and n in path else t["rule"]}" '
                     f'stroke-width="1.3"{dash}/>')
             tx = cx + 10
-            if k == 0:
-                svg.text(tx, mid(i) + num * 0.35, str(n), "mono", num, t["label"], ("label", "line-number"), inside=rid,
+            if k == 0:  # the row's first line number, in the gutter (a ruler of source lines)
+                gid = f"cpg-{c.layout}-{c.sid}-{n}"
+                gx = cx0 - 12
+                svg.raw(f'<rect id="{gid}" x="{gx - gut - 2:.1f}" y="{tops[i]:.1f}" width="{gut + 4:.1f}" height="{ch}" '
+                        f'fill="none"/>')
+                svg.text(gx, mid(i) + num * 0.35, str(n), "mono", num, t["label"], ("label", "line-number"), inside=gid,
+                         anchor="end", ocr=str(n) if getattr(svg, "tight", True) else None, ocr_group=f"cp-gutter-{c.sid}",
                          extra={"data-line": n, "data-axis": "source-line", "data-tick": n})
-                tx += fonts.width("mono", num, str(n)) + 10
             svg.text(tx, mid(i) + size * 0.35, s_, "mono", size, t["ink"] if on else t["label"], ("code", pid),
                      inside=rid, extra={"data-src-line": n})
             svg.close()
