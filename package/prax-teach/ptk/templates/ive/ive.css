@@ -154,3 +154,6 @@ ol.chapters .ttl{font-family:var(--display-font);font-weight:600}
   .mechbox{padding:.125rem}
   .mech{max-height:calc(100svh - 10.5rem);width:auto}
 }
+/* in the panel column the knob's neuron drawing stacks its three steps, so the bars and the gate stay legible */
+.xpanel .kneuron{grid-template-columns:minmax(0,1fr)!important}
+.xpanel .kn-col svg{max-width:22rem}

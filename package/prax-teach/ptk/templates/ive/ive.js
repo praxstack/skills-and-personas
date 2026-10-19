@@ -408,7 +408,8 @@
     os.appendChild(out);
     var vars = Object.keys(V.vars || {}).map(function (k) { return k + ' = ' + V.vars[k]; }).join('   ');
     var vp = el('p', 'vars'); vp.appendChild(el('span', 'lbl', U.vars_label)); vp.appendChild(el('span', 'mono', vars));
-    vp.setAttribute('data-code', V.program); os.appendChild(vp);
+    vp.setAttribute('data-code', V.program);
+    if (vars) os.appendChild(vp);  // no empty VARIABLES heading
     side.appendChild(os);
     var P = D.panels && D.panels[V.state_id], mb = null;
     if (P && V.origin !== 'yours') {

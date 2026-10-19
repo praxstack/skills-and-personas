@@ -481,7 +481,10 @@ STACK_W, VIEWS_W = 440, 520  # natural widths the film draws a stack column and 
 FILM_CODE_PX = 20  # the largest code the film draws inside a panel (lanes, the gate's fmax): outputs are never smaller
 
 
-def _zoom(lesson, sid, pw, ph, w, states=None, extra=None):
+MIN_SVG_PX = 11.2  # the frame layout gate reads an SVG text's own font size (AC-5.6: nothing under 11 px)
+
+
+def _zoom(lesson, sid, pw, ph, w, states=None, extra=None, kmax=None):
     """(sizes, scale, natural height) of a side panel at state `sid` drawn `w` wide and fitted into pw x ph (B3): the
     camera fits the state, so a short stack or a value with few views is drawn large. Labels of four or more words
     read at >= 28 px; code in the panel reads at FILM_CODE_PX at most; labels at least as large as that code."""
@@ -493,11 +496,11 @@ def _zoom(lesson, sid, pw, ph, w, states=None, extra=None):
         svg = still.Svg("light", fonts.tokens())
         h = mech.draw(svg, lesson, sid, 4, 4, w, "wide", still.Flow(svg, {}), key=False, notes=False, states=states,
                       sizes=sizes)
-        k = min(pw / (w + 8), ph / (h + 8))
-        code = min(base["code"], FILM_CODE_PX / k)
+        k = min(pw / (w + 8), ph / (h + 8), kmax or 99)
+        code = max(MIN_SVG_PX, min(base["code"], FILM_CODE_PX / k))
         sizes = {"head": round(max(base["label"], 29.0 / (lab_scale * k)), 2),
                  "label": round(max(base["label"], FILM_CODE_PX / (lab_scale * k)), 2), "code": round(code, 2),
-                 "chip": round(max(base["chip"], code * 1.08), 2), "var": round(max(code, 26.0 / k), 2),
+                 "chip": round(max(base["chip"], code * 1.08), 2), "var": round(max(code, 26.0 / k, MIN_SVG_PX), 2),
                  "own_depth": True, **(extra or {})}
     return sizes, k, h
 
@@ -834,15 +837,15 @@ def scene_html(lesson, scene, index, count, timing):
                 f'style="font-size:{note_px}px">{esc(claims[note_claim]["text"])}</p></div>')
     else:
         side = ""
-    if morph and mode is None:
+    if morph and mode in (None, "path"):
         # while the program changes, the note column says what changes (the note itself states the new
-        # program's behaviour, so it waits for the diff to finish)
+        # program's behaviour, so it waits for the diff to finish); the path layout shows it in the header band
         fo, fn = lesson.program(before["program"])["path"].split("/")[-1], lesson.program(cur["program"])["path"].split("/")[-1]
         diff_rows = "".join(f'<p class="dl {k}"><span class="mark" data-label="diff-mark">{"+" if k == "plus" else MINUS}</span>'
                             f'<span data-code="{pid}">{esc(src_[n - 1].strip())}</span></p>'
                             for k, ns, src_, pid in (("minus", removed, go["src"], before["program"]), ("plus", added, gc["src"], cur["program"]))
                             for n in ns)
-        side += (f'<div class="panel changecard"><p class="qlabel" data-chrome="morph_label">{esc(text.ui("morph_label"))}</p>'
+        side += (f'<div class="panel changecard{" pchange" if mode == "path" else ""}"><p class="qlabel" data-chrome="morph_label">{esc(text.ui("morph_label"))}</p>'
                  f'<p class="files" data-chrome="morph_files">{esc(text.ui("morph_files", program=fo, file=fn))}</p>{diff_rows}</div>')
     # --- the mechanism panel: the state before this scene, with this scene's state faded in over it
     mech_html = ""
@@ -867,8 +870,9 @@ def scene_html(lesson, scene, index, count, timing):
                      "code": round(min(mech.SIZES["wide"]["code"], (PATH_OUT_PX - 2) / (1.2 * k_)), 2)}
         kw["sizes"] = sizes
         layers, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}', **kw)
-        if replay and scene["before"] != scene["state"] and \
-                lesson.state(scene["before"])["state"]["program"] == lesson.data["figure"]["program"]:
+        if replay and scene["before"] != scene["state"]:
+            # the previous scene's path (a compare program's own figure when the recap returns from it) until the
+            # reveal, so the frame shows the state the IVE says is on screen
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme,
                                                 attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}', **kw)
             layers = bef_svg + layers
@@ -882,31 +886,32 @@ def scene_html(lesson, scene, index, count, timing):
         if stack:
             # the camera fits the stack at this state (a short stack is drawn large) over the output it has printed
             pw_ = STACK_W
+            kmax = (val_px or 30) / MIN_SVG_PX  # code in the panel never larger than the printed values
             per_col_ = _out_grid(L, L["max_out"])[1]
             out_need = lambda sid_: 64 + min(per_col_, max(1, len(lesson.state(sid_)["state"]["output"]))) * 58 + 16  # noqa: E731
             avail = lambda sid_: ph - 24 - out_need(sid_)  # noqa: E731
-            sizes, film_k, h1 = _zoom(lesson, scene["state"], pw, avail(scene["state"]), pw_, states=st_)
-            box1 = avail(scene["state"])
+            sizes, film_k, h1 = _zoom(lesson, scene["state"], pw, avail(scene["state"]), pw_, states=st_, kmax=kmax)
         else:
             # every lane on screen from the start (its value fades in when it prints); the camera fits the state
             pw_ = VIEWS_W
+            kmax = (val_px or 30) / MIN_SVG_PX
             avail = lambda sid_: ph  # noqa: E731
-            sizes, film_k, h1 = _zoom(lesson, scene["state"], pw, ph, pw_, extra={"pending": True})
-            box1 = ph
-        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit} '
-                                            f'style="height:{box1:.0f}px"', notes=False, states=st_, mark=True,
-                                            width=pw_, sizes=sizes)
+            sizes, film_k, h1 = _zoom(lesson, scene["state"], pw, ph, pw_, extra={"pending": True}, kmax=kmax)
+        # each layer's own box: the state's fit, centred across the column (the camera fits the state)
+        lbox = lambda k_, h_: (f'style="left:{(pw - (pw_ + 8) * k_) / 2:.1f}px;width:{(pw_ + 8) * k_:.1f}px;'  # noqa: E731
+                               f'height:{(h_ + 8) * k_:.1f}px"')
+        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme,
+                                            attrs=f'class="mlayer mcur" {fit} {lbox(film_k, h1)}', notes=False, states=st_,
+                                            mark=True, width=pw_, sizes=sizes)
         layers = cur_svg
         has_before = replay and scene["before"] != scene["state"]
-        bsizes, k0, box0 = sizes, film_k, box1
+        bsizes, k0 = sizes, film_k
         if has_before:
             bsizes, k0, _h0 = _zoom(lesson, scene["before"], pw, avail(scene["before"]), pw_,
-                                    extra=None if stack else {"pending": True})
-            box0 = avail(scene["before"])
+                                    extra=None if stack else {"pending": True}, kmax=kmax)
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme,
                                                 attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit} '
-                                                f'style="height:{box0:.0f}px"', notes=False, width=pw_, mark=True,
-                                                sizes=bsizes)
+                                                f'{lbox(k0, _h0)}', notes=False, width=pw_, mark=True, sizes=bsizes)
             layers = bef_svg + cur_svg
         if stack:
             # the output stands on the column's floor and grows upward as lines are printed
@@ -1058,7 +1063,10 @@ def scene_html(lesson, scene, index, count, timing):
         qx, qy, qw, qh = L["q_box"]
         ox, oy, ow, ohh = _out_rect(L)
         if mode == "path":
-            out_css_v = f".vars {{ left:{L['code_x'] + 4}px; top:{L['vars_top']}px; }}\n"
+            out_css_v = (f".vars {{ left:{L['code_x'] + 4}px; top:{L['vars_top']}px; }}\n"
+                         f".panel.pchange {{ left:{L['q_box'][0]}px; top:12px; width:{SX1 - L['q_box'][0]}px; height:auto; bottom:auto;"
+                         f" padding:6px 0 6px 24px; display:grid; grid-template-columns:auto 1fr; column-gap:24px; align-items:baseline; }}\n"
+                         f".pchange .qlabel {{ margin:0; }} .pchange .files {{ margin:0; }} .pchange .dl {{ grid-column:1 / -1; margin:0; }}\n")
         else:
             out_css_v = ""
         out_css = out_css_v + (f".outcard {{ left:0px; top:{stack_out[1] - L['side_top']:.1f}px; width:{ow}px; height:{stack_out[3]}px; }}\n"
@@ -1205,7 +1213,7 @@ def scene_html(lesson, scene, index, count, timing):
     // over the first 0.4 s of the next scene); the code card and output stay, so nothing jumps
     tl.fromTo(q('.title'), {{ opacity: 0, y: 12 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, 0);
     tl.fromTo(q('.panel:not(.changecard)'), {{ opacity: 0, y: 10 }}, {{ opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }}, {note_at:.3f});
-    {f"tl.fromTo(q('.changecard'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4, ease: 'power2.out' }}, 0.05); tl.to(q('.changecard'), {{ opacity: 0, duration: 0.3 }}, {note_at + 0.05:.3f});" if morph else ""}
+    {f"tl.fromTo(q('.changecard'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4, ease: 'power2.out' }}, 0.05); tl.to(q('.changecard'), {{ opacity: 0, duration: 0.3 }}, {(swap if mode == 'path' else note_at + 0.05):.3f});" if morph else ""}
     {f"tl.to(q('.title, .panel'), {{ opacity: 0, duration: 0.3, ease: 'power1.in' }}, {scene['duration'] - 0.3:.3f});" if index + 1 < count else ""}
     if (q('.out-new').length) tl.set(q('.out-new'), {{ opacity: 0 }}, 0);
     if (q('.ln.exec-new').length) tl.set(q('.ln.exec-new'), {{ color: '{t['label']}' }}, 0);

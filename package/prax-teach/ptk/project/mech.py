@@ -348,9 +348,9 @@ def _low_byte(c, x, y, w, v, label_first=False, scale=None):
     label_first, its label sits above the tape (beside a's cells); else under it."""
     svg, t, S = c.svg, c.t, c.S
     if label_first:
-        y += S["label"]
-        c.label(x, y, "panel_byte_note")
-        y += 2
+        y += c.lsize("panel_byte_note")
+        c.label(x, y, "panel_byte_note", max_w=w)
+        y += 2 + (c.lines_drawn - 1) * c.lsize("panel_byte_note") * 1.3
     c.group(v["bits"])
     # the byte as a tape: eight digits, each over a bar (note for a 1, rule for a 0), the bars kept clear of
     # the digits so OCR reads the digits alone
@@ -374,8 +374,8 @@ def _low_byte(c, x, y, w, v, label_first=False, scale=None):
         svg.close()
     y = base + 26
     if not label_first:
-        c.label(x, y + S["label"] + 2, "panel_byte_note")
-        y += S["label"] + 10
+        c.label(x, y + c.lsize("panel_byte_note") + 2, "panel_byte_note", max_w=w)
+        y += c.lsize("panel_byte_note") * (1 + 1.3 * (c.lines_drawn - 1)) + 10
     return y
 
 
@@ -424,9 +424,10 @@ def _memory(c, x, y, w):
             _curve_arrow(c, (x0_, ay), (x0_ - 10, ay), (x1_ + 10, ay), (x1_, ay), t["note"], 2)
             y += 8
             y += S["value"] * 0.9
-            lw = c.label(x, y - 3, "mem_read_down")
+            lw = c.label(x, y - 3, "mem_read_down", max_w=w)
+            y += (c.lines_drawn - 1) * c.lsize("mem_read_down") * 1.3
             vf0, vp0, vw0, _c0, _s0 = svg.role("value", S["value"] * 0.8)
-            if x + lw + 12 + fonts.width(vf0, vp0, c.val(dbits), weight=vw0) > x + w:  # no room beside its label
+            if c.lines_drawn > 1 or x + lw + 12 + fonts.width(vf0, vp0, c.val(dbits), weight=vw0) > x + w:  # no room beside it
                 y += S["value"] * 1.1
                 lw = -12
             c.value(x + lw + 12, y, dbits, size=S["value"] * 0.8, color=t["note"], ocr=False)
