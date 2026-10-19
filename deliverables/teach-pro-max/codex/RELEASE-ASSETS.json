@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "status": "development prerelease; not installed or accepted",
+  "release_tag": "teach-pro-max-v3-review-20261019",
+  "url": "https://github.com/praxstack/skills-and-personas/releases/tag/teach-pro-max-v3-review-20261019",
+  "general_product_commit": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "general_pack_commit": "4f50ca992a39b44dfcecb40a21f8169410cab80f",
+  "c_product_commit": "4a834ac",
+  "assets": [
+    {
+      "name": "prax-teach-v3-review.zip",
+      "bytes": 118692093,
+      "sha256": "047e340be15f887a36f478d726d7eeae284f50914d58834e79d42ea9569db143"
+    },
+    {
+      "name": "prax-teach-v3-source.tar.gz",
+      "bytes": 9333184,
+      "sha256": "037281d1e6e76ddc209fdaeb4a0d96b29dc8a6ba5d1339af3b179d32d0d518ea"
+    },
+    {
+      "name": "candidate1-working-fixtures.tar.gz",
+      "bytes": 104391797,
+      "sha256": "e56cb927c233fb1cb3b7ea7c78479f40e7cb397e08c8827838e35534118f4f93"
+    }
+  ],
+  "receipt_scope": "This manifest is outside each archive it hashes. Rendered ZIP contains pre-publication README/receipts, not its own hash manifest. Source archive includes tracked hidden supporting files; runtime dependencies/models separate. C fixtures include preserved baseline assets; see their ARTIFACTS.json.",
+  "archive_checks": {
+    "zip_crc_passed": true,
+    "review_zip_files": 448,
+    "source_tar_entries": 2878
+  }
+}
