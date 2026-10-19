@@ -1,6 +1,6 @@
 # Claude goal: correct, reusable C artifact adapter
 
-Read SHARED-CONTRACT.md first. Own only the C adapter; the general teacher remains Codex's integration responsibility.
+Read ORCHESTRATION.md and SHARED-CONTRACT.md first. Own only the C adapter; the general teacher remains Codex's integration responsibility.
 
 ## Owned deliverables
 
@@ -27,4 +27,4 @@ The new source set must remain reusable for C topics beyond the four exemplars. 
 
 ## Stop
 
-The prior 5+5 rounds are exhausted. The earlier two-repair-rounds-plus-one-spare estimate is proposed only; get the new finite budget and governing approval before implementation. Stop under SHARED-CONTRACT.md, preserve the patch and unmet criteria if blocked, and never weaken, skip or edit frozen checks. Commit only owned paths and provide the exact handoff SHA. No installation or general-teacher rewrite.
+The prior 5+5 rounds are exhausted. ORCHESTRATION.md recommends a cap of 3 implementation rounds; get explicit approval of that finite budget and any governing changes before implementation. Stop under SHARED-CONTRACT.md, preserve the patch and unmet criteria if blocked, and never weaken, skip or edit frozen checks. Commit only owned paths and provide the exact handoff SHA. No installation or general-teacher rewrite.
