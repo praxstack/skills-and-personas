@@ -12,18 +12,19 @@
 <div class="prose">
 <p id="live">With w2 = -1 and b = -1, z prints as -0.2 and a is 0.</p>
 <p id="why" hidden>z is not exactly 0 here: in binary64 the sum 1.2 - 0.4 - 0.8 rounds to a tiny double, and %g prints it.</p>
+<p data-captured="f.k1.z f.k1.a">In the captured run with b = -1, z prints as -0.2 and a is 0.</p>
 <p>ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0.</p>
 </div>
 </section>
 </main>
 <script>
 (function () {
-  var LIVE = true;
+  var LIVE = true, RELU = true;
   var iw = document.getElementById('k-w2'), ib = document.getElementById('k-b');
   function g6(x) { return String(Number(x.toPrecision(6))); }
   function upd() {
     var w2 = Math.round((-2 + 0.1 * iw.value) * 10) / 10, b = Math.round((-1 + 0.1 * ib.value) * 10) / 10;
-    var z = 0.8 * 1.5 + 0.4 * w2 + b, a = Math.max(0, z);
+    var z = 0.8 * 1.5 + 0.4 * w2 + b, a = RELU ? Math.max(0, z) : z;
     document.getElementById('k-w2-v').textContent = String(w2);
     document.getElementById('k-b-v').textContent = String(b);
     document.getElementById('k-z').textContent = g6(z);
