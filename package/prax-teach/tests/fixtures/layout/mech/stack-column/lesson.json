@@ -1,0 +1,115 @@
+{
+ "schema": "fixture",
+ "id": "fx-stack-column",
+ "platform": {
+  "captured": true,
+  "sizeof": {
+   "int": 4,
+   "double": 8
+  },
+  "endianness": "little"
+ },
+ "programs": [
+  {
+   "id": "p1",
+   "path": "programs/factorial.c"
+  }
+ ],
+ "facts": [
+  {
+   "id": "f.call3",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 2
+   }
+  },
+  {
+   "id": "f.call2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 2
+   }
+  },
+  {
+   "id": "f.call1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 3,
+    "field": 2
+   }
+  },
+  {
+   "id": "f.ret1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 4,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.ret2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 5,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.ret3",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 6,
+    "field": 3
+   }
+  }
+ ],
+ "trace": [
+  {
+   "id": "s0",
+   "state": {
+    "program": "p1",
+    "line": 4,
+    "path": [],
+    "output": [],
+    "vars": {},
+    "frames": [
+     {
+      "fn": "main"
+     },
+     {
+      "fn": "factorial",
+      "call": "f.call3"
+     },
+     {
+      "fn": "factorial",
+      "call": "f.call2"
+     },
+     {
+      "fn": "factorial",
+      "call": "f.call1"
+     }
+    ]
+   }
+  }
+ ],
+ "figure": {
+  "program": "p1",
+  "states": [
+   "s0"
+  ]
+ }
+}

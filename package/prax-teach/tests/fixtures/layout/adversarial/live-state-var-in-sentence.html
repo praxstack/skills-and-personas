@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live caption fixture</title>
+<style>body{margin:0;padding:24px;font-family:sans-serif;background:#101828;color:#edf1f7} label{display:block;margin:8px 0}</style></head>
+<body><main>
+<section class="knob" id="k">
+<h2>Try another value</h2>
+<label><span class="lbl">w2</span> <input type="range" id="k-w2" min="0" max="40" step="1" value="10"> <output id="k-w2-v">-1</output></label>
+<label><span class="lbl">b</span> <input type="range" id="k-b" min="0" max="20" step="1" value="8"> <output id="k-b-v">-0.2</output></label>
+<p class="eq"><span>z</span> = <b id="k-z">0.6</b></p>
+<p class="eq"><span>a</span> = <b id="k-a">0.6</b></p>
+<div class="prose">
+<p id="live">With w2 = <span data-state-var="w2">-1</span> and b = <span data-state-var="b">-1</span>, z prints as <span data-state-var="z">-0.2</span> and a is 0.</p>
+<p id="why">z is not exactly 0 here: in binary64 the sum 1.2 - 0.4 - 0.8 rounds to a tiny double, and %g prints it.</p>
+<p>ReLU outputs max(0, z): a positive z passes through unchanged, and a z of 0 or less gives 0.</p>
+</div>
+</section>
+</main>
+<script>
+(function () {
+  var LIVE = false;
+  var iw = document.getElementById('k-w2'), ib = document.getElementById('k-b');
+  function g6(x) { return String(Number(x.toPrecision(6))); }
+  function upd() {
+    var w2 = Math.round((-2 + 0.1 * iw.value) * 10) / 10, b = Math.round((-1 + 0.1 * ib.value) * 10) / 10;
+    var z = 0.8 * 1.5 + 0.4 * w2 + b, a = Math.max(0, z);
+    document.getElementById('k-w2-v').textContent = String(w2);
+    document.getElementById('k-b-v').textContent = String(b);
+    document.getElementById('k-z').textContent = g6(z);
+    document.getElementById('k-a').textContent = g6(a);
+    if (LIVE) {
+      document.getElementById('live').textContent = 'With w2 = ' + w2 + ' and b = ' + b + ', z prints as ' + g6(z) + ' and a is ' + g6(a) + '.';
+      document.getElementById('why').hidden = !(z !== 0 && Math.abs(z) < 1e-9);
+    }
+  }
+  iw.addEventListener('input', upd); ib.addEventListener('input', upd); upd();
+})();
+</script>
+</body></html>

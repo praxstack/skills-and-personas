@@ -1,0 +1,80 @@
+{
+ "schema": "fixture",
+ "id": "fx-control-path",
+ "platform": {
+  "captured": true,
+  "sizeof": {
+   "int": 4,
+   "double": 8
+  },
+  "endianness": "little"
+ },
+ "programs": [
+  {
+   "id": "p1",
+   "path": "programs/fallthrough.c"
+  }
+ ],
+ "facts": [
+  {
+   "id": "f.l1",
+   "program": "p1",
+   "kind": "stdout-line",
+   "select": {
+    "stream": "stdout",
+    "line": 1
+   }
+  },
+  {
+   "id": "f.l2",
+   "program": "p1",
+   "kind": "stdout-line",
+   "select": {
+    "stream": "stdout",
+    "line": 2
+   }
+  },
+  {
+   "id": "f.l3",
+   "program": "p1",
+   "kind": "stdout-line",
+   "select": {
+    "stream": "stdout",
+    "line": 3
+   }
+  }
+ ],
+ "trace": [
+  {
+   "id": "s3",
+   "state": {
+    "program": "p1",
+    "line": 16,
+    "path": [
+     4,
+     5,
+     8,
+     9,
+     10,
+     11,
+     12,
+     16
+    ],
+    "output": [
+     "f.l1",
+     "f.l2",
+     "f.l3"
+    ],
+    "vars": {
+     "n": "2"
+    }
+   }
+  }
+ ],
+ "figure": {
+  "program": "p1",
+  "states": [
+   "s3"
+  ]
+ }
+}
