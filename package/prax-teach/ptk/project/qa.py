@@ -1,16 +1,18 @@
-r"""Q&A expander projector (WP4: AC-4.3, D4.4).
+r"""Q&A expander projector (WP4: AC-4.3, D4.4), explanation first (SPEC v1.4, AC-1.3).
 
-    layer 1   the storyboard's first question: the program, the prompt, the options
+    layer 1   the storyboard's first question: the program and the prompt
+    layer 2…  one per storyboard scene after the question: scene title, the scene's question or
+              "a walkthrough step", then the scene's narration lines and the output facts its state
+              has printed. Layer k+1's Reveal is enabled once layer k is open; layer 2 needs no answer
+    check     after the last layer, labelled optional: the question's options
               Check my answer ─▶ the chosen option's row of the answer key:
                   correct  → "Correct." + the answer fact's captured lines
                   wrong    → the named misconception (its statement) + its correction claim
-    layer 2…  one per storyboard scene after the question: scene title, "predict, then reveal",
-              then the scene's narration lines and the output facts its state has printed
-              layer k+1's Reveal is enabled only once layer k is open (layer 2: once answered)
 
-Everything is in the static document; qa.js only opens parts. With no JS every layer and the
-whole answer key show (a note says to predict first); in print every layer and every option's
-routing show. Same page kit and CSP as the explorer (explorer.page).
+A title that states the question's answer (seal.py) shows when its layer opens, or once an answer is
+checked. Everything is in the static document; qa.js only opens parts. With no JS every layer and the
+whole answer key show; in print every layer and every option's routing show. Same page kit and CSP
+as the explorer (explorer.page).
 """
 import json
 
@@ -85,7 +87,7 @@ def _layers_html(m):
         vals = "".join(f'<span data-fact="{o["fact"]}">{esc(o["text"])}</span>' for o in L["output"])
         out_html = (f'<p class="lbl"><span data-chrome="output_label">{esc(text.ui("output_label"))}</span> · '
                     f'<span data-label="program-file">{esc(L["program"])}</span></p><p class="vals">{vals}</p>') if vals else ""
-        # a title that states the open question's answer stays sealed until the learner answers (seal.py)
+        # a title that states the open question's answer stays sealed until its layer opens (seal.py)
         title = (f'<h3 data-label="scene-title" data-sealed="true">{esc(L["title"])}</h3>'
                  f'<h3 class="sealed-ph" data-chrome="qa_sealed">{esc(text.ui("qa_sealed"))}</h3>') if L["sealed"] else \
             f'<h3 data-label="scene-title">{esc(L["title"])}</h3>'
@@ -121,12 +123,15 @@ def _body(lesson, m):
 <h2 class="qtext" data-question="{m['scene']}" data-key="question">{esc(m['prompt'])}</h2>
 <figure class="panel" data-key="code"><figcaption class="lbl"><span data-chrome="code_label">{esc(text.ui('code_label'))}</span> · <span data-label="program-file">{esc(pfile)}</span></figcaption>
 <ol class="code" data-code="{m['program']}">{code}</ol></figure>
-<fieldset class="opts" id="qa-options" data-key="options"><legend class="lbl" data-chrome="qa_choose">{esc(text.ui('qa_choose'))}</legend>{opts}</fieldset>
-<p><button type="button" class="pill" id="qa-check" disabled data-chrome="qa_check">{esc(text.ui('qa_check'))}</button></p>
-<ol class="key" id="qa-feedback" aria-live="polite">{_key_html(m)}</ol>
 </div></li>
 {layers}
 </ol>
+<section class="practice" aria-labelledby="qa-practice-h">
+<h2 class="lbl" id="qa-practice-h" data-chrome="qa_practice">{esc(text.ui('qa_practice'))}</h2>
+<fieldset class="opts" id="qa-options" data-key="options"><legend class="lbl" data-chrome="qa_choose">{esc(text.ui('qa_choose'))}</legend>{opts}</fieldset>
+<p><button type="button" class="pill" id="qa-check" disabled data-chrome="qa_check">{esc(text.ui('qa_check'))}</button></p>
+<ol class="key" id="qa-feedback" aria-live="polite">{_key_html(m)}</ol>
+</section>
 </main>
 <footer class="foot"><p data-chrome="provenance">{esc(text.provenance(lesson))}</p></footer>
 </div>"""
@@ -152,7 +157,7 @@ def _texts(lesson, m):
     for key, kw in (("kicker", {"subject": lesson.data.get("subject", "C"), "topic": lesson.data["topic"]}), ("question_label", {}), ("code_label", {}),
                     ("qa_choose", {}), ("qa_check", {}), ("qa_correct", {}), ("qa_wrong", {}), ("qa_correction", {}),
                     ("answer_label", {}), ("qa_walk", {}), ("qa_sealed", {}), ("qa_reveal", {}), ("output_label", {}),
-                    ("qa_noscript", {})):
+                    ("qa_noscript", {}), ("qa_practice", {})):
         items.append({"text": text.ui(key, **kw), "claims": [], "source": f"chrome:{key}", "where": w})
     items.append({"text": text.provenance(lesson), "claims": [], "source": "chrome:provenance", "where": w})
     for i in range(1, n + 1):
@@ -195,9 +200,10 @@ def _visible_entries(snap):
 
 
 def check_layers(lesson, m, rec):
-    """AC-4.3: layers open in order; each wrong option routes to its named misconception and that
-    misconception's correction claim; the correct one shows the captured answer; print and no-JS
-    show every layer and every option's routing."""
+    """AC-4.3 and explanation first (SPEC v1.4): layers open in order and layer 2 opens with no answer; the
+    optional check sits after the last layer; each wrong option routes to its named misconception and that
+    misconception's correction claim; the correct one shows the captured answer; a title that states the
+    answer stays hidden until its layer opens; print and no-JS show every layer and every option's routing."""
     probs = []
     n = len(m["layers"]) + 1
     seq = rec["sequence"]
@@ -205,25 +211,43 @@ def check_layers(lesson, m, rec):
     def opened(snap):
         return [L["i"] for L in snap["layers"] if L["open"] and L["bodyVisible"]]
 
+    def shown_titles(snap):
+        return [t["text"] for t in snap.get("titles", []) if t["visible"]]
+
     s0 = seq[0]["snap"]
-    sealed = [L["title"] for L in m["layers"] if L["sealed"]]
-    shown0 = [t["text"] for t in s0.get("titles", []) if t["visible"]]
-    for t in sealed:
-        if t in shown0:
-            probs.append(f"the title {t!r} states the open question's answer and is visible before an answer")
-    answered = next((s["snap"] for s in seq if s["action"].startswith("choose")), None)
-    if answered is not None and sealed:
-        shown1 = [t["text"] for t in answered.get("titles", []) if t["visible"]]
-        if not all(t in shown1 for t in sealed):
-            probs.append(f"sealed titles stay hidden after an answer: {[t for t in sealed if t not in shown1]}")
+    sealed = [(k, L["title"]) for k, L in enumerate(m["layers"], start=2) if L["sealed"]]
+    for _k, t in sealed:
+        if t in shown_titles(s0):
+            probs.append(f"the title {t!r} states the open question's answer and is visible before its layer opens")
+    pr = s0.get("practice") or {}
+    if not pr.get("exists"):
+        probs.append("the optional practice check is missing")
+    elif not pr.get("afterLayers"):
+        probs.append("the practice check is not after the last layer (explanation first)")
+    elif not pr.get("holdsOptions"):
+        probs.append("the practice check does not hold the options")
+    elif pr.get("label") != text.ui("qa_practice"):
+        probs.append(f"the practice check is not labelled optional: {pr.get('label')!r}")
     if opened(s0) != [1]:
         probs.append(f"on load the open layers are {opened(s0)}, expected [1]")
     if _visible_entries(s0):
-        probs.append("the answer key shows before any prediction")
+        probs.append("the answer key shows before any answer is checked")
     if not s0["checkDisabled"]:
         probs.append("Check is enabled before an option is chosen")
-    if opened(seq[1]["snap"]) != [1]:
-        probs.append(f"layer 2 opened before a prediction: {opened(seq[1]['snap'])}")
+    if opened(seq[1]["snap"]) != [1, 2]:
+        probs.append(f"layer 2 did not open without an answer (explanation first): open {opened(seq[1]['snap'])}")
+    for k, t in sealed:
+        for s in seq:
+            snap = s["snap"]
+            if k not in opened(snap) and t in shown_titles(snap) and not s["action"].startswith("choose"):
+                probs.append(f"the title {t!r} states the open question's answer and is visible before its layer opens "
+                             f"({s['action']})")
+                break
+    walked = [s for s in seq if s["action"].startswith("reveal") and "keyboard" in s["action"]]
+    if walked and sealed:
+        hidden = [t for _k, t in sealed if t not in shown_titles(walked[-1]["snap"])]
+        if hidden:
+            probs.append(f"sealed titles stay hidden after their layers opened: {hidden}")
     by_i = {str(o["i"]): o for o in m["options"]}
     choices = [s for s in seq if s["action"].startswith("choose")]
     if sorted(s["option"] for s in choices) != sorted(by_i):
@@ -251,15 +275,14 @@ def check_layers(lesson, m, rec):
             if s["snap"]["feedback"]["kind"] != "wrong":
                 probs.append(f"wrong option marked {s['snap']['feedback']['kind']}")
     oo = [s for s in seq if "out of order" in s["action"]]
-    if n > 2 and (not oo or opened(oo[0]["snap"]) != [1]):
+    if n > 3 and (not oo or opened(oo[0]["snap"]) != [1, 2]):
         probs.append(f"the last layer opened out of order: {opened(oo[0]['snap']) if oo else 'not tried'}")
-    reveals = [s for s in seq if s["action"].startswith("reveal") and "keyboard" in s["action"]]
-    for s in reveals:
+    for s in walked:
         i = int(s["action"].split()[1])
         if opened(s["snap"]) != list(range(1, i + 1)):
             probs.append(f"after revealing layer {i} the open layers are {opened(s['snap'])}")
-    if len(reveals) != n - 1:
-        probs.append(f"revealed {len(reveals)} layers, expected {n - 1}")
+    if len(walked) != max(0, n - 2):
+        probs.append(f"revealed {len(walked)} layers by keyboard after layer 2, expected {n - 2}")
     for L, snapL in zip(m["layers"], seq[-1]["snap"]["layers"][1:]):
         for x in L["narration"]:
             if x["text"] not in snapL["text"]:

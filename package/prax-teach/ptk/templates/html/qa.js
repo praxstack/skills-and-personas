@@ -1,7 +1,9 @@
 (function () {
   'use strict';
   // Every word on the page is already in the document (from the lesson model and chrome.json);
-  // this script only decides which parts are open. Layer k+1 opens only after layer k.
+  // this script only decides which parts are open. Explanation first: layer 2 opens with no answer,
+  // and layer k+1 opens only after layer k. The check after the last layer is optional. A title that
+  // states the answer shows when its layer opens, or once an answer is checked.
   function $(id) { return document.getElementById(id); }
   var layers = [].slice.call(document.querySelectorAll('[data-layer]'));
   var check = $('qa-check');
@@ -12,7 +14,7 @@
       var b = l.querySelector('button.reveal');
       if (!b) return;
       var prevOpen = i === 0 ? true : layers[i - 1].getAttribute('data-open') === 'true';
-      var ready = i === 1 ? answered : prevOpen;
+      var ready = prevOpen;
       b.disabled = !ready;
       b.setAttribute('aria-expanded', l.getAttribute('data-open'));
     });
@@ -37,6 +39,7 @@
     b.addEventListener('click', function () {
       if (b.disabled) return;
       l.setAttribute('data-open', 'true');
+      l.querySelectorAll('[data-sealed]').forEach(function (h) { h.setAttribute('data-sealed', 'false'); });
       sync();
       var next = layers[i + 1] && layers[i + 1].querySelector('button.reveal');
       if (next) next.focus(); else l.querySelector('.layer-body').focus();

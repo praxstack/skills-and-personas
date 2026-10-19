@@ -462,6 +462,16 @@ function snapQa() {
     checkDisabled: document.getElementById('qa-check') ? document.getElementById('qa-check').disabled : null,
     titles: [...document.querySelectorAll('[data-layer] h3[data-label="scene-title"]')].map((h) => ({ text: h.textContent,
       visible: getComputedStyle(h).display !== 'none' && h.getBoundingClientRect().height > 0 })),
+    practice: (() => {
+      const s = document.querySelector('section.practice');
+      const ls = [...document.querySelectorAll('[data-layer]')];
+      if (!s) return { exists: false };
+      const last = ls[ls.length - 1];
+      const opts = document.getElementById('qa-options');
+      return { exists: true, label: (s.querySelector('[data-chrome="qa_practice"]') || {}).textContent || null,
+        afterLayers: !!last && !!(last.compareDocumentPosition(s) & Node.DOCUMENT_POSITION_FOLLOWING),
+        holdsOptions: !!opts && s.contains(opts) };
+    })(),
   };
 }
 
@@ -472,27 +482,29 @@ async function qa() {
   if (!result.a11y.jsClass) { result.scriptBlocked = true; await finish(o); return; }
   const seq = [];
   seq.push({ action: 'load', snap: await p.evaluate(snapQa) });
-  // try to open layer 2 before predicting
+  // explanation first: layer 2 opens with no answer
   const r2 = p.locator('[data-layer="2"] button.reveal');
   if (await r2.count()) { await r2.click({ force: true, timeout: 2000 }).catch(() => {}); }
-  seq.push({ action: 'reveal 2 before predicting', snap: await p.evaluate(snapQa) });
+  seq.push({ action: 'reveal 2 without an answer', snap: await p.evaluate(snapQa) });
+  const n = await p.$$eval('[data-layer]', (xs) => xs.length);
+  // out of order: try the last layer before layer 3, then open the rest in order by keyboard
+  const last = p.locator(`[data-layer="${n}"] button.reveal`);
+  if (n > 3 && await last.count()) { await last.click({ force: true, timeout: 2000 }).catch(() => {}); seq.push({ action: `reveal ${n} out of order`, snap: await p.evaluate(snapQa) }); }
+  for (let i = 3; i <= n; i++) {
+    await p.focus(`[data-layer="${i}"] button.reveal`).catch(() => {});
+    await p.keyboard.press('Enter');
+    seq.push({ action: `reveal ${i} (keyboard)`, snap: await p.evaluate(snapQa) });
+  }
+  // the optional check after the walkthrough
   const options = await p.$$eval('#qa-options input', (xs) => xs.map((x) => x.value));
   for (const v of options) {
     await p.check(`#qa-options input[value="${v}"]`);
     await p.click('#qa-check');
     seq.push({ action: `choose ${v}`, option: v, snap: await p.evaluate(snapQa) });
   }
-  const n = await p.$$eval('[data-layer]', (xs) => xs.length);
-  // out of order: try the last layer first, then open in order
-  const last = p.locator(`[data-layer="${n}"] button.reveal`);
-  if (n > 2 && await last.count()) { await last.click({ force: true, timeout: 2000 }).catch(() => {}); seq.push({ action: `reveal ${n} out of order`, snap: await p.evaluate(snapQa) }); }
-  for (let i = 2; i <= n; i++) {
-    await p.focus(`[data-layer="${i}"] button.reveal`).catch(() => {});
-    await p.keyboard.press('Enter');
-    seq.push({ action: `reveal ${i} (keyboard)`, snap: await p.evaluate(snapQa) });
-  }
   result.sequence = seq;
-  result.focusRing = await p.evaluate(() => { const b = document.querySelector('button'); b.focus(); const s = getComputedStyle(b); return `${s.outlineStyle} ${s.outlineWidth}`; });
+  await p.keyboard.press('Tab');  // keyboard modality, as the old last step (a keyboard reveal) left it
+  result.focusRing = await p.evaluate(() => { const b = document.getElementById('qa-check') || document.querySelector('button'); b.focus(); const s = getComputedStyle(b); return `${s.outlineStyle} ${s.outlineWidth}`; });
   await finish(o);
 
   o = await open({ name: 'qa-print' });
@@ -514,9 +526,10 @@ async function qa() {
   for (const width of [390, 1440]) {
     for (const scheme of ['light', 'dark']) {
       o = await open({ name: `qa-${width}-${scheme}`, width, height: width === 390 ? 844 : 900, scheme });
+      // a tampered page may keep a layer shut; the layout probe still runs on what opened
+      for (let i = 2; i <= n; i++) await o.page.click(`[data-layer="${i}"] button.reveal`, { timeout: 500 }).catch(() => {});
       await o.page.check('#qa-options input >> nth=0');
       await o.page.click('#qa-check');
-      for (let i = 2; i <= n; i++) await o.page.click(`[data-layer="${i}"] button.reveal`);
       result.layout.push({ width, scheme, ...(await o.page.evaluate(layoutProbe)) });
       if (job.shots) await o.page.screenshot({ path: `${job.shots}/qa-${width}-${scheme}.png`, fullPage: true });
       await finish(o);
