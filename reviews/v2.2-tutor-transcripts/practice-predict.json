@@ -1,0 +1,87 @@
+{
+ "mode": "predict-first",
+ "turns": [
+  {
+   "role": "tutor",
+   "mode": "predict-first",
+   "acts": [
+    "question"
+   ],
+   "text": "Here's the program, fallthrough.c:\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    int n = 2;\n    switch (n) {\n    case 1:\n        puts(\"one\");\n    case 2:\n        puts(\"two\");\n    case 3:\n        puts(\"three\");\n        break;\n    case 4:\n        puts(\"four\");\n    }\n    puts(\"done\");\n    return 0;\n}\n```\n\nWhat exactly does it print, line by line? The still comes after your answer.",
+   "artifacts": [],
+   "states_shown": []
+  },
+  {
+   "role": "learner",
+   "kind": "attempt",
+   "text": "It prints two and then done. The next case label stops it."
+  },
+  {
+   "role": "tutor",
+   "mode": "predict-first",
+   "acts": [
+    "feedback",
+    "artifact",
+    "consent"
+   ],
+   "text": "Not quite. You expected the case 3 label to stop it, but a case label is only a label and does not stop execution, so case 2 falls through into case 3 and prints three.\n\nHere's the still, with every step of the trace unlocked (wide and portrait, light and dark):\n- /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-light.png\n- /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-dark.png\n- /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-light.png\n- /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-dark.png\n\nCan I note this attempt as evidence?",
+   "classification": "misconception:m.stops",
+   "feedback": "You expected the case 3 label to stop it, but a case label is only a label and does not stop execution, so case 2 falls through into case 3 and prints three.",
+   "artifacts": [
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-light.png",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-dark.png",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-light.png",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-dark.png"
+   ],
+   "states_shown": [
+    "s0",
+    "s1",
+    "s2",
+    "s3",
+    "s4"
+   ]
+  },
+  {
+   "role": "learner",
+   "kind": "consent-yes",
+   "text": "Yes, you can note it."
+  },
+  {
+   "role": "tutor",
+   "mode": "predict-first",
+   "acts": [
+    "question"
+   ],
+   "text": "Noted. Here's a small fresh variation, into_break.c:\n\n```c\n#include <stdio.h>\n\nint main(void) {\n    int n = 2;\n    switch (n) {\n    case 1:\n        puts(\"one\");\n    case 2:\n        puts(\"two\");\n    case 3:\n        break;\n    case 4:\n        puts(\"four\");\n    }\n    puts(\"done\");\n    return 0;\n}\n```\n\nWhat exactly does it print, line by line?",
+   "artifacts": [],
+   "states_shown": []
+  },
+  {
+   "role": "learner",
+   "kind": "satisfied",
+   "text": "Got it, thanks. That's enough for today."
+  },
+  {
+   "role": "tutor",
+   "mode": "predict-first",
+   "acts": [
+    "close"
+   ],
+   "text": "Good place to stop. Today's evidence: you expected the case 3 label to stop execution, and it doesn't, so case 2 fell through into case 3. The into_break.c variation is still open; it's your next step whenever you pick this up again.",
+   "reason": "satisfied",
+   "artifacts": [],
+   "states_shown": []
+  }
+ ],
+ "events": [
+  {
+   "kind": "evidence",
+   "item": "switch-fallthrough: predict the output of fallthrough.c with n = 2",
+   "result": "misconception:m.stops",
+   "gap": "Expected the case 3 label to stop execution; a case label does not stop execution, so case 2 falls through into case 3.",
+   "next_action": "Predict the output of into_break.c, where case 2 falls into a case that holds only a break.",
+   "consent": true,
+   "after_turn": 4
+  }
+ ]
+}
