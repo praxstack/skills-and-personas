@@ -54,3 +54,6 @@ prompts/agents/AI Therapist Agent Prompt.zip
 # Isolated development and per-plan scratch
 .worktrees/
 .superpowers/
+
+# Local raw CLI transcripts, not publication material
+.scratch/teach-orchestration/

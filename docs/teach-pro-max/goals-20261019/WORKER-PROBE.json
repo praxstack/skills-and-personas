@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "checked_at": "2026-10-19",
+  "scope": "subscription CLI transport canary, not teaching acceptance",
+  "grok": {
+    "login_status_reported": "grok.com",
+    "model_observed": "grok-4.7-build-fast",
+    "exit_code": 0,
+    "outer_json_valid": true,
+    "extracted_answer": {
+      "nonce": "helios-7421",
+      "total": 53,
+      "source": "INPUT.md",
+      "files_changed": []
+    },
+    "content_check": "matches original synthetic input and independent arithmetic",
+    "strict_json_only_answer": false,
+    "acceptance": "correct answer with output-format defect",
+    "inputs_match_original_fixture": true,
+    "input_sha256": {
+      "INPUT.md": "efec00ea0d6d356e22424a0e17fa62270bfb79e0ac5eba565455e42c21f6867b",
+      "TASK.md": "2d107ac6c124ad08de33f3904a60799aac6584e2a9d39698517f406821a71937"
+    },
+    "usage_as_reported": {
+      "input_tokens": 33912,
+      "cache_read_input_tokens": 36480,
+      "cache_creation_input_tokens": 0,
+      "output_tokens": 321,
+      "reasoning_tokens": 249,
+      "total_tokens": 70713
+    },
+    "reported_cost_usd": 0.17598,
+    "billing_note": "CLI estimate, not evidence of an API charge or subscription entitlement",
+    "raw_evidence_local_only": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/prax-teach-handoff-20261019/.scratch/teach-orchestration/20261019-cli-probe/direct"
+  },
+  "cursor": {
+    "account_status": "recognized by status command; account identifier omitted",
+    "model_requested": "composer-2.5",
+    "model_quality_tested": false,
+    "failures": [
+      "model listing: authentication required",
+      "direct print call: authentication required",
+      "runner call: authentication required"
+    ],
+    "runner_status": "provider_failed",
+    "exit_code": 1,
+    "changed_input_files": [],
+    "raw_evidence_local_only": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/prax-teach-handoff-20261019/.scratch/teach-orchestration/20261019-cli-probe/runner-cursor"
+  },
+  "launcher_tests": {
+    "count": 6,
+    "passed": 6,
+    "kind": "synthetic local executable tests"
+  },
+  "external_effects": {
+    "claude_calls": 0,
+    "credential_changes": false,
+    "api_key_fallback": false,
+    "teaching_candidate_changes": false,
+    "evaluator_changes": false,
+    "installation": false
+  },
+  "limits": [
+    "One successful Grok canary does not establish general task quality.",
+    "Provider read-only modes are not OS containment.",
+    "Only exported input files were checked for changes.",
+    "Reported context usage includes provider-managed context; its full source was not audited."
+  ]
+}
