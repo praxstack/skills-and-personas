@@ -1,0 +1,106 @@
+document: GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)
+clause: -Wimplicit-fallthrough=n (the whole option entry)
+taken_from: /opt/homebrew/Cellar/gcc/16.2.0/share/man/man1/gcc-16.1 (sha256 afb356cd61087d567b59d31340e321adaf77edebb64a72c4f875c18c2d7bf705), rendered with man -P cat | col -b, lines 5896-5996
+note: Taken from the man page installed with this compiler; the online manual named in the claim's url was not consulted (no network).
+---
+-Wimplicit-fallthrough=n
+    Warn when a switch case falls through.  For example:
+
+            switch (cond)
+              {
+              case 1:
+                a = 1;
+                break;
+              case 2:
+                a = 2;
+              case 3:
+                a = 3;
+                break;
+              }
+
+    This warning does not warn when the last statement of a case cannot
+    fall through, e.g. when there is a return statement or a call to
+    function declared with the noreturn attribute.
+    -Wimplicit-fallthrough= also takes into account control flow
+    statements, such as ifs, and only warns when appropriate.  E.g.
+
+            switch (cond)
+              {
+              case 1:
+                if (i > 3) {
+                  bar (5);
+                  break;
+                } else if (i < 1) {
+                  bar (0);
+                } else
+                  return;
+              default:
+                ...
+              }
+
+    Since there are occasions where a switch case fall through is
+    desirable, GCC provides an attribute, "__attribute__
+    ((fallthrough))", that is to be used along with a null statement to
+    suppress this warning that would normally occur:
+
+            switch (cond)
+              {
+              case 1:
+                bar (0);
+                __attribute__ ((fallthrough));
+              default:
+                ...
+              }
+
+    C++17 and C23 provide a standard way to suppress the
+    -Wimplicit-fallthrough warning using "[[fallthrough]];" instead of
+    the GNU attribute.  In C++11 or C++14 users can use
+    "[[gnu::fallthrough]];", which is a GNU extension.  Instead of these
+    attributes, it is also possible to add a fallthrough comment to
+    silence the warning.  The whole body of the C or C++ style comment
+    should match the given regular expressions listed below.  The option
+    argument n specifies what kind of comments are accepted:
+
+    *<-Wimplicit-fallthrough=0 disables the warning altogether.>
+    *<-Wimplicit-fallthrough=1 matches ".*" regular>
+        expression, any comment is used as fallthrough comment.
+
+    *<-Wimplicit-fallthrough=2 case insensitively matches>
+        ".*falls?[ \t-]*thr(ough|u).*" regular expression.
+
+    *<-Wimplicit-fallthrough=3 case sensitively matches one of the>
+        following regular expressions:
+
+        *<"-fallthrough">
+        *<"@fallthrough@">
+        *<"lint -fallthrough[ \t]*">
+        *<"[ \t.!]*(ELSE,? |INTENTIONAL(LY)? )?FALL(S | |-)?THR(OUGH|U)[
+        \t.!]*(-[^\n\r]*)?">
+        *<"[ \t.!]*(Else,? |Intentional(ly)? )?Fall((s |
+        |-)[Tt]|t)hr(ough|u)[ \t.!]*(-[^\n\r]*)?">
+        *<"[ \t.!]*([Ee]lse,? |[Ii]ntentional(ly)? )?fall(s |
+        |-)?thr(ough|u)[ \t.!]*(-[^\n\r]*)?">
+    *<-Wimplicit-fallthrough=4 case sensitively matches one of the>
+        following regular expressions:
+
+        *<"-fallthrough">
+        *<"@fallthrough@">
+        *<"lint -fallthrough[ \t]*">
+        *<"[ \t]*FALLTHR(OUGH|U)[ \t]*">
+    *<-Wimplicit-fallthrough=5 doesn't recognize any comments as>
+        fallthrough comments, only attributes disable the warning.
+
+    The comment needs to be followed after optional whitespace and other
+    comments by "case" or "default" keywords or by a user label that
+    precedes some "case" or "default" label.
+
+            switch (cond)
+              {
+              case 1:
+                bar (0);
+                /* FALLTHRU */
+              default:
+                ...
+              }
+
+    The -Wimplicit-fallthrough=3 warning is enabled by -Wextra.

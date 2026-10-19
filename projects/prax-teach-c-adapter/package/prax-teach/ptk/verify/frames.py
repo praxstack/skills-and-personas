@@ -1,0 +1,633 @@
+r"""What the video frame shows at time t, read from the composition itself (review P1-3, AC-5.6).
+
+Each scene's sub-composition is loaded on its own in a 1920 x 1080 page with the same GSAP and
+fonts, and its paused timeline is seeked to the frame time, exactly as the renderer seeks it.
+The rendered state is then *derived from what is drawn*, not from timing data:
+
+    program   the program whose source matches the drawn code rows (not a data attribute)
+    line      the code row under the highlight bar (its current transform)
+    path      the rail dots that are fully opaque
+    output    the output values that are fully opaque, in order
+
+and matched against the lesson's trace states. A frame in mid-tween (a segment partly drawn, a
+dot or value partly faded, or any tween on the code or output card still running) is "moving". The same pass measures the AC-5.6 layout: every key
+node fully inside the frame, no text overflow, no text under 11 px, and no empty band at the
+bottom of the frame.
+
+    video time t ──▶ frame k = floor(t * fps) ──▶ scene s with start <= k/fps < end
+                 ──▶ tl.seek(k/fps - s.start) ──▶ derive {program, line, path, output} ──▶ state id
+"""
+import math
+import re
+import shutil
+
+from . import visual
+
+EOP_JS = r"""const eop = (el) => { let o = 1; for (let e = el; e && e.nodeType === 1 && e !== document.body; e = e.parentElement)
+    o *= parseFloat(getComputedStyle(e).opacity); return o; };"""
+
+PROBE_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  const op = eop;
+  const hl = root.querySelector('.hl');
+  const hb = hl.getBoundingClientRect();
+  // only rows that are fully visible carry the program's identity (a morph draws two sets)
+  const rows = [...root.querySelectorAll('.ln[data-line]')].filter((r) => eop(r) >= 0.99);
+  let line = null, best = 1e9;
+  for (const r of rows) {
+    const b = r.getBoundingClientRect(); const d = Math.abs((b.top + b.bottom) / 2 - (hb.top + hb.bottom) / 2);
+    if (d < best) { best = d; line = +r.dataset.line; }
+  }
+  const dots = [...root.querySelectorAll('.dot')];
+  const vals = [...root.querySelectorAll('.out .val')];
+  const segs = [...root.querySelectorAll('.seg')].filter((s) => eop(s.parentElement) > 0.01)
+    .map((s) => parseFloat(getComputedStyle(s).strokeDashoffset) || 0);
+  // any tween on the mechanism (code card or output card) still running at t
+  const mech = (el) => el && el.closest && el.closest('.code, .outcard, .mechbox');
+  const active = tl.getChildren(false, true, true).some((ch) => (ch.data === 'draw' || (ch.targets && ch.targets().some(mech)))
+    && ch.startTime() <= t + 1e-6 && t < ch.endTime() - 1e-6);
+  // the mechanism panel: the state of the top layer that is fully shown (a panel lesson draws two layers in a
+  // scene that changes state; mid cross-fade is moving)
+  const layers = [...root.querySelectorAll('.mlayer')];
+  const fullL = layers.filter((l) => eop(l) >= 0.99);
+  const panel = layers.length ? (fullL.length ? fullL[fullL.length - 1].dataset.panelState : null) : undefined;
+  const moving = active || best > 1.5 || eop(hl) < 0.99 || segs.some((d) => d > 0.002 && d < 0.998)
+    || layers.some((l) => eop(l) > 0.01 && eop(l) < 0.99)
+    || dots.some((d) => op(d) > 0.01 && op(d) < 0.99)
+    || vals.some((v) => op(v) > 0.01 && op(v) < 0.99);
+  const code = rows.map((r) => [+r.dataset.line, r.querySelector('.src').textContent]);
+  // every fact the visible panel shows by value (data-m, data-fact) or gives away by geometry (data-implies)
+  const panel_facts = [...new Set([...root.querySelectorAll('.mechbox [data-m], .mechbox [data-fact], .mechbox [data-implies]')]
+    .filter((e) => eop(e) > 0.02).flatMap((e) => [e.dataset.m, e.dataset.fact, ...(e.dataset.implies || '').split(' ')])
+    .filter(Boolean))];
+  // what the side note and the diff show (WP6: the note waits until the diff is complete)
+  const one = (s) => { const e = root.querySelector(s); return e ? +eop(e).toFixed(3) : null; };
+  const each = (s) => [...root.querySelectorAll(s)].map((e) => +eop(e).toFixed(3));
+  const diff = { file_old: one('.file[data-set="old"]'), file_cur: one('.file[data-set="cur"]'),
+                 removed: each('.band.minus'), added: each('.ln.add'), rows_cur: one('.rows[data-set="cur"]') };
+  return { t, code, line, note: one('.notecard'), diff, panel: panel === undefined ? 'none' : panel, panel_facts,
+           path: dots.filter((d) => op(d) >= 0.99).map((d) => +d.dataset.line),
+           output: vals.filter((v) => op(v) >= 0.99).map((v) => v.dataset.fact),
+           moving };
+}"""
+
+LAYERS_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  return { t, layers: [...root.querySelectorAll('.mlayer')].map((l) => ({ state: l.dataset.panelState,
+           flagged: l.hasAttribute('data-layout-allow-overlap'), o: +eop(l).toFixed(3) })) };
+}"""
+
+MAX_CROSSFADE = 1.0  # seconds two panel layers may share the screen (measured: 0.65 to 0.7 s in the exemplars)
+LAYER_SHOWN = 0.01
+
+
+def layer_overlap_problems(rows, max_crossfade=MAX_CROSSFADE):
+    """Round-17 P2-3: HyperFrames exempts the outgoing panel layer (data-layout-allow-overlap) from its overlap
+    audit, so this owns the cross-fade, measured on frames. `rows`: [{t, layers: [{state, flagged, o}]}] sampled
+    through a scene. Two layers on screen together is allowed only inside a window where a layer is fading
+    (opacity changing frame to frame), no longer than max_crossfade, that ends before the scene does; an exempt
+    layer must be off screen at the scene's end."""
+    rows = sorted(rows, key=lambda r: r["t"])
+    problems, run = [], []
+
+    def ops(i):
+        return [l["o"] for l in rows[i]["layers"]]
+
+    def moving(i):
+        here = ops(i)
+        near = [ops(j) for j in (i - 1, i + 1) if 0 <= j < len(rows)]
+        return any(abs(a - b) > 0.001 for other in near for a, b in zip(here, other))
+
+    def close(run, at_end):
+        if not run:
+            return
+        t0, t1 = rows[run[0]]["t"], rows[run[-1]]["t"]
+        if t1 - t0 > max_crossfade + 1e-6:
+            problems.append({"kind": "cross-fade-too-long", "from": t0, "to": t1, "max": max_crossfade})
+        if at_end:
+            problems.append({"kind": "layer-never-fades-out", "from": t0,
+                             "states": [l["state"] for l in rows[run[-1]]["layers"] if l["o"] > LAYER_SHOWN]})
+        still = [rows[i]["t"] for i in run if not moving(i)]
+        if still:
+            problems.append({"kind": "overlap-not-fading", "at": still[:10], "frames": len(still)})
+
+    for i, r in enumerate(rows):
+        if sum(1 for l in r["layers"] if l["o"] > LAYER_SHOWN) > 1:
+            run.append(i)
+        else:
+            close(run, False)
+            run = []
+    close(run, True)
+    if rows:
+        left = [l["state"] for l in rows[-1]["layers"] if l.get("flagged") and l["o"] > LAYER_SHOWN]
+        if left:
+            problems.append({"kind": "exempt-layer-still-shown", "at": rows[-1]["t"], "states": left})
+    return problems
+
+
+def layer_samples(video_dir, timing, lesson_sha=None, step=0.05):
+    """{scene_id: rows} for every scene whose composition draws panel layers, sampled every `step` seconds."""
+    comp = video_dir / "composition"
+    with_layers = {f.stem for f in (comp / "compositions").glob("*.html") if "mlayer" in f.read_text()}
+    scenes = [s for s in timing["scenes"] if s["id"] in with_layers]
+    if not scenes:
+        return {}
+    hdir = video_dir / "work" / "frames-layers"
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    jobs = []
+    with visual.LocalServer(video_dir) as srv:
+        for sc in scenes:
+            ts = [round(i * step, 3) for i in range(int((sc["end"] - sc["start"]) / step))]
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            steps += [{"eval": f"({LAYERS_JS})({t})", "as": f"t:{t}"} for t in ts]
+            jobs.append({"id": f"layers:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-layers/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / "frames-layers-run", lesson_sha)
+    out = {}
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        out[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:300],
+                    "rows": sorted((r.get("values") or {}).values(), key=lambda v: v["t"])}
+    return out
+
+
+CHIPS_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  const own = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+  const factOf = (el) => { const m = el.closest('[data-m], [data-fact]'); return m ? (m.dataset.fact || m.dataset.m) : null; };
+  const texts = [...root.querySelectorAll('*')].filter((el) => own(el) && !el.closest('.chip') && eop(el) > 0.02);
+  return { t, chips: [...root.querySelectorAll('.chip')].map((c) => {
+    const b = c.getBoundingClientRect(), o = eop(c), area = Math.max(1, b.width * b.height);
+    const hits = o <= 0.02 ? [] : texts.map((el) => {
+      const r = el.getBoundingClientRect();
+      const w = Math.min(b.right, r.right) - Math.max(b.left, r.left), h = Math.min(b.bottom, r.bottom) - Math.max(b.top, r.top);
+      return (w > 0.5 && h > 0.5) ? { text: el.textContent.trim().slice(0, 30), fact: factOf(el), o: +eop(el).toFixed(3),
+                                      frac: +(w * h / Math.max(1, r.width * r.height)).toFixed(3) } : null;
+    }).filter(Boolean);
+    return { id: c.id, fact: c.dataset.fact, text: c.textContent.trim(), o: +o.toFixed(3), exempt: c.hasAttribute('data-layout-allow-overlap'),
+             box: [b.left, b.top, b.right, b.bottom].map((v) => +v.toFixed(1)), hits };
+  }) };
+}"""
+
+CHIP_SHOWN = 0.02  # a chip below this opacity is not on screen: an overlap there is a probe artefact, not a defect
+MAX_CHIP_SHOWN = 1.6  # seconds a flying value may be on screen (FLIGHT 0.75 + rest 0.35 + fade 0.2, with margin)
+
+
+def chip_overlap_problems(rows, max_shown=MAX_CHIP_SHOWN):
+    """A5 (DECISION-BRIEFS §5 row 10): the returned-value chip of a stack scene carries data-layout-allow-overlap, so
+    HyperFrames' layout audit never sees it. This owns that exemption, measured on frames. `rows`: [{t, chips: [{id,
+    fact, o, hits: [{text, fact, o, frac}]}]}] sampled through a scene. A chip may cover drawn text only while it is
+    on screen and moving (its box changes frame to frame) or resting on text that shows its own value (the slot it
+    lands in); it must be on screen no longer than max_shown and gone at the scene's end. Overlap of text another
+    fact owns while the chip is at rest, or any visible chip at the end, is a real overlap."""
+    rows = sorted(rows, key=lambda r: r["t"])
+    problems, shown = [], {}
+    boxes = {}
+    for r in rows:
+        for c in r["chips"]:
+            boxes.setdefault(c["id"], []).append((r["t"], c.get("box"), c["o"]))
+    for i, r in enumerate(rows):
+        for c in r["chips"]:
+            if c["o"] <= CHIP_SHOWN:
+                continue
+            shown.setdefault(c["id"], []).append(r["t"])
+            track = boxes[c["id"]]
+            k = next(j for j, (t, _b, _o) in enumerate(track) if t == r["t"])
+            moving = any(track[j][1] != c.get("box") for j in (k - 1, k + 1) if 0 <= j < len(track))
+            foreign = [h for h in c["hits"] if h["fact"] != c["fact"] and h["o"] > CHIP_SHOWN]
+            if foreign and not moving:
+                problems.append({"kind": "chip-covers-text-at-rest", "chip": c["id"], "at": r["t"],
+                                 "covers": [h["text"] for h in foreign][:5]})
+    for cid, ts in shown.items():
+        if ts[-1] - ts[0] > max_shown + 1e-6:
+            problems.append({"kind": "chip-shown-too-long", "chip": cid, "from": ts[0], "to": ts[-1], "max": max_shown})
+    if rows:
+        left = [c["id"] for c in rows[-1]["chips"] if c["o"] > CHIP_SHOWN]
+        if left:
+            problems.append({"kind": "chip-still-shown", "at": rows[-1]["t"], "chips": left})
+    return problems
+
+
+def chip_samples(video_dir, timing, lesson_sha=None, step=0.05):
+    """{scene_id: rows} for every scene whose composition draws a returned-value chip, sampled every `step` seconds."""
+    comp = video_dir / "composition"
+    with_chips = {f.stem for f in (comp / "compositions").glob("*.html") if 'class="chip"' in f.read_text()}
+    scenes = [s for s in timing["scenes"] if s["id"] in with_chips]
+    if not scenes:
+        return {}
+    hdir = video_dir / "work" / "frames-chips"
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    jobs = []
+    with visual.LocalServer(video_dir) as srv:
+        for sc in scenes:
+            ts = [round(i * step, 3) for i in range(int((sc["end"] - sc["start"]) / step))]
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            steps += [{"eval": f"({CHIPS_JS})({t})", "as": f"t:{t}"} for t in ts]
+            jobs.append({"id": f"chips:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-chips/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / "frames-chips-run", lesson_sha)
+    out = {}
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        out[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:300],
+                    "rows": sorted((r.get("values") or {}).values(), key=lambda v: v["t"])}
+    return out
+
+
+LAYOUT_JS = r"""() => {
+  const W = 1920, H = 1080, problems = [];
+  const root = document.querySelector('[data-composition-id]');
+  """ + EOP_JS + r"""
+  const keys = [...document.querySelectorAll('[data-key]')];
+  let lowest = 0;
+  for (const k of keys) {
+    const b = k.getBoundingClientRect();
+    lowest = Math.max(lowest, b.bottom);
+    if (b.left < -0.5 || b.top < -0.5 || b.right > W + 0.5 || b.bottom > H + 0.5)
+      problems.push({ kind: 'key-node-outside-frame', key: k.dataset.key, box: [b.left, b.top, b.right, b.bottom].map(Math.round) });
+    if (k.scrollHeight > k.clientHeight + 1 || k.scrollWidth > k.clientWidth + 1)
+      problems.push({ kind: 'key-node-inner-overflow', key: k.dataset.key, scroll: [k.scrollWidth, k.scrollHeight], client: [k.clientWidth, k.clientHeight] });
+  }
+  let minPx = 1e9;
+  for (const el of root.querySelectorAll('*')) {
+    const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+    if (!own || eop(el) < 0.02) continue;  // text nobody can see (faded out) is not on screen
+    const st = getComputedStyle(el), b = el.getBoundingClientRect();
+    const px = parseFloat(st.fontSize); minPx = Math.min(minPx, px);
+    if (px < 11) problems.push({ kind: 'min-size', text: el.textContent.trim().slice(0, 40), px });
+    if (b.left < -0.5 || b.right > W + 0.5 || b.top < -0.5 || b.bottom > H + 0.5)
+      problems.push({ kind: 'text-outside-frame', text: el.textContent.trim().slice(0, 40) });
+    const box = el.closest('[data-key]');
+    if (box && box !== el) {
+      const c = box.getBoundingClientRect();
+      if (b.left < c.left - 0.5 || b.right > c.right + 0.5 || b.top < c.top - 0.5 || b.bottom > c.bottom + 0.5)
+        problems.push({ kind: 'text-outside-card', key: box.dataset.key, text: el.textContent.trim().slice(0, 40) });
+    }
+  }
+  // no empty panel: an output card on screen shows at least one value (dimmed values of the previous run count)
+  const outcard = root.querySelector('.outcard');
+  const outs = [...root.querySelectorAll('.out')];
+  if (outcard && eop(outcard) > 0.5 && !outs.some((o) => eop(o) > 0.2))
+    problems.push({ kind: 'empty-panel', key: 'output' });
+  // D20.5: every output value on screen is paired with its mechanism: the step badge on the code
+  // line that printed it, and that line on the drawn path
+  const pairs = [];
+  for (const o of outs.filter((o) => eop(o) >= 0.99)) {
+    const set = o.dataset.set, step = o.dataset.step;
+    const badge = [...root.querySelectorAll('.ostep')].find((b) => b.dataset.set === set && b.dataset.step === step && eop(b) >= 0.99);
+    if (!badge) { problems.push({ kind: 'summary-without-mechanism', step: +step }); continue; }
+    const dot = [...root.querySelectorAll('.dot')].find((d) => d.dataset.set === set && d.dataset.line === badge.dataset.line && eop(d) >= 0.99);
+    if (!dot) problems.push({ kind: 'mechanism-not-drawn', step: +step, line: +badge.dataset.line });
+    pairs.push({ step: +step, line: +badge.dataset.line, drawn: !!dot });
+  }
+  const band = H - lowest;
+  return { problems, pairs, min_px: minPx, empty_bottom_px: Math.round(band), empty_bottom_frac: +(band / H).toFixed(3),
+           key_nodes: keys.map((k) => k.dataset.key) };
+}"""
+
+MAX_EMPTY_BOTTOM = 0.12
+
+
+def harness_pages(comp, out):
+    """One standalone page per scene: the template's contents, GSAP and the composition's fonts."""
+    out.mkdir(parents=True, exist_ok=True)
+    rel = "../../composition/"
+    pages = {}
+    for f in sorted((comp / "compositions").glob("*.html")):
+        src = f.read_text()
+        inner = re.search(r"<template>(.*)</template>", src, re.S).group(1)
+        page = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><base href="{rel}">'
+                f'<script src="vendor/gsap.min.js"></script><style>html,body{{margin:0;width:1920px;height:1080px;'
+                f'overflow:hidden;position:relative}}</style></head><body>{inner}</body></html>')
+        (out / f.name).write_text(page)
+        pages[f.stem] = f.name
+    return pages
+
+
+def frame_time(t, fps):
+    """The time of the video frame on screen at t (the frame that started at or before t)."""
+    return math.floor(t * fps + 1e-6) / fps
+
+
+def scene_at(timing, t):
+    return next(s for s in timing["scenes"] if s["start"] <= t + 1e-6 < s["end"] or s is timing["scenes"][-1])
+
+
+def drawn_program(lesson, code):
+    """The one program whose source lines are exactly the drawn code rows (review P3-B), else None."""
+    hits = [p["id"] for p in lesson.data["programs"] if code and all(
+        0 < n <= len(src) and src[n - 1].strip() == txt.strip()
+        for src in [lesson.program_source(p["id"]).split("\n")] for n, txt in code)]
+    return hits[0] if len(hits) == 1 else None
+
+
+def _frame_key(st):
+    s = st["state"]
+    return (s["program"], s["line"], tuple(sorted(set(s.get("path", [])))), tuple(s["output"]))
+
+
+def set_collisions(lesson):
+    """Groups of trace states a frame cannot tell apart (same program, line, output and visited-line set) when the
+    lesson has no panel to separate them (round-17 P3-1)."""
+    if "panel" in (lesson.data.get("figure") or {}):
+        return []
+    groups = {}
+    for st in lesson.data["trace"]:
+        groups.setdefault(_frame_key(st), []).append(st["id"])
+    return [ids for ids in groups.values() if len(ids) > 1]
+
+
+def panel_expected(lesson, scene=None):
+    """Whether a frame of `scene` must draw the mechanism panel: the lesson declares a figure.panel. A question
+    scene draws it too, at the question's own state (round 18, review neuron P2), and answer_on_panel() measures
+    that no element bound to the answer, by value or by geometry, is visible there."""
+    return "panel" in (lesson.data.get("figure") or {})
+
+
+def answer_parts(lesson, scene):
+    """The facts a question scene must not show anywhere on its panel: the answer and its parts (seal.py)."""
+    from ..project import seal
+    q = (scene or {}).get("question")
+    if not q:
+        return set()
+    qi = next(i for i, sc in enumerate(lesson.data["storyboard"]) if sc["id"] == scene["id"])
+    return seal.answer_facts(lesson.data, qi)
+
+
+def answer_on_panel(lesson, scene, panel_facts):
+    """Answer facts a question frame shows on its panel ([] when none): panel_facts are the data-m, data-fact and
+    data-implies ids of the visible panel elements, read from the drawn frame."""
+    return sorted(answer_parts(lesson, scene) & set(panel_facts or []))
+
+
+def match_state(lesson, probe, scene=None):
+    """The one trace state the frame shows; "moving", "unknown", or "ambiguous" when more than one state fits.
+    Paths compare as sets (one dot per line). Where the panel is expected (panel_expected), the drawn panel must
+    show the state; a frame that lost its panel ("none") matches nothing. Where it is not, no panel may be drawn."""
+    if probe.get("moving"):
+        return "moving"
+    has_panel = "panel" in (lesson.data.get("figure") or {})
+    want_panel = panel_expected(lesson, scene)
+    hits = []
+    for st in lesson.data["trace"]:
+        s = st["state"]
+        if (s["program"] == probe["program"] and s["line"] == probe["line"]
+                and sorted(set(s.get("path", []))) == sorted(set(probe["path"])) and s["output"] == probe["output"]
+                and (probe.get("panel") == st["id"] if want_panel else
+                     probe.get("panel", "none") == "none" if has_panel else probe.get("panel", "none") in ("none", st["id"]))):
+            hits.append(st["id"])
+    if len(hits) > 1:
+        return "ambiguous"
+    return hits[0] if hits else "unknown"
+
+
+def check_points(scene):
+    """Local times checked per scene: the midpoint (AC-5.6) and the settled end of its drawing."""
+    last = round(scene["duration"] - 1 / 30, 3)
+    settled = min(max(round(scene["shown"] - scene["start"] + 0.05, 3), round(scene["duration"] / 2, 3)), last)
+    return {"mid": round(scene["duration"] / 2, 3), "settled": settled}
+
+
+def probe(lesson, video_dir, timing, times, snapshots=None, work_name="frames", lesson_sha=None):
+    """Derived frame state at each video time in `times`, plus per scene the derived state, the
+    layout and (with `snapshots`, a dir) a PNG at each check point.
+    Returns ({t: {...probe, state, scene}}, {scene_id: {point: {state, layout}}})."""
+    comp = video_dir / "composition"
+    hdir = video_dir / "work" / work_name
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    fps = timing["fps"]
+    per_scene = {}
+    for t in times:
+        ft = frame_time(t, fps)
+        sc = scene_at(timing, ft)
+        per_scene.setdefault(sc["id"], []).append((t, round(ft - sc["start"], 4)))
+    jobs = []
+    with visual.LocalServer(video_dir) as srv:
+        for sc in timing["scenes"]:
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            for t, local in per_scene.get(sc["id"], []):
+                steps.append({"eval": f"({PROBE_JS})({local})", "as": f"t:{t}"})
+            for name, local in check_points(sc).items():
+                steps += [{"eval": f"({PROBE_JS})({local})", "as": f"p:{name}"}, {"eval": f"({LAYOUT_JS})()", "as": f"l:{name}"}]
+                if snapshots:
+                    steps.append({"shot": str(snapshots / f"{sc['id']}-{name}.png")})
+            jobs.append({"id": f"scene:{sc['id']}", "type": "script", "url": f"{srv.url}/work/{work_name}/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / f"{work_name}-run", lesson_sha)
+    frames, scenes = {}, {}
+    by_id = {sc["id"]: sc for sc in timing["scenes"]}
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        vals = r.get("values", {})
+        for k, v in vals.items():
+            if isinstance(v, dict) and "code" in v:
+                v["program"] = drawn_program(lesson, v.pop("code"))
+            if k.startswith("t:"):
+                frames[float(k[2:])] = {**v, "scene": sid, "state": match_state(lesson, v, by_id.get(sid))}
+        scenes[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:400],
+                       "console": [c for c in r.get("console", []) if "error" in c.lower()]}
+        for name in ("mid", "settled"):
+            if f"p:{name}" in vals:
+                scenes[sid][name] = {"state": match_state(lesson, vals[f"p:{name}"], by_id.get(sid)),
+                                     "layout": vals.get(f"l:{name}"),
+                                     "panel_facts": vals[f"p:{name}"].get("panel_facts", [])}
+    return frames, scenes
+
+
+def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
+    """AC-5.6 for WP0: at each scene's midpoint and settled point, every key node inside the frame,
+    no overflow, text >= 11 px, the empty band under the lowest key node under 12% of the frame,
+    and a frame that shows a known trace state (the scene's own state once settled)."""
+    snaps = video_dir / "work" / "snapshots"
+    if snaps.exists():
+        shutil.rmtree(snaps)
+    _f, scenes = probe(lesson, video_dir, timing, [], snapshots=snaps, work_name="frames-layout", lesson_sha=lesson_sha)
+    layers = layer_samples(video_dir, timing, lesson_sha)
+    chips = chip_samples(video_dir, timing, lesson_sha)
+    bad, summary = {}, {}
+    for s in timing["scenes"]:
+        got = scenes.get(s["id"], {})
+        probs = [] if got.get("ok") else [{"kind": "job-failed", "error": got.get("error")}]
+        if got.get("console"):
+            probs.append({"kind": "console", "messages": got["console"][:5]})
+        for name in ("mid", "settled"):
+            pt = got.get(name) or {}
+            lay = pt.get("layout") or {}
+            probs += [{**pr, "at": name} for pr in lay.get("problems", [])]
+            if lay.get("empty_bottom_frac", 1) > MAX_EMPTY_BOTTOM:
+                probs.append({"kind": "empty-bottom-band", "at": name, "frac": lay.get("empty_bottom_frac")})
+            # the midpoint may fall inside the scene's own drawing (a morph is long); it must still
+            # pass the layout checks, and the settled point must show the scene's state
+            drawing = name == "mid" and s["reveal"] - s["start"] <= s["duration"] / 2 < s["shown"] - s["start"]
+            if pt.get("state") in (None, "unknown", "ambiguous") or (pt.get("state") == "moving" and not drawing):
+                probs.append({"kind": "no-trace-state", "at": name, "shows": pt.get("state")})
+            leak = answer_on_panel(lesson, s, pt.get("panel_facts"))
+            if leak:
+                probs.append({"kind": "answer-on-panel", "at": name, "facts": leak})
+        if s["id"] in layers:
+            lay = layers[s["id"]]
+            probs += ([] if lay["ok"] else [{"kind": "layer-probe-failed", "error": lay["error"]}])
+            probs += layer_overlap_problems(lay["rows"]) if lay["rows"] else [{"kind": "layer-probe-empty"}]
+        if s["id"] in chips:
+            ch = chips[s["id"]]
+            probs += ([] if ch["ok"] else [{"kind": "chip-probe-failed", "error": ch["error"]}])
+            probs += chip_overlap_problems(ch["rows"]) if ch["rows"] else [{"kind": "chip-probe-empty"}]
+        if (got.get("settled") or {}).get("state") != s["state"]:
+            probs.append({"kind": "settled-state", "shows": (got.get("settled") or {}).get("state"), "scene_state": s["state"]})
+        summary[s["id"]] = {n: {"state": (got.get(n) or {}).get("state"),
+                                **{k: ((got.get(n) or {}).get("layout") or {}).get(k)
+                                   for k in ("min_px", "empty_bottom_frac", "key_nodes")}} for n in ("mid", "settled")}
+        if probs:
+            bad[s["id"]] = probs
+    collide = set_collisions(lesson)
+    if collide:
+        bad["lesson"] = [{"kind": "states-indistinguishable", "groups": collide}]
+    measured = {"scenes": summary, "problems": bad, "max_empty_bottom": MAX_EMPTY_BOTTOM, "set_collisions": collide,
+                "panel_layers": {sid: {"frames": len(v["rows"]), "max_crossfade_s": MAX_CROSSFADE} for sid, v in layers.items()},
+                "value_chips": {sid: {"frames": len(v["rows"]), "max_shown_s": MAX_CHIP_SHOWN} for sid, v in chips.items()},
+                "snapshots": sorted(f"video/work/snapshots/{p.name}" for p in snaps.glob("*.png"))}
+    return visual.g("video.scene-layout", "video", not bad and len(scenes) == len(timing["scenes"]), measured,
+                    "" if not bad else "scene snapshots fail the AC-5.6 layout or show no trace state")
+
+
+def _tween_ok(cue, nxt, frame):
+    """A frame in mid-tween is acceptable only inside a transition or answer cue, drawing the
+    explorer's program on a path between the cue's state and the next cue's (review P1-A).
+    Across a change of program (the diff morph), the rows on screen are still the explorer's
+    program, and the dots drawn belong to one of the two paths."""
+    if cue["kind"] not in ("transition", "answer") or frame.get("state") != "moving" or nxt is None:
+        return False
+    drawn, lo, hi = set(frame.get("path") or []), cue["state"], nxt["state"]
+    if lo["program"] != hi["program"]:
+        return frame.get("program") == lo["program"] and (drawn <= set(lo["path"]) or drawn <= set(hi["path"]))
+    return (frame.get("program") == lo["program"] == hi["program"]
+            and set(lo["path"]) <= drawn <= set(hi["path"]))
+
+
+def compare_pauses(cue_list, frame_at, explorer, points):
+    """Rows for every pause point; a row is bad when the explorer is not on the cue's state, or the
+    frame shows something else (see _tween_ok for the one allowed mid-tween case)."""
+    rows, bad = [], []
+    for i, c in enumerate(cue_list):
+        nxt = cue_list[i + 1] if i + 1 < len(cue_list) else None
+        for t in points(c):
+            fr = frame_at.get(round(t, 3), {})
+            row = {"cue": c["cue"], "kind": c["kind"], "t": t, "expected_state": c["state"]["state_id"],
+                   "explorer_state": explorer.get((c["cue"], t)), "frame_state": fr.get("state"),
+                   "frame": {k: fr.get(k) for k in ("program", "line", "path", "output")}}
+            rows.append(row)
+            if row["explorer_state"] != row["expected_state"] or not (
+                    _tween_ok(c, nxt, fr) or row["frame_state"] == row["explorer_state"]):
+                bad.append(row)
+    return rows, bad
+
+
+# ---------------------------------------------------------------- the program diff keeps the frame steady (WP9 Part A)
+
+MORPH_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  const problems = [];
+  const max = (els) => els.reduce((m, e) => Math.max(m, eop(e)), 0);
+  // every code row on screen keeps a line number on screen (its own, or the one it is turning into)
+  const rows = [...root.querySelectorAll('.code .ln')].filter((r) => eop(r) >= 0.99);
+  for (const r of rows) {
+    if (max([...r.querySelectorAll('.no')]) < 0.5) problems.push({ kind: 'gutter-number-gone', line: r.dataset.line || r.dataset.to });
+  }
+  // the file name is always readable
+  const files = [...root.querySelectorAll('.file')];
+  if (files.length && max(files) < 0.5) problems.push({ kind: 'file-name-gone' });
+  // no gap opens in the code: visible rows (old, moved and added) cover the card without a hole
+  const tops = [...root.querySelectorAll('.code .ln')].filter((r) => eop(r) >= 0.3)
+    .map((r) => { const b = r.getBoundingClientRect(); return [b.top, b.bottom]; }).sort((a, b) => a[0] - b[0]);
+  const lh = tops.length ? tops[0][1] - tops[0][0] : 0;
+  for (let i = 1; i < tops.length; i++) {
+    const gap = tops[i][0] - tops[i - 1][1];
+    if (gap > 0.6 * lh) problems.push({ kind: 'code-gap', px: Math.round(gap) });
+  }
+  const outs = (set) => [...root.querySelectorAll(`.out[data-set="${set}"]`)].map((o) => +eop(o).toFixed(3));
+  return { t, problems, out: outs('old'), cur: outs('cur'),
+           notes: max([...root.querySelectorAll('.notecard, .changecard, .qcard')]) };
+}"""
+
+
+NEW_OUTPUT_VISIBLE = 0.5  # a replacement output value at this opacity or more is on screen
+
+
+def morph_output_problems(samples):
+    """Round-17 Codex 8: continuous readable output through a program change, measured on the frames alone (no
+    planner time). `samples`: [{t, out: old output opacities, cur: new output opacities}] in time order. Until
+    the first frame where a new output value is visibly on screen, every old output value must be fully shown."""
+    problems = []
+    for v in sorted(samples, key=lambda x: x["t"]):
+        if any(o >= NEW_OUTPUT_VISIBLE for o in v.get("cur") or []):
+            break
+        if v.get("out") and min(v["out"]) < 0.99:
+            problems.append({"kind": "output-not-readable", "t": v["t"], "opacity": min(v["out"]),
+                             "why": "the old output faded before any new output was on screen"})
+    return problems
+
+
+def morph_gate(lesson, video_dir, timing, lesson_sha=None):
+    """A program change keeps the frame steady (WP9 Part A): through the diff every visible code row keeps a line
+    number, the file name stays readable, no gap opens in the code, the old output stays fully shown until new output
+    is on screen (morph_output_problems; no planner time, round-17 Codex 8), and the note column is never empty
+    once the title is in. Sampled every 0.05 s from the scene start to `shown`."""
+    scenes = [s for s in timing["scenes"] if s.get("morph")]
+    if not scenes:
+        return visual.g("video.morph-stable", "video", True, {"morph_scenes": 0, "note": "no program change in this lesson"})
+    comp = video_dir / "composition"
+    hdir = video_dir / "work" / "frames-morph"
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    jobs, plans = [], {}
+    with visual.LocalServer(video_dir) as srv:
+        for sc in scenes:
+            end = sc["shown"] - sc["start"]
+            ts = [round(x / 20, 2) for x in range(0, int(end * 20) + 1)]  # every 0.05 s
+            plans[sc["id"]] = {"times": ts}
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            steps += [{"eval": f"({MORPH_JS})({t})", "as": f"t:{t}"} for t in ts]
+            jobs.append({"id": f"morph:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-morph/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / "frames-morph-run", lesson_sha)
+    bad, sampled = [], 0
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        if not r.get("ok"):
+            bad.append({"scene": sid, "kind": "job-failed", "error": r.get("error", "")[:300]})
+            continue
+        rows = sorted((r.get("values") or {}).values(), key=lambda v: v["t"])
+        for v in rows:
+            sampled += 1
+            probs = list(v["problems"])
+            if v["t"] >= 0.45 and v["notes"] < 0.5:
+                probs.append({"kind": "note-column-empty", "opacity": v["notes"]})
+            bad += [{"scene": sid, "t": v["t"], **pr} for pr in probs]
+        out_probs = morph_output_problems(rows)
+        if out_probs:
+            plans[sid]["output_unreadable_from"] = out_probs[0]["t"]
+        bad += [{"scene": sid, **pr} for pr in out_probs]
+    return visual.g("video.morph-stable", "video", not bad and sampled > 0,
+                    {"morph_scenes": [s["id"] for s in scenes], "frames_sampled": sampled, "problems": bad[:30],
+                     "output_rule": "old output fully shown until a new output value is on screen (opacity >= "
+                                    f"{NEW_OUTPUT_VISIBLE}), measured on the frames", "scenes": plans},
+                    "" if not bad else "the frame loses its gutter, file name, output or note during the program diff")

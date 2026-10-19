@@ -1,0 +1,1545 @@
+{
+  "schema": "prax-teach/lesson@1",
+  "id": "factorial-stack",
+  "title": "factorial(3) on the call stack",
+  "topic": "recursion",
+  "language": "c",
+  "request": "Show me factorial(3) on the call stack, with frames pushed and popped and the return values, in all six media.",
+  "programs": [
+    {
+      "id": "p1",
+      "path": "programs/factorial.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 3,
+        "to": 15
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "8d2dd6acccd4cab2a20614e09dce21dca7fd5a5d7a50616d3657237b66402752"
+    },
+    {
+      "id": "p2",
+      "path": "programs/fact_n1.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 3,
+        "to": 15
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "49f8fa3ac2fb2ca74e0015e661231e507c7946b69c6123cbec5b1df1cbf36bd2"
+    },
+    {
+      "id": "p3",
+      "path": "programs/fact_n2.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 3,
+        "to": 15
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "30c3ca577b97e9fcde70f9276105cc3e05fbad15ef0c9de311e1cd729b8507d9"
+    },
+    {
+      "id": "p4",
+      "path": "programs/fact_n4.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 3,
+        "to": 15
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "7f89660aab96bcb7d64968004b9a41033d1e6c5a6a81e9c910c72d87bf7cc251"
+    },
+    {
+      "id": "p5",
+      "path": "programs/fact_n5.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "show": {
+        "from": 3,
+        "to": 15
+      },
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "b61a02178a62addf626f2dd322e6ef00a138787e87c8b3b72a85f29a925e3194"
+    }
+  ],
+  "facts": [
+    {
+      "id": "f.l1",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          1
+        ]
+      },
+      "value": "enter factorial(3)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.l2",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          2
+        ]
+      },
+      "value": "enter factorial(2)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.l3",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 3
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          3
+        ]
+      },
+      "value": "enter factorial(1)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.l4",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 4
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          4
+        ]
+      },
+      "value": "factorial(1) = 1",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.l5",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 5
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          5
+        ]
+      },
+      "value": "factorial(2) = 2",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.l6",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 6
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          6
+        ]
+      },
+      "value": "factorial(3) = 6",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.l7",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 7
+      },
+      "expect": {
+        "fn": "factorial_event",
+        "args": [
+          3,
+          7
+        ]
+      },
+      "value": "main got 6",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.call3",
+      "program": "p1",
+      "kind": "derived",
+      "select": {
+        "stream": "stdout",
+        "line": 1,
+        "field": 2
+      },
+      "expect": {
+        "fn": "call_label",
+        "args": [
+          "factorial",
+          3
+        ]
+      },
+      "value": "factorial(3)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.call2",
+      "program": "p1",
+      "kind": "derived",
+      "select": {
+        "stream": "stdout",
+        "line": 2,
+        "field": 2
+      },
+      "expect": {
+        "fn": "call_label",
+        "args": [
+          "factorial",
+          2
+        ]
+      },
+      "value": "factorial(2)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.call1",
+      "program": "p1",
+      "kind": "derived",
+      "select": {
+        "stream": "stdout",
+        "line": 3,
+        "field": 2
+      },
+      "expect": {
+        "fn": "call_label",
+        "args": [
+          "factorial",
+          1
+        ]
+      },
+      "value": "factorial(1)",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.ret1",
+      "program": "p1",
+      "kind": "derived",
+      "select": {
+        "stream": "stdout",
+        "line": 4,
+        "field": 3
+      },
+      "expect": {
+        "fn": "factorial",
+        "args": [
+          1
+        ]
+      },
+      "value": "1",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.ret2",
+      "program": "p1",
+      "kind": "derived",
+      "select": {
+        "stream": "stdout",
+        "line": 5,
+        "field": 3
+      },
+      "expect": {
+        "fn": "factorial",
+        "args": [
+          2
+        ]
+      },
+      "value": "2",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.ret3",
+      "program": "p1",
+      "kind": "derived",
+      "select": {
+        "stream": "stdout",
+        "line": 6,
+        "field": 3
+      },
+      "expect": {
+        "fn": "factorial",
+        "args": [
+          3
+        ]
+      },
+      "value": "6",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.out",
+      "program": "p1",
+      "kind": "value",
+      "select": {
+        "stream": "stdout"
+      },
+      "expect": {
+        "fn": "factorial_stdout",
+        "args": [
+          3
+        ]
+      },
+      "value": "enter factorial(3)\nenter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nfactorial(3) = 6\nmain got 6\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 factorial.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7a02412f927738f83f2a87769a4dcd7afcfc1c8619acf6b087ba3df2e47fe0bc",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.n1.out",
+      "program": "p2",
+      "kind": "value",
+      "select": {
+        "stream": "stdout"
+      },
+      "expect": {
+        "fn": "factorial_stdout",
+        "args": [
+          1
+        ]
+      },
+      "value": "enter factorial(1)\nfactorial(1) = 1\nmain got 1\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n1.c && ./p2 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "997672c0b23dc844221ac544475c3d35ee15b23bb7d7cd09b3fe26f7f755deb8",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.n2.out",
+      "program": "p3",
+      "kind": "value",
+      "select": {
+        "stream": "stdout"
+      },
+      "expect": {
+        "fn": "factorial_stdout",
+        "args": [
+          2
+        ]
+      },
+      "value": "enter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nmain got 2\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n2.c && ./p3 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "0909ee1737b11f711b79e7f2f52b7ebbef37cfc223e03245850835debe9689ac",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.n4.out",
+      "program": "p4",
+      "kind": "value",
+      "select": {
+        "stream": "stdout"
+      },
+      "expect": {
+        "fn": "factorial_stdout",
+        "args": [
+          4
+        ]
+      },
+      "value": "enter factorial(4)\nenter factorial(3)\nenter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nfactorial(3) = 6\nfactorial(4) = 24\nmain got 24\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n4.c && ./p4 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "7ae780ebf19b9b5c3c2926c16686deaa3a19d260c26eb79366e4a24d9115f02d",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.n5.out",
+      "program": "p5",
+      "kind": "value",
+      "select": {
+        "stream": "stdout"
+      },
+      "expect": {
+        "fn": "factorial_stdout",
+        "args": [
+          5
+        ]
+      },
+      "value": "enter factorial(5)\nenter factorial(4)\nenter factorial(3)\nenter factorial(2)\nenter factorial(1)\nfactorial(1) = 1\nfactorial(2) = 2\nfactorial(3) = 6\nfactorial(4) = 24\nfactorial(5) = 120\nmain got 120\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fact_n5.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "13aeb7ec0c3fa9af3a4c4fe4bfdd5fc66ed7159f7171023a78e6ce2f76462709",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "c.setup",
+      "kind": "framing",
+      "text": "main calls factorial(3), and factorial calls itself with n - 1 until n is 1.",
+      "justification": "factorial.c line 13 calls factorial(3); line 7 calls factorial(n - 1) only while n > 1 (line 6).",
+      "sources": [
+        {
+          "title": "programs/factorial.c",
+          "url": "programs/factorial.c",
+          "clause": "lines 3-15"
+        }
+      ]
+    },
+    {
+      "id": "c.frame",
+      "kind": "rule",
+      "text": "Each call to factorial gets its own n and its own r. This lesson draws each call to factorial as a frame on the call stack.",
+      "justification": "6.2.4p6: an automatic object's lifetime is from entry into its block until the block ends, and if the block is entered recursively a new instance is created each time; n (a parameter) and r are automatic objects of factorial's body, so every active call has its own. C does not name a stack; the frame picture is this lesson's drawing of those separate instances, kept in call order.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.4 ¶6",
+          "quote": "If the block is entered recursively, a new instance of the object is created each time.",
+          "excerpts": [
+            "sources/n2310-6.2.4p6.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.5.2.2 ¶11",
+          "quote": "Recursive function calls shall be permitted, both directly and indirectly through any chain of other functions.",
+          "excerpts": [
+            "sources/n2310-6.5.2.2p11.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.waits",
+      "kind": "mechanism",
+      "text": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits above the new one.",
+      "justification": "Line 7 computes n * factorial(n - 1); the value of a function call expression is the value its return statement returns (6.5.2.2p5, 6.8.6.4p3), so the multiplication and everything after it in factorial(3) happen only after factorial(2) returns. Meanwhile factorial(3)'s own n and r still exist (6.2.4p6). The run printed enter factorial(3) then enter factorial(2) before any result line.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.4 ¶3",
+          "quote": "If a return statement with an expression is executed, the value of the expression is returned to the caller as the value of the function call expression.",
+          "excerpts": [
+            "sources/n2310-6.8.6.4p3.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.4 ¶6",
+          "excerpts": [
+            "sources/n2310-6.2.4p6.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout lines 1-2"
+        }
+      ],
+      "facts": [
+        "f.call3",
+        "f.call2"
+      ]
+    },
+    {
+      "id": "c.depth",
+      "kind": "mechanism",
+      "text": "factorial(2) calls factorial(1), so three factorial frames now sit below main.",
+      "justification": "In factorial(2), n > 1 holds, so line 7 calls factorial(1); factorial(3) and factorial(2) are both still waiting in their line 7, and main is waiting in line 13. The run printed enter factorial(1) as line 3, before any result.",
+      "sources": [
+        {
+          "title": "programs/factorial.c",
+          "url": "programs/factorial.c",
+          "clause": "lines 6-7, 13"
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout line 3"
+        }
+      ],
+      "facts": [
+        "f.call1"
+      ]
+    },
+    {
+      "id": "c.base",
+      "kind": "mechanism",
+      "text": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1.",
+      "justification": "Line 6 tests n > 1 with n = 1: false, so line 7 is skipped and r keeps its initial value 1 from line 5; line 8 prints factorial(1) = 1 and line 9 returns r. The run printed factorial(1) = 1 as line 4.",
+      "sources": [
+        {
+          "title": "programs/factorial.c",
+          "url": "programs/factorial.c",
+          "clause": "lines 5-9"
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout line 4"
+        }
+      ],
+      "facts": [
+        "f.ret1"
+      ]
+    },
+    {
+      "id": "c.unwind",
+      "kind": "mechanism",
+      "text": "Each factorial return hands its value to the call that made it, one frame up. factorial(2) gets 1 and returns 2 × 1 = 2.",
+      "justification": "6.8.6.4p3: a return with an expression gives its value to the caller as the value of the call expression. factorial(1) was called by factorial(2) in line 7, so factorial(2) computes r = 2 * 1 = 2 and returns it. The run printed factorial(2) = 2 as line 5.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.4 ¶3",
+          "quote": "If a return statement with an expression is executed, the value of the expression is returned to the caller as the value of the function call expression.",
+          "excerpts": [
+            "sources/n2310-6.8.6.4p3.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout line 5"
+        }
+      ],
+      "facts": [
+        "f.ret2"
+      ]
+    },
+    {
+      "id": "c.ret3",
+      "kind": "mechanism",
+      "text": "factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
+      "justification": "factorial(2) was called by factorial(3) in line 7, so factorial(3) computes r = 3 * 2 = 6; main called factorial(3) in line 13, so 6 is returned to main (6.8.6.4p3). The run printed factorial(3) = 6 as line 6.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.4 ¶3",
+          "quote": "If a return statement with an expression is executed, the value of the expression is returned to the caller as the value of the function call expression.",
+          "excerpts": [
+            "sources/n2310-6.8.6.4p3.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout line 6"
+        }
+      ],
+      "facts": [
+        "f.ret3"
+      ]
+    },
+    {
+      "id": "c.main",
+      "kind": "framing",
+      "text": "main stores the 6 in its own r and prints main got 6.",
+      "justification": "Line 13 initialises main's r with the value of factorial(3), and line 14 prints it. The run's last line is main got 6.",
+      "sources": [
+        {
+          "title": "programs/factorial.c",
+          "url": "programs/factorial.c",
+          "clause": "lines 13-14"
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout line 7"
+        }
+      ],
+      "facts": [
+        "f.l7"
+      ]
+    },
+    {
+      "id": "c.order",
+      "kind": "mechanism",
+      "text": "The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3.",
+      "justification": "Each call prints its enter line first and finishes its callee before printing its result line, so entries come out 3, 2, 1 and results 1, 2, 3. The run printed lines 1-3 as enter factorial(3), (2), (1) and lines 4-6 as factorial(1) = 1, factorial(2) = 2, factorial(3) = 6.",
+      "sources": [
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout lines 1-6"
+        }
+      ],
+      "facts": [
+        "f.l1",
+        "f.l2",
+        "f.l3",
+        "f.l4",
+        "f.l5",
+        "f.l6"
+      ]
+    },
+    {
+      "id": "c.pause",
+      "kind": "framing",
+      "text": "The next scene answers this question.",
+      "justification": "Framing for the question scene sc4. The film shows the question and its choices, and video/transcript.txt prints the question just before this line. The film does not stop here; the answer appears in the next scene, sc5 (output line 4). Explanation comes first; a prediction pause runs only in a practice mode the learner turns on (SPEC v1.4 AC-6.8). The sentence states no fact about C.",
+      "sources": [
+        {
+          "title": "this lesson's storyboard",
+          "clause": "question scene sc4 and the next scene, sc5 (output line 4)"
+        }
+      ]
+    },
+    {
+      "id": "c.recap",
+      "kind": "mechanism",
+      "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return. Each factorial return value flows up to the frame above.",
+      "justification": "Each call creates new instances of n and r that live until that call returns (6.2.4p6), so the set of live frames grows by one per call and shrinks by one per return; each return value goes to the caller, the frame above it in the drawing (6.8.6.4p3). The run shows three enters, then three results, then main's line.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.2.4 ¶6",
+          "excerpts": [
+            "sources/n2310-6.2.4p6.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.4 ¶3",
+          "quote": "If a return statement with an expression is executed, the value of the expression is returned to the caller as the value of the function call expression.",
+          "excerpts": [
+            "sources/n2310-6.8.6.4p3.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/factorial.c",
+          "clause": "stdout lines 1-7"
+        }
+      ]
+    },
+    {
+      "id": "c.slot",
+      "kind": "framing",
+      "text": "In this lesson's drawing, the empty box after r = 3 * stands for the value factorial(2) has not returned yet.",
+      "justification": "Describes the lesson's own notation: a waiting frame shows the assignment on its call line (line 7, r = n * factorial(n - 1)) with n replaced by its value and the pending call drawn as an empty box; it makes no claim about C beyond the source line.",
+      "sources": [
+        {
+          "title": "programs/factorial.c",
+          "clause": "line 7"
+        }
+      ],
+      "facts": [
+        "f.call2"
+      ]
+    },
+    {
+      "id": "c.korder",
+      "kind": "mechanism",
+      "text": "For every n from 1 to 5, the calls to factorial start at n and count down to 1, then finish in the reverse order, and main gets n!.",
+      "justification": "Each call prints its entry line, then (when n > 1) calls factorial(n - 1) and waits for it, then prints its result line. So for n = 1 there is a single call, factorial(1); for larger n the entries run n, n - 1, ..., 1 and the results 1, 2, ..., n. The captured runs of the five programs show exactly this, with main got 1, 2, 6, 24, 120.",
+      "sources": [
+        {
+          "title": "captured run of programs/fact_n1.c, fact_n2.c, factorial.c, fact_n4.c, fact_n5.c",
+          "clause": "whole stdout"
+        },
+        {
+          "title": "programs/factorial.c",
+          "clause": "lines 3-14"
+        }
+      ],
+      "facts": [
+        "f.n1.out",
+        "f.n2.out",
+        "f.out",
+        "f.n4.out",
+        "f.n5.out"
+      ]
+    },
+    {
+      "id": "c.kbase1",
+      "kind": "mechanism",
+      "text": "With n = 1, n > 1 is false at once, so factorial(1) never calls factorial again and returns 1.",
+      "justification": "programs/fact_n1.c: main calls factorial(1); line 6 tests n > 1, which is false, so line 7 (the only call to factorial inside factorial) never runs, r stays 1 (line 5) and line 9 returns it. The captured run prints enter factorial(1), factorial(1) = 1, main got 1. factorial(1) still calls printf; the sentence is about calls to factorial.",
+      "sources": [
+        {
+          "title": "captured run of programs/fact_n1.c",
+          "clause": "whole stdout"
+        },
+        {
+          "title": "programs/fact_n1.c",
+          "clause": "lines 5-9"
+        }
+      ],
+      "facts": [
+        "f.n1.out"
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "id": "m.base",
+      "statement": "The 1 from the base case is what comes back to main.",
+      "correction": "c.unwind"
+    },
+    {
+      "id": "m.once",
+      "statement": "factorial(3) multiplies 3 by the base case's 1, so it returns 3.",
+      "correction": "c.ret3"
+    },
+    {
+      "id": "m.firstdone",
+      "statement": "factorial(3) was called first, so it prints its result first.",
+      "correction": "c.order"
+    },
+    {
+      "id": "m.zero",
+      "statement": "The calls go on down to factorial(0) before any of them prints a result.",
+      "correction": "c.base"
+    }
+  ],
+  "trace": [
+    {
+      "id": "s0",
+      "label": "main calls factorial(3)",
+      "state": {
+        "program": "p1",
+        "line": 4,
+        "path": [
+          13,
+          4
+        ],
+        "output": [
+          "f.l1"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "waiting",
+            "line": 13
+          },
+          {
+            "fn": "factorial",
+            "status": "running",
+            "call": "f.call3",
+            "line": 4
+          }
+        ]
+      },
+      "reveals": [
+        "f.l1"
+      ]
+    },
+    {
+      "id": "s1",
+      "label": "factorial(3) waits for factorial(2)",
+      "state": {
+        "program": "p1",
+        "line": 4,
+        "path": [
+          13,
+          4,
+          5,
+          6,
+          7,
+          4
+        ],
+        "output": [
+          "f.l1",
+          "f.l2"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "waiting",
+            "line": 13
+          },
+          {
+            "fn": "factorial",
+            "status": "waiting",
+            "call": "f.call3",
+            "line": 7
+          },
+          {
+            "fn": "factorial",
+            "status": "running",
+            "call": "f.call2",
+            "line": 4
+          }
+        ]
+      },
+      "reveals": [
+        "f.l2"
+      ]
+    },
+    {
+      "id": "s2",
+      "label": "Three frames below main",
+      "state": {
+        "program": "p1",
+        "line": 4,
+        "path": [
+          13,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          7,
+          4
+        ],
+        "output": [
+          "f.l1",
+          "f.l2",
+          "f.l3"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "waiting",
+            "line": 13
+          },
+          {
+            "fn": "factorial",
+            "status": "waiting",
+            "call": "f.call3",
+            "line": 7
+          },
+          {
+            "fn": "factorial",
+            "status": "waiting",
+            "call": "f.call2",
+            "line": 7
+          },
+          {
+            "fn": "factorial",
+            "status": "running",
+            "call": "f.call1",
+            "line": 4
+          }
+        ]
+      },
+      "reveals": [
+        "f.l3"
+      ]
+    },
+    {
+      "id": "s3",
+      "label": "factorial(1) returns 1",
+      "state": {
+        "program": "p1",
+        "line": 9,
+        "path": [
+          13,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          8,
+          9
+        ],
+        "output": [
+          "f.l1",
+          "f.l2",
+          "f.l3",
+          "f.l4"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "waiting",
+            "line": 13
+          },
+          {
+            "fn": "factorial",
+            "status": "waiting",
+            "call": "f.call3",
+            "line": 7
+          },
+          {
+            "fn": "factorial",
+            "status": "waiting",
+            "call": "f.call2",
+            "line": 7
+          },
+          {
+            "fn": "factorial",
+            "status": "returning",
+            "call": "f.call1",
+            "line": 9,
+            "ret": "f.ret1"
+          }
+        ]
+      },
+      "reveals": [
+        "f.l4"
+      ]
+    },
+    {
+      "id": "s4",
+      "label": "factorial(2) returns 2",
+      "state": {
+        "program": "p1",
+        "line": 9,
+        "path": [
+          13,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          8,
+          9,
+          7,
+          8,
+          9
+        ],
+        "output": [
+          "f.l1",
+          "f.l2",
+          "f.l3",
+          "f.l4",
+          "f.l5"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "waiting",
+            "line": 13
+          },
+          {
+            "fn": "factorial",
+            "status": "waiting",
+            "call": "f.call3",
+            "line": 7
+          },
+          {
+            "fn": "factorial",
+            "status": "returning",
+            "call": "f.call2",
+            "line": 9,
+            "ret": "f.ret2",
+            "got": "f.ret1"
+          }
+        ]
+      },
+      "reveals": [
+        "f.l5"
+      ]
+    },
+    {
+      "id": "s5",
+      "label": "factorial(3) returns 6",
+      "state": {
+        "program": "p1",
+        "line": 9,
+        "path": [
+          13,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          8,
+          9,
+          7,
+          8,
+          9,
+          7,
+          8,
+          9
+        ],
+        "output": [
+          "f.l1",
+          "f.l2",
+          "f.l3",
+          "f.l4",
+          "f.l5",
+          "f.l6"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "waiting",
+            "line": 13
+          },
+          {
+            "fn": "factorial",
+            "status": "returning",
+            "call": "f.call3",
+            "line": 9,
+            "ret": "f.ret3",
+            "got": "f.ret2"
+          }
+        ]
+      },
+      "reveals": [
+        "f.l6"
+      ]
+    },
+    {
+      "id": "s6",
+      "label": "main prints what it got",
+      "state": {
+        "program": "p1",
+        "line": 14,
+        "path": [
+          13,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          7,
+          4,
+          5,
+          6,
+          8,
+          9,
+          7,
+          8,
+          9,
+          7,
+          8,
+          9,
+          13,
+          14
+        ],
+        "output": [
+          "f.l1",
+          "f.l2",
+          "f.l3",
+          "f.l4",
+          "f.l5",
+          "f.l6",
+          "f.l7"
+        ],
+        "vars": {},
+        "frames": [
+          {
+            "fn": "main",
+            "status": "running",
+            "line": 14,
+            "got": "f.ret3"
+          }
+        ]
+      },
+      "reveals": [
+        "f.l7"
+      ]
+    }
+  ],
+  "storyboard": [
+    {
+      "id": "sc1",
+      "title": "main calls factorial(3)",
+      "state": "s0",
+      "key_nodes": [
+        "code",
+        "panel"
+      ],
+      "narration": [
+        {
+          "text": "main calls factorial(3), and factorial calls itself with n - 1 until n is 1.",
+          "claims": [
+            "c.setup"
+          ]
+        },
+        {
+          "text": "Each call to factorial gets its own n and its own r, drawn here as one frame on the call stack.",
+          "claims": [
+            "c.frame"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc2",
+      "title": "One frame per factorial call",
+      "state": "s1",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "Now factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits above the new one.",
+          "claims": [
+            "c.waits"
+          ]
+        },
+        {
+          "text": "The empty box after r = 3 * stands for the value factorial(2) has not returned yet.",
+          "claims": [
+            "c.slot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc3",
+      "title": "Three factorial frames on main",
+      "state": "s2",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "Then factorial(2) calls factorial(1), so three factorial frames now sit below main.",
+          "claims": [
+            "c.depth"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc4",
+      "title": "The question",
+      "state": "s2",
+      "key_nodes": [
+        "code",
+        "question"
+      ],
+      "question": {
+        "prompt": "What is line 4 of the output?",
+        "answer_fact": "f.l4",
+        "options": [
+          {
+            "text": "factorial(3) = 6",
+            "correct": false,
+            "misconception": "m.firstdone"
+          },
+          {
+            "text": "factorial(1) = 1",
+            "correct": true
+          },
+          {
+            "text": "enter factorial(0)",
+            "correct": false,
+            "misconception": "m.zero"
+          }
+        ]
+      },
+      "narration": [
+        {
+          "text": "The next scene answers this question.",
+          "claims": [
+            "c.pause"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc5",
+      "title": "The base case returns",
+      "state": "s3",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "In factorial(1), n > 1 is false, so r stays 1 and it returns 1.",
+          "claims": [
+            "c.base"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.base"
+      ],
+      "ask": "What does factorial(1) print and return?"
+    },
+    {
+      "id": "sc6",
+      "title": "One frame up",
+      "state": "s4",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "Each factorial return hands its value to the call that made it, one frame up. factorial(2) gets 1 and returns 2 × 1 = 2.",
+          "claims": [
+            "c.unwind"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.unwind"
+      ],
+      "ask": "factorial(2) gets 1 back: what does it return?"
+    },
+    {
+      "id": "sc7",
+      "title": "Back to main",
+      "state": "s5",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "Then factorial(3) gets 2 and returns 3 × 2 = 6 to main.",
+          "claims": [
+            "c.ret3"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.ret3"
+      ],
+      "ask": "What does factorial(3) return to main?"
+    },
+    {
+      "id": "sc8",
+      "title": "main prints the result",
+      "state": "s6",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "main stores the returned 6 in its own r, then prints main got 6.",
+          "claims": [
+            "c.main"
+          ]
+        },
+        {
+          "text": "The calls start in the order 3, 2, 1, and they finish in the reverse order: 1, 2, 3.",
+          "claims": [
+            "c.order"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.main",
+        "c.order"
+      ],
+      "ask": "In what order do the three calls finish?"
+    },
+    {
+      "id": "sc9",
+      "title": "Recap",
+      "state": "s6",
+      "view": "summary",
+      "mechanism": "s5",
+      "key_nodes": [
+        "code",
+        "panel",
+        "output"
+      ],
+      "narration": [
+        {
+          "text": "The stack column grows by one frame for each factorial call and shrinks by one for each return.",
+          "claims": [
+            "c.recap"
+          ]
+        },
+        {
+          "text": "Each factorial return value flows up to the frame above.",
+          "claims": [
+            "c.recap"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.recap"
+      ]
+    }
+  ],
+  "figure": {
+    "misconception": "m.base",
+    "kind": "code-trace",
+    "title_claim": "c.order",
+    "program": "p1",
+    "states": [
+      "s0",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6"
+    ],
+    "notes": [
+      {
+        "line": 7,
+        "claim": "c.waits"
+      },
+      {
+        "line": 9,
+        "claim": "c.unwind"
+      }
+    ],
+    "panel": {
+      "kind": "stack",
+      "place": "hero",
+      "vars": {
+        "param": "n",
+        "result": "r"
+      }
+    },
+    "caption_claims": [],
+    "explore": {
+      "kind": "calls",
+      "var": "n",
+      "values": [
+        {
+          "value": "1",
+          "program": "p2",
+          "facts": {
+            "out": "f.n1.out"
+          },
+          "claims": [
+            "c.kbase1"
+          ]
+        },
+        {
+          "value": "2",
+          "program": "p3",
+          "facts": {
+            "out": "f.n2.out"
+          },
+          "claims": []
+        },
+        {
+          "value": "3",
+          "program": "p1",
+          "facts": {
+            "out": "f.out"
+          },
+          "claims": []
+        },
+        {
+          "value": "4",
+          "program": "p4",
+          "facts": {
+            "out": "f.n4.out"
+          },
+          "claims": []
+        },
+        {
+          "value": "5",
+          "program": "p5",
+          "facts": {
+            "out": "f.n5.out"
+          },
+          "claims": []
+        }
+      ],
+      "claims": [
+        "c.korder",
+        "c.frame"
+      ]
+    }
+  },
+  "requested_media": [
+    "still",
+    "explorer",
+    "qa",
+    "cards",
+    "video",
+    "ive"
+  ],
+  "platform": {
+    "captured": true,
+    "os": "macOS 27.0.1",
+    "arch": "arm64",
+    "sizeof": {
+      "char": 1,
+      "short": 2,
+      "int": 4,
+      "long": 8,
+      "long long": 8,
+      "float": 4,
+      "double": 8,
+      "void*": 8
+    },
+    "char_signed": true,
+    "endianness": "little",
+    "libc": "libSystem (macOS 27.0.1)",
+    "compilers": {
+      "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+    },
+    "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+  },
+  "title_claims": []
+}

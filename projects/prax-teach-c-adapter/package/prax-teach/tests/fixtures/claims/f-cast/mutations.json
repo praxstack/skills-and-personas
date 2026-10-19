@@ -1,0 +1,70 @@
+{
+ "note": "Planted errors for the f-cast fixture (E22). None restates misconceptions[]. The %f 'same bits' claim is NOT here: it is the separate held-out regression (tests/test_regression_f_cast.py).",
+ "mutations": [
+  {
+   "id": "f1.cast.reads",
+   "kind": "false-mechanism",
+   "target": "c.cast",
+   "find": "The cast (double)a converts the value 66 to the double 66.0 before printf is called, so %f receives a double and prints 66.000000.",
+   "replace": "The cast (double)a tells printf to read the byte stored in a as a double, so %f prints 66.000000.",
+   "why_false": "A cast is an operator that converts the value; it gives printf no instruction and no access to a's storage."
+  },
+  {
+   "id": "f2.ascii.always",
+   "kind": "dropped-caveat",
+   "target": "c.ascii",
+   "find": "On this platform the character constant 'B' has the value 66, its code in ASCII and in UTF-8.",
+   "replace": "In C, the character constant 'B' always has the value 66.",
+   "why_false": "The execution character set and its values are implementation-defined (5.2.1p1); EBCDIC systems give 'B' the value 194."
+  },
+  {
+   "id": "f3.mismatch.prints",
+   "kind": "ub-dishonest",
+   "target": "c.mismatch",
+   "find": "which is undefined behaviour.",
+   "replace": "so it prints 0.000000.",
+   "why_false": "The behaviour is undefined (7.21.6.1p9); no output is guaranteed."
+  },
+  {
+   "id": "f4.promote.byte",
+   "kind": "false-mechanism",
+   "target": "c.promote",
+   "find": "the char a is promoted to int before the call, so %d receives the int 66",
+   "replace": "the char a is passed as a single byte, and %d reads that byte as 66",
+   "why_false": "Variadic arguments undergo the default argument promotions: a is passed as an int."
+  },
+  {
+   "id": "f5.cast.citation",
+   "kind": "wrong-citation",
+   "target": "c.cast",
+   "sources": [
+    {
+     "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+     "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+     "clause": "§6.3.1.3 ¶2",
+     "quote": "Otherwise, if the new type is unsigned, the value is converted by repeatedly adding or subtracting one more than the maximum value that can be represented in the new type until the value is in the range of the new type.",
+     "excerpts": [
+      "sources/n2310-6.3.1.3p2.txt"
+     ]
+    }
+   ],
+   "why_false": "6.3.1.3 covers conversions between integer types, not integer to double (6.3.1.4p2) or casts (6.5.4p5)."
+  },
+  {
+   "id": "f6.setup.format",
+   "kind": "false-framing",
+   "target": "c.setup",
+   "find": "then prints a with %d and (double)a",
+   "replace": "then prints a with %c and (double)a",
+   "why_false": "Line 5 uses %d, which prints 66; %c would print B."
+  },
+  {
+   "id": "f7.promote.all",
+   "kind": "overbroad",
+   "target": "c.promote",
+   "find": "In printf(\"%d\\n\", a), the char a is promoted to int before the call",
+   "replace": "Every argument passed to printf is converted to int before the call",
+   "why_false": "Only integer types narrower than int are promoted to int; float becomes double and double stays double."
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "sources": [
+    {
+      "author_or_publisher": "WG14",
+      "license_or_use_note": "Fixture citation.",
+      "limitations": "Committee draft.",
+      "retrieved_at": "2026-08-04",
+      "source_id": "c17",
+      "source_type": "official-doc",
+      "supports": [
+        "switch-semantics"
+      ],
+      "title": "ISO/IEC 9899:2018 draft N2176",
+      "url": "https://example.invalid/n2176",
+      "version_or_date": "2017-11-11"
+    }
+  ]
+}

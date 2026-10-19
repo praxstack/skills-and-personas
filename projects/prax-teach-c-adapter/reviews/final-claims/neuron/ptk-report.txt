@@ -1,0 +1,43 @@
+lesson neuron  status failed  exit 1
+started 2026-10-18T20:55:18+0530  finished 2026-10-18T20:58:38+0530  (200.5 s)
+
+  passed   values.expect                
+  passed   values.explorer              
+  passed   explorer.knob                
+  passed   explorer.prose-follows-state 
+  passed   explorer.a11y-csp-noscript   
+  passed   explorer.layout              
+  passed   explorer.file-protocol       
+  passed   qa.layers-misconceptions-print 
+  passed   qa.page                      
+  passed   values.cards                 
+  passed   values.still                 
+  passed   visual.still.layout          
+  passed   visual.still.key-nodes       
+  passed   visual.still.contrast        
+  passed   visual.still.ocr             
+  passed   visual.still.fonts           
+  passed   visual.still.alt-source      
+  passed   visual.still.network         
+  passed   video.hyperframes-check      
+  passed   video.scene-layout           
+  passed   video.morph-stable           
+  passed   video.render-isolation       
+  passed   values.video                 
+  passed   video.media                  
+  passed   video.sync                   
+  passed   video.no-answer-leak         
+  passed   values.ive                   
+  passed   ive.pause-state              
+  passed   ive.no-answer-leak           
+  passed   ive.controls                 
+  passed   ive.explore-return           
+  passed   ive.file-protocol            
+  passed   ive.layout                   
+  passed   ive.fonts                    
+  passed   ive.network                  
+  passed   ive.predict-gated            
+  passed   claims.mapping               
+  failed   claims.review                the reviewer rejected a claim or text
+  passed   claims.sensitivity           
+  passed   claims.artifacts-unchanged   

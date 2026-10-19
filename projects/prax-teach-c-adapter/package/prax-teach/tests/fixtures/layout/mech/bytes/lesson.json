@@ -1,0 +1,166 @@
+{
+ "schema": "fixture",
+ "id": "fx-bytes",
+ "platform": {
+  "captured": true,
+  "sizeof": {
+   "int": 4,
+   "double": 8
+  },
+  "endianness": "little"
+ },
+ "programs": [
+  {
+   "id": "p1",
+   "path": "programs/bytes.c"
+  }
+ ],
+ "facts": [
+  {
+   "id": "f.a0",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 1
+   }
+  },
+  {
+   "id": "f.a1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 2
+   }
+  },
+  {
+   "id": "f.a2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.a3",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 4
+   }
+  },
+  {
+   "id": "f.d0",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 1
+   }
+  },
+  {
+   "id": "f.d1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 2
+   }
+  },
+  {
+   "id": "f.d2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.d3",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 4
+   }
+  },
+  {
+   "id": "f.d4",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 5
+   }
+  },
+  {
+   "id": "f.d5",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 6
+   }
+  },
+  {
+   "id": "f.d6",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 7
+   }
+  },
+  {
+   "id": "f.d7",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 8
+   }
+  }
+ ],
+ "trace": [
+  {
+   "id": "s0",
+   "state": {
+    "program": "p1",
+    "line": 5,
+    "path": [],
+    "output": [],
+    "vars": {
+     "a": "66"
+    }
+   }
+  }
+ ],
+ "figure": {
+  "program": "p1",
+  "states": [
+   "s0"
+  ],
+  "panel": {
+   "kind": "bytes",
+   "value": {
+    "var": "a"
+   }
+  }
+ }
+}

@@ -1,0 +1,12 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §6.8.4.2 ¶5
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §6.8.4.2 ¶5
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 7887-7892 of that text
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage.
+---
+5   The integer promotions are performed on the controlling expression. The constant expression in
+    each case label is converted to the promoted type of the controlling expression. If a converted value
+    matches that of the promoted controlling expression, control jumps to the statement following the
+    matched case label. Otherwise, if there is a default label, control jumps to the labeled statement. If
+    no converted case constant expression matches and there is no default label, no part of the switch
+    body is executed.

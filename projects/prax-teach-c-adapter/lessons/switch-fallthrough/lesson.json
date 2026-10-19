@@ -1,0 +1,1333 @@
+{
+  "schema": "prax-teach/lesson@1",
+  "id": "switch-fallthrough",
+  "title": "How a switch runs its cases",
+  "topic": "switch statement",
+  "language": "c",
+  "request": "Teach me how a switch statement with a missing break falls through, as a still, a narrated video and an interactive video.",
+  "platform": {
+    "captured": true,
+    "os": "macOS 27.0.1",
+    "arch": "arm64",
+    "sizeof": {
+      "char": 1,
+      "short": 2,
+      "int": 4,
+      "long": 8,
+      "long long": 8,
+      "float": 4,
+      "double": 8,
+      "void*": 8
+    },
+    "char_signed": true,
+    "endianness": "little",
+    "libc": "libSystem (macOS 27.0.1)",
+    "compilers": {
+      "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+    },
+    "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+  },
+  "programs": [
+    {
+      "id": "p1",
+      "path": "programs/fallthrough.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": "fallthrough.c: In function 'main':\nfallthrough.c:7:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    7 |         puts(\"one\");\n      |         ^~~~~~~~~~~\nfallthrough.c:8:5: note: here\n    8 |     case 2:\n      |     ^~~~\nfallthrough.c:9:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    9 |         puts(\"two\");\n      |         ^~~~~~~~~~~\nfallthrough.c:10:5: note: here\n   10 |     case 3:\n      |     ^~~~"
+      },
+      "source_sha256": "97052ee0969c2e1211d6c2c11852640bdaef721e18b03e74d3e9d9b3775a3611"
+    },
+    {
+      "id": "p2",
+      "path": "programs/with_break.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "f5c4984ae2d529c98bef78eb7c0e18fbede404b1faa657222cafd864b44127e1"
+    },
+    {
+      "id": "p3",
+      "path": "programs/into_break.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": "into_break.c: In function 'main':\ninto_break.c:7:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    7 |         puts(\"one\");\n      |         ^~~~~~~~~~~\ninto_break.c:8:5: note: here\n    8 |     case 2:\n      |     ^~~~"
+      },
+      "source_sha256": "caf36e95a50ccd8d740b2c9bdf8584b39bfd8000525194079e139a581b0e60db"
+    }
+  ],
+  "facts": [
+    {
+      "id": "f.p1.l1",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [
+                "three"
+              ],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          1
+        ]
+      },
+      "value": "two",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fallthrough.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "38ae3b01ef4a745f1658d289ad71e39fb5f7f3c0a0f66299cccbe184579a6f0e",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p1.l2",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [
+                "three"
+              ],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          2
+        ]
+      },
+      "value": "three",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fallthrough.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "38ae3b01ef4a745f1658d289ad71e39fb5f7f3c0a0f66299cccbe184579a6f0e",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p1.l3",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 3
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [
+                "three"
+              ],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          3
+        ]
+      },
+      "value": "done",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fallthrough.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "38ae3b01ef4a745f1658d289ad71e39fb5f7f3c0a0f66299cccbe184579a6f0e",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p1.out",
+      "program": "p1",
+      "kind": "value",
+      "select": {
+        "stream": "stdout"
+      },
+      "expect": {
+        "fn": "switch_stdout",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [
+                "three"
+              ],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ]
+        ]
+      },
+      "value": "two\nthree\ndone\n",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fallthrough.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "38ae3b01ef4a745f1658d289ad71e39fb5f7f3c0a0f66299cccbe184579a6f0e",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p2.l1",
+      "program": "p2",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": true
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": true
+            },
+            {
+              "label": 3,
+              "out": [
+                "three"
+              ],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          1
+        ]
+      },
+      "value": "two",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 with_break.c && ./p2 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p2.l2",
+      "program": "p2",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": true
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": true
+            },
+            {
+              "label": 3,
+              "out": [
+                "three"
+              ],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          2
+        ]
+      },
+      "value": "done",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 with_break.c && ./p2 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p3.l1",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          1
+        ]
+      },
+      "value": "two",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 into_break.c && ./p3 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p3.l2",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          2
+        ]
+      },
+      "value": "done",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 into_break.c && ./p3 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.int.size",
+      "program": "p1",
+      "kind": "value",
+      "select": {
+        "stream": "platform",
+        "key": "sizeof.int"
+      },
+      "expect": {
+        "value": "4",
+        "reviewed": true
+      },
+      "value": "4",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fallthrough.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "38ae3b01ef4a745f1658d289ad71e39fb5f7f3c0a0f66299cccbe184579a6f0e",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "c.setup",
+      "kind": "framing",
+      "text": "The program sets n to 2 and switches on n. Case 2 has no break.",
+      "justification": "Read directly from programs/fallthrough.c: line 4 is int n = 2; line 5 is switch (n); lines 8-9 hold case 2 and puts(\"two\") with no break before case 3 on line 10.",
+      "sources": [
+        {
+          "title": "programs/fallthrough.c",
+          "url": "programs/fallthrough.c",
+          "clause": "lines 4-12"
+        }
+      ]
+    },
+    {
+      "id": "c.match",
+      "kind": "rule",
+      "text": "A switch jumps to the case label whose value matches the controlling expression.",
+      "justification": "C17 6.8.4.2p5: if a converted case value matches the promoted controlling expression, control jumps to the statement following the matched case label. Here n is 2, so control jumps to case 2.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5",
+          "quote": "If a converted value matches that of the promoted controlling expression, control jumps to the statement following the matched case label.",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.labels",
+      "kind": "mechanism",
+      "text": "A case label is only a label. It does not stop execution.",
+      "justification": "C17 6.8.1p4: labels in themselves do not alter the flow of control, which continues unimpeded across them. case 3: is a label, so control flows past it into puts(\"three\").",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.1 ¶4",
+          "quote": "Labels in themselves do not alter the flow of control, which continues unimpeded across them.",
+          "excerpts": [
+            "sources/n2310-6.8.1p4.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.fall",
+      "kind": "mechanism",
+      "text": "With n = 2, the switch runs case 2 and then falls through into case 3, so it prints two, then three.",
+      "justification": "Combines c.match (enter at case 2) and c.labels (case 3: does not stop control). The captured run of programs/fallthrough.c prints two on line 1 and three on line 2.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt",
+            "sources/n2310-6.8.1p4.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/fallthrough.c",
+          "clause": "stdout lines 1-2"
+        }
+      ],
+      "facts": [
+        "f.p1.l1",
+        "f.p1.l2"
+      ]
+    },
+    {
+      "id": "c.break",
+      "kind": "rule",
+      "text": "A break statement ends the smallest enclosing switch or loop. Here that is the switch, so execution continues after it.",
+      "justification": "C17 6.8.6.3p2: a break statement terminates execution of the smallest enclosing switch or iteration statement. The break on line 12 is not inside any loop, so it ends the switch and control continues at line 16; case 4 never runs.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.3 ¶2",
+          "quote": "A break statement terminates execution of the smallest enclosing switch or iteration statement.",
+          "excerpts": [
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.done",
+      "kind": "mechanism",
+      "text": "After the switch ends, the program prints done.",
+      "justification": "puts(\"done\") on line 16 follows the switch; the captured run prints done on line 3.",
+      "sources": [
+        {
+          "title": "captured run of programs/fallthrough.c",
+          "clause": "stdout line 3"
+        }
+      ],
+      "facts": [
+        "f.p1.l3"
+      ]
+    },
+    {
+      "id": "c.withbreak",
+      "kind": "mechanism",
+      "text": "With n = 2, with_break.c prints only two from the switch, and then done.",
+      "justification": "programs/with_break.c: n = 2 jumps to case 2 (line 9), puts(\"two\") runs, and the break on line 11 ends the switch (C17 6.8.6.3p2); puts(\"done\") on line 18 runs next. The captured run prints two then done.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
+        },
+        {
+          "title": "captured run of programs/with_break.c",
+          "clause": "stdout lines 1-2"
+        }
+      ],
+      "facts": [
+        "f.p2.l1",
+        "f.p2.l2"
+      ]
+    },
+    {
+      "id": "c.pause",
+      "kind": "framing",
+      "text": "The scenes that follow answer this question, one output line at a time.",
+      "justification": "Framing for the question scene sc2. The film shows the question and its choices, and video/transcript.txt prints the question just before this line. The film does not stop here; the answer appears in scenes sc3 to sc5, which print two, three and done, one line per scene. Explanation comes first; a prediction pause runs only in a practice mode the learner turns on (SPEC v1.4 AC-6.8). The sentence states no fact about C.",
+      "sources": [
+        {
+          "title": "this lesson's storyboard",
+          "clause": "question scene sc2 and scenes sc3 to sc5, which print two, three and done"
+        }
+      ]
+    },
+    {
+      "id": "c.recap",
+      "kind": "rule",
+      "text": "A case label only marks where execution enters a switch; it never ends a case. In fallthrough.c, the break on line 12 is what ends the switch.",
+      "justification": "Entry: 6.8.4.2p5 (control jumps to the statement after the matched label). Labels do not alter control flow: 6.8.1p4. The break on line 12 of programs/fallthrough.c ends the switch: 6.8.6.3p2. The sentence does not claim break is the only way out (return, goto and others also leave); it names what ends this switch.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt",
+            "sources/n2310-6.8.1p4.txt",
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.nomatch",
+      "kind": "rule",
+      "text": "If no case label matches and the switch has no default label, no part of the switch body runs.",
+      "justification": "C17 6.8.4.2p5, last sentence: if no converted case constant expression matches and there is no default label, no part of the switch body is executed. programs/fallthrough.c and programs/with_break.c have case labels 1 to 4 and no default, so any other value of n skips the body and control continues after the switch.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5",
+          "quote": "If no converted case constant expression matches and there is no default label, no part of the switch body is executed.",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.bodyend",
+      "kind": "mechanism",
+      "text": "If execution reaches the end of the switch body without a break, the switch ends there.",
+      "justification": "The switch body is the statement that the switch jumps to, into or past (C17 6.8.4.2p4). Inside it, statements execute in sequence unless a jump such as break changes that (6.8p2). In both programs case 4 is the last labelled statement and has no break, so after puts(\"four\") the body has no statements left, the switch statement completes, and execution continues with the next statement, puts(\"done\") (line 16 of fallthrough.c, line 18 of with_break.c).",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8 ¶2",
+          "quote": "Except as indicated, statements are executed in sequence.",
+          "excerpts": [
+            "sources/n2310-6.8p2.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶4",
+          "quote": "A switch statement causes control to jump to, into, or past the statement that is the switch body, depending on the value of a controlling expression, and on the presence of a default label and the values of any case labels on or in the switch body.",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p4.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4 (syntax)",
+          "excerpts": [
+            "sources/n2310-6.8.4-syntax.txt"
+          ]
+        },
+        {
+          "title": "programs/fallthrough.c",
+          "url": "programs/fallthrough.c",
+          "clause": "lines 13-16"
+        }
+      ]
+    },
+    {
+      "id": "c.fix",
+      "kind": "framing",
+      "text": "with_break.c adds a break after case 1 and after case 2, so no case runs on into the next case.",
+      "justification": "Compared with programs/fallthrough.c, programs/with_break.c adds break; on line 8 (after case 1) and line 11 (after case 2). Case 3 already ends with break (line 14) and case 4 is the last case, whose statements end at the closing brace of the switch body (line 17), so no case's statements are followed by another case's statements. gcc-16 with -Wextra (which enables -Wimplicit-fallthrough) reports nothing for with_break.c, while it warns twice for fallthrough.c.",
+      "sources": [
+        {
+          "title": "programs/with_break.c and programs/fallthrough.c",
+          "clause": "lines 6-17"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
+        },
+        {
+          "title": "GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
+          "clause": "-Wimplicit-fallthrough=n",
+          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra.",
+          "excerpts": [
+            "sources/gcc16-man-wimplicit-fallthrough.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.warn",
+      "kind": "caveat",
+      "text": "Compiled by gcc-16 with -Wextra, fallthrough.c gets a warning that the statements on lines 7 and 9 may fall through, and with_break.c gets none.",
+      "justification": "ptk capture compiles every program with gcc-16 16.2.0 (-std=c17 -Wall -Wextra -Wformat=2 -c) and records its stderr. For fallthrough.c gcc-16 prints 'warning: this statement may fall through [-Wimplicit-fallthrough=]' at 7:9 (puts(\"one\"), with a note at case 2 on line 8) and at 9:9 (puts(\"two\"), note at case 3 on line 10). For with_break.c the recorded gcc-16 output is empty. The GCC manual says -Wextra enables -Wimplicit-fallthrough=3.",
+      "sources": [
+        {
+          "title": "gcc-16 diagnostics recorded by ptk capture (gcc-16 -std=c17 -Wall -Wextra -Wformat=2 -c)",
+          "clause": "the programs' gcc-16 diagnostics in the job"
+        },
+        {
+          "title": "GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
+          "clause": "-Wimplicit-fallthrough=n",
+          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra.",
+          "excerpts": [
+            "sources/gcc16-man-wimplicit-fallthrough.txt"
+          ]
+        },
+        {
+          "title": "programs/fallthrough.c",
+          "url": "programs/fallthrough.c",
+          "clause": "lines 6-12"
+        }
+      ]
+    },
+    {
+      "id": "c.intobreak",
+      "kind": "mechanism",
+      "text": "into_break.c is fallthrough.c with case 3 cut down to a lone break. With n = 2 it prints two, falls into case 3, whose break ends the switch, and then prints done.",
+      "justification": "programs/into_break.c matches programs/fallthrough.c except that case 3 (line 10) holds only break; on line 11, where fallthrough.c has puts(\"three\"); break;. n = 2 jumps to case 2 (6.8.4.2p5), puts(\"two\") runs, case 3: does not stop control (6.8.1p4), the break on line 11 ends the switch (6.8.6.3p2), and puts(\"done\") on line 15 runs. The captured run prints two then done.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2",
+          "excerpts": [
+            "sources/n2310-6.8.4.2p5.txt",
+            "sources/n2310-6.8.1p4.txt",
+            "sources/n2310-6.8.6.3p2.txt"
+          ]
+        },
+        {
+          "title": "programs/into_break.c",
+          "url": "programs/into_break.c",
+          "clause": "lines 4-15"
+        },
+        {
+          "title": "captured run of programs/into_break.c",
+          "clause": "stdout lines 1-2"
+        }
+      ],
+      "facts": [
+        "f.p3.l1",
+        "f.p3.l2"
+      ]
+    },
+    {
+      "id": "c.silent",
+      "kind": "caveat",
+      "text": "For into_break.c, gcc-16 with -Wextra still warns at line 7, where case 1 falls into case 2, but says nothing at line 9, where case 2 falls into a case that only breaks.",
+      "justification": "The recorded gcc-16 diagnostics for into_break.c (same flags as c.warn) hold exactly one warning, 'this statement may fall through' at 7:9 (puts(\"one\"), note at case 2 on line 8). Line 9, puts(\"two\"), runs on into case 3 (line 10), whose only statement is break; (line 11), and gcc-16 reports nothing there. So -Wimplicit-fallthrough does not flag every fallthrough; the sentence states only what this compile showed.",
+      "sources": [
+        {
+          "title": "gcc-16 diagnostics recorded by ptk capture (gcc-16 -std=c17 -Wall -Wextra -Wformat=2 -c)",
+          "clause": "the programs' gcc-16 diagnostics in the job"
+        },
+        {
+          "title": "programs/into_break.c",
+          "url": "programs/into_break.c",
+          "clause": "lines 6-11"
+        }
+      ]
+    },
+    {
+      "id": "c.clang",
+      "kind": "caveat",
+      "text": "Apple clang with -Wextra gives no fallthrough warning for any of the three programs.",
+      "justification": "ptk capture compiles every program with Apple clang 21.0.0 (-std=c17 -Wall -Wextra -Wformat=2, with sanitizers) and records its stderr; any clang warning would stop the capture. The recorded clang diagnostics for fallthrough.c, with_break.c and into_break.c are all empty, so clang's -Wextra does not report these fallthroughs.",
+      "sources": [
+        {
+          "title": "clang diagnostics recorded by ptk capture (clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0)",
+          "clause": "programs[].diagnostics.clang in lesson.json"
+        },
+        {
+          "title": "captured platform facts",
+          "clause": "compilers.clang"
+        }
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "id": "m.stops",
+      "statement": "Execution stops at the next case label, so the program prints only two and done.",
+      "correction": "c.labels"
+    },
+    {
+      "id": "m.fromtop",
+      "statement": "A switch runs every case from the top, so the program prints one, two, three and done.",
+      "correction": "c.match"
+    },
+    {
+      "id": "m.toend",
+      "statement": "Fallthrough keeps going to the last case, giving two, three, four and done.",
+      "correction": "c.break"
+    }
+  ],
+  "trace": [
+    {
+      "id": "s0",
+      "label": "n is 2: the switch looks for case 2",
+      "state": {
+        "program": "p1",
+        "line": 5,
+        "path": [
+          4,
+          5
+        ],
+        "output": [],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": []
+    },
+    {
+      "id": "s1",
+      "label": "Jump to case 2: prints two",
+      "state": {
+        "program": "p1",
+        "line": 9,
+        "path": [
+          4,
+          5,
+          8,
+          9
+        ],
+        "output": [
+          "f.p1.l1"
+        ],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": [
+        "f.p1.l1"
+      ]
+    },
+    {
+      "id": "s2",
+      "label": "No break: falls into case 3, prints three",
+      "state": {
+        "program": "p1",
+        "line": 11,
+        "path": [
+          4,
+          5,
+          8,
+          9,
+          10,
+          11
+        ],
+        "output": [
+          "f.p1.l1",
+          "f.p1.l2"
+        ],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": [
+        "f.p1.l2"
+      ]
+    },
+    {
+      "id": "s3",
+      "label": "break ends the switch: prints done",
+      "state": {
+        "program": "p1",
+        "line": 16,
+        "path": [
+          4,
+          5,
+          8,
+          9,
+          10,
+          11,
+          12,
+          16
+        ],
+        "output": [
+          "f.p1.l1",
+          "f.p1.l2",
+          "f.p1.l3"
+        ],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": [
+        "f.p1.l3",
+        "f.p1.out"
+      ]
+    },
+    {
+      "id": "s4",
+      "label": "with_break.c: a break after every case that runs",
+      "state": {
+        "program": "p2",
+        "line": 18,
+        "path": [
+          4,
+          5,
+          9,
+          10,
+          11,
+          18
+        ],
+        "output": [
+          "f.p2.l1",
+          "f.p2.l2"
+        ],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": [
+        "f.p2.l1",
+        "f.p2.l2"
+      ]
+    },
+    {
+      "id": "s5",
+      "label": "into_break.c: case 3 only breaks",
+      "state": {
+        "program": "p3",
+        "line": 15,
+        "path": [
+          4,
+          5,
+          8,
+          9,
+          10,
+          11,
+          15
+        ],
+        "output": [
+          "f.p3.l1",
+          "f.p3.l2"
+        ],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": [
+        "f.p3.l1",
+        "f.p3.l2"
+      ]
+    }
+  ],
+  "storyboard": [
+    {
+      "id": "sc1",
+      "title": "A switch with a missing break",
+      "state": "s0",
+      "narration": [
+        {
+          "text": "The program sets n to 2 and switches on n. Case 2 has no break.",
+          "claims": [
+            "c.setup"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code"
+      ]
+    },
+    {
+      "id": "sc2",
+      "title": "The question",
+      "state": "s0",
+      "question": {
+        "prompt": "n is 2 and case 2 has no break. What does the program print?",
+        "answer_fact": "f.p1.out",
+        "options": [
+          {
+            "text": "two, done",
+            "correct": false,
+            "misconception": "m.stops"
+          },
+          {
+            "text": "two, three, done",
+            "correct": true
+          },
+          {
+            "text": "two, three, four, done",
+            "correct": false,
+            "misconception": "m.toend"
+          },
+          {
+            "text": "one, two, three, done",
+            "correct": false,
+            "misconception": "m.fromtop"
+          }
+        ]
+      },
+      "narration": [
+        {
+          "text": "The scenes that follow answer this question, one output line at a time.",
+          "claims": [
+            "c.pause"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "question"
+      ]
+    },
+    {
+      "id": "sc3",
+      "title": "Jump to the match",
+      "state": "s1",
+      "narration": [
+        {
+          "text": "A switch jumps to the case label whose value matches the controlling expression.",
+          "claims": [
+            "c.match"
+          ]
+        },
+        {
+          "text": "With n = 2, the matching label is case 2, which prints two.",
+          "claims": [
+            "c.fall"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output"
+      ],
+      "title_claims": [
+        "c.match"
+      ],
+      "ask": "Which case label does n = 2 jump to?"
+    },
+    {
+      "id": "sc4",
+      "title": "Past a label",
+      "state": "s2",
+      "narration": [
+        {
+          "text": "A case label is only a label. It does not stop execution.",
+          "claims": [
+            "c.labels"
+          ]
+        },
+        {
+          "text": "So execution falls through into case 3, which prints three.",
+          "claims": [
+            "c.fall"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output",
+        "note"
+      ],
+      "title_claims": [
+        "c.labels",
+        "c.fall"
+      ],
+      "ask": "Case 2 has no break: what runs after puts(\"two\")?"
+    },
+    {
+      "id": "sc5",
+      "title": "What ends the switch",
+      "state": "s3",
+      "narration": [
+        {
+          "text": "A break statement ends the smallest enclosing switch or loop. Here that is the switch.",
+          "claims": [
+            "c.break"
+          ]
+        },
+        {
+          "text": "After the switch ends, the program prints done.",
+          "claims": [
+            "c.done"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output",
+        "note"
+      ],
+      "title_claims": [
+        "c.break",
+        "c.done"
+      ],
+      "ask": "Which statement ends the switch, and what prints next?"
+    },
+    {
+      "id": "sc6",
+      "title": "Add the missing breaks",
+      "state": "s4",
+      "narration": [
+        {
+          "text": "with_break.c adds a break after case 1 and after case 2, so no case runs on into the next case.",
+          "claims": [
+            "c.fix"
+          ]
+        },
+        {
+          "text": "With n = 2, with_break.c prints only two from the switch, and then done.",
+          "claims": [
+            "c.withbreak"
+          ]
+        },
+        {
+          "text": "With -Wextra, GCC warns that the statements on line 7 and line 9 of fallthrough.c may fall through, and it gives with_break.c no warning.",
+          "claims": [
+            "c.warn"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output"
+      ],
+      "title_claims": [
+        "c.fix"
+      ],
+      "ask": "With breaks after case 1 and case 2, what prints for n = 2?"
+    },
+    {
+      "id": "sc7",
+      "title": "Where gcc stays silent",
+      "state": "s5",
+      "narration": [
+        {
+          "text": "into_break.c is fallthrough.c with case 3 cut down to a lone break.",
+          "claims": [
+            "c.intobreak"
+          ]
+        },
+        {
+          "text": "With n = 2 it prints two, falls into case 3, whose break ends the switch, and then prints done.",
+          "claims": [
+            "c.intobreak"
+          ]
+        },
+        {
+          "text": "For into_break.c, GCC still warns at line 7, where case 1 falls into case 2, but says nothing at line 9, where case 2 falls into a case that only breaks.",
+          "claims": [
+            "c.silent"
+          ]
+        },
+        {
+          "text": "Apple clang with -Wextra gives no fallthrough warning for any of the three programs.",
+          "claims": [
+            "c.clang"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output"
+      ],
+      "title_claims": [
+        "c.silent"
+      ],
+      "ask": "Which fallthrough gets no gcc-16 warning?"
+    },
+    {
+      "id": "sc8",
+      "title": "Recap",
+      "state": "s3",
+      "narration": [
+        {
+          "text": "A case label only marks where execution enters a switch; it never ends a case.",
+          "claims": [
+            "c.recap"
+          ]
+        },
+        {
+          "text": "In fallthrough.c, the break on line 12 is what ends the switch.",
+          "claims": [
+            "c.recap"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output",
+        "note"
+      ],
+      "title_claims": [
+        "c.recap"
+      ]
+    }
+  ],
+  "figure": {
+    "kind": "code-trace",
+    "title_claim": "c.fall",
+    "program": "p1",
+    "states": [
+      "s0",
+      "s1",
+      "s2",
+      "s3"
+    ],
+    "notes": [
+      {
+        "line": 8,
+        "claim": "c.match"
+      },
+      {
+        "line": 10,
+        "claim": "c.labels"
+      },
+      {
+        "line": 12,
+        "claim": "c.break"
+      }
+    ],
+    "compare": {
+      "program": "p2",
+      "state": "s4",
+      "claim": "c.withbreak"
+    },
+    "caption_claims": [
+      "c.recap"
+    ]
+  },
+  "requested_media": [
+    "still",
+    "video",
+    "ive",
+    "explorer",
+    "qa",
+    "cards"
+  ],
+  "title_claims": []
+}

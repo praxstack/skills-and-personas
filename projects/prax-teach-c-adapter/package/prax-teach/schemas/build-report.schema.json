@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prax-teach.local/schemas/build-report.schema.json",
+  "title": "ptk build report",
+  "type": "object",
+  "required": ["schema", "status", "started", "media", "gates", "fallbacks", "tools", "artifacts", "transitions"],
+  "properties": {
+    "schema": {"const": "prax-teach/build-report@1"},
+    "lesson": {"type": ["string", "null"]},
+    "lesson_sha256": {"type": ["string", "null"]},
+    "status": {"enum": ["draft", "valid", "captured", "projected", "claims-pending", "verified", "canary-verified", "packaged", "failed", "incomplete", "degraded"]},
+    "media": {"type": "array", "items": {"type": "string"}},
+    "gates": {"type": "array", "items": {
+      "type": "object", "required": ["id", "medium", "status", "measured"],
+      "properties": {"id": {"type": "string"}, "medium": {"type": "string"},
+                     "status": {"enum": ["passed", "failed", "not-run", "pending"]},
+                     "measured": {"type": "object"}, "reason": {"type": "string"}}}},
+    "fallbacks": {"type": "array"},
+    "tools": {"type": "object"},
+    "artifacts": {"type": "array"},
+    "transitions": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "verified"}}},
+     "then": {"properties": {"gates": {"items": {"properties": {"status": {"const": "passed"}}}},
+                             "fallbacks": {"maxItems": 0}}}},
+    {"if": {"properties": {"status": {"const": "verified"}}, "required": ["claims"]},
+     "then": {"properties": {"claims": {"properties": {"mode": {"not": {"const": "canary"}}}}}}}
+  ]
+}

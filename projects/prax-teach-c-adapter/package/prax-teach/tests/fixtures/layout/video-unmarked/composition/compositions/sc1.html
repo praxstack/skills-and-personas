@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Fixture scene</title></head>
+<body><template>
+<style>
+#root-sc1 { position:absolute; inset:0; background:#101828; color:#edf1f7; font-family:'Nunito Sans',sans-serif; overflow:hidden; }
+.abs { position:absolute; margin:0; }
+.card { position:absolute; background:#172136; border-radius:18px; }
+.ln { font:400 26px/40px 'JetBrains Mono',monospace; white-space:pre; }
+</style>
+<div id="root-sc1" data-composition-id="sc1" data-width="1920" data-height="1080">
+<svg class="abs" data-role="mechanism" data-kind="neuron" style="left:0;top:0" width="1920" height="1080"><rect x="0" y="0" width="1920" height="1080" fill="#101828"/></svg><svg class="abs" style="left:60px;top:60px" width="1800" height="960"><rect x="0" y="0" width="1800" height="960" fill="#172136"/></svg><p class="abs ln" style="left:120px;top:120px">double z = t1 + t2;</p><p class="abs ln" style="left:120px;top:160px">double a = fmax(0, z);</p><p class="abs ln" style="left:120px;top:200px">printf("%g", a);</p><p class="abs" style="left:120px;top:260px;font:500 16px/1.2 'JetBrains Mono'">a = 0.6</p><p class="abs" data-chrome="note" data-label="caption" style="left:120px;top:320px;width:700px;font:600 16px/1.3 'Nunito Sans'">Here z is positive, so the output a is z itself.</p>
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  window.__timelines["sc1"] = { seek: function () { return this; } };
+</script>
+</template></body></html>

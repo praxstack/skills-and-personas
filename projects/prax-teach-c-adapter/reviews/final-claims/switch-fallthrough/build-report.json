@@ -1,0 +1,2927 @@
+{
+  "schema": "prax-teach/build-report@1",
+  "lesson": "switch-fallthrough",
+  "lesson_sha256": "e36fa2a9bbc395d13c5610810b6b4f5ab6fd4f77e38711f62712e3613a3c8e0a",
+  "status": "failed",
+  "started": "2026-10-18T20:50:19+0530",
+  "finished": "2026-10-18T20:54:56+0530",
+  "media": [
+    "still",
+    "video",
+    "ive",
+    "explorer",
+    "qa",
+    "cards"
+  ],
+  "entry": {
+    "skill_md": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/package/prax-teach/SKILL.md",
+    "skill_md_sha256": "78ec6651266aa18fb43945a6b0ffb5356fca6bc0a7292664a59e19bdf97181e9",
+    "ptk": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/package/prax-teach/bin/ptk",
+    "registration": "none (direct path, D19.3)",
+    "shows": "build invoked via bin/ptk; does not show that SKILL.md was loaded"
+  },
+  "gates": [
+    {
+      "id": "values.expect",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "facts": 7,
+        "mismatches": 0
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.explorer",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 34,
+        "states": 12,
+        "domain": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "against": "expect.switch_output + expect_switch.switch_trace",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.prose-follows-state",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "control_steps": 34,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.a11y-csp-noscript",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "csp": "default-src 'none'; script-src 'sha256-9qAeIf/H9rkbU7x52g3TMQXGVQtMkpP4pP/VQ4mSXL4='; style-src 'sha256-055E2cGyhltiNHgU",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.layout",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "layouts": 48,
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ],
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "explorer.file-protocol",
+      "medium": "explorer",
+      "status": "passed",
+      "measured": {
+        "url": "file:///Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/explorer/index.html",
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.layers-misconceptions-print",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "layers": 6,
+        "options": 4,
+        "problems": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "qa.page",
+      "medium": "qa",
+      "status": "passed",
+      "measured": {
+        "problems": [],
+        "widths": [
+          390,
+          1440
+        ],
+        "schemes": [
+          "light",
+          "dark"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.cards",
+      "medium": "cards",
+      "status": "passed",
+      "measured": {
+        "cards": 8,
+        "misconception_cards": 3,
+        "apkg": "switch-fallthrough.apkg",
+        "problems": [],
+        "anki_import": "tests/test_cards.py::test_anki_import (not part of the build)"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.still",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "values_checked": 32,
+        "mismatches": [],
+        "files": [
+          "switch-fallthrough-wide-light.svg",
+          "switch-fallthrough-wide-dark.svg",
+          "switch-fallthrough-portrait-light.svg",
+          "switch-fallthrough-portrait-dark.svg"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.layout",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "views": {
+          "switch-fallthrough-wide-light.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "switch-fallthrough-wide-dark.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "switch-fallthrough-portrait-light.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          },
+          "switch-fallthrough-portrait-dark.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          }
+        },
+        "svg_problems": [],
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-light.png"
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-dark.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-light.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-dark.png"
+          }
+        ],
+        "min_text_px_at_display": 11.7,
+        "job_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.key-nodes",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "required": [
+          "code",
+          "compare",
+          "note",
+          "output"
+        ],
+        "problems": [],
+        "nodes": {
+          "switch-fallthrough-wide-light.svg": {
+            "code": {
+              "left": 64,
+              "right": 744,
+              "top": 241.4,
+              "height": 435.2,
+              "width": 680
+            },
+            "note": {
+              "left": 784,
+              "right": 1135.3,
+              "top": 239,
+              "height": 250,
+              "width": 351.3
+            },
+            "output": {
+              "left": 784,
+              "right": 1136,
+              "top": 515,
+              "height": 159.8,
+              "width": 352
+            },
+            "compare": {
+              "left": 64,
+              "right": 1136,
+              "top": 720.7,
+              "height": 438.3,
+              "width": 1072
+            }
+          },
+          "switch-fallthrough-wide-dark.svg": {
+            "code": {
+              "left": 64,
+              "right": 744,
+              "top": 241.4,
+              "height": 435.2,
+              "width": 680
+            },
+            "note": {
+              "left": 784,
+              "right": 1135.3,
+              "top": 239,
+              "height": 250,
+              "width": 351.3
+            },
+            "output": {
+              "left": 784,
+              "right": 1136,
+              "top": 515,
+              "height": 159.8,
+              "width": 352
+            },
+            "compare": {
+              "left": 64,
+              "right": 1136,
+              "top": 720.7,
+              "height": 438.3,
+              "width": 1072
+            }
+          },
+          "switch-fallthrough-portrait-light.svg": {
+            "code": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 201.2,
+              "height": 321,
+              "width": 358.8
+            },
+            "note": {
+              "left": 15.6,
+              "right": 361.3,
+              "top": 549.8,
+              "height": 161.9,
+              "width": 345.7
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 735.9,
+              "height": 131.9,
+              "width": 358.8
+            },
+            "compare": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 902.9,
+              "height": 483.3,
+              "width": 358.8
+            }
+          },
+          "switch-fallthrough-portrait-dark.svg": {
+            "code": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 201.2,
+              "height": 321,
+              "width": 358.8
+            },
+            "note": {
+              "left": 15.6,
+              "right": 361.3,
+              "top": 549.8,
+              "height": 161.9,
+              "width": 345.7
+            },
+            "output": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 735.9,
+              "height": 131.9,
+              "width": 358.8
+            },
+            "compare": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 902.9,
+              "height": 483.3,
+              "width": 358.8
+            }
+          }
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.contrast",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "pairs_checked": 508,
+        "below_minimum": [],
+        "min_text_ratio": 4.67,
+        "min_rule_ratio": 3.71,
+        "dark_note_correction_delta_L": 16.8,
+        "note_correction_delta_L": {
+          "switch-fallthrough-wide-light.svg": 16.9,
+          "switch-fallthrough-wide-dark.svg": 16.8,
+          "switch-fallthrough-portrait-light.svg": 16.9,
+          "switch-fallthrough-portrait-dark.svg": 16.8
+        },
+        "token_pairs": 50,
+        "token_failures": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.ocr",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "cells": 24,
+        "digit_cells_lining_checked": 16,
+        "misread_or_not_lining": [],
+        "numeric_style_problems": [],
+        "engine": "tesseract 5.5.3"
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.fonts",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_bundled": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.alt-source",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "svgs": [
+          {
+            "svg": "switch-fallthrough-wide-light.svg",
+            "title": true,
+            "desc_chars": 295,
+            "source_link": true
+          },
+          {
+            "svg": "switch-fallthrough-wide-dark.svg",
+            "title": true,
+            "desc_chars": 295,
+            "source_link": true
+          },
+          {
+            "svg": "switch-fallthrough-portrait-light.svg",
+            "title": true,
+            "desc_chars": 295,
+            "source_link": true
+          },
+          {
+            "svg": "switch-fallthrough-portrait-dark.svg",
+            "title": true,
+            "desc_chars": 295,
+            "source_link": true
+          }
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.network",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.hyperframes-check",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "exit": 0,
+        "counts": {
+          "lint": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "runtime": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "layout": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "contrast": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "motion": {
+            "errors": 0,
+            "warnings": 0
+          }
+        },
+        "sandboxed": true,
+        "sub_compositions": 7,
+        "scenes": 7
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.scene-layout",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "scenes": {
+          "sc1": {
+            "mid": {
+              "state": "s0",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "note"
+              ]
+            },
+            "settled": {
+              "state": "s0",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "note"
+              ]
+            }
+          },
+          "sc2": {
+            "mid": {
+              "state": "s0",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "question"
+              ]
+            },
+            "settled": {
+              "state": "s0",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "question"
+              ]
+            }
+          },
+          "sc3": {
+            "mid": {
+              "state": "s0",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            },
+            "settled": {
+              "state": "s1",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            }
+          },
+          "sc4": {
+            "mid": {
+              "state": "s1",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            },
+            "settled": {
+              "state": "s2",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            }
+          },
+          "sc5": {
+            "mid": {
+              "state": "s2",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            },
+            "settled": {
+              "state": "s3",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            }
+          },
+          "sc6": {
+            "mid": {
+              "state": "s4",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            },
+            "settled": {
+              "state": "s4",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            }
+          },
+          "sc7": {
+            "mid": {
+              "state": "s3",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            },
+            "settled": {
+              "state": "s3",
+              "min_px": 20,
+              "empty_bottom_frac": 0.078,
+              "key_nodes": [
+                "code",
+                "output",
+                "note"
+              ]
+            }
+          }
+        },
+        "problems": {},
+        "max_empty_bottom": 0.12,
+        "set_collisions": [],
+        "panel_layers": {},
+        "snapshots": [
+          "video/work/snapshots/sc1-mid.png",
+          "video/work/snapshots/sc1-settled.png",
+          "video/work/snapshots/sc2-mid.png",
+          "video/work/snapshots/sc2-settled.png",
+          "video/work/snapshots/sc3-mid.png",
+          "video/work/snapshots/sc3-settled.png",
+          "video/work/snapshots/sc4-mid.png",
+          "video/work/snapshots/sc4-settled.png",
+          "video/work/snapshots/sc5-mid.png",
+          "video/work/snapshots/sc5-settled.png",
+          "video/work/snapshots/sc6-mid.png",
+          "video/work/snapshots/sc6-settled.png",
+          "video/work/snapshots/sc7-mid.png",
+          "video/work/snapshots/sc7-settled.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.morph-stable",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "morph_scenes": [
+          "sc6",
+          "sc7"
+        ],
+        "frames_sampled": 196,
+        "problems": [],
+        "output_rule": "old output fully shown until a new output value is on screen (opacity >= 0.5), measured on the frames",
+        "scenes": {
+          "sc6": {
+            "times": [
+              0.0,
+              0.05,
+              0.1,
+              0.15,
+              0.2,
+              0.25,
+              0.3,
+              0.35,
+              0.4,
+              0.45,
+              0.5,
+              0.55,
+              0.6,
+              0.65,
+              0.7,
+              0.75,
+              0.8,
+              0.85,
+              0.9,
+              0.95,
+              1.0,
+              1.05,
+              1.1,
+              1.15,
+              1.2,
+              1.25,
+              1.3,
+              1.35,
+              1.4,
+              1.45,
+              1.5,
+              1.55,
+              1.6,
+              1.65,
+              1.7,
+              1.75,
+              1.8,
+              1.85,
+              1.9,
+              1.95,
+              2.0,
+              2.05,
+              2.1,
+              2.15,
+              2.2,
+              2.25,
+              2.3,
+              2.35,
+              2.4,
+              2.45,
+              2.5,
+              2.55,
+              2.6,
+              2.65,
+              2.7,
+              2.75,
+              2.8,
+              2.85,
+              2.9,
+              2.95,
+              3.0,
+              3.05,
+              3.1,
+              3.15,
+              3.2,
+              3.25,
+              3.3,
+              3.35,
+              3.4,
+              3.45,
+              3.5,
+              3.55,
+              3.6,
+              3.65,
+              3.7,
+              3.75,
+              3.8,
+              3.85,
+              3.9,
+              3.95,
+              4.0,
+              4.05,
+              4.1,
+              4.15,
+              4.2,
+              4.25,
+              4.3,
+              4.35,
+              4.4,
+              4.45,
+              4.5
+            ]
+          },
+          "sc7": {
+            "times": [
+              0.0,
+              0.05,
+              0.1,
+              0.15,
+              0.2,
+              0.25,
+              0.3,
+              0.35,
+              0.4,
+              0.45,
+              0.5,
+              0.55,
+              0.6,
+              0.65,
+              0.7,
+              0.75,
+              0.8,
+              0.85,
+              0.9,
+              0.95,
+              1.0,
+              1.05,
+              1.1,
+              1.15,
+              1.2,
+              1.25,
+              1.3,
+              1.35,
+              1.4,
+              1.45,
+              1.5,
+              1.55,
+              1.6,
+              1.65,
+              1.7,
+              1.75,
+              1.8,
+              1.85,
+              1.9,
+              1.95,
+              2.0,
+              2.05,
+              2.1,
+              2.15,
+              2.2,
+              2.25,
+              2.3,
+              2.35,
+              2.4,
+              2.45,
+              2.5,
+              2.55,
+              2.6,
+              2.65,
+              2.7,
+              2.75,
+              2.8,
+              2.85,
+              2.9,
+              2.95,
+              3.0,
+              3.05,
+              3.1,
+              3.15,
+              3.2,
+              3.25,
+              3.3,
+              3.35,
+              3.4,
+              3.45,
+              3.5,
+              3.55,
+              3.6,
+              3.65,
+              3.7,
+              3.75,
+              3.8,
+              3.85,
+              3.9,
+              3.95,
+              4.0,
+              4.05,
+              4.1,
+              4.15,
+              4.2,
+              4.25,
+              4.3,
+              4.35,
+              4.4,
+              4.45,
+              4.5,
+              4.55,
+              4.6,
+              4.65,
+              4.7,
+              4.75,
+              4.8,
+              4.85,
+              4.9,
+              4.95,
+              5.0,
+              5.05,
+              5.1,
+              5.15,
+              5.2
+            ]
+          }
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.render-isolation",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "isolation": "sandbox-exec -f ptk/capture/sandbox.sb -D MODE=render",
+        "canaries": {
+          "dns": {
+            "inside_exit": 1,
+            "inside_error": "e/installs/python/3.13.16/lib/python3.13/socket.py\", line 983, in getaddrinfo\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\n               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsocket.gaierror: [Errno 8] nodename nor servname provided, or not known",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          },
+          "https": {
+            "inside_exit": 6,
+            "inside_error": "curl: (6) Could not resolve host: example.com",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          },
+          "child-connect": {
+            "inside_exit": 7,
+            "inside_error": "child-connect failed: [Errno 1] Operation not permitted",
+            "blocked": true,
+            "control_exit": 0,
+            "control_reached_network": true
+          }
+        },
+        "render_succeeded": true,
+        "denied_requests_in_render_log": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.video",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "values_checked": 16,
+        "mismatches": [],
+        "files": [
+          "sc1.html",
+          "sc2.html",
+          "sc3.html",
+          "sc4.html",
+          "sc5.html",
+          "sc6.html",
+          "sc7.html"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.media",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "video_h264_1920x1080": true,
+          "video_30fps": true,
+          "audio_aac": true,
+          "captions_track_in_mp4": true,
+          "chapters_in_mp4": true,
+          "captions_vtt": true,
+          "chapters_vtt": true,
+          "loudness_in_range": true,
+          "true_peak_ok": true,
+          "av_duration_match": true
+        },
+        "integrated_lufs": -16.0,
+        "true_peak_dbtp": -1.8,
+        "lra_lu": 2.8,
+        "video": {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "r_frame_rate": "30/1",
+          "pix_fmt": "yuv420p",
+          "duration": "64.200000"
+        },
+        "audio": {
+          "codec_name": "aac",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "64.166729"
+        },
+        "subtitle": "mov_text",
+        "chapters": 7,
+        "caption_cues": 12,
+        "chapter_cues": 7,
+        "duration": 64.2,
+        "thresholds": {
+          "lufs": [
+            -17.0,
+            -15.0
+          ],
+          "true_peak_max": -1.0
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.sync",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "cues": [
+          {
+            "cue": "sc1.0",
+            "cue_start": 0.8,
+            "speech_start": 0.818,
+            "start_delta": 0.018,
+            "cue_end": 5.3667,
+            "speech_end": 5.336,
+            "end_delta": -0.031,
+            "words": 15,
+            "whisper_first_word": 0.86,
+            "whisper_last_word_end": 6.0
+          },
+          {
+            "cue": "sc2.0",
+            "cue_start": 6.1667,
+            "speech_start": 6.184,
+            "start_delta": 0.017,
+            "cue_end": 9.4333,
+            "speech_end": 9.407,
+            "end_delta": -0.026,
+            "words": 11,
+            "whisper_first_word": 6.28,
+            "whisper_last_word_end": 9.99
+          },
+          {
+            "cue": "sc3.0",
+            "cue_start": 13.2333,
+            "speech_start": 13.251,
+            "start_delta": 0.018,
+            "cue_end": 18.0,
+            "speech_end": 17.981,
+            "end_delta": -0.019,
+            "words": 13,
+            "whisper_first_word": 13.28,
+            "whisper_last_word_end": 18.0
+          },
+          {
+            "cue": "sc3.1",
+            "cue_start": 18.3333,
+            "speech_start": 18.352,
+            "start_delta": 0.019,
+            "cue_end": 21.4333,
+            "speech_end": 21.403,
+            "end_delta": -0.03,
+            "words": 11,
+            "whisper_first_word": 18.42,
+            "whisper_last_word_end": 21.99
+          },
+          {
+            "cue": "sc4.0",
+            "cue_start": 22.2333,
+            "speech_start": 22.253,
+            "start_delta": 0.02,
+            "cue_end": 26.3,
+            "speech_end": 26.242,
+            "end_delta": -0.058,
+            "words": 12,
+            "whisper_first_word": 22.28,
+            "whisper_last_word_end": 26.0
+          },
+          {
+            "cue": "sc4.1",
+            "cue_start": 26.6667,
+            "speech_start": 26.684,
+            "start_delta": 0.017,
+            "cue_end": 29.7333,
+            "speech_end": 29.701,
+            "end_delta": -0.032,
+            "words": 11,
+            "whisper_first_word": 26.76,
+            "whisper_last_word_end": 29.99
+          },
+          {
+            "cue": "sc5.0",
+            "cue_start": 30.5333,
+            "speech_start": 30.553,
+            "start_delta": 0.02,
+            "cue_end": 35.7333,
+            "speech_end": 35.682,
+            "end_delta": -0.051,
+            "words": 15,
+            "whisper_first_word": 30.6,
+            "whisper_last_word_end": 35.97
+          },
+          {
+            "cue": "sc5.1",
+            "cue_start": 36.0667,
+            "speech_start": 36.084,
+            "start_delta": 0.017,
+            "cue_end": 38.6667,
+            "speech_end": 38.627,
+            "end_delta": -0.04,
+            "words": 8,
+            "whisper_first_word": 36.2,
+            "whisper_last_word_end": 39.0
+          },
+          {
+            "cue": "sc6.0",
+            "cue_start": 39.4667,
+            "speech_start": 39.486,
+            "start_delta": 0.019,
+            "cue_end": 46.6333,
+            "speech_end": 46.591,
+            "end_delta": -0.042,
+            "words": 21,
+            "whisper_first_word": 39.58,
+            "whisper_last_word_end": 46.32
+          },
+          {
+            "cue": "sc6.1",
+            "cue_start": 46.9667,
+            "speech_start": 46.986,
+            "start_delta": 0.019,
+            "cue_end": 52.0667,
+            "speech_end": 52.037,
+            "end_delta": -0.03,
+            "words": 15,
+            "whisper_first_word": 47.08,
+            "whisper_last_word_end": 52.0
+          },
+          {
+            "cue": "sc7.0",
+            "cue_start": 52.8667,
+            "speech_start": 52.885,
+            "start_delta": 0.018,
+            "cue_end": 57.9667,
+            "speech_end": 57.915,
+            "end_delta": -0.052,
+            "words": 15,
+            "whisper_first_word": 52.92,
+            "whisper_last_word_end": 57.97
+          },
+          {
+            "cue": "sc7.1",
+            "cue_start": 58.3333,
+            "speech_start": 58.351,
+            "start_delta": 0.018,
+            "cue_end": 62.5667,
+            "speech_end": 62.516,
+            "end_delta": -0.051,
+            "words": 12,
+            "whisper_first_word": 58.42,
+            "whisper_last_word_end": 62.0
+          }
+        ],
+        "mispronounced": [],
+        "max_abs_start_delta": 0.02,
+        "max_abs_end_delta": 0.058,
+        "non_code_wer": 0.0,
+        "wer_reference": "lexicon(text), the form the voice was given (round 18)",
+        "hand_respelled": [],
+        "ref_words": 142,
+        "hyp_words": 142,
+        "whisper": {
+          "model": "ggml-base.en.bin",
+          "model_sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002",
+          "wav": "speech-16k.wav",
+          "timestamps": "start = DTW token time (fallback segment offset), end = token end offset",
+          "boundaries": "onset/offset = nearest silencedetect edge (-40 dB, 0.12 s) around the whisper words"
+        },
+        "heard": "The program sets N to 2 and switches on N. Case 2 has no break. What do you predict? Choose your answer before the answer plays. A switch jumps to the case label, whose value matches the controlling expression. With N equals 2, that is case 2 which prints 2. A case label is only a label. It does not stop execution. So the switch falls through into case 3 and prints 3. A break statement ends the smallest enclosing switch or loop. Here that is the switch. After the switch ends, the program prints done. With break.c adds a break after case 1 and after case 2, so no case runs on into the next case. With N equals 2, with break.c prints only 2 from the switch, and then done. A case label only marks where execution enters a switch. It never ends a case. In fallthrough.c, the break on line 12 is what ends the switch."
+      },
+      "reason": ""
+    },
+    {
+      "id": "video.no-answer-leak",
+      "medium": "video",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc2",
+            "answer_cue": 18.3333,
+            "answer": [
+              {
+                "kind": "words",
+                "phrase": [
+                  "two"
+                ]
+              },
+              {
+                "kind": "words",
+                "phrase": [
+                  "three"
+                ]
+              },
+              {
+                "kind": "words",
+                "phrase": [
+                  "done"
+                ]
+              }
+            ],
+            "subject": [
+              "display",
+              "output",
+              "print",
+              "program",
+              "show",
+              "write"
+            ]
+          }
+        ],
+        "leaks": [],
+        "rule": "words answers as phrases anywhere; numeric answers only as the value in a sentence about the question's subject, not in code or line numbers"
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.ive",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "values_checked": 19,
+        "mismatches": [],
+        "files": [
+          "states.vtt"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.pause-state",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "rule": "explorer == cue state, and explorer == state derived from the frame (a transition or answer cue may show a frame in mid-tween of the same program, between its state and the next); windows are half-open and a time under one frame before a boundary resolves to the later window",
+        "pauses_checked": 36,
+        "mismatches": [],
+        "chapter_jumps": [
+          {
+            "t": 0,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m1",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [],
+            "origin_text": "From the film at 0:00",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 5.833,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m2",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [],
+            "origin_text": "From the film at 0:05",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 12.867,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m2",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [],
+            "origin_text": "From the film at 0:12",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 21.867,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s1",
+            "cue": "m4",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "two"
+            ],
+            "origin_text": "From the film at 0:21",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 30.167,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s2",
+            "cue": "m6",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "two",
+              "three"
+            ],
+            "origin_text": "From the film at 0:30",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 39.133,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s3",
+            "cue": "m8",
+            "kind": "state",
+            "edit": null,
+            "program": "p1",
+            "output": [
+              "two",
+              "three",
+              "done"
+            ],
+            "origin_text": "From the film at 0:39",
+            "border": "solid",
+            "current": "true"
+          },
+          {
+            "t": 52.533,
+            "paused": true,
+            "mode": "film",
+            "origin": "film",
+            "state": "s4",
+            "cue": "m10",
+            "kind": "state",
+            "edit": null,
+            "program": "p2",
+            "output": [
+              "two",
+              "done"
+            ],
+            "origin_text": "From the film at 0:52",
+            "border": "solid",
+            "current": "true"
+          }
+        ],
+        "chapter_mismatches": [],
+        "boundary_seeks": 77,
+        "boundary_mismatches": [],
+        "boundary_cases_strict_rule_gets_wrong": 44,
+        "frame_states": {
+          "m1@0.05": "s0",
+          "m1@0.2": "s0",
+          "m1@5.783": "s0",
+          "m2@5.883": "s0",
+          "m2@6.033": "s0",
+          "m2@18.283": "s0",
+          "m3@18.383": "moving",
+          "m3@18.533": "moving",
+          "m3@19.583": "moving",
+          "m4@19.683": "s1",
+          "m4@19.833": "s1",
+          "m4@26.617": "s1",
+          "m5@26.717": "moving",
+          "m5@26.867": "moving",
+          "m5@27.617": "moving",
+          "m6@27.717": "s2",
+          "m6@27.867": "s2",
+          "m6@36.017": "s2",
+          "m7@36.117": "moving",
+          "m7@36.267": "moving",
+          "m7@37.317": "moving",
+          "m8@37.417": "s3",
+          "m8@37.567": "s3",
+          "m8@39.483": "s3",
+          "m9@39.583": "moving",
+          "m9@39.733": "moving",
+          "m9@43.583": "moving",
+          "m10@43.683": "s4",
+          "m10@43.833": "s4",
+          "m10@52.883": "s4",
+          "m11@52.983": "moving",
+          "m11@53.133": "moving",
+          "m11@57.717": "moving",
+          "m12@57.817": "s3",
+          "m12@57.967": "s3",
+          "m12@64.117": "s3"
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.no-answer-leak",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checked_before": {
+          "ive-leak:m3": {
+            "hits": [],
+            "transcript_items": 3,
+            "t": 18.233,
+            "paused": true,
+            "mode": "explore",
+            "origin": "film",
+            "state": "s0",
+            "cue": "m2",
+            "kind": "question",
+            "edit": null,
+            "program": "p1",
+            "output": [],
+            "origin_text": "From the film at 0:18",
+            "border": "solid"
+          }
+        },
+        "leaks": [],
+        "noscript_answers_heading_first": true,
+        "rule": "paused 0.1 s before each answer cue: no answer word in the DOM (noscript excluded), alt text, aria-label, title or the transcript so far; the noscript transcript sits after its 'contains the answers' heading"
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.controls",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "controls": {
+          "transcript_items_at_end": 12,
+          "seek_after_click": 0.8,
+          "caption_states": [
+            {
+              "shown": true,
+              "text": "The program sets n to 2 and switches on n. Case 2 has no break.",
+              "visibility": "visible",
+              "w": 489.546875,
+              "h": 24.640625,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            },
+            {
+              "shown": false,
+              "text": "",
+              "visibility": "hidden",
+              "w": 0,
+              "h": 0,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "false"
+            },
+            {
+              "shown": true,
+              "text": "The program sets n to 2 and switches on n. Case 2 has no break.",
+              "visibility": "visible",
+              "w": 489.546875,
+              "h": 24.640625,
+              "color": "rgb(23, 29, 41)",
+              "data_on": "true"
+            }
+          ],
+          "caption_second_cue": {
+            "shown": true,
+            "text": "A break statement ends the smallest enclosing switch or loop. Here that is the switch.",
+            "visibility": "visible",
+            "w": 652.359375,
+            "h": 24.640625,
+            "color": "rgb(23, 29, 41)",
+            "data_on": "true"
+          },
+          "caption_track_mode": "hidden",
+          "chapters": 7,
+          "readyState": 4,
+          "error": null
+        },
+        "captions": "ok",
+        "nav_events": 129,
+        "nav_actions": [
+          "chapter",
+          "explore",
+          "open",
+          "return",
+          "seek"
+        ],
+        "nav_not_navigation": [],
+        "nojs": {
+          "390": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc7.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 12
+          },
+          "1440": {
+            "images": [
+              {
+                "src": "posters/sc1.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc2.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc3.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc4.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc5.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc6.jpg",
+                "ok": true
+              },
+              {
+                "src": "posters/sc7.jpg",
+                "ok": true
+              }
+            ],
+            "answers_heading_before_transcript": true,
+            "transcript_items": 12
+          }
+        },
+        "nojs_shots": [
+          "shots/ive-nojs-390.png",
+          "shots/ive-nojs-1440.png"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.explore-return",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "checks": {
+          "film_follows_clock": true,
+          "explore_on_pause": true,
+          "live_edit_marked_yours": true,
+          "return_resumes_at_pause": true,
+          "return_shows_film_state": true,
+          "no_edit_after_return": true,
+          "live_model_builds": true
+        },
+        "mode": "live",
+        "live_edit": true,
+        "live_model_error": null,
+        "declared_by": "no figure.panel: live edit required",
+        "film": {
+          "t": 28.167,
+          "paused": true,
+          "mode": "film",
+          "origin": "film",
+          "state": "s2",
+          "cue": "m6",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "two",
+            "three"
+          ],
+          "origin_text": "From the film at 0:28",
+          "border": "solid"
+        },
+        "explore": {
+          "t": 28.48677,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s2",
+          "cue": "m6",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "two",
+            "three"
+          ],
+          "origin_text": "From the film at 0:28",
+          "border": "solid",
+          "returnTime": 28.48677,
+          "expected_cue": "m6"
+        },
+        "edited": {
+          "t": 28.48677,
+          "paused": true,
+          "mode": "explore",
+          "origin": "yours",
+          "state": null,
+          "cue": null,
+          "kind": "edit",
+          "edit": "n=3;break",
+          "program": "p2",
+          "output": [
+            "three",
+            "done"
+          ],
+          "origin_text": "Your edit, not in the film",
+          "border": "dashed"
+        },
+        "returned": {
+          "t": 28.549875,
+          "paused": false,
+          "mode": "film",
+          "origin": "film",
+          "state": "s2",
+          "cue": "m6",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "two",
+            "three"
+          ],
+          "origin_text": "From the film at 0:28",
+          "border": "solid",
+          "return_position": 28.487,
+          "returnTime": 28.48677,
+          "film_cue": "m6",
+          "edits_left": 0
+        },
+        "repaused": {
+          "t": 28.553255,
+          "paused": true,
+          "mode": "explore",
+          "origin": "film",
+          "state": "s2",
+          "cue": "m6",
+          "kind": "state",
+          "edit": null,
+          "program": "p1",
+          "output": [
+            "two",
+            "three"
+          ],
+          "origin_text": "From the film at 0:28",
+          "border": "solid",
+          "n_checked": "2",
+          "brk_pressed": "false"
+        },
+        "error": ""
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.file-protocol",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "files": {
+          "protocol": "file:",
+          "tracks": [
+            {
+              "kind": "captions",
+              "mode": "hidden",
+              "cues": 12
+            },
+            {
+              "kind": "chapters",
+              "mode": "hidden",
+              "cues": 7
+            },
+            {
+              "kind": "metadata",
+              "mode": "hidden",
+              "cues": 12
+            }
+          ],
+          "track_src": [
+            "blob",
+            "blob",
+            "blob"
+          ],
+          "readyState": 4,
+          "error": null,
+          "duration": 64.2,
+          "h264": "probably"
+        },
+        "expected_cues": {
+          "captions": 12,
+          "chapters": 7,
+          "metadata": 12
+        },
+        "console_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.layout",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "key_nodes": [
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-light.png",
+              "shots/ive-390-light-explore.png"
+            ]
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "key_nodes": [
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-390-dark.png",
+              "shots/ive-390-dark-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "key_nodes": [
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-light.png",
+              "shots/ive-1440-light-explore.png"
+            ]
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "key_nodes": [
+              "code",
+              "output"
+            ],
+            "problems": [],
+            "console": [],
+            "shots": [
+              "shots/ive-1440-dark.png",
+              "shots/ive-1440-dark-explore.png"
+            ]
+          }
+        ],
+        "errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.fonts",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_loaded": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.network",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "ive.predict-gated",
+      "medium": "ive",
+      "status": "passed",
+      "measured": {
+        "questions": [
+          {
+            "scene": "sc2",
+            "pause_at": 9.683,
+            "resume_at": 12.867,
+            "answer_at": 18.333,
+            "silence_before_pause": 0.25,
+            "silence_after_jump": 0.366,
+            "question_wpm": [
+              202
+            ],
+            "invite": "What do you predict? Choose your answer before the answer plays.",
+            "sealed_chapters": [
+              3,
+              4
+            ]
+          }
+        ],
+        "driven": {
+          "sc2@1440": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc2",
+              "t": 9.656819,
+              "paused": true,
+              "options": [
+                "two, done",
+                "two, three, done",
+                "two, three, four, done",
+                "one, two, three, done"
+              ],
+              "chapters": [
+                "A switch with a missing break",
+                "Predict",
+                "Jump to the match",
+                "Opens after you answer",
+                "Opens after you answer",
+                "Add the missing breaks",
+                "Recap"
+              ],
+              "panel": [],
+              "plan": {
+                "scene": "sc2",
+                "prompt": "n is 2 and case 2 has no break. What does the program print?",
+                "options": [
+                  {
+                    "text": "two, done",
+                    "correct": false,
+                    "misconception": "Execution stops at the next case label, so the program prints only two and done.",
+                    "correction": "A case label is only a label. It does not stop execution."
+                  },
+                  {
+                    "text": "two, three, done",
+                    "correct": true
+                  },
+                  {
+                    "text": "two, three, four, done",
+                    "correct": false,
+                    "misconception": "Fallthrough keeps going to the last case, giving two, three, four and done.",
+                    "correction": "A break statement ends the smallest enclosing switch or loop. Here that is the switch, so execution continues after it."
+                  },
+                  {
+                    "text": "one, two, three, done",
+                    "correct": false,
+                    "misconception": "A switch runs every case from the top, so the program prints one, two, three and done.",
+                    "correction": "A switch jumps to the case label whose value matches the controlling expression."
+                  }
+                ],
+                "pause_at": 9.683,
+                "q_end": 9.4333,
+                "resume_at": 12.867,
+                "answer_at": 18.333,
+                "verdict_until": 21.867,
+                "sealed": [
+                  3,
+                  4
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 9.656819,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 9.683,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 12.904761,
+              "t_later": 14.405553,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: two, doneNot quite. That answer comes from a common wrong belief:Execution stops at the next case label, so the program prints only two and done.What is actually true:A case label is only a label. It does not stop execution.",
+              "chapters": [
+                "A switch with a missing break",
+                "Predict",
+                "Jump to the match",
+                "Past a label",
+                "What ends the switch",
+                "Add the missing breaks",
+                "Recap"
+              ],
+              "picked": {
+                "sc2": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc2-1440.png",
+              "shots/ive-after-pick-sc2-1440.png"
+            ]
+          },
+          "sc2@390": {
+            "stopped": {
+              "mode": "ask",
+              "asking": "sc2",
+              "t": 9.666997,
+              "paused": true,
+              "options": [
+                "two, done",
+                "two, three, done",
+                "two, three, four, done",
+                "one, two, three, done"
+              ],
+              "chapters": [
+                "A switch with a missing break",
+                "Predict",
+                "Jump to the match",
+                "Opens after you answer",
+                "Opens after you answer",
+                "Add the missing breaks",
+                "Recap"
+              ],
+              "panel": [],
+              "plan": {
+                "scene": "sc2",
+                "prompt": "n is 2 and case 2 has no break. What does the program print?",
+                "options": [
+                  {
+                    "text": "two, done",
+                    "correct": false,
+                    "misconception": "Execution stops at the next case label, so the program prints only two and done.",
+                    "correction": "A case label is only a label. It does not stop execution."
+                  },
+                  {
+                    "text": "two, three, done",
+                    "correct": true
+                  },
+                  {
+                    "text": "two, three, four, done",
+                    "correct": false,
+                    "misconception": "Fallthrough keeps going to the last case, giving two, three, four and done.",
+                    "correction": "A break statement ends the smallest enclosing switch or loop. Here that is the switch, so execution continues after it."
+                  },
+                  {
+                    "text": "one, two, three, done",
+                    "correct": false,
+                    "misconception": "A switch runs every case from the top, so the program prints one, two, three and done.",
+                    "correction": "A switch jumps to the case label whose value matches the controlling expression."
+                  }
+                ],
+                "pause_at": 9.683,
+                "q_end": 9.4333,
+                "resume_at": 12.867,
+                "answer_at": 18.333,
+                "verdict_until": 21.867,
+                "sealed": [
+                  3,
+                  4
+                ]
+              }
+            },
+            "held": {
+              "mode": "ask",
+              "t": 9.666997,
+              "paused": true
+            },
+            "play_refused": {
+              "mode": "ask",
+              "t": 9.683,
+              "paused": true
+            },
+            "picked": {
+              "mode": "film",
+              "t_after_pick": 12.900183,
+              "t_later": 14.401596,
+              "paused": false,
+              "verdict": "wrong",
+              "verdict_text": "Your pick: two, doneNot quite. That answer comes from a common wrong belief:Execution stops at the next case label, so the program prints only two and done.What is actually true:A case label is only a label. It does not stop execution.",
+              "chapters": [
+                "A switch with a missing break",
+                "Predict",
+                "Jump to the match",
+                "Past a label",
+                "What ends the switch",
+                "Add the missing breaks",
+                "Recap"
+              ],
+              "picked": {
+                "sc2": {
+                  "i": 0
+                }
+              }
+            },
+            "shots": [
+              "shots/ive-ask-sc2-390.png",
+              "shots/ive-after-pick-sc2-390.png"
+            ]
+          }
+        },
+        "problems": [],
+        "rule": "the film stops within 0.12 s of the pause point, at most 0.6 s after the last spoken word, shows the storyboard's options, holds through a wait and a play(), keeps answer-stating chapter titles sealed, and resumes at the answer scene after a pick"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.mapping",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "texts": 265,
+        "teaching": 68,
+        "claim_mapped": 50,
+        "unmapped": [],
+        "rule": "every sentence equals a whole claim or narration sentence, or a typed chrome.json string"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.review",
+      "medium": "all",
+      "status": "passed",
+      "reason": "",
+      "measured": {
+        "lesson_job": {
+          "job": "job-a57882e5b5",
+          "overall": "accept",
+          "rejected_claims": [],
+          "rejected_texts": [],
+          "reviewer": {
+            "host": "claude-code",
+            "agent": "claims reviewer subagent, rubric v3, job file only"
+          }
+        },
+        "invalid": [],
+        "stale": [],
+        "missing": [],
+        "retrying": [],
+        "current_manifest_sha256": "cb0c60b548e1bf35d1b8bff002665e670f65bcb15716383e8cb4fdf29114ed2e",
+        "rubric_version": "3",
+        "label": "LLM-reviewed finding, not a proof"
+      }
+    },
+    {
+      "id": "claims.sensitivity",
+      "medium": "all",
+      "status": "failed",
+      "reason": "catch or control rates below the E22 thresholds",
+      "measured": {
+        "value": {
+          "n": 3,
+          "caught": 3,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "claim": {
+          "n": 8,
+          "caught": 8,
+          "schema_rejections": 0,
+          "rate": 1.0
+        },
+        "control": {
+          "n": 11,
+          "accepted": 8,
+          "schema_rejections": 0,
+          "rate": 0.7273
+        },
+        "meets_thresholds": false,
+        "thresholds": {
+          "value": 1.0,
+          "claim": 0.9,
+          "control": 0.95
+        },
+        "mutations": 11,
+        "caught": 11,
+        "skipped": [],
+        "rows": [
+          {
+            "job": "job-84b9fb6689",
+            "role": "control",
+            "pair": 1,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "t.245"
+            ]
+          },
+          {
+            "job": "job-37b7940cea",
+            "role": "mutation",
+            "pair": 1,
+            "mutation": "m1.match.nomatch",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.match",
+              "t.083",
+              "t.110",
+              "t.246",
+              "t.265"
+            ]
+          },
+          {
+            "job": "job-6a4c358838",
+            "role": "control",
+            "pair": 2,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "c.bodyend"
+            ]
+          },
+          {
+            "job": "job-096c1625a2",
+            "role": "mutation",
+            "pair": 2,
+            "mutation": "m2.break.overbroad",
+            "kind": "overbroad",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.break",
+              "t.082",
+              "t.105",
+              "t.250",
+              "t.265"
+            ]
+          },
+          {
+            "job": "job-a20b519d4e",
+            "role": "control",
+            "pair": 3,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-cb71b7272d",
+            "role": "mutation",
+            "pair": 3,
+            "mutation": "m3.withbreak.caveat",
+            "kind": "dropped-caveat",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.withbreak",
+              "t.113",
+              "t.253"
+            ]
+          },
+          {
+            "job": "job-7c85c9890d",
+            "role": "control",
+            "pair": 4,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-32b1883f76",
+            "role": "mutation",
+            "pair": 4,
+            "mutation": "m4.labels.citation",
+            "kind": "wrong-citation",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.labels",
+              "t.265"
+            ]
+          },
+          {
+            "job": "job-565a473d4a",
+            "role": "control",
+            "pair": 5,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-0f2292ee5d",
+            "role": "mutation",
+            "pair": 5,
+            "mutation": "m5.fall.reason",
+            "kind": "false-mechanism",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.fall",
+              "t.003",
+              "t.107"
+            ]
+          },
+          {
+            "job": "job-1d58091809",
+            "role": "control",
+            "pair": 6,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-d8832fd889",
+            "role": "mutation",
+            "pair": 6,
+            "mutation": "m6.recap.overbroad",
+            "kind": "overbroad",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.recap",
+              "t.002",
+              "t.084",
+              "t.111",
+              "t.255"
+            ]
+          },
+          {
+            "job": "job-1480877463",
+            "role": "control",
+            "pair": 7,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-5478368358",
+            "role": "mutation",
+            "pair": 7,
+            "mutation": "m7.setup.case3",
+            "kind": "false-framing",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.setup",
+              "t.112",
+              "t.244"
+            ]
+          },
+          {
+            "job": "job-8b74b3fff1",
+            "role": "control",
+            "pair": 8,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-e9fb952508",
+            "role": "mutation",
+            "pair": 8,
+            "mutation": "m8.narration.check",
+            "kind": "false-narration",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "t.249"
+            ]
+          },
+          {
+            "job": "job-de08135c9f",
+            "role": "control",
+            "pair": 9,
+            "mutation": null,
+            "kind": null,
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": [
+              "t.245"
+            ]
+          },
+          {
+            "job": "job-555ee8c0f3",
+            "role": "mutation",
+            "pair": 9,
+            "mutation": "auto.value.c.fall.f.p1.l1",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.fall",
+              "t.003",
+              "t.107",
+              "t.247"
+            ]
+          },
+          {
+            "job": "job-3966bc00c5",
+            "role": "control",
+            "pair": 10,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-e5795128c7",
+            "role": "mutation",
+            "pair": 10,
+            "mutation": "auto.value.c.done.f.p1.l3",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.done",
+              "t.106",
+              "t.251"
+            ]
+          },
+          {
+            "job": "job-08f1467a4e",
+            "role": "control",
+            "pair": 11,
+            "mutation": null,
+            "kind": null,
+            "overall": "accept",
+            "schema_invalid": false,
+            "caught": null,
+            "rejected": []
+          },
+          {
+            "job": "job-7a24340454",
+            "role": "mutation",
+            "pair": 11,
+            "mutation": "auto.value.c.withbreak.f.p2.l1",
+            "kind": "value-swap",
+            "overall": "reject",
+            "schema_invalid": false,
+            "caught": true,
+            "rejected": [
+              "c.withbreak",
+              "t.113",
+              "t.253"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "claims.artifacts-unchanged",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "checked": 52,
+        "changed": []
+      },
+      "reason": ""
+    }
+  ],
+  "fallbacks": [],
+  "tools": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0",
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "whisper-cli": "usage: /opt/homebrew/bin/whisper-cli [options] file0 file1 ...",
+    "tesseract": "tesseract 5.5.3",
+    "node": "v24.22.0",
+    "hyperframes": "0.8.169",
+    "playwright": "1.63.0",
+    "python": "3.13.16",
+    "sandbox-exec": "/usr/bin/sandbox-exec"
+  },
+  "artifacts": [
+    {
+      "path": "still/index.html",
+      "bytes": 826,
+      "sha256": "be73d8006a4f85f06925394ff15ff57e031cf29e82c7da83d32527a421268e45"
+    },
+    {
+      "path": "still/switch-fallthrough-portrait-dark.png",
+      "bytes": 325282,
+      "sha256": "9ee693f8ed130e99e60dda3b4567cd14e6e607d9a561f619dca344c9be54af7d"
+    },
+    {
+      "path": "still/switch-fallthrough-portrait-dark.svg",
+      "bytes": 72373,
+      "sha256": "fad83418ef9d6523e71afbbc58043419d6cbae900e885e9b8f46d5fef8657880"
+    },
+    {
+      "path": "still/switch-fallthrough-portrait-light.png",
+      "bytes": 321493,
+      "sha256": "880d612c1b3fbe9adb3d9758af927f677405650258f06b6208633fc2576f6228"
+    },
+    {
+      "path": "still/switch-fallthrough-portrait-light.svg",
+      "bytes": 72374,
+      "sha256": "0714830c9641aef18b7592ab77b3303aa7ce1647847846607c1b7f615216d1bd"
+    },
+    {
+      "path": "still/switch-fallthrough-wide-dark.png",
+      "bytes": 374039,
+      "sha256": "fd5e2964065306be6765be4d69d59a6880d940812ce88fc3dea483a96b298264"
+    },
+    {
+      "path": "still/switch-fallthrough-wide-dark.svg",
+      "bytes": 72127,
+      "sha256": "bb335c5e9677b41efcddbdf5d065fd389f06b1d01871f85ee73f4792a10c7c03"
+    },
+    {
+      "path": "still/switch-fallthrough-wide-light.png",
+      "bytes": 371881,
+      "sha256": "225d015a309527cb74efac3d9947dd3f5c5f4d5677d71f06d3d192d9b6e0dc59"
+    },
+    {
+      "path": "still/switch-fallthrough-wide-light.svg",
+      "bytes": 72128,
+      "sha256": "6575f65af132b47855cd2eead1c646f8ca1c2f886616693c77cd5e74e8d54e00"
+    },
+    {
+      "path": "video/captions.vtt",
+      "bytes": 1349,
+      "sha256": "ada02ee1bc987762049a471961d06fdb4b5b98eed133876bb6094363af584f71"
+    },
+    {
+      "path": "video/chapters.vtt",
+      "bytes": 371,
+      "sha256": "c7bb81c50f6b476af8918af5b6dceedb908b3d1d7e8168d0c5953fcac247f68a"
+    },
+    {
+      "path": "video/composition/compositions/sc1.html",
+      "bytes": 13159,
+      "sha256": "3a11fb95c11ac903b75cbafb967d2f87e0be545ce3a8a398b48e24174101a558"
+    },
+    {
+      "path": "video/composition/compositions/sc2.html",
+      "bytes": 13545,
+      "sha256": "29d9978a6eec1090fc7970f2afc9567fe7da03fdae7a9474bb9ec4071b6ad3fb"
+    },
+    {
+      "path": "video/composition/compositions/sc3.html",
+      "bytes": 15501,
+      "sha256": "1be81bb6e3b07887eca6c0be3a36a7c225a8fb480e915f397edf74f9cbf8484b"
+    },
+    {
+      "path": "video/composition/compositions/sc4.html",
+      "bytes": 16213,
+      "sha256": "53198e064723b8c09f614ff9e4a2fc2f7aac5c708453e5b25d0f2979485e44da"
+    },
+    {
+      "path": "video/composition/compositions/sc5.html",
+      "bytes": 17160,
+      "sha256": "0d5f92805cc1f1ea924ae11877945254d9fe9e327d0cfb741f2639aa309ad3ab"
+    },
+    {
+      "path": "video/composition/compositions/sc6.html",
+      "bytes": 30889,
+      "sha256": "bd0fe7d8c5348d3379c0ccc029f7765ea7caed8b283b67ca3a9463160323f09d"
+    },
+    {
+      "path": "video/composition/compositions/sc7.html",
+      "bytes": 31579,
+      "sha256": "44b148fe24ae12f6c97018562e8dce7751e7ec5692ea5535951966d3fcab7d4b"
+    },
+    {
+      "path": "video/composition/fonts/Caveat.woff2",
+      "bytes": 73380,
+      "sha256": "29791689b93416dd6ac7285999996569e250b841bb96a1df33d8accacd73d9e3"
+    },
+    {
+      "path": "video/composition/fonts/JetBrainsMono.woff2",
+      "bytes": 44712,
+      "sha256": "1d8a0d014d1aeff07f8a7b8a8a3f41f2878a2968c291e12b6a8b4eb947141a23"
+    },
+    {
+      "path": "video/composition/fonts/NunitoSans.woff2",
+      "bytes": 28712,
+      "sha256": "2827f778cbbbf51af671a8078606ea862c1a4a656529e86de8c6f8aef9e9155c"
+    },
+    {
+      "path": "video/composition/fonts/SourceSerif4-Roman.woff2",
+      "bytes": 186584,
+      "sha256": "4f8975136a23751d17aeeb04b5c77e6347ee7ba5909cc5e4ae7a56f01093325e"
+    },
+    {
+      "path": "video/composition/hyperframes.json",
+      "bytes": 31,
+      "sha256": "b48cb9c7270dfa06827c0552c6e6dbd120091650725255fda1df47b08f1547d4"
+    },
+    {
+      "path": "video/composition/index.html",
+      "bytes": 2764,
+      "sha256": "20674c33ba01844cdb49db60e7346e4bf640af518b22856ebd13095f3046302b"
+    },
+    {
+      "path": "video/composition/vendor/gsap.min.js",
+      "bytes": 72927,
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    },
+    {
+      "path": "video/lesson.mp4",
+      "bytes": 4045941,
+      "sha256": "c1dd5414c0b3006749d6e6c3330e475a1d373488b90592ba993359a0fda39ed8"
+    },
+    {
+      "path": "video/narration.wav",
+      "bytes": 12320090,
+      "sha256": "9010a324dbf42ae42cf833266eca65ee996c8f4deccb8f588e7efd43ecc42f03"
+    },
+    {
+      "path": "video/timing.json",
+      "bytes": 10109,
+      "sha256": "e28dec314927de419e6f2431948e72b10361605937ce3e62f4e22ec801df1c0b"
+    },
+    {
+      "path": "video/transcript.txt",
+      "bytes": 1140,
+      "sha256": "04ebc4827ef0d13bc0bfd99a61e2ad5550d765e8108dadb6999a430bbc4e346b"
+    },
+    {
+      "path": "ive/captions.vtt",
+      "bytes": 1349,
+      "sha256": "ada02ee1bc987762049a471961d06fdb4b5b98eed133876bb6094363af584f71"
+    },
+    {
+      "path": "ive/chapters.vtt",
+      "bytes": 371,
+      "sha256": "c7bb81c50f6b476af8918af5b6dceedb908b3d1d7e8168d0c5953fcac247f68a"
+    },
+    {
+      "path": "ive/cues.json",
+      "bytes": 13670,
+      "sha256": "1b972fde1d17b97955735b0def6b8f4f0a2cd382c8928f1eb5dcfa211454786f"
+    },
+    {
+      "path": "ive/index.html",
+      "bytes": 106058,
+      "sha256": "423bc519140e9bd21423551e9851bc98f62c695a6bbb040c23f2f0f496c95919"
+    },
+    {
+      "path": "ive/ive-data.js",
+      "bytes": 15989,
+      "sha256": "07dafc523074e07a536e685e6e1ccbfcc473811f6bbc9f413bdcb333e9a39aef"
+    },
+    {
+      "path": "ive/lesson.mp4",
+      "bytes": 4045941,
+      "sha256": "c1dd5414c0b3006749d6e6c3330e475a1d373488b90592ba993359a0fda39ed8"
+    },
+    {
+      "path": "ive/posters/sc1.jpg",
+      "bytes": 36047,
+      "sha256": "140abb2e99fc7013d9318411df4dcf972ee6df0746eecdf4b6f7d776e89ea66b"
+    },
+    {
+      "path": "ive/posters/sc2.jpg",
+      "bytes": 40996,
+      "sha256": "c483c614e9e0d052d01688392dd686261de3fa92f96f930e4734b9bb37f02099"
+    },
+    {
+      "path": "ive/posters/sc3.jpg",
+      "bytes": 39583,
+      "sha256": "f806891ccc3340eb9f89cf48d87005f0ed1cbc6c7fca3fa6cd3b2473a2f5103a"
+    },
+    {
+      "path": "ive/posters/sc4.jpg",
+      "bytes": 38973,
+      "sha256": "33c3a27db65ab451e57779e6d4e803324fefec734f5b4262d33623305817c2e2"
+    },
+    {
+      "path": "ive/posters/sc5.jpg",
+      "bytes": 48976,
+      "sha256": "61bb473236b279106274ce00ae729a0b4a087e3be6ff53ff214ace7a3cb9dcb7"
+    },
+    {
+      "path": "ive/posters/sc6.jpg",
+      "bytes": 47199,
+      "sha256": "f8c090b288ed76405475652bcccd0a7899f5486d4d0d2acad0ff11acef2f16e4"
+    },
+    {
+      "path": "ive/posters/sc7.jpg",
+      "bytes": 46493,
+      "sha256": "dec39a4d72bb4419ab742ff1d6ec0d3d2f359a995db899b9a7d48b4053fbced1"
+    },
+    {
+      "path": "ive/states.vtt",
+      "bytes": 8066,
+      "sha256": "1c0fa691a8c658b2df0637efc2027180082a29178dd2155fce80d218b486a835"
+    },
+    {
+      "path": "explorer/domain.json",
+      "bytes": 14260,
+      "sha256": "5a18dd3b5f683a068de160fc7e54d8714ec13162a02d060454f5bcf0df3c6605"
+    },
+    {
+      "path": "explorer/index.html",
+      "bytes": 186990,
+      "sha256": "1b5e21f71d13c5a2fb14552624b32309c80cf2a13167d423794436599f0ba224"
+    },
+    {
+      "path": "explorer/texts.json",
+      "bytes": 7741,
+      "sha256": "8a92c0fda603f6195a29d67f96e203fa49014c4f9c76c76d80657e6dbf2d2384"
+    },
+    {
+      "path": "qa/index.html",
+      "bytes": 92229,
+      "sha256": "46b997cf58e24cb3a7a9dff63fa27671c47c0e1680be3bf8395960d59d3aba2d"
+    },
+    {
+      "path": "qa/texts.json",
+      "bytes": 7620,
+      "sha256": "9e65f081604090fae37e2e4392d14c1892d1f45b1d980bf323812be9ab8b4076"
+    },
+    {
+      "path": "cards/cards.json",
+      "bytes": 3117,
+      "sha256": "babd6e1fc45d6e46498e166826ccbe102b05bdd44b2ef973461bd49b68a1f03c"
+    },
+    {
+      "path": "cards/switch-fallthrough.apkg",
+      "bytes": 65754,
+      "sha256": "df36c39d68c6bc53202d8ccf9e1f99c8163010efb3e4685ba43bfbaba6645c05"
+    },
+    {
+      "path": "cards/switch-fallthrough.md",
+      "bytes": 2475,
+      "sha256": "f6194f38af60959ac25c26054e1e3407f614f6f9eec15ba11bf95ba51f0f0596"
+    },
+    {
+      "path": "cards/texts.json",
+      "bytes": 4188,
+      "sha256": "1bb2863ff07d09a3a5a4e872517e790336a241ced5bb856a578706495911f002"
+    }
+  ],
+  "transitions": [
+    "draft",
+    "valid",
+    "captured",
+    "projected",
+    "claims-pending",
+    "failed"
+  ],
+  "error": null,
+  "cleared": [],
+  "capture": {
+    "programs": {
+      "p1": {
+        "ran": true,
+        "stdout_sha256": "38ae3b01ef4a745f1658d289ad71e39fb5f7f3c0a0f66299cccbe184579a6f0e",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": "fallthrough.c: In function 'main':\nfallthrough.c:7:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    7 |         puts(\"one\");\n      |         ^~~~~~~~~~~\nfallthrough.c:8:5: note: here\n    8 |     case 2:\n      |     ^~~~\nfallthrough.c:9:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    9 |         puts(\"two\");\n      |         ^~~~~~~~~~~\nfallthrough.c:10:5: note: here\n   10 |     case 3:\n      |     ^~~~"
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      },
+      "p2": {
+        "ran": true,
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      }
+    },
+    "platform": {
+      "captured": true,
+      "os": "macOS 27.0.1",
+      "arch": "arm64",
+      "sizeof": {
+        "char": 1,
+        "short": 2,
+        "int": 4,
+        "long": 8,
+        "long long": 8,
+        "float": 4,
+        "double": 8,
+        "void*": 8
+      },
+      "char_signed": true,
+      "endianness": "little",
+      "libc": "libSystem (macOS 27.0.1)",
+      "compilers": {
+        "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+      },
+      "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+    }
+  },
+  "ptk": {
+    "version": "2.1.0-wp0",
+    "code_sha256": "44b0120440006b797acad08f995815594b9e9fe6bc7f61747ea76e44537a401c"
+  },
+  "video": {
+    "theme": "dark",
+    "renderer": "hyperframes"
+  },
+  "tts": {
+    "engine": "kokoro-onnx 0.6.1 (Kokoro-82M v1.0)",
+    "voice": "af_heart",
+    "speed": 0.9,
+    "degraded": false,
+    "cache_inputs": {
+      "engine": "kokoro-onnx",
+      "engine_version": "0.6.1",
+      "model_sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5",
+      "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+      "voice": "af_heart",
+      "speed": 0.9,
+      "lang": "en-us",
+      "lexicon_version": "4"
+    },
+    "process_count": 0,
+    "model_loads": 0,
+    "synthesised_now": 0,
+    "cached": 12
+  },
+  "claims": {
+    "mode": "full",
+    "jobs": [
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-a57882e5b5.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-37b7940cea.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-84b9fb6689.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-096c1625a2.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-6a4c358838.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-cb71b7272d.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-a20b519d4e.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-32b1883f76.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-7c85c9890d.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-0f2292ee5d.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-565a473d4a.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-d8832fd889.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-1d58091809.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-5478368358.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-1480877463.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-e9fb952508.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-8b74b3fff1.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-555ee8c0f3.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-de08135c9f.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-e5795128c7.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-3966bc00c5.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-7a24340454.json",
+      "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-jobs/job-08f1467a4e.json"
+    ],
+    "reviews_dir": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/lessons/switch-fallthrough/build/claims-review",
+    "rubric": "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/.state/final-claims-a/package/prax-teach/ptk/verify/rubric.md",
+    "job_tokens": {
+      "job-08f1467a4e": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-096c1625a2": {
+        "job_tokens": 8730,
+        "with_rubric": 10335
+      },
+      "job-0f2292ee5d": {
+        "job_tokens": 8755,
+        "with_rubric": 10360
+      },
+      "job-1480877463": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-1d58091809": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-32b1883f76": {
+        "job_tokens": 8729,
+        "with_rubric": 10334
+      },
+      "job-37b7940cea": {
+        "job_tokens": 8776,
+        "with_rubric": 10381
+      },
+      "job-3966bc00c5": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-5478368358": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-555ee8c0f3": {
+        "job_tokens": 8729,
+        "with_rubric": 10334
+      },
+      "job-565a473d4a": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-6a4c358838": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-7a24340454": {
+        "job_tokens": 8730,
+        "with_rubric": 10335
+      },
+      "job-7c85c9890d": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-84b9fb6689": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-8b74b3fff1": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-a20b519d4e": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-a57882e5b5": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-cb71b7272d": {
+        "job_tokens": 8706,
+        "with_rubric": 10311
+      },
+      "job-d8832fd889": {
+        "job_tokens": 8723,
+        "with_rubric": 10328
+      },
+      "job-de08135c9f": {
+        "job_tokens": 8728,
+        "with_rubric": 10333
+      },
+      "job-e5795128c7": {
+        "job_tokens": 8727,
+        "with_rubric": 10332
+      },
+      "job-e9fb952508": {
+        "job_tokens": 8733,
+        "with_rubric": 10338
+      }
+    },
+    "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"
+  },
+  "seconds": 277.2,
+  "claims_checked": "2026-10-18T21:00:02+0530"
+}

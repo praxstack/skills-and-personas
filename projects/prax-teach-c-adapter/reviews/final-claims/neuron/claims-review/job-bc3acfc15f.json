@@ -1,0 +1,339 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-bc3acfc15f",
+ "manifest_sha256": "bc3acfc15fc2a15976021dc40be3d0e89c39ec2fdf2910b894580966d50779fb",
+ "rubric_version": "3",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent (Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.formula",
+   "verdict": "accept",
+   "reason": "Explanation: lines 8, 10, 12 and 14 do exactly this, and fmax(0.0, z) matches the quoted ReLU definition. Framing only, scoped to this neuron.",
+   "evidence": [
+    "programs/neuron.c lines 8-14",
+    "Deep Learning §6.3.1"
+   ]
+  },
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Maths: lines 5-7 set these values and %g prints them as 0.8, 1.5, 0.4, -1 and -0.2.",
+   "evidence": [
+    "fact f.x1",
+    "fact f.w1",
+    "fact f.x2",
+    "fact f.w2",
+    "fact f.b"
+   ]
+  },
+  {
+   "id": "c.mul",
+   "verdict": "accept",
+   "reason": "Maths: I recomputed 0.8*1.5 as 1.2000000000000002, printed +1.2, and 0.4*-1 as exactly -0.4. The quoted %g clause fits.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8",
+    "fact f.t1",
+    "fact f.t2"
+   ]
+  },
+  {
+   "id": "c.sign",
+   "verdict": "accept",
+   "reason": "Explanation: scoped with 'here', and a positive times a negative gives the -0.4 the run printed.",
+   "evidence": [
+    "fact f.t2"
+   ]
+  },
+  {
+   "id": "c.add",
+   "verdict": "accept",
+   "reason": "Maths: z is 0.6000000000000001, the next double above 0.6, and %g prints 0.6. The claim states only the printed value.",
+   "evidence": [
+    "programs/neuron.c line 12",
+    "C17 §7.21.6.1 ¶8",
+    "fact f.z"
+   ]
+  },
+  {
+   "id": "c.relu",
+   "verdict": "accept",
+   "reason": "Explanation: the definition matches max{0, z}, and fmax returns the larger argument, so z of 0 or less gives 0.",
+   "evidence": [
+    "Deep Learning §6.3.1",
+    "C17 §7.12.12.2 ¶3"
+   ]
+  },
+  {
+   "id": "c.out",
+   "verdict": "accept",
+   "reason": "Explanation: z is positive, so fmax(0.0, z) returns z, which prints as 0.6. c.add and c.relu supply the mechanism.",
+   "evidence": [
+    "C17 §7.12.12.2 ¶3",
+    "fact f.a"
+   ]
+  },
+  {
+   "id": "c.toy",
+   "verdict": "accept",
+   "reason": "Explanation: every variable is double, and %g or %+g with the default precision shows at most 6 significant digits.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8",
+    "programs/neuron.c lines 5-15"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Kind fits: it's a predict-first prompt that makes no claim about C.",
+   "evidence": [
+    "AGENTS.md Teaching"
+   ]
+  },
+  {
+   "id": "c.round",
+   "verdict": "accept",
+   "reason": "Maths and caveat: it's scoped to binary64 on this machine. 0.8*1.5 is 1.2000000000000002, z is 0.6000000000000001 so z == 0.6 is false, and %g prints 0.6.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8",
+    "C17 §F.2 ¶1",
+    "fact f.z"
+   ]
+  },
+  {
+   "id": "c.kzero",
+   "verdict": "accept",
+   "reason": "Maths: I recomputed z for neuron_k1.c as -0.19999999999999984. It prints -0.2, and fmax gives exactly 0. The first term still prints +1.2.",
+   "evidence": [
+    "fact f.k1.t1",
+    "fact f.k1.z",
+    "fact f.k1.a"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "First sentence of c.toy, unchanged."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "Second sentence of c.toy, unchanged."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Same as c.formula."
+  },
+  {
+   "id": "t.081",
+   "verdict": "accept",
+   "reason": "True-or-false card for a true statement. Matches c.relu."
+  },
+  {
+   "id": "t.082",
+   "verdict": "accept",
+   "reason": "True-or-false card for a true statement. Matches c.round."
+  },
+  {
+   "id": "t.083",
+   "verdict": "accept",
+   "reason": "Shows m.negterm as a wrong belief, and it really is false: t2 is negative here, yet a is 0.6."
+  },
+  {
+   "id": "t.084",
+   "verdict": "accept",
+   "reason": "Shows m.nobias as a wrong belief, and it really is false: the bias is in the sum and a is 0.6."
+  },
+  {
+   "id": "t.085",
+   "verdict": "accept",
+   "reason": "Same as c.add."
+  },
+  {
+   "id": "t.086",
+   "verdict": "accept",
+   "reason": "Same as c.formula."
+  },
+  {
+   "id": "t.087",
+   "verdict": "accept",
+   "reason": "Same as c.kzero."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "Same as c.mul."
+  },
+  {
+   "id": "t.089",
+   "verdict": "accept",
+   "reason": "Same as c.out."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "Same as c.relu."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Same as c.sign."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Same as c.toy."
+  },
+  {
+   "id": "t.166",
+   "verdict": "accept",
+   "reason": "A plain scene title that fits the add step."
+  },
+  {
+   "id": "t.167",
+   "verdict": "accept",
+   "reason": "A plain scene title that fits the ReLU gate step."
+  },
+  {
+   "id": "t.168",
+   "verdict": "accept",
+   "reason": "A plain scene title that fits the multiply step."
+  },
+  {
+   "id": "t.169",
+   "verdict": "accept",
+   "reason": "Multiply, add and gate make three steps, which matches c.formula."
+  },
+  {
+   "id": "t.170",
+   "verdict": "accept",
+   "reason": "A plain scene title for the prediction question."
+  },
+  {
+   "id": "t.171",
+   "verdict": "accept",
+   "reason": "A plain scene title. It claims nothing."
+  },
+  {
+   "id": "t.183",
+   "verdict": "accept",
+   "reason": "The lesson title doesn't overstate anything."
+  },
+  {
+   "id": "t.184",
+   "verdict": "accept",
+   "reason": "Labelled as a wrong belief, and it is false."
+  },
+  {
+   "id": "t.185",
+   "verdict": "accept",
+   "reason": "Labelled as a wrong belief, and it is false."
+  },
+  {
+   "id": "t.186",
+   "verdict": "accept",
+   "reason": "Narration matches c.formula."
+  },
+  {
+   "id": "t.187",
+   "verdict": "accept",
+   "reason": "Narration matches c.setup."
+  },
+  {
+   "id": "t.188",
+   "verdict": "accept",
+   "reason": "Narration matches c.mul. Only the punctuation differs."
+  },
+  {
+   "id": "t.189",
+   "verdict": "accept",
+   "reason": "Narration matches c.sign."
+  },
+  {
+   "id": "t.190",
+   "verdict": "accept",
+   "reason": "Narration matches c.pause."
+  },
+  {
+   "id": "t.191",
+   "verdict": "accept",
+   "reason": "Narration matches c.add."
+  },
+  {
+   "id": "t.192",
+   "verdict": "accept",
+   "reason": "Narration matches c.relu."
+  },
+  {
+   "id": "t.193",
+   "verdict": "accept",
+   "reason": "Narration matches c.out."
+  },
+  {
+   "id": "t.194",
+   "verdict": "accept",
+   "reason": "First half of c.round, caveat kept."
+  },
+  {
+   "id": "t.195",
+   "verdict": "accept",
+   "reason": "Second half of c.round. It's true: z rounds to 0.6 at 6 significant digits."
+  },
+  {
+   "id": "t.196",
+   "verdict": "accept",
+   "reason": "Narration matches c.formula."
+  },
+  {
+   "id": "t.197",
+   "verdict": "accept",
+   "reason": "Marked wrong, and it is wrong: a prints 0.6, not 0.8."
+  },
+  {
+   "id": "t.198",
+   "verdict": "accept",
+   "reason": "Marked wrong, and it is wrong: a prints 0.6, not 0."
+  },
+  {
+   "id": "t.199",
+   "verdict": "accept",
+   "reason": "Marked correct, and it matches fact f.a."
+  },
+  {
+   "id": "t.200",
+   "verdict": "accept",
+   "reason": "The prompt doesn't give away the answer."
+  },
+  {
+   "id": "t.201",
+   "verdict": "accept",
+   "reason": "True at s0: lines 5-7 set the inputs, weights and bias."
+  },
+  {
+   "id": "t.202",
+   "verdict": "accept",
+   "reason": "True at s1: lines 8-11 multiply and print both terms."
+  },
+  {
+   "id": "t.203",
+   "verdict": "accept",
+   "reason": "True at s2: line 12 adds the terms and the bias, and line 13 prints z."
+  },
+  {
+   "id": "t.204",
+   "verdict": "accept",
+   "reason": "True at s3: line 14 applies fmax(0.0, z), and line 15 prints a."
+  }
+ ],
+ "overall": "accept"
+}

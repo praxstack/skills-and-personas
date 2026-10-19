@@ -1,0 +1,397 @@
+{
+  "schema": "prax-teach/lesson@1",
+  "id": "f-cast",
+  "title": "One char, two conversions",
+  "topic": "printf conversions",
+  "language": "c",
+  "request": "Teach me what printf(\"%f\", (double)a) does to a char.",
+  "platform": {
+    "captured": true,
+    "os": "macOS 27.0.1",
+    "arch": "arm64",
+    "sizeof": {
+      "char": 1,
+      "short": 2,
+      "int": 4,
+      "long": 8,
+      "long long": 8,
+      "float": 4,
+      "double": 8,
+      "void*": 8
+    },
+    "char_signed": true,
+    "endianness": "little",
+    "libc": "libSystem (macOS 27.0.1)",
+    "compilers": {
+      "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+    },
+    "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+  },
+  "programs": [
+    {
+      "id": "p1",
+      "path": "programs/fcast.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "f55bd5e4b0b316f149b082e4b4a2bd5297284ae3c989b54711453188eab2ea5d"
+    }
+  ],
+  "facts": [
+    {
+      "id": "f.d",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "value": "66",
+        "reviewed": true
+      },
+      "value": "66",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fcast.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "9e17157baf1a7ff61793906b62f70d9ade4a6ccd4c052de044fdf228a44272aa",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.f",
+      "program": "p1",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "value": "66.000000",
+        "reviewed": true
+      },
+      "value": "66.000000",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 fcast.c && ./p1 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "9e17157baf1a7ff61793906b62f70d9ade4a6ccd4c052de044fdf228a44272aa",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "c.setup",
+      "kind": "framing",
+      "text": "The program stores 'B' in the char a, then prints a with %d and (double)a with %f.",
+      "justification": "Lines 4 to 6 of fcast.c do exactly this, in this order.",
+      "sources": [
+        {
+          "title": "The lesson program",
+          "clause": "programs/fcast.c"
+        }
+      ]
+    },
+    {
+      "id": "c.ascii",
+      "kind": "implementation-defined",
+      "text": "On this platform the character constant 'B' has the value 66, its code in ASCII and in UTF-8.",
+      "justification": "C17 leaves the values of execution characters to the implementation. Apple clang encodes 'B' as the single byte 66, which is its code in ASCII and in UTF-8, and the captured %d line shows 66.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§5.2.1 ¶1",
+          "quote": "The values of the members of the execution character set are implementation-defined.",
+          "excerpts": [
+            "sources/n2310-5.2.1p1.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.4.4.4 ¶10",
+          "quote": "The value of an integer character constant containing a single character that maps to a single-byte execution character is the numerical value of the representation of the mapped character interpreted as an integer.",
+          "excerpts": [
+            "sources/n2310-6.4.4.4p10.txt"
+          ]
+        }
+      ],
+      "facts": [
+        "f.d"
+      ]
+    },
+    {
+      "id": "c.promote",
+      "kind": "mechanism",
+      "text": "In printf(\"%d\\n\", a), the char a is promoted to int before the call, so %d receives the int 66 and prints 66.",
+      "justification": "a is a trailing argument of a variadic call, so the default argument promotions apply and char becomes int; %d then prints that int in decimal.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.5.2.2 ¶7",
+          "quote": "The ellipsis notation in a function prototype declarator causes argument type conversion to stop after the last declared parameter. The default argument promotions are performed on trailing arguments.",
+          "excerpts": [
+            "sources/n2310-6.5.2.2p7.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.5.2.2 ¶6",
+          "quote": "the integer promotions are performed on each argument, and arguments that have type float are promoted to double. These are called the default argument promotions.",
+          "excerpts": [
+            "sources/n2310-6.5.2.2p6.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶8",
+          "quote": "d,i The int argument is converted to signed decimal in the style [−]dddd.",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p8-d.txt"
+          ]
+        }
+      ],
+      "facts": [
+        "f.d"
+      ]
+    },
+    {
+      "id": "c.cast",
+      "kind": "mechanism",
+      "text": "The cast (double)a converts the value 66 to the double 66.0 before printf is called, so %f receives a double and prints 66.000000.",
+      "justification": "A cast converts the value of its operand to the named type. 66 is exactly representable as a double, so the result is 66.0, and %f prints a double with six digits after the point by default.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.5.4 ¶5",
+          "quote": "Preceding an expression by a parenthesized type name converts the value of the expression to the unqualified version of the named type.",
+          "excerpts": [
+            "sources/n2310-6.5.4p5.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.3.1.4 ¶2",
+          "quote": "When a value of integer type is converted to a real floating type, if the value being converted can be represented exactly in the new type, it is unchanged.",
+          "excerpts": [
+            "sources/n2310-6.3.1.4p2.txt"
+          ]
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶8",
+          "quote": "f,F A double argument representing a floating-point number is converted to decimal notation in the style [−]ddd.ddd, where the number of digits after the decimal-point character is equal to the precision specification. If the precision is missing, it is taken as 6",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p8-f.txt"
+          ]
+        }
+      ],
+      "facts": [
+        "f.f"
+      ]
+    },
+    {
+      "id": "c.mismatch",
+      "kind": "undefined-behaviour",
+      "text": "Without the cast, printf(\"%f\\n\", a) would pass an int where %f expects a double, which is undefined behaviour.",
+      "justification": "The default argument promotions turn the char into an int, and %f needs a double argument; a wrong argument type for a conversion specification is undefined behaviour.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶9",
+          "quote": "If any argument is not the correct type for the corresponding conversion specification, the behavior is undefined.",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p9.txt"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c.pause",
+      "kind": "framing",
+      "text": "Pause here and predict what %f prints before you go on.",
+      "justification": "A prompt for the learner; it makes no technical statement.",
+      "sources": [
+        {
+          "title": "The lesson program",
+          "clause": "programs/fcast.c"
+        }
+      ]
+    }
+  ],
+  "misconceptions": [
+    {
+      "id": "m.charprint",
+      "statement": "%d prints the letter B because a is a char.",
+      "correction": "c.promote"
+    }
+  ],
+  "trace": [
+    {
+      "id": "s0",
+      "label": "a holds 'B', which is 66 on this platform",
+      "state": {
+        "program": "p1",
+        "line": 4,
+        "path": [
+          4
+        ],
+        "output": [],
+        "vars": {
+          "a": "'B'"
+        }
+      },
+      "reveals": []
+    },
+    {
+      "id": "s1",
+      "label": "%d receives the int 66 and prints 66",
+      "state": {
+        "program": "p1",
+        "line": 5,
+        "path": [
+          4,
+          5
+        ],
+        "output": [
+          "f.d"
+        ],
+        "vars": {
+          "a": "'B'"
+        }
+      },
+      "reveals": [
+        "f.d"
+      ]
+    },
+    {
+      "id": "s2",
+      "label": "(double)a is the double 66.0, so %f prints 66.000000",
+      "state": {
+        "program": "p1",
+        "line": 6,
+        "path": [
+          4,
+          5,
+          6
+        ],
+        "output": [
+          "f.d",
+          "f.f"
+        ],
+        "vars": {
+          "a": "'B'"
+        }
+      },
+      "reveals": [
+        "f.f"
+      ]
+    }
+  ],
+  "storyboard": [
+    {
+      "id": "sc1",
+      "title": "One char, two conversions",
+      "state": "s0",
+      "narration": [
+        {
+          "text": "The program stores 'B' in the char a, then prints a with %d and (double)a with %f.",
+          "claims": [
+            "c.setup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc2",
+      "title": "Predict",
+      "state": "s0",
+      "question": {
+        "prompt": "a holds 'B'. What does printf(\"%f\\n\", (double)a) print?",
+        "answer_fact": "f.f"
+      },
+      "narration": [
+        {
+          "text": "Pause here and predict what %f prints before you go on.",
+          "claims": [
+            "c.pause"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sc3",
+      "title": "Promotion for %d",
+      "state": "s1",
+      "narration": [
+        {
+          "text": "On this platform the character constant 'B' has the value 66, its code in ASCII and in UTF-8.",
+          "claims": [
+            "c.ascii"
+          ]
+        },
+        {
+          "text": "In printf(\"%d\\n\", a), the char a is promoted to int before the call, so %d receives the int 66 and prints 66.",
+          "claims": [
+            "c.promote"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.ascii",
+        "c.promote"
+      ]
+    },
+    {
+      "id": "sc4",
+      "title": "The cast makes a new value",
+      "state": "s2",
+      "narration": [
+        {
+          "text": "The cast (double)a converts the value 66 to the double 66.0 before printf is called, so %f receives a double and prints 66.000000.",
+          "claims": [
+            "c.cast"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.cast"
+      ]
+    },
+    {
+      "id": "sc5",
+      "title": "Without the cast",
+      "state": "s2",
+      "narration": [
+        {
+          "text": "Without the cast, printf(\"%f\\n\", a) would pass an int where %f expects a double, which is undefined behaviour.",
+          "claims": [
+            "c.mismatch"
+          ]
+        }
+      ],
+      "title_claims": [
+        "c.mismatch"
+      ]
+    }
+  ],
+  "requested_media": [
+    "still",
+    "video"
+  ]
+}

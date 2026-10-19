@@ -1,0 +1,32 @@
+{"id": "H01", "prompt": "teach me how printf %d works as a narrated video", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "narrated-video"}}
+{"id": "H02", "prompt": "make me a narrated explainer video about pointers", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "narrated-video"}}
+{"id": "H03", "prompt": "explain recursion with a video I can pause and poke at", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "interactive-video"}}
+{"id": "H04", "prompt": "show the bit pattern of int a = 66", "workspace": null, "expected": {"mode": "quick", "visual_route": "static", "medium": "still"}}
+{"id": "H05", "prompt": "draw the stack frames for factorial(3)", "workspace": null, "expected": {"mode": "lesson", "visual_route": "static", "medium": "still"}}
+{"id": "H06", "prompt": "let me play with how p++ walks an array", "workspace": null, "expected": {"mode": "lesson", "visual_route": "interactive", "medium": "explorer"}}
+{"id": "H07", "prompt": "make flash cards for integer promotion in C", "workspace": null, "expected": {"mode": "lesson", "visual_route": "none", "medium": "flashcards"}}
+{"id": "H08", "prompt": "quiz me on C integer promotion", "workspace": null, "expected": {"mode": "lesson", "visual_route": "none", "medium": "quiz"}}
+{"id": "H09", "prompt": "give me a Socratic session on malloc and free", "workspace": null, "expected": {"mode": "lesson", "visual_route": "none", "medium": "socratic"}}
+{"id": "H10", "prompt": "what does sizeof(char) return? just the answer", "workspace": null, "expected": {"mode": "quick", "visual_route": "none", "medium": "direct-answer"}}
+{"id": "H11", "prompt": "fix the off-by-one in my loop", "workspace": null, "expected": {"mode": "ordinary_task", "visual_route": "none", "medium": "none"}}
+{"id": "H12", "prompt": "rename this variable across the file", "workspace": null, "expected": {"mode": "ordinary_task", "visual_route": "none", "medium": "none"}}
+{"id": "H13", "prompt": "teach me the compile pipeline: preprocess, compile, assemble, link", "workspace": null, "expected": {"mode": "lesson", "visual_route": "static", "medium": "still"}}
+{"id": "H14", "prompt": "animate how quicksort partitions an array", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "video"}}
+{"id": "H15", "prompt": "explain big-O of binary search with a graph", "workspace": null, "expected": {"mode": "lesson", "visual_route": "static", "medium": "still"}}
+{"id": "H16", "prompt": "build me an explorer for two's complement", "workspace": null, "expected": {"mode": "lesson", "visual_route": "interactive", "medium": "explorer"}}
+{"id": "H17", "prompt": "expand this: why is i++ + ++i undefined? layer by layer", "workspace": null, "expected": {"mode": "lesson", "visual_route": "none", "medium": "qa-expander"}}
+{"id": "H18", "prompt": "continue my C course from last time", "workspace": null, "expected": {"mode": "course", "visual_route": "none", "medium": "resume"}}
+{"id": "H19", "prompt": "teach me pointers", "workspace": "prax-c-workspace", "expected": {"mode": "lesson", "visual_route": "static", "medium": "still"}, "relabel": "v2: was prediction-first; explanation-first rule (FREEZE-v2 criterion 5)"}
+{"id": "H20", "prompt": "teach me how printf %c works", "workspace": "prax-c-workspace", "expected": {"mode": "lesson", "visual_route": "static", "medium": "still"}, "relabel": "v2: was prediction-first; explanation-first rule (FREEZE-v2 criterion 5)"}
+{"id": "H21", "prompt": "make a narrated video on struct padding", "workspace": "prax-c-workspace", "expected": {"mode": "lesson", "visual_route": "motion", "medium": "narrated-video"}}
+{"id": "H22", "prompt": "explain it again simpler", "workspace": null, "expected": {"mode": "quick", "visual_route": "none", "medium": "re-explain"}}
+{"id": "H23", "prompt": "turn this lesson into Anki cards", "workspace": null, "expected": {"mode": "lesson", "visual_route": "none", "medium": "flashcards"}}
+{"id": "H24", "prompt": "make a 3Blue1Brown style video on the master theorem", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "narrated-video"}}
+{"id": "H25", "prompt": "show memory layout of struct {char c; int i;}", "workspace": null, "expected": {"mode": "quick", "visual_route": "static", "medium": "still"}}
+{"id": "H26", "prompt": "I want an interactive video on linked list insertion with chapters", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "interactive-video"}}
+{"id": "H27", "prompt": "teach me GATE-style pointer arithmetic with timed practice", "workspace": "prax-c-workspace", "expected": {"mode": "lesson", "visual_route": "none", "medium": "exam-drill"}}
+{"id": "H28", "prompt": "explain what a segfault is, no files please", "workspace": null, "expected": {"mode": "lesson", "visual_route": "static", "medium": "save-nothing"}}
+{"id": "H29", "prompt": "write the unit tests for this function", "workspace": null, "expected": {"mode": "ordinary_task", "visual_route": "none", "medium": "none"}}
+{"id": "H30", "prompt": "create a visual explainer of how a hash table resolves collisions", "workspace": null, "expected": {"mode": "lesson", "visual_route": "static", "medium": "still"}}
+{"id": "H31", "prompt": "voice over this explainer in a British accent", "workspace": null, "expected": {"mode": "lesson", "visual_route": "motion", "medium": "narrated-video"}}
+{"id": "H32", "prompt": "make me a cheat sheet image for C format specifiers", "workspace": null, "expected": {"mode": "quick", "visual_route": "static", "medium": "still"}}

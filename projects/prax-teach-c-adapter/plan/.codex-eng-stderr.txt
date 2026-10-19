@@ -1,0 +1,1790 @@
+Reading additional input from stdin...
+OpenAI Codex v0.163.0
+--------
+workdir: /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a14cf2-01f9-7951-8a66-1068d0dd6ce0
+--------
+user
+IMPORTANT: Do NOT read or execute any files under ~/.claude/, ~/.agents/, .claude/skills/, or agents/. Do not read holdout/ or plan/proposed/. Stay focused on plan/CEO-PLAN.md (especially the section 'Eng Review (plan-eng-review, 2026-10-18)') and FREEZE.md.
+
+You are a brutally honest technical reviewer examining an engineering plan that has already been through a multi-section review and an earlier Codex pass. Find what it still misses: logical gaps, unstated assumptions, overcomplexity, feasibility risks (macOS arm64, clang 21, gcc-16, HyperFrames 0.8.169 driving headless Chrome, kokoro-onnx, whisper-cli, Playwright, sandbox-exec), missing dependencies or sequencing issues, and testability holes. Do not repeat issues the plan already resolves. Be direct. Be terse. Numbered problems, each with a concrete fix.
+warning: Under-development features enabled: chronicle. Under-development features are incomplete and may behave unpredictably. To suppress this warning, set `suppress_unstable_features_warning = true` in /Users/prax/.codex/config.toml.
+2026-10-18T02:58:11.625736Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer realm=\"OAuth\", resource_metadata=\"https://mcp.cloudflare.com/.well-known/oauth-protected-resource/mcp\", scope=\"user:read account:read\"" })
+2026-10-18T02:58:12.862193Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer realm=\"OAuth\", resource_metadata=\"https://mcp.cloudflare.com/.well-known/oauth-protected-resource/mcp\", scope=\"user:read account:read\"" })
+2026-10-18T02:58:13.316705Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer resource_metadata=\"https://openai-mcp.higgsfield.ai/.well-known/oauth-protected-resource/mcp\", scope=\"openid email profile\"" })
+2026-10-18T02:58:13.319620Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer error=\"invalid_token\", error_description=\"No authorization provided\", resource_metadata=\"https://mcp.neon.tech/.well-known/oauth-protected-resource/mcp\"" })
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart Completed
+hook: SessionStart Completed
+hook: SessionStart Failed
+hook: UserPromptSubmit
+hook: UserPromptSubmit Completed
+codex
+I’ll read the plan and freeze contract, then check for unresolved gaps—especially toolchain feasibility, sequencing, and test coverage.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+/bin/zsh -lc "pwd && rtk rg --files -g AGENTS.md -g FREEZE.md -g CEO-PLAN.md -g RTK.md -g '"'!holdout/**'"' -g '"'!plan/proposed/**'"' -g '"'!agents/**'"' -g '"'!.claude/**'"' . /Users/prax/.codex/RTK.md" in /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+ succeeded in 0ms:
+/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+/Users/prax/.codex/RTK.md
+./plan/CEO-PLAN.md
+./FREEZE.md
+
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+/bin/zsh -lc 'rtk read /Users/prax/.codex/RTK.md && nl -ba FREEZE.md && nl -ba plan/CEO-PLAN.md' in /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+ succeeded in 0ms:
+<!-- rtk-owned: written by `rtk init --codex`, removed by `rtk init --codex --uninstall` -->
+
+# Command output
+
+Command output here is condensed to save tokens, keeping every signal and
+dropping costly noise. Treat it as the complete result: run commands
+normally, and batch related commands into one call to avoid extra turns.
+Truncated results state their recovery path in their own output. Re-run a
+command as `rtk proxy <cmd>` only when its result is unusable: empty when
+output was clearly expected, contradicting its exit code, or garbled.
+     1	# Freeze record: Prax Teach v2.1 improvement loop
+     2	
+     3	Written 2026-10-18, before any planning or implementation, as `/Users/prax/AGENTS.md` (identity preservation) requires. Changing anything here needs Prax's explicit approval and a new version of this file.
+     4	
+     5	## Original objective (Prax's words, 2026-10-18)
+     6	
+     7	"Review the skill and make sure it can produce world class all kind of explainer visualisation still, interactive, videos, TTS etc." Then: "World-class aesthetics and mathematically correct still-image explainer artifacts. The best possible approaches, 10 or even 20 different ways, to produce any artifact: a still explainer, an interactive explorer, a Q&A expander, flash cards, or, most importantly, a video explainer and interactive video explorers." Then: run /plan-ceo-review, /plan-eng-review, /product-management:write-spec, /implement-from-spec and /code-review-and-quality in a loop, autonomously, with /deep-research if needed.
+     8	
+     9	## Success definition
+    10	
+    11	The skill, installed from its own package on this Mac, can produce each of the six artifact types for a C or DSA topic with:
+    12	1. every displayed value generated from a real compiled run or computed by code, and checked by an automated assertion that fails on tampering;
+    13	2. every conceptual claim checked by a separate claims review (values alone are not enough: the v2 proof stated "printf never changes the bits" for a `(double)` cast);
+    14	3. a world-class look in light and dark, at 1440 px and 390 px, with measured contrast;
+    15	4. narrated video with local TTS, synced WebVTT captions, chapters, measured loudness and inspected frames;
+    16	5. teaching behaviour that respects the learner workspace contract (Prax's C workspace: one prediction, wait for the attempt).
+    17	
+    18	## Non-goals
+    19	
+    20	- No claims about human learning outcomes.
+    21	- No cloud TTS, cloud rendering or paid services without Prax's permission.
+    22	- No edits to the accepted v2 bytes. v2 stays installed and runnable until v2.1 is accepted.
+    23	
+    24	## Baseline (frozen)
+    25	
+    26	- Package: `~/Developer/prax-teach-evaluation-20261016/clean-install-20261018/deliverables/prax-teach-v2-clean-install.zip`, sha256 `c4827533185ad7db90aaf3af25edd97f6cf9d3a8b3e868a1b683ef3ba552205f`, accepted source commit `389f6f9067c40de4ebed10a48d6048ed90d58b0c`.
+    27	- Installed copy: `~/.agents/skill-library/prax-teach-v2` (configured, 22/22 JS tests).
+    28	- Review of the baseline: `../clean-install-20261018/review-20261018/reports/01..05` (114 issues: 9 critical) and proofs in `../clean-install-20261018/review-20261018/proof/`.
+    29	
+    30	## Rollback pointer
+    31	
+    32	- `~/.agents/skills/prax-teach-v2` is a symlink. Reinstall v2 by pointing it back to `/Users/prax/.agents/skill-library/prax-teach-v2` (the clean v2 install). The pre-2026-10-18 target was `/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/visual-intuition/skills/teach-pro-max/references/prax-teach-v2`.
+    33	- v2.1 installs side by side under a new name until accepted; it never overwrites v2.
+    34	
+    35	## Evaluator and holdout
+    36	
+    37	- `holdout/routing-prompts.jsonl`: labelled prompts written before planning. Implementers must not read this folder. Only the acceptance step runs it. Its sha256 is recorded in `holdout/SHA256` so later edits are visible.
+    38	- Acceptance compares v2.1 against both the v2 baseline and the last accepted v2.1 candidate. Accept only a held-out improvement with no regression on the protected checks below.
+    39	
+    40	## Protected checks (must never regress)
+    41	
+    42	- v2's 22 JS tests and its passing Python tests still pass, or each removal is justified in writing.
+    43	- One skill entry per host (Claude Code, Codex, Hermes, OpenCode).
+    44	- The tamper test: a deliberately wrong figure must fail verification.
+    45	- No network access at teach time beyond what Prax approved.
+    46	
+    47	## Mutable and protected paths
+    48	
+    49	- Mutable: `~/Developer/prax-teach-evaluation-20261016/v2.1/**`.
+    50	- Protected: `~/.agents/skill-library/prax-teach-v2/**` (baseline), the C study repo, every other skill.
+    51	
+    52	## Budget and stop rule
+    53	
+    54	- At most 3 implement→review rounds per spec work package. Stop a package after 2 rounds with no newly passing acceptance check, park it with findings, and continue with the next.
+    55	- A run may change the candidate or its spec/evaluator, never both. A spec change needs Prax's approval.
+    56	- Report stalls instead of weakening a gate.
+     1	---
+     2	status: ACTIVE
+     3	---
+     4	# CEO Plan: Prax Teach v2.1, the lesson compiler
+     5	
+     6	Generated by /plan-ceo-review on 2026-10-18.
+     7	Repo: `~/Developer/prax-teach-evaluation-20261016/v2.1` (local, branch main). Mode: SCOPE EXPANSION.
+     8	Input: `PLAN-INPUT.md`. Frozen goals, baseline, holdout and stop rule: `../FREEZE.md`.
+     9	
+    10	## How decisions were made
+    11	
+    12	Prax asked for a fully autonomous run: CEO review, then eng review, write-spec, implement-from-spec and code review in a loop, with no stops for questions. So no AskUserQuestion was fired. Every decision below is recorded as `D<n>` with the option taken, its completeness score and the reason. Each choice follows his standing choices on record: keep improving tooling, scope expansion, completeness 10/10, highest-quality path, local-first, and no paid or cloud services without permission. Any decision can be overturned by naming its `D<n>`. The run has no license to change `FREEZE.md`; a change there needs Prax.
+    13	
+    14	## Pre-review system audit
+    15	
+    16	- **Repo state.** The new candidate repo has one commit, `e29321b`, which holds the freeze, holdout and plan input. There are no TODOs and no stashes. The "existing system" is the installed v2 package at `~/.agents/skill-library/prax-teach-v2`, plus three proofs built today outside it.
+    17	- **Prior review cycles.** 21 historical attempts sit in v2's `.engine/evidence/forward/attempts/`. The same areas were reworked repeatedly: routing, visual verification and receipts. That points to an architectural smell: the receipts and hash locks grew faster than the product.
+    18	- **UI scope.** Yes. Every artifact is a user-facing page, image or video, so Section 11 applies.
+    19	- **Taste calibration.** These are worth keeping:
+    20	  - v2's consent-first learner state with an FSRS scheduler (`.engine/scripts/praxteach/`);
+    21	  - its deterministic Markdown renderer with source-hash provenance;
+    22	  - the proof builds' "every number comes from `facts.json` captured from real compilers, plus a tamper test" (`proof/still-interactive/build.sh`, `check/assert_all.py`).
+    23	
+    24	  These are the anti-patterns to avoid repeating:
+    25	  - keyword-regex routers (`routing.py:49-55`, `:105-108`);
+    26	  - receipts that pin hashes of files the tool itself rewrote (`configure.py`);
+    27	  - historical attempts shipped inside the install.
+    28	- **Landscape.** Report 05 already covers it, with 76 sources checked today. **Layer 1:** Manim and HyperFrames-style HTML video; Anki for spaced repetition. **Layer 2:** agent-first video tools (HyperFrames 0.8.x with local Kokoro TTS and `transcribe`), and in-page composition players. **Layer 3, the eureka:** every serious explainer pipeline treats the *render* as the product. For a tutor the product is the *verified lesson model*, and renders are cheap projections of it. One model with facts, claims, a trace and a storyboard fixes correctness, consistency across artifacts, and interactive video, all at once. Interactive video stops being a special feature: it is the video and the explorer projected from the same state timeline.
+    29	
+    30	## Step 0
+    31	
+    32	### 0A. Premise challenge
+    33	
+    34	1. **Is this the right problem?**
+    35	   - The literal problem, "make v2 produce six artifact types well", is right but framed too low.
+    36	   - The real problem is that v2 has no single source of truth. It verifies files, not facts, and it routes by keywords, not by intent and the workspace's own contract.
+    37	   - So patching v2 means 114 local fixes. Restructuring around a lesson model removes whole classes of them.
+    38	2. **The actual outcome.** Prax learns C, then C++, DSA and GATE CS from explanations that are never wrong and look world-class, in the medium he asks for, inside his own study loop: a prediction first, the attempt log, spaced review.
+    39	3. **If we do nothing.**
+    40	   - v2 keeps routing "narrated video" requests to text-only answers.
+    41	   - It can't hold a video.
+    42	   - It ships wrong figures with "passed" receipts.
+    43	   - It also contradicts the workspace's Socratic contract.
+    44	
+    45	   That is real pain, observed today, not hypothetical.
+    46	4. **Raised once and recorded, not re-argued.** `MISSION.md` in the C workspace warns against replacing practice with an expanding curriculum or dashboard, and that workspace has zero practice sessions logged. This plan is tooling. Prax chose to keep improving tooling, and this plan honours that choice in two ways:
+    47	   - **Build requirement:** the tool must make practice easier, not replace it. Prediction-first mode, cards wired to his spaced review, and exam drills are all in scope.
+    48	   - **Dogfooding requirement:** both exemplar lessons are C topics he needs anyway.
+    49	
+    50	### 0B. Existing code leverage
+    51	
+    52	| Sub-problem | Existing code | Plan |
+    53	|---|---|---|
+    54	| Capture real C outputs | `cpx` runner in the C repo (`tools/cpx/execute.py`, `toolchain.py`: process groups, timeouts, sanitizers, compiler discovery); `proof/still-interactive/c/` capture program | Port the capture pattern; do not import the C repo at runtime (separate products). |
+    55	| Still SVG from data | `proof/still-interactive` generator and `assert_all.py`, tamper test | Generalise into the still projector. |
+    56	| Explorer HTML | `proof/still-interactive/dist/byte-explorer.html` | Generalise into a template. |
+    57	| Flash cards | proof genanki deck | Generalise. |
+    58	| Narrated video | `proof/video` (HyperFrames composition, `tools/build.py`, Kokoro via `HYPERFRAMES_PYTHON`, LUFS, transcribe sync) and the C repo's `assets/video/0000-demo` | Generalise into the video projector. |
+    59	| Markdown → HTML with provenance | v2 `render_markdown.mjs` | Port, then add inline SVG, math (MathJax `tex2svg`), `<video>`/`<track>`, dark-mode figures, lining numerals. |
+    60	| Learner state and FSRS | v2 `praxteach` engine, `fsrs==6.3.1` | Port as an optional, lazily loaded module. |
+    61	| Tool registry | v2 `visualization-tool-registry.json` (38 tools) | Port, correct the entries flagged in M11–M16, rank by fit instead of alphabetically, and probe binaries, not just skill files. |
+    62	| Video skills | `hyperframes`, `hyperframes-core`, `-cli`, `-animation`, `manim-video` | Hand off to them with a written contract (M21). |
+    63	
+    64	### 0C. Dream state
+    65	
+    66	```
+    67	  CURRENT STATE (v2)                THIS PLAN (v2.1)                       12-MONTH IDEAL
+    68	  keyword routers; text-first  ---> lesson.json = facts+claims+trace  ---> "teach me X" in any medium returns a
+    69	  wrong figures pass gates          +storyboard; 6 projectors; value         verified lesson pack in minutes, in
+    70	  no TTS / no video / no IVE        + claims + visual + media gates;         Prax's style; pause any video into a
+    71	  12.9 MB, 85% history              workspace contract wins; ~3 MB           live explorer; cards feed his spaced
+    72	  one skill name, 25 copies seen    one entry per host; honest receipts      review; C++/DSA/GATE topic packs reuse it
+    73	```
+    74	
+    75	### 0C-bis. Implementation alternatives
+    76	
+    77	```
+    78	APPROACH A: Patch v2 in place
+    79	  Summary: New .engine revision: fix routers, add a media addendum, widen the renderer and verifier.
+    80	  Effort:  M   Risk: Med
+    81	  Pros:    smallest diff; keeps v2 receipts lineage; fastest to a first video route
+    82	  Cons:    keeps hash-locked bloat (E9, E14); verifier still checks files not facts (V1);
+    83	           every artifact type stays a separate code path, so values drift between them
+    84	  Reuses:  everything in v2
+    85	
+    86	APPROACH B: v2.1 lesson compiler, fresh package, port only what earns its place (ideal architecture)
+    87	  Summary: One lesson model (facts captured from real runs, claims ledger, trace, storyboard).
+    88	           Six projectors render from it. Gates verify the model, the values and the claims.
+    89	           Rendering for video is delegated to HyperFrames (and Manim for math); stills, explorer,
+    90	           Q&A, cards are our own generators. v2's renderer, state engine and registry are ported.
+    91	  Effort:  XL (human ~3-4 weeks / CC ~6-10 h)   Risk: Med
+    92	  Pros:    removes whole classes of bugs (consistency, tamper, drift); interactive video falls out
+    93	           of the shared timeline; slim install; honest receipts from fresh runs
+    94	  Cons:    largest build; must re-earn trust that v2's receipts claimed; two languages (Python+Node)
+    95	  Reuses:  v2 renderer, FSRS state engine, registry; all three proofs; cpx capture patterns
+    96	
+    97	APPROACH C: Thin router skill that delegates every medium to existing skills (minimal viable)
+    98	  Summary: A small SKILL.md plus a lesson.json contract; hand stills to svg-principal-engineer,
+    99	           video to hyperframes, cards to genanki recipe; no projectors of our own.
+   100	  Effort:  L   Risk: High
+   101	  Pros:    least code; uses best-in-class skills directly
+   102	  Cons:    no shared verification, so correctness depends on each skill; no interactive video;
+   103	           quality varies by skill; still needs the router and contract fixes
+   104	  Reuses:  installed skills
+   105	```
+   106	
+   107	**D2.** I chose **B**. Completeness scores: A=6, B=10, C=5. B fixes the root causes behind V1, E9, E14 and M7 instead of patching their symptoms, and it is the only option that produces interactive video from shared state. Engineering preference applied: the existing foundation is broken, so "scrap it and do this instead" (prime directive 9). A two-way door: v2 stays installed.
+   108	
+   109	**D1.** I skipped `/office-hours`, because the five review reports and the freeze record already state the problem.
+   110	
+   111	### 0D. Scope expansion
+   112	
+   113	**10x check.** A *lesson compiler*: `ptk build lessons/one-byte.lesson.json` produces the six artifacts, a build report with every gate, and an Anki deck, in about 3 minutes. For about 2x the effort of fixing v2, it turns "can the tutor make a video" into "every lesson comes in every medium, consistent and checked". Topic packs for C++, DSA and GATE reuse it.
+   114	
+   115	**Platonic ideal.** Prax asks "how does `%c` print B?" and gets the medium he named, in his paper-and-ink style.
+   116	- The numbers are never wrong, and every sentence traces to a claim with a reason.
+   117	- The video narrates at a calm pace with code tokens said correctly. Pausing it turns the current frame into a live bit explorer at the same value.
+   118	- The cards he flips next week come from the same facts.
+   119	- When his workspace says "prediction first", the first thing he sees is one question, not the answer.
+   120	
+   121	**Delight opportunities.**
+   122	- **Pronunciation lexicon for code.** `printf` is said "print f" and `%d` is said "percent d".
+   123	- **Captioned chapter thumbnails**, generated from storyboard keyframes.
+   124	- **"Show me the real run"**: every number links to the compiler output that produced it.
+   125	- **Light and dark themes for every artifact**, with portrait layouts for phones.
+   126	- **"Wrong on purpose" cards** built from named misconceptions, such as "printf reinterprets the bits", today's real error.
+   127	
+   128	**Expansion decisions (D4.x).** Each one is decided under the standing choice of scope expansion at 10/10.
+   129	
+   130	| # | Proposal | Effort (human / CC) | Decision | Reasoning |
+   131	|---|---|---|---|---|
+   132	| D4.1 | Lesson model with facts captured from real compiler runs (clang 21 and gcc-16, both, results compared) | L / 1.5 h | ACCEPTED | Root fix for V1 and the consistency across all six artifacts. |
+   133	| D4.2 | Claims ledger plus an independent claims review gate | M / 1 h | ACCEPTED | Today's proofs passed every value check and still taught a false claim about `%f`. |
+   134	| D4.3 | Interactive video explorer (MP4 + WebVTT metadata cue track mapping time to scene state + explorer state bridge, pause-to-explore, chapters, synced transcript; see D17.2) | L / 1.5 h | ACCEPTED | Prax named it as the most important artifact. |
+   135	| D4.4 | Q&A expander with misconception routing | M / 45 min | ACCEPTED | Requested type. Fixes T10. |
+   136	| D4.5 | Flash cards: Markdown and .apkg, FSRS-ready, generated from facts and misconceptions | S / 30 min | ACCEPTED | Requested type, and the proof already exists. |
+   137	| D4.6 | Narrated video projector: HyperFrames, Kokoro, WebVTT, chapters, LUFS and sync gates, env hardening | L / 1.5 h | ACCEPTED | Requested type. Fixes M1–M5, M10, M17–M19 and M26. |
+   138	| D4.7 | Router rebuild: medium words, intent classes, workspace contract precedence, prediction-first, exam-drill and Socratic modes | M / 1 h | ACCEPTED | Fixes the critical issues T1–T3, M1, M2, V8 and E12. |
+   139	| D4.8 | Style system v2: bundled OFL fonts with lining numerals, dark tokens with separable lightness, 3:1 rules | S / 30 min | ACCEPTED | Fixes V2, V6, V12 and V13. Offline, no Google Fonts. |
+   140	| D4.9 | Slim install with v2 history moved to a separate archive, exactly one entry per host, honest receipts, Node 22 and 24 | M / 1 h | ACCEPTED | Fixes E3, E4, E6, E9, E11, E14, E15, E18 and E19. |
+   141	| D4.10 | Pronunciation lexicon and chapter thumbnails | S / 20 min | ACCEPTED | Delight items. Lexicon fixes M19. |
+   142	| D4.11 | "Show me the real run" provenance links | S / 15 min | ACCEPTED | Delight item. Cheap once facts carry sources. |
+   143	| D4.12 | Localhost compile-and-trace server that runs the learner's own code inside explorers | L / 2 h | DEFERRED | It runs untrusted code from a browser, so it needs its own threat model. P2 in TODOS. |
+   144	| D4.13 | LLDB execution traces for step-through (recursion, pointers) | M / 1 h | ACCEPTED (scoped) | Use a deterministic instrumented trace (printf-trace harness) for the second exemplar. LLDB scripting is a stretch goal inside the same work package. |
+   145	| D4.14 | Manim projector for math-heavy topics | M / 1 h | ACCEPTED (scoped) | Route and hand-off contract only. `MathTex` needs LaTeX, which isn't installed and isn't approved. Math in stills uses MathJax `tex2svg` (KaTeX cannot emit SVG); math in HTML and video uses MathJax SVG output too, so one renderer covers both. |
+   146	| D4.15 | Host installs: BasicTeX or Typst | S | DEFERRED, needs Prax | One install rule (PLAN-INPUT §7, D17.14): new system-wide software needs his OK; user-scope venvs and model files under `$PTK_STATE` are allowed with disclosure. whisper-cli is already installed and is used for the sync gate. |
+   147	| D4.16 | Topic packs for C++, DSA and GATE | XL | DEFERRED | Phase 2, built on the compiler once it is accepted. |
+   148	
+   149	### 0D-POST. Accepted scope
+   150	
+   151	- **WP1 Router and teaching contract (D4.7).**
+   152	  - Intent and medium classifier.
+   153	  - Workspace contract loader (AGENTS.md, MISSION.md, NOTES.md), which wins over skill defaults.
+   154	  - Modes: explain, predict-first (Socratic), quiz, exam-drill, Q&A expand, quick answer.
+   155	  - Public dev prompt set, kept separate from the holdout.
+   156	- **WP2 Lesson model and capture (D4.1, D4.13).**
+   157	  - `lesson.schema.json`.
+   158	  - A C capture runner (clang and gcc-16, timeouts, a temp dir, outputs compared across compilers, run twice to check determinism).
+   159	  - Facts, claims, trace and storyboard.
+   160	- **WP3 Still projector and style system (D4.8).** SVG and PNG, light and dark, wide and portrait, with bundled fonts. Value gate, tamper test, contrast gate, screenshot gate.
+   161	- **WP4 Explorer, Q&A expander and flash cards (D4.4, D4.5).**
+   162	- **WP5 Narrated video projector (D4.6, D4.10).** HyperFrames composition generated from the storyboard. Kokoro TTS through a managed venv, pronunciation lexicon, WebVTT and chapters, and the LUFS, ffprobe, sync and snapshot gates.
+   163	- **WP6 Interactive video explorer (D4.3).**
+   164	- **WP7 Claims gate (D4.2, D4.11).** Every artifact sentence maps to a claim ID; an independent reviewer pass uses a rubric; provenance links.
+   165	- **WP8 Packaging and install (D4.9).** Plus the port of the v2 renderer, the state engine and the corrected registry.
+   166	- **WP9 Two exemplar lessons, built end to end by the compiler.**
+   167	  - "One byte, four views", with the `%f` cast claim corrected.
+   168	  - "factorial(3) on the call stack", which exercises a trace.
+   169	
+   170	### 0E. Temporal interrogation (decided now)
+   171	
+   172	```
+   173	HOUR 1 (foundations): languages and layout.  D5.1: Python 3.10-3.13 stdlib core (CLI `ptk`), Node 22/24 only
+   174	                      for the Markdown renderer, Playwright checks and HyperFrames. No new framework.
+   175	HOUR 2-3 (core):      lesson.json shape.      D5.2: JSON Schema 2020-12; facts are typed values with a
+   176	                      `source` (compiler, command, stdout sha256); claims have id, text, kind
+   177	                      (definition|mechanism|rule|caveat|undefined-behaviour|implementation-defined|framing), justification, source; `framing` covers headings and transitions and still gets a claim id; trace is a list of
+   178	                      states; storyboard is a list of scenes with narration segments and claim ids.
+   179	HOUR 4-5 (integration): HyperFrames contract. D5.3: generate one sub-composition per scene (fixes the
+   180	                      lint warnings seen in the proof); env always sets HYPERFRAMES_SKIP_SKILLS=1 and
+   181	                      telemetry off; HyperFrames is a pinned local npm install (D17.9), never the global CLI; fonts bundled as local
+   182	                      files and Google Fonts fetch blocked by a check.
+   183	HOUR 6+ (polish):     D5.4: cache keys are the full effective inputs listed in D17.9; D5.5: every gate
+   184	                      returns passed | failed | not-run(reason), and "not-run" never counts as passed;
+   185	                      D5.6: build is deterministic given SOURCE_DATE_EPOCH, which ptk sets itself.
+   186	```
+   187	
+   188	Kokoro venv location, **D5.7** (revised by D19.1): `$PTK_STATE/venvs/kokoro`. During development `$PTK_STATE` is `v2.1/.state/` (git-ignored, inside the FREEZE mutable path). It is created only by an explicit `ptk host setup`, never at teach time. Setup prints every download (Kokoro model about 330 MB, whisper ggml model, pinned HyperFrames npm tarball) and needs a yes. After setup, synthesis runs offline.
+   189	
+   190	### 0F. Mode
+   191	
+   192	**D3.** SCOPE EXPANSION. This is Prax's standing choice, and the plan is greenfield on top of v2. Approach B applies.
+   193	
+   194	## Spec review of this document
+   195	
+   196	Round 1: the adversarial spec reviewer scored it 6/10 with 15 issues, and Codex as outside voice raised 13. Both are folded into "Round 1 revisions" below. Round 2 follows.
+   197	
+   198	## Round 1 revisions (binding; they override earlier text where the two conflict)
+   199	
+   200	Cross-model tension was resolved autonomously, as Prax asked. Each D17 item records which reviewer raised it and why it was accepted. None of these items changes FREEZE.md.
+   201	
+   202	**D17.1 Vertical slice first** (Codex 1, 12; reviewer 9).
+   203	- **Before generalising, build WP0.** One unfamiliar request goes through the real skill entry → `lesson.json` → all six artifacts → every gate, for one lesson.
+   204	- **Dependency order:** WP0 → (WP1 ∥ WP2) → WP3 → WP4 → WP5 → WP6 → WP7 → WP8 → WP9.
+   205	- **If a package stalls, its dependents stop.**
+   206	- **Total budget:** 18 implement-and-review rounds across all packages. This is stricter than FREEZE's maximum of 27, so it is a self-limit, not a gate change.
+   207	- **A live session is a human step.** One real prediction → attempt → feedback session with Prax is listed as a human acceptance step, like the Competitive Companion click. The agent can't run it alone.
+   208	
+   209	**D17.2 Interactive video design** (Codex 2, reviewer 6). The IVE is the narrated MP4 plus a WebVTT `metadata` cue track.
+   210	- Each cue carries `{scene_id, state_id}`.
+   211	- On pause, seek or chapter jump, the page loads the explorer at that cue's state, which is the last state already shown (D18.2).
+   212	- It works for any video source, HyperFrames or Manim. No in-page composition runtime is needed.
+   213	
+   214	**D17.3 Authoring contract** (Codex 3; reviewer 9).
+   215	- **Writing the model:** the host agent writes `lesson.json` from `references/LESSON-MODEL.md`, using `ptk new <slug>` to scaffold. `ptk validate` reports JSON-pointer errors, and the agent repairs at most twice per error.
+   216	- **Runtime flow per mode:**
+   217	  - **Quick answer:** the agent answers directly. No model and no build.
+   218	  - **Predict-first:** one question, wait, then feedback. Artifacts come only after the attempt.
+   219	  - **Lesson in a named medium:** model → capture → the projectors for the requested media only → gates → deliver. The agent tells the learner first whether the build will take more than 60 s.
+   220	  - **Full pack:** only when asked.
+   221	- **The router is code** (`ptk route`). SKILL.md tells the agent to call it and obey its result.
+   222	
+   223	**D17.4 Undefined-behaviour guard and platform facts** (Codex 4; reviewer 1, 14).
+   224	- **Compiler flags:** capture compiles with `-std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address`. Any warning or sanitizer report blocks the fact, unless a claim of kind `undefined-behaviour` covers it, and such programs are compiled but never run.
+   225	- **Platform facts are captured once and shown wherever relevant:** `sizeof` of each scalar, char signedness, endianness, libc.
+   226	- **CompilerDisagreement is never rescued automatically.** It fails unless an authored claim of kind `implementation-defined` cites the C standard clause.
+   227	- **Two compilers don't add trust here.** clang and gcc-16 share Apple's libc on this Mac, so comparing them doesn't make printf output more trustworthy. The claim is dropped. The second compiler only checks diagnostics.
+   228	
+   229	**D17.5 Independent expectations and mutation testing** (Codex 5, 6; reviewer 1).
+   230	- Every displayed fact needs an independent `expect` field, computed by a separate Python function (bits, ASCII, arithmetic) or authored and reviewed.
+   231	- The values gate compares the artifact against both the capture and the expectation.
+   232	- **Mutation suite:** for each lesson, a script makes 10 or more corrupted variants (false claims, swapped values) and runs the *real* claims reviewer and value gates. At least 90% must be caught, and every value mutation must be.
+   233	- **Explorer logic:** checked against an independent computation over its whole input domain.
+   234	- **No spoilers:** a paused state never shows the answer to an open prediction question (retrieval safety, M20). That covers narration, transcript, chapter titles and alt text.
+   235	
+   236	**D17.6 Teaching protocol** (Codex 7; reviewer 1).
+   237	- **Multi-turn spec:** `references/TEACHING.md` defines predict-first as a multi-turn protocol:
+   238	  1. ask one question;
+   239	  2. end the turn;
+   240	  3. classify the attempt as correct, partial or misconception;
+   241	  4. give exactly one hint or feedback;
+   242	  5. show the artifact;
+   243	  6. record evidence (recognition, recall, explain, apply).
+   244	- **Transcript test:** `tests/test_protocol_transcripts.py` drives it with scripted learner turns.
+   245	- **Workspace contract precedence:** AGENTS.md, MISSION.md and NOTES.md are read first, and their rules beat skill defaults.
+   246	- **Hidden end state:** traces hide the final state until the learner predicts (fixes T3).
+   247	- **Evidence:** stored in `.prax-teach/state` as `evidence` events, with consent. T2 is answered by the stop rule "satisfaction plus at least one observed evidence item, or an explicit stop".
+   248	
+   249	**D17.7 Claims reviewer contract** (Codex 8; reviewer 8).
+   250	- **Who reviews:** the host agent spawns a separate subagent with a fixed rubric and the lesson's claims, sources and artifact texts. It writes `claims-review.json`, and `ptk claims check` validates its schema.
+   251	- **Coverage:** every sentence in narration, captions, labels, cards, Q&A and the still must carry a claim ID, tagged by the author in the storyboard or model and checked by `ptk`.
+   252	- **Not run is not passed:** if no subagent facility exists in the host, the gate is `not-run` and the build is `incomplete`. It is never `passed`.
+   253	
+   254	**D17.8 Offline caption sync** (Codex 8; reviewer 4).
+   255	- The sync gate uses `whisper-cli`, which is already installed, with a local ggml model under `$PTK_STATE/models`. `hyperframes transcribe` is the second choice.
+   256	- **Pass rule:** every cue start within 0.5 s of its planned time, and word error rate on non-code words of 10% or less.
+   257	
+   258	**D17.9 Pinned and reproducible builds** (Codex 9; reviewer 10, 13).
+   259	- **Pinned HyperFrames:** a local npm install inside `$PTK_STATE/tools` at a pinned version, never the global auto-upgrading CLI.
+   260	- **Cache keys:** the full effective inputs (source bytes, includes, flags, compiler version, TTS engine, model file sha256, voice, speed, lexicon version and fallback engine).
+   261	- **What reproducibility means:** "reproducible" applies to the lesson data and the HTML/SVG bytes. Media bytes are checked against tolerances instead.
+   262	- **No silent fetches:** outbound network during render is blocked by the sandbox profile in D18.3, and any denied request fails the build.
+   263	
+   264	**D17.10 Sandbox** (Codex 10; reviewer 14).
+   265	- **The profile:** capture runs under a tested `sandbox-exec` profile that denies network and denies file writes outside its temp dir. A test proves both denials.
+   266	- **Memory limit:** enforced by a watchdog that samples resident size, because macOS doesn't enforce `RLIMIT_AS`.
+   267	- **No sandbox, no capture:** if `sandbox-exec` is missing, `ptk` refuses to capture. There is no silent fallback.
+   268	
+   269	**D17.11 Acceptance proposal** (Codex 11; reviewer 3).
+   270	- **Proposal for approval:** `plan/ACCEPTANCE-PROPOSAL.md` adds an unfamiliar end-to-end request set and numeric media thresholds (integrated loudness of −16 ± 1 LUFS, true peak of −1 dBTP or lower, cue sync within 0.5 s). It also adds an aesthetics rule: 15 checklist items, 9 automated (including an OCR digit check with tesseract, which is installed), and the rest reviewed by screenshot. It goes to Prax for approval as a new FREEZE version.
+   271	- **Until he approves:** the frozen evaluator stands, and these checks run as the candidate's own internal tests.
+   272	
+   273	**D17.12 Rollback and state** (Codex 13; reviewer 5).
+   274	- **Candidate registration:** the candidate is never registered in any host's skill dir, so each host keeps exactly one entry. It's reachable by `ptk` and a direct path only.
+   275	- **Before acceptance:** learner state is snapshotted, and install and rollback are tested per host (Claude Code, Codex, Hermes, OpenCode).
+   276	- **Schema version:** the state schema becomes v2 (navigation events kept separate from learner attempts, plus an `evidence` kind). It has a migration and a test, and v1 state reads unchanged.
+   277	
+   278	**D17.13 Alternatives per artifact type** (reviewer 2).
+   279	- WP8's registry lists the ranked alternatives per type from report 05 (13 to 16 each).
+   280	- Each alternative has a binary probe and a fallback order.
+   281	- `ptk host probe` reports which alternatives this machine can run right now.
+   282	
+   283	**D17.14 One install rule** (reviewer 4). New system-wide software needs Prax's OK. User-scope venvs and models under `$PTK_STATE` are allowed, with the download size disclosed before fetching.
+   284	
+   285	**D17.15 Dependencies** (reviewer 13). The core gets a venv with pinned `jsonschema`, `genanki` and `fsrs==6.3.1`, created by `ptk host setup`. "stdlib-only" is dropped.
+   286	
+   287	**D17.16 Delight after acceptance** (reviewer 11). Chapter thumbnails, provenance links, `ptk report --html` and LLDB traces move after acceptance. The pronunciation lexicon stays, because M19 needs it.
+   288	
+   289	**D17.17 Protected v2 tests** (reviewer 6). `plan/PROTECTED-MAP.md` maps each of v2's 22 JS tests and its passing Python tests to a v2.1 equivalent, or gives a written reason the behaviour was removed. The FREEZE protected check is satisfied that way.
+   290	
+   291	**D17.18 Missing issues** (reviewer 1).
+   292	- **T13** is covered by D17.4.
+   293	- **T22:** the loader must stay under 4k tokens before the first teaching word, and a test counts it.
+   294	- **M20** is covered by D17.5.
+   295	- **T2** is covered by D17.6.
+   296	
+   297	## Round 2 revisions (binding)
+   298	
+   299	Round 2 scored the plan 7/10 with 11 issues. All 11 are accepted.
+   300	
+   301	**D18.1 Claims handoff state.** The build gains a `claims-pending` state.
+   302	1. `ptk verify` runs every automatic gate.
+   303	2. It writes `build/<lesson>/claims-jobs/*.json`: one job for the lesson, plus one per mutation. Mutations are capped at 12 per lesson.
+   304	3. The host agent runs each job in a separate subagent and writes `claims-review/*.json`.
+   305	4. `ptk claims check` validates the reviews and finishes the build.
+   306	
+   307	The mutation suite uses this same path.
+   308	
+   309	```
+   310	  draft ─capture─▶ captured ─project─▶ projected ─verify─▶ claims-pending ─claims check─▶ verified ─package─▶ packaged
+   311	                                                                  │                          │
+   312	                                                                  └── reviews missing ──▶ incomplete    any gate failed ──▶ failed
+   313	  Final statuses: verified | degraded (all gates passed but a fallback was used, e.g. `say` TTS; not verified) | incomplete (a gate not-run) | failed
+   314	```
+   315	
+   316	**D18.2 No answer leaks on pause.**
+   317	- A cue's state is the last state already shown on screen, never the settled end of a transition that is still running.
+   318	- Every reveal becomes two cues: a question cue, with the state before the answer, and an answer cue.
+   319	- Pausing on a question cue shows the question state only.
+   320	- A test pauses at 0.1 s before each answer cue and checks that no answer text appears in the DOM, the alt text or the transcript shown so far.
+   321	
+   322	**D18.3 Render network block.**
+   323	- `hyperframes render` and `check` run under a `sandbox-exec` profile that denies all network except loopback. They have no request hook of their own.
+   324	- Any denied request appears in the render log, and the build then fails.
+   325	- Moved into the T0 spikes.
+   326	
+   327	**D18.4 New error classes** (Section 2 additions):
+   328	
+   329	| Error class | Raised when | What happens |
+   330	|---|---|---|
+   331	| `SandboxUnavailable` | `sandbox-exec` missing | exit 2 and stop |
+   332	| `SanitizerFinding` | warning or UBSan/ASan report without an `undefined-behaviour` claim | the fact is blocked; findings shown |
+   333	| `ExpectationMismatch` | capture ≠ independent `expect` | fail, showing both values |
+   334	| `OutboundRequest` | a request was denied during render or capture | fail, with the URL |
+   335	| `MemoryLimitExceeded` | the watchdog kills a process | fail, with peak RSS |
+   336	| `ClaimsNotRun` | no review files present | status `incomplete` |
+   337	| `StateMigrationError` | v1 state can't be read | exit 3; state left untouched |
+   338	
+   339	**D18.5 Dependency graph and T0 scope.**
+   340	
+   341	```
+   342	  WP0 (slice: still + narrated video + IVE for one lesson; spikes)
+   343	   ├──▶ WP1 router + teaching protocol ─────────────────────────────┐
+   344	   └──▶ WP2 model + capture ──┬──▶ WP3 still ──┐                    │
+   345	                              ├──▶ WP4 explorer, Q&A, cards ─┐      │
+   346	                              ├──▶ WP5 video ──▶ WP6 IVE     │      │
+   347	                              └──▶ WP7 claims gate ──────────┤      │
+   348	                                                   WP8 packaging ◀─┘ (needs WP1, WP3, WP4, WP7; WP5/WP6 optional for packaging)
+   349	                                                   WP9 exemplars ◀── all
+   350	```
+   351	
+   352	- A stall in WP6 blocks only WP9's IVE item. It doesn't block packaging or the claims gate.
+   353	- T0 is re-estimated at about 3 h with CC, and it covers the still, the narrated video and the IVE only.
+   354	
+   355	**D18.6 Live session checkpoint.**
+   356	- After WP0 and WP1, the run stops to ask Prax for one 5-minute predict-first session.
+   357	- The tooling packages continue meanwhile, because they don't depend on it.
+   358	- Acceptance and any topic-pack work wait for that session.
+   359	
+   360	**D18.7 Hidden test sets.**
+   361	- The six end-to-end requests written during this run are moved to `plan/proposed/e2e-requests.jsonl`, and `holdout/SHA256` goes back to its frozen single line.
+   362	- They take effect only if Prax approves the acceptance proposal, and he can rewrite them. Until then the frozen routing holdout is the only hidden evaluator.
+   363	- They are not candidate tests.
+   364	
+   365	**D18.8 Traceability for round 1 issues 7, 12 and 15:**
+   366	- issue 7 (`say` fallback) is covered by the `degraded` status in D18.1;
+   367	- issue 12 (KaTeX) by the MathJax `tex2svg` fix in 0B and D4.14;
+   368	- issue 15 (process) by the fact that the reviews ran and are recorded here and in `plan/outside-voice-codex.md`.
+   369	
+   370	## Round 3 revisions (binding)
+   371	
+   372	Round 3 scored the plan 7/10 with 6 issues. All 6 are fixed below. Under the loop's three-round limit, these fixes weren't reviewed a fourth time.
+   373	
+   374	**D19.1 Paths.**
+   375	- During development, every write stays inside the FREEZE mutable path. `$PTK_STATE` is `v2.1/.state/` (git-ignored) and holds venvs, models, the pinned HyperFrames install and the throwaway host homes.
+   376	- Learner state for tests lives under `v2.1/.state/learners/`. The C workspace is never written.
+   377	- The install into `~/.agents/skill-library/prax-teach-v2.1`, the user-scope `$PTK_STATE=~/.local/share/prax-teach`, and the `prax-teach-v2` symlink flip are proposed as a FREEZE amendment in `ACCEPTANCE-PROPOSAL.md` §7. They happen only after Prax approves, and the flip is his step.
+   378	
+   379	**D19.2 No fetch at teach time.**
+   380	- Every download happens in `ptk host setup`, which lists each file, its size and its source, and needs an explicit yes.
+   381	- Teach-time paths never touch the network. A missing tool gives `not-run` (status `incomplete`), or the `say` fallback (status `degraded`).
+   382	
+   383	**D19.3 WP0 entry and host tests.**
+   384	- WP0 calls the candidate by loading its `SKILL.md` by direct path, with `ptk` on `PATH` from `v2.1/`.
+   385	- Per-host install and rollback tests run with `HOME` set to throwaway dirs under `v2.1/.state/hosts/<host>/`.
+   386	- WP0's request is fixed now: "Teach me how a switch statement with a missing break falls through, as a still, a narrated video and an interactive video." It is a development request, not a holdout.
+   387	
+   388	**D19.4 Stop rule measurement.**
+   389	- A round counts as progress when a new acceptance criterion from `spec/SPEC.md` (the EARS criteria for that package) starts passing.
+   390	- These are the candidate's own tests. The frozen holdout still runs only at acceptance.
+   391	- This reads "acceptance check" in FREEZE as "spec acceptance criterion". The interpretation is recorded for Prax in `ACCEPTANCE-PROPOSAL.md` §8.
+   392	
+   393	**D19.5 Exit codes for `ptk`:**
+   394	
+   395	| Code | Meaning | What the agent does next |
+   396	|---|---|---|
+   397	| 0 | verified or packaged | deliver |
+   398	| 1 | a gate failed | repair at most twice, then report |
+   399	| 2 | host or environment problem | name the tool and its setup command |
+   400	| 3 | model error | fix `lesson.json` at the JSON pointer |
+   401	| 4 | claims-pending | run every job in `claims-jobs/` as a separate subagent, then `ptk claims check` |
+   402	| 5 | incomplete (a gate not run) | report which gate and why; never call it verified |
+   403	| 6 | degraded (a fallback was used) | deliver with the fallback named |
+   404	
+   405	**D19.6** Fixed inline:
+   406	- "settled state";
+   407	- the §1 state machine;
+   408	- the Chrome flag;
+   409	- the drift wording;
+   410	- the cache keys;
+   411	- the fixture reviewer in §6;
+   412	- T0's estimate.
+   413	
+   414	## Section 1: Architecture
+   415	
+   416	```
+   417	                         +------------------------- ptk (Python CLI) --------------------------+
+   418	  request ──▶ route ──▶ | mode+medium+workspace contract ──▶ lesson.json (model)               |
+   419	  (agent)               |                                    │  facts  claims  trace  storyboard |
+   420	                        |   capture/c_runner ── clang,gcc-16 ┘                                   |
+   421	                        |                                    ▼                                   |
+   422	                        |  projectors: still │ explorer │ qa │ cards │ video │ ivideo          |
+   423	                        |        │               │                    │         │               |
+   424	                        |        ▼               ▼                    ▼         ▼               |
+   425	                        |   SVG/PNG         HTML (self-contained)   HyperFrames  player page    |
+   426	                        |                                           +Kokoro TTS  +state bridge  |
+   427	                        |  gates: values · tamper · claims · contrast · screenshots · media     |
+   428	                        |                     ▼                                                  |
+   429	                        |            build-report.json (passed | failed | not-run)             |
+   430	                        +-----------------------------------------------------------------------+
+   431	  ported from v2: render_markdown (Node) · praxteach state+FSRS (optional) · tool registry (fixed)
+   432	  external: clang · gcc-16 · node · playwright · hyperframes · kokoro venv · ffmpeg/ffprobe · manim (route only)
+   433	```
+   434	
+   435	**Data flow and shadow paths (capture → model):**
+   436	- **Happy path:** compile with clang under the sandbox with warnings and sanitizers on (D17.4), run twice, the outputs match, and they're stored as facts with sha256 hashes next to the independent `expect` values. gcc-16 compiles the same source for diagnostics only.
+   437	- **Missing input** (no source or program for a fact): `ModelError("fact X has no source")`. The build stops.
+   438	- **Empty stdout:** stored as an empty-string fact. Allowed, but a value gate that expects text fails loudly.
+   439	- **Upstream error:**
+   440	  - a compile error gives `CompileError` with the compiler's stderr;
+   441	  - a timeout gives `RunTimeout`;
+   442	  - outputs that differ between compilers give `CompilerDisagreement`, which is valid when the behaviour is implementation-defined, but then a claim must say so;
+   443	  - outputs that differ between runs give `NondeterministicOutput`.
+   444	
+   445	**State machine (lesson build):**
+   446	
+   447	```
+   448	  draft ──capture──▶ captured ──project──▶ projected ──verify──▶ claims-pending ──claims check──▶ verified ──package──▶ packaged
+   449	    ▲                   │ fail                │ fail                │ any gate failed
+   450	    └──── edit ◀────────┴─────────────────────┴─────────────────────┘ (stays failed; never "verified")
+   451	  Invalid: projected→packaged without verify (ptk refuses); verified with a not-run gate marked passed (schema forbids).
+   452	```
+   453	
+   454	**Coupling.**
+   455	- Projectors depend only on `lesson.json` and the style tokens.
+   456	- Gates depend on `lesson.json` and the artifacts, never on how a projector works internally.
+   457	- The C repo isn't a dependency; the capture runner is self-contained.
+   458	
+   459	**Scaling.** A build costs one TTS pass per scene (cached) and one HyperFrames render, about 2–4 minutes for 60–90 s of video. Ten lessons in a pack cost about 30 minutes. The first thing to break at 10x is TTS and render time, so a content-hash cache and `--only` flags per projector handle it.
+   460	
+   461	**Single points of failure.**
+   462	- HyperFrames: a pinned local install (D17.9). If it's missing, video gates are `not-run` and the build is `incomplete`.
+   463	- The Kokoro venv: falls back to macOS `say`, disclosed in the report.
+   464	- Playwright: if it's missing, the visual gate reports `not-run`.
+   465	
+   466	**Security architecture.** No network endpoints. The capture runner executes C that the agent wrote, so it gets a temp dir, rlimits, a timeout, process-group kill, a resident-size watchdog and a tested `sandbox-exec` profile (no network, no writes outside the temp dir). If `sandbox-exec` is missing, capture refuses to run (D17.10). Explorer and IVE HTML are self-contained, with a CSP meta tag that blocks all remote fetches.
+   467	
+   468	**Production failures per integration.**
+   469	
+   470	| Integration | Failure | Handled by |
+   471	|---|---|---|
+   472	| HyperFrames | Global CLI upgrades itself mid-build (seen today) | Pinned local install (D17.9); the global CLI is never used |
+   473	| Kokoro | Long-path bug in its pronunciation data (seen today) | Venv setup applies the proven fix |
+   474	| Playwright | Browser cache purged by an outside cleaner (seen on 2026-10-08) | `PLAYWRIGHT_BROWSERS_PATH` set to the package's own state dir |
+   475	
+   476	**Rollback.** v2.1 installs alongside v2 under a candidate name. Acceptance flips the `prax-teach-v2` symlink, and rollback flips it back: one command, about 1 second.
+   477	
+   478	**Beautiful version.** One file, the lesson model, is the only thing an author writes. Everything else is a pure function of it, plus captured runs. A new engineer reads `lesson.schema.json` and the six projector files and understands the whole system.
+   479	
+   480	**Platform potential.** Topic packs (Phase 2), a cpx integration that cards and drills feed into, and other learners' workspaces.
+   481	
+   482	Section 1 decisions:
+   483	- **D6.1** Per-scene HyperFrames sub-compositions. *Accepted*, completeness 10 versus 7 for one file, because it fixes the proof's lint warnings.
+   484	- **D6.2** The capture runner is self-contained rather than importing cpx. *Accepted*: separate products and no cross-repo coupling.
+   485	
+   486	## Section 2: Error and rescue map
+   487	
+   488	```
+   489	  CODEPATH                 | WHAT CAN GO WRONG                         | ERROR CLASS
+   490	  -------------------------|-------------------------------------------|-------------------------
+   491	  capture.c_runner         | compiler missing                          | HostToolMissing
+   492	                           | compile error                             | CompileError
+   493	                           | run exceeds limit                         | RunTimeout
+   494	                           | crash / signal                            | RunCrashed
+   495	                           | outputs differ across runs                | NondeterministicOutput
+   496	                           | outputs differ across compilers           | CompilerDisagreement
+   497	  model.load               | schema invalid                            | ModelSchemaError
+   498	                           | claim references unknown fact             | ModelReferenceError
+   499	  projector.*              | fact missing for a slot                   | ModelReferenceError
+   500	                           | text overflow (measured in browser)       | LayoutOverflow
+   501	  tts                      | kokoro venv absent                        | TTSUnavailable
+   502	                           | empty segment text                        | NarrationEmpty
+   503	                           | lexicon token unknown in code span        | PronunciationMissing (warning)
+   504	  video.render             | hyperframes check fails                   | RenderCheckFailed
+   505	                           | render non-zero exit                      | RenderFailed
+   506	  gates.media              | ffprobe fields out of spec                | MediaGateFailed
+   507	                           | LUFS outside -16±1                        | LoudnessGateFailed
+   508	                           | transcribe unavailable                    | GateNotRun(sync)
+   509	  gates.claims             | reviewer output malformed / empty / refusal| ClaimsReviewInvalid
+   510	                           | sentence maps to no claim                 | ClaimsUnmapped
+   511	  gates.visual             | playwright missing                        | GateNotRun(visual)
+   512	                           | contrast below threshold                  | ContrastGateFailed
+   513	
+   514	  ERROR CLASS              | RESCUED? | RESCUE ACTION                                  | USER SEES
+   515	  -------------------------|----------|------------------------------------------------|-----------------------------
+   516	  HostToolMissing          | Y        | name the tool + install command; stop          | "gcc-16 not found: brew install gcc"
+   517	  CompileError/RunCrashed  | Y        | stop; show stderr and exit status              | exact compiler message
+   518	  RunTimeout               | Y        | kill process group; stop                       | "ran >5s, killed"
+   519	  NondeterministicOutput   | Y        | stop; show both outputs                        | diff of the two runs
+   520	  CompilerDisagreement     | Y        | require a claim of kind implementation-defined | which compilers disagree
+   521	  ModelSchemaError/RefErr  | Y        | stop; JSON pointer to the bad field            | "/facts/3/source missing"
+   522	  LayoutOverflow           | Y        | fail the gate; screenshot path                 | screenshot + element id
+   523	  TTSUnavailable           | Y        | fall back to `say`; build status `degraded`    | "TTS: say (Kokoro missing), degraded"
+   524	  NarrationEmpty           | Y        | stop                                           | scene id
+   525	  RenderCheckFailed        | Y        | stop; keep hyperframes output                  | lint/runtime lines
+   526	  MediaGate/Loudness       | Y        | fail; numbers in report                        | measured vs target
+   527	  GateNotRun(*)            | Y        | report not-run with reason; build not verified | "sync: not-run (no transcriber)"
+   528	  ClaimsReviewInvalid      | Y        | retry once with schema reminder, then fail     | raw reviewer output path
+   529	  ClaimsUnmapped           | Y        | fail; list sentences                           | the unmapped sentences
+   530	```
+   531	
+   532	No catch-all handlers: every error class is distinct, and `ptk` exits 1 for a gate failure, 2 for host or environment problems and 3 for model errors.
+   533	
+   534	**D7.1.** `GateNotRun` never counts as passed, and a build with any not-run gate is reported `incomplete`, not `verified`. *Accepted*, completeness 10. This is the direct fix for the v2 habit of passing on presence.
+   535	
+   536	## Section 3: Security and threat model
+   537	
+   538	| Threat | Likelihood | Impact | Mitigation in plan |
+   539	|---|---|---|---|
+   540	| Captured C program does something harmful (agent-written code; future: learner code) | Low | High | temp dir, rlimits (CPU, memory, file size), timeout, process-group kill, tested sandbox-exec profile (no network, no writes outside temp), RSS watchdog, refuse if unavailable; D4.12 deferred |
+   541	| HTML artifact fetches remote content or runs injected text | Med | Med | self-contained output, CSP `default-src 'self' data:`, all model text HTML-escaped, a test injects `<script>` into a claim |
+   542	| HyperFrames telemetry and skill auto-update change `~/.agents` | High (seen today) | Med | ptk always sets `HYPERFRAMES_SKIP_SKILLS=1` and telemetry off; a test asserts the env |
+   543	| Prompt injection from web sources quoted in lessons | Med | Med | sources are data; the claims reviewer gets them as quoted data with a fixed rubric |
+   544	| Model download (Kokoro) supply chain | Low | Med | pinned kokoro-onnx version and file sha256 recorded; one-time, disclosed |
+   545	| npm advisories (2 high in v2's tree) | Med | Low | `npm audit` runs in CI-equivalent check; upgrade or document each |
+   546	| `/Users/prax` paths leaked in package | High (156 files in v2) | Low | packaging test greps for home paths |
+   547	
+   548	**D8.1.** The sandbox for captured code is required. *Accepted*, completeness 10.
+   549	
+   550	## Section 4: Data flow and interaction edge cases
+   551	
+   552	```
+   553	  lesson.json ──▶ VALIDATE ──▶ CAPTURE ──▶ PROJECT ──▶ VERIFY ──▶ PACKAGE
+   554	     │              │            │            │           │           │
+   555	  [missing?]   [schema?]    [timeout?]   [overflow?]  [not-run?]  [partial dir?]
+   556	  [empty facts?][bad ref?]  [disagree?]  [font miss?] [flaky shot?][stale cache?]
+   557	```
+   558	
+   559	Every shadow path has an error class from Section 2. Two more: a stale cache is prevented by content-hash keys, and a partial output dir is avoided by building into a temp dir and swapping it in atomically.
+   560	
+   561	| Interaction | Edge case | Handled? | How |
+   562	|---|---|---|---|
+   563	| Explorer value input | non-integer, out of range, empty | Y | clamp and message; tested |
+   564	| Explorer bit toggles | keyboard only | Y | buttons with aria-pressed; tested |
+   565	| IVE pause-to-explore | pause mid-transition | Y | explorer loads the last state already shown, never a tween value or a future answer (D18.2) |
+   566	| IVE seek | seek past end / rapid scrubbing | Y | debounce; state = scene at time t |
+   567	| IVE | no JS | Y | static poster sequence + transcript |
+   568	| Video | autoplay with sound | Y | never; play is a user action |
+   569	| Cards | value with no printable glyph | Y | label "non-printable (code N)" |
+   570	| Q&A expander | open all at once / print | Y | details elements, print stylesheet expands all |
+   571	
+   572	**D9.1.** IVE explorer state comes from scene states, never from in-between animation values. *Accepted*: it is exact by construction.
+   573	
+   574	## Section 5: Code quality
+   575	
+   576	- Keep one formatter for values, shared by all projectors, so the same fact can't render differently in two artifacts. That is DRY at the point that matters.
+   577	- No framework: templates are string templates with escaping. Over-engineering check: no plugin system for projectors in v2.1, since six fixed modules are enough.
+   578	- Branching budget: the router must not exceed 5 branches per function. Use a table-driven classifier with explicit rules plus tests, not regexes scattered through the code.
+   579	- **D10.1.** Table-driven router plus a dev prompt set of at least 60 prompts, kept separate from the holdout. *Accepted.*
+   580	
+   581	## Section 6: Tests
+   582	
+   583	```
+   584	  NEW UX FLOWS:        explorer interaction; Q&A expand; IVE pause/seek/chapters; video play
+   585	  NEW DATA FLOWS:      capture → facts; model → 6 projectors; artifacts → gates → report
+   586	  NEW CODEPATHS:       router rules; workspace contract precedence; each projector; each gate
+   587	  NEW ASYNC WORK:      TTS synthesis; HyperFrames render; Playwright screenshots
+   588	  NEW INTEGRATIONS:    clang, gcc-16, hyperframes, kokoro, ffmpeg/ffprobe, playwright, genanki
+   589	  NEW ERROR PATHS:     every class in Section 2
+   590	```
+   591	
+   592	| Item | Test type | Happy | Failure | Edge |
+   593	|---|---|---|---|---|
+   594	| router | unit (dev set ≥60) + holdout (32, acceptance only) | "narrated video" → motion | "fix my loop" → ordinary | workspace contract present |
+   595	| capture | integration (real compilers) | %d/%u/%f/%c outputs | compile error, timeout | gcc-16 missing → HostToolMissing |
+   596	| values gate | unit + tamper test | all match | 5 corrupted values each caught | locale-sensitive float formatting |
+   597	| claims gate | unit (schema, fixtures for malformed/refusal) + integration with the real reviewer subagent via claims jobs | all mapped | unmapped sentence, malformed JSON, refusal | the %f "same bits" sentence must fail with the real reviewer |
+   598	| still projector | snapshot + Playwright | 4 variants render | overflow detection fires on long label | 390 px portrait |
+   599	| video | integration (real render of a 10 s fixture) | gates pass | LUFS out of range fixture | Kokoro missing → say + disclosed |
+   600	| IVE | Playwright | pause → explorer at scene state | seek past end | no-JS fallback |
+   601	| packaging | system | one entry per host | nested SKILL.md present → fail | Node 22 and 24 |
+   602	
+   603	**Test ambition.**
+   604	- **The 2am test:** a full build of both exemplars from a clean checkout, with every gate passed and nothing not-run.
+   605	- **The hostile QA test:** a tamper suite for each artifact type, plus a claims fixture that repeats today's real `%f` error.
+   606	- **The chaos test:** delete the Kokoro venv and the Playwright browsers mid-build, and check the report says not-run or fallback, never passed.
+   607	
+   608	**Flakiness.** Playwright font loading: fonts are bundled and loading is awaited before screenshots. TTS is deterministic per cached hash.
+   609	
+   610	**D11.1.** The claims gate gets a regression fixture taken from today's real error. *Accepted.*
+   611	
+   612	## Section 7: Performance
+   613	
+   614	- **Slowest paths.** Video render takes about 60–180 s, TTS about 1–2 s per sentence (cached), and Playwright screenshots about 5–10 s per artifact.
+   615	- **Memory.** Kokoro needs about 1 GB resident and HyperFrames' Chrome about 1 GB. With 24 GB RAM that's fine; renders still run one at a time.
+   616	- **Cache.** Keyed by the full effective inputs in D17.9.
+   617	- No issues beyond caching. **D12.1.** Caching *accepted.*
+   618	
+   619	## Section 8: Observability
+   620	
+   621	- `build-report.json` per lesson records every gate with status, measured values, thresholds, tool versions, durations and artifact paths. `ptk report` prints it as a table.
+   622	- Logs are structured JSON lines to `build/<lesson>/log.jsonl`. They record the start and end of each stage with its inputs and hashes.
+   623	- Three weeks after a build, the report plus the logs reconstruct exactly what ran and which tool versions ran it.
+   624	- The "joy to operate" version: `ptk report --html` renders the build report with thumbnails of every artifact and gate.
+   625	- **D13.1** *Accepted.*
+   626	
+   627	## Section 9: Deployment and rollout
+   628	
+   629	1. Build and test in the candidate repo.
+   630	2. Install side by side into `~/.agents/skill-library/prax-teach-v2.1/`. It is not linked into any host skill dir (D17.12), so each host keeps one entry. It is reachable through `ptk` and its direct path only. Snapshot `.prax-teach` learner state first.
+   631	3. Run the acceptance step: the holdout, both exemplar builds and the protected checks.
+   632	4. Once accepted, point `~/.agents/skills/prax-teach-v2` at v2.1. Install and rollback are tested on each host first.
+   633	5. Rollback is to point the link back at the clean v2 install and restore the learner-state snapshot. Evidence recorded after the snapshot is lost; the rollback command prints how many events that is.
+   634	
+   635	Learner state moves to schema v2 (D17.12): navigation events are separated from attempts, and an `evidence` kind is added. A migration reads v1 unchanged and has a test. v2 cannot read schema v2, which is why rollback restores the snapshot.
+   636	
+   637	**D14.1** *Accepted.* The infrastructure that makes this routine: `ptk package --install` performs steps 2 and 4 with a dry-run diff first.
+   638	
+   639	## Section 10: Long-term trajectory
+   640	
+   641	- **Reversibility: 5/5.** It's side by side, with a symlink flip.
+   642	- **Debt introduced.**
+   643	  - Two languages: Python for the core, Node for rendering and checks.
+   644	  - Dependence on HyperFrames releases. The pinned local install controls it; upgrading is a deliberate, tested change.
+   645	- **Phase 2.** Topic packs, the D4.12 compile-and-trace server, and cpx integration (cards and drills land in his attempt log).
+   646	- **Phase 3.** Manim math track once LaTeX or Typst is approved.
+   647	- **The 1-year question.** A new engineer reads `lesson.schema.json`, `ptk --help` and one exemplar lesson, and understands the system.
+   648	
+   649	## Section 11: Design and UX
+   650	
+   651	```
+   652	  request ─▶ [prediction-first?] ─yes─▶ one question ─▶ attempt ─▶ feedback ─▶ artifact(s)
+   653	                   │no
+   654	                   ▼
+   655	            artifact in requested medium ─▶ (optional) check ─▶ next step
+   656	  Artifact pages: still (figure + caption + source link) │ explorer (control panel │ live readout │ notes)
+   657	  IVE: video ▸ pause ─▶ explorer at scene state ▸ resume ─▶ video   chapters list │ transcript (synced)
+   658	```
+   659	
+   660	**State coverage.**
+   661	
+   662	| Feature | Loading | Empty | Error | Success | Partial |
+   663	|---|---|---|---|---|---|
+   664	| Explorer | n/a (static) | default value 66 | invalid input message | live readout | no-JS static |
+   665	| IVE | poster frame | n/a | video failed → transcript + stills | synced | captions missing → report fails build |
+   666	| Q&A | n/a | n/a | n/a | collapsed layers | print expands all |
+   667	
+   668	**AI-slop risk.** High by default, and the v2 router image proves it: a generic gradient infographic. Mitigation is the style system from D4.8 plus report 02's 15-item quality bar as a gate checklist, plus screenshot review.
+   669	- **Mobile:** portrait variants are required.
+   670	- **Accessibility:** keyboard access, captions, transcript, audio description cues in the storyboard, and contrast measured with 3:1 for rules and borders.
+   671	- **The inevitable feel:** the paper-and-ink style everywhere, the same labels in every medium, and the numbers always link to the run.
+   672	- **D15.1.** Run a design review after implementation as part of the code-review loop, by screenshot. *Accepted.* A separate `/plan-design-review` isn't run, because Prax's chain names only CEO, eng, spec, implement and review.
+   673	
+   674	## NOT in scope
+   675	
+   676	- Learner-code compile server (D4.12). Untrusted code from the browser needs its own threat model.
+   677	- C++, DSA and GATE topic packs (D4.16). Phase 2.
+   678	- Manim `MathTex`, BasicTeX and Typst installs (D4.14, D4.15). These are system-wide installs that need Prax's OK. whisper-cli is already installed and is used.
+   679	- Cloud TTS, cloud rendering and HyperFrames `publish`. Cloud and paid services need permission.
+   680	- Claims about human learning outcomes. Not measurable here.
+   681	
+   682	## What already exists
+   683	
+   684	See the 0B table. Reused: the v2 renderer, the state engine, the registry, all three proofs, the cpx capture patterns and the five HyperFrames/Manim skills.
+   685	
+   686	## Dream state delta
+   687	
+   688	After v2.1, all six media exist with verified values and reviewed claims for C topics. The remaining gap to the 12-month ideal is topic packs, running the learner's own code, the math track and cpx integration.
+   689	
+   690	## Error and rescue registry
+   691	
+   692	Section 2 is the complete registry: 22 failure modes, all named; 21 rescued; one known limit (the claims reviewer can itself be wrong), mitigated by a mutation test set and labelled in every report. 0 silent gaps.
+   693	
+   694	## Failure modes registry
+   695	
+   696	```
+   697	  CODEPATH        | FAILURE MODE            | RESCUED? | TEST? | USER SEES?            | LOGGED?
+   698	  ----------------|-------------------------|----------|-------|-----------------------|--------
+   699	  capture         | compiler disagreement   | Y        | Y     | which compilers       | Y
+   700	  values gate     | tampered value          | Y        | Y     | mismatch list         | Y
+   701	  claims gate     | false claim, mapped     | Y        | Y     | reviewer finding      | Y
+   702	  claims gate     | reviewer itself wrong   | N (known limit) | Y (mutation set) | report labels review as LLM-reviewed, not proven | Y
+   703	  visual gate     | Playwright missing      | Y        | Y     | not-run, incomplete   | Y
+   704	  tts             | Kokoro missing          | Y        | Y     | fallback disclosed    | Y
+   705	  video           | HyperFrames upgraded    | Y        | Y     | cannot happen: pinned local install | Y
+   706	```
+   707	
+   708	The claims reviewer is itself an LLM, so its verdict is a reviewed finding, not a proof. The report labels it that way. That is a known limit, not a silent gap.
+   709	
+   710	## TODOS (written to `../TODOS.md`)
+   711	
+   712	1. **P2: learner compile-and-trace server (D4.12).**
+   713	2. **P2: topic packs for C++, DSA and GATE (D4.16).**
+   714	3. **P3: Manim math track after a LaTeX or Typst install is approved (D4.14 and D4.15).**
+   715	4. **P3: cpx integration, where cards and drills feed the C repo's attempt log.**
+   716	
+   717	**D16.** All four go to TODOS.md. *Accepted.*
+   718	
+   719	## Scope expansion decisions
+   720	
+   721	- **Accepted:** D4.1–D4.11, plus D4.13 and D4.14, which are scoped down.
+   722	- **Deferred:** D4.12, D4.15 and D4.16.
+   723	- **Skipped:** none.
+   724	
+   725	## Diagrams produced
+   726	
+   727	These are in the sections above: system architecture, the shadow paths in the data flow, the build state machine, the error flow (Section 2), the user flow, and the deployment and rollback steps (Section 9).
+   728	
+   729	There are no stale diagrams, because the repo is new.
+   730	
+   731	## Implementation Tasks
+   732	
+   733	- [ ] **T0 (P1, human ~3d / CC ~3h)**: vertical slice (D17.1, D18.5: still, narrated video and IVE for one lesson). Spikes first:
+   734	  - `sandbox-exec` profile;
+   735	  - whisper-cli sync on the proof MP4;
+   736	  - a pinned local HyperFrames;
+   737	  - the claims subagent contract.
+   738	
+   739	  Then one unfamiliar request goes through the whole path end to end. *Verify:* the build report has no `not-run` gates.
+   740	- [ ] **T1 (P1, human ~2d / CC ~1h)**: router: table-driven intent, medium and workspace-contract classifier with modes and a dev set of at least 60 prompts. *From:* Step 0 and Section 5 (T1–T3, M1, M2, V8, E12). *Verify:* dev-set accuracy; the holdout runs only at acceptance.
+   741	- [ ] **T2 (P1, ~2d / ~1.5h)**: lesson model, schema and C capture runner with the sandbox and both compilers. *From:* D4.1, Section 3. *Verify:* capture tests with real compilers.
+   742	- [ ] **T3 (P1, ~2d / ~1h)**: still projector and style system with bundled fonts. Value, tamper, contrast and screenshot gates. *From:* V1, V2, V6, V7, V12, V13. *Verify:* tamper test catches 5 of 5, and contrast is measured.
+   743	- [ ] **T4 (P1, ~2d / ~1h)**: explorer, Q&A expander and flash card projectors. *From:* D4.4, D4.5. *Verify:* Playwright interaction tests; the .apkg opens with genanki round-trip.
+   744	- [ ] **T5 (P1, ~3d / ~1.5h)**: narrated video projector with per-scene compositions, Kokoro venv management, lexicon, WebVTT, chapters, and the LUFS, ffprobe, sync and snapshot gates. *From:* M1–M5, M10, M17–M19, M26. *Verify:* real 10 s fixture render, then the full exemplar.
+   745	- [ ] **T6 (P1, ~3d / ~1.5h)**: interactive video explorer with pause-to-explore at the scene state, chapters, synced transcript and a no-JS fallback. *From:* D4.3, M7. *Verify:* Playwright pause and seek tests.
+   746	- [ ] **T7 (P1, ~1d / ~45min)**: claims gate (sentence-to-claim map, reviewer rubric, malformed-output handling) and the `%f` regression fixture. *From:* D4.2. *Verify:* the fixture fails and the corrected lesson passes.
+   747	- [ ] **T8 (P1, ~2d / ~1h)**: packaging: slim install, one entry per host, Node 22 and 24, no home paths, receipts from fresh runs, the renderer port with SVG, math and video, the state engine port, and the registry fixes. *From:* E1–E33, V3–V5, M11–M16. *Verify:* discovery test per host; clean-install test.
+   748	- [ ] **T9 (P1, ~1d / ~45min)**: two exemplar lessons built end to end with every gate passed. *From:* WP9. *Verify:* build reports.
+   749	
+   750	## Reviewer Concerns
+   751	
+   752	The spec review loop ran 3 rounds (6/10, then 7/10, then 7/10) and the Codex outside voice ran once. Round 3's six issues are fixed in D19.x but weren't re-reviewed, because of the three-round limit.
+   753	
+   754	Open items that need Prax, not more review:
+   755	- **Approve the FREEZE amendment for install paths and the symlink flip** (ACCEPTANCE-PROPOSAL §7).
+   756	- **Approve the stop-rule interpretation** (§8).
+   757	- **Approve the acceptance additions** (§1 to §6).
+   758	- **Hold the live predict-first session** (D18.6).
+   759	
+   760	## Eng Review (plan-eng-review, 2026-10-18)
+   761	
+   762	The target is this plan. The scope gate's question, what to review, is answered: B, the plan document. The complexity check trips, with more than 8 files and more than 2 new services, but the CEO review already chose full scope on Prax's standing preference. So **E0: proceed as-is**, recorded rather than re-argued.
+   763	
+   764	Prior learning applied: **value-checks-miss-claims** (confidence 9/10, from today).
+   765	
+   766	**Host facts checked for this review:**
+   767	- `whisper-cli` is installed, but there's no `ggml-*.bin` model anywhere under `~`, and it reads only flac, mp3, ogg and wav.
+   768	- A `sandbox-exec` profile with `(deny network*)` blocks `curl` (DNS fails, exit 6).
+   769	- npm `hyperframes` latest is 0.8.169.
+   770	- Proof venvs exist at `proof/video/.venv-kokoro` and `proof/still-interactive/.venv`. They can't be relocated, so they get rebuilt in `$PTK_STATE`.
+   771	
+   772	### Step 0: Scope challenge
+   773	
+   774	- **What already exists:** see CEO §0B. Everything reusable is reused, and nothing gets rebuilt that already works:
+   775	  - the proof generators;
+   776	  - the v2 renderer and state engine;
+   777	  - HyperFrames for video;
+   778	  - genanki for cards.
+   779	- **Minimum change set:** WP0 is the minimum that proves the architecture. WP1–WP9 widen it.
+   780	- **Search check:**
+   781	  - HyperFrames has `tts` and `transcribe` built in. **[Layer 1]** Use them before building our own.
+   782	  - Calling `hyperframes tts` once per segment reloads Kokoro every time, so the batch path calls `kokoro-onnx` directly in one process. **[Layer 3]**
+   783	  - Anki already schedules cards with FSRS **[Layer 1]**, so the plan builds no card scheduler of its own.
+   784	- **Distribution:**
+   785	  - `bin/ptk` is a shell shim into `ptk/` (Python).
+   786	  - `ptk host setup` builds the venv and fetches models with a yes (D19.2).
+   787	  - There's no PyPI or CI. `ptk selftest` is the single local test entry, and the acceptance step runs it on a clean `HOME`.
+   788	  - Targets: macOS arm64 is primary, and Linux is best effort. `sandbox-exec` is macOS-only, so on Linux capture refuses (D17.10), or uses `bwrap` later (TODO).
+   789	
+   790	### 1. Architecture
+   791	
+   792	| ID | Finding | Decision |
+   793	|---|---|---|
+   794	| **A1** | [P1] (confidence: 8/10) CEO D18.3, "run under a `sandbox-exec` profile that denies all network except loopback". `hyperframes render` drives Chrome, and Chrome applies its own seatbelt sandbox. Nesting Chrome under `sandbox-exec` often fails to start. | **E1:** T0 spike order. (a) Render under the `sandbox-exec` profile. (b) If Chrome won't start, HyperFrames' Docker render with `--network none` (Docker is installed but not running; starting it is user-scope). (c) If both fail, the offline-render gate is `not-run` and the build is `incomplete`. Completeness: A (spike with fallbacks) = 10, B (assume it works) = 4. |
+   795	| **A2** | [P1] (confidence: 9/10) D17.8, "with a local ggml model under `$PTK_STATE/models`". No model exists on this Mac, and `whisper-cli` won't read MP4 or AAC. | **E2:** `ptk host setup` fetches `ggml-base.en.bin` (about 142 MB, sha256 recorded). The sync gate extracts 16 kHz mono WAV with ffmpeg first. Code tokens are excluded from WER through the pronunciation lexicon's spoken forms. |
+   796	| **A3** | [P2] (confidence: 7/10) Python core calls Node in three places: the renderer, Playwright and HyperFrames. Without one boundary, versions and environments drift. | **E3:** one module, `ptk/node.py`. It resolves Node ≥22 (the `mise` shim or PATH), and it injects `HYPERFRAMES_SKIP_SKILLS=1`, telemetry off, `PLAYWRIGHT_BROWSERS_PATH=$PTK_STATE/browsers` and `SOURCE_DATE_EPOCH`. It records versions in the build report. No other module calls `subprocess` for Node, and a test checks this with grep. |
+   797	| **A4** | [P2] (confidence: 7/10) Templates need fixed UI strings ("Set the value"), while D17.7 requires every sentence to carry a claim ID. | **E4:** fixed UI strings live in one `ptk/templates/chrome.json`, which is exempt from the claims gate but spell-checked and unslop-checked. Every teaching sentence comes from the model, and a test fails if a template contains a literal sentence that isn't in `chrome.json`. |
+   798	| **A5** | [P3] (confidence: 6/10) Linux capture: `sandbox-exec` doesn't exist there. Medium confidence, since Linux isn't a stated target. | **E5:** macOS-only for capture in v2.1. TODO: a `bwrap` profile for Linux. |
+   799	
+   800	```
+   801	  ptk/ (Python)                                   external
+   802	  ├── cli.py ── route.py ── workspace.py          clang, gcc-16  ◀── capture/c_runner.py (sandbox-exec)
+   803	  ├── model.py (schema, refs, expect)             node≥22 ◀── node.py ──▶ render_markdown.mjs, playwright, hyperframes(pinned)
+   804	  ├── capture/c_runner.py                         kokoro-onnx (venv) ◀── tts.py ──fallback──▶ say
+   805	  ├── project/{still,explorer,qa,cards,video,ive}.py
+   806	  ├── verify/{values,mutation,visual,media,claims}.py ──▶ whisper-cli, ffprobe, ffmpeg, tesseract
+   807	  ├── state/ (ported v2 consent engine, schema v2)
+   808	  ├── text.py (format + escape)  errors.py (classes → exit codes)  host.py (probe, setup)
+   809	  └── templates/ (chrome.json, svg/html templates)
+   810	```
+   811	
+   812	### 2. Code quality
+   813	
+   814	| ID | Finding | Decision |
+   815	|---|---|---|
+   816	| **Q1** | [P2] (confidence: 8/10) Six projectors would each format numbers and escape HTML: a DRY hotspot, and the same fact could render two ways. | **E6:** `ptk/text.py` holds the only value formatter and the only HTML/SVG escaper. A lint test bans f-string HTML and `.replace('<'` outside it. |
+   817	| **Q2** | [P2] (confidence: 8/10) The error classes in CEO §2 and D18.4 need one home and one exit-code map (D19.5). | **E7:** `ptk/errors.py` holds every class and its exit code. A test bans `except Exception` and bare `except:`. |
+   818	| **Q3** | [P3] (confidence: 6/10) Porting v2's whole FSRS scheduler duplicates Anki's scheduler for cards. | **E8:** port the consent and state engine and FSRS unchanged, because v2's protected tests cover them (D17.17). New card scheduling is left to Anki, and no new scheduler code is written. |
+   819	| **Q4** | [P2] (confidence: 7/10) The router is the only file likely to grow branches. | **E9:** a rule table in `route_rules.json` (pattern, intent, medium, mode) with ordered precedence: workspace contract, then explicit medium words, then intent. The function stays under 5 branches, and the dev set has at least 60 prompts. |
+   820	
+   821	Inline ASCII diagrams are required in `route.py` (precedence), `model.py` (build state machine, D18.1), `project/ive.py` (the cue-to-state rule, D18.2) and `verify/media.py` (the gate pipeline).
+   822	
+   823	### 3. Tests
+   824	
+   825	No code exists yet, so the diagram lists the planned paths and their tests. Every path is a GAP until it is written. The plan requires the tests to land together with the code.
+   826	
+   827	```
+   828	CODE PATHS                                         TEST (file :: what)                                        TYPE
+   829	[+] route.py
+   830	  ├── workspace contract precedence                tests/test_route.py :: AGENTS.md says predict-first wins   unit ★★★
+   831	  ├── explicit medium words (video, narrated...)   tests/test_route.py :: 60+ dev prompts incl. M1/M2 cases    unit ★★★
+   832	  └── ordinary task / quick answer                 tests/test_route.py :: "fix my loop" -> ordinary           unit ★★★
+   833	[+] capture/c_runner.py
+   834	  ├── happy (clang, sanitizers, run twice)         tests/test_capture.py :: %d %u %f %c facts + expect         integ ★★★
+   835	  ├── CompileError / RunTimeout / RunCrashed       tests/test_capture.py :: bad source, while(1), abort()      integ ★★★
+   836	  ├── SanitizerFinding (no UB claim)               tests/test_capture.py :: printf("%f", a) blocked            integ ★★★
+   837	  ├── sandbox denies network + outside writes      tests/test_security.py :: connect(), fopen("/Users/..")     integ ★★★
+   838	  └── SandboxUnavailable / MemoryLimitExceeded     tests/test_capture.py :: PATH without sandbox-exec; malloc loop  integ ★★★
+   839	[+] model.py   schema, refs, expect, state machine  tests/test_model.py :: JSON pointers, illegal transitions    unit ★★★
+   840	[+] project/still.py   4 variants, overflow        tests/test_still.py (+ playwright) :: 390/1440 x light/dark  [→E2E]
+   841	[+] project/explorer.py  full domain 0..255         tests/test_explorer.mjs :: all values vs independent fn     [→E2E]
+   842	[+] project/qa.py, cards.py (.md + .apkg)           tests/test_qa.py, test_cards.py :: genanki round-trip      unit ★★★
+   843	[+] project/video.py  per-scene comps, TTS, VTT     tests/test_video.py :: 10 s fixture render + gates (slow)   [→E2E]
+   844	[+] project/ive.py   question/answer cues, pause    tests/test_ive.mjs :: pause 0.1 s before answer: no leak    [→E2E]
+   845	[+] verify/values.py + mutation.py                  tests/test_mutation.py :: 100% value, >=90% claim mutations  [→EVAL]
+   846	[+] verify/claims.py  jobs, schema, malformed       tests/test_claims.py :: fixtures + real-subagent integration [→EVAL]
+   847	[+] verify/media.py   LUFS, dBTP, sync, ffprobe     tests/test_media.py :: out-of-range fixtures fail           integ ★★★
+   848	[+] verify/visual.py  contrast, OCR digits, net     tests/test_visual.py :: old-style-numeral fixture fails OCR integ ★★★
+   849	[+] state/ (schema v2 + migration)                  tests/test_state.py + ported v2 tests (PROTECTED-MAP)       unit ★★★
+   850	[+] packaging + hosts                               tests/test_packaging.py, test_hosts.py :: one entry/host    [→E2E]
+   851	[+] teaching protocol                               tests/test_protocol_transcripts.py :: predict-first turns   [→EVAL]
+   852	REGRESSION (CRITICAL)                              tests/test_regression_f_cast.py :: "same bits" claim fails  [→EVAL]
+   853	
+   854	USER FLOWS: explorer keyboard/mouse/no-JS; IVE play/pause/seek/chapter/no-JS; video captions on/off; Q&A expand/print
+   855	COVERAGE TARGET: every path above has a test before its WP closes. GAPS now: all (no code yet).
+   856	```
+   857	
+   858	**E10:** the test plan artifact is written to `~/.gstack/projects/v2.1/` and to `plan/TEST-PLAN.md`.
+   859	
+   860	**Eval scope** (prompt and LLM paths):
+   861	- **Claims reviewer rubric:** the mutation set from D17.5 and the `%f` regression.
+   862	- **Teaching protocol:** scripted transcripts.
+   863	- **Baseline:** v2's 8 eval cases, run against v2.1 for comparison.
+   864	
+   865	### 4. Performance
+   866	
+   867	| ID | Finding | Decision |
+   868	|---|---|---|
+   869	| **P1** | [P2] (confidence: 7/10) `hyperframes tts` per segment starts Python and loads Kokoro each time: about 2–4 s × 15 segments. | **E11:** `tts.py` synthesises all segments in one `kokoro-onnx` process. `hyperframes tts` is the fallback, then `say` (`degraded`). |
+   870	| **P2** | [P3] (confidence: 7/10) Playwright per screenshot is slow. | **E12:** one browser per lesson verify run, with all shots in that one session. |
+   871	| **P3** | [P3] (confidence: 6/10) Memory: Chrome plus Kokoro at once is about 2 GB. | **E13:** stages run in order, so no two heavy stages overlap. |
+   872	
+   873	### Outside voice
+   874	
+   875	Codex ran on the full plan including this section. Its findings are in `plan/outside-voice-codex-eng.md` and are dispositioned below.
+   876	
+   877	### NOT in scope (eng)
+   878	
+   879	- Linux capture sandbox: TODO.
+   880	- A CI service: local `ptk selftest` only.
+   881	- PyPI distribution.
+   882	- Parallel renders.
+   883	
+   884	### Failure modes (eng)
+   885	
+   886	These are the new modes not already in CEO §2:
+   887	- **Chrome fails to start under the sandbox:** spike E1, then the Docker fallback, then `not-run`, which the user sees.
+   888	- **Whisper model missing:** sync gate `not-run`, build `incomplete`, visible.
+   889	- **Node below 22:** `HostToolMissing`, visible.
+   890	- **The Kokoro process crashes mid-batch:** resynthesise the failed segment once, then fall back to `degraded`, visible.
+   891	
+   892	There are no critical gaps, since every mode is visible and tested.
+   893	
+   894	### Worktree parallelization
+   895	
+   896	| Step | Modules touched | Depends on |
+   897	|---|---|---|
+   898	| WP0 slice | everything, thinly | — |
+   899	| WP1 router and protocol | `ptk/route*`, `ptk/workspace.py`, `references/TEACHING.md`, `tests/test_route*` | WP0 |
+   900	| WP2 model and capture | `ptk/model.py`, `ptk/capture/`, `schemas/` | WP0 |
+   901	| WP3 still | `ptk/project/still.py`, `templates/svg/`, `verify/visual.py` | WP2 |
+   902	| WP4 explorer, Q&A, cards | `ptk/project/{explorer,qa,cards}.py`, `templates/html/` | WP2 |
+   903	| WP5 video | `ptk/project/video.py`, `ptk/tts.py`, `verify/media.py` | WP2 |
+   904	| WP6 IVE | `ptk/project/ive.py`, `templates/ive/` | WP5 |
+   905	| WP7 claims | `ptk/verify/{claims,mutation}.py` | WP2 |
+   906	| WP8 packaging | `bin/`, `ptk/host.py`, `state/`, `tests/test_packaging*` | WP1, WP3, WP4, WP7 |
+   907	
+   908	**Lanes:**
+   909	- **Lane A:** WP1.
+   910	- **Lane B:** WP2, then WP3.
+   911	- **Lane C:** WP4, after WP2.
+   912	- **Lane D:** WP5, then WP6, after WP2.
+   913	- **Lane E:** WP7, after WP2.
+   914	
+   915	**Execution order:**
+   916	1. WP0 runs alone.
+   917	2. Lanes A and B run in parallel.
+   918	3. Once WP2 merges, lanes C, D and E run in parallel.
+   919	4. WP8, then WP9.
+   920	
+   921	**Conflict flag:** lanes B and C both touch `templates/`. Split it into `templates/svg/` (lane B) and `templates/html/` (lane C) to avoid merge conflicts.
+   922	
+   923	### Eng implementation tasks (additions to CEO T0–T9)
+   924	
+   925	- [ ] **ET1 (P1, human ~4h / CC ~20min):** T0 spike. Render under the sandbox, with Docker `--network none` as the fallback (E1). *Verify:* the render log has 0 denied requests and the MP4 is produced.
+   926	- [ ] **ET2 (P1, ~2h / ~10min):** `ptk host setup` fetches the whisper base.en model with a sha256 check, plus WAV extraction (E2). *Verify:* the sync gate runs on the proof MP4.
+   927	- [ ] **ET3 (P2, ~3h / ~15min):** `ptk/node.py`, the single Node boundary, plus a grep test (E3).
+   928	- [ ] **ET4 (P2, ~2h / ~10min):** `chrome.json` UI-string exemption, plus a literal-sentence test (E4).
+   929	- [ ] **ET5 (P2, ~2h / ~10min):** `text.py` and `errors.py`, plus lint tests (E6, E7).
+   930	- [ ] **ET6 (P2, ~3h / ~15min):** a rule-table router and at least 60 dev prompts (E9).
+   931	- [ ] **ET7 (P2, ~3h / ~15min):** batched Kokoro TTS with fallbacks (E11).
+   932	- [ ] **ET8 (P1, ~1h / ~5min):** `tests/test_regression_f_cast.py`. **CRITICAL** regression from today's proofs.
+   933	
+   934	## GSTACK REVIEW REPORT
+   935	
+   936	| Review | Trigger | Why | Runs | Status | Findings |
+   937	|--------|---------|-----|------|--------|----------|
+   938	| CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | issues_open | 16 proposals, 13 accepted (2 scoped), 3 deferred; 3 spec-review rounds; 0 critical gaps |
+   939	| Codex Review | `/codex review` | Independent 2nd opinion | 1 | issues_found | 13 findings, all accepted into D17 |
+   940	| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 0 | — | — |
+   941	| Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
+   942	| DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
+   943	
+   944	- **CROSS-MODEL:** Codex and the Claude spec reviewer agreed on the claims reviewer contract, the missing undefined-behaviour guard, the interactive video design and the weak acceptance rules. Every Codex point was accepted. No tension was left unresolved.
+   945	- **VERDICT:** the CEO review is complete, and the eng review is required next.
+   946	
+   947	**UNRESOLVED DECISIONS:**
+   948	- Prax: approve or edit ACCEPTANCE-PROPOSAL §1 to §8 (acceptance additions, install-path amendment, stop-rule interpretation).
+   949	- Prax: the live predict-first session after WP0 and WP1 (D18.6).
+
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse Completed
+mcp: agent-memory/recall started
+hook: PermissionRequest
+hook: PermissionRequest Completed
+mcp: agent-memory/recall (failed)
+MCP tool call requires approval, but approval policy is never
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+/bin/zsh -lc "rtk rg -n 'prax-teach|prax-teach-evaluation|CEO-PLAN|FREEZE' /Users/prax/.codex/memories/MEMORY.md" in /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+ exited 1 in 0ms:
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+/bin/zsh -lc "sed -n '145,430p' plan/CEO-PLAN.md | nl -ba -v145" in /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+ succeeded in 0ms:
+   145	| D4.14 | Manim projector for math-heavy topics | M / 1 h | ACCEPTED (scoped) | Route and hand-off contract only. `MathTex` needs LaTeX, which isn't installed and isn't approved. Math in stills uses MathJax `tex2svg` (KaTeX cannot emit SVG); math in HTML and video uses MathJax SVG output too, so one renderer covers both. |
+   146	| D4.15 | Host installs: BasicTeX or Typst | S | DEFERRED, needs Prax | One install rule (PLAN-INPUT §7, D17.14): new system-wide software needs his OK; user-scope venvs and model files under `$PTK_STATE` are allowed with disclosure. whisper-cli is already installed and is used for the sync gate. |
+   147	| D4.16 | Topic packs for C++, DSA and GATE | XL | DEFERRED | Phase 2, built on the compiler once it is accepted. |
+   148	
+   149	### 0D-POST. Accepted scope
+   150	
+   151	- **WP1 Router and teaching contract (D4.7).**
+   152	  - Intent and medium classifier.
+   153	  - Workspace contract loader (AGENTS.md, MISSION.md, NOTES.md), which wins over skill defaults.
+   154	  - Modes: explain, predict-first (Socratic), quiz, exam-drill, Q&A expand, quick answer.
+   155	  - Public dev prompt set, kept separate from the holdout.
+   156	- **WP2 Lesson model and capture (D4.1, D4.13).**
+   157	  - `lesson.schema.json`.
+   158	  - A C capture runner (clang and gcc-16, timeouts, a temp dir, outputs compared across compilers, run twice to check determinism).
+   159	  - Facts, claims, trace and storyboard.
+   160	- **WP3 Still projector and style system (D4.8).** SVG and PNG, light and dark, wide and portrait, with bundled fonts. Value gate, tamper test, contrast gate, screenshot gate.
+   161	- **WP4 Explorer, Q&A expander and flash cards (D4.4, D4.5).**
+   162	- **WP5 Narrated video projector (D4.6, D4.10).** HyperFrames composition generated from the storyboard. Kokoro TTS through a managed venv, pronunciation lexicon, WebVTT and chapters, and the LUFS, ffprobe, sync and snapshot gates.
+   163	- **WP6 Interactive video explorer (D4.3).**
+   164	- **WP7 Claims gate (D4.2, D4.11).** Every artifact sentence maps to a claim ID; an independent reviewer pass uses a rubric; provenance links.
+   165	- **WP8 Packaging and install (D4.9).** Plus the port of the v2 renderer, the state engine and the corrected registry.
+   166	- **WP9 Two exemplar lessons, built end to end by the compiler.**
+   167	  - "One byte, four views", with the `%f` cast claim corrected.
+   168	  - "factorial(3) on the call stack", which exercises a trace.
+   169	
+   170	### 0E. Temporal interrogation (decided now)
+   171	
+   172	```
+   173	HOUR 1 (foundations): languages and layout.  D5.1: Python 3.10-3.13 stdlib core (CLI `ptk`), Node 22/24 only
+   174	                      for the Markdown renderer, Playwright checks and HyperFrames. No new framework.
+   175	HOUR 2-3 (core):      lesson.json shape.      D5.2: JSON Schema 2020-12; facts are typed values with a
+   176	                      `source` (compiler, command, stdout sha256); claims have id, text, kind
+   177	                      (definition|mechanism|rule|caveat|undefined-behaviour|implementation-defined|framing), justification, source; `framing` covers headings and transitions and still gets a claim id; trace is a list of
+   178	                      states; storyboard is a list of scenes with narration segments and claim ids.
+   179	HOUR 4-5 (integration): HyperFrames contract. D5.3: generate one sub-composition per scene (fixes the
+   180	                      lint warnings seen in the proof); env always sets HYPERFRAMES_SKIP_SKILLS=1 and
+   181	                      telemetry off; HyperFrames is a pinned local npm install (D17.9), never the global CLI; fonts bundled as local
+   182	                      files and Google Fonts fetch blocked by a check.
+   183	HOUR 6+ (polish):     D5.4: cache keys are the full effective inputs listed in D17.9; D5.5: every gate
+   184	                      returns passed | failed | not-run(reason), and "not-run" never counts as passed;
+   185	                      D5.6: build is deterministic given SOURCE_DATE_EPOCH, which ptk sets itself.
+   186	```
+   187	
+   188	Kokoro venv location, **D5.7** (revised by D19.1): `$PTK_STATE/venvs/kokoro`. During development `$PTK_STATE` is `v2.1/.state/` (git-ignored, inside the FREEZE mutable path). It is created only by an explicit `ptk host setup`, never at teach time. Setup prints every download (Kokoro model about 330 MB, whisper ggml model, pinned HyperFrames npm tarball) and needs a yes. After setup, synthesis runs offline.
+   189	
+   190	### 0F. Mode
+   191	
+   192	**D3.** SCOPE EXPANSION. This is Prax's standing choice, and the plan is greenfield on top of v2. Approach B applies.
+   193	
+   194	## Spec review of this document
+   195	
+   196	Round 1: the adversarial spec reviewer scored it 6/10 with 15 issues, and Codex as outside voice raised 13. Both are folded into "Round 1 revisions" below. Round 2 follows.
+   197	
+   198	## Round 1 revisions (binding; they override earlier text where the two conflict)
+   199	
+   200	Cross-model tension was resolved autonomously, as Prax asked. Each D17 item records which reviewer raised it and why it was accepted. None of these items changes FREEZE.md.
+   201	
+   202	**D17.1 Vertical slice first** (Codex 1, 12; reviewer 9).
+   203	- **Before generalising, build WP0.** One unfamiliar request goes through the real skill entry → `lesson.json` → all six artifacts → every gate, for one lesson.
+   204	- **Dependency order:** WP0 → (WP1 ∥ WP2) → WP3 → WP4 → WP5 → WP6 → WP7 → WP8 → WP9.
+   205	- **If a package stalls, its dependents stop.**
+   206	- **Total budget:** 18 implement-and-review rounds across all packages. This is stricter than FREEZE's maximum of 27, so it is a self-limit, not a gate change.
+   207	- **A live session is a human step.** One real prediction → attempt → feedback session with Prax is listed as a human acceptance step, like the Competitive Companion click. The agent can't run it alone.
+   208	
+   209	**D17.2 Interactive video design** (Codex 2, reviewer 6). The IVE is the narrated MP4 plus a WebVTT `metadata` cue track.
+   210	- Each cue carries `{scene_id, state_id}`.
+   211	- On pause, seek or chapter jump, the page loads the explorer at that cue's state, which is the last state already shown (D18.2).
+   212	- It works for any video source, HyperFrames or Manim. No in-page composition runtime is needed.
+   213	
+   214	**D17.3 Authoring contract** (Codex 3; reviewer 9).
+   215	- **Writing the model:** the host agent writes `lesson.json` from `references/LESSON-MODEL.md`, using `ptk new <slug>` to scaffold. `ptk validate` reports JSON-pointer errors, and the agent repairs at most twice per error.
+   216	- **Runtime flow per mode:**
+   217	  - **Quick answer:** the agent answers directly. No model and no build.
+   218	  - **Predict-first:** one question, wait, then feedback. Artifacts come only after the attempt.
+   219	  - **Lesson in a named medium:** model → capture → the projectors for the requested media only → gates → deliver. The agent tells the learner first whether the build will take more than 60 s.
+   220	  - **Full pack:** only when asked.
+   221	- **The router is code** (`ptk route`). SKILL.md tells the agent to call it and obey its result.
+   222	
+   223	**D17.4 Undefined-behaviour guard and platform facts** (Codex 4; reviewer 1, 14).
+   224	- **Compiler flags:** capture compiles with `-std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address`. Any warning or sanitizer report blocks the fact, unless a claim of kind `undefined-behaviour` covers it, and such programs are compiled but never run.
+   225	- **Platform facts are captured once and shown wherever relevant:** `sizeof` of each scalar, char signedness, endianness, libc.
+   226	- **CompilerDisagreement is never rescued automatically.** It fails unless an authored claim of kind `implementation-defined` cites the C standard clause.
+   227	- **Two compilers don't add trust here.** clang and gcc-16 share Apple's libc on this Mac, so comparing them doesn't make printf output more trustworthy. The claim is dropped. The second compiler only checks diagnostics.
+   228	
+   229	**D17.5 Independent expectations and mutation testing** (Codex 5, 6; reviewer 1).
+   230	- Every displayed fact needs an independent `expect` field, computed by a separate Python function (bits, ASCII, arithmetic) or authored and reviewed.
+   231	- The values gate compares the artifact against both the capture and the expectation.
+   232	- **Mutation suite:** for each lesson, a script makes 10 or more corrupted variants (false claims, swapped values) and runs the *real* claims reviewer and value gates. At least 90% must be caught, and every value mutation must be.
+   233	- **Explorer logic:** checked against an independent computation over its whole input domain.
+   234	- **No spoilers:** a paused state never shows the answer to an open prediction question (retrieval safety, M20). That covers narration, transcript, chapter titles and alt text.
+   235	
+   236	**D17.6 Teaching protocol** (Codex 7; reviewer 1).
+   237	- **Multi-turn spec:** `references/TEACHING.md` defines predict-first as a multi-turn protocol:
+   238	  1. ask one question;
+   239	  2. end the turn;
+   240	  3. classify the attempt as correct, partial or misconception;
+   241	  4. give exactly one hint or feedback;
+   242	  5. show the artifact;
+   243	  6. record evidence (recognition, recall, explain, apply).
+   244	- **Transcript test:** `tests/test_protocol_transcripts.py` drives it with scripted learner turns.
+   245	- **Workspace contract precedence:** AGENTS.md, MISSION.md and NOTES.md are read first, and their rules beat skill defaults.
+   246	- **Hidden end state:** traces hide the final state until the learner predicts (fixes T3).
+   247	- **Evidence:** stored in `.prax-teach/state` as `evidence` events, with consent. T2 is answered by the stop rule "satisfaction plus at least one observed evidence item, or an explicit stop".
+   248	
+   249	**D17.7 Claims reviewer contract** (Codex 8; reviewer 8).
+   250	- **Who reviews:** the host agent spawns a separate subagent with a fixed rubric and the lesson's claims, sources and artifact texts. It writes `claims-review.json`, and `ptk claims check` validates its schema.
+   251	- **Coverage:** every sentence in narration, captions, labels, cards, Q&A and the still must carry a claim ID, tagged by the author in the storyboard or model and checked by `ptk`.
+   252	- **Not run is not passed:** if no subagent facility exists in the host, the gate is `not-run` and the build is `incomplete`. It is never `passed`.
+   253	
+   254	**D17.8 Offline caption sync** (Codex 8; reviewer 4).
+   255	- The sync gate uses `whisper-cli`, which is already installed, with a local ggml model under `$PTK_STATE/models`. `hyperframes transcribe` is the second choice.
+   256	- **Pass rule:** every cue start within 0.5 s of its planned time, and word error rate on non-code words of 10% or less.
+   257	
+   258	**D17.9 Pinned and reproducible builds** (Codex 9; reviewer 10, 13).
+   259	- **Pinned HyperFrames:** a local npm install inside `$PTK_STATE/tools` at a pinned version, never the global auto-upgrading CLI.
+   260	- **Cache keys:** the full effective inputs (source bytes, includes, flags, compiler version, TTS engine, model file sha256, voice, speed, lexicon version and fallback engine).
+   261	- **What reproducibility means:** "reproducible" applies to the lesson data and the HTML/SVG bytes. Media bytes are checked against tolerances instead.
+   262	- **No silent fetches:** outbound network during render is blocked by the sandbox profile in D18.3, and any denied request fails the build.
+   263	
+   264	**D17.10 Sandbox** (Codex 10; reviewer 14).
+   265	- **The profile:** capture runs under a tested `sandbox-exec` profile that denies network and denies file writes outside its temp dir. A test proves both denials.
+   266	- **Memory limit:** enforced by a watchdog that samples resident size, because macOS doesn't enforce `RLIMIT_AS`.
+   267	- **No sandbox, no capture:** if `sandbox-exec` is missing, `ptk` refuses to capture. There is no silent fallback.
+   268	
+   269	**D17.11 Acceptance proposal** (Codex 11; reviewer 3).
+   270	- **Proposal for approval:** `plan/ACCEPTANCE-PROPOSAL.md` adds an unfamiliar end-to-end request set and numeric media thresholds (integrated loudness of −16 ± 1 LUFS, true peak of −1 dBTP or lower, cue sync within 0.5 s). It also adds an aesthetics rule: 15 checklist items, 9 automated (including an OCR digit check with tesseract, which is installed), and the rest reviewed by screenshot. It goes to Prax for approval as a new FREEZE version.
+   271	- **Until he approves:** the frozen evaluator stands, and these checks run as the candidate's own internal tests.
+   272	
+   273	**D17.12 Rollback and state** (Codex 13; reviewer 5).
+   274	- **Candidate registration:** the candidate is never registered in any host's skill dir, so each host keeps exactly one entry. It's reachable by `ptk` and a direct path only.
+   275	- **Before acceptance:** learner state is snapshotted, and install and rollback are tested per host (Claude Code, Codex, Hermes, OpenCode).
+   276	- **Schema version:** the state schema becomes v2 (navigation events kept separate from learner attempts, plus an `evidence` kind). It has a migration and a test, and v1 state reads unchanged.
+   277	
+   278	**D17.13 Alternatives per artifact type** (reviewer 2).
+   279	- WP8's registry lists the ranked alternatives per type from report 05 (13 to 16 each).
+   280	- Each alternative has a binary probe and a fallback order.
+   281	- `ptk host probe` reports which alternatives this machine can run right now.
+   282	
+   283	**D17.14 One install rule** (reviewer 4). New system-wide software needs Prax's OK. User-scope venvs and models under `$PTK_STATE` are allowed, with the download size disclosed before fetching.
+   284	
+   285	**D17.15 Dependencies** (reviewer 13). The core gets a venv with pinned `jsonschema`, `genanki` and `fsrs==6.3.1`, created by `ptk host setup`. "stdlib-only" is dropped.
+   286	
+   287	**D17.16 Delight after acceptance** (reviewer 11). Chapter thumbnails, provenance links, `ptk report --html` and LLDB traces move after acceptance. The pronunciation lexicon stays, because M19 needs it.
+   288	
+   289	**D17.17 Protected v2 tests** (reviewer 6). `plan/PROTECTED-MAP.md` maps each of v2's 22 JS tests and its passing Python tests to a v2.1 equivalent, or gives a written reason the behaviour was removed. The FREEZE protected check is satisfied that way.
+   290	
+   291	**D17.18 Missing issues** (reviewer 1).
+   292	- **T13** is covered by D17.4.
+   293	- **T22:** the loader must stay under 4k tokens before the first teaching word, and a test counts it.
+   294	- **M20** is covered by D17.5.
+   295	- **T2** is covered by D17.6.
+   296	
+   297	## Round 2 revisions (binding)
+   298	
+   299	Round 2 scored the plan 7/10 with 11 issues. All 11 are accepted.
+   300	
+   301	**D18.1 Claims handoff state.** The build gains a `claims-pending` state.
+   302	1. `ptk verify` runs every automatic gate.
+   303	2. It writes `build/<lesson>/claims-jobs/*.json`: one job for the lesson, plus one per mutation. Mutations are capped at 12 per lesson.
+   304	3. The host agent runs each job in a separate subagent and writes `claims-review/*.json`.
+   305	4. `ptk claims check` validates the reviews and finishes the build.
+   306	
+   307	The mutation suite uses this same path.
+   308	
+   309	```
+   310	  draft ─capture─▶ captured ─project─▶ projected ─verify─▶ claims-pending ─claims check─▶ verified ─package─▶ packaged
+   311	                                                                  │                          │
+   312	                                                                  └── reviews missing ──▶ incomplete    any gate failed ──▶ failed
+   313	  Final statuses: verified | degraded (all gates passed but a fallback was used, e.g. `say` TTS; not verified) | incomplete (a gate not-run) | failed
+   314	```
+   315	
+   316	**D18.2 No answer leaks on pause.**
+   317	- A cue's state is the last state already shown on screen, never the settled end of a transition that is still running.
+   318	- Every reveal becomes two cues: a question cue, with the state before the answer, and an answer cue.
+   319	- Pausing on a question cue shows the question state only.
+   320	- A test pauses at 0.1 s before each answer cue and checks that no answer text appears in the DOM, the alt text or the transcript shown so far.
+   321	
+   322	**D18.3 Render network block.**
+   323	- `hyperframes render` and `check` run under a `sandbox-exec` profile that denies all network except loopback. They have no request hook of their own.
+   324	- Any denied request appears in the render log, and the build then fails.
+   325	- Moved into the T0 spikes.
+   326	
+   327	**D18.4 New error classes** (Section 2 additions):
+   328	
+   329	| Error class | Raised when | What happens |
+   330	|---|---|---|
+   331	| `SandboxUnavailable` | `sandbox-exec` missing | exit 2 and stop |
+   332	| `SanitizerFinding` | warning or UBSan/ASan report without an `undefined-behaviour` claim | the fact is blocked; findings shown |
+   333	| `ExpectationMismatch` | capture ≠ independent `expect` | fail, showing both values |
+   334	| `OutboundRequest` | a request was denied during render or capture | fail, with the URL |
+   335	| `MemoryLimitExceeded` | the watchdog kills a process | fail, with peak RSS |
+   336	| `ClaimsNotRun` | no review files present | status `incomplete` |
+   337	| `StateMigrationError` | v1 state can't be read | exit 3; state left untouched |
+   338	
+   339	**D18.5 Dependency graph and T0 scope.**
+   340	
+   341	```
+   342	  WP0 (slice: still + narrated video + IVE for one lesson; spikes)
+   343	   ├──▶ WP1 router + teaching protocol ─────────────────────────────┐
+   344	   └──▶ WP2 model + capture ──┬──▶ WP3 still ──┐                    │
+   345	                              ├──▶ WP4 explorer, Q&A, cards ─┐      │
+   346	                              ├──▶ WP5 video ──▶ WP6 IVE     │      │
+   347	                              └──▶ WP7 claims gate ──────────┤      │
+   348	                                                   WP8 packaging ◀─┘ (needs WP1, WP3, WP4, WP7; WP5/WP6 optional for packaging)
+   349	                                                   WP9 exemplars ◀── all
+   350	```
+   351	
+   352	- A stall in WP6 blocks only WP9's IVE item. It doesn't block packaging or the claims gate.
+   353	- T0 is re-estimated at about 3 h with CC, and it covers the still, the narrated video and the IVE only.
+   354	
+   355	**D18.6 Live session checkpoint.**
+   356	- After WP0 and WP1, the run stops to ask Prax for one 5-minute predict-first session.
+   357	- The tooling packages continue meanwhile, because they don't depend on it.
+   358	- Acceptance and any topic-pack work wait for that session.
+   359	
+   360	**D18.7 Hidden test sets.**
+   361	- The six end-to-end requests written during this run are moved to `plan/proposed/e2e-requests.jsonl`, and `holdout/SHA256` goes back to its frozen single line.
+   362	- They take effect only if Prax approves the acceptance proposal, and he can rewrite them. Until then the frozen routing holdout is the only hidden evaluator.
+   363	- They are not candidate tests.
+   364	
+   365	**D18.8 Traceability for round 1 issues 7, 12 and 15:**
+   366	- issue 7 (`say` fallback) is covered by the `degraded` status in D18.1;
+   367	- issue 12 (KaTeX) by the MathJax `tex2svg` fix in 0B and D4.14;
+   368	- issue 15 (process) by the fact that the reviews ran and are recorded here and in `plan/outside-voice-codex.md`.
+   369	
+   370	## Round 3 revisions (binding)
+   371	
+   372	Round 3 scored the plan 7/10 with 6 issues. All 6 are fixed below. Under the loop's three-round limit, these fixes weren't reviewed a fourth time.
+   373	
+   374	**D19.1 Paths.**
+   375	- During development, every write stays inside the FREEZE mutable path. `$PTK_STATE` is `v2.1/.state/` (git-ignored) and holds venvs, models, the pinned HyperFrames install and the throwaway host homes.
+   376	- Learner state for tests lives under `v2.1/.state/learners/`. The C workspace is never written.
+   377	- The install into `~/.agents/skill-library/prax-teach-v2.1`, the user-scope `$PTK_STATE=~/.local/share/prax-teach`, and the `prax-teach-v2` symlink flip are proposed as a FREEZE amendment in `ACCEPTANCE-PROPOSAL.md` §7. They happen only after Prax approves, and the flip is his step.
+   378	
+   379	**D19.2 No fetch at teach time.**
+   380	- Every download happens in `ptk host setup`, which lists each file, its size and its source, and needs an explicit yes.
+   381	- Teach-time paths never touch the network. A missing tool gives `not-run` (status `incomplete`), or the `say` fallback (status `degraded`).
+   382	
+   383	**D19.3 WP0 entry and host tests.**
+   384	- WP0 calls the candidate by loading its `SKILL.md` by direct path, with `ptk` on `PATH` from `v2.1/`.
+   385	- Per-host install and rollback tests run with `HOME` set to throwaway dirs under `v2.1/.state/hosts/<host>/`.
+   386	- WP0's request is fixed now: "Teach me how a switch statement with a missing break falls through, as a still, a narrated video and an interactive video." It is a development request, not a holdout.
+   387	
+   388	**D19.4 Stop rule measurement.**
+   389	- A round counts as progress when a new acceptance criterion from `spec/SPEC.md` (the EARS criteria for that package) starts passing.
+   390	- These are the candidate's own tests. The frozen holdout still runs only at acceptance.
+   391	- This reads "acceptance check" in FREEZE as "spec acceptance criterion". The interpretation is recorded for Prax in `ACCEPTANCE-PROPOSAL.md` §8.
+   392	
+   393	**D19.5 Exit codes for `ptk`:**
+   394	
+   395	| Code | Meaning | What the agent does next |
+   396	|---|---|---|
+   397	| 0 | verified or packaged | deliver |
+   398	| 1 | a gate failed | repair at most twice, then report |
+   399	| 2 | host or environment problem | name the tool and its setup command |
+   400	| 3 | model error | fix `lesson.json` at the JSON pointer |
+   401	| 4 | claims-pending | run every job in `claims-jobs/` as a separate subagent, then `ptk claims check` |
+   402	| 5 | incomplete (a gate not run) | report which gate and why; never call it verified |
+   403	| 6 | degraded (a fallback was used) | deliver with the fallback named |
+   404	
+   405	**D19.6** Fixed inline:
+   406	- "settled state";
+   407	- the §1 state machine;
+   408	- the Chrome flag;
+   409	- the drift wording;
+   410	- the cache keys;
+   411	- the fixture reviewer in §6;
+   412	- T0's estimate.
+   413	
+   414	## Section 1: Architecture
+   415	
+   416	```
+   417	                         +------------------------- ptk (Python CLI) --------------------------+
+   418	  request ──▶ route ──▶ | mode+medium+workspace contract ──▶ lesson.json (model)               |
+   419	  (agent)               |                                    │  facts  claims  trace  storyboard |
+   420	                        |   capture/c_runner ── clang,gcc-16 ┘                                   |
+   421	                        |                                    ▼                                   |
+   422	                        |  projectors: still │ explorer │ qa │ cards │ video │ ivideo          |
+   423	                        |        │               │                    │         │               |
+   424	                        |        ▼               ▼                    ▼         ▼               |
+   425	                        |   SVG/PNG         HTML (self-contained)   HyperFrames  player page    |
+   426	                        |                                           +Kokoro TTS  +state bridge  |
+   427	                        |  gates: values · tamper · claims · contrast · screenshots · media     |
+   428	                        |                     ▼                                                  |
+   429	                        |            build-report.json (passed | failed | not-run)             |
+   430	                        +-----------------------------------------------------------------------+
+
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+/bin/zsh -lc "sed -n '431,739p' plan/CEO-PLAN.md | nl -ba -v431" in /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+ succeeded in 0ms:
+   431	  ported from v2: render_markdown (Node) · praxteach state+FSRS (optional) · tool registry (fixed)
+   432	  external: clang · gcc-16 · node · playwright · hyperframes · kokoro venv · ffmpeg/ffprobe · manim (route only)
+   433	```
+   434	
+   435	**Data flow and shadow paths (capture → model):**
+   436	- **Happy path:** compile with clang under the sandbox with warnings and sanitizers on (D17.4), run twice, the outputs match, and they're stored as facts with sha256 hashes next to the independent `expect` values. gcc-16 compiles the same source for diagnostics only.
+   437	- **Missing input** (no source or program for a fact): `ModelError("fact X has no source")`. The build stops.
+   438	- **Empty stdout:** stored as an empty-string fact. Allowed, but a value gate that expects text fails loudly.
+   439	- **Upstream error:**
+   440	  - a compile error gives `CompileError` with the compiler's stderr;
+   441	  - a timeout gives `RunTimeout`;
+   442	  - outputs that differ between compilers give `CompilerDisagreement`, which is valid when the behaviour is implementation-defined, but then a claim must say so;
+   443	  - outputs that differ between runs give `NondeterministicOutput`.
+   444	
+   445	**State machine (lesson build):**
+   446	
+   447	```
+   448	  draft ──capture──▶ captured ──project──▶ projected ──verify──▶ claims-pending ──claims check──▶ verified ──package──▶ packaged
+   449	    ▲                   │ fail                │ fail                │ any gate failed
+   450	    └──── edit ◀────────┴─────────────────────┴─────────────────────┘ (stays failed; never "verified")
+   451	  Invalid: projected→packaged without verify (ptk refuses); verified with a not-run gate marked passed (schema forbids).
+   452	```
+   453	
+   454	**Coupling.**
+   455	- Projectors depend only on `lesson.json` and the style tokens.
+   456	- Gates depend on `lesson.json` and the artifacts, never on how a projector works internally.
+   457	- The C repo isn't a dependency; the capture runner is self-contained.
+   458	
+   459	**Scaling.** A build costs one TTS pass per scene (cached) and one HyperFrames render, about 2–4 minutes for 60–90 s of video. Ten lessons in a pack cost about 30 minutes. The first thing to break at 10x is TTS and render time, so a content-hash cache and `--only` flags per projector handle it.
+   460	
+   461	**Single points of failure.**
+   462	- HyperFrames: a pinned local install (D17.9). If it's missing, video gates are `not-run` and the build is `incomplete`.
+   463	- The Kokoro venv: falls back to macOS `say`, disclosed in the report.
+   464	- Playwright: if it's missing, the visual gate reports `not-run`.
+   465	
+   466	**Security architecture.** No network endpoints. The capture runner executes C that the agent wrote, so it gets a temp dir, rlimits, a timeout, process-group kill, a resident-size watchdog and a tested `sandbox-exec` profile (no network, no writes outside the temp dir). If `sandbox-exec` is missing, capture refuses to run (D17.10). Explorer and IVE HTML are self-contained, with a CSP meta tag that blocks all remote fetches.
+   467	
+   468	**Production failures per integration.**
+   469	
+   470	| Integration | Failure | Handled by |
+   471	|---|---|---|
+   472	| HyperFrames | Global CLI upgrades itself mid-build (seen today) | Pinned local install (D17.9); the global CLI is never used |
+   473	| Kokoro | Long-path bug in its pronunciation data (seen today) | Venv setup applies the proven fix |
+   474	| Playwright | Browser cache purged by an outside cleaner (seen on 2026-10-08) | `PLAYWRIGHT_BROWSERS_PATH` set to the package's own state dir |
+   475	
+   476	**Rollback.** v2.1 installs alongside v2 under a candidate name. Acceptance flips the `prax-teach-v2` symlink, and rollback flips it back: one command, about 1 second.
+   477	
+   478	**Beautiful version.** One file, the lesson model, is the only thing an author writes. Everything else is a pure function of it, plus captured runs. A new engineer reads `lesson.schema.json` and the six projector files and understands the whole system.
+   479	
+   480	**Platform potential.** Topic packs (Phase 2), a cpx integration that cards and drills feed into, and other learners' workspaces.
+   481	
+   482	Section 1 decisions:
+   483	- **D6.1** Per-scene HyperFrames sub-compositions. *Accepted*, completeness 10 versus 7 for one file, because it fixes the proof's lint warnings.
+   484	- **D6.2** The capture runner is self-contained rather than importing cpx. *Accepted*: separate products and no cross-repo coupling.
+   485	
+   486	## Section 2: Error and rescue map
+   487	
+   488	```
+   489	  CODEPATH                 | WHAT CAN GO WRONG                         | ERROR CLASS
+   490	  -------------------------|-------------------------------------------|-------------------------
+   491	  capture.c_runner         | compiler missing                          | HostToolMissing
+   492	                           | compile error                             | CompileError
+   493	                           | run exceeds limit                         | RunTimeout
+   494	                           | crash / signal                            | RunCrashed
+   495	                           | outputs differ across runs                | NondeterministicOutput
+   496	                           | outputs differ across compilers           | CompilerDisagreement
+   497	  model.load               | schema invalid                            | ModelSchemaError
+   498	                           | claim references unknown fact             | ModelReferenceError
+   499	  projector.*              | fact missing for a slot                   | ModelReferenceError
+   500	                           | text overflow (measured in browser)       | LayoutOverflow
+   501	  tts                      | kokoro venv absent                        | TTSUnavailable
+   502	                           | empty segment text                        | NarrationEmpty
+   503	                           | lexicon token unknown in code span        | PronunciationMissing (warning)
+   504	  video.render             | hyperframes check fails                   | RenderCheckFailed
+   505	                           | render non-zero exit                      | RenderFailed
+   506	  gates.media              | ffprobe fields out of spec                | MediaGateFailed
+   507	                           | LUFS outside -16±1                        | LoudnessGateFailed
+   508	                           | transcribe unavailable                    | GateNotRun(sync)
+   509	  gates.claims             | reviewer output malformed / empty / refusal| ClaimsReviewInvalid
+   510	                           | sentence maps to no claim                 | ClaimsUnmapped
+   511	  gates.visual             | playwright missing                        | GateNotRun(visual)
+   512	                           | contrast below threshold                  | ContrastGateFailed
+   513	
+   514	  ERROR CLASS              | RESCUED? | RESCUE ACTION                                  | USER SEES
+   515	  -------------------------|----------|------------------------------------------------|-----------------------------
+   516	  HostToolMissing          | Y        | name the tool + install command; stop          | "gcc-16 not found: brew install gcc"
+   517	  CompileError/RunCrashed  | Y        | stop; show stderr and exit status              | exact compiler message
+   518	  RunTimeout               | Y        | kill process group; stop                       | "ran >5s, killed"
+   519	  NondeterministicOutput   | Y        | stop; show both outputs                        | diff of the two runs
+   520	  CompilerDisagreement     | Y        | require a claim of kind implementation-defined | which compilers disagree
+   521	  ModelSchemaError/RefErr  | Y        | stop; JSON pointer to the bad field            | "/facts/3/source missing"
+   522	  LayoutOverflow           | Y        | fail the gate; screenshot path                 | screenshot + element id
+   523	  TTSUnavailable           | Y        | fall back to `say`; build status `degraded`    | "TTS: say (Kokoro missing), degraded"
+   524	  NarrationEmpty           | Y        | stop                                           | scene id
+   525	  RenderCheckFailed        | Y        | stop; keep hyperframes output                  | lint/runtime lines
+   526	  MediaGate/Loudness       | Y        | fail; numbers in report                        | measured vs target
+   527	  GateNotRun(*)            | Y        | report not-run with reason; build not verified | "sync: not-run (no transcriber)"
+   528	  ClaimsReviewInvalid      | Y        | retry once with schema reminder, then fail     | raw reviewer output path
+   529	  ClaimsUnmapped           | Y        | fail; list sentences                           | the unmapped sentences
+   530	```
+   531	
+   532	No catch-all handlers: every error class is distinct, and `ptk` exits 1 for a gate failure, 2 for host or environment problems and 3 for model errors.
+   533	
+   534	**D7.1.** `GateNotRun` never counts as passed, and a build with any not-run gate is reported `incomplete`, not `verified`. *Accepted*, completeness 10. This is the direct fix for the v2 habit of passing on presence.
+   535	
+   536	## Section 3: Security and threat model
+   537	
+   538	| Threat | Likelihood | Impact | Mitigation in plan |
+   539	|---|---|---|---|
+   540	| Captured C program does something harmful (agent-written code; future: learner code) | Low | High | temp dir, rlimits (CPU, memory, file size), timeout, process-group kill, tested sandbox-exec profile (no network, no writes outside temp), RSS watchdog, refuse if unavailable; D4.12 deferred |
+   541	| HTML artifact fetches remote content or runs injected text | Med | Med | self-contained output, CSP `default-src 'self' data:`, all model text HTML-escaped, a test injects `<script>` into a claim |
+   542	| HyperFrames telemetry and skill auto-update change `~/.agents` | High (seen today) | Med | ptk always sets `HYPERFRAMES_SKIP_SKILLS=1` and telemetry off; a test asserts the env |
+   543	| Prompt injection from web sources quoted in lessons | Med | Med | sources are data; the claims reviewer gets them as quoted data with a fixed rubric |
+   544	| Model download (Kokoro) supply chain | Low | Med | pinned kokoro-onnx version and file sha256 recorded; one-time, disclosed |
+   545	| npm advisories (2 high in v2's tree) | Med | Low | `npm audit` runs in CI-equivalent check; upgrade or document each |
+   546	| `/Users/prax` paths leaked in package | High (156 files in v2) | Low | packaging test greps for home paths |
+   547	
+   548	**D8.1.** The sandbox for captured code is required. *Accepted*, completeness 10.
+   549	
+   550	## Section 4: Data flow and interaction edge cases
+   551	
+   552	```
+   553	  lesson.json ──▶ VALIDATE ──▶ CAPTURE ──▶ PROJECT ──▶ VERIFY ──▶ PACKAGE
+   554	     │              │            │            │           │           │
+   555	  [missing?]   [schema?]    [timeout?]   [overflow?]  [not-run?]  [partial dir?]
+   556	  [empty facts?][bad ref?]  [disagree?]  [font miss?] [flaky shot?][stale cache?]
+   557	```
+   558	
+   559	Every shadow path has an error class from Section 2. Two more: a stale cache is prevented by content-hash keys, and a partial output dir is avoided by building into a temp dir and swapping it in atomically.
+   560	
+   561	| Interaction | Edge case | Handled? | How |
+   562	|---|---|---|---|
+   563	| Explorer value input | non-integer, out of range, empty | Y | clamp and message; tested |
+   564	| Explorer bit toggles | keyboard only | Y | buttons with aria-pressed; tested |
+   565	| IVE pause-to-explore | pause mid-transition | Y | explorer loads the last state already shown, never a tween value or a future answer (D18.2) |
+   566	| IVE seek | seek past end / rapid scrubbing | Y | debounce; state = scene at time t |
+   567	| IVE | no JS | Y | static poster sequence + transcript |
+   568	| Video | autoplay with sound | Y | never; play is a user action |
+   569	| Cards | value with no printable glyph | Y | label "non-printable (code N)" |
+   570	| Q&A expander | open all at once / print | Y | details elements, print stylesheet expands all |
+   571	
+   572	**D9.1.** IVE explorer state comes from scene states, never from in-between animation values. *Accepted*: it is exact by construction.
+   573	
+   574	## Section 5: Code quality
+   575	
+   576	- Keep one formatter for values, shared by all projectors, so the same fact can't render differently in two artifacts. That is DRY at the point that matters.
+   577	- No framework: templates are string templates with escaping. Over-engineering check: no plugin system for projectors in v2.1, since six fixed modules are enough.
+   578	- Branching budget: the router must not exceed 5 branches per function. Use a table-driven classifier with explicit rules plus tests, not regexes scattered through the code.
+   579	- **D10.1.** Table-driven router plus a dev prompt set of at least 60 prompts, kept separate from the holdout. *Accepted.*
+   580	
+   581	## Section 6: Tests
+   582	
+   583	```
+   584	  NEW UX FLOWS:        explorer interaction; Q&A expand; IVE pause/seek/chapters; video play
+   585	  NEW DATA FLOWS:      capture → facts; model → 6 projectors; artifacts → gates → report
+   586	  NEW CODEPATHS:       router rules; workspace contract precedence; each projector; each gate
+   587	  NEW ASYNC WORK:      TTS synthesis; HyperFrames render; Playwright screenshots
+   588	  NEW INTEGRATIONS:    clang, gcc-16, hyperframes, kokoro, ffmpeg/ffprobe, playwright, genanki
+   589	  NEW ERROR PATHS:     every class in Section 2
+   590	```
+   591	
+   592	| Item | Test type | Happy | Failure | Edge |
+   593	|---|---|---|---|---|
+   594	| router | unit (dev set ≥60) + holdout (32, acceptance only) | "narrated video" → motion | "fix my loop" → ordinary | workspace contract present |
+   595	| capture | integration (real compilers) | %d/%u/%f/%c outputs | compile error, timeout | gcc-16 missing → HostToolMissing |
+   596	| values gate | unit + tamper test | all match | 5 corrupted values each caught | locale-sensitive float formatting |
+   597	| claims gate | unit (schema, fixtures for malformed/refusal) + integration with the real reviewer subagent via claims jobs | all mapped | unmapped sentence, malformed JSON, refusal | the %f "same bits" sentence must fail with the real reviewer |
+   598	| still projector | snapshot + Playwright | 4 variants render | overflow detection fires on long label | 390 px portrait |
+   599	| video | integration (real render of a 10 s fixture) | gates pass | LUFS out of range fixture | Kokoro missing → say + disclosed |
+   600	| IVE | Playwright | pause → explorer at scene state | seek past end | no-JS fallback |
+   601	| packaging | system | one entry per host | nested SKILL.md present → fail | Node 22 and 24 |
+   602	
+   603	**Test ambition.**
+   604	- **The 2am test:** a full build of both exemplars from a clean checkout, with every gate passed and nothing not-run.
+   605	- **The hostile QA test:** a tamper suite for each artifact type, plus a claims fixture that repeats today's real `%f` error.
+   606	- **The chaos test:** delete the Kokoro venv and the Playwright browsers mid-build, and check the report says not-run or fallback, never passed.
+   607	
+   608	**Flakiness.** Playwright font loading: fonts are bundled and loading is awaited before screenshots. TTS is deterministic per cached hash.
+   609	
+   610	**D11.1.** The claims gate gets a regression fixture taken from today's real error. *Accepted.*
+   611	
+   612	## Section 7: Performance
+   613	
+   614	- **Slowest paths.** Video render takes about 60–180 s, TTS about 1–2 s per sentence (cached), and Playwright screenshots about 5–10 s per artifact.
+   615	- **Memory.** Kokoro needs about 1 GB resident and HyperFrames' Chrome about 1 GB. With 24 GB RAM that's fine; renders still run one at a time.
+   616	- **Cache.** Keyed by the full effective inputs in D17.9.
+   617	- No issues beyond caching. **D12.1.** Caching *accepted.*
+   618	
+   619	## Section 8: Observability
+   620	
+   621	- `build-report.json` per lesson records every gate with status, measured values, thresholds, tool versions, durations and artifact paths. `ptk report` prints it as a table.
+   622	- Logs are structured JSON lines to `build/<lesson>/log.jsonl`. They record the start and end of each stage with its inputs and hashes.
+   623	- Three weeks after a build, the report plus the logs reconstruct exactly what ran and which tool versions ran it.
+   624	- The "joy to operate" version: `ptk report --html` renders the build report with thumbnails of every artifact and gate.
+   625	- **D13.1** *Accepted.*
+   626	
+   627	## Section 9: Deployment and rollout
+   628	
+   629	1. Build and test in the candidate repo.
+   630	2. Install side by side into `~/.agents/skill-library/prax-teach-v2.1/`. It is not linked into any host skill dir (D17.12), so each host keeps one entry. It is reachable through `ptk` and its direct path only. Snapshot `.prax-teach` learner state first.
+   631	3. Run the acceptance step: the holdout, both exemplar builds and the protected checks.
+   632	4. Once accepted, point `~/.agents/skills/prax-teach-v2` at v2.1. Install and rollback are tested on each host first.
+   633	5. Rollback is to point the link back at the clean v2 install and restore the learner-state snapshot. Evidence recorded after the snapshot is lost; the rollback command prints how many events that is.
+   634	
+   635	Learner state moves to schema v2 (D17.12): navigation events are separated from attempts, and an `evidence` kind is added. A migration reads v1 unchanged and has a test. v2 cannot read schema v2, which is why rollback restores the snapshot.
+   636	
+   637	**D14.1** *Accepted.* The infrastructure that makes this routine: `ptk package --install` performs steps 2 and 4 with a dry-run diff first.
+   638	
+   639	## Section 10: Long-term trajectory
+   640	
+   641	- **Reversibility: 5/5.** It's side by side, with a symlink flip.
+   642	- **Debt introduced.**
+   643	  - Two languages: Python for the core, Node for rendering and checks.
+   644	  - Dependence on HyperFrames releases. The pinned local install controls it; upgrading is a deliberate, tested change.
+   645	- **Phase 2.** Topic packs, the D4.12 compile-and-trace server, and cpx integration (cards and drills land in his attempt log).
+   646	- **Phase 3.** Manim math track once LaTeX or Typst is approved.
+   647	- **The 1-year question.** A new engineer reads `lesson.schema.json`, `ptk --help` and one exemplar lesson, and understands the system.
+   648	
+   649	## Section 11: Design and UX
+   650	
+   651	```
+   652	  request ─▶ [prediction-first?] ─yes─▶ one question ─▶ attempt ─▶ feedback ─▶ artifact(s)
+   653	                   │no
+   654	                   ▼
+   655	            artifact in requested medium ─▶ (optional) check ─▶ next step
+   656	  Artifact pages: still (figure + caption + source link) │ explorer (control panel │ live readout │ notes)
+   657	  IVE: video ▸ pause ─▶ explorer at scene state ▸ resume ─▶ video   chapters list │ transcript (synced)
+   658	```
+   659	
+   660	**State coverage.**
+   661	
+   662	| Feature | Loading | Empty | Error | Success | Partial |
+   663	|---|---|---|---|---|---|
+   664	| Explorer | n/a (static) | default value 66 | invalid input message | live readout | no-JS static |
+   665	| IVE | poster frame | n/a | video failed → transcript + stills | synced | captions missing → report fails build |
+   666	| Q&A | n/a | n/a | n/a | collapsed layers | print expands all |
+   667	
+   668	**AI-slop risk.** High by default, and the v2 router image proves it: a generic gradient infographic. Mitigation is the style system from D4.8 plus report 02's 15-item quality bar as a gate checklist, plus screenshot review.
+   669	- **Mobile:** portrait variants are required.
+   670	- **Accessibility:** keyboard access, captions, transcript, audio description cues in the storyboard, and contrast measured with 3:1 for rules and borders.
+   671	- **The inevitable feel:** the paper-and-ink style everywhere, the same labels in every medium, and the numbers always link to the run.
+   672	- **D15.1.** Run a design review after implementation as part of the code-review loop, by screenshot. *Accepted.* A separate `/plan-design-review` isn't run, because Prax's chain names only CEO, eng, spec, implement and review.
+   673	
+   674	## NOT in scope
+   675	
+   676	- Learner-code compile server (D4.12). Untrusted code from the browser needs its own threat model.
+   677	- C++, DSA and GATE topic packs (D4.16). Phase 2.
+   678	- Manim `MathTex`, BasicTeX and Typst installs (D4.14, D4.15). These are system-wide installs that need Prax's OK. whisper-cli is already installed and is used.
+   679	- Cloud TTS, cloud rendering and HyperFrames `publish`. Cloud and paid services need permission.
+   680	- Claims about human learning outcomes. Not measurable here.
+   681	
+   682	## What already exists
+   683	
+   684	See the 0B table. Reused: the v2 renderer, the state engine, the registry, all three proofs, the cpx capture patterns and the five HyperFrames/Manim skills.
+   685	
+   686	## Dream state delta
+   687	
+   688	After v2.1, all six media exist with verified values and reviewed claims for C topics. The remaining gap to the 12-month ideal is topic packs, running the learner's own code, the math track and cpx integration.
+   689	
+   690	## Error and rescue registry
+   691	
+   692	Section 2 is the complete registry: 22 failure modes, all named; 21 rescued; one known limit (the claims reviewer can itself be wrong), mitigated by a mutation test set and labelled in every report. 0 silent gaps.
+   693	
+   694	## Failure modes registry
+   695	
+   696	```
+   697	  CODEPATH        | FAILURE MODE            | RESCUED? | TEST? | USER SEES?            | LOGGED?
+   698	  ----------------|-------------------------|----------|-------|-----------------------|--------
+   699	  capture         | compiler disagreement   | Y        | Y     | which compilers       | Y
+   700	  values gate     | tampered value          | Y        | Y     | mismatch list         | Y
+   701	  claims gate     | false claim, mapped     | Y        | Y     | reviewer finding      | Y
+   702	  claims gate     | reviewer itself wrong   | N (known limit) | Y (mutation set) | report labels review as LLM-reviewed, not proven | Y
+   703	  visual gate     | Playwright missing      | Y        | Y     | not-run, incomplete   | Y
+   704	  tts             | Kokoro missing          | Y        | Y     | fallback disclosed    | Y
+   705	  video           | HyperFrames upgraded    | Y        | Y     | cannot happen: pinned local install | Y
+   706	```
+   707	
+   708	The claims reviewer is itself an LLM, so its verdict is a reviewed finding, not a proof. The report labels it that way. That is a known limit, not a silent gap.
+   709	
+   710	## TODOS (written to `../TODOS.md`)
+   711	
+   712	1. **P2: learner compile-and-trace server (D4.12).**
+   713	2. **P2: topic packs for C++, DSA and GATE (D4.16).**
+   714	3. **P3: Manim math track after a LaTeX or Typst install is approved (D4.14 and D4.15).**
+   715	4. **P3: cpx integration, where cards and drills feed the C repo's attempt log.**
+   716	
+   717	**D16.** All four go to TODOS.md. *Accepted.*
+   718	
+   719	## Scope expansion decisions
+   720	
+   721	- **Accepted:** D4.1–D4.11, plus D4.13 and D4.14, which are scoped down.
+   722	- **Deferred:** D4.12, D4.15 and D4.16.
+   723	- **Skipped:** none.
+   724	
+   725	## Diagrams produced
+   726	
+   727	These are in the sections above: system architecture, the shadow paths in the data flow, the build state machine, the error flow (Section 2), the user flow, and the deployment and rollback steps (Section 9).
+   728	
+   729	There are no stale diagrams, because the repo is new.
+   730	
+   731	## Implementation Tasks
+   732	
+   733	- [ ] **T0 (P1, human ~3d / CC ~3h)**: vertical slice (D17.1, D18.5: still, narrated video and IVE for one lesson). Spikes first:
+   734	  - `sandbox-exec` profile;
+   735	  - whisper-cli sync on the proof MP4;
+   736	  - a pinned local HyperFrames;
+   737	  - the claims subagent contract.
+   738	
+   739	  Then one unfamiliar request goes through the whole path end to end. *Verify:* the build report has no `not-run` gates.
+
+hook: PostToolUse
+hook: PostToolUse Completed
+codex
+The plan covers most obvious missing-tool failures. The remaining gaps appear to be in the evidence: caption timing may be checked against itself, the sandbox test cannot prove zero network attempts, and several planned tests may pass without exercising the behavior they claim to verify.
+hook: PreToolUse
+hook: PreToolUse Completed
+web search: 
+web search: site.gcc.gnu.org Darwin sanitizers libsanitizer unsupported address sanitizer GCC ...
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+/bin/zsh -lc 'command -v clang; command -v clang-21; command -v gcc-16; command -v whisper-cli; command -v node; rtk gcc-16 -v; clang --version; uname -m' in /Users/prax/Developer/prax-teach-evaluation-20261016/v2.1
+ succeeded in 4533ms:
+/usr/bin/clang
+/opt/homebrew/bin/gcc-16
+/opt/homebrew/bin/whisper-cli
+/Users/prax/.local/share/mise/shims/node
+Using built-in specs.
+COLLECT_GCC=/opt/homebrew/bin/gcc-16
+COLLECT_LTO_WRAPPER=/opt/homebrew/Cellar/gcc/16.2.0/bin/../libexec/gcc/aarch64-apple-darwin27/16/lto-wrapper
+Target: aarch64-apple-darwin27
+Configured with: ../configure --prefix=/opt/homebrew/opt/gcc --libdir=/opt/homebrew/opt/gcc/lib/gcc/current --disable-nls --enable-checking=release --with-gcc-major-version-only --enable-languages=c,c++,objc,obj-c++,fortran --program-suffix=-16 --with-gmp=/opt/homebrew/opt/gmp --with-mpfr=/opt/homebrew/opt/mpfr --with-mpc=/opt/homebrew/opt/libmpc --with-isl=/opt/homebrew/opt/isl --with-zstd=/opt/homebrew/opt/zstd --with-pkgversion='Homebrew GCC 16.2.0' --with-bugurl=https://github.com/Homebrew/homebrew-core/issues --with-system-zlib --build=aarch64-apple-darwin27 --with-sysroot=/Library/Developer/CommandLineTools/SDKs/MacOSX27.sdk
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 16.2.0 (Homebrew GCC 16.2.0) 
+clang: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+clang: error: couldn't create cache file '/tmp/xcrun_db-vgg1Pyfu' (errno=Operation not permitted)
+2026-10-18 08:28:51.562 xcodebuild[46240:1400512]  DVTFilePathFSEvents: Failed to start fs event stream.
+2026-10-18 08:28:51.874 xcodebuild[46240:1400511] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 "Input/output error". Using NSCachesDirectory instead.
+clang: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+clang: error: couldn't create cache file '/tmp/xcrun_db-B3zqL0RN' (errno=Operation not permitted)
+2026-10-18 08:28:52.827 xcodebuild[46245:1400577]  DVTFilePathFSEvents: Failed to start fs event stream.
+2026-10-18 08:28:53.027 xcodebuild[46245:1400576] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 "Input/output error". Using NSCachesDirectory instead.
+Apple clang version 21.0.0 (clang-2100.3.34.2)
+Target: arm64-apple-darwin27.0.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+arm64
+
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse Completed
+web search: 
+web search: HyperFrames 0.8.169 github render docker ...
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse Completed
+web search: 
+web search: https://raw.githubusercontent.com/heygen-com/hyperframes/main/docs/packages/cli.mdx
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PreToolUse
+hook: PreToolUse Completed
+web search: 
+web search: 'network'
+hook: PostToolUse
+hook: PostToolUse Completed
+codex
+1. **Offline setup is incomplete (E1–E3, D19.2).** The download inventory omits Playwright’s browser revision, HyperFrames’ browser, Kokoro’s voice file, and any Docker image. `PLAYWRIGHT_BROWSERS_PATH` doesn’t configure every Chrome launcher. **Fix:** enumerate and pin the complete runtime dependencies; prove a first build succeeds with empty ordinary caches and networking disabled. [Playwright](https://playwright.dev/docs/browsers), [Kokoro](https://github.com/thewh1teagle/kokoro-onnx).
+
+2. **A local npm pin doesn’t disable HyperFrames updates (D17.9, E3).** The environment contract omits `HYPERFRAMES_NO_UPDATE_CHECK=1`. Upstream documents background update behavior. **Fix:** set it explicitly and test that pinned **0.8.169** neither fetches nor modifies its installation. [HyperFrames documentation](https://github.com/heygen-com/hyperframes/blob/main/docs/packages/cli.mdx).
+
+3. **ET1’s network evidence is insufficient.** “MP4 produced, zero denied requests in the render log” cannot distinguish successful isolation from missing denial logging. Docker isolation also doesn’t automatically report attempted requests. **Fix:** require deliberate DNS, HTTPS and child-process canaries to fail observably; specify the actual Docker invocation carrying `--network none`.
+
+4. **Caption synchronization lacks an independent timing oracle (D17.8, E2).** Comparing cue starts with their *planned* times can pass captions and audio that drift together. **Fix:** measure synthesized segment durations before scheduling; compare final-MP4 speech timestamps against VTT starts **and ends**. Include shifted-audio, truncated-speech and wrong-code-token fixtures.
+
+5. **Claims reviews can become stale approvals (D18.1).** Schema validation doesn’t establish that a review covers the current lesson, artifacts, sources or rubric. **Fix:** bind each job and response to an immutable input manifest; invalidate affected reviews after edits. Test replaying a previously passing review against changed content.
+
+6. **The sanitizer test exercises the wrong mechanism (Eng §3).** `printf("%f", a)` should trigger the format-warning gate; it doesn’t demonstrate working runtime sanitizers. **Fix:** separate warning-only, runtime-ASan and runtime-UBSan fixtures. Specify GCC’s diagnostic-only command separately from Clang’s compile/link/run flags. Clean sanitizer output must never mean “no UB.” [Clang UBSan](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html).
+
+7. **The stated CSP conflicts with self-contained interactive HTML (§3).** `default-src 'self' data:` blocks ordinary inline scripts and styles. **Fix:** define explicit script/style hashes and media/font directives; choose and test the delivery mode, including metadata-track loading. Exercise the packaged artifact with CSP enforced. [CSP behavior](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy).
+
+8. **`ptk selftest` cannot independently complete its own claims tests (E3, Eng §3).** A Python CLI cannot invoke unspecified host-subagent facilities merely because `claims-jobs/` exists. **Fix:** define the host orchestration adapter and resume protocol. Distinguish automatic selftests from agent-mediated integration tests; test both on each supported host.
+
+9. **Mutation detection has no adequate false-positive control (D17.5).** A reviewer that rejects almost everything can achieve excellent mutation recall. **Fix:** pair every corruption with a valid control, require a clean-control acceptance threshold, and distinguish schema rejection from detection of the intended semantic error.
+
+10. **“genanki round-trip” names no executable test (T4, Eng §3).** The plan specifies a deck generator, but no reader or actual Anki import. **Fix:** inspect the archive/database, then import into an isolated Anki profile and verify rendered cards, stable note IDs and duplicate-free reimport.
+
+11. **The capture watchdog leaves resource escape paths unspecified (D17.10).** Parent RSS and process-group killing don’t cover descendant memory, detached children or unlimited stdout. **Fix:** prohibit child creation for capture programs unless needed; bound aggregate memory and output, and test cleanup after timeout and watchdog termination.
+
+12. **E10 directly contradicts FREEZE’s write boundary.** It mandates writing `~/.gstack/projects/v2.1/`, while D19.1 requires development writes inside `v2.1/**`. **Fix:** keep the test-plan artifact inside the candidate tree; defer external copies until explicitly authorized.
+hook: Stop
+hook: Stop Completed
+tokens used
+90,788

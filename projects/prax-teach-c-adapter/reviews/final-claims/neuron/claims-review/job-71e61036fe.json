@@ -1,0 +1,336 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-71e61036fe",
+ "manifest_sha256": "71e61036fe7d8241b6ae09307b261f3927abf934676d3fd634f655d515082a00",
+ "rubric_version": "3",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent (Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.formula",
+   "verdict": "accept",
+   "reason": "Framing only. Lines 8, 10, 12 and 14 do exactly this, and fmax(0.0, z) matches the cited ReLU definition max{0, z}.",
+   "evidence": [
+    "Deep Learning §6.3.1",
+    "programs/neuron.c lines 8-14"
+   ]
+  },
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Values match lines 5-7 and the printed fields 0.8, 1.5, 0.4, -1, -0.2.",
+   "evidence": [
+    "fact f.x1",
+    "fact f.w1",
+    "fact f.x2",
+    "fact f.w2",
+    "fact f.b"
+   ]
+  },
+  {
+   "id": "c.mul",
+   "verdict": "accept",
+   "reason": "Maths checks out: 0.8*1.5 rounds to 1.2000000000000002 (one ulp above 1.2), which %+g prints as +1.2, and 0.4*-1 is exactly -0.4 as a double. The g-style quote supports the printing.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8",
+    "fact f.t1",
+    "fact f.t2"
+   ]
+  },
+  {
+   "id": "c.sign",
+   "verdict": "accept",
+   "reason": "Scoped with 'here' and true: a positive times a negative gives -0.4, as printed.",
+   "evidence": [
+    "fact f.t2"
+   ]
+  },
+  {
+   "id": "c.add",
+   "verdict": "accept",
+   "reason": "I recomputed the sum: left to right in double it lands one ulp above 0.6 (0.6000000000000001), which %g prints as 0.6. The sentence only claims the printed value, and c.mul plus c.relu give the mechanism.",
+   "evidence": [
+    "programs/neuron.c line 12",
+    "C17 §7.21.6.1 ¶8",
+    "fact f.z"
+   ]
+  },
+  {
+   "id": "c.relu",
+   "verdict": "accept",
+   "reason": "Correct definition of ReLU. The fmax quote is the Returns paragraph ¶3 and supports the line 14 implementation.",
+   "evidence": [
+    "Deep Learning §6.3.1",
+    "C17 §7.12.12.2 ¶3"
+   ]
+  },
+  {
+   "id": "c.out",
+   "verdict": "accept",
+   "reason": "z is the double just above 0.6, so it is positive, fmax returns z, and %g prints 0.6. The cause is stated correctly.",
+   "evidence": [
+    "C17 §7.12.12.2 ¶3",
+    "fact f.a"
+   ]
+  },
+  {
+   "id": "c.toy",
+   "verdict": "accept",
+   "reason": "Framing. Every quantity is double, and %g/%+g with no precision given use 6 significant digits with trailing zeros removed, so 'at most 6' holds for these specifiers.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "A prediction prompt that states nothing about C. Fine as framing.",
+   "evidence": []
+  },
+  {
+   "id": "c.round",
+   "verdict": "accept",
+   "reason": "True and scoped to this machine. The product is one ulp above 1.2, z is one ulp above 0.6 so z == 0.6 is false, and %g rounds it to 0.6. Every step of the justification checks out, including 1.5 being exact.",
+   "evidence": [
+    "C17 §7.21.6.1 ¶8",
+    "C17 §F.2 ¶1",
+    "fact f.z"
+   ]
+  },
+  {
+   "id": "c.kzero",
+   "verdict": "accept",
+   "reason": "I recomputed p2: z is -0.19999999999999984, which prints as -0.2, and fmax(0.0, z) returns 0 exactly. The first term still prints +1.2. All of this matches the captured lines.",
+   "evidence": [
+    "fact f.k1.t1",
+    "fact f.k1.z",
+    "fact f.k1.a"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "Matches the first sentence of c.toy."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "Matches the second sentence of c.toy."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Same as c.formula."
+  },
+  {
+   "id": "t.081",
+   "verdict": "accept",
+   "reason": "True-or-false card built on a true claim (c.relu)."
+  },
+  {
+   "id": "t.082",
+   "verdict": "accept",
+   "reason": "True-or-false card built on a true claim (c.round)."
+  },
+  {
+   "id": "t.083",
+   "verdict": "accept",
+   "reason": "It shows m.negterm as a question, not as true, and the belief is false: here t2 is negative yet a is 0.6."
+  },
+  {
+   "id": "t.084",
+   "verdict": "accept",
+   "reason": "It shows m.nobias as a question, not as true, and the belief is false because the bias is in the sum on line 12."
+  },
+  {
+   "id": "t.085",
+   "verdict": "accept",
+   "reason": "Same as c.add."
+  },
+  {
+   "id": "t.086",
+   "verdict": "accept",
+   "reason": "Same as c.formula."
+  },
+  {
+   "id": "t.087",
+   "verdict": "accept",
+   "reason": "Same as c.kzero."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "Same as c.mul."
+  },
+  {
+   "id": "t.089",
+   "verdict": "accept",
+   "reason": "Same as c.out."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "Same as c.relu."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Same as c.sign."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Same as c.toy."
+  },
+  {
+   "id": "t.166",
+   "verdict": "accept",
+   "reason": "The Add scene title fits line 12."
+  },
+  {
+   "id": "t.167",
+   "verdict": "accept",
+   "reason": "The Gate scene title fits the ReLU step."
+  },
+  {
+   "id": "t.168",
+   "verdict": "accept",
+   "reason": "The Multiply scene title fits lines 8 and 10."
+  },
+  {
+   "id": "t.169",
+   "verdict": "accept",
+   "reason": "Multiply, add, gate really are three steps. No overstatement."
+  },
+  {
+   "id": "t.170",
+   "verdict": "accept",
+   "reason": "The Predict scene title fits the question scene."
+  },
+  {
+   "id": "t.171",
+   "verdict": "accept",
+   "reason": "Neutral recap title."
+  },
+  {
+   "id": "t.183",
+   "verdict": "accept",
+   "reason": "The lesson title makes no technical claim."
+  },
+  {
+   "id": "t.184",
+   "verdict": "accept",
+   "reason": "Labelled as a wrong belief, and it is false."
+  },
+  {
+   "id": "t.185",
+   "verdict": "accept",
+   "reason": "Labelled as a wrong belief, and it is false."
+  },
+  {
+   "id": "t.186",
+   "verdict": "accept",
+   "reason": "Same as c.formula."
+  },
+  {
+   "id": "t.187",
+   "verdict": "accept",
+   "reason": "Same as c.setup."
+  },
+  {
+   "id": "t.188",
+   "verdict": "accept",
+   "reason": "Same as c.mul, just split into two sentences."
+  },
+  {
+   "id": "t.189",
+   "verdict": "accept",
+   "reason": "Same as c.sign."
+  },
+  {
+   "id": "t.190",
+   "verdict": "accept",
+   "reason": "Same as c.pause."
+  },
+  {
+   "id": "t.191",
+   "verdict": "accept",
+   "reason": "Same as c.add."
+  },
+  {
+   "id": "t.192",
+   "verdict": "accept",
+   "reason": "Same as c.relu."
+  },
+  {
+   "id": "t.193",
+   "verdict": "accept",
+   "reason": "Same as c.out."
+  },
+  {
+   "id": "t.194",
+   "verdict": "accept",
+   "reason": "First half of c.round, with the machine qualifier kept."
+  },
+  {
+   "id": "t.195",
+   "verdict": "accept",
+   "reason": "Second half of c.round. Correct for z here."
+  },
+  {
+   "id": "t.196",
+   "verdict": "accept",
+   "reason": "Same as c.formula."
+  },
+  {
+   "id": "t.197",
+   "verdict": "accept",
+   "reason": "Marked wrong and it is wrong: 0.8 is the sum without the bias, but a prints 0.6."
+  },
+  {
+   "id": "t.198",
+   "verdict": "accept",
+   "reason": "Marked wrong and it is wrong: z is positive, so a is not 0."
+  },
+  {
+   "id": "t.199",
+   "verdict": "accept",
+   "reason": "Marked correct and it is correct: fact f.a is 0.6."
+  },
+  {
+   "id": "t.200",
+   "verdict": "accept",
+   "reason": "The prompt doesn't give away the answer 0.6."
+  },
+  {
+   "id": "t.201",
+   "verdict": "accept",
+   "reason": "At line 7 the inputs, weights and bias have just been set."
+  },
+  {
+   "id": "t.202",
+   "verdict": "accept",
+   "reason": "By line 11 both products have been computed and printed."
+  },
+  {
+   "id": "t.203",
+   "verdict": "accept",
+   "reason": "By line 13 z has been summed and printed."
+  },
+  {
+   "id": "t.204",
+   "verdict": "accept",
+   "reason": "By line 15 fmax has been applied and a printed."
+  }
+ ],
+ "overall": "accept"
+}

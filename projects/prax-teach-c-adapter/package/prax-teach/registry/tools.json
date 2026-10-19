@@ -1,0 +1,2342 @@
+{
+ "schema": "prax-teach/tools@2",
+ "note": "WP8 registry. `tools`: probes for every tool an alternative needs. `artifacts`: report 05's ranked alternatives per artifact type, each with its needs (the binary probe) and rank; `fallback_order` is the rank order. `catalog`: v2's 38 visualization tools, ported with corrections. `downloads`: what `ptk host setup` fetches.",
+ "tools": {
+  "clang": {
+   "probe": "binary",
+   "role": "capture compiler (runs facts)",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "gcc-16": {
+   "probe": "binary",
+   "role": "diagnostics-only compiler",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "sandbox-exec": {
+   "probe": "sandbox",
+   "role": "capture and render isolation"
+  },
+  "node": {
+   "probe": "binary",
+   "role": "Playwright and HyperFrames runtime (>= 22)",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "npm": {
+   "probe": "binary",
+   "role": "installs the pinned node tools"
+  },
+  "ffmpeg": {
+   "probe": "binary",
+   "role": "audio assembly, loudness, mux",
+   "version_args": [
+    "-version"
+   ]
+  },
+  "ffprobe": {
+   "probe": "binary",
+   "role": "media gate",
+   "version_args": [
+    "-version"
+   ]
+  },
+  "whisper-cli": {
+   "probe": "binary",
+   "role": "caption sync gate",
+   "version_args": [
+    "--help"
+   ]
+  },
+  "tesseract": {
+   "probe": "binary",
+   "role": "OCR digit gate",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "say": {
+   "probe": "binary",
+   "role": "TTS fallback (degraded)"
+  },
+  "hyperframes": {
+   "probe": "state",
+   "path": "tools/node/node_modules/.bin/hyperframes",
+   "role": "video render, pinned 0.8.169"
+  },
+  "playwright": {
+   "probe": "state",
+   "path": "tools/node/node_modules/.bin/playwright",
+   "role": "screenshots, visual gate"
+  },
+  "playwright-chromium": {
+   "probe": "state",
+   "path": "browsers",
+   "role": "Playwright browser"
+  },
+  "hyperframes-chrome": {
+   "probe": "state",
+   "path": "browsers/hyperframes/mac_arm-152.0.7977.30/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+   "role": "HyperFrames render browser"
+  },
+  "kokoro": {
+   "probe": "state",
+   "path": "venvs/kokoro/bin/python",
+   "role": "batched local TTS"
+  },
+  "kokoro-model": {
+   "probe": "state",
+   "path": "models/kokoro/kokoro-v1.0.onnx",
+   "role": "Kokoro-82M model"
+  },
+  "whisper-model": {
+   "probe": "state",
+   "path": "models/whisper/ggml-base.en.bin",
+   "role": "whisper base.en"
+  },
+  "core-venv": {
+   "probe": "state",
+   "path": "venvs/core/bin/python",
+   "role": "jsonschema, fontTools"
+  },
+  "python3": {
+   "probe": "binary",
+   "role": "ptk itself, matplotlib route",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "typst": {
+   "probe": "binary",
+   "role": "Typst + CeTZ/fletcher stills, handouts, printable cards",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "dot": {
+   "probe": "binary",
+   "role": "Graphviz layout",
+   "version_args": [
+    "-V"
+   ]
+  },
+  "docker": {
+   "probe": "binary",
+   "role": "Kroki, local Compiler Explorer, HyperFrames render fallback",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "manim": {
+   "probe": "binary",
+   "role": "Manim Community 0.22 (no LaTeX: Text and Code only)",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "manimgl": {
+   "probe": "binary",
+   "role": "ManimGL (3b1b fork)",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "manim-slides": {
+   "probe": "binary",
+   "role": "manim-slides HTML export",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "tectonic": {
+   "probe": "binary",
+   "role": "TeX engine for TikZ/PGF and Manim MathTex",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "asy": {
+   "probe": "binary",
+   "role": "Asymptote",
+   "version_args": [
+    "-version"
+   ]
+  },
+  "d2": {
+   "probe": "binary",
+   "role": "D2 diagrams",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "mmdc": {
+   "probe": "binary",
+   "role": "mermaid-cli",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "vhs": {
+   "probe": "binary",
+   "role": "VHS terminal recordings",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "lldb": {
+   "probe": "binary",
+   "role": "LLDB session capture",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "quarto": {
+   "probe": "binary",
+   "role": "Quarto documents",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "marimo": {
+   "probe": "binary",
+   "role": "marimo notebooks",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "blender": {
+   "probe": "binary",
+   "role": "Blender with Python",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "hashcards": {
+   "probe": "binary",
+   "role": "hashcards plain-text SRS",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "c2w": {
+   "probe": "binary",
+   "role": "container2wasm",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "piper": {
+   "probe": "binary",
+   "role": "Piper TTS",
+   "version_args": [
+    "--version"
+   ]
+  },
+  "anki": {
+   "probe": "app",
+   "role": "Anki desktop",
+   "path": "/Applications/Anki.app"
+  },
+  "obsidian": {
+   "probe": "app",
+   "role": "Obsidian vault",
+   "path": "/Applications/Obsidian.app"
+  },
+  "keynote": {
+   "probe": "app",
+   "role": "Keynote",
+   "path": "/Applications/Keynote.app"
+  },
+  "tldraw": {
+   "probe": "app",
+   "role": "tldraw desktop",
+   "path": "/Applications/tldraw.app"
+  },
+  "genanki": {
+   "probe": "python-module",
+   "role": "genanki 0.13.1 in the core venv (.apkg export)",
+   "module": "genanki",
+   "venv": "core"
+  },
+  "fsrs": {
+   "probe": "python-module",
+   "role": "fsrs 6.3.1 in the core venv (learner-state scheduler)",
+   "module": "fsrs",
+   "venv": "core"
+  },
+  "matplotlib": {
+   "probe": "python-module",
+   "role": "matplotlib in the core venv (not installed by setup)",
+   "module": "matplotlib",
+   "venv": "core"
+  },
+  "mlx-audio": {
+   "probe": "python-module",
+   "role": "Kokoro on Metal (not installed by setup)",
+   "module": "mlx_audio",
+   "venv": "kokoro"
+  },
+  "marked": {
+   "probe": "node-module",
+   "role": "Markdown parser for render_markdown.mjs",
+   "module": "marked"
+  },
+  "sanitize-html": {
+   "probe": "node-module",
+   "role": "HTML sanitizer for render_markdown.mjs",
+   "module": "sanitize-html"
+  },
+  "mathjax-full": {
+   "probe": "node-module",
+   "role": "MathJax TeX to SVG (tex2svg.mjs)",
+   "module": "mathjax-full"
+  },
+  "bytefield-svg": {
+   "probe": "node-module",
+   "role": "bytefield-svg under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "bytefield-svg"
+  },
+  "@penrose/core": {
+   "probe": "node-module",
+   "role": "@penrose/core under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@penrose/core"
+  },
+  "vega-lite": {
+   "probe": "node-module",
+   "role": "vega-lite under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "vega-lite"
+  },
+  "bluefish-js": {
+   "probe": "node-module",
+   "role": "bluefish-js under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "bluefish-js"
+  },
+  "@excalidraw/utils": {
+   "probe": "node-module",
+   "role": "@excalidraw/utils under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@excalidraw/utils"
+  },
+  "@codemirror/view": {
+   "probe": "node-module",
+   "role": "@codemirror/view under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@codemirror/view"
+  },
+  "svelte": {
+   "probe": "node-module",
+   "role": "svelte under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "svelte"
+  },
+  "@wasmer/sdk": {
+   "probe": "node-module",
+   "role": "@wasmer/sdk under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@wasmer/sdk"
+  },
+  "d3": {
+   "probe": "node-module",
+   "role": "d3 under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "d3"
+  },
+  "cytoscape": {
+   "probe": "node-module",
+   "role": "cytoscape under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "cytoscape"
+  },
+  "pyodide": {
+   "probe": "node-module",
+   "role": "pyodide under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "pyodide"
+  },
+  "jsxgraph": {
+   "probe": "node-module",
+   "role": "jsxgraph under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "jsxgraph"
+  },
+  "shiki": {
+   "probe": "node-module",
+   "role": "shiki under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "shiki"
+  },
+  "inkjs": {
+   "probe": "node-module",
+   "role": "inkjs under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "inkjs"
+  },
+  "scrollama": {
+   "probe": "node-module",
+   "role": "scrollama under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "scrollama"
+  },
+  "idyll": {
+   "probe": "node-module",
+   "role": "idyll under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "idyll"
+  },
+  "ts-fsrs": {
+   "probe": "node-module",
+   "role": "ts-fsrs under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "ts-fsrs"
+  },
+  "remotion": {
+   "probe": "node-module",
+   "role": "remotion under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "remotion"
+  },
+  "shiki-magic-move": {
+   "probe": "node-module",
+   "role": "shiki-magic-move under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "shiki-magic-move"
+  },
+  "@motion-canvas/core": {
+   "probe": "node-module",
+   "role": "@motion-canvas/core under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@motion-canvas/core"
+  },
+  "@revideo/core": {
+   "probe": "node-module",
+   "role": "@revideo/core under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@revideo/core"
+  },
+  "manim-web": {
+   "probe": "node-module",
+   "role": "manim-web under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "manim-web"
+  },
+  "@remotion/player": {
+   "probe": "node-module",
+   "role": "@remotion/player under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@remotion/player"
+  },
+  "ableplayer": {
+   "probe": "node-module",
+   "role": "ableplayer under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "ableplayer"
+  },
+  "h5p-standalone": {
+   "probe": "node-module",
+   "role": "h5p-standalone under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "h5p-standalone"
+  },
+  "asciinema-player": {
+   "probe": "node-module",
+   "role": "asciinema-player under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "asciinema-player"
+  },
+  "video.js": {
+   "probe": "node-module",
+   "role": "video.js under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "video.js"
+  },
+  "@motion-canvas/player": {
+   "probe": "node-module",
+   "role": "@motion-canvas/player under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "@motion-canvas/player"
+  },
+  "distill-template": {
+   "probe": "node-module",
+   "role": "distill-template under $PTK_STATE/tools/node (not installed by setup)",
+   "module": "distill-template"
+  },
+  "ptk": {
+   "probe": "builtin",
+   "role": "a projector shipped in this package"
+  },
+  "agent": {
+   "probe": "builtin",
+   "role": "the host agent itself (no extra tool)"
+  },
+  "cloud-image-gen": {
+   "probe": "cloud",
+   "role": "generative image service: network and an account; needs Prax's permission (D19.2)"
+  },
+  "godbolt": {
+   "probe": "cloud",
+   "role": "godbolt.org: network and an account; needs Prax's permission (D19.2)"
+  },
+  "pythontutor": {
+   "probe": "cloud",
+   "role": "pythontutor.com: network and an account; needs Prax's permission (D19.2)"
+  },
+  "desmos": {
+   "probe": "cloud",
+   "role": "Desmos / GeoGebra: network and an account; needs Prax's permission (D19.2)"
+  },
+  "rive-editor": {
+   "probe": "cloud",
+   "role": "Rive editor: network and an account; needs Prax's permission (D19.2)"
+  },
+  "lottie-creator": {
+   "probe": "cloud",
+   "role": "LottieFiles Creator: network and an account; needs Prax's permission (D19.2)"
+  },
+  "mochi": {
+   "probe": "cloud",
+   "role": "Mochi: network and an account; needs Prax's permission (D19.2)"
+  },
+  "orbit": {
+   "probe": "cloud",
+   "role": "Orbit: network and an account; needs Prax's permission (D19.2)"
+  },
+  "remnote": {
+   "probe": "cloud",
+   "role": "RemNote: network and an account; needs Prax's permission (D19.2)"
+  },
+  "quizlet": {
+   "probe": "cloud",
+   "role": "Quizlet / Brainscape: network and an account; needs Prax's permission (D19.2)"
+  },
+  "ai-video": {
+   "probe": "cloud",
+   "role": "AI avatar video service: network and an account; needs Prax's permission (D19.2)"
+  },
+  "elevenlabs": {
+   "probe": "cloud",
+   "role": "ElevenLabs: network and an account; needs Prax's permission (D19.2)"
+  },
+  "openai-tts": {
+   "probe": "cloud",
+   "role": "OpenAI TTS: network and an account; needs Prax's permission (D19.2)"
+  },
+  "mux": {
+   "probe": "cloud",
+   "role": "Mux / YouTube: network and an account; needs Prax's permission (D19.2)"
+  },
+  "supermemo": {
+   "probe": "unsupported-platform",
+   "role": "SuperMemo is Windows only",
+   "platform": "win32"
+  },
+  "xtts": {
+   "probe": "python-module",
+   "role": "coqui-tts XTTS-v2 (not installed by setup)",
+   "module": "TTS",
+   "venv": "kokoro"
+  },
+  "f5-tts": {
+   "probe": "python-module",
+   "role": "F5-TTS (not installed by setup)",
+   "module": "f5_tts",
+   "venv": "kokoro"
+  }
+ },
+ "artifacts": {
+  "still": [
+   {
+    "rank": 1,
+    "id": "code-svg",
+    "title": "Code-computed SVG from captured data",
+    "needs": [
+     "ptk",
+     "node",
+     "playwright",
+     "playwright-chromium"
+    ],
+    "local": true,
+    "ptk_projector": "still"
+   },
+   {
+    "rank": 2,
+    "id": "typst-cetz",
+    "title": "Typst 0.15 + CeTZ 0.5 + fletcher 0.5",
+    "needs": [
+     "typst"
+    ],
+    "local": true
+   },
+   {
+    "rank": 3,
+    "id": "graphviz",
+    "title": "Graphviz from generated DOT",
+    "needs": [
+     "dot"
+    ],
+    "local": true
+   },
+   {
+    "rank": 4,
+    "id": "kroki-docker",
+    "title": "Kroki 0.33 in Docker as a diagram hub",
+    "needs": [
+     "docker"
+    ],
+    "local": true,
+    "note": "pull the image during setup only"
+   },
+   {
+    "rank": 5,
+    "id": "bytefield",
+    "title": "bytefield-svg or WaveDrom bitfield for bit layouts",
+    "needs": [
+     "node",
+     "bytefield-svg"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "manim-frame",
+    "title": "Manim CE 0.22 single frame",
+    "needs": [
+     "manim"
+    ],
+    "local": true,
+    "note": "no LaTeX installed: Text and Code only"
+   },
+   {
+    "rank": 7,
+    "id": "tikz",
+    "title": "TikZ/PGF via Tectonic",
+    "needs": [
+     "tectonic"
+    ],
+    "local": true
+   },
+   {
+    "rank": 8,
+    "id": "penrose",
+    "title": "Penrose constraint diagrams",
+    "needs": [
+     "node",
+     "@penrose/core"
+    ],
+    "local": true
+   },
+   {
+    "rank": 9,
+    "id": "d2",
+    "title": "D2 0.9",
+    "needs": [
+     "d2"
+    ],
+    "local": true
+   },
+   {
+    "rank": 10,
+    "id": "plot-vega",
+    "title": "Observable Plot or Vega-Lite charts",
+    "needs": [
+     "node",
+     "vega-lite"
+    ],
+    "local": true
+   },
+   {
+    "rank": 11,
+    "id": "matplotlib",
+    "title": "matplotlib + networkx",
+    "needs": [
+     "matplotlib"
+    ],
+    "local": true
+   },
+   {
+    "rank": 12,
+    "id": "bluefish",
+    "title": "Bluefish relational diagrams",
+    "needs": [
+     "node",
+     "bluefish-js"
+    ],
+    "local": true
+   },
+   {
+    "rank": 13,
+    "id": "mermaid",
+    "title": "Mermaid via mermaid-cli",
+    "needs": [
+     "mmdc"
+    ],
+    "local": true,
+    "note": "lowest aesthetic ceiling of the local options"
+   },
+   {
+    "rank": 14,
+    "id": "excalidraw-json",
+    "title": "Excalidraw or tldraw scenes generated as JSON",
+    "needs": [
+     "node",
+     "@excalidraw/utils"
+    ],
+    "local": true
+   },
+   {
+    "rank": 15,
+    "id": "asymptote",
+    "title": "Asymptote",
+    "needs": [
+     "asy",
+     "tectonic"
+    ],
+    "local": true
+   },
+   {
+    "rank": 16,
+    "id": "ai-image",
+    "title": "AI image generation",
+    "needs": [
+     "cloud-image-gen"
+    ],
+    "local": false,
+    "note": "looks good, labels wrong: appearance only"
+   }
+  ],
+  "explorer": [
+   {
+    "rank": 1,
+    "id": "trace-stepper",
+    "title": "Precomputed trace stepper, vanilla JS + SVG",
+    "needs": [
+     "ptk",
+     "node",
+     "playwright",
+     "playwright-chromium"
+    ],
+    "local": true,
+    "ptk_projector": "explorer"
+   },
+   {
+    "rank": 2,
+    "id": "compile-server",
+    "title": "Localhost compile-and-trace server + CodeMirror 6",
+    "needs": [
+     "clang",
+     "node",
+     "@codemirror/view"
+    ],
+    "local": true
+   },
+   {
+    "rank": 3,
+    "id": "marimo-wasm",
+    "title": "marimo notebooks exported to WASM",
+    "needs": [
+     "marimo"
+    ],
+    "local": true
+   },
+   {
+    "rank": 4,
+    "id": "svelte-sim",
+    "title": "Svelte 5 parameter simulators with golden tests",
+    "needs": [
+     "node",
+     "svelte"
+    ],
+    "local": true
+   },
+   {
+    "rank": 5,
+    "id": "compiler-explorer",
+    "title": "Compiler Explorer, local in Docker (godbolt.org is cloud)",
+    "needs": [
+     "docker"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "python-tutor",
+    "title": "Python Tutor embed",
+    "needs": [
+     "pythontutor"
+    ],
+    "local": false
+   },
+   {
+    "rank": 7,
+    "id": "clang-wasm",
+    "title": "Clang in the browser via Wasmer SDK",
+    "needs": [
+     "node",
+     "@wasmer/sdk"
+    ],
+    "local": true
+   },
+   {
+    "rank": 8,
+    "id": "d3",
+    "title": "D3 custom explorables",
+    "needs": [
+     "node",
+     "d3"
+    ],
+    "local": true
+   },
+   {
+    "rank": 9,
+    "id": "cytoscape",
+    "title": "Cytoscape.js graph algorithm explorers",
+    "needs": [
+     "node",
+     "cytoscape"
+    ],
+    "local": true
+   },
+   {
+    "rank": 10,
+    "id": "pyodide",
+    "title": "Pyodide with sys.settrace",
+    "needs": [
+     "node",
+     "pyodide"
+    ],
+    "local": true
+   },
+   {
+    "rank": 11,
+    "id": "jsxgraph",
+    "title": "Mafs or JSXGraph math widgets",
+    "needs": [
+     "node",
+     "jsxgraph"
+    ],
+    "local": true
+   },
+   {
+    "rank": 12,
+    "id": "container2wasm",
+    "title": "Full Linux in the browser: container2wasm",
+    "needs": [
+     "c2w"
+    ],
+    "local": true
+   },
+   {
+    "rank": 13,
+    "id": "tldraw-canvas",
+    "title": "tldraw canvas the learner manipulates",
+    "needs": [
+     "tldraw"
+    ],
+    "local": true
+   },
+   {
+    "rank": 14,
+    "id": "desmos",
+    "title": "Desmos API or GeoGebra",
+    "needs": [
+     "desmos"
+    ],
+    "local": false
+   },
+   {
+    "rank": 15,
+    "id": "rive-sm",
+    "title": "Rive state machines",
+    "needs": [
+     "rive-editor"
+    ],
+    "local": false,
+    "note": "needs a human-authored .riv"
+   }
+  ],
+  "qa": [
+   {
+    "rank": 1,
+    "id": "predict-gated-html",
+    "title": "Layered HTML walkthrough with an optional misconception-routed check",
+    "needs": [
+     "ptk",
+     "node",
+     "playwright"
+    ],
+    "local": true,
+    "ptk_projector": "qa"
+   },
+   {
+    "rank": 2,
+    "id": "annotated-code",
+    "title": "Annotated-code expander: Shiki or Code Hike",
+    "needs": [
+     "node",
+     "shiki"
+    ],
+    "local": true
+   },
+   {
+    "rank": 3,
+    "id": "obsidian-callouts",
+    "title": "Obsidian foldable callouts in the learner's vault",
+    "needs": [
+     "obsidian"
+    ],
+    "local": true
+   },
+   {
+    "rank": 4,
+    "id": "socratic-chat",
+    "title": "Chat-native Socratic loop, no artifact",
+    "needs": [
+     "agent"
+    ],
+    "local": true
+   },
+   {
+    "rank": 5,
+    "id": "quarto",
+    "title": "Quarto collapsible callouts and tabsets",
+    "needs": [
+     "quarto"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "inkjs",
+    "title": "Ink branching dialogue via inkjs",
+    "needs": [
+     "node",
+     "inkjs"
+    ],
+    "local": true
+   },
+   {
+    "rank": 7,
+    "id": "distill",
+    "title": "Distill-style article with hover notes",
+    "needs": [
+     "node",
+     "distill-template"
+    ],
+    "local": true
+   },
+   {
+    "rank": 8,
+    "id": "marimo-layers",
+    "title": "Runnable layers in a marimo notebook",
+    "needs": [
+     "marimo"
+    ],
+    "local": true
+   },
+   {
+    "rank": 9,
+    "id": "reveal-deck",
+    "title": "Progressive-reveal deck: hyperframes present",
+    "needs": [
+     "hyperframes"
+    ],
+    "local": true
+   },
+   {
+    "rank": 10,
+    "id": "self-explanation",
+    "title": "Self-explanation box graded against a rubric by the model",
+    "needs": [
+     "agent"
+    ],
+    "local": true
+   },
+   {
+    "rank": 11,
+    "id": "scrollama",
+    "title": "Scrollytelling with Scrollama",
+    "needs": [
+     "node",
+     "scrollama"
+    ],
+    "local": true
+   },
+   {
+    "rank": 12,
+    "id": "typst-handout",
+    "title": "Typst PDF handout with answers in an appendix",
+    "needs": [
+     "typst"
+    ],
+    "local": true
+   },
+   {
+    "rank": 13,
+    "id": "idyll",
+    "title": "Idyll explorable documents",
+    "needs": [
+     "node",
+     "idyll"
+    ],
+    "local": true
+   }
+  ],
+  "cards": [
+   {
+    "rank": 1,
+    "id": "genanki-anki",
+    "title": "genanki 0.13.1 to Anki with FSRS, compiled-output cards",
+    "needs": [
+     "ptk",
+     "genanki"
+    ],
+    "local": true,
+    "ptk_projector": "cards"
+   },
+   {
+    "rank": 2,
+    "id": "model-occlusion",
+    "title": "Cards from the lesson model: trace states and SVG-layer occlusion, into Anki",
+    "needs": [
+     "ptk",
+     "genanki",
+     "node",
+     "playwright"
+    ],
+    "local": true
+   },
+   {
+    "rank": 3,
+    "id": "ts-fsrs-cards",
+    "title": "Executable cards in the lesson library with ts-fsrs",
+    "needs": [
+     "node",
+     "ts-fsrs"
+    ],
+    "local": true
+   },
+   {
+    "rank": 4,
+    "id": "anki-occlusion",
+    "title": "Anki built-in image occlusion",
+    "needs": [
+     "anki"
+    ],
+    "local": true
+   },
+   {
+    "rank": 5,
+    "id": "hashcards",
+    "title": "hashcards plain-text cards in git",
+    "needs": [
+     "hashcards"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "obsidian-sr",
+    "title": "Obsidian Spaced Repetition plugin",
+    "needs": [
+     "obsidian"
+    ],
+    "local": true
+   },
+   {
+    "rank": 7,
+    "id": "ankiconnect",
+    "title": "AnkiConnect live updates",
+    "needs": [
+     "anki"
+    ],
+    "local": true,
+    "note": "repository archived"
+   },
+   {
+    "rank": 8,
+    "id": "mochi",
+    "title": "Mochi with Markdown cards and API",
+    "needs": [
+     "mochi"
+    ],
+    "local": false
+   },
+   {
+    "rank": 9,
+    "id": "orbit",
+    "title": "Orbit prompts embedded in essays",
+    "needs": [
+     "orbit"
+    ],
+    "local": false
+   },
+   {
+    "rank": 10,
+    "id": "remnote",
+    "title": "RemNote",
+    "needs": [
+     "remnote"
+    ],
+    "local": false
+   },
+   {
+    "rank": 11,
+    "id": "typst-cards",
+    "title": "Printable Typst cards",
+    "needs": [
+     "typst"
+    ],
+    "local": true
+   },
+   {
+    "rank": 12,
+    "id": "quizlet",
+    "title": "Quizlet or Brainscape",
+    "needs": [
+     "quizlet"
+    ],
+    "local": false
+   },
+   {
+    "rank": 13,
+    "id": "supermemo",
+    "title": "SuperMemo",
+    "needs": [
+     "supermemo"
+    ],
+    "local": true
+   }
+  ],
+  "video": [
+   {
+    "rank": 1,
+    "id": "hyperframes-kokoro",
+    "title": "HyperFrames 0.8.169: HTML + GSAP + SVG, Kokoro narration, trace-driven",
+    "needs": [
+     "hyperframes",
+     "hyperframes-chrome",
+     "kokoro",
+     "kokoro-model",
+     "ffmpeg"
+    ],
+    "local": true,
+    "ptk_projector": "video"
+   },
+   {
+    "rank": 2,
+    "id": "manim-voiceover",
+    "title": "Manim CE 0.22 + manim-voiceover with a Kokoro service",
+    "needs": [
+     "manim",
+     "kokoro",
+     "ffmpeg"
+    ],
+    "local": true,
+    "note": "renderer-neutral interface target (D20.11); no LaTeX: Text and Code only"
+   },
+   {
+    "rank": 3,
+    "id": "vhs",
+    "title": "VHS terminal clips of real compiles and runs",
+    "needs": [
+     "vhs",
+     "ffmpeg"
+    ],
+    "local": true
+   },
+   {
+    "rank": 4,
+    "id": "remotion",
+    "title": "Remotion 4",
+    "needs": [
+     "node",
+     "remotion"
+    ],
+    "local": true,
+    "note": "source-available licence; free for individuals"
+   },
+   {
+    "rank": 5,
+    "id": "svg-frames-ffmpeg",
+    "title": "Frame sequence from code-computed SVG + ffmpeg",
+    "needs": [
+     "node",
+     "playwright",
+     "ffmpeg"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "lldb-recording",
+    "title": "Real LLDB session recording with overlays",
+    "needs": [
+     "lldb",
+     "ffmpeg"
+    ],
+    "local": true
+   },
+   {
+    "rank": 7,
+    "id": "code-morph",
+    "title": "Code-morph video: Code Hike or Shiki Magic Move",
+    "needs": [
+     "node",
+     "shiki-magic-move"
+    ],
+    "local": true
+   },
+   {
+    "rank": 8,
+    "id": "motion-canvas",
+    "title": "Motion Canvas or canvas-commons",
+    "needs": [
+     "node",
+     "@motion-canvas/core"
+    ],
+    "local": true
+   },
+   {
+    "rank": 9,
+    "id": "revideo",
+    "title": "Revideo",
+    "needs": [
+     "node",
+     "@revideo/core"
+    ],
+    "local": true
+   },
+   {
+    "rank": 10,
+    "id": "manimgl",
+    "title": "ManimGL",
+    "needs": [
+     "manimgl"
+    ],
+    "local": true
+   },
+   {
+    "rank": 11,
+    "id": "manim-web",
+    "title": "manim-web",
+    "needs": [
+     "node",
+     "manim-web"
+    ],
+    "local": true
+   },
+   {
+    "rank": 12,
+    "id": "slide-to-video",
+    "title": "Slide-to-video: hyperframes present with narration",
+    "needs": [
+     "hyperframes",
+     "ffmpeg"
+    ],
+    "local": true
+   },
+   {
+    "rank": 13,
+    "id": "keynote",
+    "title": "Keynote Magic Move exported by script",
+    "needs": [
+     "keynote"
+    ],
+    "local": true
+   },
+   {
+    "rank": 14,
+    "id": "blender",
+    "title": "Blender with Python",
+    "needs": [
+     "blender"
+    ],
+    "local": true
+   },
+   {
+    "rank": 15,
+    "id": "lottie-rive",
+    "title": "Lottie or Rive motion assets",
+    "needs": [
+     "lottie-creator"
+    ],
+    "local": false,
+    "note": "needs a human-authored asset"
+   },
+   {
+    "rank": 16,
+    "id": "ai-avatar",
+    "title": "AI avatars or generative video",
+    "needs": [
+     "ai-video"
+    ],
+    "local": false
+   }
+  ],
+  "ive": [
+   {
+    "rank": 1,
+    "id": "state-first-timeline",
+    "title": "State-first HTML timeline: the composition plays in the page and pauses into the live explorer",
+    "needs": [
+     "hyperframes",
+     "hyperframes-chrome",
+     "ffmpeg",
+     "playwright"
+    ],
+    "local": true
+   },
+   {
+    "rank": 2,
+    "id": "mp4-webvtt-cues",
+    "title": "MP4 + native video controls + WebVTT chapters and metadata cues that open the explorer",
+    "needs": [
+     "hyperframes",
+     "hyperframes-chrome",
+     "ffmpeg",
+     "playwright"
+    ],
+    "local": true,
+    "ptk_projector": "ive",
+    "note": "ptk ships this with native <video>; Vidstack or Media Chrome are optional skins"
+   },
+   {
+    "rank": 3,
+    "id": "event-replay",
+    "title": "Scrimba-style event replay into a live CodeMirror editor + audio",
+    "needs": [
+     "clang",
+     "node",
+     "@codemirror/view"
+    ],
+    "local": true
+   },
+   {
+    "rank": 4,
+    "id": "remotion-player",
+    "title": "Remotion Player swapping to a live component on pause",
+    "needs": [
+     "node",
+     "@remotion/player"
+    ],
+    "local": true
+   },
+   {
+    "rank": 5,
+    "id": "able-player",
+    "title": "Able Player for interactive transcript and description tracks",
+    "needs": [
+     "node",
+     "ableplayer"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "h5p",
+    "title": "H5P Interactive Video via h5p-standalone",
+    "needs": [
+     "node",
+     "h5p-standalone"
+    ],
+    "local": true
+   },
+   {
+    "rank": 7,
+    "id": "branching-video",
+    "title": "Branching misconception video: custom state graph",
+    "needs": [
+     "hyperframes",
+     "ffmpeg"
+    ],
+    "local": true
+   },
+   {
+    "rank": 8,
+    "id": "manim-slides",
+    "title": "manim-slides HTML export with pause points",
+    "needs": [
+     "manim-slides"
+    ],
+    "local": true
+   },
+   {
+    "rank": 9,
+    "id": "asciinema",
+    "title": "asciinema-player with markers for terminal sessions",
+    "needs": [
+     "node",
+     "asciinema-player"
+    ],
+    "local": true
+   },
+   {
+    "rank": 10,
+    "id": "hf-present",
+    "title": "hyperframes present deck with audience sync",
+    "needs": [
+     "hyperframes"
+    ],
+    "local": true
+   },
+   {
+    "rank": 11,
+    "id": "scrollama-timeline",
+    "title": "Scrollytelling timeline with Scrollama",
+    "needs": [
+     "node",
+     "scrollama"
+    ],
+    "local": true
+   },
+   {
+    "rank": 12,
+    "id": "videojs",
+    "title": "Video.js with chapter and quiz plugins",
+    "needs": [
+     "node",
+     "video.js"
+    ],
+    "local": true
+   },
+   {
+    "rank": 13,
+    "id": "motion-canvas-player",
+    "title": "Motion Canvas or canvas-commons player and presenter",
+    "needs": [
+     "node",
+     "@motion-canvas/player"
+    ],
+    "local": true
+   },
+   {
+    "rank": 14,
+    "id": "rive-video",
+    "title": "Rive state-machine video",
+    "needs": [
+     "rive-editor"
+    ],
+    "local": false
+   },
+   {
+    "rank": 15,
+    "id": "mux-youtube",
+    "title": "Mux Player or YouTube with chapters",
+    "needs": [
+     "mux"
+    ],
+    "local": false
+   }
+  ],
+  "tts": [
+   {
+    "rank": 1,
+    "id": "kokoro-onnx",
+    "title": "Kokoro-82M through kokoro-onnx in one process",
+    "needs": [
+     "kokoro",
+     "kokoro-model"
+    ],
+    "local": true,
+    "ptk_projector": "tts"
+   },
+   {
+    "rank": 2,
+    "id": "hyperframes-tts",
+    "title": "Kokoro-82M via hyperframes tts",
+    "needs": [
+     "hyperframes"
+    ],
+    "local": true,
+    "ptk_projector": "tts"
+   },
+   {
+    "rank": 3,
+    "id": "macos-say",
+    "title": "macOS say (status degraded)",
+    "needs": [
+     "say"
+    ],
+    "local": true,
+    "ptk_projector": "tts",
+    "note": "check say -v '?' first: a missing voice silently falls back"
+   },
+   {
+    "rank": 4,
+    "id": "mlx-audio",
+    "title": "Kokoro via mlx-audio on Metal",
+    "needs": [
+     "mlx-audio"
+    ],
+    "local": true
+   },
+   {
+    "rank": 5,
+    "id": "piper",
+    "title": "Piper 1.8 (GPL-3.0)",
+    "needs": [
+     "piper"
+    ],
+    "local": true
+   },
+   {
+    "rank": 6,
+    "id": "xtts",
+    "title": "XTTS-v2 via coqui-tts (non-commercial weights)",
+    "needs": [
+     "xtts"
+    ],
+    "local": true
+   },
+   {
+    "rank": 7,
+    "id": "f5-chatterbox",
+    "title": "F5-TTS or Chatterbox voice cloning",
+    "needs": [
+     "f5-tts"
+    ],
+    "local": true
+   },
+   {
+    "rank": 8,
+    "id": "own-voice",
+    "title": "Prax's own voice with forced alignment",
+    "needs": [
+     "whisper-cli",
+     "whisper-model"
+    ],
+    "local": true
+   },
+   {
+    "rank": 9,
+    "id": "elevenlabs",
+    "title": "ElevenLabs",
+    "needs": [
+     "elevenlabs"
+    ],
+    "local": false,
+    "note": "paid; needs explicit permission"
+   },
+   {
+    "rank": 10,
+    "id": "openai-tts",
+    "title": "OpenAI gpt-4o-mini-tts",
+    "needs": [
+     "openai-tts"
+    ],
+    "local": false,
+    "note": "paid; needs explicit permission"
+   }
+  ]
+ },
+ "install_hints": {
+  "clang": "xcode-select --install (needs Prax's OK)",
+  "gcc-16": "brew install gcc (needs Prax's OK)",
+  "node": "mise use -g node@lts",
+  "ffmpeg": "brew install ffmpeg (needs Prax's OK)",
+  "ffprobe": "brew install ffmpeg (needs Prax's OK)",
+  "whisper-cli": "brew install whisper-cpp (needs Prax's OK)",
+  "tesseract": "brew install tesseract (needs Prax's OK)",
+  "python3": "mise use -g python@3.13"
+ },
+ "hyperframes_chrome": {
+  "version": "152.0.7977.30",
+  "dir": "mac_arm-152.0.7977.30",
+  "binary": "chrome-headless-shell-mac-arm64/chrome-headless-shell"
+ },
+ "downloads": [
+  {
+   "id": "core-venv",
+   "kind": "venv",
+   "venv": "core",
+   "python": "python3.13",
+   "requirements": [
+    "registry/requirements-core.txt",
+    "registry/requirements-cards.txt",
+    "registry/requirements-state.txt"
+   ],
+   "url": "https://pypi.org/simple/",
+   "dest": "venvs/core",
+   "note": "jsonschema, fontTools, brotli, genanki 0.13.1, fsrs 6.3.1 (hash-pinned wheels, one pip run)"
+  },
+  {
+   "id": "kokoro-venv",
+   "kind": "venv",
+   "venv": "kokoro",
+   "python": "python3.13",
+   "requirements": "registry/requirements-kokoro.txt",
+   "post": "espeak_short_path",
+   "url": "https://pypi.org/simple/",
+   "dest": "venvs/kokoro",
+   "note": "kokoro-onnx 0.6.1 + soundfile (hash-pinned wheels); espeak data moved to a short path"
+  },
+  {
+   "id": "node-tools",
+   "kind": "npm",
+   "url": "https://registry.npmjs.org/",
+   "dest": "tools/node",
+   "note": "hyperframes 0.8.169 + playwright 1.63.0 from node/package-lock.json (npm ci)"
+  },
+  {
+   "id": "playwright-chromium",
+   "kind": "playwright",
+   "url": "https://cdn.playwright.dev/chrome-for-testing-public/153.0.8010.12/mac-arm64/chrome-headless-shell-mac-arm64.zip",
+   "dest": "browsers/chromium_headless_shell-1243",
+   "note": "Playwright 1.63.0 chromium headless shell, revision 1243"
+  },
+  {
+   "id": "hyperframes-chrome",
+   "kind": "hyperframes_chrome",
+   "url": "https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.30/mac-arm64/chrome-headless-shell-mac-arm64.zip",
+   "sha256": "ed7c5c6aff7cc4dd88ee7746c0df97f08a454180b62b7063fc961ba42e10b6a1",
+   "dest": "browsers/hyperframes/mac_arm-152.0.7977.30",
+   "note": "sha256 is of the chrome-headless-shell binary; copied from ~/.cache/hyperframes when identical, else `hyperframes browser ensure` with HOME=$PTK_STATE/home"
+  },
+  {
+   "id": "kokoro-model",
+   "kind": "file",
+   "url": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx",
+   "size": 325532387,
+   "sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5",
+   "dest": "models/kokoro/kokoro-v1.0.onnx",
+   "copy_from": [
+    "~/.cache/hyperframes/tts/models/kokoro-v1.0.onnx"
+   ]
+  },
+  {
+   "id": "kokoro-voices",
+   "kind": "file",
+   "url": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin",
+   "size": 28214398,
+   "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+   "dest": "models/kokoro/voices-v1.0.bin",
+   "copy_from": [
+    "~/.cache/hyperframes/tts/voices/voices-v1.0.bin"
+   ]
+  },
+  {
+   "id": "whisper-base-en",
+   "kind": "file",
+   "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin",
+   "size": 147964211,
+   "sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002",
+   "dest": "models/whisper/ggml-base.en.bin"
+  },
+  {
+   "id": "font-source-serif-4-roman",
+   "kind": "font",
+   "dest_root": "fonts",
+   "dest": "SourceSerif4-Roman.woff2",
+   "url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/VAR/SourceSerif4Variable-Roman.ttf",
+   "size": 1204208,
+   "sha256": "14d360ee1b76655da9276628b229e11671bc1f5d1083636144db6677d452cf55",
+   "license_url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/LICENSE.md",
+   "license_dest": "LICENSE-SourceSerif4.md",
+   "license_sha256": "75784a295293a8992f5a8d99210566e0064a012e6dab6731305e3787f15896c7"
+  },
+  {
+   "id": "font-source-serif-4-italic",
+   "kind": "font",
+   "dest_root": "fonts",
+   "dest": "SourceSerif4-Italic.woff2",
+   "url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/VAR/SourceSerif4Variable-Italic.ttf",
+   "size": 850036,
+   "sha256": "6a059a64838978d54e8fab71ed86b0d82e948c0e12b2664d0c15166326dcff82",
+   "license_url": "https://raw.githubusercontent.com/adobe-fonts/source-serif/4.005R/LICENSE.md",
+   "license_dest": "LICENSE-SourceSerif4.md",
+   "license_sha256": "75784a295293a8992f5a8d99210566e0064a012e6dab6731305e3787f15896c7"
+  },
+  {
+   "id": "font-jetbrains-mono",
+   "kind": "font",
+   "dest_root": "fonts",
+   "dest": "JetBrainsMono.woff2",
+   "url": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/fonts/variable/JetBrainsMono%5Bwght%5D.ttf",
+   "size": 303144,
+   "sha256": "662a196d58f1183bf2d77428b6d5283fe3f45161ab021bea4036bc98e5cac016",
+   "license_url": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/v2.304/OFL.txt",
+   "license_dest": "LICENSE-JetBrainsMono.txt",
+   "license_sha256": "30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad"
+  },
+  {
+   "id": "font-caveat",
+   "kind": "font",
+   "dest_root": "fonts",
+   "dest": "Caveat.woff2",
+   "url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/caveat/Caveat%5Bwght%5D.ttf",
+   "size": 403648,
+   "sha256": "0bdb6b660482d31531b3945849fba5916b3ef8695da7024a9e6b9ee3c4157988",
+   "license_url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/caveat/OFL.txt",
+   "license_dest": "LICENSE-Caveat.txt",
+   "license_sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"
+  },
+  {
+   "id": "font-nunito-sans",
+   "kind": "font",
+   "dest_root": "fonts",
+   "dest": "NunitoSans.woff2",
+   "url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/nunitosans/NunitoSans%5BYTLC,opsz,wdth,wght%5D.ttf",
+   "size": 571240,
+   "sha256": "f934d7142fb4784bf828da485b7dcbd90c0c80d514e9d49a5da0ed3a1ae2491d",
+   "license_url": "https://raw.githubusercontent.com/google/fonts/5571d84c0d8c70ec1af4f64072d8c5cf1e4e9643/ofl/nunitosans/OFL.txt",
+   "license_dest": "LICENSE-NunitoSans.txt",
+   "license_sha256": "efbb0c9e864cef973982d9a17567e6be5c3d1759695574586f3f18c7ecca064b",
+   "note": "Dark-theme display and body sans (D20.1). Instanced wdth=100 opsz=12 YTLC=500, wght 300-900 kept, Latin subset (references/STYLE.md)."
+  }
+ ],
+ "fallback_order": {
+  "still": [
+   "code-svg",
+   "typst-cetz",
+   "graphviz",
+   "kroki-docker",
+   "bytefield",
+   "manim-frame",
+   "tikz",
+   "penrose",
+   "d2",
+   "plot-vega",
+   "matplotlib",
+   "bluefish",
+   "mermaid",
+   "excalidraw-json",
+   "asymptote",
+   "ai-image"
+  ],
+  "explorer": [
+   "trace-stepper",
+   "compile-server",
+   "marimo-wasm",
+   "svelte-sim",
+   "compiler-explorer",
+   "python-tutor",
+   "clang-wasm",
+   "d3",
+   "cytoscape",
+   "pyodide",
+   "jsxgraph",
+   "container2wasm",
+   "tldraw-canvas",
+   "desmos",
+   "rive-sm"
+  ],
+  "qa": [
+   "predict-gated-html",
+   "annotated-code",
+   "obsidian-callouts",
+   "socratic-chat",
+   "quarto",
+   "inkjs",
+   "distill",
+   "marimo-layers",
+   "reveal-deck",
+   "self-explanation",
+   "scrollama",
+   "typst-handout",
+   "idyll"
+  ],
+  "cards": [
+   "genanki-anki",
+   "model-occlusion",
+   "ts-fsrs-cards",
+   "anki-occlusion",
+   "hashcards",
+   "obsidian-sr",
+   "ankiconnect",
+   "mochi",
+   "orbit",
+   "remnote",
+   "typst-cards",
+   "quizlet",
+   "supermemo"
+  ],
+  "video": [
+   "hyperframes-kokoro",
+   "manim-voiceover",
+   "vhs",
+   "remotion",
+   "svg-frames-ffmpeg",
+   "lldb-recording",
+   "code-morph",
+   "motion-canvas",
+   "revideo",
+   "manimgl",
+   "manim-web",
+   "slide-to-video",
+   "keynote",
+   "blender",
+   "lottie-rive",
+   "ai-avatar"
+  ],
+  "ive": [
+   "state-first-timeline",
+   "mp4-webvtt-cues",
+   "event-replay",
+   "remotion-player",
+   "able-player",
+   "h5p",
+   "branching-video",
+   "manim-slides",
+   "asciinema",
+   "hf-present",
+   "scrollama-timeline",
+   "videojs",
+   "motion-canvas-player",
+   "rive-video",
+   "mux-youtube"
+  ],
+  "tts": [
+   "kokoro-onnx",
+   "hyperframes-tts",
+   "macos-say",
+   "mlx-audio",
+   "piper",
+   "xtts",
+   "f5-chatterbox",
+   "own-voice",
+   "elevenlabs",
+   "openai-tts"
+  ]
+ },
+ "catalog": [
+  {
+   "id": "svg",
+   "name": "SVG",
+   "kind": "format",
+   "routes": [
+    "structure",
+    "appearance",
+    "spatial"
+   ],
+   "disposition": "route",
+   "docs": "https://www.w3.org/TR/SVG2/",
+   "probe": "ptk",
+   "corrections": [
+    "the default still route is ptk's code-computed SVG, which render_markdown now inlines (v2 rejected inline <svg>)"
+   ]
+  },
+  {
+   "id": "mermaid",
+   "name": "Mermaid",
+   "kind": "renderer",
+   "routes": [
+    "structure",
+    "sequence",
+    "architecture"
+   ],
+   "disposition": "route",
+   "docs": "https://mermaid.js.org/",
+   "probe": "mmdc",
+   "corrections": [
+    "a mermaid fence without a pinned build step is rejected, never shipped as literal text"
+   ]
+  },
+  {
+   "id": "d2",
+   "name": "D2",
+   "kind": "renderer",
+   "routes": [
+    "structure",
+    "architecture"
+   ],
+   "disposition": "route",
+   "docs": "https://d2lang.com/",
+   "probe": "d2",
+   "corrections": [
+    "install from a pinned release, not curl | sh or @latest"
+   ]
+  },
+  {
+   "id": "graphviz",
+   "name": "Graphviz",
+   "kind": "renderer",
+   "routes": [
+    "structure",
+    "dependency",
+    "network",
+    "hierarchy"
+   ],
+   "disposition": "route",
+   "docs": "https://graphviz.org/documentation/",
+   "probe": "dot"
+  },
+  {
+   "id": "drawio",
+   "name": "draw.io",
+   "kind": "editor",
+   "routes": [
+    "structure",
+    "architecture",
+    "editable-handoff"
+   ],
+   "disposition": "handoff-only",
+   "docs": "https://www.drawio.com/doc/",
+   "corrections": [
+    "the remote MCP is network egress at teach time: handoff format only"
+   ]
+  },
+  {
+   "id": "vega-lite",
+   "name": "Vega-Lite",
+   "kind": "library",
+   "routes": [
+    "quantity"
+   ],
+   "disposition": "route",
+   "docs": "https://vega.github.io/vega-lite/docs/",
+   "probe": "vega-lite"
+  },
+  {
+   "id": "observable-plot",
+   "name": "Observable Plot",
+   "kind": "library",
+   "routes": [
+    "quantity",
+    "interaction"
+   ],
+   "disposition": "route",
+   "docs": "https://observablehq.com/plot/",
+   "probe": "vega-lite",
+   "corrections": [
+    "shares the Vega-Lite probe slot in the still ranking; vendored, never from a CDN"
+   ]
+  },
+  {
+   "id": "echarts",
+   "name": "Apache ECharts",
+   "kind": "library",
+   "routes": [
+    "quantity",
+    "interaction"
+   ],
+   "disposition": "route",
+   "docs": "https://echarts.apache.org/en/index.html",
+   "corrections": [
+    "not vendored: probe reports not runnable until installed under $PTK_STATE/tools/node"
+   ]
+  },
+  {
+   "id": "matplotlib",
+   "name": "Matplotlib",
+   "kind": "library",
+   "routes": [
+    "quantity"
+   ],
+   "disposition": "route",
+   "docs": "https://matplotlib.org/stable/",
+   "probe": "matplotlib"
+  },
+  {
+   "id": "plotly",
+   "name": "Plotly",
+   "kind": "library",
+   "routes": [
+    "quantity",
+    "interaction"
+   ],
+   "disposition": "route",
+   "docs": "https://plotly.com/python/",
+   "corrections": [
+    "standalone HTML must inline plotly.js; the CDN default breaks the no-network rule"
+   ]
+  },
+  {
+   "id": "altair",
+   "name": "Vega-Altair",
+   "kind": "library",
+   "routes": [
+    "quantity"
+   ],
+   "disposition": "route",
+   "docs": "https://altair-viz.github.io/"
+  },
+  {
+   "id": "ggplot2",
+   "name": "ggplot2",
+   "kind": "library",
+   "routes": [
+    "quantity"
+   ],
+   "disposition": "do-not-route",
+   "docs": "https://ggplot2.tidyverse.org/",
+   "corrections": [
+    "R is not installed and is outside the C/DSA scope"
+   ]
+  },
+  {
+   "id": "excalidraw",
+   "name": "Excalidraw",
+   "kind": "editor",
+   "routes": [
+    "structure",
+    "ideation",
+    "editable-handoff"
+   ],
+   "disposition": "route",
+   "docs": "https://docs.excalidraw.com/",
+   "probe": "@excalidraw/utils"
+  },
+  {
+   "id": "kroki",
+   "name": "Kroki",
+   "kind": "renderer-gateway",
+   "routes": [
+    "renderer",
+    "structure"
+   ],
+   "disposition": "route",
+   "docs": "https://docs.kroki.io/",
+   "probe": "docker",
+   "corrections": [
+    "local container only; pin the image digest during setup (kroki.io is a remote service)"
+   ]
+  },
+  {
+   "id": "plantuml",
+   "name": "PlantUML",
+   "kind": "renderer",
+   "routes": [
+    "structure",
+    "sequence",
+    "architecture"
+   ],
+   "disposition": "route",
+   "docs": "https://plantuml.com/",
+   "probe": "docker"
+  },
+  {
+   "id": "structurizr",
+   "name": "Structurizr",
+   "kind": "renderer",
+   "routes": [
+    "architecture",
+    "structure"
+   ],
+   "disposition": "do-not-route",
+   "docs": "https://docs.structurizr.com/",
+   "corrections": [
+    "architecture modelling is outside the C/DSA scope"
+   ]
+  },
+  {
+   "id": "penrose",
+   "name": "Penrose",
+   "kind": "renderer",
+   "routes": [
+    "spatial",
+    "structure",
+    "mathematics"
+   ],
+   "disposition": "route",
+   "docs": "https://penrose.cs.cmu.edu/docs/",
+   "probe": "@penrose/core"
+  },
+  {
+   "id": "html",
+   "name": "HTML",
+   "kind": "format",
+   "routes": [
+    "structure",
+    "interaction"
+   ],
+   "disposition": "format",
+   "docs": "https://html.spec.whatwg.org/",
+   "probe": "ptk",
+   "corrections": [
+    "a format, not a tool: it no longer counts toward any tool ranking"
+   ]
+  },
+  {
+   "id": "css",
+   "name": "CSS",
+   "kind": "format",
+   "routes": [
+    "appearance"
+   ],
+   "disposition": "format",
+   "docs": "https://www.w3.org/TR/CSS/",
+   "probe": "ptk",
+   "corrections": [
+    "a format, not a tool"
+   ]
+  },
+  {
+   "id": "javascript",
+   "name": "JavaScript",
+   "kind": "format",
+   "routes": [
+    "interaction"
+   ],
+   "disposition": "format",
+   "docs": "https://tc39.es/ecma262/",
+   "probe": "ptk",
+   "corrections": [
+    "a format, not a tool"
+   ]
+  },
+  {
+   "id": "canvas-2d",
+   "name": "Canvas 2D",
+   "kind": "format",
+   "routes": [
+    "interaction",
+    "quantity",
+    "spatial"
+   ],
+   "disposition": "format",
+   "docs": "https://html.spec.whatwg.org/multipage/canvas.html",
+   "probe": "ptk",
+   "corrections": [
+    "a format, not a tool"
+   ]
+  },
+  {
+   "id": "webgl",
+   "name": "WebGL",
+   "kind": "format",
+   "routes": [
+    "interaction",
+    "spatial"
+   ],
+   "disposition": "format",
+   "docs": "https://registry.khronos.org/webgl/specs/latest/",
+   "corrections": [
+    "a format; no lesson in scope needs GPU rendering"
+   ]
+  },
+  {
+   "id": "react-flow",
+   "name": "React Flow",
+   "kind": "library",
+   "routes": [
+    "interaction",
+    "structure"
+   ],
+   "disposition": "route",
+   "docs": "https://reactflow.dev/learn"
+  },
+  {
+   "id": "threejs",
+   "name": "three.js",
+   "kind": "library",
+   "routes": [
+    "interaction",
+    "spatial"
+   ],
+   "disposition": "do-not-route",
+   "docs": "https://threejs.org/docs/",
+   "corrections": [
+    "3D is outside the C/DSA scope"
+   ]
+  },
+  {
+   "id": "d3",
+   "name": "D3",
+   "kind": "library",
+   "routes": [
+    "quantity",
+    "interaction"
+   ],
+   "disposition": "route",
+   "docs": "https://d3js.org/",
+   "probe": "d3"
+  },
+  {
+   "id": "cytoscapejs",
+   "name": "Cytoscape.js",
+   "kind": "library",
+   "routes": [
+    "interaction",
+    "network",
+    "structure"
+   ],
+   "disposition": "route",
+   "docs": "https://js.cytoscape.org/",
+   "probe": "cytoscape"
+  },
+  {
+   "id": "sigmajs",
+   "name": "Sigma.js",
+   "kind": "library",
+   "routes": [
+    "interaction",
+    "network"
+   ],
+   "disposition": "do-not-route",
+   "docs": "https://www.sigmajs.org/docs/",
+   "corrections": [
+    "large-network rendering is outside lesson scale"
+   ]
+  },
+  {
+   "id": "deckgl",
+   "name": "deck.gl",
+   "kind": "library",
+   "routes": [
+    "spatial",
+    "interaction",
+    "quantity"
+   ],
+   "disposition": "do-not-route",
+   "docs": "https://deck.gl/docs",
+   "corrections": [
+    "geospatial; outside the C/DSA scope"
+   ]
+  },
+  {
+   "id": "rive",
+   "name": "Rive",
+   "kind": "runtime",
+   "routes": [
+    "interaction",
+    "change-over-time"
+   ],
+   "disposition": "requires-human-authored-asset",
+   "docs": "https://rive.app/docs/",
+   "probe": "rive-editor",
+   "corrections": [
+    "no CLI: a .riv must be built in the Rive editor",
+    "needs 'wasm-unsafe-eval' in the page CSP"
+   ]
+  },
+  {
+   "id": "dotlottie",
+   "name": "dotLottie",
+   "kind": "runtime",
+   "routes": [
+    "interaction",
+    "change-over-time"
+   ],
+   "disposition": "requires-human-authored-asset",
+   "docs": "https://developers.lottiefiles.com/docs/dotlottie-player/",
+   "probe": "lottie-creator",
+   "corrections": [
+    "'verified' dropped: neither integration is installed",
+    "the Lottie Creator MCP is remote egress",
+    "needs WASM in the page CSP"
+   ]
+  },
+  {
+   "id": "manim",
+   "name": "Manim Community",
+   "kind": "renderer",
+   "routes": [
+    "change-over-time",
+    "mathematics"
+   ],
+   "disposition": "route",
+   "docs": "https://docs.manim.community/en/stable/",
+   "probe": "manim",
+   "version": "0.22.0",
+   "corrections": [
+    "pin 0.22.0 (the host version), not 0.21.0",
+    "no LaTeX on this Mac: MathTex/Tex fail, use Text and Code or install Tectonic with Prax's OK",
+    "probe runs manim --version, not a Python import from the system interpreter"
+   ]
+  },
+  {
+   "id": "motion-canvas",
+   "name": "Motion Canvas",
+   "kind": "renderer",
+   "routes": [
+    "change-over-time"
+   ],
+   "disposition": "alternative",
+   "docs": "https://motioncanvas.io/docs/",
+   "probe": "@motion-canvas/core",
+   "corrections": [
+    "v2 said do-not-route while report 05 ranks it video #8: now a ranked alternative, upstream stale, canvas-commons fork noted"
+   ]
+  },
+  {
+   "id": "remotion",
+   "name": "Remotion",
+   "kind": "renderer",
+   "routes": [
+    "change-over-time"
+   ],
+   "disposition": "alternative",
+   "docs": "https://www.remotion.dev/docs/",
+   "probe": "remotion",
+   "corrections": [
+    "v2 said do-not-route while report 05 ranks it video #4: now a ranked alternative with the licence note",
+    "never npx create-video@latest at teach time"
+   ]
+  },
+  {
+   "id": "hyperframes",
+   "name": "HyperFrames",
+   "kind": "renderer",
+   "routes": [
+    "change-over-time"
+   ],
+   "disposition": "route",
+   "docs": "https://hyperframes.heygen.com/",
+   "probe": "hyperframes",
+   "version": "0.8.169",
+   "corrections": [
+    "pinned 0.8.169 from node/package-lock.json under $PTK_STATE; never the global CLI or npx latest",
+    "tts and transcribe listed (v2 omitted the narration commands)",
+    "GSAP is vendored; no CDN",
+    "Docker render fallback only when Docker is running",
+    "HYPERFRAMES_SKIP_SKILLS/NO_UPDATE_CHECK/telemetry off in every child (spec 5.5)",
+    "never publish, cloud, lambda or auth without consent"
+   ],
+   "subcommands": {
+    "render": "render the composition to MP4",
+    "tts": "Kokoro-82M narration (fallback TTS route)",
+    "transcribe": "whisper.cpp or Parakeet word timestamps",
+    "lint": "composition lint",
+    "check": "mandatory checks",
+    "present": "progressive-reveal deck",
+    "browser": "pinned Chrome (setup only)",
+    "doctor": "environment report"
+   }
+  },
+  {
+   "id": "openai-image-generation",
+   "name": "OpenAI image generation",
+   "kind": "service",
+   "routes": [
+    "appearance"
+   ],
+   "disposition": "cloud-needs-consent",
+   "docs": "https://platform.openai.com/docs/guides/images",
+   "probe": "cloud-image-gen",
+   "corrections": [
+    "cloud and paid: off unless Prax approves; never for labels, charts or topology"
+   ]
+  },
+  {
+   "id": "wikimedia-commons",
+   "name": "Wikimedia Commons",
+   "kind": "asset-source",
+   "routes": [
+    "appearance"
+   ],
+   "disposition": "cloud-needs-consent",
+   "docs": "https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia",
+   "corrections": [
+    "fetching is network at teach time: only with consent, licence recorded"
+   ]
+  },
+  {
+   "id": "unsplash",
+   "name": "Unsplash",
+   "kind": "asset-source",
+   "routes": [
+    "appearance"
+   ],
+   "disposition": "cloud-needs-consent",
+   "docs": "https://unsplash.com/documentation",
+   "corrections": [
+    "network and an API key: only with consent"
+   ]
+  },
+  {
+   "id": "ffmpeg",
+   "name": "FFmpeg",
+   "kind": "backend",
+   "routes": [
+    "production-backend"
+   ],
+   "disposition": "backend",
+   "docs": "https://ffmpeg.org/documentation.html",
+   "probe": "ffmpeg",
+   "corrections": [
+    "a production backend: never ranked as a visualization route (v2 ranked it first for change-over-time)",
+    "pass criteria live in the media gate (loudness, sync, streams), not in this entry"
+   ]
+  }
+ ],
+ "probe_kinds": {
+  "binary": "shutil.which(binary or name)",
+  "state": "a path under $PTK_STATE exists",
+  "sandbox": "sandbox-exec is usable",
+  "app": "a macOS app bundle exists",
+  "python-module": "importable in the named $PTK_STATE venv",
+  "node-module": "installed under $PTK_STATE/tools/node/node_modules",
+  "builtin": "always runnable (ships in the package)",
+  "cloud": "never runnable without Prax's permission",
+  "unsupported-platform": "never runnable on this OS"
+ }
+}

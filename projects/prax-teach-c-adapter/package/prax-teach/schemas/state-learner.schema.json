@@ -1,0 +1,276 @@
+{
+ "$id": "https://prax.local/prax-teach-v2.1/schemas/state-learner.schema.json",
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "additionalProperties": false,
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "schema_version": {
+      "const": "1"
+     }
+    }
+   },
+   "then": {
+    "not": {
+     "required": [
+      "migration"
+     ]
+    },
+    "properties": {
+     "consent": {
+      "not": {
+       "required": [
+        "navigation_granted_at"
+       ]
+      },
+      "properties": {
+       "scope": {
+        "items": {
+         "enum": [
+          "goal",
+          "practice_evidence",
+          "reviews"
+         ]
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "properties": {
+    "consent": {
+     "else": {
+      "not": {
+       "required": [
+        "navigation_granted_at"
+       ]
+      }
+     },
+     "if": {
+      "properties": {
+       "scope": {
+        "contains": {
+         "const": "navigation"
+        }
+       }
+      },
+      "required": [
+       "scope"
+      ]
+     },
+     "then": {
+      "required": [
+       "navigation_granted_at"
+      ]
+     }
+    }
+   }
+  }
+ ],
+ "properties": {
+  "consent": {
+   "additionalProperties": false,
+   "allOf": [
+    {
+     "else": {
+      "not": {
+       "anyOf": [
+        {
+         "required": [
+          "disabled_at"
+         ]
+        },
+        {
+         "required": [
+          "disable_reason"
+         ]
+        }
+       ]
+      }
+     },
+     "if": {
+      "properties": {
+       "persistent_state": {
+        "const": false
+       }
+      },
+      "required": [
+       "persistent_state"
+      ]
+     },
+     "then": {
+      "required": [
+       "disabled_at",
+       "disable_reason"
+      ]
+     }
+    }
+   ],
+   "properties": {
+    "controls": {
+     "items": {
+      "enum": [
+       "inspect",
+       "correct",
+       "export",
+       "delete"
+      ]
+     },
+     "minItems": 4,
+     "type": "array",
+     "uniqueItems": true
+    },
+    "disable_reason": {
+     "maxLength": 1000,
+     "minLength": 1,
+     "type": "string"
+    },
+    "disabled_at": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "granted_at": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "location": {
+     "minLength": 1,
+     "type": "string"
+    },
+    "navigation_granted_at": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "persistent_state": {
+     "type": "boolean"
+    },
+    "purpose": {
+     "minLength": 1,
+     "type": "string"
+    },
+    "scope": {
+     "items": {
+      "enum": [
+       "goal",
+       "practice_evidence",
+       "reviews",
+       "navigation"
+      ]
+     },
+     "maxItems": 4,
+     "minItems": 3,
+     "type": "array",
+     "uniqueItems": true
+    },
+    "synced_location": {
+     "additionalProperties": false,
+     "description": "WP11 (D23.1): the learner's explicit opt-in to learner state in a folder Google Drive for desktop backs up, with the notice shown. Schema 2 only.",
+     "properties": {
+      "acknowledged_notice": {
+       "maxLength": 4000,
+       "minLength": 1,
+       "pattern": "Google Drive",
+       "type": "string"
+      },
+      "root": {
+       "maxLength": 4096,
+       "minLength": 1,
+       "type": "string"
+      },
+      "service": {
+       "const": "Google Drive for desktop"
+      }
+     },
+     "required": [
+      "acknowledged_notice",
+      "root",
+      "service"
+     ],
+     "type": "object"
+    }
+   },
+   "required": [
+    "controls",
+    "granted_at",
+    "location",
+    "persistent_state",
+    "purpose",
+    "scope"
+   ],
+   "type": "object"
+  },
+  "goal": {
+   "additionalProperties": false,
+   "properties": {
+    "retention_horizon_days": {
+     "maximum": 3650,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "statement": {
+     "minLength": 1,
+     "type": "string"
+    },
+    "target_performance": {
+     "minLength": 1,
+     "type": "string"
+    }
+   },
+   "required": [
+    "retention_horizon_days",
+    "statement",
+    "target_performance"
+   ],
+   "type": "object"
+  },
+  "learner_id": {
+   "maxLength": 128,
+   "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+   "type": "string"
+  },
+  "migration": {
+   "additionalProperties": false,
+   "properties": {
+    "from": {
+     "const": "1"
+    },
+    "migrated_at": {
+     "format": "date-time",
+     "type": "string"
+    },
+    "snapshot_sha256": {
+     "pattern": "^[0-9a-f]{64}$",
+     "type": "string"
+    },
+    "v1_event_count": {
+     "minimum": 0,
+     "type": "integer"
+    }
+   },
+   "required": [
+    "from",
+    "migrated_at",
+    "snapshot_sha256",
+    "v1_event_count"
+   ],
+   "type": "object"
+  },
+  "schema_version": {
+   "enum": [
+    "1",
+    "2"
+   ]
+  }
+ },
+ "required": [
+  "consent",
+  "goal",
+  "learner_id",
+  "schema_version"
+ ],
+ "title": "Prax Teach learner consent and goal: schema 1 (v2) or schema 2 (v2.1)",
+ "type": "object"
+}

@@ -1,0 +1,13 @@
+/* Rereview P2-A fixture: tries to #embed a file outside the program's dirs and print it.
+ * The test replaces @SECRET@ with an absolute path. Nothing is silenced: the source guard refuses
+ * #embed in capture, so the sandbox test drives the compile step directly. */
+#include <stdio.h>
+
+static const unsigned char data[] = {
+#embed "@SECRET@"
+    , 0};
+
+int main(void) {
+    fputs((const char *)data, stdout);
+    return 0;
+}

@@ -1,0 +1,26 @@
+{
+  "consent": {
+    "controls": [
+      "inspect",
+      "correct",
+      "export",
+      "delete"
+    ],
+    "granted_at": "2026-08-04T10:00:00.000000Z",
+    "location": "@WORKSPACE@",
+    "persistent_state": true,
+    "purpose": "Adapt future teaching from the approved goal, practice evidence, and reviews.",
+    "scope": [
+      "goal",
+      "practice_evidence",
+      "reviews"
+    ]
+  },
+  "goal": {
+    "retention_horizon_days": 60,
+    "statement": "Trace switch fall-through in C",
+    "target_performance": "Trace switch fall-through in C"
+  },
+  "learner_id": "learner-fixture-1",
+  "schema_version": "1"
+}

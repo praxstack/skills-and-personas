@@ -1,0 +1,9 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §6.3.1.3 ¶2
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §6.3.1.3 ¶2
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 3088-3090 of that text
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage.
+---
+2   Otherwise, if the new type is unsigned, the value is converted by repeatedly adding or subtracting
+    one more than the maximum value that can be represented in the new type until the value is in the
+    range of the new type.61)

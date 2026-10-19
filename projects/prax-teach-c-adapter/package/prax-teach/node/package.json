@@ -1,0 +1,21 @@
+{
+  "name": "prax-teach-node",
+  "private": true,
+  "version": "2.1.0",
+  "type": "module",
+  "description": "Pinned Node tools for ptk: Playwright (screenshots, visual gate), HyperFrames (video render), MathJax (tex2svg), and marked + sanitize-html + entities (render_markdown.mjs). Installed by `ptk host setup` into $PTK_STATE/tools/node.",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "entities": "8.0.0",
+    "hyperframes": "0.8.169",
+    "marked": "18.0.7",
+    "mathjax-full": "3.2.2",
+    "playwright": "1.63.0",
+    "sanitize-html": "2.18.1"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "0.9.12"
+  }
+}

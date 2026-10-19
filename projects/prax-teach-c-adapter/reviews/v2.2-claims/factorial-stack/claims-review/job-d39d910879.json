@@ -1,0 +1,431 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-d39d910879",
+ "manifest_sha256": "d39d910879978a73897c13c0a3cf19d622f7bcc0c03f4e1b088a5024c8277164",
+ "rubric_version": "4",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent (Opus 5.5)"
+ },
+ "claims": [
+  {
+   "id": "c.setup",
+   "verdict": "reject",
+   "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but main calls factorial(1), factorial(2), factorial(4) and factorial(5) in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c, not factorial(3). Needs 'In factorial.c'.",
+   "evidence": [
+    "fact f.n1.out",
+    "fact f.n4.out"
+   ]
+  },
+  {
+   "id": "c.frame",
+   "verdict": "accept",
+   "reason": "6.2.4p6 says a recursively entered block gets a new instance of each automatic object, which backs separate n and r per call; the frame picture is marked as the lesson's drawing and the justification says C names no stack.",
+   "evidence": [
+    "passage sources/n2310-6.2.4p6.txt",
+    "passage sources/n2310-6.5.2.2p11.txt"
+   ]
+  },
+  {
+   "id": "c.waits",
+   "verdict": "accept",
+   "reason": "True wherever factorial(3) runs: the multiplication in line 7 needs the value of the call, which 6.8.6.4p3 says is the callee's return value, and 6.2.4p6 keeps factorial(3)'s objects alive meanwhile. Facts f.call3 and f.call2 match.",
+   "evidence": [
+    "passage sources/n2310-6.8.6.4p3.txt",
+    "passage sources/n2310-6.2.4p6.txt",
+    "fact f.call3",
+    "fact f.call2"
+   ]
+  },
+  {
+   "id": "c.depth",
+   "verdict": "reject",
+   "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but in fact_n4.c and fact_n5.c, when factorial(2) calls factorial(1) there are four and five factorial frames on main, not three (f.n4.out, f.n5.out). The 'so' also gives the wrong cause: the count comes from where the chain started.",
+   "evidence": [
+    "fact f.n4.out",
+    "fact f.n5.out",
+    "fact f.call1"
+   ]
+  },
+  {
+   "id": "c.base",
+   "verdict": "reject",
+   "reason": "Lens 1 and 2: false. Line 6 tests n > 1, not n > 2, and line 5 initialises r to 1, not 2. The base case is factorial(1), which skips line 7 and returns 1 (fact f.ret1 = 1, stdout line 4 is factorial(1) = 1, not factorial(2) = 2). The justification repeats the same false steps.",
+   "evidence": [
+    "fact f.ret1",
+    "fact f.l4"
+   ]
+  },
+  {
+   "id": "c.unwind",
+   "verdict": "accept",
+   "reason": "6.8.6.4p3 says the return value goes to the caller as the value of the call; factorial(2) computes 2 * 1 = 2 in every program that runs it (fact f.ret2). 'One frame down' is the lesson's frame drawing set up in c.frame.",
+   "evidence": [
+    "passage sources/n2310-6.8.6.4p3.txt",
+    "fact f.ret2"
+   ]
+  },
+  {
+   "id": "c.ret3",
+   "verdict": "reject",
+   "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but in fact_n4.c and fact_n5.c factorial(3) returns 6 to factorial(4), not to main. The value 3 x 2 = 6 is right; the 'to main' part needs 'In factorial.c'.",
+   "evidence": [
+    "fact f.ret3",
+    "fact f.n4.out"
+   ]
+  },
+  {
+   "id": "c.main",
+   "verdict": "reject",
+   "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but main stores 1, 2, 24 and 120 in fact_n1.c, fact_n2.c, fact_n4.c and fact_n5.c and prints main got 1/2/24/120. Needs 'In factorial.c'.",
+   "evidence": [
+    "fact f.l7",
+    "fact f.n1.out",
+    "fact f.n4.out"
+   ]
+  },
+  {
+   "id": "c.order",
+   "verdict": "reject",
+   "reason": "Lens 2 / claim scope: the sentence names no program, so it must hold for every program in the job, but fact_n4.c starts 4, 3, 2, 1 and finishes 1, 2, 3, 4, and fact_n2.c starts 2, 1. The order is right for factorial.c only, which the sentence doesn't say.",
+   "evidence": [
+    "fact f.out",
+    "fact f.n4.out",
+    "fact f.n2.out"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing, no C assertion. In the storyboard the next scene, sc5, has state s3, whose output includes f.l4 (factorial(1) = 1), the answer to sc4's question. Its transcript rendering is judged separately under t.216.",
+   "evidence": [
+    "fact f.l4"
+   ]
+  },
+  {
+   "id": "c.recap",
+   "verdict": "accept",
+   "reason": "Scoped to the lesson's drawing. Each call creates new instances of n and r that live until it ends (6.2.4p6), and each return value goes to the caller (6.8.6.4p3), which the drawing puts below.",
+   "evidence": [
+    "passage sources/n2310-6.2.4p6.txt",
+    "passage sources/n2310-6.8.6.4p3.txt"
+   ]
+  },
+  {
+   "id": "c.slot",
+   "verdict": "accept",
+   "reason": "Framing that describes the lesson's own notation for factorial(3) waiting in line 7 on factorial(2); scoped to the drawing and makes no claim about C.",
+   "evidence": [
+    "fact f.call2"
+   ]
+  },
+  {
+   "id": "c.korder",
+   "verdict": "accept",
+   "reason": "Scoped to n = 1..5. The five captured runs show entries n down to 1, results 1 up to n, and main got 1, 2, 6, 24, 120, which are n!; the justification gives the mechanism (enter line, recursive call while n > 1, result line).",
+   "evidence": [
+    "fact f.n1.out",
+    "fact f.n2.out",
+    "fact f.out",
+    "fact f.n4.out",
+    "fact f.n5.out"
+   ]
+  },
+  {
+   "id": "c.kbase1",
+   "verdict": "accept",
+   "reason": "True in every program: with n = 1 the line 6 test n > 1 fails, line 7 is skipped, r keeps 1 from line 5 and line 9 returns it; fact_n1.c output matches.",
+   "evidence": [
+    "fact f.n1.out"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "Alt: matches c.frame, true for every call."
+  },
+  {
+   "id": "t.002",
+   "verdict": "reject",
+   "reason": "Alt, standalone on the still: same scope fault as c.order; unscoped and false for fact_n2.c and fact_n4.c."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Alt: matches c.frame, marked as the lesson's drawing."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Template rule card: repeats c.frame, which is true."
+  },
+  {
+   "id": "t.092",
+   "verdict": "reject",
+   "reason": "Misconception card: the belief must be false, but unscoped it is true for fact_n1.c, where the base case's 1 is exactly what main gets (f.n1.out: main got 1). Needs 'In factorial.c' or 'for factorial(3)'."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Misconception card: false in every program; results print 1 first (f.l4), and the card presents it as false."
+  },
+  {
+   "id": "t.094",
+   "verdict": "accept",
+   "reason": "Misconception card: false; factorial(3) multiplies 3 by 2 and returns 6 wherever it runs (f.ret3). Presented as false."
+  },
+  {
+   "id": "t.095",
+   "verdict": "reject",
+   "reason": "Misconception card m:m.zero: the belief is false, but the card's correction is c.base (t.096), which is false (n > 2, r stays 2) and says nothing about where the calls stop, so the card corrects with a wrong statement."
+  },
+  {
+   "id": "t.096",
+   "verdict": "reject",
+   "reason": "Class claim: false as in c.base. Line 6 tests n > 1 and r starts at 1; factorial(1) is the base case and returns 1 (f.ret1). Wrong on the m.zero card, explorer step 4 and Q&A."
+  },
+  {
+   "id": "t.097",
+   "verdict": "reject",
+   "reason": "Class claim, standalone: same scope fault as c.depth. In fact_n4.c and fact_n5.c there are four or five factorial frames when factorial(2) calls factorial(1). Explorer step 3."
+  },
+  {
+   "id": "t.098",
+   "verdict": "accept",
+   "reason": "Class claim: matches c.frame, true in every place listed."
+  },
+  {
+   "id": "t.099",
+   "verdict": "accept",
+   "reason": "Class claim: matches c.kbase1, true in every program."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "Class claim: matches c.korder; scoped to n = 1..5 and matches the captured runs."
+  },
+  {
+   "id": "t.101",
+   "verdict": "reject",
+   "reason": "Class claim, standalone: same scope fault as c.main. main gets 1, 2, 24 or 120 in the other programs. Explorer step 7."
+  },
+  {
+   "id": "t.102",
+   "verdict": "reject",
+   "reason": "Same scope fault as c.order: unscoped, and false for fact_n2.c and fact_n4.c (e.g. 4, 3, 2, 1). On the cards and still it is read alone."
+  },
+  {
+   "id": "t.103",
+   "verdict": "reject",
+   "reason": "Class claim, standalone: same scope fault as c.ret3. In fact_n4.c factorial(3) returns 6 to factorial(4), not main. Breaks on the m.once card, read alone."
+  },
+  {
+   "id": "t.104",
+   "verdict": "reject",
+   "reason": "Class claim, standalone: same scope fault as c.setup. In fact_n1/2/4/5.c main does not call factorial(3). Explorer step 1."
+  },
+  {
+   "id": "t.105",
+   "verdict": "accept",
+   "reason": "Class claim: matches c.slot, scoped to the lesson's drawing."
+  },
+  {
+   "id": "t.106",
+   "verdict": "accept",
+   "reason": "Class claim: matches c.unwind; true for every program, and a correct correction on the m.base card."
+  },
+  {
+   "id": "t.107",
+   "verdict": "accept",
+   "reason": "Class claim: matches c.waits; true wherever factorial(3) runs."
+  },
+  {
+   "id": "t.185",
+   "verdict": "accept",
+   "reason": "Chapter title: sc7 (s5) shows factorial(3) returning 6 to main."
+  },
+  {
+   "id": "t.186",
+   "verdict": "accept",
+   "reason": "Chapter title: sc6 (s4) shows factorial(2) getting 1 from the frame above and returning."
+  },
+  {
+   "id": "t.187",
+   "verdict": "accept",
+   "reason": "Chapter title: sc2 (s1) shows a new factorial frame for factorial(2); no overstatement."
+  },
+  {
+   "id": "t.188",
+   "verdict": "accept",
+   "reason": "Chapter title: sc9 is the recap."
+  },
+  {
+   "id": "t.189",
+   "verdict": "accept",
+   "reason": "Chapter title: sc5 (s3) shows factorial(1) returning 1."
+  },
+  {
+   "id": "t.190",
+   "verdict": "accept",
+   "reason": "Chapter title: names the question scene without giving away the answer."
+  },
+  {
+   "id": "t.191",
+   "verdict": "accept",
+   "reason": "Chapter title: sc3 (s2) shows three factorial frames above main."
+  },
+  {
+   "id": "t.192",
+   "verdict": "accept",
+   "reason": "Chapter title: sc1 (s0) shows main calling factorial(3)."
+  },
+  {
+   "id": "t.193",
+   "verdict": "accept",
+   "reason": "Chapter title: sc8 (s6) shows main printing main got 6."
+  },
+  {
+   "id": "t.207",
+   "verdict": "accept",
+   "reason": "Lesson title: the lesson traces factorial(3) with frames in its call-stack drawing; nothing overstated."
+  },
+  {
+   "id": "t.208",
+   "verdict": "reject",
+   "reason": "Misconception on the still: same fault as t.092; unscoped, the belief is true for fact_n1.c (main got 1 from the base case), so labelling it wrong is not true as worded."
+  },
+  {
+   "id": "t.209",
+   "verdict": "accept",
+   "reason": "Wrong belief in Q&A: false; factorial(1) prints its result first (f.l4), and it is shown as a wrong belief behind the wrong option."
+  },
+  {
+   "id": "t.210",
+   "verdict": "reject",
+   "reason": "Wrong belief in Q&A: the belief is false, but its mapped correction c.base is false and does not address where the calls stop, so the item is not backed by its maps_to claim."
+  },
+  {
+   "id": "t.211",
+   "verdict": "accept",
+   "reason": "Narration in sc1 (s0, factorial.c): true in its scene, and transcript-safe."
+  },
+  {
+   "id": "t.212",
+   "verdict": "accept",
+   "reason": "Narration: matches c.frame; the frame is marked as the lesson's drawing."
+  },
+  {
+   "id": "t.213",
+   "verdict": "accept",
+   "reason": "Narration in sc2 (s1): factorial(3) waits at line 7 for factorial(2); matches c.waits."
+  },
+  {
+   "id": "t.214",
+   "verdict": "accept",
+   "reason": "Narration: describes the lesson's drawing, backed by s1 (factorial(3) waiting at line 7); reads true in the transcript as a statement about the drawing."
+  },
+  {
+   "id": "t.215",
+   "verdict": "accept",
+   "reason": "Narration in sc3 (s2): main plus three factorial frames; true in its scene, which gives the factorial.c scope."
+  },
+  {
+   "id": "t.216",
+   "verdict": "reject",
+   "reason": "Narration, transcript.txt: the next scene there is the title 'The base case returns' and t.217, which never states line 4 of the output (and states a false factorial(2) result), so 'the next scene answers this question' is false in the transcript. The answer only shows in sc5's on-screen output."
+  },
+  {
+   "id": "t.217",
+   "verdict": "reject",
+   "reason": "Narration in sc5: false as in c.base. Line 6 tests n > 1 and r starts at 1; s3 shows factorial(1) returning 1, not factorial(2) returning 2. Wrong in captions, IVE, Q&A and transcript."
+  },
+  {
+   "id": "t.218",
+   "verdict": "accept",
+   "reason": "Narration in sc6 (s4): factorial(2) got f.ret1 and returns 2; matches c.unwind."
+  },
+  {
+   "id": "t.219",
+   "verdict": "accept",
+   "reason": "Narration in sc7 (s5, factorial.c): factorial(3) got 2 and returns 6 to main; true in its scene, which gives the scope."
+  },
+  {
+   "id": "t.220",
+   "verdict": "accept",
+   "reason": "Narration in sc8 (s6): main got 6 and printed f.l7; true in its scene."
+  },
+  {
+   "id": "t.221",
+   "verdict": "accept",
+   "reason": "Narration in sc8 (s6): output lines 1-6 show starts 3, 2, 1 and finishes 1, 2, 3 for this scene's program."
+  },
+  {
+   "id": "t.222",
+   "verdict": "accept",
+   "reason": "Narration: matches c.recap, scoped to the drawing."
+  },
+  {
+   "id": "t.223",
+   "verdict": "accept",
+   "reason": "Narration: follows t.222's drawing scope in sc9; matches c.recap."
+  },
+  {
+   "id": "t.224",
+   "verdict": "accept",
+   "reason": "Option marked wrong: factorial(3) = 6 is line 6, not line 4."
+  },
+  {
+   "id": "t.225",
+   "verdict": "accept",
+   "reason": "Option marked correct: line 4 is factorial(1) = 1 (f.l4)."
+  },
+  {
+   "id": "t.226",
+   "verdict": "accept",
+   "reason": "Option marked wrong: no factorial(0) call happens; line 4 is factorial(1) = 1."
+  },
+  {
+   "id": "t.227",
+   "verdict": "accept",
+   "reason": "Question: does not give away f.l4 in its title 'The question' or the prior narration, and makes sense without options."
+  },
+  {
+   "id": "t.228",
+   "verdict": "accept",
+   "reason": "Trace label: s0 has main waiting at line 13 and factorial(3) running."
+  },
+  {
+   "id": "t.229",
+   "verdict": "accept",
+   "reason": "Trace label: s1 has factorial(3) waiting at line 7 with factorial(2) running."
+  },
+  {
+   "id": "t.230",
+   "verdict": "accept",
+   "reason": "Trace label: s2 has three factorial frames above main."
+  },
+  {
+   "id": "t.231",
+   "verdict": "accept",
+   "reason": "Trace label: s3 has factorial(1) returning f.ret1 = 1."
+  },
+  {
+   "id": "t.232",
+   "verdict": "accept",
+   "reason": "Trace label: s4 has factorial(2) returning f.ret2 = 2."
+  },
+  {
+   "id": "t.233",
+   "verdict": "accept",
+   "reason": "Trace label: s5 has factorial(3) returning f.ret3 = 6."
+  },
+  {
+   "id": "t.234",
+   "verdict": "accept",
+   "reason": "Trace label: s6 has main at line 14 with output f.l7."
+  }
+ ],
+ "overall": "reject"
+}

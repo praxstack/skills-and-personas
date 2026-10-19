@@ -1,0 +1,78 @@
+{
+ "note": "Planted errors for the claims mutation suite (E22, AC-7.5). Each is applied to one claim (and every teaching text mapped to it that contains the anchor) or to one narration line, and paired with an unchanged control job. None restates misconceptions[] (review P2-2). ptk adds automatic value swaps on top. Which job is which lives only in $PTK_STATE/claims-private/.",
+ "mutations": [
+  {
+   "id": "m1.match.nomatch",
+   "kind": "false-mechanism",
+   "target": "c.match",
+   "find": "whose value matches the controlling expression.",
+   "replace": "whose value matches the controlling expression, or to the first case label if no value matches.",
+   "why_false": "With no match and no default, control skips the whole switch body (C17 6.8.4.2p5)."
+  },
+  {
+   "id": "m2.break.overbroad",
+   "kind": "overbroad",
+   "target": "c.break",
+   "find": "A break statement ends the smallest enclosing switch or loop.",
+   "replace": "A break statement ends every enclosing switch and loop at once.",
+   "why_false": "break terminates only the smallest enclosing switch or iteration statement (6.8.6.3p2)."
+  },
+  {
+   "id": "m3.withbreak.caveat",
+   "kind": "dropped-caveat",
+   "target": "c.withbreak",
+   "find": "With n = 2, with_break.c prints only two from the switch",
+   "replace": "The switch prints only two",
+   "why_false": "Without the qualifier it describes fallthrough.c, which prints two, three, done."
+  },
+  {
+   "id": "m4.labels.citation",
+   "kind": "wrong-citation",
+   "target": "c.labels",
+   "sources": [
+    {
+     "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+     "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+     "clause": "§6.8.6.3 ¶2",
+     "quote": "A break statement terminates execution of the smallest enclosing switch or iteration statement.",
+     "excerpts": [
+      "sources/n2310-6.8.6.3p2.txt"
+     ]
+    }
+   ],
+   "why_false": "The break clause says nothing about labels; the claim needs 6.8.1p4."
+  },
+  {
+   "id": "m5.fall.reason",
+   "kind": "false-mechanism",
+   "target": "c.fall",
+   "find": "and then falls through into case 3, so it prints",
+   "replace": "and then falls through into case 3 because 3 is the next value after 2, so it prints",
+   "why_false": "Fallthrough goes to the next statement in source order whatever its case value."
+  },
+  {
+   "id": "m6.recap.overbroad",
+   "kind": "overbroad",
+   "target": "c.recap",
+   "find": "In fallthrough.c, the break on line 12 is what ends the switch.",
+   "replace": "In every switch, a break statement is what ends the switch.",
+   "why_false": "A switch also ends when control reaches the end of its body, or by return or goto."
+  },
+  {
+   "id": "m7.setup.case3",
+   "kind": "false-framing",
+   "target": "c.setup",
+   "find": "Case 2 has no break.",
+   "replace": "Case 3 has no break.",
+   "why_false": "In fallthrough.c case 3 ends with break; case 2 is the one without."
+  },
+  {
+   "id": "m8.narration.check",
+   "kind": "false-narration",
+   "target": "narration:sc4.1",
+   "find": "So execution falls through into case 3, which prints three.",
+   "replace": "So the switch checks the case 3 label, finds that it matches, and prints three.",
+   "why_false": "Nothing is checked at a case label during fallthrough, and 3 does not match n = 2."
+  }
+ ]
+}

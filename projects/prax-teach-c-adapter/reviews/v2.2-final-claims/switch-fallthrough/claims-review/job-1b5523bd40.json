@@ -1,0 +1,544 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-1b5523bd40",
+ "manifest_sha256": "1b5523bd4090854abda3ecf1fae86ab933192d0335d3945c1e938f149cce1d90",
+ "rubric_version": "4",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "Claude Opus 5.5 claims reviewer subagent"
+ },
+ "claims": [
+  {
+   "id": "c.setup",
+   "verdict": "reject",
+   "reason": "Explanation, no overgeneralising: the sentence names no program, so it is read for every program in the job, and with_break.c has a break after case 2 (line 11). It needs 'In fallthrough.c' to be true as worded.",
+   "evidence": [
+    "program p2 line 11",
+    "program p1 lines 8-10"
+   ]
+  },
+  {
+   "id": "c.match",
+   "verdict": "accept",
+   "reason": "True as worded; the stored 6.8.4.2p5 passage says control jumps to the statement following the matched case label.",
+   "evidence": [
+    "passage sources/n2310-6.8.4.2p5.txt"
+   ]
+  },
+  {
+   "id": "c.labels",
+   "verdict": "accept",
+   "reason": "True; the stored 6.8.1p4 passage says labels in themselves do not alter the flow of control. Justification matches fallthrough.c.",
+   "evidence": [
+    "passage sources/n2310-6.8.1p4.txt"
+   ]
+  },
+  {
+   "id": "c.fall",
+   "verdict": "reject",
+   "reason": "Explanation, scope: the sentence names no program. With n = 2, with_break.c never reaches case 3 and into_break.c falls into case 3 but does not print three, so it is false for two of the three programs. It needs 'In fallthrough.c'.",
+   "evidence": [
+    "fact f.p1.l1",
+    "fact f.p1.l2",
+    "fact f.p2.l2",
+    "fact f.p3.l2"
+   ]
+  },
+  {
+   "id": "c.break",
+   "verdict": "accept",
+   "reason": "First sentence matches the stored 6.8.6.3p2 passage; every break in the three programs sits in a switch with no loop, so 'Here that is the switch' holds for each. Justification line numbers check out.",
+   "evidence": [
+    "passage sources/n2310-6.8.6.3p2.txt"
+   ]
+  },
+  {
+   "id": "c.done",
+   "verdict": "accept",
+   "reason": "puts(\"done\") follows the switch in all three programs; matches fact f.p1.l3.",
+   "evidence": [
+    "fact f.p1.l3",
+    "fact f.p2.l2",
+    "fact f.p3.l2"
+   ]
+  },
+  {
+   "id": "c.withbreak",
+   "verdict": "accept",
+   "reason": "Values match the captured run; justification lines 9, 11 and 18 of with_break.c are correct and the break passage supports the mechanism.",
+   "evidence": [
+    "fact f.p2.l1",
+    "fact f.p2.l2",
+    "passage sources/n2310-6.8.6.3p2.txt"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing only. scenes sc3, sc4 and sc5 add two, three and done one line each (states s1, s2, s3), and transcript.txt prints the prompt before this line.",
+   "evidence": [
+    "scenes sc2-sc5",
+    "trace s1-s3"
+   ]
+  },
+  {
+   "id": "c.recap",
+   "verdict": "accept",
+   "reason": "Labels don't end a case (6.8.1p4), entry is at the matched label (6.8.4.2p5), and with n = 2 the break on line 12 of fallthrough.c ends the switch (6.8.6.3p2). Scoped to fallthrough.c.",
+   "evidence": [
+    "passage sources/n2310-6.8.4.2p5.txt",
+    "passage sources/n2310-6.8.1p4.txt",
+    "passage sources/n2310-6.8.6.3p2.txt"
+   ]
+  },
+  {
+   "id": "c.nomatch",
+   "verdict": "accept",
+   "reason": "The quote is the last sentence of the stored 6.8.4.2p5 passage and states exactly this.",
+   "evidence": [
+    "passage sources/n2310-6.8.4.2p5.txt"
+   ]
+  },
+  {
+   "id": "c.bodyend",
+   "verdict": "accept",
+   "reason": "True; the body is the statement the switch jumps into (6.8.4.2p4, syntax 6.8.4), statements run in sequence (6.8p2), so finishing the body finishes the switch. Line 16 and line 18 references are correct.",
+   "evidence": [
+    "passage sources/n2310-6.8p2.txt",
+    "passage sources/n2310-6.8.4.2p4.txt",
+    "passage sources/n2310-6.8.4-syntax.txt"
+   ]
+  },
+  {
+   "id": "c.fix",
+   "verdict": "accept",
+   "reason": "with_break.c adds break on lines 8 and 11 versus fallthrough.c; case 3 already breaks (line 14) and case 4 is last, so no case runs into the next. Diagnostics confirm two gcc-16 warnings for fallthrough.c and none for with_break.c.",
+   "evidence": [
+    "program p2 lines 6-17",
+    "program p1 gcc-16 diagnostics",
+    "passage sources/n2310-6.8.6.3p2.txt",
+    "passage sources/gcc16-man-wimplicit-fallthrough.txt"
+   ]
+  },
+  {
+   "id": "c.warn",
+   "verdict": "reject",
+   "reason": "Maths, count: the recorded gcc-16 output for fallthrough.c holds two separate warnings (7:9 and 9:9), but the claim says it 'gets a warning'. Say 'warnings' or 'two warnings'.",
+   "evidence": [
+    "program p1 gcc-16 diagnostics",
+    "passage sources/gcc16-man-wimplicit-fallthrough.txt"
+   ]
+  },
+  {
+   "id": "c.intobreak",
+   "verdict": "accept",
+   "reason": "into_break.c differs from fallthrough.c only in case 3 (break alone on line 11); n = 2 prints two then done, matching the captured run; line 15 for done is correct.",
+   "evidence": [
+    "fact f.p3.l1",
+    "fact f.p3.l2",
+    "passage sources/n2310-6.8.4.2p5.txt",
+    "passage sources/n2310-6.8.1p4.txt",
+    "passage sources/n2310-6.8.6.3p2.txt"
+   ]
+  },
+  {
+   "id": "c.silent",
+   "verdict": "accept",
+   "reason": "The recorded gcc-16 diagnostics for into_break.c hold exactly one warning, at 7:9 with a note at case 2, and nothing for line 9. Scoped to gcc-16 and this program.",
+   "evidence": [
+    "program p3 gcc-16 diagnostics"
+   ]
+  },
+  {
+   "id": "c.clang",
+   "verdict": "reject",
+   "reason": "Sources: the cited clang diagnostics (programs[].diagnostics.clang) are not in the job; programs carry only gcc-16 diagnostics, so nothing here backs the claim, and 'any clang warning would stop the capture' can't be checked. When in doubt, reject.",
+   "evidence": [
+    "platform compilers.clang"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "alt: matches c.recap's first sentence, true for C generally."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "alt: scoped to fallthrough.c; with n = 2 its line-12 break ends the switch (c.recap)."
+  },
+  {
+   "id": "t.003",
+   "verdict": "reject",
+   "reason": "alt is standalone: names no program, so it is false for with_break.c and into_break.c (same fault as c.fall)."
+  },
+  {
+   "id": "t.090",
+   "verdict": "reject",
+   "reason": "Rule card cards r:c.break is read on its own; 'Here' points at nothing there."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Rule card states c.match, true on its own."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Rule card states c.recap, scoped to fallthrough.c, true on its own."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Wrong-belief card: the belief is false for every program in the job and the card answers False."
+  },
+  {
+   "id": "t.094",
+   "verdict": "accept",
+   "reason": "Wrong-belief card: execution does not stop at a case label (c.labels), so the belief is false and is shown as false."
+  },
+  {
+   "id": "t.095",
+   "verdict": "accept",
+   "reason": "Wrong-belief card: the break on line 12 ends the switch before case 4, so the belief is false and shown as false."
+  },
+  {
+   "id": "t.096",
+   "verdict": "accept",
+   "reason": "template: n=2 break=on is with_break.c; its break on line 11 ends the switch."
+  },
+  {
+   "id": "t.097",
+   "verdict": "accept",
+   "reason": "template: n=1 break=off is fallthrough.c; one, two, three run and the break on line 12 ends the switch."
+  },
+  {
+   "id": "t.098",
+   "verdict": "accept",
+   "reason": "template: with_break.c case 3 break is on line 14."
+  },
+  {
+   "id": "t.099",
+   "verdict": "accept",
+   "reason": "template: with_break.c case 1 break is on line 8."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c closing brace of the switch is line 15; case 4 is last with no break."
+  },
+  {
+   "id": "t.101",
+   "verdict": "accept",
+   "reason": "template: with_break.c closing brace of the switch is line 17."
+  },
+  {
+   "id": "t.102",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c case 2 label is on line 8; case 1 has no break."
+  },
+  {
+   "id": "t.103",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c case 3 label is on line 10; case 2 has no break."
+  },
+  {
+   "id": "t.104",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c line 7 is puts(\"one\"), the statement after case 1."
+  },
+  {
+   "id": "t.105",
+   "verdict": "accept",
+   "reason": "template: with_break.c line 10 is puts(\"two\"), the statement after case 2."
+  },
+  {
+   "id": "t.106",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c line 9 is puts(\"two\")."
+  },
+  {
+   "id": "t.107",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c line 11 is puts(\"three\")."
+  },
+  {
+   "id": "t.108",
+   "verdict": "accept",
+   "reason": "template: with_break.c line 13 is puts(\"three\")."
+  },
+  {
+   "id": "t.109",
+   "verdict": "accept",
+   "reason": "template: fallthrough.c line 14 is puts(\"four\")."
+  },
+  {
+   "id": "t.110",
+   "verdict": "accept",
+   "reason": "template: with_break.c line 16 is puts(\"four\")."
+  },
+  {
+   "id": "t.111",
+   "verdict": "accept",
+   "reason": "template: 0 matches no case and there is no default, so the body is skipped (c.nomatch)."
+  },
+  {
+   "id": "t.112",
+   "verdict": "accept",
+   "reason": "template: 5 matches no case and there is no default, so the body is skipped (c.nomatch)."
+  },
+  {
+   "id": "t.113",
+   "verdict": "reject",
+   "reason": "On cards m:m.toend, read on its own with no program shown, 'Here' has nothing to point at. Fine in qa/index.html and the still."
+  },
+  {
+   "id": "t.114",
+   "verdict": "accept",
+   "reason": "True for every program and in the n=0 explorer state, where the body is skipped and done still prints."
+  },
+  {
+   "id": "t.115",
+   "verdict": "reject",
+   "reason": "class claim is standalone: names no program, so false for with_break.c and into_break.c (same fault as c.fall), on cards q:sc2 and the still."
+  },
+  {
+   "id": "t.116",
+   "verdict": "accept",
+   "reason": "Matches c.fix; true in video/sc6.html."
+  },
+  {
+   "id": "t.117",
+   "verdict": "accept",
+   "reason": "Matches c.intobreak and facts f.p3.l1, f.p3.l2."
+  },
+  {
+   "id": "t.118",
+   "verdict": "accept",
+   "reason": "Matches c.labels; true in every place."
+  },
+  {
+   "id": "t.119",
+   "verdict": "accept",
+   "reason": "Matches c.match; true in every place."
+  },
+  {
+   "id": "t.120",
+   "verdict": "accept",
+   "reason": "Matches c.recap, scoped to fallthrough.c."
+  },
+  {
+   "id": "t.121",
+   "verdict": "reject",
+   "reason": "class claim is standalone: 'The program ... Case 2 has no break' names no program and is false for with_break.c (same fault as c.setup)."
+  },
+  {
+   "id": "t.122",
+   "verdict": "accept",
+   "reason": "Matches c.withbreak and facts f.p2.l1, f.p2.l2; names with_break.c."
+  },
+  {
+   "id": "t.264",
+   "verdict": "accept",
+   "reason": "chapter-title: sc1 shows fallthrough.c, whose case 2 lacks a break."
+  },
+  {
+   "id": "t.265",
+   "verdict": "accept",
+   "reason": "chapter-title: sc6 shows with_break.c, which adds the breaks."
+  },
+  {
+   "id": "t.266",
+   "verdict": "accept",
+   "reason": "chapter-title: sc3 state s1 jumps to case 2."
+  },
+  {
+   "id": "t.267",
+   "verdict": "accept",
+   "reason": "chapter-title: sc4 state s2 runs past the case 3 label."
+  },
+  {
+   "id": "t.268",
+   "verdict": "accept",
+   "reason": "chapter-title: plain recap label for sc8."
+  },
+  {
+   "id": "t.269",
+   "verdict": "accept",
+   "reason": "chapter-title: names the question scene without giving the answer."
+  },
+  {
+   "id": "t.270",
+   "verdict": "accept",
+   "reason": "chapter-title: sc5 shows the break ending the switch; doesn't give away the question answer before it."
+  },
+  {
+   "id": "t.271",
+   "verdict": "accept",
+   "reason": "chapter-title: sc7 shows into_break.c, where gcc-16 is silent at line 9."
+  },
+  {
+   "id": "t.289",
+   "verdict": "accept",
+   "reason": "lesson-title: matches the whole lesson."
+  },
+  {
+   "id": "t.290",
+   "verdict": "accept",
+   "reason": "Wrong belief, labelled as one; it is false (c.match)."
+  },
+  {
+   "id": "t.291",
+   "verdict": "accept",
+   "reason": "Wrong belief, labelled as one; it is false (c.labels)."
+  },
+  {
+   "id": "t.292",
+   "verdict": "accept",
+   "reason": "Wrong belief, labelled as one; it is false (c.break)."
+  },
+  {
+   "id": "t.293",
+   "verdict": "accept",
+   "reason": "narration: in sc1 (state s0, fallthrough.c) and as the transcript's opening line, 'the program' is the lesson's program, which sets n to 2 and has no break after case 2."
+  },
+  {
+   "id": "t.294",
+   "verdict": "accept",
+   "reason": "narration: sc3, sc4, sc5 each add one output line; the transcript prints the prompt before it, so 'this question' reads true there too."
+  },
+  {
+   "id": "t.295",
+   "verdict": "accept",
+   "reason": "narration: matches c.match."
+  },
+  {
+   "id": "t.296",
+   "verdict": "accept",
+   "reason": "narration: case 2 matches and prints two in sc3's state s1 and in every program."
+  },
+  {
+   "id": "t.297",
+   "verdict": "accept",
+   "reason": "narration: matches c.labels."
+  },
+  {
+   "id": "t.298",
+   "verdict": "accept",
+   "reason": "narration: true in sc4 state s2 (fallthrough.c), output two, three."
+  },
+  {
+   "id": "t.299",
+   "verdict": "accept",
+   "reason": "narration: in sc5 'Here' is fallthrough.c, whose break on line 12 ends the switch; reads true in captions, qa layer and transcript."
+  },
+  {
+   "id": "t.300",
+   "verdict": "accept",
+   "reason": "narration: matches c.done and fact f.p1.l3."
+  },
+  {
+   "id": "t.301",
+   "verdict": "accept",
+   "reason": "narration: matches c.fix."
+  },
+  {
+   "id": "t.302",
+   "verdict": "accept",
+   "reason": "narration: matches c.withbreak."
+  },
+  {
+   "id": "t.303",
+   "verdict": "reject",
+   "reason": "narration drops c.warn's gcc-16 qualifier and says 'GCC' in general; compiler diagnostics must stay scoped to the recorded compiler. Also maps to c.warn, which is rejected."
+  },
+  {
+   "id": "t.304",
+   "verdict": "accept",
+   "reason": "narration: matches c.intobreak."
+  },
+  {
+   "id": "t.305",
+   "verdict": "accept",
+   "reason": "narration: matches c.intobreak and facts f.p3.l1, f.p3.l2."
+  },
+  {
+   "id": "t.306",
+   "verdict": "reject",
+   "reason": "narration drops c.silent's gcc-16 qualifier and says 'GCC' in general; the recorded diagnostics only show what gcc-16 did."
+  },
+  {
+   "id": "t.307",
+   "verdict": "reject",
+   "reason": "narration maps to c.clang, which has no evidence in the job."
+  },
+  {
+   "id": "t.308",
+   "verdict": "accept",
+   "reason": "narration: matches c.recap."
+  },
+  {
+   "id": "t.309",
+   "verdict": "accept",
+   "reason": "narration: matches c.recap, scoped to fallthrough.c."
+  },
+  {
+   "id": "t.310",
+   "verdict": "accept",
+   "reason": "option marked wrong; fallthrough.c prints two, three, done (f.p1.out)."
+  },
+  {
+   "id": "t.311",
+   "verdict": "accept",
+   "reason": "option marked correct; equals f.p1.out."
+  },
+  {
+   "id": "t.312",
+   "verdict": "accept",
+   "reason": "option marked wrong; the break on line 12 stops case 4 from running."
+  },
+  {
+   "id": "t.313",
+   "verdict": "accept",
+   "reason": "option marked wrong; the switch enters at case 2, not case 1."
+  },
+  {
+   "id": "t.314",
+   "verdict": "accept",
+   "reason": "question: doesn't give away f.p1.out, makes sense without options, and neither the title 'The question' nor the sc1 narration gives the answer."
+  },
+  {
+   "id": "t.315",
+   "verdict": "accept",
+   "reason": "trace-label: s0 at line 5 with n = 2."
+  },
+  {
+   "id": "t.316",
+   "verdict": "accept",
+   "reason": "trace-label: s1 at line 9, output two."
+  },
+  {
+   "id": "t.317",
+   "verdict": "accept",
+   "reason": "trace-label: s2 at line 11, output two, three."
+  },
+  {
+   "id": "t.318",
+   "verdict": "accept",
+   "reason": "trace-label: s3 at line 16 after the break, output includes done."
+  },
+  {
+   "id": "t.319",
+   "verdict": "accept",
+   "reason": "trace-label: s4 in with_break.c only case 2 runs and it ends in a break."
+  },
+  {
+   "id": "t.320",
+   "verdict": "accept",
+   "reason": "trace-label: s5 in into_break.c case 3 holds only break."
+  }
+ ],
+ "overall": "reject"
+}

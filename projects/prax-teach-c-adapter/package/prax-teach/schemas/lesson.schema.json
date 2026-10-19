@@ -1,0 +1,1241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prax-teach.local/schemas/lesson.schema.json",
+  "title": "Prax Teach lesson model",
+  "description": "The one file an author writes (prax-teach/lesson@1, spec §5.2). Every value comes from facts, every sentence from claims, narration (which cites claims) or templates/chrome.json. Capture fills facts[].value, facts[].source, programs[].diagnostics, programs[].source_sha256 and platform; never write those by hand. The authoring contract is references/LESSON-MODEL.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "title",
+    "topic",
+    "language",
+    "programs",
+    "facts",
+    "claims",
+    "misconceptions",
+    "trace",
+    "storyboard",
+    "requested_media"
+  ],
+  "properties": {
+    "schema": {
+      "const": "prax-teach/lesson@1"
+    },
+    "id": {
+      "$ref": "#/$defs/slug"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "description": "What the lesson teaches, for the kicker ('{subject} · {topic}'). Default \"C\". A lesson about another subject still shows its values from C runs."
+    },
+    "language": {
+      "enum": [
+        "c"
+      ]
+    },
+    "request": {
+      "type": "string",
+      "description": "The learner request this lesson answers, verbatim."
+    },
+    "platform": {
+      "$ref": "#/$defs/platform",
+      "description": "Written by capture: the platform facts of this Mac."
+    },
+    "programs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/program"
+      }
+    },
+    "facts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/fact"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "misconceptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/misconception"
+      }
+    },
+    "trace": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/state"
+      }
+    },
+    "storyboard": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/scene"
+      }
+    },
+    "figure": {
+      "$ref": "#/$defs/figure"
+    },
+    "requested_media": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "still",
+          "explorer",
+          "qa",
+          "cards",
+          "video",
+          "ive"
+        ]
+      },
+      "description": "The media to build, in the order the learner asked for them."
+    },
+    "title_claims": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/ref"
+      },
+      "description": "The claims the lesson title states or implies. Every page shows the title, so it may not state a question's answer."
+    }
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]*$"
+    },
+    "ref": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "captured"
+      ],
+      "properties": {
+        "captured": {
+          "type": "boolean"
+        },
+        "os": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "sizeof": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "description": "sizeof of each scalar type, in bytes."
+        },
+        "char_signed": {
+          "type": "boolean"
+        },
+        "endianness": {
+          "enum": [
+            "little",
+            "big"
+          ]
+        },
+        "libc": {
+          "type": "string"
+        },
+        "compilers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Version line of each compiler (clang runs; gcc-16 gives diagnostics only)."
+        },
+        "sandbox": {
+          "type": "string"
+        }
+      }
+    },
+    "program": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "std",
+        "ub",
+        "run"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ref"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^programs/[A-Za-z0-9_.-]+\\.c$"
+        },
+        "std": {
+          "enum": [
+            "c17"
+          ]
+        },
+        "ub": {
+          "type": "boolean",
+          "description": "true: the program has undefined behaviour on purpose. It compiles (warnings recorded) but never runs, needs run:false, and an undefined-behaviour claim must list it in `programs`."
+        },
+        "run": {
+          "type": "boolean",
+          "description": "false: compile only. Facts may not read its stdout."
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "argv[1..] for both runs."
+        },
+        "diagnostics": {
+          "type": "object",
+          "description": "Written by capture: compiler stderr per compiler (clang, gcc-16). gcc-16 is diagnostics only and never blocks.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Written by capture: sha256 of the compiled source bytes."
+        },
+        "show": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "to": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "description": "The source lines listings show (1-based, inclusive). Default: main's body. Use it when the program has a function before main."
+        }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "program",
+        "kind",
+        "select",
+        "expect"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ref"
+        },
+        "program": {
+          "$ref": "#/$defs/ref"
+        },
+        "kind": {
+          "enum": [
+            "stdout-line",
+            "value",
+            "derived"
+          ],
+          "description": "stdout-line: one line of a run; value: a platform value or the whole stdout; derived: computed from other captured values."
+        },
+        "select": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "stream"
+          ],
+          "properties": {
+            "stream": {
+              "enum": [
+                "stdout",
+                "platform"
+              ]
+            },
+            "line": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "key": {
+              "type": "string"
+            },
+            "field": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "With line: the 1-based whitespace-separated token of that line (for one value inside a printed sentence)."
+            }
+          },
+          "description": "Where capture reads the value: stream stdout with line N (1-based) or no line for the whole stdout; stream platform with key naming one platform value: captured, os, arch, char_signed, endianness, libc, sandbox, sizeof.<char|short|int|long|long long|float|double|void*> or compilers.<clang|gcc-16>.",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "stream": {
+                    "const": "platform"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "key"
+                ],
+                "not": {
+                  "required": [
+                    "line"
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "stream": {
+                    "const": "stdout"
+                  }
+                }
+              },
+              "then": {
+                "not": {
+                  "required": [
+                    "key"
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "required": [
+                  "field"
+                ]
+              },
+              "then": {
+                "required": [
+                  "line"
+                ],
+                "properties": {
+                  "stream": {
+                    "const": "stdout"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "Written by capture: the displayed text."
+        },
+        "expect": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "fn",
+                "args"
+              ],
+              "properties": {
+                "fn": {
+                  "type": "string",
+                  "pattern": "^[a-z_][a-z0-9_]*$"
+                },
+                "args": {
+                  "type": "array"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "reviewed"
+              ],
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "reviewed": {
+                  "const": true
+                }
+              }
+            }
+          ],
+          "description": "The independent expectation (D17.5): {fn, args} names a pure function in ptk/expect.py, or {value, reviewed: true} is an authored literal that a reviewer checked. Capture must equal it (ExpectationMismatch)."
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "compiler",
+            "cmd",
+            "stdout_sha256"
+          ],
+          "properties": {
+            "compiler": {
+              "type": "string"
+            },
+            "cmd": {
+              "type": "string"
+            },
+            "stdout_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "runs": {
+              "type": "integer"
+            },
+            "sandbox": {
+              "type": "string"
+            }
+          },
+          "description": "Written by capture: compiler, command, stdout sha256, runs, sandbox."
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "text",
+        "kind",
+        "justification",
+        "sources"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ref"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 240
+        },
+        "kind": {
+          "enum": [
+            "definition",
+            "mechanism",
+            "rule",
+            "caveat",
+            "undefined-behaviour",
+            "implementation-defined",
+            "framing"
+          ],
+          "description": "definition: what a term means. mechanism: what the machine does step by step. rule: what the standard requires. caveat: a limit or exception. undefined-behaviour: the standard imposes no requirement (cite the clause). implementation-defined: the implementation chooses and documents (cite the clause and the platform fact). framing: orientation about this lesson's program or task, no technical assertion beyond what the source shows."
+        },
+        "justification": {
+          "type": "string",
+          "minLength": 10
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "clause"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "clause": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string",
+                "maxLength": 400
+              },
+              "excerpts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^sources/[a-z0-9][a-z0-9._-]*\\.txt$"
+                },
+                "description": "AC-7.7: the stored passages this source relies on, one file per passage under the lesson's sources/ (header lines document, clause, taken_from; a --- line; then the text as taken from the document)."
+              }
+            }
+          },
+          "description": "At least one: a standard clause with a short quote, a reference, or the lesson's own program file. A source that cites an outside document names its stored passages in excerpts (AC-7.7)."
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "Facts whose values this claim states."
+        },
+        "programs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "Programs this claim is about. An undefined-behaviour claim lists every ub:true program it covers."
+        },
+        "overrides": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "pragma-diagnostic",
+              "pragma-attribute",
+              "pragma-system-header",
+              "pragma-operator",
+              "pragma-other",
+              "line-marker",
+              "line-directive",
+              "embed",
+              "no-sanitize",
+              "sanitizer-hook",
+              "asm",
+              "dynamic-symbol"
+            ]
+          },
+          "description": "Source-guard constructs (ptk/capture/guard.py) this claim declares on purpose for the programs in `programs`. Honoured only for programs that never run (ub:true or run:false); the claim goes through claims review like any other. Without it, capture refuses the construct by name."
+        },
+        "needs_hedge": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "on this machine"
+            ]
+          },
+          "description": "Hedge phrases this claim needs in narration (AC-10.5). Closed list: \"on this machine\" only, and only on a claim that cites a platform fact and whose own text holds the phrase. The claims job shows this field, so reviewers judge each exemption."
+        }
+      }
+    },
+    "misconception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "correction"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ref"
+        },
+        "statement": {
+          "type": "string",
+          "description": "The wrong belief, in the learner's words.",
+          "minLength": 3
+        },
+        "correction": {
+          "$ref": "#/$defs/ref",
+          "description": "The claim that corrects it."
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "state",
+        "reveals"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ref"
+        },
+        "label": {
+          "type": "string"
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "program",
+            "line",
+            "output"
+          ],
+          "properties": {
+            "program": {
+              "$ref": "#/$defs/ref"
+            },
+            "line": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "path": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "description": "Source lines executed so far, in order."
+            },
+            "output": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ref"
+              },
+              "description": "Facts printed so far, in order."
+            },
+            "vars": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Variable name to displayed value at this state."
+            },
+            "frames": {
+              "type": "array",
+              "description": "The call stack at this state, outermost first.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "fn"
+                ],
+                "properties": {
+                  "fn": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "line": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "vars": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "call": {
+                    "$ref": "#/$defs/ref",
+                    "description": "A fact whose value labels this frame, e.g. factorial(2)."
+                  },
+                  "ret": {
+                    "$ref": "#/$defs/ref",
+                    "description": "A fact: the value this frame has returned (shown once it returns)."
+                  },
+                  "status": {
+                    "enum": [
+                      "running",
+                      "waiting",
+                      "returning"
+                    ],
+                    "description": "running: the top frame executing; waiting: blocked in a call; returning: popped, its value flowing to the caller."
+                  },
+                  "got": {
+                    "$ref": "#/$defs/ref",
+                    "description": "A fact: the value this frame received from the call it was waiting for (it fills the frame's slot)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "reveals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "Facts this state shows for the first time. A question's answer must not be revealed by the state of the scene that asks it."
+        }
+      },
+      "description": "One explorer state: program, current line, executed path, output facts so far, variables, and (for call traces) the stack."
+    },
+    "scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "state",
+        "narration"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ref"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 48
+        },
+        "state": {
+          "$ref": "#/$defs/ref",
+          "description": "The trace state on screen."
+        },
+        "narration": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text",
+              "claims"
+            ],
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "claims": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/ref"
+                }
+              },
+              "spoken": {
+                "type": "string",
+                "description": "Retired (round 18): ptk validate refuses it. The voice reads lexicon/c.json applied to `text`."
+              }
+            }
+          },
+          "description": "Spoken lines in their written form (%f, factorial(2)). Each cites the claims it states; the voice reads the lexicon's spoken form of the text."
+        },
+        "question": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prompt",
+            "answer_fact"
+          ],
+          "properties": {
+            "prompt": {
+              "type": "string",
+              "minLength": 3
+            },
+            "answer_fact": {
+              "$ref": "#/$defs/ref"
+            },
+            "options": {
+              "type": "array",
+              "minItems": 2,
+              "description": "Optional choices (Q&A, cards). Exactly one is correct; every wrong option names the misconception it reveals.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "text",
+                  "correct"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "correct": {
+                    "type": "boolean"
+                  },
+                  "misconception": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
+            }
+          },
+          "description": "A prediction question. Nothing may state the answer before the answer cue."
+        },
+        "key_nodes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "Figure elements that carry the mechanism in this scene. Each must be fully visible with no inner scroll at 390 and 1440 px (AC-3.4, AC-4.7, AC-5.6). Ids come from the figure kind's fixed set (code-trace: code, output, question, note, compare) plus figure.elements."
+        },
+        "view": {
+          "enum": [
+            "mechanism",
+            "summary"
+          ],
+          "default": "mechanism",
+          "description": "mechanism: shows how the result is produced. summary: shows a result (a total, the output, a comparison); needs `mechanism`."
+        },
+        "mechanism": {
+          "$ref": "#/$defs/ref",
+          "description": "For view=summary: the trace state whose mechanism produced this summary. An earlier or the same scene must show it."
+        },
+        "title_claims": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "The claims the title states or implies ([] for a neutral title). Required for every scene after a question: a title that states a question's answer stays hidden in the IVE chapter list and the Q&A until the question is answered (ptk/project/seal.py)."
+        },
+        "ask": {
+          "type": "string",
+          "pattern": "^[^.!?]{3,60}\\?$",
+          "description": "Optional: one bounded question the Q&A asks before revealing this scene, in written forms (%f, factorial(2)). At most 60 characters before its one question mark, with no other sentence mark. Without it the layer is a walkthrough step, not a prediction."
+        }
+      },
+      "description": "One video scene. view=summary scenes (totals, outputs, results) must name the mechanism state that produced them (D20.5, mechanism not metrics).",
+      "if": {
+        "properties": {
+          "view": {
+            "const": "summary"
+          }
+        },
+        "required": [
+          "view"
+        ]
+      },
+      "then": {
+        "required": [
+          "mechanism"
+        ]
+      }
+    },
+    "figure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "program",
+        "states"
+      ],
+      "description": "Still layout hints. kind=code-trace: a program listing with the execution path of the given trace states, the output, and an optional comparison program. Its fixed elements are code, output, question, note and compare. An optional `panel` adds a mechanism diagram drawn from the facts each trace state shows (kind views, stack or neuron); its element id is panel.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "code-trace"
+          ]
+        },
+        "title_claim": {
+          "$ref": "#/$defs/ref"
+        },
+        "program": {
+          "$ref": "#/$defs/ref"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "line",
+              "claim"
+            ],
+            "properties": {
+              "line": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "claim": {
+                "$ref": "#/$defs/ref"
+              }
+            }
+          }
+        },
+        "compare": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "program",
+            "state",
+            "claim"
+          ],
+          "properties": {
+            "program": {
+              "$ref": "#/$defs/ref"
+            },
+            "state": {
+              "$ref": "#/$defs/ref"
+            },
+            "claim": {
+              "$ref": "#/$defs/ref"
+            }
+          }
+        },
+        "caption_claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "elements": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "description": "Extra element ids this figure draws beyond its kind's fixed set; storyboard key_nodes may name them."
+        },
+        "panel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "place"
+          ],
+          "description": "A mechanism diagram. Every value in it is a fact; an element appears in a state once its fact is shown (output or reveals). views: one value in several printf conversions. stack: the call stack of each state's `frames`. neuron: multiply, add and gate panels.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "views",
+                "stack",
+                "neuron"
+              ]
+            },
+            "place": {
+              "enum": [
+                "side",
+                "hero"
+              ],
+              "description": "side: beside the program (wide) / under it (portrait). hero: full width above the program."
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "var",
+                "bits",
+                "hex"
+              ],
+              "properties": {
+                "var": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "bits": {
+                  "$ref": "#/$defs/ref"
+                },
+                "hex": {
+                  "$ref": "#/$defs/ref"
+                }
+              }
+            },
+            "lanes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "line",
+                  "fact"
+                ],
+                "properties": {
+                  "line": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "fact": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "via": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "claim": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
+            },
+            "ub": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "program",
+                "line",
+                "claim",
+                "after"
+              ],
+              "properties": {
+                "program": {
+                  "$ref": "#/$defs/ref"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "claim": {
+                  "$ref": "#/$defs/ref"
+                },
+                "after": {
+                  "$ref": "#/$defs/ref"
+                }
+              }
+            },
+            "terms": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "x",
+                  "w",
+                  "t"
+                ],
+                "properties": {
+                  "x": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "w": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "t": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
+            },
+            "bias": {
+              "$ref": "#/$defs/ref"
+            },
+            "sum": {
+              "$ref": "#/$defs/ref"
+            },
+            "out": {
+              "$ref": "#/$defs/ref"
+            },
+            "gate": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "line"
+              ],
+              "properties": {
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ref"
+              },
+              "description": "Claims the panel prints as its caption lines."
+            },
+            "vars": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "param": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_]\\w*$"
+                },
+                "result": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_]\\w*$"
+                }
+              },
+              "description": "stack: every frame shows its own parameter (the argument in its call fact) and result variable (unset, a slot waiting for the call on its call line, or the value it received), derived from facts and the program source."
+            },
+            "memory": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "program",
+                "int",
+                "double"
+              ],
+              "description": "views: the bytes of the value's int object and of (double)value in memory, one captured fact per byte from the lowest address up (data-part byte cells of the bytes mechanism, AC-10.2).",
+              "properties": {
+                "program": {
+                  "$ref": "#/$defs/ref"
+                },
+                "int": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/ref"
+                  }
+                },
+                "double": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/ref"
+                  }
+                },
+                "claims": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/ref"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "misconception": {
+          "$ref": "#/$defs/ref",
+          "description": "A misconception the still shows as a wrong-belief callout, with the claim that corrects it."
+        },
+        "explore": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "description": "The explorer's knob (round 18): the learner changes one input and sees the captured or computed result. values: one captured run per value of `var` (roles name its facts). calls: one captured run per argument, its stdout one fact (the explorer steps through its calls). neuron: sliders over the neuron's inputs, every point computed by ptk/expect_neuron.py and spot-checked against captured runs (`checks`).",
+          "properties": {
+            "kind": {
+              "enum": [
+                "values",
+                "calls",
+                "neuron"
+              ]
+            },
+            "var": {
+              "type": "string"
+            },
+            "values": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "program",
+                  "facts"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "string"
+                  },
+                  "program": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "facts": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/$defs/ref"
+                    }
+                  },
+                  "claims": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/ref"
+                    }
+                  }
+                }
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ref"
+              }
+            },
+            "sliders": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "var",
+                  "min",
+                  "max",
+                  "step"
+                ],
+                "properties": {
+                  "var": {
+                    "type": "string"
+                  },
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  },
+                  "step": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "program",
+                  "at",
+                  "facts"
+                ],
+                "properties": {
+                  "program": {
+                    "$ref": "#/$defs/ref"
+                  },
+                  "at": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "number"
+                    }
+                  },
+                  "facts": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/$defs/ref"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §5.2.1 ¶1
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §5.2.1 ¶1
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 1597-1602 of that text
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage.
+---
+1    Two sets of characters and their associated collating sequences shall be defined: the set in which
+     source files are written (the source character set), and the set interpreted in the execution environment
+     (the execution character set). Each set is further divided into a basic character set, whose contents are
+     given by this subclause, and a set of zero or more locale-specific members (which are not members
+     of the basic character set) called extended characters. The combined set is also called the extended
+     character set. The values of the members of the execution character set are implementation-defined.

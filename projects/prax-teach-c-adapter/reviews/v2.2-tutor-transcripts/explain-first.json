@@ -1,0 +1,41 @@
+{
+ "mode": "lesson",
+ "turns": [
+  {
+   "role": "tutor",
+   "acts": [
+    "explanation",
+    "artifact"
+   ],
+   "text": "Here's the still. It was already built, so there's no wait. Wide and portrait versions, light and dark:\n/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-light.png\n/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-dark.png\n/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-light.png\n/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-dark.png\n\nThe program sets n to 2 and does switch (n). Case 2 has no break.\n\nFollow the blue path on the left, top to bottom:\n1. The switch jumps straight to the case label that matches n. That's case 2 on line 8. case 1 is skipped, never looked at again. puts(\"two\") prints two.\n2. There's no break after it. A case label is only a label, it doesn't stop execution. So control walks right past case 3: and runs puts(\"three\"), which prints three. That red stretch is the fallthrough.\n3. The break on line 12 ends the switch. case 4 never runs.\n4. After the switch, puts(\"done\") prints done.\n\nReal output from the run (Apple clang, C17, run twice):\ntwo\nthree\ndone\n\nThe right panel is with_break.c, which adds a break after case 1 and after case 2. Same n = 2, and it prints only two from the switch, then done.\n\nThe rule in one line: a case label only marks where execution enters a switch; it never ends a case. Once inside, you keep running until a break, or until the end of the switch body.\n\nThe two usual wrong guesses: that the next label stops it (that would print two, done), or that fallthrough runs all the way to the last case (two, three, four, done). The break on line 12 is what stops it before case 4.\n\nSide note: gcc-16 with -Wextra warns that lines 7 and 9 may fall through. Apple clang with -Wextra says nothing for this program.\n\nBuild status, straight from ptk report: every still check passed (values, layout, contrast, OCR, fonts). The lesson's overall status is failed, because the claim reviewers disagree on the wording of some sentences (for example ones that say \"the switch\" without naming fallthrough.c) and the reviewer sensitivity check fell short. None of that touches the output values in the picture.\n\nIf you want to check it stuck, I can give you one short practice question on a variant.",
+   "artifacts": [
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-light.png",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-wide-dark.png",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-light.png",
+    "/Users/prax/Developer/prax-teach-evaluation-20261016/v2.1/lessons/switch-fallthrough/build/still/switch-fallthrough-portrait-dark.png"
+   ],
+   "states_shown": [
+    "s0",
+    "s1",
+    "s2",
+    "s3",
+    "s4"
+   ],
+   "practice_offer": "If you want to check it stuck, I can give you one short practice question on a variant."
+  },
+  {
+   "role": "learner",
+   "kind": "stop",
+   "text": "Thanks, that's clear. That's all for now."
+  },
+  {
+   "role": "tutor",
+   "acts": [
+    "close"
+   ],
+   "text": "Glad it helped. Stopping here. You haven't tried a fallthrough question yet, so I haven't noted anything as learned. The still stays in the lesson's build/still folder if you want to look again later.",
+   "reason": "learner-stop"
+  }
+ ],
+ "events": []
+}

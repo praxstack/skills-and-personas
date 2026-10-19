@@ -1,0 +1,54 @@
+{
+ "note": "Planted errors for the claims canary and calibration suite (D21.1, AC-7.5). None restates misconceptions[]. Which job is which lives only in $PTK_STATE/claims-private/.",
+ "mutations": [
+  {
+   "id": "m1.mul.sign",
+   "kind": "false-mechanism",
+   "target": "c.mul",
+   "find": "0.4 × -1 = -0.4.",
+   "replace": "0.4 × -1 = +0.4.",
+   "why_false": "A positive times a negative is negative; the run printed -0.4."
+  },
+  {
+   "id": "m2.relu.overbroad",
+   "kind": "overbroad",
+   "target": "c.relu",
+   "find": "a positive z passes through unchanged, and a z of 0 or less gives 0.",
+   "replace": "every z comes out as a value between 0 and 1.",
+   "why_false": "ReLU is max(0, z): a positive z passes unchanged, so it can exceed 1."
+  },
+  {
+   "id": "m3.add.bias",
+   "kind": "false-mechanism",
+   "target": "c.add",
+   "find": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum",
+   "replace": "The neuron adds the two terms and then multiplies by the bias, which print as +1.2, -0.4 and -0.2, and the program prints that result",
+   "why_false": "Line 12 adds b; (1.2 - 0.4) × -0.2 would be -0.16, not 0.6."
+  },
+  {
+   "id": "m4.out.caveat",
+   "kind": "dropped-caveat",
+   "target": "c.out",
+   "find": "Here z prints as 0.6, which is positive, so the output a prints as 0.6.",
+   "replace": "The output a is always equal to z.",
+   "why_false": "Only a positive z passes unchanged; a negative z gives 0."
+  },
+  {
+   "id": "m5.relu.citation",
+   "kind": "wrong-citation",
+   "target": "c.relu",
+   "sources": [
+    {
+     "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+     "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+     "clause": "§7.12.7.5 ¶2",
+     "quote": "The sqrt functions compute the nonnegative square root of x.",
+     "excerpts": [
+      "sources/n2310-7.12.7.5p2.txt"
+     ]
+    }
+   ],
+   "why_false": "sqrt has nothing to do with ReLU; the program uses fmax (7.12.12.2)."
+  }
+ ]
+}

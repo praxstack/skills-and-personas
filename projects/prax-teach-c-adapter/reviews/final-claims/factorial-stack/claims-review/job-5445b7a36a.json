@@ -1,0 +1,418 @@
+{
+ "schema": "prax-teach/claims-review@1",
+ "job_id": "job-5445b7a36a",
+ "manifest_sha256": "5445b7a36ae25621beae2b89573261ef2f1749a99335be044b088f25a9fbd001",
+ "rubric_version": "3",
+ "reviewer": {
+  "host": "claude-code",
+  "agent": "claims reviewer subagent"
+ },
+ "claims": [
+  {
+   "id": "c.setup",
+   "verdict": "accept",
+   "reason": "Explanation: line 13 calls factorial(3) and line 7 recurses with n - 1 only while n > 1, so in this program the calls stop at n = 1. Framing only orients.",
+   "evidence": [
+    "programs/factorial.c lines 6-7, 13"
+   ]
+  },
+  {
+   "id": "c.frame",
+   "verdict": "accept",
+   "reason": "Explanation: each recursive entry creates new instances of the automatic objects n and r, and the frame picture is clearly marked as the lesson's drawing. Quotes match the clauses.",
+   "evidence": [
+    "C17 §6.2.4 ¶6",
+    "C17 §6.5.2.2 ¶11"
+   ]
+  },
+  {
+   "id": "c.waits",
+   "verdict": "reject",
+   "reason": "Explanation: the mechanism is backwards. factorial(3) calls factorial(2) in the middle of line 7 and waits there, so its frame stays alive until factorial(2) returns; it does not finish line 7 first and its frame is not gone. The claim's own justification says the opposite.",
+   "evidence": [
+    "C17 §6.2.4 ¶6",
+    "C17 §6.8.6.4 ¶3",
+    "fact f.call3",
+    "fact f.call2"
+   ]
+  },
+  {
+   "id": "c.depth",
+   "verdict": "accept",
+   "reason": "Maths and explanation: n = 2 passes n > 1, so line 7 calls factorial(1) while factorial(3) and factorial(2) wait, giving three factorial frames in the lesson's drawing. Matches stdout line 3.",
+   "evidence": [
+    "fact f.call1",
+    "programs/factorial.c lines 6-7, 13"
+   ]
+  },
+  {
+   "id": "c.base",
+   "verdict": "accept",
+   "reason": "Maths and explanation: with n = 1 the test on line 6 fails, r keeps 1 from line 5, and line 9 returns it. Matches stdout line 4.",
+   "evidence": [
+    "fact f.ret1"
+   ]
+  },
+  {
+   "id": "c.unwind",
+   "verdict": "accept",
+   "reason": "Explanation: a return value goes to the caller as the call expression's value, so factorial(2) computes 2 * 1 = 2. Matches stdout line 5.",
+   "evidence": [
+    "C17 §6.8.6.4 ¶3",
+    "fact f.ret2"
+   ]
+  },
+  {
+   "id": "c.ret3",
+   "verdict": "accept",
+   "reason": "Maths: factorial(3) gets 2 from factorial(2), computes 3 * 2 = 6 and returns it to main. Matches stdout line 6.",
+   "evidence": [
+    "C17 §6.8.6.4 ¶3",
+    "fact f.ret3"
+   ]
+  },
+  {
+   "id": "c.main",
+   "verdict": "accept",
+   "reason": "Maths: line 13 initialises main's r with 6 and line 14 prints main got 6, the last stdout line.",
+   "evidence": [
+    "fact f.l7"
+   ]
+  },
+  {
+   "id": "c.order",
+   "verdict": "accept",
+   "reason": "Explanation: each call prints its enter line, then waits for its callee before printing its result, so entries go 3, 2, 1 and results 1, 2, 3. Matches stdout lines 1-6.",
+   "evidence": [
+    "facts f.l1-f.l6"
+   ]
+  },
+  {
+   "id": "c.pause",
+   "verdict": "accept",
+   "reason": "Framing: a predict prompt that states no fact about C.",
+   "evidence": []
+  },
+  {
+   "id": "c.recap",
+   "verdict": "accept",
+   "reason": "Explanation: scoped to the lesson's drawing; one new frame per call, one removed per return, and each return value goes to the caller below, which is main for factorial(3).",
+   "evidence": [
+    "C17 §6.2.4 ¶6",
+    "C17 §6.8.6.4 ¶3"
+   ]
+  },
+  {
+   "id": "c.slot",
+   "verdict": "accept",
+   "reason": "Framing: describes the lesson's own notation for line 7 with n replaced by 3; no claim about C beyond the source line.",
+   "evidence": [
+    "programs/factorial.c line 7"
+   ]
+  },
+  {
+   "id": "c.korder",
+   "verdict": "accept",
+   "reason": "Maths: the five captured runs show entries counting down from n to 1, results in reverse, and main got 1, 2, 6, 24, 120, which are 1! to 5!. Mechanism is given in the justification.",
+   "evidence": [
+    "facts f.n1.out, f.n2.out, f.out, f.n4.out, f.n5.out"
+   ]
+  },
+  {
+   "id": "c.kbase1",
+   "verdict": "accept",
+   "reason": "Explanation: with n = 1 line 6 fails, so line 7, the only call to factorial inside factorial, never runs, and line 9 returns 1. Matches the fact_n1 run.",
+   "evidence": [
+    "fact f.n1.out"
+   ]
+  }
+ ],
+ "texts": [
+  {
+   "id": "t.001",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.002",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.003",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.088",
+   "verdict": "accept",
+   "reason": "True-or-false card showing the true c.frame statement; the statement is true."
+  },
+  {
+   "id": "t.089",
+   "verdict": "accept",
+   "reason": "Card presents a misconception for the learner to reject; the belief is false per the facts and the mapped claim."
+  },
+  {
+   "id": "t.090",
+   "verdict": "accept",
+   "reason": "Card presents a misconception for the learner to reject; the belief is false per the facts and the mapped claim."
+  },
+  {
+   "id": "t.091",
+   "verdict": "accept",
+   "reason": "Card presents a misconception for the learner to reject; the belief is false per the facts and the mapped claim."
+  },
+  {
+   "id": "t.092",
+   "verdict": "accept",
+   "reason": "Card presents a misconception for the learner to reject; the belief is false per the facts and the mapped claim."
+  },
+  {
+   "id": "t.093",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.094",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.095",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.096",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.097",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.098",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.099",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.100",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.101",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.102",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.103",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.104",
+   "verdict": "reject",
+   "reason": "Maps to c.waits, which is false: factorial(3) waits inside line 7 while factorial(2) runs, and its frame is still there."
+  },
+  {
+   "id": "t.182",
+   "verdict": "accept",
+   "reason": "Fits the scene where 6 returns to main."
+  },
+  {
+   "id": "t.183",
+   "verdict": "accept",
+   "reason": "Fits c.unwind; the drawing passes the value one frame down."
+  },
+  {
+   "id": "t.184",
+   "verdict": "accept",
+   "reason": "Matches c.frame's drawing of one frame per call."
+  },
+  {
+   "id": "t.185",
+   "verdict": "accept",
+   "reason": "Neutral title for the predict scene."
+  },
+  {
+   "id": "t.186",
+   "verdict": "accept",
+   "reason": "Neutral title for the recap."
+  },
+  {
+   "id": "t.187",
+   "verdict": "accept",
+   "reason": "Matches c.base: factorial(1) returns 1."
+  },
+  {
+   "id": "t.188",
+   "verdict": "accept",
+   "reason": "Matches c.depth: three factorial frames on top of main."
+  },
+  {
+   "id": "t.189",
+   "verdict": "accept",
+   "reason": "Matches c.setup."
+  },
+  {
+   "id": "t.190",
+   "verdict": "accept",
+   "reason": "Matches c.main."
+  },
+  {
+   "id": "t.204",
+   "verdict": "accept",
+   "reason": "Lesson title matches what the lesson shows; no overstatement."
+  },
+  {
+   "id": "t.205",
+   "verdict": "accept",
+   "reason": "Shown labelled as a wrong belief, and the belief really is false per the facts."
+  },
+  {
+   "id": "t.206",
+   "verdict": "accept",
+   "reason": "Shown labelled as a wrong belief, and the belief really is false per the facts."
+  },
+  {
+   "id": "t.207",
+   "verdict": "accept",
+   "reason": "Shown labelled as a wrong belief, and the belief really is false per the facts."
+  },
+  {
+   "id": "t.208",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.209",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.210",
+   "verdict": "reject",
+   "reason": "Maps to c.waits, which is false: factorial(3) waits inside line 7 while factorial(2) runs, and its frame is still there."
+  },
+  {
+   "id": "t.211",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.212",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.213",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.214",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.215",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.216",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.217",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.218",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.219",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.220",
+   "verdict": "accept",
+   "reason": "Same wording as its accepted claim; nothing added or dropped."
+  },
+  {
+   "id": "t.221",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: line 4 is factorial(1) = 1, not factorial(3) = 6."
+  },
+  {
+   "id": "t.222",
+   "verdict": "accept",
+   "reason": "Marked correct and matches fact f.l4."
+  },
+  {
+   "id": "t.223",
+   "verdict": "accept",
+   "reason": "Marked wrong and is wrong: no call to factorial(0) happens."
+  },
+  {
+   "id": "t.224",
+   "verdict": "accept",
+   "reason": "The prompt does not give away the answer."
+  },
+  {
+   "id": "t.225",
+   "verdict": "accept",
+   "reason": "True at s0: main is waiting at line 13 and factorial(3) is running."
+  },
+  {
+   "id": "t.226",
+   "verdict": "accept",
+   "reason": "True at s1: factorial(3) waits at line 7 while factorial(2) runs."
+  },
+  {
+   "id": "t.227",
+   "verdict": "accept",
+   "reason": "True at s2: three factorial frames above main."
+  },
+  {
+   "id": "t.228",
+   "verdict": "accept",
+   "reason": "True at s3: factorial(1) is at line 9 returning 1."
+  },
+  {
+   "id": "t.229",
+   "verdict": "accept",
+   "reason": "True at s4: factorial(2) got 1 and returns 2."
+  },
+  {
+   "id": "t.230",
+   "verdict": "accept",
+   "reason": "True at s5: factorial(3) got 2 and returns 6."
+  },
+  {
+   "id": "t.231",
+   "verdict": "accept",
+   "reason": "True at s6: main at line 14 prints the 6 it got."
+  }
+ ],
+ "overall": "reject"
+}

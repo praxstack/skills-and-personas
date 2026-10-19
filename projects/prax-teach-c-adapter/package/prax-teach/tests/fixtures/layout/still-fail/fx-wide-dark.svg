@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600" data-theme="dark">
+<title>Fixture still</title><desc>A synthetic still for the AC-10.1 measure.</desc>
+<rect id="frame-bg" x="0" y="0" width="1200" height="1600" fill="#101828"/>
+<g fill="#edf1f7"><text x="48" y="56" font-family="'Nunito Sans', sans-serif" font-size="30">A tall poster</text>
+<g data-role="figure"><rect x="48" y="90" width="500" height="300" rx="16" fill="none" stroke="#7c6fd6" stroke-width="3"/>
+<text x="70" y="140" font-family="'JetBrains Mono', monospace" font-size="28">0.6</text></g>
+<text x="48" y="500" font-family="'JetBrains Mono', monospace" font-size="17">int main(void) {</text>
+<text x="80" y="531" font-family="'JetBrains Mono', monospace" font-size="17">double z = t1 + t2 + b;</text>
+<text x="80" y="562" font-family="'JetBrains Mono', monospace" font-size="17">printf("a = %g\n", a);</text>
+<text x="80" y="593" font-family="'JetBrains Mono', monospace" font-size="17">return 0;</text>
+<text x="48" y="1560" font-family="'JetBrains Mono', monospace" font-size="12.5">Captured from clang, run twice · stdout sha256 neuron.c 38ae3b01ef4a</text></g>
+</svg>
