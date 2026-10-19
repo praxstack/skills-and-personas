@@ -770,8 +770,10 @@
         "field": 2
       },
       "expect": {
-        "value": "2",
-        "reviewed": true
+        "fn": "binary64_float_h",
+        "args": [
+          "FLT_RADIX"
+        ]
       },
       "value": "2",
       "source": {
@@ -792,8 +794,10 @@
         "field": 2
       },
       "expect": {
-        "value": "53",
-        "reviewed": true
+        "fn": "binary64_float_h",
+        "args": [
+          "DBL_MANT_DIG"
+        ]
       },
       "value": "53",
       "source": {
@@ -814,8 +818,10 @@
         "field": 2
       },
       "expect": {
-        "value": "-1021",
-        "reviewed": true
+        "fn": "binary64_float_h",
+        "args": [
+          "DBL_MIN_EXP"
+        ]
       },
       "value": "-1021",
       "source": {
@@ -836,8 +842,10 @@
         "field": 2
       },
       "expect": {
-        "value": "1024",
-        "reviewed": true
+        "fn": "binary64_float_h",
+        "args": [
+          "DBL_MAX_EXP"
+        ]
       },
       "value": "1024",
       "source": {
