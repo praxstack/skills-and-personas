@@ -70,6 +70,18 @@
         "gcc-16": ""
       },
       "source_sha256": "af01eb6592cd80802de534996f84420f4af22ae9df7b5035d84f48ee41ef6adb"
+    },
+    {
+      "id": "p5",
+      "path": "programs/double_format.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": ""
+      },
+      "source_sha256": "77889ecd8bf8ff1a4b8133e61c216d1ef9fffe18a2a3b64e4fc0635005c8efd1"
     }
   ],
   "facts": [
@@ -747,6 +759,117 @@
         "runs": 2,
         "sandbox": "sandbox-exec MODE=run"
       }
+    },
+    {
+      "id": "f.radix",
+      "program": "p5",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 1,
+        "field": 2
+      },
+      "expect": {
+        "value": "2",
+        "reviewed": true
+      },
+      "value": "2",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 double_format.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "d3a961504359fb96607bb69f8e1588f68f09bdd728ae2bd9901fe848be214937",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.mantdig",
+      "program": "p5",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 2,
+        "field": 2
+      },
+      "expect": {
+        "value": "53",
+        "reviewed": true
+      },
+      "value": "53",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 double_format.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "d3a961504359fb96607bb69f8e1588f68f09bdd728ae2bd9901fe848be214937",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.minexp",
+      "program": "p5",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 3,
+        "field": 2
+      },
+      "expect": {
+        "value": "-1021",
+        "reviewed": true
+      },
+      "value": "-1021",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 double_format.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "d3a961504359fb96607bb69f8e1588f68f09bdd728ae2bd9901fe848be214937",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.maxexp",
+      "program": "p5",
+      "kind": "value",
+      "select": {
+        "stream": "stdout",
+        "line": 4,
+        "field": 2
+      },
+      "expect": {
+        "value": "1024",
+        "reviewed": true
+      },
+      "value": "1024",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 double_format.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "d3a961504359fb96607bb69f8e1588f68f09bdd728ae2bd9901fe848be214937",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.dsize",
+      "program": "p5",
+      "kind": "value",
+      "select": {
+        "stream": "platform",
+        "key": "sizeof.double"
+      },
+      "expect": {
+        "fn": "sizeof_abi",
+        "args": [
+          "double"
+        ]
+      },
+      "value": "8",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 double_format.c && ./p5 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "d3a961504359fb96607bb69f8e1588f68f09bdd728ae2bd9901fe848be214937",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
     }
   ],
   "claims": [
@@ -797,7 +920,7 @@
       "id": "c.mul",
       "kind": "mechanism",
       "text": "Each input is multiplied by its weight: 0.8 × 1.5 prints as +1.2 and 0.4 × -1 = -0.4.",
-      "justification": "Lines 8 and 10 compute t1 = x1 * w1 and t2 = x2 * w2 in double. 0.8 has no exact binary64 form, so 0.8 * 1.5 is the double 1.2000000000000002, which %+g (six significant digits) prints as +1.2; 0.4 * -1 is exactly the negated double of 0.4, printed -0.4. Captured run lines 1-2.",
+      "justification": "Lines 8 and 10 compute t1 = x1 * w1 and t2 = x2 * w2 in double. 0.8 has no exact binary64 form, so 0.8 * 1.5 is the double 1.2000000000000002. %+g (7.21.6.1p8, conversion g): the precision is omitted, so P = 6; in style e the value would have exponent X = 0, and P > X >= -4, so it is converted in style f with precision P - (X + 1) = 5, giving 1.20000; the g conversion then removes the trailing zeros, giving 1.2, and the + flag (7.21.6.1p6) adds the sign: +1.2. 0.4 * -1 is exactly the negated double of 0.4; with X = -1 the same rule gives -0.400000, trimmed to -0.4. Captured run lines 1-2.",
       "sources": [
         {
           "title": "programs/neuron.c",
@@ -807,8 +930,20 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§7.21.6.1 ¶8",
-          "quote": "if P > X ≥ −4, the conversion is with style f and precision P − (X + 1)."
+          "clause": "§7.21.6.1 ¶8 (conversion g)",
+          "quote": "Let P equal the precision if nonzero, 6 if the precision is omitted, or 1 if the precision is zero. Then, if a conversion with style E would have an exponent of X: if P > X ≥ −4, the conversion is with style f (or F) and precision P − (X + 1)."
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶8 (conversion g, last sentence of the rule)",
+          "quote": "Finally, unless the # flag is used, any trailing zeros are removed from the fractional portion of the result and the decimal-point character is removed if there is no fractional portion remaining."
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.21.6.1 ¶6 (the + flag)",
+          "quote": "The result of a signed conversion always begins with a plus or minus sign."
         },
         {
           "title": "captured run of programs/neuron.c",
@@ -919,12 +1054,12 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "What do you predict? Commit to an answer before the answer comes.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
+      "text": "The next few scenes answer this question.",
+      "justification": "Framing for the question scene sc3. The film shows the question and its choices, and video/transcript.txt prints the question just before this line. The film does not stop here; the answer appears in scenes sc4 and sc5, which print z and then a. Explanation comes first; a prediction pause runs only in a practice mode the learner turns on (SPEC v1.4 AC-6.8). The sentence states no fact about C.",
       "sources": [
         {
-          "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
-          "clause": "Teaching"
+          "title": "this lesson's storyboard",
+          "clause": "question scene sc3 and scenes sc4 and sc5, which print z and then a"
         }
       ]
     },
@@ -932,7 +1067,7 @@
       "id": "c.round",
       "kind": "caveat",
       "text": "On this machine, where double is binary64, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
-      "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8; Annex F binary64).",
+      "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8). On this platform double has the binary64 parameters that C17 §5.2.4.2.2 EXAMPLE 2 gives for an IEC 60559 double: programs/double_format.c prints FLT_RADIX 2, DBL_MANT_DIG 53, DBL_MIN_EXP -1021 and DBL_MAX_EXP 1024 (facts f.radix, f.mantdig, f.minexp, f.maxexp), and sizeof(double) is 8 (f.dsize). The format is measured, not taken from Annex F, which binds only implementations that define __STDC_IEC_559__.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -942,7 +1077,18 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§F.2 ¶1"
+          "clause": "§5.2.4.2.2, EXAMPLE 2",
+          "quote": "The following describes floating-point representations that also meet the requirements for single-precision and double-precision numbers in IEC 60559, and the appropriate values in a <float.h> header for types float and double:"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§5.2.4.2.2, EXAMPLE 2 (the double rows)",
+          "quote": "FLT_RADIX 2 … DBL_MANT_DIG 53 … DBL_MIN_EXP -1021 … DBL_MAX_EXP +1024"
+        },
+        {
+          "title": "captured run of programs/double_format.c",
+          "clause": "stdout lines 1-4"
         },
         {
           "title": "captured run of programs/neuron.c",
@@ -968,6 +1114,29 @@
         "f.k1.t1",
         "f.k1.z",
         "f.k1.a"
+      ]
+    },
+    {
+      "id": "c.kformula",
+      "kind": "mechanism",
+      "text": "In the explorer, w2 runs from -2 to 2 and b from -1 to 1 in steps of 0.1. At each setting, z = 0.8 × 1.5 + 0.4 × w2 + b, computed in double in neuron.c's order, and a = max(0, z).",
+      "justification": "figure.explore.sliders: w2 from -2.0 to 2.0 and b from -1.0 to 1.0, step 0.1, each slider value being the double nearest its decimal, so every input is finite and no NaN or infinity can arise. The explorer's values are computed by ptk/expect_neuron.py, which follows programs/neuron.c lines 5-14: t1 = 0.8 * 1.5, t2 = 0.4 * w2, z = t1 + t2 + b left to right in binary64 doubles, and a = fmax(0.0, z), which for a finite z is max(0, z) (7.12.12.2; at z = 0 both are 0). Copies of neuron.c compiled with (w2, b) = (-1, -1), (0.5, 0.3) and (-2, -1), programs/neuron_k1.c to neuron_k3.c, print z = -0.2, 1.7 and -0.6, as the explorer shows at those settings. The sentence is shown only in the live explorer, never on a static card.",
+      "sources": [
+        {
+          "title": "programs/neuron.c",
+          "url": "programs/neuron.c",
+          "clause": "lines 5-14"
+        },
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§7.12.12.2 ¶3",
+          "quote": "The fmax functions return the maximum numeric value of their arguments."
+        },
+        {
+          "title": "captured runs of programs/neuron_k1.c, neuron_k2.c, neuron_k3.c",
+          "clause": "stdout line 3"
+        }
       ]
     }
   ],
@@ -1171,7 +1340,7 @@
       },
       "narration": [
         {
-          "text": "What do you predict? Commit to an answer before the answer comes.",
+          "text": "The next few scenes answer this question.",
           "claims": [
             "c.pause"
           ]
@@ -1369,6 +1538,7 @@
         }
       ],
       "claims": [
+        "c.kformula",
         "c.kzero",
         "c.relu"
       ]
