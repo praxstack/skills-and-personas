@@ -499,6 +499,10 @@ def test_source_excerpts_bound():
     (d / rel).write_text((d / rel).read_text() + "One more sentence.\n")
     g = _gate(copy_lesson, items, cbuild)
     assert g["status"] == "failed" and g["measured"]["stale"], g
+    # a passage deleted after the build fails the gate (it must not crash the check)
+    (d / rel).unlink()
+    g = _gate(copy_lesson, items, cbuild)
+    assert g["status"] == "failed" and g["reason"] == "SourceExcerptMissing" and g["measured"]["problems"], g
     # four ways to lose a cited passage
     cases = {}
     d, lesson = _fixture_copy("excerpt-missing-file")

@@ -1183,6 +1183,11 @@ def check(lesson, build, current_items):
     priv = load_private(build)
     if current_items and "maps_to" not in current_items[0]:
         mapping_gate(lesson, current_items)
+    try:  # AC-7.7: a passage deleted or broken after the build fails the gate, it never crashes the check
+        check_source_excerpts(lesson, [m["mutation"] for m in priv["jobs"].values() if m.get("mutation")])
+    except errors.SourceExcerptMissing as e:
+        return [{"id": "claims.review", "medium": "all", "status": "failed", "reason": "SourceExcerptMissing",
+                 "measured": {"problems": e.detail["problems"], "rubric_version": RUBRIC_VERSION}}]
     cur_sha = manifest_for(_job_body(lesson, current_items))[1]
     rows, invalid, stale, missing, retrying = [], [], [], [], []
     for job_id, meta in priv["jobs"].items():
