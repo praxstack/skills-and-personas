@@ -677,16 +677,16 @@ def _neuron_band(svg, flow, lesson, g, x, y, w, wide):
     if wide:
         lw = (w - g["col_gap"]) * 0.52
         y1 = _code_strip(svg, lesson, fig["program"], [n["line"] for n in notes], x, y, lw, g["code"], badges=badges)
-        y1 = _output_grid(svg, dict(g, out=g["out"] * 0.9), lesson, final, x, y1 + 14, lw)
+        y1 = _output_grid(svg, dict(g, out=g["out"] * 0.86, out_gap=8), lesson, final, x, y1 + 6, lw)
         rx = x + lw + g["col_gap"]
-        y2 = _notes(svg, flow, lesson, notes, rx, y - 4, x + w - rx, dict(g, note=g["note"] * 0.95))
-        svg.close()  # the caption reads the figure from beside it; it is not part of the figure
-        y2 = _caption(svg, flow, lesson, dict(g, caption=g["caption"] * 0.92), rx, y2 + 34, x + w - rx)
+        y2 = _notes(svg, flow, lesson, notes, rx, y - 4, x + w - rx, dict(g, note=g["note"] * 0.9), belief=True)
+        svg.close()  # the caption reads the figure from under the output; it is not part of the figure
+        y1 = _caption(svg, flow, lesson, dict(g, caption=g["caption"] * 0.92), x, y1 + 24, lw)
         svg.open(data_role="figure")
         return max(y1, y2)
     y = _code_strip(svg, lesson, fig["program"], [n["line"] for n in notes], x, y, w, g["code"], badges=badges) + 14
     y = _output_card_at(svg, g, lesson, final, x, y, w)
-    return _notes(svg, flow, lesson, notes, x, y, w, g)
+    return _notes(svg, flow, lesson, notes, x, y, w, g, belief=True)
 
 
 def build_svg(lesson, layout, theme, tokens, math=None):
@@ -752,10 +752,10 @@ def build_svg(lesson, layout, theme, tokens, math=None):
             svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
             y = _side(svg, flow, lesson, g, kind, X0, y + 6, X1 - X0, wide)
     svg.close()
-    y += 26 if wide else 22
+    y += (8 if kind == "neuron" else 26) if wide else 22
 
     # ---------- caption and the source link (provenance lives in <metadata>, off the picture) ----------
-    if not (wide and kind == "neuron"):  # the neuron's caption sits in its band, under the notes
+    if not (wide and kind == "neuron"):  # the neuron's caption sits in its band, under the output
         y = _caption(svg, flow, lesson, g, X0, y, X1 - X0)
     ffont, fpx, _w, _c, _s = svg.role("foot", g["foot"])
     prog = lesson.program(fig["program"])
