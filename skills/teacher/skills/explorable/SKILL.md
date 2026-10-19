@@ -1,18 +1,18 @@
 ---
 name: explorable
-description: Build an interactive lesson where one executable model drives every view, a figure the learner manipulates, live readouts, commit-then-reveal questions, a narrated film, margin notes and a report back to the teacher. Manipulate first, answer, then see why. One hint after a miss, taught directly after a second, and a "still confused?" button that swaps in a different explanation and records what was tried. Use for any "teach me X" where something can be varied, in any subject. Builds to one self-contained HTML file in the lesson-notebook style.
+description: Build an interactive lesson where one executable model drives every view, a figure the learner manipulates, live readouts, optional practice questions, a narrated film, margin notes and a report back to the teacher. Complete explanation first, with immediate controls; attempt-first only for explicitly requested practice. One hint after a miss, taught directly after a second, and a "still confused?" button that swaps in a different explanation and records what was tried. Use for any "teach me X" where something can be varied, in any subject. Builds to one self-contained HTML file in the lesson-notebook style.
 ---
 
 # Explorable
 
-The learner moves the thing, commits an answer, and only then reads why. Every number on screen comes from one model function, so the figure, the questions, the film and the checks can't disagree.
+The learner sees the complete mechanism and explanation, then can manipulate the figure or try optional practice. Every number on screen comes from one model function, so the figure, the questions, the film and the checks can't disagree.
 
 ## Build one
 
-1. Write the model first: a pure function from parameters to state. If you can't write it, you don't understand the idea well enough to draw it yet.
+1. Quantitative lessons use a checked pure function from parameters to state. Qualitative lessons use a sourced selection/context model. Do not invent measurements for a language or history lesson.
 2. Write `checks`: facts the model must satisfy (limits, symmetries, a known value). They run in the test.
 3. Draw the figure from the state with `kit` (below). Draw the claim, not decoration.
-4. Write 3 to 7 steps. Each step: one idea, which controls are live, what to look for, one question, a margin note, and at least one other way to explain it.
+4. Write 3 to 7 steps. Each step: one idea, which controls are live, what to look for, an optional check, a margin note, and at least one other way to explain it.
 5. Build, test, look:
 
 ```sh
@@ -65,8 +65,8 @@ Every page also has: "Or see it as a film / code" under "Still confused?", a "Qu
 
 ## What the page does
 
-- Layout: contents, lesson, margin notes, kept apart, with Film and "Notes and report" as their own tabs. Progress, answers and the learner's notes stay in the browser (and the page works when storage is blocked). Saved progress is matched to steps by key (the step's `id`, else its title and question), so a step that is inserted, removed or moved never inherits another step's answers; give steps an `id` if you expect to reword them.
-- Questions: Next stays locked until the step's question is resolved. A miss gets the hint. A second miss, or "Show me", teaches it directly. Every attempt is recorded.
+- Layout: contents, lesson, margin notes, kept apart, with Film and "Notes and report" as their own tabs. Progress, answers and notes stay ephemeral unless the learner checks "Remember progress on this device". Withdrawing it removes this page's local progress and consent key; it cannot erase exported or externally copied records. The page works when storage is blocked. Saved progress is matched to steps by key (the step's `id`, else its title and question), so a step that is inserted, removed or moved never inherits another step's answers; give steps an `id` if you expect to reword them.
+- Questions: Next is always available in the default explanation style. Optional practice lives in a closed detail after the explanation. Only explicitly requested practice locks Next until the question is resolved or shown. A miss gets the hint. A second miss, or "Show me", teaches it directly. Every attempt is recorded.
 - "Still confused? Try another way": cycles through `alts`, changing the representation, example or analogy, and records which ones were tried.
 - Film: the same figure, eased between each scene's parameters, with captions, play, pause, scrub, chapters, speed and a transcript (the human-sounding voice is in the narrated video: `scripts/narrate.py`).
 - The end isn't a score. "Where to next?" offers: got it, go deeper, another example, explain it differently, practise. Then a plain-text report (steps, misses, explanations tried, notes, choice) the learner copies back to the teacher, so the next session fits them.
@@ -75,10 +75,14 @@ Every page also has: "Or see it as a film / code" under "Still confused?", a "Qu
 ## Rules
 
 - Every visual explains something. The step's `say` states the claim, `lookFor` says where to look, and the figure's label says it in words.
-- Ask before telling. The question comes after manipulation and before the explanation.
+- Explain first. Attempt-first applies only to `style: "practice-first"` or `?practice=1` after an explicit learner request. `?practice=0` exits it.
 - One idea per step. If a step needs two sliders and three paragraphs, split it.
 - Numbers come from the model, never typed into the figure by hand.
 - `alts` must change one thing (the example, the representation, the granularity or the analogy), not repeat the same explanation louder.
 - Phone first: test the narrow layout. `visual-qa` fails figure text under 11px as drawn.
 
 Examples: `assets/examples/seasons.lesson.js` (Earth science, no code).
+
+## Six formats from one lesson
+
+Add `sources: [{title, url, note}]` and an honest `limits` statement to source-grounded lessons. Build the explorer, render narrated video, then use `node scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. The exporter produces editable still/PNG, Q&A, cards, static fallback and interactive video. Real video and matching timing/captions are required for the video explorer; missing media is not silently labelled complete.

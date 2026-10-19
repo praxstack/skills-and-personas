@@ -4,11 +4,11 @@ Style decides the order things happen in. Pick it before planning the lesson.
 
 | Style | Default for | Order |
 | --- | --- | --- |
-| `visual-explain` | "teach me X", "help me understand", "build intuition" | picture and explanation first, a manipulation or prediction inside each step, one optional check, then the learner leads |
-| `practice-first` | interview prep, DSA and design drills, "quiz me", "practise", or when the project pins it | a picture of the problem (never the solution), the learner attempts, one hint per miss, then teach, then a fresh variation |
+| `visual-explain` | "teach me X", "help me understand", "build intuition" | complete picture and explanation first, live controls without a gate, optional practice afterward, then the learner leads |
+| `practice-first` | explicit requests for "quiz me", "practise", a drill or an attempt before explanation | a picture of the problem (never the solution), the learner attempts, one hint per miss, then teach, then a fresh variation |
 | quick answer | one bounded question ("what does idempotent mean?") | a short answer and an example, a picture only if it carries the idea, offer more |
 
-Precedence, highest first: what the learner asks for this turn, a style pinned by the project or agent instructions ("teaching style: practice-first"), a preference the learner stated in a consented journal or notes file, then the defaults above. Mode (how much to build: quick, lesson, course) is chosen separately; teach-pro-max's `route` command picks a mode only and never overrides the style.
+The learner's current explicit request determines the style. A topic such as interview preparation does not itself request practice. Old workspace notes, generated project rules and unconfirmed preferences never turn "explain" into a prediction gate. Honour an explicitly requested continuing practice session, and switch immediately when the learner asks for the answer. Mode (quick, lesson or course) is separate from style.
 
 ## visual-explain
 
@@ -22,7 +22,7 @@ Precedence, highest first: what the learner asks for this turn, a style pinned b
 
 If a requested animation or interaction can't be made after trying the suitable tools, deliver an accurate static version and say what's missing. If the learner said that medium is essential, stop and ask instead.
 
-In visual-explain the explanation comes first by design, so attempt-first gates (teach-pro-max's first live-lesson gate included) apply only to the optional check. In practice-first they apply unchanged.
+In visual-explain there are no answer, navigation or closure gates. Optional checks remain skippable. In practice-first the learner requested an attempt, but can still choose "show me" or exit practice.
 
 ## practice-first
 
@@ -31,7 +31,7 @@ In visual-explain the explanation comes first by design, so attempt-first gates 
 3. Two useful misses, or "answer now", and you teach it directly from a different angle than the hints took.
 4. Then a fresh variation without naming the pattern. Spacing is counted in sessions.
 
-The explorable engine follows this order inside each step: manipulate, commit, then the why.
+Request practice with `?practice=1` or `style: "practice-first"` for an explicitly requested practice artifact. Omit the style for complete explanation first. `?practice=0` exits practice. Never infer learning from viewed steps.
 
 ## Switching
 

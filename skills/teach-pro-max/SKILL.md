@@ -15,30 +15,11 @@ Help the learner become independently capable, not merely satisfied with an
 explanation. Use the lightest teaching mode that can reach the learner's actual
 outcome and support every claim with the right evidence.
 
-## Activate the embedded teaching engine
+## Use the general teacher
 
-Before teaching, read
-[`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md)
-completely and follow it as the normative teaching protocol, with one
-exception: when the style is `visual-explain` (see "Choose the teaching style"
-below), that section overrides the engine's first live-lesson gate. The
-explanation comes first and the attempt-first gate applies only to the optional
-check that follows it. In `practice-first` the engine's gates apply unchanged.
+The general teaching authority is the sibling [`teacher/SKILL.md`](../teacher/SKILL.md). Read it for lesson design, medium selection, the six-format build path, accessible fallback and optional practice. This entry preserves the `teach-pro-max` invocation; it does not create a competing teacher or require C programs for non-code topics.
 
-Resolve every path named by that embedded skill relative to
-`references/prax-teach-v2/`. Read only the detailed references needed for the
-current request, except where the embedded skill explicitly requires a complete
-read before an operation.
-
-The embedded name `prax-teach-v2` is a preserved implementation and schema
-identifier. The public invocation name is `teach-pro-max`. Do not rewrite old
-learner records, study arms, content hashes, receipts, or provenance merely to
-change the public name.
-
-Read
-[`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md)
-before migrating persisted state, evaluating this distribution, modifying the
-embedded engine, or making a release claim.
+The embedded [`references/prax-teach-v2/SKILL.md`](./references/prax-teach-v2/SKILL.md) remains a preserved compatibility implementation for its existing state and schemas. Use it only for an explicitly requested compatible operation. Its historical attempt-first gates do not override complete explanation first. Never rewrite learner records, hashes or provenance to rename an entry. Read [`references/PUBLIC-DISTRIBUTION.md`](./references/PUBLIC-DISTRIBUTION.md) before evaluating that embedded distribution, migrating state or making a release claim. The development C adapter is optional and not installed or certified by this entry.
 
 ## Route the learner request
 
@@ -61,14 +42,10 @@ style separately from the mode.
 | Style | Default for | Order |
 |---|---|---|
 | `visual-explain` | "Teach me X", "help me understand", "build intuition" | Picture and explanation first, then one optional check, then the learner leads |
-| `practice-first` | Interview prep, DSA/LLD/HLD drills, "quiz me", "practice", any project that pins it | Picture of the problem (not the solution), learner attempts, one hint per miss, then teach |
+| `practice-first` | An explicit request for "quiz me", "practice", a drill or an attempt before explanation | Picture of the problem (not the solution), learner attempts, one hint per miss, then teach |
 | `quick` answer | One bounded question such as "what does X mean?" | Short answer and example, optional visual, optional check |
 
-Precedence, highest first: the learner's explicit request for this turn, then
-a style pinned by the project or agent instructions (for example "teaching
-style: practice-first"), then a preference the learner stated in a consented
-workspace, then the defaults above. The embedded `route` command chooses a
-mode only; it never overrides the style.
+The learner's current request decides the style. An interview topic or an old project note does not itself request prediction-first teaching. Complete the explanation by default, then offer practice. Switch immediately when the learner asks to see the answer. The embedded route mode never overrides this rule.
 
 ### `visual-explain`
 

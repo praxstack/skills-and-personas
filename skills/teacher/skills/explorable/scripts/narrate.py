@@ -477,7 +477,7 @@ def main() -> int:
         # passes, so a failed render never clobbers a good video.
         out = a.out.with_name(a.out.stem + ".partial" + a.out.suffix)
         print("encoding…")
-        master = "loudnorm=I=-16:TP=-2:LRA=11,aresample=48000,alimiter=limit=0.75:attack=1:release=60:level=false"
+        master = "loudnorm=I=-16:TP=-2:LRA=7,aresample=48000"
         if a.remux:
             run(["ffmpeg", "-loglevel", "error", "-y", "-i", str(a.out), "-i", str(work / "audio.wav"), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
                  "-af", master, "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(out)])

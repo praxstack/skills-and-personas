@@ -44,8 +44,13 @@ for (let f = 0; f < frames; f++) {
   const sc = timing.scenes[i];
   const u = Math.max(0, Math.min(1, (t - sc.start) / sc.dur));
   // Caption written line by line as the voice speaks it.
-  const cu = sc.voiceDur ? Math.max(0.12, Math.min(1, (t - sc.voiceAt + 0.2) / sc.voiceDur)) : 1;
-  const info = await page.evaluate(([k, uu, c]) => window.__filmExport.frame(k, uu, c), [i, u, cu]);
+  const voiceAt = sc.voiceAt ?? sc.start + 0.7;
+  const cu = t < voiceAt ? 0 : sc.voiceDur ? Math.max(0.12, Math.min(1, (t - voiceAt + 0.2) / sc.voiceDur)) : 1;
+  // Settle all parameters before the first spoken/captioned claim. A fixed
+  // fraction of scene duration can keep stale values visible for seconds.
+  const settleDuration = Math.max(1 / fps, voiceAt - sc.start - 0.1);
+  const settled = Math.max(0, Math.min(1, (t - sc.start) / settleDuration));
+  const info = await page.evaluate(([k, uu, c, ss]) => window.__filmExport.frame(k, uu, c, ss), [i, u, cu, settled]);
   marks[i] = Math.max(marks[i], info.marks.length);
   await page.screenshot({ path: join(out, `${String(n++).padStart(6, "0")}.png`) });
 }
