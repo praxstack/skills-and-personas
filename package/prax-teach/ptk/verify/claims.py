@@ -210,10 +210,60 @@ def axis_anchor_problem(lesson, ticks, anchors):
     return None
 
 
+RELU_WINDOW = (-1.0, 1.5)  # the ReLU plot's z window: a fixed teaching window that must hold z and both sides of 0
+
+
+def axis_data_ticks(lesson, axis):
+    """The tick values an axis must show, computed from the facts' independent expectations (anchor_value), never
+    from a number the renderer drew (A5, DECISION-BRIEFS §5 row 8). None when the verifier knows no data scale for
+    the axis; such ticks are refused rather than passed on their own labels.
+
+    - neuron "add": the running sums of the terms and the bias, with 0, padded by 0.5 below and 0.4 above and
+      rounded to halves; ticks at both ends and at 0.
+    - neuron "gate-z": RELU_WINDOW with 0, and only when that window holds the facts' z.
+    """
+    panel = ((lesson.data.get("figure") or {}).get("panel") or {}) if lesson is not None else {}
+    if panel.get("kind") != "neuron":
+        return None
+    try:
+        if axis == "add":
+            total, ends = 0.0, [0.0]
+            for fid in [tm["t"] for tm in panel["terms"]] + [panel["bias"]]:
+                total += anchor_value(lesson, fid)
+                ends.append(total)
+            lo, hi = min(ends) - 0.5, max(ends) + 0.4
+            return (round(lo * 2) / 2, 0.0, round(hi * 2) / 2)
+        if axis == "gate-z":
+            z = anchor_value(lesson, panel["sum"])
+            lo, hi = RELU_WINDOW
+            return (lo, 0.0, hi) if lo <= z <= hi else None
+    except (KeyError, TypeError, ValueError):
+        return None
+    return None
+
+
+def axis_data_problem(lesson, axis, ticks):
+    """Each drawn tick label must be one of the values axis_data_ticks computes from the facts, and every one of those
+    values must be drawn. Labels wrong in the same way (all shifted, all scaled) still fit a line and, in a frame
+    drawn before any data mark, have no anchor to catch them; this catches them. Returns a problem or None."""
+    if lesson is None:
+        return "no lesson facts to bind the axis ticks to"
+    want = axis_data_ticks(lesson, axis) if isinstance(axis, str) else None
+    if want is None:
+        return f"the axis {axis!r} has no tick scale computed from the facts"
+    drawn = sorted(_num(t.strip().replace("−", "-")) for t, _x in ticks)
+    if len(drawn) != len(want) or any(d is None or abs(d - w) > 1e-9 for d, w in zip(drawn, sorted(want))):
+        shown = ", ".join(t.strip() for t, _x in ticks)
+        return (f"axis ticks do not match the data: {axis} shows {shown}, where the facts give "
+                f"{', '.join(f'{w:g}' for w in sorted(want))}")
+    return None
+
+
 def rebind_ticks(items, ticks, anchors=None, lesson=None):
     """items: (kind, ref, text, ...) tuples; ticks: [(item index, axis key, x)]. Ticks of an axis whose scale fails,
-    or whose data marks (anchors: {axis key: [(expression, x)]}) sit off that scale, get ref
-    "axis-tick-off-scale|<problem>", which map_item reports."""
+    whose labels differ from the tick values the facts give (axis_data_problem), or whose data marks (anchors:
+    {axis key: [(expression, x)]}) sit off that scale, get ref "axis-tick-off-scale|<problem>", which map_item
+    reports."""
     axes = {}
     for i, key, x in ticks:
         k1 = key[1] if isinstance(key[1], str) or key[1] is None else round(key[1], 1)
@@ -221,6 +271,8 @@ def rebind_ticks(items, ticks, anchors=None, lesson=None):
     out = list(items)
     for akey, members in axes.items():
         why = tick_scale_problem([(items[i][2], x) for i, x in members])
+        if not why:
+            why = axis_data_problem(lesson, akey[1], [(items[i][2], x) for i, x in members])
         if not why and lesson is not None and anchors and akey in anchors:
             why = axis_anchor_problem(lesson, [(items[i][2], x) for i, x in members], anchors[akey])
         if why:

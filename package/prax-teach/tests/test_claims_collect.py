@@ -63,8 +63,10 @@ def test_wrong_belief_label_must_be_drawn_in_the_box():
     return {"real": labelled, "box": box}
 
 
-def _tick_svg(ticks, y=468.8):
-    body = "".join(f'<text x="{x}" y="{y}" data-label="axis-tick" text-anchor="middle">{v}</text>' for v, x in ticks)
+def _tick_svg(ticks, y=468.8, axis="add"):
+    named = f' data-axis="{axis}"' if axis else ""
+    body = "".join(f'<text x="{x}" y="{y}" data-label="axis-tick"{named} text-anchor="middle">{v}</text>'
+                   for v, x in ticks)
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">{body}</svg>'
 
 
@@ -79,7 +81,8 @@ def _tick_problems(lesson, svg_text, tmp):
 def test_axis_ticks_bound_to_a_linear_scale():
     """Codex 5: an axis tick label used to pass on its number pattern alone, so a tick changed from 1.5 to 999 was
     accepted and never reviewed. Now the ticks of one axis (same SVG, same baseline) must sit on one increasing
-    linear scale fitted from their own positions (residual <= 1 px), with at least three ticks to check it."""
+    linear scale fitted from their own positions (residual <= 1 px), with at least three ticks to check it, and (A5)
+    the axis must be named so its labels can be bound to the tick values the facts give."""
     lesson = model.load(NEURON)
     tmp = host.make_tmp("claims-ticks-")
     good = [("−0.5", 447.3), ("0", 523.7), ("1.5", 752.7)]  # the neuron still's add-axis ticks
@@ -91,6 +94,8 @@ def test_axis_ticks_bound_to_a_linear_scale():
     assert all(_tick_problems(lesson, _tick_svg(reversed_), tmp)), "a decreasing axis is not the drawn scale"
     two = [("0", 523.7), ("1.5", 752.7)]
     assert all(_tick_problems(lesson, _tick_svg(two), tmp)), "two ticks cannot show a scale"
+    # A5: an axis with no name has no tick scale computed from the facts, so its ticks are refused (stricter)
+    assert all(_tick_problems(lesson, _tick_svg(good, axis=None), tmp)), "an unnamed axis passed on its own labels"
     svg = _still()
     real = _tick_problems(lesson, svg, tmp)
     assert real and not any(real), real
