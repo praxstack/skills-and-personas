@@ -20,7 +20,6 @@ import re
 from pathlib import Path
 
 import _b0
-from ptk import host
 
 MIN_RATIO = 1.5
 MIN_FIGURE = 0.50
@@ -101,10 +100,10 @@ def measure_wide(m, ctx, png=None):
         return {"problems": [{"kind": "render-failed", "error": (m or {}).get("error")}]}
     W, H = m["W"], m["H"]
     vb, rb = m.get("viewBox") or [W, H], m.get("rendered") or [0, 0, W, H]
-    ratios = {"viewBox": round(vb[0] / vb[1], 3), "rendered": round(rb[2] / rb[3], 3)}
+    ratio = lambda w, h: round(w / h, 3) if h else 0.0
+    ratios = {"viewBox": ratio(vb[0], vb[1]), "rendered": ratio(rb[2], rb[3])}
     if png and Path(png).is_file():
-        pw, ph = _png_size(png)
-        ratios["png"] = round(pw / ph, 3)
+        ratios["png"] = ratio(*_png_size(png))
     fig, hulls = _b0.group_coverage(m, "fig")
     blocks = code_blocks(m, ctx)
     hashes = hash_texts(m, ctx)
