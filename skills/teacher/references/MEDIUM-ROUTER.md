@@ -2,6 +2,10 @@
 
 Pick the medium by the job the idea needs, then the tool by what the host can run. Every visual must explain something. Pretty isn't a job.
 
+## Honor the requested delivery
+
+Explicit requests take priority over a default medium. Live oral or chat practice stays as a live dialogue, one exchange at a time. Do not turn it into flashcards just because it is practice. Cards require a request for a deck/cards; a layered Q&A page requires a request for a reference artifact. Video, still, interactive explorer and course requests retain those forms when the host can produce them.
+
 ## Four questions
 
 1. **What's the claim?** Write the sentence the visual proves. No sentence, no visual.

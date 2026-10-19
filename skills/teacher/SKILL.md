@@ -11,7 +11,7 @@ Everything here is plain files and scripts. Nothing depends on one host. Where a
 
 ## Every session starts the same way
 
-1. **Find out what this host can do.** Can you write files, run shell commands, open a browser, publish a page, start subagents? Don't assume; check the tools you actually have. Then run `python3 scripts/find_tool.py --inventory --net` once to see which visual tools work here. See [references/HOSTS.md](references/HOSTS.md).
+1. **Find out what this host can do.** Can you write files, run shell commands, open a browser, publish a page, start subagents? Don't assume; check the tools you actually have. Then run `python3 scripts/find_tool.py --inventory` once to see which local visual tools work here. Network probing and downloads belong to an explicitly permitted setup stage; teaching can then use the provisioned local tools offline. See [references/HOSTS.md](references/HOSTS.md).
 2. **Find the learner.** If there's a consented journal (`.teacher/` in the workspace), run `python3 scripts/series.py resume` and pick up the open thread. Otherwise infer their level from how they asked. Ask one question only when the answer would change the lesson ("Have you met derivatives yet?"), and never quiz them before teaching.
 3. **Pick the style.** `visual-explain` for "teach me X" and "help me understand". `practice-first` only when the learner explicitly asks for practice, drills, "quiz me", or an attempt before explanation. A workspace note or an interview topic alone does not request a quiz. A plain answer for a one-line question, with a picture only if it helps. The learner's request for this turn beats any pinned style. Details: [references/STYLES.md](references/STYLES.md).
 4. **Name the outcome.** One sentence: what the learner will be able to see, explain or do. That sentence is what every visual has to serve.
@@ -35,6 +35,10 @@ Everything here is plain files and scripts. Nothing depends on one host. Where a
 
 The full loop, the depth ladder and how to tell understanding from recognition: [references/TEACHING-LOOP.md](references/TEACHING-LOOP.md).
 
+## Inspect the actual mechanism
+
+Before delivery, enumerate the relationships asserted by the explanation and check each against the actual figure: every claimed connection, direction, quantity, comparison and return path must be present and correct. Inspect SVG text bounds at the delivered desktop and mobile sizes; wrap or reposition long labels rather than shrinking them below readable size. A missing arrow or overflowing label is a failed artifact to repair, even when the underlying calculation passes. Inspect again after repair. These checks supplement independent factual review; they do not certify truth by themselves.
+
 ## When they're still confused
 
 Never repeat the same explanation louder or in new words. Change one thing, and keep a list of what was tried:
@@ -51,6 +55,8 @@ Never repeat the same explanation louder or in new words. Change one thing, and 
 If several gaps are plausible, ask one focused question to find which. After two failed repairs on the same point, go down a rung on the depth ladder (a missing prerequisite is the usual cause) and say so plainly.
 
 ## Choose the medium that makes it click
+
+Honor an explicitly requested delivery form before choosing a default. A live tutoring exchange (“ask me one question at a time”) stays in the conversation: it is not a flashcard export or a layered reference page. Produce cards only when the learner asks for cards or a reusable revision deck; produce a Q&A expander when they ask for an explorable reference artifact. Practice describes the teaching order, not the file format.
 
 | The idea is mostly... | Make | With |
 | --- | --- | --- |

@@ -548,9 +548,10 @@ function goStep(i, { focus = true } = {}) {
     ...[
     h("p", { class: "nb-label", text: `Step ${S.step + 1} of ${L.steps.length}` }),
     h("h2", { tabindex: "-1", text: step.title }),
-    hook,
+    PRACTICE ? hook : null,
     stage,
     controls,
+    !PRACTICE ? hook : null,
     h("div", { class: "xp-say", html: step.say }),
     stepCode ? stepCode.el : null,
     step.lookFor ? h("p", { class: "xp-lookfor" }, h("span", { class: "nb-label", text: "Look for" }), h("span", { class: "nb-hand", text: step.lookFor })) : null,
