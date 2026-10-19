@@ -90,7 +90,7 @@
   "panel_multiply": "multiply / signed terms",
   "panel_add": "add / follow the endpoint",
   "panel_gate": "gate / rectified linear unit",
-  "neuron_input": "input {i}",
+  "neuron_input": "input x{i}",
   "neuron_bias": "bias",
   "neuron_added": "added directly",
   "times": "×",
@@ -139,6 +139,17 @@
   "qa_walk": "A walkthrough step: read it when you are ready.",
   "qa_sealed": "Shown when this layer opens",
   "qa_practice": "Check yourself (optional)",
-  "card_true": "True."
+  "card_true": "True.",
+  "mem_label": "in memory · lowest address first",
+  "mem_row": "{var} · {ctype} · {n} bytes",
+  "mem_byte": "+{k}",
+  "mem_offset": "byte offset",
+  "mem_read_down": "read from the highest address down",
+  "stack_order": "main on top · each call below its caller",
+  "prints_label": "what {file} prints",
+  "compare_label": "compare: {file}",
+  "stack_calls": "↓ calls go down",
+  "stack_returns": "values come back up ↑",
+  "mem_prints": "%f prints this double as"
  }
 }

@@ -115,9 +115,11 @@ def test_math_svg():
 
 
 def test_wide_notes_numbered_and_column_filled():
-    """Integration finding (WP9 Part A): the wide still numbers its notes exactly as the portrait does (a badge
-    on the code line and the same number before the note), and the column beside the program starts at the
-    top of the code card, so no empty block sits top right."""
+    """Integration finding (WP9 Part A), carried into the landscape still (AC-10.1): every variant numbers its notes
+    the same way, a badge beside the figure element for the note's line (a row of the path figure, a program line, a
+    line of output) and the same number before the note. No badge is drawn inside a mechanism (a note number is not
+    a value). In the wide still the column beside the figure starts at the figure's top, so no empty block sits top
+    right."""
     lesson = model.load(SLICE)
     tk = fonts.tokens()
     notes = lesson.data["figure"]["notes"]
@@ -125,18 +127,23 @@ def test_wide_notes_numbered_and_column_filled():
     for layout in ("wide", "portrait"):
         for theme in ("light", "dark"):
             root = ET.fromstring(still.render(lesson, layout, theme, tk))
+            parents = {c: p for p in root.iter() for c in p}
+
+            def in_mech(el):
+                while el is not None:
+                    if el.get("data-role") == "mechanism":
+                        return True
+                    el = parents.get(el)
+                return False
             badges = [el for el in root.iter(f"{SVG_NS}text") if el.get("data-label") == "note-badge"]
-            in_code = sorted(b.text for b in badges if (b.get("data-in") or "").startswith("code-card-badge"))
+            on_fig = sorted(b.text for b in badges if not (b.get("data-in") or "").startswith("badge-n"))
             listed = sorted(b.text for b in badges if (b.get("data-in") or "").startswith("badge-n"))
-            assert in_code == want and listed == want, (layout, theme, in_code, listed)
+            assert on_fig == want and listed == want, (layout, theme, on_fig, listed)
+            assert not [b.text for b in badges if in_mech(b)], (layout, theme, "a note badge inside a mechanism")
             if layout == "wide":
-                card = next(el for el in root.iter(f"{SVG_NS}rect") if el.get("id") == "code-card")
+                mech_el = next(el for el in root.iter() if el.get("data-role") == "mechanism")
+                top = min(float(el.get("y")) for el in mech_el.iter(f"{SVG_NS}text") if el.get("y"))
                 first_note = next(el for el in root.iter(f"{SVG_NS}text") if el.get("data-claim") == notes[0]["claim"])
                 ny = float(first_note.get("y") or first_note[0].get("y"))
-                gap = ny - float(card.get("y"))
-                assert 0 <= gap <= 48, f"{theme}: the first note starts {gap:.0f} px below the code card top"
-                out = next(el for el in root.iter() if el.get("data-key") == "output")
-                fact_y = [float(el.get("y")) for el in out.iter(f"{SVG_NS}text") if el.get("data-fact")]
-                card_bottom = float(card.get("y")) + float(card.get("height"))
-                assert fact_y and max(fact_y) <= card_bottom + 40, f"{theme}: the output does not sit beside the code"
+                assert abs(ny - top) <= 48, f"{theme}: the first note starts {ny - top:.0f} px from the figure top"
     return {"notes": len(notes)}

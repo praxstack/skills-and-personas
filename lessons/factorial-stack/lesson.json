@@ -557,7 +557,7 @@
     {
       "id": "c.waits",
       "kind": "mechanism",
-      "text": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+      "text": "factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits above the new one.",
       "justification": "Line 7 computes n * factorial(n - 1); the value of a function call expression is the value its return statement returns (6.5.2.2p5, 6.8.6.4p3), so the multiplication and everything after it in factorial(3) happen only after factorial(2) returns. Meanwhile factorial(3)'s own n and r still exist (6.2.4p6). The run printed enter factorial(3) then enter factorial(2) before any result line.",
       "sources": [
         {
@@ -590,7 +590,7 @@
     {
       "id": "c.depth",
       "kind": "mechanism",
-      "text": "factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
+      "text": "factorial(2) calls factorial(1), so three factorial frames now sit below main.",
       "justification": "In factorial(2), n > 1 holds, so line 7 calls factorial(1); factorial(3) and factorial(2) are both still waiting in their line 7, and main is waiting in line 13. The run printed enter factorial(1) as line 3, before any result.",
       "sources": [
         {
@@ -630,7 +630,7 @@
     {
       "id": "c.unwind",
       "kind": "mechanism",
-      "text": "Each factorial return hands its value to the call that made it, one frame down. factorial(2) gets 1 and returns 2 × 1 = 2.",
+      "text": "Each factorial return hands its value to the call that made it, one frame up. factorial(2) gets 1 and returns 2 × 1 = 2.",
       "justification": "6.8.6.4p3: a return with an expression gives its value to the caller as the value of the call expression. factorial(1) was called by factorial(2) in line 7, so factorial(2) computes r = 2 * 1 = 2 and returns it. The run printed factorial(2) = 2 as line 5.",
       "sources": [
         {
@@ -730,8 +730,8 @@
     {
       "id": "c.recap",
       "kind": "mechanism",
-      "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return. Each factorial return value flows to the frame below.",
-      "justification": "Each call creates new instances of n and r that live until that call returns (6.2.4p6), so the set of live frames grows by one per call and shrinks by one per return; each return value goes to the caller, the frame below it (6.8.6.4p3). The run shows three enters, then three results, then main's line.",
+      "text": "In this lesson's drawing, the stack grows by one frame for each factorial call and shrinks by one for each factorial return. Each factorial return value flows up to the frame above.",
+      "justification": "Each call creates new instances of n and r that live until that call returns (6.2.4p6), so the set of live frames grows by one per call and shrinks by one per return; each return value goes to the caller, the frame above it in the drawing (6.8.6.4p3). The run shows three enters, then three results, then main's line.",
       "sources": [
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
@@ -914,7 +914,7 @@
     },
     {
       "id": "s2",
-      "label": "Three frames on top of main",
+      "label": "Three frames below main",
       "state": {
         "program": "p1",
         "line": 4,
@@ -1231,7 +1231,7 @@
       ],
       "narration": [
         {
-          "text": "Now factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits under the new one.",
+          "text": "Now factorial(3) cannot finish line 7 until factorial(2) returns a value, so its frame waits above the new one.",
           "claims": [
             "c.waits"
           ]
@@ -1255,7 +1255,7 @@
       ],
       "narration": [
         {
-          "text": "Then factorial(2) calls factorial(1), so three factorial frames now sit on top of main.",
+          "text": "Then factorial(2) calls factorial(1), so three factorial frames now sit below main.",
           "claims": [
             "c.depth"
           ]
@@ -1323,7 +1323,7 @@
     },
     {
       "id": "sc6",
-      "title": "One frame down",
+      "title": "One frame up",
       "state": "s4",
       "key_nodes": [
         "code",
@@ -1332,7 +1332,7 @@
       ],
       "narration": [
         {
-          "text": "Each factorial return hands its value to the call that made it, one frame down. factorial(2) gets 1 and returns 2 × 1 = 2.",
+          "text": "Each factorial return hands its value to the call that made it, one frame up. factorial(2) gets 1 and returns 2 × 1 = 2.",
           "claims": [
             "c.unwind"
           ]
@@ -1413,7 +1413,7 @@
           ]
         },
         {
-          "text": "Each factorial return value flows to the frame below.",
+          "text": "Each factorial return value flows up to the frame above.",
           "claims": [
             "c.recap"
           ]
