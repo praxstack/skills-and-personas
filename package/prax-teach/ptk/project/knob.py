@@ -111,9 +111,48 @@ def _radios(name, values, first):
                    f'<span>{esc(v)}</span></label>' for v in values)
 
 
+def captured_claim(lesson, cid):
+    """The facts of a knob sentence that describes a captured check run (figure.explore.checks), not the setting on
+    screen: it is marked data-captured with them (AC-10.4), so it is held to those runs' numbers, never to the live
+    state. Every other knob sentence is compared with what is drawn. [] when it is not one."""
+    sp = spec(lesson) or {}
+    check_facts = {f for c in sp.get("checks", []) for f in c["facts"].values()}
+    facts = lesson.claim(cid).get("facts") or []
+    return facts if facts and set(facts) <= check_facts else []
+
+
 def _claims_html(lesson, cids):
+    """The knob's fixed sentences; one about a captured check run is marked data-captured (captured_claim)."""
     from .stepper import nobr
-    return "".join(f'<p data-claim="{c}">{nobr(lesson.claim(c)["text"])}</p>' for c in cids)
+    out = []
+    for c in cids:
+        cl = lesson.claim(c)
+        cf = captured_claim(lesson, c)
+        cap = f' data-captured="{" ".join(cf)}"' if cf else ""
+        out.append(f'<p data-claim="{c}"{cap}>{nobr(cl["text"])}</p>')
+    return "".join(out)
+
+
+LIVE_CLAIM, ROUND_CLAIM = "c.kformula", "c.kround"
+
+
+def live_texts(lesson, T):
+    """The neuron knob's live sentences (AC-10.4), rebuilt from the grid row on screen after every slider step:
+    {"live": template, "tiny": template or None, "fill": {...}, "claims": {...}}. Every number comes from
+    expect_neuron (the row strings, and t1 to 17 significant digits); the page only fills the templates in."""
+    P = lesson.data["figure"]["panel"]
+    num = lambda fid: float(_fact_text(lesson, fid).replace("−", "-"))  # noqa: E731
+    x1, w1 = num(P["terms"][0]["x"]), num(P["terms"][0]["w"])
+    t1 = expect_neuron.point(x1, w1, 0.0, 0.0, 0.0)["t1"]
+    has_round = any(c["id"] == ROUND_CLAIM for c in lesson.data["claims"])
+    return {"live": text.ui("k_live", g_w2="{w2}", g_b="{b}", g_z="{z}", g_a="{a}"),
+            "tiny": text.ui("k_tiny", g_z="{z}", g_x1=T["x1"], g_w1=T["w1"], g_x2=T["x2"], d_t1=repr(t1)) if has_round else None,
+            "claims": {"live": LIVE_CLAIM, "tiny": ROUND_CLAIM if has_round else None}}
+
+
+def tiny(row):
+    """A nonzero z too small to be anything but rounding (|z| < 1e-9): the page explains it (AC-10.4)."""
+    return row["zf"] != 0.0 and abs(row["zf"]) < 1e-9
 
 
 COLS = (("bits", "k_col_bits"), ("hex", "k_col_hex"), ("d", "k_col_d"), ("u", "k_col_u"), ("f", "k_col_f"),
@@ -217,6 +256,8 @@ def _neuron_html(lesson, sp):
             f'<div class="kn-col"><p class="lbl" data-chrome="panel_gate">{esc(text.ui("panel_gate"))}</p>'
             f'<svg id="k-gate" viewBox="0 0 320 150" role="img" aria-labelledby="k-al"></svg>'
             f'<p class="kn-eq" id="k-al"><span data-chrome="axis_a">{esc(text.ui("axis_a"))}</span> = <b id="k-a"></b></p></div></div>'
+            f'<div class="klives"><p class="klive" id="k-live" data-chrome="k_live" data-claims="{LIVE_CLAIM}"></p>'
+            f'<p class="klive" id="k-tiny" data-chrome="k_tiny" data-claims="{ROUND_CLAIM}" hidden></p></div>'
             f'<div class="kprose-all always">{_claims_html(lesson, sp.get("claims", []))}'
             f'<p class="prov" data-chrome="k_computed">{esc(text.ui("k_computed", count=len(sp.get("checks", []))))}</p></div>')
 
@@ -243,7 +284,8 @@ def section(lesson):
     else:
         T = neuron_table(lesson, sp)
         data = {"kind": "neuron", "w2": T["w2"], "b": T["b"], "rows": T["rows"], "x1": T["x1"], "x2": T["x2"], "geom": GEOM,
-                "labels": [text.ui("neuron_term", i=1), text.ui("neuron_term", i=2), text.ui("neuron_term_bias")]}
+                "labels": [text.ui("neuron_term", i=1), text.ui("neuron_term", i=2), text.ui("neuron_term_bias")],
+                "texts": live_texts(lesson, T)}
         html = (f'<section class="knob js-only" id="k" data-kind="neuron" aria-labelledby="k-h">{head}'
                 f'{_neuron_html(lesson, sp)}</section>')
     return html, data
@@ -270,6 +312,17 @@ def texts(lesson, where):
         items.append({"text": text.ui(k, **kw), "claims": [], "source": f"chrome:{k}", "where": where})
     for v in sp.get("values", []):
         items.append({"text": _prov(lesson, v["program"]), "claims": [], "source": "chrome:x_captured_run", "where": where})
+    if sp["kind"] == "neuron":
+        T = neuron_table(lesson, sp)
+        L = live_texts(lesson, T)
+        for key, tpl in (("live", L["live"]), ("tiny", L["tiny"])):
+            if not tpl:
+                continue
+            k_ = next((k for k, r in T["rows"].items() if tiny(r)), None) if key == "tiny" else f"{T['w2_0']}|{T['b_0']}"
+            if k_:
+                row, (w2_, b_) = T["rows"][k_], k_.split("|")
+                items.append({"text": tpl.format(w2=w2_, b=b_, z=row["z"], a=row["a"]),
+                              "claims": [L["claims"][key]], "source": f"chrome:k_{key}", "where": where})
     return items
 
 

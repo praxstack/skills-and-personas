@@ -246,8 +246,8 @@ def _explore_values(origin, cue_list):
 
 
 def test_explore_mode_is_declared_not_inferred():
-    """Round-17 P2-2: the IVE explore check decides step-through vs live edit from lesson.json (a `figure.panel`
-    declares step-through), never from whether the live model happened to build. The auditor's counterexample:
+    """Round-17 P2-2: the IVE explore check decides the kind of live edit from lesson.json (the switch model, or the
+    knob a `figure.explore` declares), never from whether the live model happened to build. The auditor's counterexample:
     drop figure.compare.program from the switch lesson, so its live model fails; a page that only steps back
     used to pass `ive.explore-return`. Now it fails with the model error."""
     import copy
@@ -269,13 +269,22 @@ def test_explore_mode_is_declared_not_inferred():
     bad, bm = visual.explore_checks(broken, cues, _explore_values("step", cues))
     assert bm["mode"] == "live" and not bad["live_model_builds"] and not all(bad.values()), bm
     assert bm["live_model_error"], bm
+    # D23.5 (SPEC v1.4 AC-6.6, stricter): a panel lesson needs a live control too. The neuron declares its knob
+    # (figure.explore), so its IVE must make a live edit in EXPLORE: a page that only steps back through the film now
+    # fails, and a live edit marked as the learner's passes.
     panel = model.load(SLICE.parent / "neuron")
     pcues = built_cues(SLICE.parent / "neuron")
-    pok, pm = visual.explore_checks(panel, pcues, _explore_values("step", pcues))
-    assert pm["mode"] == "step" and all(pok.values()) and "step_back_marked" in pok, pok
-    pbad, _ = visual.explore_checks(panel, pcues, _explore_values("film", pcues))
-    assert not all(pbad.values()), "a step-through lesson must still mark the step as off the film"
-    return {"switch": m["mode"], "broken_switch": bm["live_model_error"][:120], "neuron": pm["mode"]}
+    pok, pm = visual.explore_checks(panel, pcues, _explore_values("yours", pcues))
+    assert pm["mode"] == "knob" and pm["live_edit"] and all(pok.values()) and "live_edit_marked_yours" in pok, pok
+    pstep, _ = visual.explore_checks(panel, pcues, _explore_values("step", pcues))
+    assert not all(pstep.values()), "a panel lesson whose IVE only steps back through the film must fail (D23.5)"
+    # a panel lesson that declares no live control at all fails: there is nothing a step-through page can do to pass
+    bare = copy.deepcopy(panel)
+    bare.data["figure"].pop("explore", None)
+    nok, nm = visual.explore_checks(bare, pcues, _explore_values("step", pcues))
+    assert nm["mode"] == "missing" and not all(nok.values()), (nm["mode"], nok)
+    return {"switch": m["mode"], "broken_switch": bm["live_model_error"][:120], "neuron": pm["mode"],
+            "no_knob": nm["mode"]}
 
 
 def test_caption_toggle_measures_rendered_text():
@@ -312,3 +321,34 @@ def test_caption_toggle_measures_rendered_text():
         return {"ok": [m["shown"] for m in good["caption_states"]], "slip_caught": why_bad}
     finally:
         shutil.rmtree(work, ignore_errors=True)
+
+
+def test_live_control_every_lesson():
+    """SPEC v1.4 AC-6.6 (D23.5), on all four lessons: in EXPLORE the IVE offers a live control that changes the shown
+    state (stepping back through the film does not count), the edit is marked as the learner's, and RETURN resumes the
+    film at the paused time with the film's state. Each built lesson's IVE runs the gate's own FILM / EXPLORE /
+    RETURN script in Chrome from file://; not-run when a lesson is not built."""
+    lessons = sorted(p.parent for p in SLICE.parent.glob("*/lesson.json"))
+    built = [d for d in lessons if (d / "build" / "ive" / "cues.json").exists() and (d / "build" / "ive" / "index.html").exists()]
+    if len(built) < len(lessons):
+        raise NotRun(f"not built: {sorted(d.name for d in lessons if d not in built)}")
+    jobs, cues = [], {}
+    for d in built:
+        cues[d.name] = json.loads((d / "build" / "ive" / "cues.json").read_text())
+        jobs.append(visual.explore_flow_job(cues[d.name], (d / "build" / "ive" / "index.html").resolve().as_uri(),
+                                            job_id=d.name))
+    work = host.make_tmp("ive-live-every-")
+    try:
+        res = {r["id"]: r for r in visual.shoot(jobs, work / "w")["results"]}
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    out, bad = {}, {}
+    for d in built:
+        r = res.get(d.name) or {}
+        checks, m = visual.explore_checks(model.load(d), cues[d.name], r.get("values") or {})
+        out[d.name] = {"mode": m["mode"], "edit": (m["edited"] or {}).get("edit"),
+                       "output_before": (m["explore"] or {}).get("output"), "output_edited": (m["edited"] or {}).get("output")}
+        if not r.get("ok") or not all(checks.values()):
+            bad[d.name] = {"error": (r.get("error") or "")[:300], "checks": checks}
+    assert not bad, bad
+    return out

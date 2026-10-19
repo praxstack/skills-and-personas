@@ -54,3 +54,6 @@ html.js .ktable td[data-value]:not(.sel){color:var(--ink_soft)}
   .kgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
   .kneuron{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+/* the live sentences under the neuron's panels (AC-10.4): rebuilt from the setting on screen */
+.klives{display:grid;gap:.5rem}
+.klive{max-width:60ch;color:var(--ink);font-weight:600}

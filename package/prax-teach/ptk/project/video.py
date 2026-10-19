@@ -312,40 +312,110 @@ NUM_X, RAIL_X, SRC_X, BULGE = 58, 124, 170, 46
 OUT_H, OUT_TOP = 84, 84
 
 
-def _layout(lesson):
-    """The frame grid, shared by every scene. Row height comes from the longest listing in the storyboard.
+# B3 (AC-10.3): the stage. Every scene that shows the mechanism draws it, the code it runs and the output it prints
+# as one figure under the title (data-role="mechanism"), so the mechanism carries the frame and every number on it is
+# bound to a fact, a source line or an axis. Type sizes: teaching text >= 28 px, output never smaller than code.
+#
+#   hero (neuron)                         side (views, stack)                 path (switch, figure program)
+#   kicker / title ───────────────────    kicker / title ──────── file        kicker / title ──────── file
+#   ┌ panel 1776 x 520 ─────────────┐     ┌ panel 1090 x 874 ┐ ┌ code ┐       ┌ path figure ─────┐ ┌ code ┐
+#   │                               │     │                  │ │ 662  │       │ 1120 x 874       │ │ 632  │
+#   └───────────────────────────────┘     │                  │ └──────┘       │                  │ └──────┘
+#   ┌ code 1052 ─────┐ ┌ output 700 ┐     │                  │ ┌ out  ┐       │                  │ ┌ out  ┐
+#   └────────────────┘ └────────────┘     └──────────────────┘ └──────┘       └──────────────────┘ └──────┘
+# A question scene puts the question under the title, over the panel's column, and the panel gives up that height.
+# A switch scene on another program (the compare runs) keeps the classic code card, output and note.
+SX0, SX1, STOP, SBOT = 48, 1872, 128, 1036
+QH = 132  # the question block under the title: the prompt and its options
 
-    No panel: the code card (1060 wide) and the side column (output, variables, note) as drawn above.
-    A panel lesson makes the mechanism the hero of the frame (round 18, review P1: the figure was a third
-    of the frame and its labels 11 px, under a code block that dominated):
 
-      side (views, stack)                         hero (neuron)
-      ┌ panel 1040 x 784 ───────┐ ┌ code ─┐      ┌ panel 1728 x 536 ──────────────────────┐
-      │                         │ │ 648   │      │                                        │
-      │  the mechanism, scaled  │ └───────┘      └────────────────────────────────────────┘
-      │  to fill its box        │ ┌ output│      ┌ code strip 1000 ──┐ ┌ output / question ┐
-      │                         │ │ or the│      └───────────────────┘ └───────────────────┘
-      └─────────────────────────┘ └ quest.┘
-    Code and output are secondary: a narrower gutter and smaller rows; a question card takes the output's
-    place, so the panel stays on screen while the question is on screen.
+def _path_scene(lesson, sid_state):
+    """A switch lesson's scene on its figure program once control has run a case (the state has printed): the path
+    figure (AC-10.2 control-path) is the hero. Before that (the opening and the question) there is no path yet, and
+    the program's code leads the frame."""
+    fig = lesson.data.get("figure") or {}
+    if fig.get("panel") or mech.panel_kind(lesson) != "control-path":
+        return False
+    st = lesson.state(sid_state)["state"]
+    return st["program"] == fig.get("program") and bool(st["output"])
+
+
+def _layout(lesson, scene=None):
+    """The frame grid. Row height comes from the longest listing among the scenes that share this layout, so every
+    such scene draws its code on the same rows (a morph turns rows into rows).
+
+    None (classic): the code card (1060 wide) and the side column (output, variables, note), as drawn above; a
+    switch lesson's scenes on its compare programs. hero, side and path: the stage drawn above.
     """
     panel = (lesson.data.get("figure") or {}).get("panel")
-    mode = None if not panel else ("side" if panel["kind"] == "stack" or panel["place"] == "side" else "hero")
+    if panel:
+        mode = "side" if panel["kind"] == "stack" or panel["place"] == "side" else "hero"
+    else:
+        mode = "path" if scene is not None and _path_scene(lesson, scene["state"]) else None
     L = {"mode": mode, "code_x": MX, "code_top": CODE_TOP, "card_w": CARD_W, "side_x": SIDE_X, "side_w": SIDE_W,
          "num_x": NUM_X, "rail_x": RAIL_X, "src_x": SRC_X, "bulge": BULGE, "row_pad": ROW_PAD}
-    if mode == "side":
-        L.update(code_x=1176, card_w=648, card_h=400, side_x=1176, side_w=648, side_top=CODE_TOP + 420,
-                 side_h=H - BOTTOM - CODE_TOP - 420, panel_box=(MX, CODE_TOP, 1040, H - BOTTOM - CODE_TOP),
-                 q_panel_box=(MX, CODE_TOP, 1040, H - BOTTOM - CODE_TOP - 300), q_box=(MX, H - BOTTOM - 280, 1040, 280),
-                 num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=16)
+    if mode is None and scene is not None and mech.panel_kind(lesson) == "control-path" \
+            and not lesson.state(scene["state"])["state"]["output"]:
+        # B3: before control has run a case no tag is drawn beside the code, so the card is as wide as its rows and
+        # the note or the question takes the rest of the frame
+        L.update(card_w=760, side_x=MX + 760 + 48, side_w=W - MX - (MX + 760 + 48))
+    if mode == "side" and panel["kind"] == "stack":
+        # the stack: the column holds the stack and, under its last frame, the output; the code fills the right
+        cx = 1186
+        n_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
+        L.update(code_x=cx, code_top=STOP, card_w=SX1 - cx, card_h=SBOT - STOP, side_x=SX0, side_w=cx - 24 - SX0,
+                 side_top=STOP, side_h=SBOT - STOP, out_h=64 + -(-max(n_out, 2) // 2) * 58, line_cap=46,
+                 panel_box=(SX0, STOP, cx - 24 - SX0, SBOT - STOP),
+                 q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
+                 num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=14)
+    elif mode == "side":
+        # views: the panel's column is as wide as the drawing at its largest; the code and the output get the rest
+        cx = 972
+        n_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
+        oh = 64 + max(n_out, 2) * 40
+        ch = SBOT - STOP - 24 - oh
+        L["font_cap"] = 18  # the panel's smallest printed value (the double's bits) stays at least this large
+        L.update(code_x=cx, code_top=STOP, card_w=SX1 - cx, card_h=ch, side_x=cx, side_w=SX1 - cx, side_top=STOP + ch + 24,
+                 side_h=oh, panel_box=(SX0, STOP, cx - 24 - SX0, SBOT - STOP),
+                 q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
+                 num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=14)
     elif mode == "hero":
-        top = 736
-        L.update(code_top=top, card_w=1000, card_h=H - BOTTOM - top, side_x=1136, side_w=W - MX - 1136, side_top=top,
-                 side_h=H - BOTTOM - top, panel_box=(MX, 172, W - 2 * MX, top - 172 - 44),
-                 q_panel_box=(MX, 172, W - 2 * MX, 268), q_box=(MX, 456, W - 2 * MX, top - 456 - 58),  # clear of the file label
+        # the output card sits left of the code: before the first value is printed the empty stretch is the card's
+        # place plus what lies right of the code text, never one block across both (AC-10.3 empty region)
+        top, ow = 668, 640
+        L.update(code_x=SX0 + ow + 24, code_top=top, card_w=SX1 - SX0 - ow - 24, card_h=SBOT - top, side_x=SX0,
+                 side_w=ow, side_top=top, side_h=SBOT - top, panel_box=(SX0, STOP, SX1 - SX0, top - STOP - 40),
+                 q_panel_box=(SX0, STOP + QH, SX1 - SX0, top - STOP - 44 - QH), q_box=(SX0, 120, SX1 - SX0, QH),
                  num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=10)
+    elif mode == "path":
+        # the right column: the code, the switch's controlling variable, then the output
+        cx, vh = 1040, 64
+        ch = SBOT - STOP - vh
+        L.update(code_x=cx, code_top=STOP, card_w=SX1 - cx, card_h=ch, side_x=cx, side_w=SX1 - cx, line_cap=50,
+                 side_top=SBOT, side_h=1, vars_top=STOP + ch + 12,
+                 panel_box=(SX0, STOP, cx - 24 - SX0, SBOT - STOP),
+                 q_panel_box=(SX0, STOP + QH, cx - 24 - SX0, SBOT - STOP - QH), q_box=(SX0, 120, cx - 24 - SX0, QH),
+                 num_x=40, rail_x=78, src_x=112, bulge=30, row_pad=14)
+    if mode:
+        # the question: beside the scene title in the header band when it fits there (the mechanism keeps its whole
+        # box), else under the title, over the mechanism's column, which gives up that height
+        qs = [sc for sc in lesson.data["storyboard"] if sc.get("question")]
+        disp = fonts.tokens()["themes"][DEFAULT_THEME]["type"]["display"]["font"]
+        kick = fonts.width(fonts.tokens()["themes"][DEFAULT_THEME]["type"]["kicker"]["font"], 24,
+                           text.kicker(lesson).upper(), bold=True) * 1.15 + 160  # its letter spacing and the n / N count
+        tx = SX0 + max([fonts.width(disp, 48, sc["title"], bold=True) for sc in qs] + [kick]) + 64
+        beside = max([_q_height(lesson, sc, SX1 - tx) for sc in qs] + [0])
+        bx, by, bw, bh = L["panel_box"]
+        if qs and beside <= STOP - 24:
+            L.update(q_box=(tx, 16, SX1 - tx, beside), q_panel_box=L["panel_box"])
+        else:
+            qx, _qy, qw, _qh = L["q_box"]
+            qh = max(max([_q_height(lesson, sc, qw) for sc in qs] + [0]), 96)
+            L.update(q_box=(qx, 112, qw, qh), q_panel_box=(bx, max(by, 112 + qh + 16), bw, by + bh - max(by, 112 + qh + 16)))
     rows, longest, per_line = 1, 1, 1
     for sc in lesson.data["storyboard"]:
+        if not panel and (mode == "path") != _path_scene(lesson, sc["state"]):
+            continue  # a switch lesson's two layouts each size their own rows
         st = lesson.state(sc["state"])["state"]
         src = lesson.program_source(st["program"]).split("\n")
         first, last = rail.listing(lesson, st["program"])
@@ -356,27 +426,117 @@ def _layout(lesson):
     L.setdefault("card_h", H - BOTTOM - L["code_top"])
     L.setdefault("side_top", L["code_top"])
     L.setdefault("side_h", L["card_h"])
-    line_h = int((L["card_h"] - 2 * L["row_pad"]) // rows)
+    line_h = int(min((L["card_h"] - 2 * L["row_pad"]) // rows, L.get("line_cap", 999)))
     L["badge"] = int(min(40, line_h - 4))
     # the longest line, its output-step badges and the tag column must fit the card
     fit = (L["card_w"] - L["src_x"] - 40 - per_line * (L["badge"] + 6)) / (longest * 0.6)
-    L.update(line_h=line_h, font=int(min(36, line_h * 0.64, fit)))
+    L.update(line_h=line_h, font=int(min(36, line_h * 0.64, fit, L.get("font_cap", 99))))
     max_out = max(len(lesson.state(sc["state"])["state"]["output"]) for sc in lesson.data["storyboard"])
     L["max_out"] = max(max_out, 1)
     return L
 
 
+Q_PROMPT, Q_OPT = 32, 26  # px: the question's prompt (teaching text) and its options (values) in the film
+
+
+def _q_height(lesson, sc, width):
+    """The question block's height in a stage layout: the prompt wrapped to `width`, then its options as chips."""
+    q = sc["question"]
+    body = fonts.tokens()["themes"][DEFAULT_THEME]["type"]["body"]["font"]
+    lines = len(fonts.wrap(body, Q_PROMPT, q["prompt"], width))
+    rows, x = 1, 0
+    for o in q.get("options") or []:
+        w = fonts.width("mono", Q_OPT, o["text"]) + 2 * 16 + 4 + 14
+        if x and x + w > width:
+            rows, x = rows + 1, 0
+        x += w
+    return round(lines * Q_PROMPT * 1.2 + 12 + rows * (Q_OPT * 1.3 + 12 + 4) + (rows - 1) * 10 + 4)
+
+
+def _film_sizes(lesson, L, pw, ph, width, states=None):
+    """(sizes, scale) for a panel scaled into a pw x ph box: labels large enough that a 4-word label reads at
+    >= 28 px, and code in the panel no larger than the code card's rows, so every output, label and value in the
+    frame is at least as large as its code (AC-10.3)."""
+    base = mech.SIZES["wide"]
+    lab_scale = fonts.tokens()["themes"][DEFAULT_THEME]["type"]["label"].get("scale", 1)
+    sizes, k = None, 1.0
+    for _ in range(3):
+        if states:
+            from . import still
+            svg = still.Svg("light", fonts.tokens())
+            mh = mech.draw(svg, lesson, states[-1], 4, 4, width or mech.WIDTHS[("wide", mech.page_place(lesson))], "wide",
+                           still.Flow(svg, {}), key=False, notes=False, states=states, sizes=sizes)
+        else:
+            mh = mech.max_height(lesson, "wide", notes=False, width=width, sizes=sizes)
+        w = width or mech.WIDTHS[("wide", mech.page_place(lesson))]
+        k = min(pw / (w + 8), ph / (mh + 8))
+        head = max(base["label"], 29.0 / (lab_scale * k))
+        code = min(base["code"], L["font"] / k)
+        sizes = {"head": round(head, 2), "label": round(max(base["label"], code, L["font"] / (lab_scale * k)), 2),
+                 "code": round(code, 2),
+                 "chip": round(max(base["chip"], code * 1.08), 2)}
+    return sizes, k
+
+
+PATH_OUT_PX = 32  # a printed value on its code row in the path layout (the figure's code chips are drawn smaller)
+STACK_W, VIEWS_W = 440, 520  # natural widths the film draws a stack column and a views panel at
+FILM_CODE_PX = 20  # the largest code the film draws inside a panel (lanes, the gate's fmax): outputs are never smaller
+
+
+MIN_SVG_PX = 11.2  # the frame layout gate reads an SVG text's own font size (AC-5.6: nothing under 11 px)
+
+
+def _zoom(lesson, sid, pw, ph, w, states=None, extra=None, kmax=None):
+    """(sizes, scale, natural height) of a side panel at state `sid` drawn `w` wide and fitted into pw x ph (B3): the
+    camera fits the state, so a short stack or a value with few views is drawn large. Labels of four or more words
+    read at >= 28 px; code in the panel reads at FILM_CODE_PX at most; labels at least as large as that code."""
+    from . import still
+    base = mech.SIZES["wide"]
+    lab_scale = fonts.tokens()["themes"][DEFAULT_THEME]["type"]["label"].get("scale", 1)
+    sizes, k, h = dict(extra or {}), 1.0, 0
+    for _ in range(4):
+        svg = still.Svg("light", fonts.tokens())
+        h = mech.draw(svg, lesson, sid, 4, 4, w, "wide", still.Flow(svg, {}), key=False, notes=False, states=states,
+                      sizes=sizes)
+        k = min(pw / (w + 8), ph / (h + 8), kmax or 99)
+        code = max(MIN_SVG_PX, min(base["code"], FILM_CODE_PX / k))
+        sizes = {"head": round(max(base["label"], 29.0 / (lab_scale * k)), 2),
+                 "label": round(max(base["label"], FILM_CODE_PX / (lab_scale * k)), 2), "code": round(code, 2),
+                 "chip": round(max(base["chip"], code * 1.08), 2), "var": round(max(code, 26.0 / k, MIN_SVG_PX), 2),
+                 "own_depth": True, **(extra or {})}
+    return sizes, k, h
+
+
+_SIDE_W = {}
+
+
+def _side_width(lesson, pw, ph):
+    """The one natural width a side panel is drawn at in every scene: the width whose least-filled state fills the
+    most of the box's height, with every state drawn at 1.3x or more."""
+    key = (lesson.id, lesson.sha256(), pw, ph)
+    if key not in _SIDE_W:
+        best = None
+        for w in range(280, 761, 40):
+            ks = [_zoom(lesson, st["id"], pw, ph, w)[1:] for st in lesson.data["trace"]]
+            fill = min(k * (h + 8) / ph for k, h in ks)
+            kmin = min(k for k, _h in ks)
+            cand = (kmin >= 1.3, round(fill, 3), kmin, w)
+            best = cand if best is None or cand > best else best
+        _SIDE_W[key] = best[3]
+    return _SIDE_W[key]
+
+
 def _out_rect(L):
     """The output card in panel layouts (x, y, w, h) relative to the side column: under the panel (side) or the
     whole column (hero). The note is left to the narration and its captions; the panel carries the picture."""
-    return (0, 0, L["side_w"], L["side_h"])
+    return (0, 0, L["side_w"], L.get("out_h", L["side_h"]))
 
 
 def _out_grid(L, n):
     """(row height, rows per column, column width) for n output values in a panel layout's output card:
     one column when rows of at least 46 px fit, else two."""
     _x, _y, w, h = _out_rect(L)
-    rows = n if (h - 72) / max(n, 1) >= 46 else -(-n // 2)
+    rows = n if (h - 72) / max(n, 1) >= 38 else -(-n // 2)
     cols = -(-n // rows)
     return min(OUT_H, int((h - 72) / rows)), rows, (w - 34) / cols
 
@@ -434,10 +594,13 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
         extra = f' data-to="{to}"' if to is not None else ' data-gone="1"'
         moves = morph_to is not None and to is not None and to != n
         # only a row whose number changes cross-fades it; every other gutter number stays put (WP9 Part A)
-        no2 = f'<span class="no no2" data-label="line-number">{to}</span>' if moves else ""
+        no2 = (f'<span class="no no2" data-label="line-number" data-axis="source-line" data-tick="{to}">{to}</span>'
+               if moves else "")
         rows.append(f'<div class="{cls}" {S} data-line="{n}"{extra} style="top:{top[n]}px">'
-                    f'<span class="no no1{" moves" if moves else ""}" data-label="line-number">{n}</span>{no2}'
-                    f'<span class="src" data-code="{view["program"]}" style="padding-left:{indent * 0.6:.2f}em">'
+                    f'<span class="no no1{" moves" if moves else ""}" data-label="line-number" data-axis="source-line" '
+                    f'data-tick="{n}">{n}</span>{no2}'
+                    f'<span class="src" data-code="{view["program"]}" data-src-line="{n}" '
+                    f'style="padding-left:{indent * 0.6:.2f}em">'
                     f'{_code_html(txt.strip())}</span></div>')
     drawn_run = [n for n in drawn_path if n in top]
     old_segs = {(a, b) for a, b, _k in rail.segments(drawn_run)}
@@ -465,8 +628,9 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
     if nob:
         on = nob in drawn_path and (nob + 1) in drawn_path
         tags.append(f'<p class="badge nobreak{"" if on else " new"}" {S} data-after="{nob}" data-chrome="no_break" '
-                    f'style="top:{top[nob] + LH / 2 + 4:.0f}px">{esc(text.ui("no_break"))}</p>')
-    steps = []
+                    f'style="top:{(top[nob + 1] + (LH - 40) / 2) if L["mode"] == "path" and nob + 1 in top else top[nob] + LH / 2 + 4:.0f}px">'
+                    f'{esc(text.ui("no_break"))}</p>')
+    steps, out_xy = [], {}
     made = rail.print_lines(src, view["path"], [o["text"] for o in view["output"]]) or []
     for k, n in enumerate(made, 1):
         txt = src[n - 1]
@@ -475,16 +639,19 @@ def _program_set(lesson, L, g, view, set_name, drawn_path, drawn_out, morph_to=N
         B = L["badge"]
         x = SRC_X + indent * 0.6 * font + fonts.width("mono", font, txt.strip()) + B * 0.55 + made[:k - 1].count(n) * (B + 6)
         steps.append(f'<p class="ostep{"" if k <= drawn_out else " new"}" {S} data-step="{k}" data-line="{n}" '
-                     f'data-label="output-step" style="left:{x:.0f}px;top:{top[n] + (LH - B) / 2:.0f}px">{k}</p>')
+                     f'data-label="output-step" data-axis="output-step" data-tick="{k}" '
+                     f'style="left:{x:.0f}px;top:{top[n] + (LH - B) / 2:.0f}px">{k}</p>')
+        out_xy[k] = (x + B + 18 + (made[k:].count(n)) * (B + 6), top[n])  # after the line's last badge
     return {"rows": f'<div class="rows" {S}>{"".join(rows)}</div>', "rail": svg, "tags": "".join(tags),
-            "steps": "".join(steps), "run": run, "nob": nob, "tag_list": rail.tags(src, run, shown_lines)}
+            "steps": "".join(steps), "run": run, "nob": nob, "tag_list": rail.tags(src, run, shown_lines),
+            "out_xy": out_xy}
 
 
 def scene_html(lesson, scene, index, count, timing):
     theme = timing.get("theme", DEFAULT_THEME)
     t, ty = _theme(theme)
     frame = t["frame"]
-    L = _layout(lesson)
+    L = _layout(lesson, scene)
     LH = L["line_h"]
     sid = scene["id"]
     cur = _state_view(lesson, scene["state"])
@@ -544,7 +711,10 @@ def scene_html(lesson, scene, index, count, timing):
         morph_js += [
             # the old path's lines and tags go; its dots and output-step badges stay with their rows (they pair the
             # output, which stays on screen through the diff, with the lines that printed it) until the diff ends
-            f"d.to(q('.seg{O}, .head{O}, .tag{O}, .badge{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
+            f"d.to(q('.seg{O}, .head{O}, .badge{O}'), {{ opacity: 0, duration: 0.3, ease: 'power1.out' }}, 0);",
+            # the old rows' tags stay beside their rows (they slide with them) until the new path starts, so the
+            # code card never stands half empty mid-diff (B3, AC-10.3 pixel check)
+            f"d.to(q('.tag{O}'), {{ opacity: 0, duration: 0.25 }}, {MORPH - 0.25:.2f});",
             f"d.to(q('.hl'), {{ opacity: 0, duration: 0.25 }}, 0);",
             # the output, the gutter and the file name stay on screen through the diff (WP9 Part A)
             f"d.fromTo(q('.band.minus'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.2 }}, 0.05);",
@@ -552,6 +722,7 @@ def scene_html(lesson, scene, index, count, timing):
             f"d.to(q('.ln[data-gone]'), {{ color: '{t['correction']}', duration: 0.2 }}, 0.05);",
             # a removed row fades while the rows below close over it, so no hole opens
             f"d.to(q('.ln[data-gone], .band.minus'), {{ opacity: 0, duration: 0.6, ease: 'none' }}, 0.45);",
+            *[f"d.to(q('.tag{O}[data-line=\"{n}\"]'), {{ opacity: 0, duration: 0.6, ease: 'none' }}, 0.45);" for n in removed],
             f"d.to(q('.ln{O}[data-to]'), {{ color: '{t['label']}', duration: 0.3 }}, 0.45);",
             f"d.to(q('.ln{O} .no1.moves'), {{ opacity: 0, duration: 0.3 }}, 0.45);",
         ]
@@ -559,7 +730,8 @@ def scene_html(lesson, scene, index, count, timing):
             dy = gc["top"][n_new] - go["top"][n_old]
             if abs(dy) > 0.01:
                 morph_js.append(f"d.to(q('.ln{O}[data-line=\"{n_old}\"], .dot{O}[data-line=\"{n_old}\"], "
-                                f".ostep{O}[data-line=\"{n_old}\"]'), {{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
+                                f".ostep{O}[data-line=\"{n_old}\"], .tag{O}[data-line=\"{n_old}\"]'), "
+                                f"{{ y: {dy:.1f}, duration: 0.6, ease: 'power2.inOut' }}, 0.45);")
         morph_js += [
             # a moving row's number cross-fades while it slides; an added row fills its slot as the slot opens
             f"d.fromTo(q('.ln{O} .no2'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, 0.45);",
@@ -613,7 +785,7 @@ def scene_html(lesson, scene, index, count, timing):
         x_, y_ = place(k)
         size = f";font-size:{val_px}px;line-height:{oh}px;height:{oh}px" if val_px else ""
         return (f'<div class="{cls}" data-set="{set_name}" data-step="{k}" style="left:{x_:.0f}px;top:{y_}px{size}">'
-                f'<span class="step" data-label="output-step">{k}</span>'
+                f'<span class="step" data-label="output-step" data-axis="output-step" data-tick="{k}">{k}</span>'
                 f'<span class="val" data-fact="{esc(o["fact"])}">{esc(o["text"])}</span></div>')
     for k, o in enumerate(before_out if morph else [], 1):
         outs.append(out_div("out", "old", k, o))
@@ -622,6 +794,26 @@ def scene_html(lesson, scene, index, count, timing):
         outs.append(out_div("out" + ("" if o["fact"] in prev_out else " out-new"), "cur", k, o))
     outcard = (f'<div class="outcard" data-key="output"><p class="outlabel" data-chrome="output_label">'
                f'{esc(text.ui("output_label").upper())}</p>{"".join(outs)}</div>') if has_out else ""
+    inline_outs = ""
+    if mode == "path":
+        # B3: in the path layout each printed value stands on the code row that printed it, after its step badge,
+        # as the path figure shows it; the code column runs the frame's full height and needs no output card
+        outcard = ""
+        oset = {s_["out_xy"].get(1) and "x" for s_ in sets}
+        del oset
+        ipx = PATH_OUT_PX
+
+        def in_div(cls, set_name, k, o, xy):
+            return (f'<div class="{cls}" data-set="{set_name}" data-step="{k}" style="left:{xy[0]:.0f}px;top:{xy[1]}px;'
+                    f'font-size:{ipx}px;line-height:{LH}px;height:{LH}px">'
+                    f'<span class="val" data-fact="{esc(o["fact"])}">{esc(o["text"])}</span></div>')
+        if morph:
+            for k, o in enumerate(before_out, 1):
+                if k in sets[0]["out_xy"]:
+                    inline_outs += in_div("out", "old", k, o, sets[0]["out_xy"][k])
+        for k, o in enumerate(cur["output"], 1):
+            if k in sets[-1]["out_xy"]:
+                inline_outs += in_div("out" + ("" if o["fact"] in prev_out else " out-new"), "cur", k, o, sets[-1]["out_xy"][k])
     # in a panel lesson's question scene the panel steps up to make room for the question card under it; code
     # and output stay, so the frame still shows the whole state
     vars_html = " ".join(f'<span data-code="{cur["program"]}">{esc(k)} = {esc(v)}</span>' for k, v in cur["vars"].items())
@@ -630,60 +822,157 @@ def scene_html(lesson, scene, index, count, timing):
     panel_w = L["side_w"]
     panel_h = L["card_h"] - panel_top
     nt = ty["note"]
-    if q:
+    if q and mode:
+        # a stage layout: the question under the title, over the mechanism's column (the scene title names it)
+        opts = "".join(f'<p class="qopt" data-option="{esc(sid)}.{k}">{esc(o["text"])}</p>'
+                       for k, o in enumerate(q.get("options") or []))
+        side = (f'<div class="qhead" data-key="question"><p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p>'
+                f'<div class="qopts">{opts}</div></div>')
+    elif q:
         # the question and its options, as in the Q&A and the IVE; the answer scene follows at the normal pace
         opts = "".join(f'<p class="qopt" data-option="{esc(sid)}.{k}">{esc(o["text"])}</p>'
                        for k, o in enumerate(q.get("options") or []))
         side = (f'<div class="panel qcard" data-key="question"><p class="qlabel" data-chrome="question_label">'
                 f'{esc(text.ui("question_label"))}</p><p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p>'
                 f'<div class="qopts">{opts}</div></div>')
-    elif mode is None and not morph and cur["output"] and cur["program"] == lesson.data["figure"]["program"] \
-            and mech.panel_kind(lesson) == "control-path":
-        # the path through the switch (AC-10.2), the still's mechanism at this scene's state, in place of the note
-        # (the narration and its captions carry the note's sentence)
-        fig_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, width=600, mark=True,
-                                            kind="control-path", attrs='class="pathfig" preserveAspectRatio="xMidYMin meet"')
-        side = f'<div class="panel pathcard" data-key="panel">{fig_svg}</div>'
     elif mode is None:
-        sizes = tuple(round(x * nt["scale"]) for x in (64, 58, 52, 48, 44))
-        note_px = _fit(nt["key"], claims[note_claim]["text"], panel_w - 84, panel_h - 76, 1.18, sizes)
+        # B3: the note as large as fills about two thirds of its column (it sits centred there, so no empty half
+        # opens beside the code)
+        sizes = tuple(round(x * nt["scale"]) for x in (96, 88, 80, 72, 64, 58, 52, 48, 44))
+        note_px = _fit(nt["key"], claims[note_claim]["text"], panel_w - 84, (panel_h - 76) * 0.66, 1.18, sizes)
         side = (f'<div class="panel notecard" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
                 f'style="font-size:{note_px}px">{esc(claims[note_claim]["text"])}</p></div>')
+    elif mode == "path" and morph:
+        # a change of program in the path layout (the recap returns to the figure's program): the note states the
+        # new program's behaviour once the diff is complete, in the header band where the change card stood (WP6)
+        qx_ = L["q_box"][0]
+        npx = _fit(nt["key"], claims[note_claim]["text"], SX1 - qx_ - 24, STOP - 24, 1.18, (34, 32, 30, 28))
+        side = (f'<div class="panel notecard pnote" data-key="note"><p class="note" data-claim="{esc(note_claim)}" '
+                f'style="font-size:{npx}px;line-height:1.18">{esc(claims[note_claim]["text"])}</p></div>')
     else:
         side = ""
-    if morph:
+    if morph and mode in (None, "path"):
         # while the program changes, the note column says what changes (the note itself states the new
-        # program's behaviour, so it waits for the diff to finish)
+        # program's behaviour, so it waits for the diff to finish); the path layout shows it in the header band
         fo, fn = lesson.program(before["program"])["path"].split("/")[-1], lesson.program(cur["program"])["path"].split("/")[-1]
         diff_rows = "".join(f'<p class="dl {k}"><span class="mark" data-label="diff-mark">{"+" if k == "plus" else MINUS}</span>'
                             f'<span data-code="{pid}">{esc(src_[n - 1].strip())}</span></p>'
                             for k, ns, src_, pid in (("minus", removed, go["src"], before["program"]), ("plus", added, gc["src"], cur["program"]))
                             for n in ns)
-        side += (f'<div class="panel changecard"><p class="qlabel" data-chrome="morph_label">{esc(text.ui("morph_label"))}</p>'
+        side += (f'<div class="panel changecard{" pchange" if mode == "path" else ""}"><p class="qlabel" data-chrome="morph_label">{esc(text.ui("morph_label"))}</p>'
                  f'<p class="files" data-chrome="morph_files">{esc(text.ui("morph_files", program=fo, file=fn))}</p>{diff_rows}</div>')
     # --- the mechanism panel: the state before this scene, with this scene's state faded in over it
     mech_html = ""
-    if mode:
+    film_k = 1.0
+    stack_out = None
+    if mode == "path":
+        # the path through the switch (AC-10.2 control-path), the still's figure, as the hero: drawn at half the box
+        # and scaled 2x, its rows spread to the box's height
         px, py, pw, ph = L["q_panel_box"] if q else L["panel_box"]
-        # a side panel is drawn wider when the frame's box is wider than the panel is tall, so it fills the box
-        pw_ = None
-        if mode == "side":
-            h0 = mech.max_height(lesson, "wide", notes=False)
-            pw_ = int(min(760, max(mech.WIDTHS[("wide", "side")], pw * h0 / ph)))
-        mh = mech.max_height(lesson, "wide", notes=False, width=pw_)
-        fit = 'preserveAspectRatio="xMidYMin meet"'
+        PK = 2.0
+        fit = 'preserveAspectRatio="xMidYMid meet"'
+        kw = dict(width=round(pw / PK - 8), fit_h=round(ph / PK - 8), height=round(ph / PK - 8), notes=False, mark=False,
+                  kind="control-path")
+        sizes = None
+        for _ in range(3):  # the figure's own scale in its box: its 4-word heading reads at >= 28 px
+            from . import still
+            _svg = still.Svg("light", fonts.tokens())
+            hh = mech.draw(_svg, lesson, scene["state"], 4, 4, kw["width"], "wide", still.Flow(_svg, {}), key=False,
+                           notes=False, kind="control-path", fit_h=kw["fit_h"], sizes=sizes)
+            k_ = min(pw / (kw["width"] + 8), ph / (max(hh, kw["height"]) + 8))
+            sizes = {"head": round(max(mech.SIZES["wide"]["label"], 29.0 / (1.04 * k_)), 2),
+                     "code": round(min(mech.SIZES["wide"]["code"], (PATH_OUT_PX - 2) / (1.2 * k_)), 2)}
+        kw["sizes"] = sizes
+        layers, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}', **kw)
+        if replay and scene["before"] != scene["state"]:
+            # the previous scene's path (a compare program's own figure when the recap returns from it) until the
+            # reveal, so the frame shows the state the IVE says is on screen
+            bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme,
+                                                attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}', **kw)
+            layers = bef_svg + layers
+        mech_html = f'<div class="mechbox" data-key="panel">{layers}</div>'
+    elif mode == "side":
+        px, py, pw, ph = L["q_panel_box"] if q else L["panel_box"]
         recap = sb.get("view") == "summary" and lesson.data["figure"]["panel"]["kind"] == "stack"
+        fit = 'preserveAspectRatio="xMidYMin meet"'
+        st_ = lesson.data["figure"]["states"] if recap else None
+        stack = lesson.data["figure"]["panel"]["kind"] == "stack"
+        if stack:
+            # the camera fits the stack at this state (a short stack is drawn large) over the output it has printed
+            pw_ = STACK_W
+            kmax = (val_px or 30) / MIN_SVG_PX  # code in the panel never larger than the printed values
+            per_col_ = _out_grid(L, L["max_out"])[1]
+            out_need = lambda sid_: 64 + min(per_col_, max(1, len(lesson.state(sid_)["state"]["output"]))) * 58 + 16  # noqa: E731
+            avail = lambda sid_: ph - 24 - out_need(sid_)  # noqa: E731
+            sizes, film_k, h1 = _zoom(lesson, scene["state"], pw, avail(scene["state"]), pw_, states=st_, kmax=kmax)
+        else:
+            # every lane on screen from the start (its value fades in when it prints); the camera fits the state
+            pw_ = VIEWS_W
+            kmax = (val_px or 30) / MIN_SVG_PX
+            avail = lambda sid_: ph  # noqa: E731
+            sizes, film_k, h1 = _zoom(lesson, scene["state"], pw, ph, pw_, extra={"pending": True}, kmax=kmax)
+        # each layer's own box: the state's fit, centred across the column (the camera fits the state)
+        lbox = lambda k_, h_: (f'style="left:{(pw - (pw_ + 8) * k_) / 2:.1f}px;width:{(pw_ + 8) * k_:.1f}px;'  # noqa: E731
+                               f'height:{(h_ + 8) * k_:.1f}px"')
+        cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme,
+                                            attrs=f'class="mlayer mcur" {fit} {lbox(film_k, h1)}', notes=False, states=st_,
+                                            mark=False, width=pw_, sizes=sizes)
+        layers = cur_svg
+        has_before = replay and scene["before"] != scene["state"]
+        bsizes, k0 = sizes, film_k
+        if has_before:
+            bsizes, k0, _h0 = _zoom(lesson, scene["before"], pw, avail(scene["before"]), pw_,
+                                    extra=None if stack else {"pending": True}, kmax=kmax)
+            bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme,
+                                                attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit} '
+                                                f'{lbox(k0, _h0)}', notes=False, width=pw_, mark=False, sizes=bsizes)
+            layers = bef_svg + cur_svg
+        if stack:
+            # the output stands on the column's floor and grows upward as lines are printed
+            n0_ = out_need(scene["before"] if has_before else scene["state"])
+            stack_out = (py + ph - n0_, py + ph - out_need(scene["state"]), n0_, out_need(scene["state"]))
+        chips = ""
+        fl = mech.flows(lesson, scene["before"], scene["state"]) if has_before else []
+        if fl:
+            A0 = mech.stack_anchors(lesson, scene["before"], "wide", pw_, sizes=bsizes)
+            A1 = mech.stack_anchors(lesson, scene["state"], "wide", pw_, sizes=sizes)
+            ox0, ox1 = (pw - (pw_ + 8) * k0) / 2, (pw - (pw_ + 8) * film_k) / 2
+            for n_, (i, j, fid) in enumerate(fl):
+                if i not in A0["rets"] or j not in A1["slots"]:
+                    continue
+                x0, y0 = A0["rets"][i]
+                x1, y1 = A1["slots"][j]
+                fpx = round({**mech.SIZES["wide"], **bsizes}["value"] * k0, 1)
+                chips += (f'<p class="chip" id="chip{n_}" data-fact="{esc(fid)}" data-layout-allow-overlap="" '
+                          f'style="left:{ox0 + x0 * k0:.1f}px;top:{y0 * k0:.1f}px;font-size:{fpx}px">'
+                          f'{esc(text.display(lesson.fact(fid)))}</p>')
+                dx, dy = ox1 + x1 * film_k - ox0 - x0 * k0, y1 * film_k - y0 * k0
+                # the value leaves its frame, swings out to the right and lands in the caller's slot
+                morph_js.append(f"d.set(q('#chip{n_}'), {{ xPercent: -50, yPercent: -50 }}, 0);")
+                morph_js.append(f"d.fromTo(q('#chip{n_}'), {{ opacity: 0 }}, {{ opacity: 1, duration: 0.12 }}, 0);")
+                morph_js.append(f"d.to(q('#chip{n_}'), {{ x: {dx:.1f}, duration: {FLIGHT - 0.1}, ease: 'power1.inOut' }}, 0.1);")
+                morph_js.append(f"d.to(q('#chip{n_}'), {{ y: {dy:.1f}, duration: {FLIGHT - 0.1}, ease: 'back.in(1.4)' }}, 0.1);")
+                morph_js.append(f"d.to(q('#chip{n_}'), {{ opacity: 0, duration: 0.2 }}, {FLIGHT + 0.35});")
+        mech_html = f'<div class="mechbox" data-key="panel">{layers}{chips}</div>'
+    elif mode:
+        px, py, pw, ph = L["q_panel_box"] if q else L["panel_box"]
+        pw_ = None
+        recap = sb.get("view") == "summary" and lesson.data["figure"]["panel"]["kind"] == "stack"
+        sizes, film_k = _film_sizes(lesson, L, pw, ph, pw_, states=lesson.data["figure"]["states"] if recap else None)
+        mh = mech.max_height(lesson, "wide", notes=False, width=pw_, sizes=sizes)
+        fit = 'preserveAspectRatio="xMidYMin meet"'
         if recap:
             # a summary of the stack is the whole run, step by step (the still's strip), not the last state alone
             cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
-                                                notes=False, states=lesson.data["figure"]["states"], mark=True)
+                                                notes=False, states=lesson.data["figure"]["states"], mark=False,
+                                                width=pw_, sizes=sizes)
         else:
             cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
-                                                height=mh, notes=False, width=pw_, mark=True)
+                                                height=mh, notes=False, width=pw_, mark=False, sizes=sizes)
         layers = cur_svg
         if replay and scene["before"] != scene["state"]:
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}',
-                                                height=mh, notes=False, width=pw_, mark=True)
+                                                height=mh, notes=False, width=pw_, mark=False, sizes=sizes)
             layers = bef_svg + cur_svg
         chips = ""
         if replay and scene["before"] != scene["state"]:
@@ -693,15 +982,15 @@ def scene_html(lesson, scene, index, count, timing):
                 vbh = mh + 8
                 k_ = min(pw / vbw, ph / vbh)
                 ox = (pw - vbw * k_) / 2
-                A0 = mech.stack_anchors(lesson, scene["before"], "wide", pw_)
-                A1 = mech.stack_anchors(lesson, scene["state"], "wide", pw_)
+                A0 = mech.stack_anchors(lesson, scene["before"], "wide", pw_, sizes=sizes)
+                A1 = mech.stack_anchors(lesson, scene["state"], "wide", pw_, sizes=sizes)
                 vt0 = ty["value"]
                 for n_, (i, j, fid) in enumerate(fl):
                     if i not in A0["rets"] or j not in A1["slots"]:
                         continue
                     x0, y0 = A0["rets"][i]
                     x1, y1 = A1["slots"][j]
-                    fpx = round(mech.SIZES["wide"]["value"] * k_, 1)
+                    fpx = round({**mech.SIZES["wide"], **sizes}["value"] * k_, 1)
                     chips += (f'<p class="chip" id="chip{n_}" data-fact="{esc(fid)}" data-layout-allow-overlap="" '
                               f'style="left:{ox + x0 * k_:.1f}px;top:{y0 * k_:.1f}px;font-size:{fpx}px">'
                               f'{esc(text.display(lesson.fact(fid)))}</p>')
@@ -758,6 +1047,12 @@ def scene_html(lesson, scene, index, count, timing):
         # held at full until the first new value is half in (0.3 s fade from oa), then gone in 0.15 s
         js.append(f"d.to(q('.out[data-set=\"old\"]'), {{ opacity: 0, duration: 0.15 }}, {oa + 0.16:.3f});")
 
+    if stack_out:
+        t0_, t1_, h0_, h1_ = stack_out
+        if abs(t0_ - t1_) > 0.5 or h0_ != h1_:
+            f0 = FLIGHT if mech.flows(lesson, scene["before"], scene["state"]) else 0.0
+            js.append(f"d.fromTo(q('.outcard'), {{ top: {t0_ - L['side_top']:.1f}, height: {h0_} }}, "
+                      f"{{ top: {t1_ - L['side_top']:.1f}, height: {h1_}, duration: 0.45, ease: 'power2.inOut' }}, {f0});")
     if mode and has_out and not before_out:
         js.append(f"d.fromTo(q('.outcard'), {{ opacity: 0, y: -12 }}, {{ opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }}, {max(0.0, oa - 0.15):.3f});")
     if mode and not q and replay and scene["before"] != scene["state"]:
@@ -766,27 +1061,55 @@ def scene_html(lesson, scene, index, count, timing):
         f0 = FLIGHT if mech.flows(lesson, scene["before"], scene["state"]) else 0.0
         js.append(f"d.fromTo(q('.mcur'), {{ autoAlpha: 0 }}, {{ autoAlpha: 1, duration: 0.45, ease: 'power1.out' }}, {f0});")
         js.append(f"d.to(q('.mbefore'), {{ autoAlpha: 0, duration: 0.3, ease: 'power1.in' }}, {f0 + 0.45});")
+    if mode == "path":
+        # the controlling variable, bound to the line that sets it (every number on the stage is bound, AC-10.2)
+        nl = rail.listing(lesson, cur["program"])[0]
+        src_ = lesson.program_source(cur["program"]).split("\n")
+        vline = next((i for i in range(1, len(src_) + 1) if all(f"{k} = {v}" in src_[i - 1] for k, v in cur["vars"].items())), None)
+        vars_html = " ".join(f'<span data-code="{cur["program"]}"{f" data-src-line={chr(34)}{vline}{chr(34)}" if vline else ""}>'
+                             f'{esc(k)} = {esc(v)}</span>' for k, v in cur["vars"].items())
+        del nl
     vars_p = (f'<p class="vars"><span class="varlabel" data-chrome="vars_label">{esc(text.ui("vars_label").upper())}</span>'
-              f'{vars_html}</p>') if mode is None else ""
+              f'{vars_html}</p>') if mode in (None, "path") else ""
     panel_css = ""
     if mode:
         bx, by, bw, bh = L["q_panel_box"] if q else L["panel_box"]
         qx, qy, qw, qh = L["q_box"]
         ox, oy, ow, ohh = _out_rect(L)
+        if mode == "path":
+            out_css_v = (f".vars {{ left:{L['code_x'] + 4}px; top:{L['vars_top']}px; }}\n"
+                         f".panel.pnote {{ left:{L['q_box'][0]}px; top:12px; width:{SX1 - L['q_box'][0]}px; height:{STOP - 20}px; bottom:auto;"
+                         f" padding:4px 0 4px 24px; display:flex; align-items:center; }}\n"
+                         f".panel.pchange {{ left:{L['q_box'][0]}px; top:12px; width:{SX1 - L['q_box'][0]}px; height:auto; bottom:auto;"
+                         f" padding:6px 0 6px 24px; display:grid; grid-template-columns:auto 1fr; column-gap:24px; align-items:baseline; }}\n"
+                         f".pchange .qlabel {{ margin:0; }} .pchange .files {{ margin:0; }} .pchange .dl {{ grid-column:1 / -1; margin:0; }}\n")
+        else:
+            out_css_v = ""
+        out_css = out_css_v + (f".outcard {{ left:0px; top:{stack_out[1] - L['side_top']:.1f}px; width:{ow}px; height:{stack_out[3]}px; }}\n"
+                   if stack_out else f".outcard {{ left:{ox}px; top:{oy}px; width:{ow}px; height:{ohh}px; }}\n")
         panel_css = (f".mechbox {{ position:absolute; left:{bx}px; top:{by}px; width:{bw}px; height:{bh}px; }}\n"
                      f".mlayer {{ position:absolute; left:0; top:0; width:100%; height:100%; }}\n"
                      f".chip {{ position:absolute; margin:0; padding:2px 12px; opacity:0; border-radius:10px; white-space:nowrap; "
                      f"font-family:{ty['value']['family']}; font-weight:700; line-height:1.25; color:{t['ground']}; background:{t['value']}; }}\n"
-                     f".outcard {{ left:{ox}px; top:{oy}px; width:{ow}px; height:{ohh}px; }}\n"
-                     f".panel.pbox {{ left:{qx}px; top:{qy}px; width:{qw}px; height:{qh}px; bottom:auto; padding:20px 30px; }}\n"
-                     f".pbox .qtext {{ font-size:{round(32 * ty['body']['scale'])}px; }}\n")
-        side = side.replace('class="panel qcard"', 'class="panel qcard pbox"')
+                     f"{out_css}"
+                     f".qhead {{ position:absolute; left:{qx}px; top:{qy}px; width:{qw}px; height:{qh}px; margin:0; }}\n"
+                     f".qhead .qtext {{ font-size:{Q_PROMPT}px; line-height:1.2; color:{t['note']}; font-weight:600; }}\n"
+                     f".qhead .qopts {{ margin-top:12px; gap:10px 14px; }}\n"
+                     f".qhead .qopt {{ font-size:{Q_OPT}px; padding:4px 16px; }}\n")
     font = L["font"]
+    # B3: in a stage layout the mechanism, the code it runs and the output it prints are one figure (AC-10.2 markup)
+    mk = mech.MECH_KIND.get(mech.panel_kind(lesson) or "", "")
+    stage_open = (f'<div class="stage" data-role="figure"><div class="stagemech" data-role="mechanism" data-kind="{mk}">'
+                  if mode else "")
+    stage_close = "</div></div>" if mode else ""
     kt, dt, bt, lt, vt, ct = ty["kicker"], ty["display"], ty["body"], ty["label"], ty["value"], ty["code"]
     card_border = f"border:2px solid {t['rule']};" if frame.get("card_border") else ""
     panel_fill = f"background:{t['note_tint']};" if frame.get("panel_fill") else ""
     panel_rule = f"border-left:4px solid {t['rule'] if frame.get('panel_divider') else t['note']};"
     title_px = 60 if dt["key"] == "sans" else 64
+    kick_top, title_top = (52, 90) if mode is None else (22, 48)
+    if mode:
+        title_px = 48
     return _guard_tweens(f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>{esc(scene['title'])}</title></head>
 <body><template>
@@ -795,10 +1118,10 @@ def scene_html(lesson, scene, index, count, timing):
 #root-{sid} {{ position:absolute; inset:0; color:{t['ink']}; font-family:{bt['family']};
   font-variant-numeric:lining-nums tabular-nums; overflow:hidden; }}
 .bg {{ position:absolute; inset:0; background:{t['ground']}; }}
-.kicker {{ position:absolute; left:{MX}px; top:52px; margin:0; display:flex; align-items:center; font:{kt['weight']} 24px/1.2 {kt['family']};
+.kicker {{ position:absolute; left:{SX0 if mode else MX}px; top:{kick_top}px; margin:0; display:flex; align-items:center; font:{kt['weight']} 24px/1.2 {kt['family']};
   letter-spacing:.12em; color:{t['label']}; }}
 .count {{ margin-left:24px; padding-left:24px; border-left:2px solid {t['rule']}; font:500 24px/1.2 {ct['family']}; letter-spacing:.04em; color:{t['label']}; }}
-.title {{ position:absolute; left:{MX}px; top:90px; margin:0; font:{dt['weight']} {title_px}px/1.15 {dt['family']}; letter-spacing:-.015em; color:{t['ink']}; }}
+.title {{ position:absolute; left:{SX0 if mode else MX}px; top:{title_top}px; margin:0; font:{dt['weight']} {title_px}px/1.15 {dt['family']}; letter-spacing:-.015em; color:{t['ink']}; }}
 .file[data-set="cur"] {{ opacity:{0 if morph else 1}; }}
 .file {{ position:absolute; left:{L['code_x']}px; width:{L['card_w'] - 24}px; top:{L['code_top'] - 38}px; margin:0; text-align:right;
   font:600 24px/1.2 {ct['family']}; color:{t['label']}; }}
@@ -841,11 +1164,11 @@ def scene_html(lesson, scene, index, count, timing):
 .vars {{ position:absolute; left:4px; top:{shift}px; margin:0; font:500 30px/1.3 {ct['family']}; color:{t['ink_soft']}; }}
 .varlabel {{ font:{lt['weight']} 22px/1.3 {lt['family']}; letter-spacing:.12em; color:{t['label']}; margin-right:18px; }}
 .panel {{ position:absolute; left:0; top:{panel_top}px; width:{L['side_w']}px; bottom:0; box-sizing:border-box; border-radius:{22 if frame.get('panel_fill') else 0}px; padding:30px 38px; }}
-.notecard {{ {panel_fill} {panel_rule} }}
+.notecard {{ {panel_fill} {panel_rule} display:flex; flex-direction:column; justify-content:center; }}
 .pathcard {{ {panel_rule} padding:12px 0 12px 22px; }}
 .pathfig {{ display:block; width:100%; height:100%; }}
 .note {{ margin:0; font:{nt['weight']} 50px/1.18 {nt['family']}; color:{t['note']}; }}
-.qcard {{ {panel_fill} border:3px solid {t['note']}; border-radius:22px; }}
+.qcard {{ {panel_fill} border:3px solid {t['note']}; border-radius:22px; display:flex; flex-direction:column; justify-content:center; }}
 .changecard {{ {panel_fill} {panel_rule} }}
 .changecard .files {{ margin:0 0 18px; font:600 30px/1.3 {ct['family']}; color:{t['ink']}; }}
 .changecard .dl {{ margin:0 0 8px; font:400 30px/1.3 {ct['family']}; color:{t['ink']}; white-space:pre; }}
@@ -858,8 +1181,9 @@ def scene_html(lesson, scene, index, count, timing):
 .qopt {{ margin:0; padding:6px 18px; border:2px solid {t['rule']}; border-radius:12px; background:{t['surface']};
   font:{vt['weight']} 28px/1.3 {vt['family']}; color:{t['ink']}; white-space:pre; }}
 {panel_css}
-.footrule {{ position:absolute; left:{MX}px; right:{MX}px; top:{H - BOTTOM + 22}px; height:2px; background:{t['rule']}; opacity:.6; }}
-.foot {{ position:absolute; right:{MX}px; top:{H - BOTTOM + 36}px; margin:0; font:400 20px/1.2 {ct['family']}; letter-spacing:.06em; color:{t['label']}; }}
+.stage, .stagemech {{ position:absolute; inset:0; }}
+.footrule {{ position:absolute; left:{SX0 if mode else MX}px; right:{W - SX1 if mode else MX}px; top:{SBOT + 8 if mode else H - BOTTOM + 22}px; height:2px; background:{t['rule']}; opacity:.6; }}
+.foot {{ position:absolute; right:{W - SX1 if mode else MX}px; top:{SBOT + 16 if mode else H - BOTTOM + 36}px; margin:0; font:400 20px/1.2 {ct['family']}; letter-spacing:.06em; color:{t['label']}; }}
 </style>
 <div id="root-{sid}" data-composition-id="{sid}" data-width="{W}" data-height="{H}" data-program="{cur['program']}"
   data-state="{scene['state']}" data-before="{scene['before']}" data-theme="{theme}" data-swap="{swap if morph else ''}">
@@ -867,21 +1191,25 @@ def scene_html(lesson, scene, index, count, timing):
   <p class="kicker"><span data-chrome="kicker">{esc(kicker)}</span><span class="count" data-label="chapter-count">{index + 1} / {count}</span></p>
   <h1 class="title" data-label="scene-title">{esc(scene['title'])}</h1>
   {files}
+  {stage_open}
   <div class="code" id="code-{sid}" data-key="code">
     {morph_html}
     <div class="hl" style="transform:translateY({hl_from - LH / 2:.1f}px)"></div>
     {''.join(s['rows'] for s in sets)}
     {''.join(s['rail'] for s in sets)}
     {''.join(s['tags'] + s['steps'] for s in sets)}
+    {inline_outs}
   </div>
   {mech_html}
   <div class="side">
     {outcard}
     <div class="sidebody">
-      {vars_p}
+      {vars_p if mode is None else ''}
       {side if mode is None else ''}
     </div>
   </div>
+  {vars_p if mode == "path" else ''}
+  {stage_close}
   {side if mode else ''}
   <div class="footrule"></div>
   {foot}

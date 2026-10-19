@@ -45,8 +45,8 @@ import os
 import re
 import shutil
 
-from .. import errors, host, text
-from . import explorer, mech, seal
+from .. import errors, expect_neuron, host, text
+from . import explorer, knob, mech, seal
 from . import path as rail
 from ..text import esc
 
@@ -69,15 +69,95 @@ def _view(lesson, sid):
 
 
 def panels(lesson):
-    """{state id: {"wl", "wd", "pl", "pd"}}: the panel of every trace state, wide and portrait, light and dark."""
-    if not (lesson.data.get("figure") or {}).get("panel"):
+    """{state id: {"wl", "wd", "pl", "pd"}}: the mechanism of every trace state, wide and portrait, light and dark,
+    with the AC-10.2 markup (B3: the IVE draws the still's and the film's figure; a switch lesson draws its path
+    figure)."""
+    kind = mech.panel_kind(lesson)
+    if not kind:
         return None
+    extra = {} if (lesson.data.get("figure") or {}).get("panel") else {"kind": "control-path"}
     out = {}
     for st in lesson.data["trace"]:
-        out[st["id"]] = {f"{lay[0]}{th[0]}": mech.svg_fragment(lesson, st["id"], lay, th,
-                                                               attrs=f'class="mech mech-{lay[0]}-{th}"')[0]
+        out[st["id"]] = {f"{lay[0]}{th[0]}": mech.svg_fragment(lesson, st["id"], lay, th, mark=True,
+                                                               attrs=f'class="mech mech-{lay[0]}-{th}"', **extra)[0]
                          for lay in ("wide", "portrait") for th in ("light", "dark")}
     return out
+
+
+# ---------------------------------------------------------------- the knob in EXPLORE (AC-6.6, D23.5)
+
+def _listing(lesson, pid):
+    src = lesson.program_source(pid).split("\n")
+    first, last = rail.listing(lesson, pid)
+    return [[n, src[n - 1]] for n in range(first, last + 1)]
+
+
+def _claim_rows(lesson, cids):
+    """A knob sentence for the page: its text, and the captured check facts it is held to (knob.captured_claim)."""
+    return [{"id": c, "text": lesson.claim(c)["text"], "facts": knob.captured_claim(lesson, c)} for c in cids]
+
+
+def knob_model(lesson):
+    """The EXPLORE panel's live control for a lesson with figure.explore: the explorer's knob (knob.py), with every
+    value computed by ptk, never by the page. values/calls: one captured run per value (its program, its stdout as
+    facts, its claims); neuron: the expect_neuron grid over the two sliders, the variant programs captured at a few
+    points. None when the lesson has no knob. The data lives in ive-data.js, so no value of an edit sits in the
+    document before the learner asks for it (AC-6.3)."""
+    sp = knob.spec(lesson)
+    if not sp:
+        return None
+    fig_pid = lesson.data["figure"]["program"]
+    if sp["kind"] in ("values", "calls"):
+        vals = []
+        for v in sp["values"]:
+            pid = v["program"]
+            row = {"value": v["value"], "program": pid, "file": lesson.program(pid)["path"].split("/")[-1],
+                   "code": _listing(lesson, pid), "prov": knob._prov(lesson, pid),
+                   "claims": _claim_rows(lesson, v.get("claims", []))}
+            if sp["kind"] == "values":
+                F = v["facts"]
+                row["views"] = []
+                for role, key in knob.COLS:
+                    fid = F.get("char") if role == "c" and "char" in F else (F.get("byte") if role == "c" else F.get(role))
+                    if fid:
+                        row["views"].append({"label": text.ui("k_byte") if role == "c" and "char" not in F else text.ui(key),
+                                             "fact": fid, "text": text.display(lesson.fact(fid))})
+                row["output"] = [{"fact": x["fact"], "text": x["text"]} for x in row["views"]]
+            else:
+                fid = v["facts"]["out"]
+                lines = text.display(lesson.fact(fid)).split("\n")
+                row["fact"] = fid
+                row["steps"] = knob.stack_steps(lines)
+                row["output"] = [{"text": ln} for ln in lines]
+            vals.append(row)
+        first = next((v["value"] for v in sp["values"] if v["program"] == fig_pid), sp["values"][0]["value"])
+        return {"kind": sp["kind"], "var": sp["var"], "first": first, "values": vals,
+                "label": text.ui("k_var_label", var=sp["var"]), "common": _claim_rows(lesson, sp.get("claims", []))}
+    T = knob.neuron_table(lesson, sp)
+    src = lesson.program_source(fig_pid).split("\n")
+    subst = {}
+    for var in ("w2", "b"):
+        rx = re.compile(r"\b" + var + r"\s*=\s*(-?[0-9.]+)")
+        for n, ln in enumerate(src, 1):
+            m = rx.search(ln)
+            if m:
+                subst[var] = {"line": n, "prefix": ln[:m.start(1)], "suffix": ln[m.end(1):]}
+                break
+    checks = {}
+    for c in sp.get("checks", []):
+        key = f"{expect_neuron.g(c['at']['w2'])}|{expect_neuron.g(c['at']['b'])}"
+        checks[key] = {"file": lesson.program(c["program"])["path"].split("/")[-1],
+                       "prov": knob._prov(lesson, c["program"]),
+                       "facts": [c["facts"][r] for r in ("t1", "t2", "z", "a")]}
+    keep = ("t1", "t2", "b", "z", "a", "zf", "af", "t1f", "t2f")
+    return {"kind": "neuron", "w2": T["w2"], "b": T["b"], "x1": T["x1"], "w1": T["w1"], "x2": T["x2"],
+            "start": [T["w2"].index(T["w2_0"]), T["b"].index(T["b_0"])], "geom": knob.GEOM,
+            "rows": {k: {f: r[f] for f in keep} for k, r in T["rows"].items()}, "checks": checks, "subst": subst,
+            "code": _listing(lesson, fig_pid), "file": lesson.program(fig_pid)["path"].split("/")[-1],
+            "labels": [text.ui("neuron_term", i=1), text.ui("neuron_term", i=2), text.ui("neuron_term_bias")],
+            "texts": knob.live_texts(lesson, T),
+            "computed": text.ui("k_computed", count=len(sp.get("checks", []))),
+            "common": _claim_rows(lesson, [c for c in sp.get("claims", []) if not lesson.claim(c).get("facts")])}
 
 
 def cues(lesson, timing):
@@ -137,7 +217,9 @@ JS_UI = ("chapters", "code_label", "output_label", "vars_label", "question_label
          "ive_from_film", "ive_yours", "ive_mode_label_explore", "ive_mode_label_film", "ive_mode_explore",
          "ive_mode_film", "x_on", "x_off", "x_captured", "x_computed", "x_tag_changed", "x_tag_nomatch", "enter_label",
          "x_tag_fall", "exit_label", "x_tag_end", "ive_ask_hint", "ive_mode_label_ask", "ive_mode_ask", "qa_correct",
-         "qa_wrong", "qa_correction", "ive_your_pick", "ive_chapter_sealed", "qa_choose")
+         "qa_wrong", "qa_correction", "ive_your_pick", "ive_chapter_sealed", "qa_choose", "k_slider", "stack_label",
+         "frame_returns", "frame_running", "frame_waiting", "k_slot", "panel_multiply", "panel_add",
+         "panel_gate", "neuron_bias", "axis_z", "axis_a", "k_captured_point", "x_section", "s_step")
 PAUSE_AFTER = 0.25  # the film stops this long after the question's last spoken word (no dead air before the pause)
 
 
@@ -214,11 +296,21 @@ def page_data(lesson, timing, cue_list, ive_dir, live):
             "artifact_id": f"{lesson.id}:ive", "session_id": "local",
             "tracks": {k: (ive_dir / f"{k}.vtt").read_text() for k in ("captions", "chapters", "states")},
             "unlock_cue": answers[-1]["cue"] if answers else None, "live": live, "panels": panels(lesson),
+            "knob": knob_model(lesson),
             "questions": question_plan(lesson, timing, cue_list),
-            "panel_place": mech.page_place(lesson) if (lesson.data.get("figure") or {}).get("panel") else None}
+            "panel_place": mech.page_place(lesson) if mech.panel_kind(lesson) else None}
 
 
 def _live_html(lesson, live, unlock):
+    if not live and knob.spec(lesson):
+        # the knob: its controls are built by ive.js from ive-data.js (no value in the document before it is asked for)
+        lock = (f'<p class="locked" id="locked" hidden data-chrome="ive_locked">{esc(text.ui("ive_locked", time=clock(unlock)))}</p>'
+                if unlock is not None else '<p class="locked" id="locked" hidden></p>')
+        return (f'<div class="live" id="live" data-locked="false" data-knob="{esc(knob.spec(lesson)["kind"])}">'
+                f'<p class="lbl" data-chrome="x_section">{esc(text.ui("x_section"))}</p>{lock}'
+                f'<div class="livectl" id="knobctl"></div>'
+                f'<button type="button" class="pill" id="live-reset" disabled data-chrome="ive_live_reset">'
+                f'{esc(text.ui("ive_live_reset"))}</button></div>')
     if not live:
         return ""
     lock = (f'<p class="locked" id="locked" hidden data-chrome="ive_locked">{esc(text.ui("ive_locked", time=clock(unlock)))}</p>'
@@ -239,8 +331,10 @@ def page(lesson, timing, cue_list, posters, live=None):
     script = (IVE_DIR / "ive.js").read_text()
     answers = [c for c in cue_list if c["kind"] == "answer"]
     unlock = answers[-1]["start"] if answers else None
-    pchars = " ".join(mech.svg_fragment(lesson, st["id"], lay, "light")[2] for st in lesson.data["trace"]
-                      for lay in ("wide", "portrait")) if (lesson.data.get("figure") or {}).get("panel") else ""
+    extra = {} if (lesson.data.get("figure") or {}).get("panel") else {"kind": "control-path"}
+    pchars = " ".join(mech.svg_fragment(lesson, st["id"], lay, "light", **extra)[2] for st in lesson.data["trace"]
+                      for lay in ("wide", "portrait")) if mech.panel_kind(lesson) else ""
+    pchars += " " + json.dumps(knob_model(lesson) or {}, ensure_ascii=False) + " " + knob.page_chars(lesson)
     used = " ".join([lesson.data["title"], text.kicker(lesson), explorer.all_chrome_text(), pchars,
                      *[c["text"] for c in timing["cues"]], *[s["title"] for s in timing["scenes"]],
                      *[json.dumps(c, ensure_ascii=False) for c in cue_list],
@@ -248,7 +342,7 @@ def page(lesson, timing, cue_list, posters, live=None):
                      *[x for q in question_plan(lesson, timing, cue_list) for o in q["options"]
                        for x in (o["text"], o.get("misconception", ""), o.get("correction", ""))],
                      "0123456789:—·=; English"])
-    css = explorer.page_css(used, "base.css") + (IVE_DIR / "ive.css").read_text()
+    css = explorer.page_css(used, "base.css", "knob.css") + (IVE_DIR / "ive.css").read_text()
     src = lesson.program(lesson.data["figure"]["program"]) if lesson.data.get("figure") else lesson.data["programs"][0]
     tx_full = "".join(f'<li data-narration="{esc(c["id"])}"><span class="time" data-label="time">'
                       f'{esc(clock(c["start"]))}</span><span>{esc(c["text"])}</span></li>' for c in timing["cues"])

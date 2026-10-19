@@ -57,6 +57,7 @@ LABEL_PATTERNS = {"line-number": r"\d+", "output-step": r"\d+", "note-badge": r"
 PROJECTOR_MODULES = ("explorer", "qa", "cards")
 TEACHING = {"claim", "alt", "narration", "question", "option", "trace", "projector", "misconception", "chrome-claim"}
 NUMERIC_SLOTS = {"n", "k", "line", "a", "b", "n0", "i", "j", "count", "value"}
+DOUBLE_SLOT = r"[-+\u2212]?\d+(?:\.\d+)?(?:e[-+]\d+)?"
 TEACHING_LABELS = {"title", "scene-title"}
 SCHEMA_REMINDER = (
     "Your previous review could not be used. Write exactly one JSON object to review_path and nothing else. "
@@ -544,7 +545,9 @@ def chrome_regex(lesson, key):
             name = part[1:-1]
             # numeric slots hold integers; an unknown slot holds a short phrase with no sentence end.
             # Teaching templates (chrome-claim) send every filled instance to the reviewer.
-            out += slots.get(name, r"-?\d+" if name in NUMERIC_SLOTS else r"[^.!?]{1,60}?")
+            # g_<name>: a double as printf("%g") prints it; d_<name>: a double to 17 significant digits (B4)
+            num = DOUBLE_SLOT if name.startswith(("g_", "d_")) else (r"-?\d+" if name in NUMERIC_SLOTS else None)
+            out += slots.get(name, num or r"[^.!?]{1,60}?")
         else:
             out += re.escape(_squash(part))
     return re.compile(out)
