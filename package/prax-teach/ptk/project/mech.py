@@ -306,7 +306,7 @@ def _mem_row(c, x, y, w, var, ctype, fids, size_fid, low_offset=None):
     return {"y": y + 8, "top": top, "bottom": bottom, "right": x + n * (cw + gap) - gap}
 
 
-def _low_byte(c, x, y, w, v, label_first=False):
+def _low_byte(c, x, y, w, v, label_first=False, scale=None):
     """The low byte as a tape (eight digits over bars, note for a 1) and its hex form; returns the y after. With
     label_first, its label sits above the tape (beside a's cells); else under it."""
     svg, t, S = c.svg, c.t, c.S
@@ -317,7 +317,7 @@ def _low_byte(c, x, y, w, v, label_first=False):
     c.group(v["bits"])
     # the byte as a tape: eight digits, each over a bar (note for a 1, rule for a 0), the bars kept clear of
     # the digits so OCR reads the digits alone
-    vfont, vpx, vweight, _c, _s = svg.role("value", S["value"] * (1.08 if label_first else 1.15))
+    vfont, vpx, vweight, _c, _s = svg.role("value", S["value"] * (scale or (1.08 if label_first else 1.15)))
     adv = fonts.width(vfont, vpx, "0", weight=vweight)
     gap = round(vpx * 0.22, 1)
     bits = c.val(v["bits"])
@@ -366,9 +366,11 @@ def _memory(c, x, y, w):
         n = len(M["int"])
         row = _mem_row(c, x, y + 8, w, v["var"], "int", M["int"], _size_fact(lesson, "int"),
                        low_offset=0 if little else n - 1)
-        if c.on(v["bits"]) and x + w - row["right"] >= 250 * S["k"]:
-            _low_byte(c, row["right"] + 30 * S["k"], row["top"] - S["label"] - 14,
-                      x + w - row["right"] - 30 * S["k"], v, label_first=True)
+        room = x + w - row["right"] - 30 * S["k"]
+        if c.on(v["bits"]) and room >= 180:
+            # beside a's cells, as large as the room allows (the tape and its hex need about 9.6 em)
+            _low_byte(c, row["right"] + 30 * S["k"], row["top"] - S["label"] - 14, room, v, label_first=True,
+                      scale=min(1.08, room / (9.6 * S["value"])))
             bits_done = True
         y = row["y"]
     if c.on(v["bits"]) and not bits_done:
@@ -1108,7 +1110,7 @@ def svg_fragment(lesson, sid, layout, theme, tokens=None, states=None, attrs="",
     kind = kind or panel_kind(lesson)
     w = width or (WIDTHS[(layout, "side")] if kind in ("stack", "control-path") else WIDTHS[(layout, page_place(lesson))])
     h = draw(svg, lesson, sid, 4, 4, w, layout, flow, key=False, states=states, notes=notes, mark=mark, kind=kind)
-    body = "\n".join(svg.els)
+    body = "".join(svg.els)  # one line: the film's sub-compositions stay small (HyperFrames lint)
     facts = re.findall(r'data-fact="([^"]+)"', body)
     chars = "".join(svg.chars.values())
     defs = (f'<defs><marker id="arrow-{theme}-{layout}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" '
