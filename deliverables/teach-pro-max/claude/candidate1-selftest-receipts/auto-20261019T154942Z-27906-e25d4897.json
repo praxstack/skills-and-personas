@@ -1,0 +1,25 @@
+{
+ "suite": "auto",
+ "pattern": "test_qa.py",
+ "pid": 27906,
+ "results": [
+  {
+   "test": "tests/test_qa.py::test_explanation_first_practice_after",
+   "status": "failed",
+   "seconds": 5.6,
+   "detail": "AssertionError: [\"layer sc3 lacks narration 'A switch jumps to the case label whose value matches the controlling expression.'\", \"layer sc3 lacks narration 'With n = 2, the matching label is case 2, which prints two.'\", \"layer sc4 lacks narration 'A case label is only a label. It does not stop execution.'\"]"
+  },
+  {
+   "test": "tests/test_qa.py::test_layers_misconceptions_print",
+   "status": "failed",
+   "seconds": 2.4,
+   "detail": "AssertionError: [\"layer sc3 lacks narration 'A switch jumps to the case label whose value matches the controlling expression.'\", \"layer sc3 lacks narration 'With n = 2, the matching label is case 2, which prints two.'\", \"layer sc4 lacks narration 'A case label is only a label. It does not stop execution.'\", \"layer sc4 lacks narration 'So execution falls through into case 3, which prints three.'\", \"layer sc5 lacks narration 'A break statement ends the smallest enclosing switch or loop. Here that is the switch.'\", \"layer sc5 lacks narration 'After the switch ends, the program prints done.'\", \"layer sc6 lacks narration 'with_break.c adds a break after case 1 and after case 2, so no case runs on into the next case.'\", \"layer sc6 lacks narration 'With n = 2, with_break.c prints only two from the switch, and then done.'\", \"layer sc6 lacks narration 'With -Wextra, gcc-16 warns that the statements on line 7 and line 9 of fallthrough.c may fall through, and it gives with_break.c no warning.'\", \"layer sc7 lacks narration 'into_break.c is fallthrough.c with case 3 cut down to a lone break.'\"]"
+  },
+  {
+   "test": "tests/test_qa.py::test_sealed_titles_wait_for_the_answer",
+   "status": "passed",
+   "seconds": 4.8,
+   "detail": null
+  }
+ ]
+}

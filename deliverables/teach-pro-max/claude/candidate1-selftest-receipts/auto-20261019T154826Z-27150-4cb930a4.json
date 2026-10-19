@@ -1,0 +1,25 @@
+{
+ "suite": "auto",
+ "pattern": "test_qa.py",
+ "pid": 27150,
+ "results": [
+  {
+   "test": "tests/test_qa.py::test_explanation_first_practice_after",
+   "status": "failed",
+   "seconds": 0.9,
+   "detail": "ptk.errors.ToolFailed: the qa browser driver wrote no result"
+  },
+  {
+   "test": "tests/test_qa.py::test_layers_misconceptions_print",
+   "status": "failed",
+   "seconds": 0.4,
+   "detail": "ptk.errors.ToolFailed: the qa browser driver wrote no result"
+  },
+  {
+   "test": "tests/test_qa.py::test_sealed_titles_wait_for_the_answer",
+   "status": "failed",
+   "seconds": 0.4,
+   "detail": "ptk.errors.ToolFailed: the qa browser driver wrote no result"
+  }
+ ]
+}

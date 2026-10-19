@@ -1,0 +1,12 @@
+{
+  "answer_cue_check": true,
+  "answer_cues": [
+    {
+      "cue": "m8",
+      "time": 20.0333,
+      "state": "s3"
+    }
+  ],
+  "loop_frozen_checker_collisions": [],
+  "qa_page": "/private/tmp/prax-teach-c-v3-audit/qa/index.html"
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "lesson": "factorial-stack",
+    "facts_unchanged": true,
+    "programs_captured": 5,
+    "facts_compared": 18,
+    "match": true
+  },
+  {
+    "lesson": "neuron",
+    "facts_unchanged": true,
+    "programs_captured": 5,
+    "facts_compared": 30,
+    "match": true
+  },
+  {
+    "lesson": "one-byte-four-views",
+    "facts_unchanged": true,
+    "programs_captured": 7,
+    "facts_compared": 44,
+    "match": true
+  },
+  {
+    "lesson": "switch-fallthrough",
+    "facts_unchanged": true,
+    "programs_captured": 3,
+    "facts_compared": 9,
+    "match": true
+  }
+]

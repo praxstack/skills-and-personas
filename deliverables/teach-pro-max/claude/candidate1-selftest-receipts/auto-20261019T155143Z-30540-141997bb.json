@@ -1,0 +1,86 @@
+{
+ "suite": "auto",
+ "pattern": "test_frame_state",
+ "pid": 30540,
+ "results": [
+  {
+   "test": "tests/test_frame_state.py::test_a_program_change_after_a_question_answers_at_its_morph",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_frame_state.py::test_compare_pauses_rejects_a_moving_frame_of_another_program",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_frame_state.py::test_explorer_matches_frame_at_every_pause",
+   "status": "passed",
+   "seconds": 6.1,
+   "detail": {
+    "pauses": 42,
+    "recap_pauses": 3,
+    "old_rule_mismatches": 17
+   }
+  },
+  {
+   "test": "tests/test_frame_state.py::test_morph_output_stays_readable_until_the_new_output_is_on_screen",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "gap_caught_at": 1.0,
+    "cross_fade_ok": true
+   }
+  },
+  {
+   "test": "tests/test_frame_state.py::test_note_waits_for_the_diff",
+   "status": "passed",
+   "seconds": 3.0,
+   "detail": {
+    "frames_checked": 705,
+    "note_first_full": {
+     "sc6": 23.4343,
+     "sc7": 30.9343,
+     "sc8": 40.6343
+    }
+   }
+  },
+  {
+   "test": "tests/test_frame_state.py::test_panel_overlap_only_while_cross_fading",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "stuck": [
+     "exempt-layer-still-shown",
+     "layer-never-fades-out",
+     "overlap-not-fading"
+    ],
+    "max_crossfade_s": 1.0
+   }
+  },
+  {
+   "test": "tests/test_frame_state.py::test_path_set_matching_refuses_ambiguity",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "collision": "ambiguous",
+    "lost_panel": "unknown"
+   }
+  },
+  {
+   "test": "tests/test_frame_state.py::test_program_change_frame_shows_the_explorers_program",
+   "status": "passed",
+   "seconds": 1.9,
+   "detail": {
+    "pauses": 42,
+    "program_changes": [
+     "sc6",
+     "sc7",
+     "sc8"
+    ]
+   }
+  }
+ ]
+}

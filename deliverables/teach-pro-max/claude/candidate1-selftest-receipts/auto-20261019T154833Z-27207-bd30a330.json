@@ -1,0 +1,164 @@
+{
+ "suite": "auto",
+ "pattern": "test_route.py",
+ "pid": 27207,
+ "results": [
+  {
+   "test": "tests/test_route.py::test_answer_now_overrides_practice",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": "AssertionError: [\n {\n  \"id\": \"d093\",\n  \"request\": \"Just explain how a switch falls through\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:just-explain\"\n  ]\n },\n {\n  \"id\": \"d109\",\n  \"request\": \"teach me pointers, no quiz please\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:no-questions\"\n  ]\n },\n {\n  \"id\": \"r033\",\n  \"request\": \"just explain integer promotion, no questions\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:just-explain\"\n  ]\n },\n {\n  \"id\": \"a09\",\n  \"request\": \"I just want the explanation, no back and forth\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:just-explain\"\n  ]\n },\n {\n  \"id\": \"i03\",\n  \"request\": \"can you not ask me to guess\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:no-questions\"\n  ]\n }\n]"
+  },
+  {
+   "test": "tests/test_route.py::test_confidence",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "high": 4,
+    "low": 4
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_dev_set_size_and_accuracy",
+   "status": "failed",
+   "seconds": 1.3,
+   "detail": "-teach\",\n   \"override:just-explain\"\n  ]\n },\n {\n  \"id\": \"a11\",\n  \"request\": \"teach me about video codecs\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"a13\",\n  \"request\": \"teach me how to animate in CSS\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"a15\",\n  \"request\": \"explain how to shuffle a deck of cards in C\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"a33\",\n  \"request\": \"explain pointers, no diagrams\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"i01\",\n  \"request\": \"forget the video\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"i03\",\n  \"request\": \"can you not ask me to guess\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:no-questions\"\n  ]\n }\n]"
+  },
+  {
+   "test": "tests/test_route.py::test_explanation_first_in_every_workspace",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": " pointers\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r032\",\n  \"request\": \"explain how a for loop works\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r041\",\n  \"request\": \"i dont get recursion :(\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r053\",\n  \"request\": \"explain the output of this code: int x = 5; printf(\\\"%d %d\\\", x++, x++);\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r055\",\n  \"request\": \"help me understand why my program prints garbage after the loop\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r059\",\n  \"request\": \"teach me how strings end with \\\\0, thoda simple rakhna\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n }\n]"
+  },
+  {
+   "test": "tests/test_route.py::test_fresh_and_adversarial_sets",
+   "status": "failed",
+   "seconds": 1.3,
+   "detail": "{\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r033\",\n  \"request\": \"just explain integer promotion, no questions\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:just-explain\"\n  ]\n },\n {\n  \"id\": \"r041\",\n  \"request\": \"i dont get recursion :(\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r053\",\n  \"request\": \"explain the output of this code: int x = 5; printf(\\\"%d %d\\\", x++, x++);\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r055\",\n  \"request\": \"help me understand why my program prints garbage after the loop\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"r059\",\n  \"request\": \"teach me how strings end with \\\\0, thoda simple rakhna\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n }\n]"
+  },
+  {
+   "test": "tests/test_route.py::test_heldback_report",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "cases": 20,
+    "correct": 14,
+    "misses": [
+     "a02",
+     "a07",
+     "a12",
+     "a16",
+     "a28",
+     "a36"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_medium_words",
+   "status": "passed",
+   "seconds": 1.3,
+   "detail": {
+    "cases": 53
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_modes_route",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": "ult\"\n  ]\n },\n {\n  \"id\": \"d079\",\n  \"request\": \"I still don't get why case 3 runs\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"d080\",\n  \"request\": \"Help me figure out why this pointer is null\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"d103\",\n  \"request\": \"write an explanation of linked lists\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"d104\",\n  \"request\": \"Fix my understanding of pointers\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n },\n {\n  \"id\": \"d105\",\n  \"request\": \"teach me pointers, no quiz please\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"override:no-questions\"\n  ]\n },\n {\n  \"id\": \"r005\",\n  \"request\": \"i dont get recursion\",\n  \"diff\": {\n   \"media\": [\n    [],\n    [\n     \"still\"\n    ]\n   ],\n   \"build_needed\": [\n    false,\n    true\n   ]\n  },\n  \"rules\": [\n   \"default-teach\",\n   \"default:default\"\n  ]\n }\n]"
+  },
+  {
+   "test": "tests/test_route.py::test_negated_medium_is_never_built",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": "AssertionError: (\"I don't want a video, just explain pointers\", {'intent': 'teach', 'mode': 'explain', 'media': ['still'], 'narration': False, 'workspace_contract': {'dir': '/private/tmp/prax-teach-c-v3-state/tmp/route-ws-e3iu2p52/none', 'files': [], 'asks': None, 'evidence': []}, 'workspace_conflict': None, 'first_turn': {'kind': 'explanation', 'questions': 0, 'end_turn': True, 'artifact': 'none', 'instruction': 'Give the complete explanation now, no question first: what the learner sees, the rule, one exact example from a real run, a diagram or trace where it helps. Close with one sentence offering optional practice. TEACHING.md#explain.'}, 'build_needed': True, 'confidence': 'low', 'reasons': ['negated video'], 'also': [], 'rules': ['default-teach', 'override:just-explain']})"
+  },
+  {
+   "test": "tests/test_route.py::test_ordinary_tasks",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "cases": 36
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_practice_only_when_asked",
+   "status": "passed",
+   "seconds": 3.5,
+   "detail": {
+    "asked": 5,
+    "practice_rows": 22
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_quick_no_build",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "cases": 12,
+    "cli": {
+     "exit": 0,
+     "mode": "quick"
+    }
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_refusal_beats_quiz_and_contract",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": "AssertionError: ('none', 'dont ask me questions, what does static do', {'intent': 'teach', 'mode': 'explain', 'media': ['still'], 'narration': False, 'workspace_contract': {'dir': '/private/tmp/prax-teach-c-v3-state/tmp/route-ws-vvxb8c4e/none', 'files': [], 'asks': None, 'evidence': []}, 'workspace_conflict': None, 'first_turn': {'kind': 'explanation', 'questions': 0, 'end_turn': True, 'artifact': 'none', 'instruction': 'Give the complete explanation now, no question first: what the learner sees, the rule, one exact example from a real run, a diagram or trace where it helps. Close with one sentence offering optional practice. TEACHING.md#explain.'}, 'build_needed': True, 'confidence': 'high', 'reasons': [], 'also': [], 'rules': ['default-teach', 'override:no-questions']})"
+  },
+  {
+   "test": "tests/test_route.py::test_rule_table_and_complexity",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "max_branches": 5,
+    "functions": 25
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_tasks_and_rebuilds",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "ok": true
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_topic_words_are_not_media",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": "AssertionError: ('teach me about video codecs', {'intent': 'teach', 'mode': 'explain', 'media': ['still'], 'narration': False, 'workspace_contract': {'dir': '/private/tmp/prax-teach-c-v3-state/tmp/route-ws-j2xkmi3h/none', 'files': [], 'asks': None, 'evidence': []}, 'workspace_conflict': None, 'first_turn': {'kind': 'explanation', 'questions': 0, 'end_turn': True, 'artifact': 'none', 'instruction': 'Give the complete explanation now, no question first: what the learner sees, the rule, one exact example from a real run, a diagram or trace where it helps. Close with one sentence offering optional practice. TEACHING.md#explain.'}, 'build_needed': True, 'confidence': 'low', 'reasons': ['topic word, not a medium: video'], 'also': [], 'rules': ['default-teach', 'default:default']})"
+  },
+  {
+   "test": "tests/test_route.py::test_workspace_conflict_reported",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "predict": [
+     "AGENTS.md:5"
+    ],
+    "notes": [
+     "NOTES.md:3"
+    ],
+    "socratic": [
+     "MISSION.md:3"
+    ],
+    "real_c_workspace": [
+     "AGENTS.md:7",
+     "MISSION.md:5",
+     "NOTES.md:3"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_workspace_negation_without_apostrophe",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "mode": "explain"
+   }
+  }
+ ]
+}

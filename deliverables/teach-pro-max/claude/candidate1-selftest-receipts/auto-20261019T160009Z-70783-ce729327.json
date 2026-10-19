@@ -1,0 +1,172 @@
+{
+ "suite": "auto",
+ "pattern": "test_claims.py",
+ "pid": 70783,
+ "results": [
+  {
+   "test": "tests/test_claims.py::test_build_cli_canary_flag",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "flag": "--canary"
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_build_report_status_after_retry",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "status": "claims-pending"
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_canary_build_never_verified",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "canary": "canary-verified",
+    "full": "verified"
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_canary_gate",
+   "status": "passed",
+   "seconds": 0.4,
+   "detail": {
+    "caught": "passed",
+    "accepted": "failed",
+    "missing": "not-run"
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_canary_jobs_only_when_asked",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "f-cast": {
+     "jobs": 4,
+     "canary": "f4.promote.byte",
+     "candidates": 10,
+     "calibration_jobs": 23
+    }
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_invalid_reviews",
+   "status": "passed",
+   "seconds": 0.6,
+   "detail": {
+    "empty": "empty review",
+    "refusal": "not JSON (refusal or prose?): Expecting value",
+    "not-an-object": "review is not a JSON object",
+    "missing-keys": ": 'job_id' is a required property",
+    "partial-coverage": "text verdicts do not cover every teaching text exactly once",
+    "overall-mismatch": "overall does not follow the verdicts (one reject makes overa",
+    "empty-verdicts": "claims: [] should be non-empty",
+    "recovered_after_retry": true
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_jobs_and_manifest",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "f-cast": {
+     "jobs": 23,
+     "mutations": 10,
+     "max_tokens_with_rubric": 11172,
+     "teaching_texts": 22,
+     "not_sent": 0
+    }
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_private_map_not_in_reviewer_reach",
+   "status": "passed",
+   "seconds": 0.2,
+   "detail": {
+    "private": "/private/tmp/prax-teach-c-v3-state/claims-private/be815b06b56067c6.json"
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_rubric_sentence_classes",
+   "status": "passed",
+   "seconds": 0.2,
+   "detail": {
+    "sections": {
+     "Narration and transcript lines": 1222,
+     "Chapter titles": 762,
+     "Question lines": 761,
+     "Context sentences": 1057
+    },
+    "classes": [
+     "chapter-title",
+     "claim",
+     "lesson-title",
+     "narration",
+     "question",
+     "trace-label"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_source_excerpts_bound",
+   "status": "passed",
+   "seconds": 0.4,
+   "detail": {
+    "f-cast": 10,
+    "factorial-stack": 4,
+    "neuron": 6,
+    "one-byte-four-views": 15,
+    "switch-fallthrough": 7,
+    "build": "1 cited passage(s) not stored with the lesson (AC-7.7); first: claim c.ascii sou",
+    "cases": {
+     "file deleted": "claim c.ascii source 0 (ISO/IEC 9899:2018 (C17), working draft N2176, ",
+     "no excerpts field": "claim c.ascii source 0 (ISO/IEC 9899:2018 (C17), working draft N2176, ",
+     "quote not in passage": "claim c.ascii source 0 (ISO/IEC 9899:2018 (C17), working draft N2176, ",
+     "planted citation unstored": "mutation f5.cast.citation source 0 (ISO/IEC 9899:2018 (C17), working d"
+    }
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_stale_review_rejected",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "model": "lesson, artifact texts, sources or rubric changed since the job was written",
+    "cases": 5
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_three_reviewers_agree",
+   "status": "passed",
+   "seconds": 0.3,
+   "detail": {
+    "all-accept": "passed",
+    "split": "failed",
+    "all-reject": "failed",
+    "missing": "not-run"
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_unmapped_sentence",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "f-cast": 22,
+    "switch-fallthrough": "skipped: the slice build is older than lesson.json",
+    "rejected_cases": 12
+   }
+  },
+  {
+   "test": "tests/test_claims.py::test_v1_review_rejected_for_v2_job",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "rejected": [
+     "review used rubric v1, job needs v4"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+{
+ "suite": "auto",
+ "pattern": "test_qa.py",
+ "pid": 28882,
+ "results": [
+  {
+   "test": "tests/test_qa.py::test_explanation_first_practice_after",
+   "status": "failed",
+   "seconds": 5.6,
+   "detail": "AssertionError: []"
+  },
+  {
+   "test": "tests/test_qa.py::test_layers_misconceptions_print",
+   "status": "passed",
+   "seconds": 23.7,
+   "detail": {
+    "layers": 7,
+    "options": 4,
+    "wrong_routed": [
+     "m.stops",
+     "m.toend",
+     "m.fromtop"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_qa.py::test_sealed_titles_wait_for_the_answer",
+   "status": "passed",
+   "seconds": 5.1,
+   "detail": null
+  }
+ ]
+}

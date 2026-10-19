@@ -1,0 +1,97 @@
+{
+ "suite": "auto",
+ "pattern": "test_ive.py",
+ "pid": 32653,
+ "results": [
+  {
+   "test": "tests/test_ive.py::test_before_answer_shot_has_no_loading_spinner",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_caption_band_clear_of_film",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_caption_toggle_measures_rendered_text",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_controls_and_noscript",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_cue_track",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_explanation_first_default",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_explore_mode_is_declared_not_inferred",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE cues at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive/cues.json"
+  },
+  {
+   "test": "tests/test_ive.py::test_file_protocol",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_film_explore_return",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_live_control_every_lesson",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "not built: ['factorial-stack', 'neuron', 'one-byte-four-views', 'switch-fallthrough']"
+  },
+  {
+   "test": "tests/test_ive.py::test_live_views_match_expect",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_navigation_events_only",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_no_leak_before_answer",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_pause_state",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  },
+  {
+   "test": "tests/test_ive.py::test_practice_mode_pauses",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no built IVE at /Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/lessons/switch-fallthrough/build/ive; run `ptk build lessons/switch-fallthrough --only video,ive`"
+  }
+ ]
+}

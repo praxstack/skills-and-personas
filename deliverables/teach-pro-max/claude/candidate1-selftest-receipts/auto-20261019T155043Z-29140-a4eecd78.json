@@ -1,0 +1,38 @@
+{
+ "suite": "auto",
+ "pattern": "test_cards.py",
+ "pid": 29140,
+ "results": [
+  {
+   "test": "tests/test_cards.py::test_anki_import",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "no `anki` Python package in the ptk venv; no Anki app either"
+  },
+  {
+   "test": "tests/test_cards.py::test_apkg_contents",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "notes": 9,
+    "md_bytes": 4716
+   }
+  },
+  {
+   "test": "tests/test_cards.py::test_misconception_cards",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "misconception_cards": 3
+   }
+  },
+  {
+   "test": "tests/test_cards.py::test_stable_guids",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "guids": 9
+   }
+  }
+ ]
+}

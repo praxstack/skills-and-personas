@@ -1,0 +1,601 @@
+{
+  "schema": "prax-teach/build-report@1",
+  "lesson": "struct-padding",
+  "lesson_sha256": "8006125ce46f9e57d1546c190b39b79b93cf6a37781bf08b368d76fc0cc10663",
+  "status": "failed",
+  "started": "2026-10-19T21:28:10+0530",
+  "finished": "2026-10-19T21:28:25+0530",
+  "media": [
+    "still"
+  ],
+  "entry": {
+    "skill_md": "/Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/package/prax-teach/SKILL.md",
+    "skill_md_sha256": "3cf3812a14b36c1f00d437fcab714bf249bd76cf225c9041228d131e76fa550e",
+    "ptk": "/Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/package/prax-teach/bin/ptk",
+    "registration": "none (direct path, D19.3)",
+    "shows": "build invoked via bin/ptk; does not show that SKILL.md was loaded"
+  },
+  "gates": [
+    {
+      "id": "values.expect",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "facts": 17,
+        "mismatches": 0
+      },
+      "reason": ""
+    },
+    {
+      "id": "values.still",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "values_checked": 56,
+        "mismatches": [],
+        "files": [
+          "struct-padding-wide-light.svg",
+          "struct-padding-wide-dark.svg",
+          "struct-padding-portrait-light.svg",
+          "struct-padding-portrait-dark.svg"
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.layout",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "views": {
+          "struct-padding-wide-light.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "struct-padding-wide-dark.svg": {
+            "viewport": [
+              1440,
+              900
+            ],
+            "shown_width": 1200
+          },
+          "struct-padding-portrait-light.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          },
+          "struct-padding-portrait-dark.svg": {
+            "viewport": [
+              390,
+              844
+            ],
+            "shown_width": 390
+          }
+        },
+        "svg_problems": [],
+        "pages": [
+          {
+            "width": 390,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-light.png"
+          },
+          {
+            "width": 390,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-390-dark.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "light",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-light.png"
+          },
+          {
+            "width": 1440,
+            "scheme": "dark",
+            "problems": [],
+            "images_loaded": true,
+            "shot": "shots/still-1440-dark.png"
+          }
+        ],
+        "min_text_px_at_display": 11.7,
+        "job_errors": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.key-nodes",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "required": [
+          "code",
+          "note",
+          "output"
+        ],
+        "problems": [],
+        "nodes": {
+          "struct-padding-wide-light.svg": {
+            "code": {
+              "left": 48,
+              "right": 345.4,
+              "top": 165.7,
+              "height": 60,
+              "width": 297.4
+            },
+            "output": {
+              "left": 48,
+              "right": 973.6,
+              "top": 254.4,
+              "height": 167.2,
+              "width": 925.6
+            },
+            "note": {
+              "left": 48,
+              "right": 1152,
+              "top": 450.5,
+              "height": 175,
+              "width": 1104
+            }
+          },
+          "struct-padding-wide-dark.svg": {
+            "code": {
+              "left": 48,
+              "right": 345.4,
+              "top": 165.7,
+              "height": 60,
+              "width": 297.4
+            },
+            "output": {
+              "left": 48,
+              "right": 973.6,
+              "top": 254.4,
+              "height": 167.2,
+              "width": 925.6
+            },
+            "note": {
+              "left": 48,
+              "right": 1152,
+              "top": 450.5,
+              "height": 175,
+              "width": 1104
+            }
+          },
+          "struct-padding-portrait-light.svg": {
+            "code": {
+              "left": 15.6,
+              "right": 274,
+              "top": 164.7,
+              "height": 50.7,
+              "width": 258.4
+            },
+            "output": {
+              "left": 15.6,
+              "right": 337.7,
+              "top": 243.6,
+              "height": 235.2,
+              "width": 322.1
+            },
+            "note": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 506.2,
+              "height": 248.7,
+              "width": 358.8
+            }
+          },
+          "struct-padding-portrait-dark.svg": {
+            "code": {
+              "left": 15.6,
+              "right": 274,
+              "top": 164.7,
+              "height": 50.7,
+              "width": 258.4
+            },
+            "output": {
+              "left": 15.6,
+              "right": 337.7,
+              "top": 243.6,
+              "height": 235.2,
+              "width": 322.1
+            },
+            "note": {
+              "left": 15.6,
+              "right": 374.4,
+              "top": 506.2,
+              "height": 248.7,
+              "width": 358.8
+            }
+          }
+        }
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.contrast",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "pairs_checked": 140,
+        "below_minimum": [],
+        "min_text_ratio": 4.67,
+        "min_rule_ratio": 3.71,
+        "dark_note_correction_delta_L": 16.8,
+        "note_correction_delta_L": {
+          "struct-padding-wide-light.svg": 16.9,
+          "struct-padding-wide-dark.svg": 16.8,
+          "struct-padding-portrait-light.svg": 16.9,
+          "struct-padding-portrait-dark.svg": 16.8
+        },
+        "token_pairs": 50,
+        "token_failures": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.ocr",
+      "medium": "still",
+      "status": "failed",
+      "measured": {
+        "cells": 12,
+        "digit_cells_lining_checked": 12,
+        "misread_or_not_lining": [
+          {
+            "expected": "sizeof(struct S) = 12 i at offset 4 padding after c: 3 bytes bytes: c...iiiiss..",
+            "read": "sizeof(struct S$) = 12  1 at offset 4  padding after c: 3 bytes bytes: c...1111Ss..",
+            "read_ok": false,
+            "lining": {
+              "ok": true,
+              "digits": 4,
+              "tallest_px": 54,
+              "bad": []
+            },
+            "ok": false,
+            "crop": "struct-padding-wide-light/crop-001.png",
+            "group": "out-0"
+          },
+          {
+            "expected": "sizeof(struct S) = 12 i at offset 4 padding after c: 3 bytes bytes: c...iiiiss..",
+            "read": "sizeof(struct S) = 12  1 at offset 4  padding after c: 3 bytes bytes: c...1111SS..",
+            "read_ok": false,
+            "lining": {
+              "ok": true,
+              "digits": 4,
+              "tallest_px": 54,
+              "bad": []
+            },
+            "ok": false,
+            "crop": "struct-padding-wide-dark/crop-001.png",
+            "group": "out-0"
+          },
+          {
+            "expected": "sizeof(struct S) = 12 c at offset 0 i at offset 4 s at offset 8 padding after c: 3 bytes padding after s: 2 bytes bytes: c...iiiiss..",
+            "read": "sizeof(struct S) = 12  c at offset 0  i at offset 4  s at offset 8  padding after c: 3 bytes padding after s: 2 bytes bytes: c...1111iss..",
+            "read_ok": false,
+            "lining": {
+              "ok": true,
+              "digits": 7,
+              "tallest_px": 48,
+              "bad": []
+            },
+            "ok": false,
+            "crop": "struct-padding-portrait-light/crop-001.png",
+            "group": "out-0"
+          },
+          {
+            "expected": "sizeof(struct S) = 12 c at offset 0 i at offset 4 s at offset 8 padding after c: 3 bytes padding after s: 2 bytes bytes: c...iiiiss..",
+            "read": "sizeof(struct S) = 12  c at offset 0  i at offset 4  s at offset 8  padding after c: 3 bytes padding after s: 2 bytes bytes: c...1111Ss..",
+            "read_ok": false,
+            "lining": {
+              "ok": true,
+              "digits": 7,
+              "tallest_px": 48,
+              "bad": []
+            },
+            "ok": false,
+            "crop": "struct-padding-portrait-dark/crop-001.png",
+            "group": "out-0"
+          }
+        ],
+        "numeric_style_problems": [],
+        "engine": "tesseract 5.5.3"
+      },
+      "reason": "OCR misread, or figures are not lining tabular"
+    },
+    {
+      "id": "visual.still.fonts",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "families_used": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "faces_loaded": [
+          "JetBrains Mono",
+          "Nunito Sans"
+        ],
+        "not_bundled": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.alt-source",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "svgs": [
+          {
+            "svg": "struct-padding-wide-light.svg",
+            "title": true,
+            "desc_chars": 431,
+            "source_link": true
+          },
+          {
+            "svg": "struct-padding-wide-dark.svg",
+            "title": true,
+            "desc_chars": 431,
+            "source_link": true
+          },
+          {
+            "svg": "struct-padding-portrait-light.svg",
+            "title": true,
+            "desc_chars": 431,
+            "source_link": true
+          },
+          {
+            "svg": "struct-padding-portrait-dark.svg",
+            "title": true,
+            "desc_chars": 431,
+            "source_link": true
+          }
+        ]
+      },
+      "reason": ""
+    },
+    {
+      "id": "visual.still.network",
+      "medium": "still",
+      "status": "passed",
+      "measured": {
+        "outbound_requests": []
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.mapping",
+      "medium": "all",
+      "status": "passed",
+      "measured": {
+        "texts": 36,
+        "teaching": 10,
+        "claim_mapped": 9,
+        "unmapped": [],
+        "rule": "every sentence equals a whole claim or narration sentence, or a typed chrome.json string"
+      },
+      "reason": ""
+    },
+    {
+      "id": "claims.review",
+      "medium": "all",
+      "status": "pending",
+      "measured": {},
+      "reason": "waiting for reviewer subagents"
+    },
+    {
+      "id": "claims.sensitivity",
+      "medium": "all",
+      "status": "pending",
+      "measured": {},
+      "reason": "waiting for reviewer subagents"
+    }
+  ],
+  "fallbacks": [],
+  "tools": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0",
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "whisper-cli": "usage: /opt/homebrew/bin/whisper-cli [options] file0 file1 ...",
+    "tesseract": "tesseract 5.5.3",
+    "node": "v26.12.0",
+    "hyperframes": "0.8.169",
+    "playwright": "1.63.0",
+    "python": "3.13.16",
+    "sandbox-exec": "/usr/bin/sandbox-exec"
+  },
+  "artifacts": [
+    {
+      "path": "still/index.html",
+      "bytes": 816,
+      "sha256": "a4dd6cf8ca6118793bcfc442ac1e022b97d114b73bb9412fb9c9e4e2337e201d"
+    },
+    {
+      "path": "still/struct-padding-portrait-dark.png",
+      "bytes": 215631,
+      "sha256": "dc06b046bfc2d031d5c2bc9ecbf3ebcb8229c45edcae9930099cf55ac82e5f86"
+    },
+    {
+      "path": "still/struct-padding-portrait-dark.svg",
+      "bytes": 55764,
+      "sha256": "08fae7c20d3c784ad7f9767548265c934b1934141d55cf3236378d2fb1e57d6c"
+    },
+    {
+      "path": "still/struct-padding-portrait-light.png",
+      "bytes": 213034,
+      "sha256": "40de36505eaf86dd14075070ce9efb2cbbe69569e985d47ac5c2d993f7e6b1e1"
+    },
+    {
+      "path": "still/struct-padding-portrait-light.svg",
+      "bytes": 55765,
+      "sha256": "7c842950ae18916ec627b0b0489b6d45ffef02c8071685b47a3bad50d2506547"
+    },
+    {
+      "path": "still/struct-padding-wide-dark.png",
+      "bytes": 219611,
+      "sha256": "9d3a7292371763a4b2105114359d3f5c128afce4d2cc1d492c7694154838311c"
+    },
+    {
+      "path": "still/struct-padding-wide-dark.svg",
+      "bytes": 55304,
+      "sha256": "73224859357ca89579ad4561492f28b5ec7db1e69dad41809d7e358fa85cf01d"
+    },
+    {
+      "path": "still/struct-padding-wide-light.png",
+      "bytes": 219004,
+      "sha256": "96ecf56ed40399c048be66e06270067773059e1eb1d8c73804b2cc7309da2b31"
+    },
+    {
+      "path": "still/struct-padding-wide-light.svg",
+      "bytes": 55305,
+      "sha256": "ae746b289ac0c5171ffbc1e99b35529f590629cef39bc4d3c53bd99f18093575"
+    }
+  ],
+  "transitions": [
+    "draft",
+    "valid",
+    "captured",
+    "projected",
+    "failed"
+  ],
+  "error": null,
+  "sources": [
+    "sources/n2310-6.2.8p1.txt",
+    "sources/n2310-6.5.3.4p4.txt",
+    "sources/n2310-6.7.2.1p14-15.txt",
+    "sources/n2310-6.7.2.1p17.txt",
+    "sources/n2310-7.19p3-offsetof.txt"
+  ],
+  "cleared": [
+    "claims-jobs",
+    "still"
+  ],
+  "capture": {
+    "programs": {
+      "p1": {
+        "ran": true,
+        "stdout_sha256": "f82cb180c491d4ca643a7048f5026fee9ef90c53dfcf7fb59b00320593c8e704",
+        "sanitizers": "no finding",
+        "diagnostics": {
+          "clang": "",
+          "gcc-16": ""
+        },
+        "guard": {
+          "flags": [
+            "--no-default-config"
+          ],
+          "scans": [
+            "source",
+            "preprocessed"
+          ],
+          "overrides": []
+        }
+      }
+    },
+    "platform": {
+      "captured": true,
+      "os": "macOS 27.0.1",
+      "arch": "arm64",
+      "sizeof": {
+        "char": 1,
+        "short": 2,
+        "int": 4,
+        "long": 8,
+        "long long": 8,
+        "float": 4,
+        "double": 8,
+        "void*": 8
+      },
+      "char_signed": true,
+      "endianness": "little",
+      "libc": "libSystem (macOS 27.0.1)",
+      "compilers": {
+        "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "gcc-16": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0"
+      },
+      "sandbox": "sandbox-exec ptk/capture/sandbox.sb"
+    }
+  },
+  "ptk": {
+    "version": "2.1.0-wp0",
+    "code_sha256": "27f921a74953acbddd55a120b761eda8bcfc00d37fb2afae6b5b42a3a85c3980"
+  },
+  "merged_from_previous": [],
+  "carry_refused": {},
+  "uncovered_media": [],
+  "claims": {
+    "mode": "full",
+    "jobs": [
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-c62804612d.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-fbe5fc8f0d.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-a961e9415a.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-0affff4341.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-824b9d11f1.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-2788f35fb2.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-f5640d4092.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-31002cf9c7.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-044cd9058b.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-63550b21f7.json",
+      "/private/tmp/prax-teach-c-v3-struct/build/claims-jobs/job-5d8adf4137.json"
+    ],
+    "reviews_dir": "/private/tmp/prax-teach-c-v3-struct/build/claims-review",
+    "rubric": "/Users/prax/Developer/teach-c-adapter-20261019/projects/prax-teach-c-adapter/package/prax-teach/ptk/verify/rubric.md",
+    "job_tokens": {
+      "job-044cd9058b": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-0affff4341": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-2788f35fb2": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-31002cf9c7": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-5d8adf4137": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-63550b21f7": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-824b9d11f1": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-a961e9415a": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-c62804612d": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-f5640d4092": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      },
+      "job-fbe5fc8f0d": {
+        "job_tokens": 5948,
+        "with_rubric": 9461
+      }
+    },
+    "next": "run each job in a separate subagent with only the job file and the rubric, then `ptk claims check`"
+  },
+  "seconds": 14.5
+}

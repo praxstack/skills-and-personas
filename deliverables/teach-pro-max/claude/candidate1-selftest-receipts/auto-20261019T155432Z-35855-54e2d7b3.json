@@ -1,0 +1,178 @@
+{
+ "suite": "auto",
+ "pattern": "test_route.py",
+ "pid": 35855,
+ "results": [
+  {
+   "test": "tests/test_route.py::test_answer_now_overrides_practice",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "cases": 16,
+    "ends_practice": 4
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_confidence",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "high": 4,
+    "low": 4
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_dev_set_size_and_accuracy",
+   "status": "passed",
+   "seconds": 4.0,
+   "detail": {
+    "cases": 192,
+    "correct": 192,
+    "accuracy": 1.0
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_explanation_first_in_every_workspace",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "cases": 36
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_fresh_and_adversarial_sets",
+   "status": "passed",
+   "seconds": 2.9,
+   "detail": {
+    "fresh-wp1-review": 60,
+    "adversarial": 23
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_heldback_report",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "cases": 20,
+    "correct": 20,
+    "misses": []
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_medium_words",
+   "status": "passed",
+   "seconds": 2.0,
+   "detail": {
+    "cases": 53
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_modes_route",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "quiz": 5,
+    "exam-drill": 6,
+    "socratic": 3,
+    "qa-expand": 3,
+    "predict": 6,
+    "explain": 10,
+    "full": 3
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_negated_medium_is_never_built",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "cases": 8
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_ordinary_tasks",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "cases": 36
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_practice_only_when_asked",
+   "status": "passed",
+   "seconds": 4.1,
+   "detail": {
+    "asked": 5,
+    "practice_rows": 22
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_quick_no_build",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "cases": 12,
+    "cli": {
+     "exit": 0,
+     "mode": "quick"
+    }
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_refusal_beats_quiz_and_contract",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "ok": true
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_rule_table_and_complexity",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "max_branches": 5,
+    "functions": 25
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_tasks_and_rebuilds",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "ok": true
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_topic_words_are_not_media",
+   "status": "passed",
+   "seconds": 0.1,
+   "detail": {
+    "ok": true
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_workspace_conflict_reported",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "predict": [
+     "AGENTS.md:5"
+    ],
+    "notes": [
+     "NOTES.md:3"
+    ],
+    "socratic": [
+     "MISSION.md:3"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_route.py::test_workspace_negation_without_apostrophe",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "mode": "explain"
+   }
+  }
+ ]
+}

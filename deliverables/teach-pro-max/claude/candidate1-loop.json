@@ -1,0 +1,60 @@
+{
+  "pauses": 36,
+  "mismatches": [],
+  "product_only_fix": true,
+  "baseline": {
+    "source": "988e691",
+    "pauses": 36,
+    "mismatches": [
+      {
+        "cue": "m6",
+        "kind": "transition",
+        "t": 16.683,
+        "expected_state": "s2",
+        "explorer_state": "s2",
+        "frame_state": "s3",
+        "frame": {
+          "program": "p1",
+          "line": 8,
+          "path": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "output": [
+            "f.s1",
+            "f.s2",
+            "f.s3"
+          ]
+        }
+      },
+      {
+        "cue": "m9",
+        "kind": "answer",
+        "t": 22.283,
+        "expected_state": "s3",
+        "explorer_state": "s3",
+        "frame_state": "s4",
+        "frame": {
+          "program": "p1",
+          "line": 8,
+          "path": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "output": [
+            "f.s1",
+            "f.s2",
+            "f.s3",
+            "f.s4"
+          ]
+        }
+      }
+    ]
+  }
+}

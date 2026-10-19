@@ -1,0 +1,15 @@
+{
+ "suite": "auto",
+ "pattern": "test_backup_link_to_delete_journal_recovers",
+ "pid": 63894,
+ "results": [
+  {
+   "test": "tests/test_state.py::test_backup_link_to_delete_journal_recovers",
+   "status": "passed",
+   "seconds": 0.4,
+   "detail": {
+    "journal": ".course.full-delete-transaction.json"
+   }
+  }
+ ]
+}

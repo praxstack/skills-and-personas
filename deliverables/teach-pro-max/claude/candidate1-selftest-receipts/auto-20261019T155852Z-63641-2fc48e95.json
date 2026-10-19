@@ -1,0 +1,254 @@
+{
+ "suite": "auto",
+ "pattern": "test_ive.py",
+ "pid": 63641,
+ "results": [
+  {
+   "test": "tests/test_ive.py::test_before_answer_shot_has_no_loading_spinner",
+   "status": "passed",
+   "seconds": 6.7,
+   "detail": {
+    "cue": "m3",
+    "settled": true
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_caption_band_clear_of_film",
+   "status": "passed",
+   "seconds": 1.6,
+   "detail": {
+    "w390": {
+     "gap_px": 8.0
+    },
+    "w1440": {
+     "gap_px": 8.0
+    }
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_caption_toggle_measures_rendered_text",
+   "status": "passed",
+   "seconds": 6.1,
+   "detail": {
+    "ok": [
+     true,
+     false,
+     true
+    ],
+    "slip_caught": "caption text drawn [True, True, True] after on/off/on, want [True, False, True]"
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_controls_and_noscript",
+   "status": "passed",
+   "seconds": 57.6,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "runs": 5,
+    "all_ok": true
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_cue_track",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "cues": 14,
+    "questions": [
+     "sc2"
+    ],
+    "answered": [
+     "sc2"
+    ],
+    "malformed": 0,
+    "contiguous": true
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_explanation_first_default",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "played_through": [
+     {
+      "scene": "sc2",
+      "modes": [
+       "film"
+      ],
+      "paused": false,
+      "t_end": 20.669
+     }
+    ]
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_explore_mode_is_declared_not_inferred",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "switch": "live",
+    "broken_switch": "the switch explorer needs figure.program and figure.compare.program",
+    "neuron": "knob",
+    "no_knob": "missing"
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_file_protocol",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "tracks": [
+     {
+      "kind": "captions",
+      "mode": "hidden",
+      "cues": 17
+     },
+     {
+      "kind": "chapters",
+      "mode": "hidden",
+      "cues": 8
+     },
+     {
+      "kind": "metadata",
+      "mode": "hidden",
+      "cues": 14
+     }
+    ],
+    "readyState": 4,
+    "track_src": [
+     "blob",
+     "blob",
+     "blob"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_film_explore_return",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "checks": {
+     "film_follows_clock": true,
+     "explore_on_pause": true,
+     "edit_marked_yours": true,
+     "return_resumes_at_pause": true,
+     "film_state_after_return": true,
+     "no_edit_on_next_pause": true
+    }
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_live_control_every_lesson",
+   "status": "not-run",
+   "seconds": 0.0,
+   "detail": "not built: ['factorial-stack', 'one-byte-four-views']"
+  },
+  {
+   "test": "tests/test_ive.py::test_live_views_match_expect",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "views": 12
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_navigation_events_only",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "events": 5,
+    "actions": [
+     "explore",
+     "open",
+     "return",
+     "seek"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_no_leak_before_answer",
+   "status": "failed",
+   "seconds": 0.0,
+   "detail": "AssertionError: no_leak_before_answer failed in chrome 155.0.8059.84: [{\"cue\": \"m2\", \"hits\": [], \"transcript_items\": 3, \"t\": 20.2333, \"paused\": true, \"mode\": \"explore\", \"origin\": \"film\", \"state\": \"s0\", \"kind\": \"question\", \"edit\": null, \"program\": \"p1\", \"output\": [], \"origin_text\": \"From the film at 0:20\", \"border\": \"solid\", \"locked\": \"false\"}]"
+  },
+  {
+   "test": "tests/test_ive.py::test_pause_state",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "seeks": 91,
+    "strict_rule_would_fail": 51,
+    "sample": [
+     {
+      "at": "b-1ms",
+      "t": 7.166,
+      "actual_t": 7.166,
+      "expected": "m2",
+      "shown": "m2"
+     },
+     {
+      "at": "b",
+      "t": 7.167,
+      "actual_t": 7.167,
+      "expected": "m2",
+      "shown": "m2"
+     },
+     {
+      "at": "b+1ms",
+      "t": 7.168,
+      "actual_t": 7.168,
+      "expected": "m2",
+      "shown": "m2"
+     },
+     {
+      "at": "b-1us",
+      "t": 7.166999,
+      "actual_t": 7.166999,
+      "expected": "m2",
+      "shown": "m2"
+     },
+     {
+      "at": "frame-floor",
+      "t": 7.166667,
+      "actual_t": 7.166667,
+      "expected": "m2",
+      "shown": "m2"
+     },
+     {
+      "at": "inside-tolerance",
+      "t": 7.134667,
+      "actual_t": 7.134667,
+      "expected": "m2",
+      "shown": "m2"
+     },
+     {
+      "at": "outside-tolerance",
+      "t": 7.132667,
+      "actual_t": 7.132667,
+      "expected": "m1",
+      "shown": "m1"
+     }
+    ]
+   }
+  },
+  {
+   "test": "tests/test_ive.py::test_practice_mode_pauses",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "browser": "chrome 155.0.8059.84",
+    "stopped_at": [
+     13.255
+    ],
+    "resumed_at": [
+     13.498
+    ]
+   }
+  }
+ ]
+}

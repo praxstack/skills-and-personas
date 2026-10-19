@@ -1,0 +1,8 @@
+{
+  "source_commit": "4a834acfc0d2190f1a15c4c882076c81d3b7768b",
+  "source_product_tree": "aedbf78a67a0750603a9f8372a6ac03c7de3c5f5",
+  "governing_commit": "b7bb239",
+  "import_baseline": "988e691",
+  "protected_tracked_differences": [],
+  "note": "Local checks were run during construction. Independent acceptance must rerun against exact committed source. Evidence is outside source product tree."
+}

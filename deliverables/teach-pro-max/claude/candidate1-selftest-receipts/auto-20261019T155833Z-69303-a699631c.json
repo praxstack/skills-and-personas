@@ -1,0 +1,19 @@
+{
+ "suite": "auto",
+ "pattern": "test_candidate1_product",
+ "pid": 69303,
+ "results": [
+  {
+   "test": "tests/test_candidate1_product.py::test_answer_unlock_uses_visible_answer_fact_not_generic_next_scene",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_candidate1_product.py::test_loop_revisit_keeps_each_new_edge_occurrence",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  }
+ ]
+}

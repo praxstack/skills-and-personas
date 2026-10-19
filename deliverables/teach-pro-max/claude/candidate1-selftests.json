@@ -1,0 +1,110 @@
+[
+  {
+    "pattern": "test_state_privacy",
+    "counts": {
+      "passed": 5
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155426Z-36232-44e50fa8.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_qa.py",
+    "counts": {
+      "passed": 3
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155242Z-31172-0a7993b1.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_route.py",
+    "counts": {
+      "passed": 18
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155432Z-35855-54e2d7b3.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_spoken_form",
+    "counts": {
+      "passed": 5
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155647Z-59902-2ae94828.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_cards.py",
+    "counts": {
+      "not-run": 1,
+      "passed": 3
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155043Z-29140-a4eecd78.json",
+    "limitations": [
+      {
+        "test": "tests/test_cards.py::test_anki_import",
+        "status": "not-run",
+        "detail": "no `anki` Python package in the ptk venv; no Anki app either"
+      }
+    ]
+  },
+  {
+    "pattern": "test_frame_state",
+    "counts": {
+      "passed": 8
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155725Z-63201-ef2638da.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_lint.py",
+    "counts": {
+      "passed": 6
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155155Z-31028-8955c9b6.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_ive.py",
+    "counts": {
+      "passed": 13,
+      "not-run": 1,
+      "failed": 1
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155852Z-63641-2fc48e95.json",
+    "limitations": [
+      {
+        "test": "tests/test_ive.py::test_live_control_every_lesson",
+        "status": "not-run",
+        "detail": "not built: ['factorial-stack', 'one-byte-four-views']"
+      },
+      {
+        "test": "tests/test_ive.py::test_no_leak_before_answer",
+        "status": "failed",
+        "detail": "AssertionError: no_leak_before_answer failed in chrome 155.0.8059.84: [{\"cue\": \"m2\", \"hits\": [], \"transcript_items\": 3, \"t\": 20.2333, \"paused\": true, \"mode\": \"explore\", \"origin\": \"film\", \"state\": \"s0\", \"kind\": \"question\", \"edit\": null, \"program\": \"p1\", \"output\": [], \"origin_text\": \"From the film at 0:20\", \"border\": \"solid\", \"locked\": \"false\"}]"
+      }
+    ]
+  },
+  {
+    "pattern": "test_backup_link_to_delete_journal_recovers",
+    "counts": {
+      "passed": 1
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155741Z-63894-6f76cd0c.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_candidate1_product",
+    "counts": {
+      "passed": 2
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T155833Z-69303-a699631c.json",
+    "limitations": []
+  },
+  {
+    "pattern": "test_claims.py",
+    "counts": {
+      "passed": 14
+    },
+    "receipt": "candidate1-selftest-receipts/auto-20261019T160009Z-70783-ce729327.json",
+    "limitations": []
+  }
+]

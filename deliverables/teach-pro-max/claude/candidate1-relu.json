@@ -1,0 +1,19 @@
+{
+  "accepted_forms_unchanged": true,
+  "local_context_probes": [
+    {
+      "audio": "/private/tmp/prax-teach-c-v3-pronunciation/ReLU-sc1-0.wav",
+      "sha256": "827ea689461d067f480edd3349c36ef5fdacaf29fb32980feb223ed1131d8577"
+    },
+    {
+      "audio": "/private/tmp/prax-teach-c-v3-pronunciation/ReLU-sc5-0.wav",
+      "sha256": "bd1b8cdc5486889e2eb32023f53fb651fb61a06ad8969558417158f920193192"
+    },
+    {
+      "audio": "/private/tmp/prax-teach-c-v3-pronunciation/pause-sc6-2.wav",
+      "sha256": "11d9954f1fb2b28bbbf441e5c22366bc793e0905ccf37555e71a31f737eb98db"
+    }
+  ],
+  "full_video_sync": "PASS in actual neuron video build; build has separate ive.predict-gated failure",
+  "actual_build_report": "candidate1-neuron-build-report.json"
+}

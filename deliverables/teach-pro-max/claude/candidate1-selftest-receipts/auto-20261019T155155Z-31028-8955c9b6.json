@@ -1,0 +1,69 @@
+{
+ "suite": "auto",
+ "pattern": "test_lint.py",
+ "pid": 31028,
+ "results": [
+  {
+   "test": "tests/test_lint.py::test_expect_independent",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "loaded": [
+     "ptk",
+     "ptk.expect"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_lint.py::test_guard_constructs_match_schema",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "constructs": 12
+   }
+  },
+  {
+   "test": "tests/test_lint.py::test_no_broad_except",
+   "status": "passed",
+   "seconds": 0.2,
+   "detail": {
+    "files": 58
+   }
+  },
+  {
+   "test": "tests/test_lint.py::test_no_predict_first_default",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "files": 7,
+    "drifted_caught": 8
+   }
+  },
+  {
+   "test": "tests/test_lint.py::test_no_prediction_barrier_in_default_artifacts",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "texts": 260,
+    "lessons": 4,
+    "practice_only": [
+     "card_print",
+     "card_true_false",
+     "ive_ask_hint",
+     "ive_mode_ask",
+     "ive_mode_label_ask",
+     "ive_your_pick",
+     "qa_choose"
+    ]
+   }
+  },
+  {
+   "test": "tests/test_lint.py::test_subprocess_boundary",
+   "status": "passed",
+   "seconds": 0.2,
+   "detail": {
+    "files": 58
+   }
+  }
+ ]
+}

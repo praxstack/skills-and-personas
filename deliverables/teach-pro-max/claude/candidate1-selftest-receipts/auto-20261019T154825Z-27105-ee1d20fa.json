@@ -1,0 +1,68 @@
+{
+ "suite": "auto",
+ "pattern": "test_state_privacy",
+ "pid": 27105,
+ "results": [
+  {
+   "test": "tests/test_state_privacy.py::test_consent_names_drive",
+   "status": "passed",
+   "seconds": 0.2,
+   "detail": {
+    "prompt": "error: explicit consent is required before the learner workspace or any state file is created. This folder is inside /private/tmp/prax-teach-c-v3-state/tmp/drive-names-30xr89ub/Drive Root, which Googl",
+    "warning": "warning: prax-teach state: state/sessions.jsonl has 2 hard links (Google Drive for desktop backs up /private/tmp/prax-teach-c-v3-state/tmp/drive-names-30xr89ub/Drive Root and links new files while it "
+   }
+  },
+  {
+   "test": "tests/test_state_privacy.py::test_delete_reports_surviving_copies",
+   "status": "passed",
+   "seconds": 0.6,
+   "detail": {
+    "survivors": [
+     [
+      "MISSION.md",
+      "same content",
+      "1682105"
+     ],
+     [
+      "state/learner.json",
+      "same inode",
+      "1682115"
+     ]
+    ],
+    "control": "all_state_deleted"
+   }
+  },
+  {
+   "test": "tests/test_state_privacy.py::test_detection_walks_ancestors",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": {
+    "root": "/private/tmp/prax-teach-c-v3-state/tmp/drive-walk-vam2f4yg/Drive Root"
+   }
+  },
+  {
+   "test": "tests/test_state_privacy.py::test_drive_folder_refused_by_default",
+   "status": "passed",
+   "seconds": 0.3,
+   "detail": {
+    "refused": "error: refusing to create learner state in a folder Google Drive backs up. This folder is inside /private/tmp/prax-teach-c-v3-state/tmp/drive-refuse-ix9yxvn3/Dr"
+   }
+  },
+  {
+   "test": "tests/test_state_privacy.py::test_read_only_writes_nothing_without_consent",
+   "status": "passed",
+   "seconds": 0.7,
+   "detail": {
+    "codes": {
+     "show": 0,
+     "due": 3,
+     "export": 0,
+     "continuity-show": 0,
+     "delete-dry-run": 0,
+     "delete-unconfirmed": 4,
+     "rebind": 3
+    }
+   }
+  }
+ ]
+}

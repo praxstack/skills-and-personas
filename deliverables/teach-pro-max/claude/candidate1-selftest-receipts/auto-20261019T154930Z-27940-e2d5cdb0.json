@@ -1,0 +1,37 @@
+{
+ "suite": "auto",
+ "pattern": "test_spoken_form",
+ "pid": 27940,
+ "results": [
+  {
+   "test": "tests/test_spoken_form.py::test_a_hand_edited_said_fails",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_spoken_form.py::test_a_lesson_may_not_author_a_spoken_form",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_spoken_form.py::test_audio_that_differs_from_said_fails_the_wer",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_spoken_form.py::test_every_cue_speaks_lexicon_of_its_text",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  },
+  {
+   "test": "tests/test_spoken_form.py::test_lexicon_patterns_read_code_aloud",
+   "status": "passed",
+   "seconds": 0.0,
+   "detail": null
+  }
+ ]
+}

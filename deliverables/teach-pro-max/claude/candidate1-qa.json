@@ -1,0 +1,42 @@
+[
+  {
+    "width": 1440,
+    "scheme": "light",
+    "coreParagraphs": 10,
+    "coreVisible": true,
+    "coreBeforeQuestion": true,
+    "coreButtons": 0,
+    "horizontalOverflow": false
+  },
+  {
+    "width": 1440,
+    "scheme": "dark",
+    "coreParagraphs": 10,
+    "coreVisible": true,
+    "coreBeforeQuestion": true,
+    "coreButtons": 0,
+    "horizontalOverflow": false
+  },
+  {
+    "width": 390,
+    "scheme": "light",
+    "coreParagraphs": 10,
+    "coreVisible": true,
+    "coreBeforeQuestion": true,
+    "coreButtons": 0,
+    "horizontalOverflow": false
+  },
+  {
+    "width": 390,
+    "scheme": "dark",
+    "coreParagraphs": 10,
+    "coreVisible": true,
+    "coreBeforeQuestion": true,
+    "coreButtons": 0,
+    "horizontalOverflow": false
+  },
+  {
+    "javascript": false,
+    "coreVisible": true
+  }
+]
