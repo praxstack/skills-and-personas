@@ -369,7 +369,12 @@ def test_legacy_unbound_state_migrates():
         _need_bindings(parent)
         g = golden(ws)
         before = digests(ws)
-        # (1) adoption: one link, read normally, bytes unchanged; an extra link afterwards is a backup link
+        # (1) adoption: one link, read normally, bytes unchanged; an extra link afterwards is a backup link.
+        # Google Drive may already have linked the fresh copies; then the precondition (legacy files with one link)
+        # does not hold and the refusal that follows is correct, so the step cannot be run.
+        linked = sorted(str(p.relative_to(ws)) for p in ws.rglob("*") if p.is_file() and p.stat().st_nlink > 1)
+        if linked:
+            raise NotRun(f"an outside tool (Google Drive) linked the legacy fixture before the first command: {linked}")
         first = state_cli("show", str(ws))
         assert first.code == 0, first.stderr
         assert digests(ws) == before, "adopting legacy state changed its bytes"
@@ -387,6 +392,10 @@ def test_legacy_unbound_state_migrates():
         os.replace(fresh, concepts)
         assert sio.read_binding(concepts) is None
         os.link(concepts, parent / "old-link-concepts.json")
+        # Google Drive for desktop stages a second link to any new file in a folder it backs up (EVIDENCE-HARDLINKS);
+        # a sibling link stands in for it, so the test does not depend on Drive's timing
+        os.link(concepts, parent / "drive-staging-concepts.json")
+        old_inode, old_bytes = concepts.stat().st_ino, concepts.read_bytes()
         refused = state_cli("show", str(ws))
         assert refused.code == 5 and "rebind" in refused.stderr, (refused.code, refused.stderr)
         dry = state_cli("rebind", str(ws))
@@ -395,7 +404,15 @@ def test_legacy_unbound_state_migrates():
         assert done.code == 0, done.stderr
         # MISSION.md and RESOURCES.md are listed too when macOS backup has linked them already
         assert "state/concepts.json" in json.loads(done.stdout)["rebound"], done.stdout
-        assert (parent / "old-link-concepts.json").stat().st_nlink == 1, "rebind wrote through the old link"
+        # rebind copies onto a fresh inode: the old inode (still reachable through both outside links) keeps its
+        # bytes and gets no binding, and the workspace file is a different inode. The rc1 check here was
+        # st_nlink == 1 on the old link, which Google Drive's staging link breaks at random (A5 item 4).
+        old_link = parent / "old-link-concepts.json"
+        assert old_link.stat().st_ino == old_inode and concepts.stat().st_ino != old_inode, \
+            "rebind wrote through the old link"
+        assert old_link.read_bytes() == old_bytes and sio.read_binding(old_link) is None, \
+            "rebind changed the old inode"
+        assert sio.read_binding(concepts) == sio.read_binding(ws / "state")
         assert digests(ws) == before, "rebind changed state bytes"
         again = state_cli("show", str(ws))
         assert again.code == 0 and json.loads(again.stdout) == g["show"], again.stderr
