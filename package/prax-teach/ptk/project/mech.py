@@ -971,12 +971,13 @@ def _wiring(c, P, cx, cw, by, row, tone, scale=1.0):
         m_ = re.search(r"\b(\w+)\s*=\s*(\w+(?:\s*\+\s*\w+)+)\s*;", ln_)
         if m_:
             svg.open(data_src_line=n_)
-            c.code(cx + cw - 4, ys[-1] + S["code"] * 0.4, f"{m_.group(1)} = {m_.group(2)}", pid, size=S["code"] * 1.05,
-                   color=t["label"], anchor="end")
+            c.code(cx + cw - 4, ys[-1] + S["code"] * 0.4, f"{m_.group(1)} = {m_.group(2)}", pid,
+                   size=svg.role("label", S["label"])[1] * 0.98, color=t["ink_soft"], anchor="end")
             svg.close()
             break
     svg.text((sx + sr + ox) / 2, sy - 12, text.ui("axis_z"), "mono", lp, t["label"], ("chrome", "axis_z"),
              anchor="middle")
+    return ys[-1] + vpx * 0.9  # the bottom of the last pill
 
 
 def _neuron(c, x, y, w):
@@ -1035,7 +1036,9 @@ def _neuron(c, x, y, w):
                 # before the product is computed, the line that will compute it stands where its value will be (B5)
                 n_, expr = prods[i - 1]
                 svg.open(data_src_line=n_)
-                c.code(cx + cw, yy + ls * 1.2, expr, pid, size=S["code"] * 1.05, color=t["label"], anchor="end")
+                # as large as the labels beside it (they sit in the input's fact group, which reads as output)
+                c.code(cx + cw, yy + ls * 1.2, expr, pid, size=svg.role("label", S["label"])[1] * 0.98, color=t["ink_soft"],
+                       anchor="end")
                 svg.close()
         yy += ls * 1.7 + 18
         svg.line(cx, yy, cx + cw, yy, t["rule"], 1)
@@ -1063,8 +1066,7 @@ def _neuron(c, x, y, w):
     row = S["value"] * 1.9
     by = yy + 30
     wired = not c.on(P["sum"]) and all(c.on(tm["x"]) for tm in P["terms"]) and c.on(P["bias"])
-    if wired:  # the wiring takes the column; the number line comes with the bars, when there is a sum to follow
-        _wiring(c, P, cx, cw, by, row * 1.85, tone, scale=1.45)
+    wire_bottom = _wiring(c, P, cx, cw, by, row * 1.5, tone, scale=1.45) if wired else 0
     for k, (fid, (a, b)) in enumerate(zip(terms, ends)):
         # a bar starts where the one before it ends, and the bars are the adding step: they appear with the sum
         # (round 18: during Multiply they gave the sum away by geometry, ahead of the Add scene)
@@ -1095,11 +1097,11 @@ def _neuron(c, x, y, w):
             svg.raw(f'<line data-role="guide" x1="{X(a):.1f}" y1="{ry - row:.1f}" x2="{X(a):.1f}" y2="{ry:.1f}" '
                     f'stroke="{t["label"]}" stroke-width="1" stroke-dasharray="3 4"/>')
         svg.close()
-    ay = by + len(terms) * row + 10
+    # the number line the sum will follow: under the wiring while there is no sum yet
+    ay = max(by + len(terms) * row + 10, wire_bottom + 28)
     ffont, fpx, _w, _c, _s = svg.role("foot", S["label"])
-    if not wired:
-        svg.line(cx + 10, ay, cx + cw - 10, ay, t["rule"], 1.2)
-    for v in (() if wired else (lo, 0.0, hi)):
+    svg.line(cx + 10, ay, cx + cw - 10, ay, t["rule"], 1.2)
+    for v in (lo, 0.0, hi):
         svg.line(X(v), ay - 5, X(v), ay + 5, t["rule"], 1.2)
         lab = f"{v:g}".replace("-", "−")
         svg.text(X(v), ay + 22, lab, ffont, fpx, t["label"], ("label", "axis-tick"), anchor="middle",
@@ -1127,7 +1129,7 @@ def _neuron(c, x, y, w):
         lw = c.label(cx, yy + S["value"] * 0.9, "neuron_sum")
         c.value(cx + lw + 14, yy + S["value"] * 1.1, P["sum"], size=big)
         svg.close()
-    yy += big * 1.4
+    yy += 0 if wired else big * 1.4  # the column stays no taller than with the sum, so the film's scale holds
     svg.close()
     heights.append(yy - cy)
 

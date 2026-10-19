@@ -169,7 +169,7 @@ await check('explanation_first_default', async () => {
       const toggle = { visible: vis, pressed: b && b.getAttribute('aria-pressed'), practice: I.practice() };
       await D.seek(${Math.max(0, q.pause_at - 2)}); const p = v.play(); if (p && p.catch) p.catch(() => {});
       const modes = new Set(), samples = []; let paused = false;
-      for (let i = 0; i < 160 && v.currentTime < ${q.answer_at} + 0.3; i++) {
+      for (let i = 0; i < 260 && v.currentTime < ${q.answer_at} + 0.3; i++) {  // B5: 13 s, the 0.75 narration puts the answer 7.4 s after the question
         await D.sleep(50); modes.add(I.mode()); samples.push(Math.round(v.currentTime * 1000) / 1000);
         if (v.paused && !v.ended) paused = true; }
       const chapters = [...document.querySelectorAll('#chapters .ttl')].map((e) => e.textContent);

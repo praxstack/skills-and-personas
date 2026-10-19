@@ -70,7 +70,7 @@
    "id": "m8.narration.check",
    "kind": "false-narration",
    "target": "narration:sc4.1",
-   "find": "So the switch falls through into case 3, and prints three.",
+   "find": "So execution falls through into case 3, which prints three.",
    "replace": "So the switch checks the case 3 label, finds that it matches, and prints three.",
    "why_false": "Nothing is checked at a case label during fallthrough, and 3 does not match n = 2."
   }
