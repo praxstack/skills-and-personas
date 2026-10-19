@@ -5,7 +5,7 @@ in every workspace (FREEZE-v2 criterion 5). This module only reports which teach
 ask for, with the lines that say so, so the router can name them in a `workspace_conflict` note
 instead of obeying them. The patterns live in route_rules.json under `workspace_contract`.
 
-A line counts as predict-first evidence when a predict-first pattern matches and no negation
+A line is predict-first evidence when a predict-first pattern matches and no negation
 pattern does ("without prediction" is explain-first, not predict-first). When some file asks for
 prediction first, `asks` is "predict-first" and `evidence` holds those lines, so the conflict note
 names every one of them.

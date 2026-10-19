@@ -1,6 +1,6 @@
 ---
 name: prax-teach
-description: Teach Prax a C topic the way his workspace asks, and compile lessons into verified explainers (still, explorer, Q&A, cards, narrated video, interactive video) from one lesson model. Every number comes from a sandboxed real run; every sentence maps to a reviewed claim. Use when Prax asks to be taught, quizzed or drilled, or asks for a lesson in a named medium.
+description: Teach Prax C topics with a complete visual explanation first, and compile lessons into verified explainers (still, explorer, Q&A, cards, narrated video, interactive video) from one lesson model. Every number comes from a sandboxed real run; every sentence maps to a reviewed claim. Use when Prax asks to be taught, quizzed or drilled, or asks for a lesson in a named medium.
 ---
 
 # Prax Teach v2.1
@@ -17,14 +17,17 @@ the section of `references/TEACHING.md` for the routed mode. Read nothing else f
 
    `ptk route "<request>" --workspace <learner workspace dir> --json`
 
-   It returns `{intent, mode, media[], workspace_contract, first_turn, build_needed, confidence,
-   reasons[], also[]}`. The router has already read the workspace's AGENTS.md, MISSION.md and
-   NOTES.md, applied their teaching rules and any "answer now" or "just explain", and dropped every
-   medium the learner refused ("no video") or only mentioned as a topic ("video codecs").
+   It returns `{intent, mode, media[], workspace_contract, workspace_conflict, first_turn,
+   build_needed, confidence, reasons[], also[]}`. It has applied any "answer now", "just explain" or
+   practice mode the learner asked for, and dropped every medium they refused ("no video") or only
+   named as a topic ("video codecs").
+   **Explanation first, in every workspace.** Unless the learner asked for practice, the first turn
+   is the complete explanation (with any medium asked for), then one sentence offering practice.
+   Workspace files never make prediction the default: `workspace_conflict` names the lines that ask
+   for it, and you don't obey them.
 2. `confidence: high`: obey the route. `confidence: low`: `reasons` says what conflicted. Decide
-   yourself among the modes TEACHING.md allows, using its rules (explicit words beat the contract,
-   the contract beats defaults, a refused medium is never built). Ask one short question only if a
-   wrong guess would cost a long build. Then act on the route, or on your corrected reading:
+   yourself by TEACHING.md's rules (the learner's words, then the default; a refused medium is never
+   built). Ask one short question only if a wrong guess would cost a long build. Then act:
    - `intent: ordinary_task`: do the task. No teaching, no question, no build. If `explain_after`,
      explain briefly when done.
    - `intent: rebuild`: repair the existing lesson and rebuild only its `media[]`. No new lesson.
@@ -34,14 +37,15 @@ the section of `references/TEACHING.md` for the routed mode. Read nothing else f
      output) is shown until the learner has attempted the question.
    - `build_needed: true` means build exactly `media[]`, as below. `false` means build nothing.
    - `also[]` is a second request to do after the first (for example a quiz after the build).
-3. If the learner later says "answer now", "just explain" or "stop", that wins over the protocol.
+3. If the learner later says "answer now", "just explain" or "stop", that wins in any mode.
 
 | mode | first turn |
 |---|---|
-| predict-first, socratic, quiz, exam-drill | one question, then wait |
+| explain | the complete explanation, then one sentence offering practice |
+| lesson, full-pack | say what you'll build and how long, build, then explain with the artifacts |
+| quick | a direct answer, no build |
 | qa-expand | layer-1 answer, name the deeper layers |
-| quick, explain | answer in chat, no build |
-| lesson, full-pack | say what you'll build and how long, then build |
+| predict-first, socratic, quiz, exam-drill (only when asked) | one question, then wait |
 
 ## Build a lesson in a named medium
 
@@ -62,7 +66,7 @@ Read `references/LESSON-MODEL.md` now, not before.
 | 5 | incomplete | report which gate did not run and why; never call it verified |
 | 6 | degraded | deliver, naming the fallback |
 
-5. Deliver the built files (`build/still/*.png`, `build/video/lesson.mp4` with captions and chapters, `build/ive/index.html`). Quote the status from `ptk report <lesson>`. In predict-first mode, deliver only after the learner's attempt.
+5. Deliver the built files (`build/still/*.png`, `build/video/lesson.mp4` with captions and chapters, `build/ive/index.html`). Quote the status from `ptk report <lesson>`. In a practice mode the learner asked for, deliver only after the attempt.
 
 ## Rules
 

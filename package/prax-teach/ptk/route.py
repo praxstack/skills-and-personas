@@ -166,7 +166,7 @@ def workspace_conflict(contract, R):
         return None
     where = [f"{e['file']}:{e['line']}" for e in contract["evidence"]]
     first = contract["evidence"][0]
-    return {"asks": contract["asks"], "file": first["file"], "line": first["line"], "where": where,
+    return {"file": first["file"], "line": first["line"], "where": where,
             "note": spec["note"].format(where=", ".join(where))}
 
 

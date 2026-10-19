@@ -541,14 +541,14 @@
    "questions": 0,
    "end_turn": true,
    "artifact": "none",
-   "instruction": "Give the complete explanation now, no question before it: what the learner sees, the rule, one exact example from a real run, a small diagram or trace where it helps. Close with one sentence offering optional practice. Build nothing unless asked. TEACHING.md#explain."
+   "instruction": "Give the complete explanation now, no question first: what the learner sees, the rule, one exact example from a real run, a diagram or trace where it helps. Close with one sentence offering optional practice. TEACHING.md#explain."
   },
   "lesson": {
    "kind": "build-notice",
    "questions": 0,
    "end_turn": false,
    "artifact": "after-build",
-   "instruction": "Name the media and whether the build takes over 60 s, write the lesson model and run ptk build --only <media>. Then show the artifacts with the complete explanation, no question first, and close with one sentence offering optional practice. TEACHING.md#lesson."
+   "instruction": "Name the media and whether the build takes over 60 s, write the lesson model, run ptk build --only <media>. Then show the artifacts with the complete explanation, no question first; close with one sentence offering optional practice. TEACHING.md#lesson."
   },
   "full-pack": {
    "kind": "build-notice",
@@ -604,6 +604,6 @@
   "asks": [
    "predict-first"
   ],
-  "note": "The workspace asks for prediction first ({where}). Not obeyed: every teaching request gets the complete explanation first (AC-1.3); offer practice after it in one sentence."
+  "note": "The workspace asks for prediction first ({where}). Not obeyed (AC-1.3): explain first, offer practice after."
  }
 }
