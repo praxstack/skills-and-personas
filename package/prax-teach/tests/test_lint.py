@@ -168,3 +168,67 @@ def test_guard_constructs_match_schema():
     enum = schema["$defs"]["claim"]["properties"]["overrides"]["items"]["enum"]
     assert sorted(enum) == sorted(guard.CONSTRUCTS), (sorted(enum), sorted(guard.CONSTRUCTS))
     return {"constructs": len(enum)}
+
+
+# ---------------------------------------------------------------- AC-1.10 (SPEC v1.4)
+
+# Sentences that make prediction the default, or let workspace files set the mode. Each pattern is
+# one of the drifted v2.1 sentences (plan/EVIDENCE-PREDICT-FIRST.md) or its paraphrase family.
+PREDICT_DEFAULT = [
+    r"workspace(?: contract| files?)?[^.\n]{0,40}\b(?:wins?|beats?|overrides?|takes? precedence)\b",
+    r"\bcontract (?:wins|beats|overrides)\b",
+    r"\b(?:agents|mission|notes)\.md\b[^.\n]{0,80}\b(?:wins?|beats?|overrides?|takes? precedence)\b",
+    r"counts as predict-first",
+    r"\bin a predict-first workspace\b",
+    r"\bpredict-first workspace\b",
+    r"\bthe way (?:his|her|their|the) workspace asks\b",
+    r"\bpredict-first wins\b",
+    r"\bstart (?:each|every|the first)(?: learning)? (?:session|lesson|request|turn) with (?:one|a)\b[^.\n]{0,30}\bpredict",
+    r"\b(?:by default|default(?: mode)? is)[^.\n]{0,30}\b(?:predict|quiz|socratic)",
+    r"\bworkspace[^.\n]{0,40}\b(?:requires?|demands?) (?:a )?predict",
+]
+NO_PREDICT_FILES = ["SKILL.md", "README.md", "references/TEACHING.md", "references/LESSON-MODEL.md",
+                    "ptk/route_rules.json", "ptk/route.py", "ptk/workspace.py"]
+EXPLAIN_FIRST_STATED = {
+    "references/TEACHING.md": [r"explanation first", r"every workspace", r"optional", r"answer now", r"workspace_conflict"],
+    "SKILL.md": [r"explanation first", r"every workspace", r"workspace_conflict"],
+    "ptk/route_rules.json": [r"explanation first", r"workspace_conflict"],
+}
+
+
+def _predict_default_problems(text, label="<text>"):
+    low = text.lower()
+    return [f"{label}: {m.group(0)!r}" for p in PREDICT_DEFAULT for m in re.finditer(p, low)]
+
+
+def test_no_predict_first_default():
+    """AC-1.10: TEACHING.md, SKILL.md and route_rules.json state the explanation-first rule of AC-1.3 and hold no
+    instruction that makes prediction the default (README, LESSON-MODEL.md, route.py and workspace.py too).
+    The lint first proves it catches each drifted sentence and passes the rule itself."""
+    drifted = ["The workspace contract wins over these defaults.", "A workspace that only says \"Socratic\" counts as predict-first.",
+               "In a predict-first workspace the first turn is one question.", "Teach Prax a C topic the way his workspace asks.",
+               "When files disagree, predict-first wins.", "Start the first learning session with one short C output prediction.",
+               "AGENTS.md, MISSION.md and NOTES.md are read first, and their teaching rules beat the skill's defaults.",
+               "By default, ask one prediction question."]
+    for s in drifted:
+        assert _predict_default_problems(s), f"the lint missed: {s!r}"
+    rule = ("Every teaching request gets the complete explanation first, in every workspace. Practice is optional and "
+            "offered after it. Workspace files never switch the default to prediction; the route reports workspace_conflict.")
+    assert not _predict_default_problems(rule), _predict_default_problems(rule)
+    problems = []
+    for rel in NO_PREDICT_FILES:
+        problems += _predict_default_problems((host.PKG / rel).read_text(), rel)
+    for rel, needs in EXPLAIN_FIRST_STATED.items():
+        low = (host.PKG / rel).read_text().lower()
+        problems += [f"{rel} does not state {n!r}" for n in needs if not re.search(n, low)]
+    table = json.loads((host.PKG / "ptk" / "route_rules.json").read_text())
+    problems += ["route_rules.json: workspace files are a mode stage"] * ("workspace" in table["precedence"])
+    problems += ["route_rules.json: a workspace contract maps to a mode"] * ("contract_modes" in table)
+    problems += [f"route_rules.json: default mode is {table['default_mode']!r}"] * (table["default_mode"] != "explain")
+    for mode in ("explain", "lesson", "full-pack"):
+        ft = table["first_turn"][mode]
+        problems += [f"route_rules.json: the {mode} first turn asks a question"] * (ft["questions"] != 0 or ft["kind"] == "question")
+        problems += [f"route_rules.json: the {mode} first turn does not offer practice after"] * \
+            ("practice" not in ft["instruction"].lower())
+    assert not problems, problems
+    return {"files": len(NO_PREDICT_FILES), "drifted_caught": len(drifted)}
