@@ -4,7 +4,7 @@ A teaching skill for Prax's C study, plus `ptk`, a small lesson compiler.
 
 It does two jobs:
 
-1. **Teach the way the workspace asks.** `ptk route` reads the request and the learner's AGENTS.md, MISSION.md and NOTES.md. In a predict-first workspace the first turn is one question, and the agent waits for the attempt. An explicit "answer now" or "just explain" wins.
+1. **Explain first, in every workspace.** `ptk route` reads the request. Every teaching request gets the complete visual explanation first, with any medium asked for, then one sentence offering practice. Prediction questions, quizzes and drills run only when the learner asks for them ("quiz me", "let me predict", "Socratic", "test me"), and "answer now" or "just explain" ends questioning in any mode. The learner's AGENTS.md, MISSION.md and NOTES.md never switch the default to prediction: when they ask for it, the route names the file and line in `workspace_conflict` and keeps explanation first.
 2. **Build verified explainers from one lesson model.** One `lesson.json` with its C programs becomes up to six media: a still, an interactive explorer, a Q&A expander, flash cards, a narrated video and an interactive video explorer (IVE).
 
 Every number on screen comes from a real compiled run in a sandbox, and each one is checked against an independent `expect` function. Every sentence maps to a claim, and a separate reviewer subagent checks the claims.

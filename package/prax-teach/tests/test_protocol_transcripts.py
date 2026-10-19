@@ -6,7 +6,11 @@
   attempts carry their ground-truth class (`expect_class`); the checker grades the tutor's
   classification against it (or against the question's answer key) instead of trusting the
   tutor's own labels.
-- test_predict_first_flow, test_modes_live (agent-tests): a real tutor agent, loaded from SKILL.md by
+- test_explanation_first (automatic): with no practice mode asked for, the checker wants the complete
+  explanation first, then optional practice offered in one closing sentence, and no question before it
+  (AC-1.6 v1.4). A naming sentence for a misconception beside the one feedback item stays rejected; the
+  name goes inside that sentence, as TEACHING.md says.
+- test_practice_mode_flow, test_explanation_first_flow, test_modes_live (agent-tests): a real tutor agent, loaded from SKILL.md by
   direct path, plays the tutor one turn at a time against fixed learner turns it can't see ahead
   of time. Each run appends the next learner turn and stops at claims-pending (exit 4) until the
   tutor has answered; when the script is used up, the whole transcript must pass the protocol.
@@ -56,6 +60,8 @@ EVIDENCE = {"kind": "evidence", "item": "switch fallthrough output", "result": "
             "consent": True}
 
 FIX = "A case label is only a label, so control runs on into case 3."
+PRACTICE_REQUEST = "Let me predict first: how does a switch statement with a missing break fall through? Show me the still after."
+EXPLAIN_REQUEST = "Teach me how a switch statement with a missing break falls through, as a still."
 PREDICT_GOOD = {"mode": "predict-first", "turns": [
     T(["question"], "Here is the program: n is 2 and case 2 has no break. What does it print?", states_shown=["s0"]),
     S("attempt", "two, then done", expect_class="misconception:m.stops"),
@@ -92,13 +98,16 @@ def test_no_reveal_before_attempt():
     bad = copy.deepcopy(lesson)
     next(s for s in bad["storyboard"] if s.get("question"))["state"] = "s3"
     assert protocol.reveal_plan(bad)[0]["problems"]
-    # the router tells the agent the artifact waits for the attempt
+    # in a practice mode the learner asked for, the router tells the agent the artifact waits for the attempt;
+    # the same topic without a practice request is explanation first, even in a workspace that asks for prediction
     ws = _tmp_ws(PREDICT_WS)
     try:
-        r = route.route("Teach me how a switch statement with a missing break falls through, as a still.", ws)
+        r = route.route(PRACTICE_REQUEST, ws)
+        plain = route.route(EXPLAIN_REQUEST, ws)
     finally:
         shutil.rmtree(ws)
     assert r["mode"] == "predict-first" and r["first_turn"]["artifact"] == "after-attempt", r
+    assert plain["mode"] == "lesson" and plain["first_turn"]["artifact"] == "after-build" and plain["workspace_conflict"], plain
     assert "artifact" in _section("predict-first").lower()
     # the clean transcript passes; each kind of reveal fails
     assert protocol.check_transcript(PREDICT_GOOD, lesson) == []
@@ -425,12 +434,93 @@ def test_modes():
     return out
 
 
+STILL = "lessons/switch-fallthrough/build/still/switch-fallthrough-wide-light.png"
+OFFER = "Want one practice question on a switch like this?"
+EXPLAIN_BODY = ("Here is the program with n = 2. The switch jumps to the label case 2 and prints two. A case label is only "
+                "a label, not a stop, so control runs on into case 3 and prints three. The break there ends the switch, "
+                "and the line after it prints done. So the output is two, three, done. The still shows each step.")
+EXPLAIN_GOOD = {"mode": "lesson", "turns": [
+    T(["explanation", "artifact"], f"{EXPLAIN_BODY} {OFFER}", practice_offer=OFFER, artifacts=[STILL],
+      states_shown=["s0", "s1", "s2", "s3", "s4"]),
+    S("stop", "Thanks, that's clear. That's all for now."),
+    T(["close"], "Done. Nothing was practised, so nothing is noted as learned.", reason="learner-stop"),
+], "events": []}
+PRACTICE_AFTER = {"mode": "lesson", "turns": EXPLAIN_GOOD["turns"][:1] + [
+    S("practice-yes", "Sure, one question."),
+    T(["question"], "Same program with n = 1. What does it print?", states_shown=["s0"]),
+    S("attempt", "one, two, three, done", expect_class="correct"),
+    T(["feedback", "consent"], f"Right. {FIX} Can I note this attempt as evidence?", classification="correct", feedback=FIX),
+    S("consent-yes", "yes"),
+    T(["summary"], "Noted. One attempt observed."),
+    S("satisfied", "got it, thanks"),
+    T(["close"], "Good. The n = 1 case is observed.", reason="satisfied"),
+], "events": [dict(EVIDENCE, after_turn=6, result="correct")]}
+
+
+def test_explanation_first():
+    """AC-1.6 (v1.4): with no practice mode asked for, the complete explanation comes first, then optional practice
+    offered in one closing sentence, with no question before the explanation. A question turn comes only after the
+    learner takes up the offer. Also: the misconception naming rule in TEACHING.md and the checker agree."""
+    lesson = _lesson()
+    assert protocol.check_transcript(EXPLAIN_GOOD, lesson) == [], protocol.check_transcript(EXPLAIN_GOOD, lesson)
+    assert protocol.check_transcript(PRACTICE_AFTER, lesson) == [], protocol.check_transcript(PRACTICE_AFTER, lesson)
+    for mode in ("explain", "full-pack"):
+        assert protocol.check_transcript(dict(EXPLAIN_GOOD, mode=mode), lesson) == [], mode
+    q = "What do you think the program prints? "
+    breaks = {
+        "a question first": (lambda t: t["turns"][0].update(acts=["question"], text=q), "first turn must be the explanation"),
+        "a question before the explanation": (lambda t: t["turns"][0].update(text=q + t["turns"][0]["text"]),
+                                              "question before or inside the explanation"),
+        "a prediction prompt before the explanation": (lambda t: t["turns"][0].update(
+            text="Predict the output for n = 2 first. " + t["turns"][0]["text"]), "question before or inside the explanation"),
+        "no practice offer": (lambda t: (t["turns"][0].pop("practice_offer"),
+                                         t["turns"][0].update(text=EXPLAIN_BODY)), "one sentence offering optional practice"),
+        "offer not at the close": (lambda t: t["turns"][0].update(text=f"{OFFER} {EXPLAIN_BODY}"), "closing sentence"),
+        "two offers": (lambda t: t["turns"][0].update(text=f"{EXPLAIN_BODY} Shall I quiz you? {OFFER}"),
+                       "question before or inside the explanation"),
+        "an offer that is not about practice": (lambda t: t["turns"][0].update(
+            practice_offer="Does that make sense?", text=f"{EXPLAIN_BODY} Does that make sense?"), "offer practice"),
+        "an incomplete explanation": (lambda t: t["turns"][0].update(
+            text=f"The switch jumps to case 2 and keeps going. The still shows it. {OFFER}"), "never states the answer"),
+        "no artifact in a lesson": (lambda t: t["turns"][0].update(acts=["explanation"], artifacts=[]),
+                                    "show the built artifact"),
+        "a question turn the learner did not ask for": (lambda t: t["turns"].insert(2, T(["question"], "n = 1?")) or
+                                                        t["turns"].insert(2, S("other", "ok")), "before the learner asked for practice"),
+    }
+    caught = {}
+    for name, (fn, why) in breaks.items():
+        v = protocol.check_transcript(_break(EXPLAIN_GOOD, fn), lesson)
+        assert v, f"the checker missed: {name}"
+        assert why in " | ".join(v), f"{name}: caught for the wrong reason: {v}"
+        caught[name] = next(x for x in v if why in x)
+    # the explain section of TEACHING.md says the same thing the checker enforces
+    for mode in ("explain", "lesson"):
+        sec = _section(mode).lower()
+        assert "no question" in sec and "practice" in sec and "one sentence" in sec, mode
+    # practice mode: TEACHING.md puts a misconception's name inside the one feedback sentence; the checker rejects
+    # a naming sentence of its own (the r18 live failure) and accepts the name inside the item
+    named = "You expected the next case label to stop it, but a label is only a label, so control runs on into case 3."
+    inside = _break(PREDICT_GOOD, lambda t: t["turns"][2].update(
+        feedback=named, text=f"Not quite. {named} Here is the still with every step. Can I note this attempt as evidence?"))
+    assert protocol.check_transcript(inside, lesson) == [], protocol.check_transcript(inside, lesson)
+    for own in ("You expected the next case label to stop it.", "That's the \"next case label stops it\" idea."):
+        apart = _break(PREDICT_GOOD, lambda t: t["turns"][2].update(
+            text=f"Not quite. {own} {FIX} Here is the still with every step. Can I note this attempt as evidence?"))
+        v = protocol.check_transcript(apart, lesson)
+        assert any("second correction" in x and "inside the feedback sentence" in x for x in v), (own, v)
+    sec = _section("predict-first").lower() + TEACHING.read_text().lower()
+    assert "same sentence" in sec and "never in a sentence of its own" in sec
+    return {"breaks_caught": len(caught)}
+
+
 # ---------------------------------------------------------------- agent-mediated (AC-1.6)
 
 SCENARIOS = {
-    "predict-first": {
-        "request": "Teach me how a switch statement with a missing break falls through, as a still.",
-        "workspace": PREDICT_WS, "mode": "predict-first", "lesson": True,
+    "explain-first": {
+        "request": EXPLAIN_REQUEST, "workspace": PREDICT_WS, "mode": "lesson", "lesson": True,
+        "learner": [S("stop", "Thanks, that's clear. That's all for now.")]},
+    "practice-predict": {
+        "request": PRACTICE_REQUEST, "workspace": {}, "mode": "predict-first", "lesson": True,
         "learner": [S("attempt", "It prints two and then done. The next case label stops it.",
                       expect_class="misconception:m.stops"),
                     S("consent-yes", "Yes, you can note it."),
@@ -467,13 +557,16 @@ You are the tutor in a scripted teaching transcript. Write only inside this job 
    or `kind` field is present, it is part of what the learner said.
 
 Tutor turn fields (JSON, all at the top level of the turn object):
-- role "tutor"; acts: any of "question", "feedback", "artifact", "consent", "answer", "layer", "close";
+- role "tutor"; acts: any of "explanation", "question", "feedback", "artifact", "consent", "answer", "layer", "close";
 - text: exactly what you say to the learner;
 - classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback (the
-  one hint or correction, one sentence of at most 40 words, copied verbatim from text) on any turn with "feedback". The
+  one hint or correction, one sentence of at most 40 words, copied verbatim from text; a misconception's name goes
+  inside that sentence, never in a sentence of its own) on any turn with "feedback". The
   rest of a feedback turn's text may hold only a short verdict, the artifact, a consent question or
   the next question, plus the short lines the mode's protocol in TEACHING.md names;
 - artifacts (file paths you show) and states_shown (trace state ids you show);
+- explanation turn (act "explanation"): practice_offer, the one closing sentence that offers optional
+  practice, copied verbatim from the end of text;
 - quiz: answer_key (private, never in text; the exact answer: output lines, a value or an option letter) on
   each question, question_count on the first, score "k/n" on close;
 - exam-drill: format ("mcq", "msq", "nat"), marks, time_limit_s on the first turn; options (4) and
@@ -539,13 +632,22 @@ def _run_agent(sids):
     return {sid: json.loads((JOBS / sid / "transcript.json").read_text())["turns"].__len__() for sid in sids}
 
 
-def test_predict_first_flow():
-    """AC-1.6: ask one question and end the turn; classify; one feedback item; show the artifact;
-    record one evidence event with consent; stop by the stop rule."""
-    return _run_agent(["predict-first"])
+def test_practice_mode_flow():
+    """AC-1.6 (v1.4), practice mode the learner asked for: ask one question and end the turn; classify;
+    one feedback item; show the artifact; record one evidence event with consent; stop by the stop rule."""
+    return _run_agent(["practice-predict"])
 
 
-test_predict_first_flow.agent = True
+test_practice_mode_flow.agent = True
+
+
+def test_explanation_first_flow():
+    """AC-1.6 (v1.4), no practice mode asked for, in a workspace whose AGENTS.md asks for prediction first:
+    the complete explanation with the artifact first, then optional practice in one closing sentence."""
+    return _run_agent(["explain-first"])
+
+
+test_explanation_first_flow.agent = True
 
 
 def test_modes_live():

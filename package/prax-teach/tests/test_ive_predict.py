@@ -1,8 +1,10 @@
-"""Round 18, review X1: the IVE stops for the prediction (ptk/verify/ive_predict.py).
+"""The IVE prediction gate (ptk/verify/ive_predict.py): round 18 review X1 and AC-6.8 (SPEC v1.4).
 
-The static half reads ive-data.js and captions.vtt; the browser half drives the built page. Each unit
-test plants one defect the review found (no pause plan, "Pause here and predict" with no invitation,
-a 3.8 s silent gap, 220 wpm, options that differ) and checks the gate names it."""
+By default the film plays through each question and explains (AC-6.8); with the practice-mode toggle on,
+it stops for the prediction (review X1). The static half reads ive-data.js and captions.vtt; the browser
+half drives the built page in both modes. Each unit test plants one defect (no pause plan, "Pause here and
+predict" with no invitation, a 3.8 s silent gap, 220 wpm, options that differ, a default film that stops,
+a practice toggle that is missing or on by default) and checks the gate names it."""
 import copy
 import json
 
@@ -59,10 +61,14 @@ def test_static_fails_when_options_differ():
     assert any("differ from the storyboard" in p for p in probs), probs
 
 
-def _fake_results(q, scene, opts, *, stop_t, held_t, refuse_t, resume_t, sealed_title):
+def _fake_results(q, scene, opts, *, stop_t, held_t, refuse_t, resume_t, sealed_title, default=None):
     out = []
     for w in (1440, 390):
+        out.append({"id": f"ive-explain:{scene}:{w}", "ok": True, "values": {"default": {
+            "toggle": {"visible": True, "pressed": "false", "practice": False}, "modes": ["film"], "paused": False,
+            "t_end": q["answer_at"] + 0.3, "in_gap": [], **(default or {})}}})
         out.append({"id": f"ive-predict:{scene}:{w}", "ok": True, "values": {
+            "practice_on": {"pressed": "true", "practice": True},
             "stopped": {"mode": "ask", "asking": scene, "t": stop_t, "paused": True, "options": opts,
                         "chapters": [sealed_title], "page": ""},
             "held": {"mode": "ask", "t": held_t, "paused": True},
@@ -95,8 +101,36 @@ def test_browser_check_fails_when_play_runs_through():
     assert any("while the question is open" in p for p in probs), probs
 
 
+def test_browser_check_fails_when_the_default_film_stops():
+    """AC-6.8: with practice mode off the film must not stop for the prediction, and the toggle must be visible and off."""
+    lesson, data, _caps, sc = _fixture()
+    q = {**data["questions"][0], "sealed": [0]}
+    opts = [o["text"] for o in sc["question"]["options"]]
+    seal = text.ui("ive_chapter_sealed")
+    for default, why in (({"modes": ["film", "ask"], "paused": True, "t_end": 15.26}, "practice mode off"),
+                         ({"toggle": {"visible": True, "pressed": "true", "practice": True}}, "toggle"),
+                         ({"toggle": {"visible": False, "pressed": None, "practice": False}}, "toggle"),
+                         ({"in_gap": [16.0, 16.5]}, "silent think gap")):
+        res = _fake_results(q, sc["id"], opts, stop_t=15.26, held_t=15.26, refuse_t=15.26, resume_t=15.31,
+                            sealed_title=seal, default=default)
+        probs, _ = P.browser_check(lesson, {"questions": [q]}, [], LESSON / "build" / "ive", run=lambda jobs, work: res)
+        assert any(why in p for p in probs), (default, probs)
+
+
+def test_browser_jobs_cover_both_modes():
+    """The gate drives the default film and, separately, the film with the practice toggle turned on."""
+    lesson, data, _caps, sc = _fixture()
+    jobs = P.browser_jobs("file:///x/index.html", {**data["questions"][0], "sealed": []}, [], LESSON / "build" / "shots")
+    kinds = sorted({j["id"].split(":")[0] for j in jobs})
+    assert kinds == ["ive-explain", "ive-predict"], kinds
+    practice = [j for j in jobs if j["id"].startswith("ive-predict:")]
+    assert all("getElementById('practice').click()" in json.dumps(j["steps"]) for j in practice)
+    assert not any("getElementById('practice').click()" in json.dumps(j["steps"]) for j in jobs if j not in practice)
+
+
 def test_built_ive_stops_for_every_prediction():
-    """The real thing, on every built lesson whose IVE has a pause plan (Chromium from $PTK_STATE)."""
+    """The real thing, on every built lesson whose IVE has a pause plan (Chromium from $PTK_STATE): the default film
+    plays through, and with the practice toggle on it stops for the prediction."""
     ran = 0
     for d in sorted((V21 / "lessons").iterdir()):
         ive = d / "build" / "ive"

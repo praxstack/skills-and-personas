@@ -6,11 +6,15 @@
   //    ▲  the panel follows the film's cue    │ seeded at the film's state; edits marked as yours │
   //    └──────────────────────────────────────┴── a seek while exploring re-seeds at the new time ┘
   //
-  // ASK (round 18): playing into a question's pause point (its last spoken word + 0.25 s) stops the film
-  // and shows the same options as the Q&A. Play holds until the learner picks; a pick shows the verdict
-  // and jumps to the answer scene, so the think gap of the plain MP4 is never heard. A chapter title
-  // that states the answer (D.questions[].sealed) shows a placeholder until the question is answered or
-  // the film has passed the answer.
+  // Explanation first (AC-6.8): by default the film plays through each question and explains. At the pause
+  // point it jumps over the silent think gap to the answer scene and never stops. The options sit beside
+  // the film; a pick is optional.
+  // ASK, practice mode only (round 18; off by default, the visible "Practice mode" toggle turns it on):
+  // playing into a question's pause point (its last spoken word + 0.25 s) stops the film and shows the
+  // same options as the Q&A. Play holds until the learner picks; a pick shows the verdict and jumps to
+  // the answer scene. Turning practice off releases the hold. A chapter title that states the answer
+  // (D.questions[].sealed) shows a placeholder until the question is answered or the film has passed
+  // the answer.
   //
   // Cue windows are half-open [start, next start). A time less than one frame before a boundary
   // belongs to the later window, because browsers round seek targets (to the frame or to the
@@ -88,11 +92,12 @@
 
   var meta = [], chaps = [], caps = [], booted = false, unlockIdx = -1;
   var mode = 'film', returnTime = 0, edit = null, step = null, seed = null, quiet = false, lastKey = '';
-  var Q = D.questions || [], picked = {}, passed = {}, asking = null;
+  var Q = D.questions || [], picked = {}, passed = {}, asking = null, practice = false;
 
   // ---- predictions (ASK)
   function now() { return mode === 'film' || mode === 'ask' ? v.currentTime : returnTime; }
   function askAt(t) {
+    if (!practice) return null;  // explanation first: the film stops for a prediction only in practice mode
     for (var i = 0; i < Q.length; i++) {
       var q = Q[i];
       if (!picked[q.scene] && t >= q.pause_at - 0.03 && t < q.resume_at) return q;
@@ -135,7 +140,8 @@
       if (q) { startAsk(q); return; }
       for (var i = 0; i < Q.length; i++) {
         var a = Q[i];
-        if (picked[a.scene] && t >= a.pause_at && t < a.resume_at - 0.1) { quiet = true; v.currentTime = a.resume_at; break; }
+        // past the pause point with nothing to wait for (answered, or practice off): skip the think gap
+        if ((picked[a.scene] || !practice) && t >= a.pause_at && t < a.resume_at - 0.1) { quiet = true; v.currentTime = a.resume_at; break; }
       }
     }
     window.requestAnimationFrame(tick);
@@ -315,6 +321,7 @@
     xp.setAttribute('data-mode', mode);
     document.documentElement.setAttribute('data-ive-mode', mode);
     document.documentElement.setAttribute('data-ive-ask', mode === 'ask' ? asking.scene : '');
+    document.documentElement.setAttribute('data-ive-practice', String(practice));
     $('mode-label').textContent = exploring ? U.ive_mode_label_explore : (mode === 'ask' ? U.ive_mode_label_ask : U.ive_mode_label_film);
     $('mode-text').textContent = exploring ? fmt(U.ive_mode_explore, { time: clock(returnTime) })
       : (mode === 'ask' ? fmt(U.ive_mode_ask, { time: clock(v.currentTime) }) : U.ive_mode_film);
@@ -390,6 +397,16 @@
   v.addEventListener('ended', function () { mode = 'film'; paint(); });
   $('explore').addEventListener('click', function () { if (mode === 'ask') { mode = 'film'; asking = null; } enterExplore(); });
   $('return').addEventListener('click', returnToFilm);
+  // practice mode (AC-6.8): off by default; on, the film stops at each question until a pick
+  var prBtn = $('practice');
+  if (prBtn) prBtn.addEventListener('click', function () {
+    practice = !practice;
+    prBtn.setAttribute('aria-pressed', String(practice));
+    $('practice-state').textContent = practice ? U.x_on : U.x_off;
+    if (!practice && mode === 'ask') { mode = 'film'; asking = null; }  // the hold ends at once
+    lastKey = '';
+    paint();
+  });
   function seekTo(t, action) { quiet = true; v.currentTime = t; emit(action); }
 
   $('prev').addEventListener('click', function () { var c = step !== null ? step : shownIdx(); if (c > 0) { step = c - 1; paint(); } });
@@ -454,6 +471,7 @@
     resolve: function (t) { var i = windowAt(meta, t); return i < 0 ? null : meta[i].p.cue; },
     chapterAt: function (t) { return windowAt(chaps, t); },
     mode: function () { return mode; },
+    practice: function () { return practice; },
     asking: function () { return asking ? asking.scene : null; },
     picked: function () { return JSON.parse(JSON.stringify(picked)); },
     questions: function () { return Q; },

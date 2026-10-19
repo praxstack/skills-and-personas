@@ -24,6 +24,10 @@ later window, because browsers round seek targets:
     ──── window k-1 ────┤◀ 1 frame ▶│──── window k ────
                         └─ resolves to k ─┘
 
+Explanation first (AC-6.8): by default the film plays through each question and explains; at the
+pause point it skips the silent think gap. The prediction stop (ASK) runs only when the learner turns
+on the visible "Practice mode" toggle, which is off when the page opens.
+
 FILM / EXPLORE / RETURN (AC-6.6): in FILM the panel follows the cue at currentTime. Pausing or
 "Pause and explore" enters EXPLORE, seeded at the film's state; steps and live edits there are
 marked as the learner's (a dashed panel, "Your edit, not in the film"). RETURN drops every edit,
@@ -137,11 +141,12 @@ PAUSE_AFTER = 0.25  # the film stops this long after the question's last spoken 
 
 
 def question_plan(lesson, timing, cue_list):
-    """Where the film waits for a prediction (round 18, review X1). Per question scene with options:
+    """Where the film waits for a prediction in practice mode (round 18, review X1; AC-6.8). Per question
+    scene with options:
 
-        q narration ─────────┤ pause_at ── waits for a pick ──▶ resume_at (answer scene start) ─▶ answer_at
-                               (q end + PAUSE_AFTER)              the film jumps here, so the think gap
-                                                                  of the plain MP4 is never heard
+        q narration ─────────┤ pause_at ── practice mode: waits for a pick ──▶ resume_at (answer scene start) ─▶ answer_at
+                               (q end + PAUSE_AFTER)   default: jumps on at once     so the think gap of the
+                                                                                     plain MP4 is never heard
     `sealed` lists the chapter indices whose titles state the answer (seal.py); the page shows a neutral
     placeholder for them until the question is answered or the film has passed `answer_at`."""
     out = []
@@ -271,7 +276,8 @@ def page(lesson, timing, cue_list, posters, live=None):
 <div class="modebar js-only"><p class="mode" id="mode" role="status" data-nodata="{esc(ui('ive_no_data'))}"><span class="tagm" id="mode-label" data-chrome="ive_mode_label_film">{esc(ui('ive_mode_label_film'))}</span><span id="mode-text" data-chrome="ive_mode_film">{esc(ui('ive_mode_film'))}</span></p>
 <div class="acts"><button type="button" class="pill primary" id="explore" data-chrome="ive_explore">{esc(ui('ive_explore'))}</button>
 <button type="button" class="pill primary" id="return" hidden data-chrome="ive_return">{esc(ui('ive_return'))}</button>
-<button type="button" class="pill" id="caps" aria-pressed="true" data-chrome="captions_on">{esc(ui('captions_on'))}</button></div></div>
+<button type="button" class="pill" id="caps" aria-pressed="true" data-chrome="captions_on">{esc(ui('captions_on'))}</button>
+<button type="button" class="pill" id="practice" aria-pressed="false"><span data-chrome="ive_practice">{esc(ui('ive_practice'))}</span><span class="onoff" id="practice-state" data-chrome="x_off">{esc(ui('x_off'))}</span></button></div></div>
 </section>
 <section class="xpanel js-only" id="xp" data-origin="film" data-mode="film" aria-labelledby="xp-h">
 <div class="xhead"><h2 class="lbl" id="xp-h" data-chrome="state_label">{esc(ui('state_label'))}</h2><p class="origin" id="origin" aria-live="polite"></p></div>
