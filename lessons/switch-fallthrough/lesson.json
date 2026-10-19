@@ -52,6 +52,18 @@
         "gcc-16": ""
       },
       "source_sha256": "f5c4984ae2d529c98bef78eb7c0e18fbede404b1faa657222cafd864b44127e1"
+    },
+    {
+      "id": "p3",
+      "path": "programs/into_break.c",
+      "std": "c17",
+      "ub": false,
+      "run": true,
+      "diagnostics": {
+        "clang": "",
+        "gcc-16": "into_break.c: In function 'main':\ninto_break.c:7:9: warning: this statement may fall through [-Wimplicit-fallthrough=]\n    7 |         puts(\"one\");\n      |         ^~~~~~~~~~~\ninto_break.c:8:5: note: here\n    8 |     case 2:\n      |     ^~~~"
+      },
+      "source_sha256": "caf36e95a50ccd8d740b2c9bdf8584b39bfd8000525194079e139a581b0e60db"
     }
   ],
   "facts": [
@@ -396,6 +408,116 @@
       }
     },
     {
+      "id": "f.p3.l1",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 1
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          1
+        ]
+      },
+      "value": "two",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 into_break.c && ./p3 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
+      "id": "f.p3.l2",
+      "program": "p3",
+      "kind": "stdout-line",
+      "select": {
+        "stream": "stdout",
+        "line": 2
+      },
+      "expect": {
+        "fn": "switch_line",
+        "args": [
+          [
+            {
+              "label": 1,
+              "out": [
+                "one"
+              ],
+              "brk": false
+            },
+            {
+              "label": 2,
+              "out": [
+                "two"
+              ],
+              "brk": false
+            },
+            {
+              "label": 3,
+              "out": [],
+              "brk": true
+            },
+            {
+              "label": 4,
+              "out": [
+                "four"
+              ],
+              "brk": false
+            }
+          ],
+          2,
+          [
+            "done"
+          ],
+          2
+        ]
+      },
+      "value": "done",
+      "source": {
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "cmd": "clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0 into_break.c && ./p3 (sandbox-exec MODE=run, run twice)",
+        "stdout_sha256": "5f2a0b8378e7b8440d3e20e4189824406ef987b187b0cd940220196c138c6f43",
+        "runs": 2,
+        "sandbox": "sandbox-exec MODE=run"
+      }
+    },
+    {
       "id": "f.int.size",
       "program": "p1",
       "kind": "value",
@@ -533,12 +655,12 @@
     {
       "id": "c.pause",
       "kind": "framing",
-      "text": "What do you predict? Choose your answer before the answer plays.",
-      "justification": "Retrieval prompt required by the learner workspace's predict-first contract: the question and its answer choices are on screen (and the question is in the transcript); the sentence asks the learner to commit to one before the answer is shown, and states no fact about C.",
+      "text": "The next few scenes answer this question.",
+      "justification": "Framing for the question scene sc2. The film shows the question and its choices, and video/transcript.txt prints the question just before this line. The film does not stop here; the answer appears in scenes sc3 to sc5, which print two, three and done. Explanation comes first; a prediction pause runs only in a practice mode the learner turns on (SPEC v1.4 AC-6.8). The sentence states no fact about C.",
       "sources": [
         {
-          "title": "Learner workspace contract (AGENTS.md: ask one bounded prediction, wait for the attempt)",
-          "clause": "Teaching"
+          "title": "this lesson's storyboard",
+          "clause": "question scene sc2 and scenes sc3 to sc5, which print two, three and done"
         }
       ]
     },
@@ -615,10 +737,92 @@
           "clause": "§6.8.6.3 ¶2"
         },
         {
-          "title": "GCC manual, Warning Options",
+          "title": "GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)",
           "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
-          "clause": "-Wimplicit-fallthrough",
-          "quote": "-Wimplicit-fallthrough=3 is enabled by -Wextra."
+          "clause": "-Wimplicit-fallthrough=n",
+          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra."
+        }
+      ]
+    },
+    {
+      "id": "c.warn",
+      "kind": "caveat",
+      "text": "Compiled by gcc-16 with -Wextra, fallthrough.c gets a warning that the statements on lines 7 and 9 may fall through, and with_break.c gets none.",
+      "justification": "ptk capture compiles every program with gcc-16 16.2.0 (-std=c17 -Wall -Wextra -Wformat=2 -c) and records its stderr. For fallthrough.c gcc-16 prints 'warning: this statement may fall through [-Wimplicit-fallthrough=]' at 7:9 (puts(\"one\"), with a note at case 2 on line 8) and at 9:9 (puts(\"two\"), note at case 3 on line 10). For with_break.c the recorded gcc-16 output is empty. The GCC manual says -Wextra enables -Wimplicit-fallthrough=3.",
+      "sources": [
+        {
+          "title": "gcc-16 diagnostics recorded by ptk capture (gcc-16 -std=c17 -Wall -Wextra -Wformat=2 -c)",
+          "clause": "the programs' gcc-16 diagnostics in the job"
+        },
+        {
+          "title": "GCC 16.2 manual, gcc-16(1) man page (Homebrew GCC 16.2.0)",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html",
+          "clause": "-Wimplicit-fallthrough=n",
+          "quote": "The -Wimplicit-fallthrough=3 warning is enabled by -Wextra."
+        },
+        {
+          "title": "programs/fallthrough.c",
+          "url": "programs/fallthrough.c",
+          "clause": "lines 6-12"
+        }
+      ]
+    },
+    {
+      "id": "c.intobreak",
+      "kind": "mechanism",
+      "text": "into_break.c is fallthrough.c with case 3 cut down to a lone break. With n = 2 it prints two, falls into case 3, whose break ends the switch, and then prints done.",
+      "justification": "programs/into_break.c matches programs/fallthrough.c except that case 3 (line 10) holds only break; on line 11, where fallthrough.c has puts(\"three\"); break;. n = 2 jumps to case 2 (6.8.4.2p5), puts(\"two\") runs, case 3: does not stop control (6.8.1p4), the break on line 11 ends the switch (6.8.6.3p2), and puts(\"done\") on line 15 runs. The captured run prints two then done.",
+      "sources": [
+        {
+          "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
+          "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
+          "clause": "§6.8.4.2 ¶5, §6.8.1 ¶4, §6.8.6.3 ¶2"
+        },
+        {
+          "title": "programs/into_break.c",
+          "url": "programs/into_break.c",
+          "clause": "lines 4-15"
+        },
+        {
+          "title": "captured run of programs/into_break.c",
+          "clause": "stdout lines 1-2"
+        }
+      ],
+      "facts": [
+        "f.p3.l1",
+        "f.p3.l2"
+      ]
+    },
+    {
+      "id": "c.silent",
+      "kind": "caveat",
+      "text": "For into_break.c, gcc-16 with -Wextra still warns at line 7, where case 1 falls into case 2, but says nothing at line 9, where case 2 falls into a case that only breaks.",
+      "justification": "The recorded gcc-16 diagnostics for into_break.c (same flags as c.warn) hold exactly one warning, 'this statement may fall through' at 7:9 (puts(\"one\"), note at case 2 on line 8). Line 9, puts(\"two\"), runs on into case 3 (line 10), whose only statement is break; (line 11), and gcc-16 reports nothing there. So -Wimplicit-fallthrough does not flag every fallthrough; the sentence states only what this compile showed.",
+      "sources": [
+        {
+          "title": "gcc-16 diagnostics recorded by ptk capture (gcc-16 -std=c17 -Wall -Wextra -Wformat=2 -c)",
+          "clause": "the programs' gcc-16 diagnostics in the job"
+        },
+        {
+          "title": "programs/into_break.c",
+          "url": "programs/into_break.c",
+          "clause": "lines 6-11"
+        }
+      ]
+    },
+    {
+      "id": "c.clang",
+      "kind": "caveat",
+      "text": "Apple clang with -Wextra gives no fallthrough warning for any of the three programs.",
+      "justification": "ptk capture compiles every program with Apple clang 21.0.0 (-std=c17 -Wall -Wextra -Wformat=2, with sanitizers) and records its stderr; any clang warning would stop the capture. The recorded clang diagnostics for fallthrough.c, with_break.c and into_break.c are all empty, so clang's -Wextra does not report these fallthroughs.",
+      "sources": [
+        {
+          "title": "clang diagnostics recorded by ptk capture (clang -std=c17 -Wall -Wextra -Wformat=2 -fsanitize=undefined,address -g -O0)",
+          "clause": "programs[].diagnostics.clang in lesson.json"
+        },
+        {
+          "title": "captured platform facts",
+          "clause": "compilers.clang"
         }
       ]
     }
@@ -763,6 +967,34 @@
         "f.p2.l1",
         "f.p2.l2"
       ]
+    },
+    {
+      "id": "s5",
+      "label": "into_break.c: case 3 only breaks",
+      "state": {
+        "program": "p3",
+        "line": 15,
+        "path": [
+          4,
+          5,
+          8,
+          9,
+          10,
+          11,
+          15
+        ],
+        "output": [
+          "f.p3.l1",
+          "f.p3.l2"
+        ],
+        "vars": {
+          "n": "2"
+        }
+      },
+      "reveals": [
+        "f.p3.l1",
+        "f.p3.l2"
+      ]
     }
   ],
   "storyboard": [
@@ -813,7 +1045,7 @@
       },
       "narration": [
         {
-          "text": "What do you predict? Choose your answer before the answer plays.",
+          "text": "The next few scenes answer this question.",
           "claims": [
             "c.pause"
           ]
@@ -925,6 +1157,12 @@
           "claims": [
             "c.withbreak"
           ]
+        },
+        {
+          "text": "Compiled by gcc-16 with -Wextra, fallthrough.c gets a warning that the statements on lines 7 and 9 may fall through, and with_break.c gets none.",
+          "claims": [
+            "c.warn"
+          ]
         }
       ],
       "key_nodes": [
@@ -938,6 +1176,45 @@
     },
     {
       "id": "sc7",
+      "title": "Where gcc stays silent",
+      "state": "s5",
+      "narration": [
+        {
+          "text": "into_break.c is fallthrough.c with case 3 cut down to a lone break.",
+          "claims": [
+            "c.intobreak"
+          ]
+        },
+        {
+          "text": "With n = 2 it prints two, falls into case 3, whose break ends the switch, and then prints done.",
+          "claims": [
+            "c.intobreak"
+          ]
+        },
+        {
+          "text": "For into_break.c, gcc-16 with -Wextra still warns at line 7, where case 1 falls into case 2, but says nothing at line 9, where case 2 falls into a case that only breaks.",
+          "claims": [
+            "c.silent"
+          ]
+        },
+        {
+          "text": "Apple clang with -Wextra gives no fallthrough warning for any of the three programs.",
+          "claims": [
+            "c.clang"
+          ]
+        }
+      ],
+      "key_nodes": [
+        "code",
+        "output"
+      ],
+      "title_claims": [
+        "c.silent"
+      ],
+      "ask": "Which fallthrough gets no gcc-16 warning?"
+    },
+    {
+      "id": "sc8",
       "title": "Recap",
       "state": "s3",
       "narration": [
