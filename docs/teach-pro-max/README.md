@@ -62,3 +62,7 @@ https://skills.sh/praxstack/skills-and-personas/teach-pro-max
 
 The upgrade plan is a plan, not a claim that the future interactive visual
 runtime or external learner-evidence gates are complete.
+
+## Evolution checkpoint and next goals
+
+The [19 October checkpoint](../../archive/teach-pro-max-evolution-20261019/README.md) preserves source history, the accepted general engine, Atlas, reviews and v2.1/v2.2 lesson outputs. The [coordinated goal briefs](goals-20261019/README.md) split general-teacher integration from C-adapter repair. Both are review material; neither changes the installed skill or approves a new implementation budget.
