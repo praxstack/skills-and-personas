@@ -560,7 +560,8 @@ Tutor turn fields (JSON, all at the top level of the turn object):
 - role "tutor"; acts: any of "explanation", "question", "feedback", "artifact", "consent", "answer", "layer", "close";
 - text: exactly what you say to the learner;
 - classification ("correct", "partial", "misconception:<id>", "skipped", "timeout") and feedback (the
-  one hint or correction, one sentence of at most 40 words, copied verbatim from text) on any turn with "feedback". The
+  one hint or correction, one sentence of at most 40 words, copied verbatim from text; a misconception's name goes
+  inside that sentence, never in a sentence of its own) on any turn with "feedback". The
   rest of a feedback turn's text may hold only a short verdict, the artifact, a consent question or
   the next question, plus the short lines the mode's protocol in TEACHING.md names;
 - artifacts (file paths you show) and states_shown (trace state ids you show);
