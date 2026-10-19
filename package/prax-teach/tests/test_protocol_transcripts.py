@@ -86,7 +86,7 @@ def test_no_reveal_before_attempt():
     assert len(plan) == 1 and plan[0]["answer_fact"] == "f.p1.out", plan
     p = plan[0]
     assert p["visible_states"] == ["s0"], p          # the setup state only
-    assert set(p["hidden_states"]) == {"s1", "s2", "s3", "s4"}, p
+    assert set(p["hidden_states"]) == {"s1", "s2", "s3", "s4", "s5"}, p  # s5: into_break.c also prints two
     assert not p["problems"]
     # a lesson whose question opens on an answering state is flagged
     bad = copy.deepcopy(lesson)
