@@ -164,6 +164,32 @@
      "minItems": 3,
      "type": "array",
      "uniqueItems": true
+    },
+    "synced_location": {
+     "additionalProperties": false,
+     "description": "WP11 (D23.1): the learner's explicit opt-in to learner state in a folder Google Drive for desktop backs up, with the notice shown. Schema 2 only.",
+     "properties": {
+      "acknowledged_notice": {
+       "maxLength": 4000,
+       "minLength": 1,
+       "pattern": "Google Drive",
+       "type": "string"
+      },
+      "root": {
+       "maxLength": 4096,
+       "minLength": 1,
+       "type": "string"
+      },
+      "service": {
+       "const": "Google Drive for desktop"
+      }
+     },
+     "required": [
+      "acknowledged_notice",
+      "root",
+      "service"
+     ],
+     "type": "object"
     }
    },
    "required": [

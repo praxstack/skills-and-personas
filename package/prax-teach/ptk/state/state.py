@@ -25,6 +25,7 @@ from . import (
     SCHEMA_VERSION,
     WORKSPACE_SCHEMA,
 )
+from . import sync
 from .errors import ConsentRequired, SafetyError, ValidationError
 from .io import (
     ANY_BINDING,
@@ -196,6 +197,20 @@ def _empty_misconceptions() -> dict[str, Any]:
     }
 
 
+class SyncedLocationRefused(ConsentRequired):
+    """Learner state would be created in a folder Google Drive for desktop backs up, without the explicit opt-in."""
+
+
+def synced_location_record(location: sync.SyncedLocation) -> dict[str, str]:
+    """The opt-in recorded with consent (AC-11.1): the service, the backed-up root and the exact notice shown."""
+
+    return {
+        "acknowledged_notice": sync.consent_notice(location),
+        "root": str(location.root),
+        "service": location.service,
+    }
+
+
 def initialize_workspace(
     path: str,
     *,
@@ -203,14 +218,24 @@ def initialize_workspace(
     goal: str,
     horizon_days: int,
     granted_at: str,
+    allow_synced_location: bool = False,
 ) -> tuple[Path, dict[str, Any]]:
-    """Create the first durable byte only after the caller has consent."""
+    """Create the first durable byte only after the caller has consent.
+
+    D23.1 (AC-11.1): inside a folder Google Drive for desktop backs up, nothing is created unless the learner also
+    opted in explicitly (allow_synced_location); the opt-in is then recorded in the consent.
+    """
 
     learner = _require_identifier("learner_id", learner_id)
     goal_statement = _require_text("goal", goal)
     if horizon_days < 1 or horizon_days > 3650:
         raise ValidationError("horizon_days must be between 1 and 3650")
     timestamp = normalize_timestamp(granted_at)
+    location = sync.detect(path)
+    if location is not None and not allow_synced_location:
+        raise SyncedLocationRefused(
+            "refusing to create learner state in a folder Google Drive backs up. " + sync.consent_notice(location)
+        )
     candidate = prepare_private_parent(path)
     with workspace_generation_lock(candidate):
         # A confirmed deletion owns this pathname until its durable parent
@@ -223,6 +248,7 @@ def initialize_workspace(
             goal_statement=goal_statement,
             horizon_days=horizon_days,
             timestamp=timestamp,
+            synced=synced_location_record(location) if location is not None else None,
         )
 
 
@@ -233,6 +259,7 @@ def _create_workspace_locked(
     goal_statement: str,
     horizon_days: int,
     timestamp: str,
+    synced: dict[str, str] | None = None,
 ) -> tuple[Path, dict[str, Any]]:
     """Create workspace contents while the parent generation is locked."""
 
@@ -261,6 +288,8 @@ def _create_workspace_locked(
             "purpose": "Adapt future teaching from the approved goal, practice evidence, and reviews.",
             "scope": ["goal", "practice_evidence", "reviews"],
         }
+        if synced is not None:
+            consent["synced_location"] = synced
         learner_document = {
             "consent": consent,
             "goal": {
@@ -330,6 +359,19 @@ def _validate_migration_record(record: Any) -> None:
         raise ValidationError("learner migration v1_event_count is invalid")
 
 
+def _validate_synced_location(record: Any) -> None:
+    if not isinstance(record, dict):
+        raise ValidationError("learner consent synced_location must be an object")
+    _exact_fields(record, {"acknowledged_notice", "root", "service"}, label="learner consent synced_location")
+    if record.get("service") != sync.DRIVE_SERVICE:
+        raise ValidationError("learner consent synced_location names an unknown service")
+    _require_text("consent.synced_location.root", record.get("root"), maximum=4096)
+    notice = _require_text("consent.synced_location.acknowledged_notice", record.get("acknowledged_notice"),
+                           maximum=4000)
+    if "Google Drive" not in notice:
+        raise ValidationError("learner consent synced_location notice does not name Google Drive")
+
+
 def validate_learner_document(
     document: Any, *, require_active: bool = True
 ) -> dict[str, Any]:
@@ -367,6 +409,9 @@ def validate_learner_document(
     )
     if navigation_scoped:
         consent_fields.add("navigation_granted_at")
+    if version == WORKSPACE_SCHEMA and "synced_location" in consent:
+        consent_fields.add("synced_location")
+        _validate_synced_location(consent["synced_location"])
     _exact_fields(consent, consent_fields, label="learner consent")
     if navigation_scoped:
         normalize_timestamp(consent.get("navigation_granted_at"))
@@ -2418,9 +2463,14 @@ def delete_events(
             )
 
         transaction = _deletion_transaction(plan, retained, retained_reviews)
+        location = sync.detect(workspace)
+        before = _state_file_targets(workspace)
         atomic_write_json(workspace / "state" / DELETE_TRANSACTION_NAME, transaction)
         _apply_deletion_transaction(workspace, transaction)
-    return {
+        after = {t["path"]: t["sha256"] for t in _state_file_targets(workspace)}
+        # AC-11.3: the old copies of the files the deletion rewrote still hold the deleted events
+        replaced = [t for t in before if after.get(t["path"]) != t["sha256"]]
+    receipt = {
         "deleted_event_ids": plan["selected_event_ids"],
         "dependent_events_removed": len(plan["dependent_event_ids_removed"]),
         "dependent_events_rewritten": len(plan["rewritten_events"]),
@@ -2429,6 +2479,21 @@ def delete_events(
         "review_events_removed": len(plan["review_event_ids_removed"]),
         "status": "deleted",
     }
+    return _with_copies(receipt, location, sync.find_copies(location, replaced))
+
+
+def _state_file_targets(workspace: Path) -> list[dict[str, Any]]:
+    """file_target records for the state files a scoped deletion can rewrite."""
+
+    targets = []
+    for name in ("sessions.jsonl", "reviews.jsonl", "concepts.json", "misconceptions.json"):
+        relative = f"state/{name}"
+        try:
+            current = (workspace / relative).lstat()
+        except FileNotFoundError:
+            continue
+        targets.append(sync.file_target(relative, current, hashlib.sha256(read_bytes(workspace, relative)).hexdigest()))
+    return targets
 
 
 def _workspace_deletion_plan(
@@ -2935,12 +3000,15 @@ def delete_workspace(path: str, *, dry_run: bool, confirm: bool) -> dict[str, An
                 raise SafetyError("full deletion journal could not be recovered")
             return recovered
         plan = _workspace_deletion_plan(workspace)
+        location = sync.detect(workspace)
+        targets = _deletion_targets(workspace, plan)
         if dry_run:
-            return {
+            preview = {
                 "plan": plan,
                 "status": "preview",
                 "workspace": str(workspace),
             }
+            return _with_copies(preview, location, sync.find_copies(location, targets))
         if not confirm:
             raise ConfirmationRequired(
                 "full workspace deletion requires --confirm; run with --dry-run to preview the exact tree"
@@ -2955,11 +3023,55 @@ def delete_workspace(path: str, *, dry_run: bool, confirm: bool) -> dict[str, An
         recovered = _recover_quarantined_workspace_deletion(workspace)
         if recovered is None:
             raise SafetyError("confirmed full deletion did not complete")
-    return {
+    receipt = {
         "plan": plan,
         "status": "all_state_deleted",
         "workspace": str(workspace),
     }
+    # AC-11.3: never all_state_deleted while a copy survives outside the workspace
+    return _with_copies(receipt, location, sync.find_copies(location, targets),
+                        status="deleted_with_surviving_copies")
+
+
+def _deletion_targets(workspace: Path, plan: dict[str, Any]) -> list[dict[str, Any]]:
+    """file_target records (inode, link count, size, SHA-256) for every regular file a full deletion removes.
+    _workspace_deletion_plan has already refused symlinks and special files."""
+
+    del plan  # the plan only carries counts and a tree hash
+    targets = []
+    for root, directories, files in os.walk(workspace, topdown=True, followlinks=False):
+        directories.sort()
+        for name in sorted(files):
+            child = Path(root) / name
+            relative = child.relative_to(workspace).as_posix()
+            current = child.lstat()
+            if not stat.S_ISREG(current.st_mode):
+                continue
+            digest = hashlib.sha256(read_bytes(workspace, relative)).hexdigest()
+            targets.append(sync.file_target(relative, current, digest))
+    return targets
+
+
+def _with_copies(
+    result: dict[str, Any],
+    location: sync.SyncedLocation | None,
+    found: dict[str, list[dict[str, Any]]],
+    *,
+    status: str | None = None,
+) -> dict[str, Any]:
+    """Add what survives outside the workspace to a delete result (only when something does: v2's shape else)."""
+
+    if not found["surviving_copies"] and not found["unlocated_links"]:
+        return result
+    out = dict(result)
+    if found["surviving_copies"]:
+        out["surviving_copies"] = found["surviving_copies"]
+    if found["unlocated_links"]:
+        out["unlocated_links"] = found["unlocated_links"]
+    out["warning"] = sync.surviving_copies_warning(location, found)
+    if status is not None:
+        out["status"] = status
+    return out
 
 
 def show_state(path: str) -> dict[str, Any]:

@@ -70,11 +70,13 @@ Exit codes are v2's (3 consent, 4 confirmation, 5 safety, 6 validation, 7 not fo
   its own consent and goes to `state/navigation.jsonl`, never with attempts. `revoke-navigation` deletes it.
 - `snapshot WS --to DIR`, `rollback WS --snapshot DIR`.
 
-Known issue: at times a macOS background process gives fresh files under `~/Developer` a second hard
-link (commit 3b89295). The engine keeps v2's refusal of hard-linked state files, because v2's protected
-tests check it (a hard link can tie one learner's log to another's). So an operation can fail with
-"must not be a hardlink" for a file nobody linked. The tests report that as not-run, never as a pass.
-Rerun; if it persists, keep learner workspaces outside `~/Developer`.
+Google Drive (WP11): Drive for desktop backs up `~/Developer` and `~/Study` and hard-links each new file into
+`<root>/.tmp.driveupload` while it uploads it. `init` refuses a Drive-backed folder unless the learner adds
+`--allow-google-drive` to `--consent` (recorded as `consent.synced_location`). `delete` reports copies it finds
+outside the workspace and then says `deleted_with_surviving_copies`. A learner's own file with Drive's extra link
+is read with a warning naming Google Drive, because it carries the workspace's learner binding (D22.3). Read-only
+commands write nothing, extended attributes included, without active consent. Tests set `PRAX_TEACH_SYNC_ROOTS`
+to fixture folders and never look at a real Drive folder.
 
 ## Renderer (AC-8.3)
 

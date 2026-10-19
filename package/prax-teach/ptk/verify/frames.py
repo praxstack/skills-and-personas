@@ -159,6 +159,94 @@ def layer_samples(video_dir, timing, lesson_sha=None, step=0.05):
     return out
 
 
+CHIPS_JS = r"""(t) => {
+  const root = document.querySelector('[data-composition-id]');
+  const tl = window.__timelines[root.dataset.compositionId];
+  tl.seek(t, false);
+  """ + EOP_JS + r"""
+  const own = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+  const factOf = (el) => { const m = el.closest('[data-m], [data-fact]'); return m ? (m.dataset.fact || m.dataset.m) : null; };
+  const texts = [...root.querySelectorAll('*')].filter((el) => own(el) && !el.closest('.chip') && eop(el) > 0.02);
+  return { t, chips: [...root.querySelectorAll('.chip')].map((c) => {
+    const b = c.getBoundingClientRect(), o = eop(c), area = Math.max(1, b.width * b.height);
+    const hits = o <= 0.02 ? [] : texts.map((el) => {
+      const r = el.getBoundingClientRect();
+      const w = Math.min(b.right, r.right) - Math.max(b.left, r.left), h = Math.min(b.bottom, r.bottom) - Math.max(b.top, r.top);
+      return (w > 0.5 && h > 0.5) ? { text: el.textContent.trim().slice(0, 30), fact: factOf(el), o: +eop(el).toFixed(3),
+                                      frac: +(w * h / Math.max(1, r.width * r.height)).toFixed(3) } : null;
+    }).filter(Boolean);
+    return { id: c.id, fact: c.dataset.fact, text: c.textContent.trim(), o: +o.toFixed(3), exempt: c.hasAttribute('data-layout-allow-overlap'),
+             box: [b.left, b.top, b.right, b.bottom].map((v) => +v.toFixed(1)), hits };
+  }) };
+}"""
+
+CHIP_SHOWN = 0.02  # a chip below this opacity is not on screen: an overlap there is a probe artefact, not a defect
+MAX_CHIP_SHOWN = 1.6  # seconds a flying value may be on screen (FLIGHT 0.75 + rest 0.35 + fade 0.2, with margin)
+
+
+def chip_overlap_problems(rows, max_shown=MAX_CHIP_SHOWN):
+    """A5 (DECISION-BRIEFS §5 row 10): the returned-value chip of a stack scene carries data-layout-allow-overlap, so
+    HyperFrames' layout audit never sees it. This owns that exemption, measured on frames. `rows`: [{t, chips: [{id,
+    fact, o, hits: [{text, fact, o, frac}]}]}] sampled through a scene. A chip may cover drawn text only while it is
+    on screen and moving (its box changes frame to frame) or resting on text that shows its own value (the slot it
+    lands in); it must be on screen no longer than max_shown and gone at the scene's end. Overlap of text another
+    fact owns while the chip is at rest, or any visible chip at the end, is a real overlap."""
+    rows = sorted(rows, key=lambda r: r["t"])
+    problems, shown = [], {}
+    boxes = {}
+    for r in rows:
+        for c in r["chips"]:
+            boxes.setdefault(c["id"], []).append((r["t"], c.get("box"), c["o"]))
+    for i, r in enumerate(rows):
+        for c in r["chips"]:
+            if c["o"] <= CHIP_SHOWN:
+                continue
+            shown.setdefault(c["id"], []).append(r["t"])
+            track = boxes[c["id"]]
+            k = next(j for j, (t, _b, _o) in enumerate(track) if t == r["t"])
+            moving = any(track[j][1] != c.get("box") for j in (k - 1, k + 1) if 0 <= j < len(track))
+            foreign = [h for h in c["hits"] if h["fact"] != c["fact"] and h["o"] > CHIP_SHOWN]
+            if foreign and not moving:
+                problems.append({"kind": "chip-covers-text-at-rest", "chip": c["id"], "at": r["t"],
+                                 "covers": [h["text"] for h in foreign][:5]})
+    for cid, ts in shown.items():
+        if ts[-1] - ts[0] > max_shown + 1e-6:
+            problems.append({"kind": "chip-shown-too-long", "chip": cid, "from": ts[0], "to": ts[-1], "max": max_shown})
+    if rows:
+        left = [c["id"] for c in rows[-1]["chips"] if c["o"] > CHIP_SHOWN]
+        if left:
+            problems.append({"kind": "chip-still-shown", "at": rows[-1]["t"], "chips": left})
+    return problems
+
+
+def chip_samples(video_dir, timing, lesson_sha=None, step=0.05):
+    """{scene_id: rows} for every scene whose composition draws a returned-value chip, sampled every `step` seconds."""
+    comp = video_dir / "composition"
+    with_chips = {f.stem for f in (comp / "compositions").glob("*.html") if 'class="chip"' in f.read_text()}
+    scenes = [s for s in timing["scenes"] if s["id"] in with_chips]
+    if not scenes:
+        return {}
+    hdir = video_dir / "work" / "frames-chips"
+    if hdir.exists():
+        shutil.rmtree(hdir)
+    pages = harness_pages(comp, hdir)
+    jobs = []
+    with visual.LocalServer(video_dir) as srv:
+        for sc in scenes:
+            ts = [round(i * step, 3) for i in range(int((sc["end"] - sc["start"]) / step))]
+            steps = [{"waitFor": "window.__timelines && Object.keys(window.__timelines).length > 0", "timeout": 20000}]
+            steps += [{"eval": f"({CHIPS_JS})({t})", "as": f"t:{t}"} for t in ts]
+            jobs.append({"id": f"chips:{sc['id']}", "type": "script", "url": f"{srv.url}/work/frames-chips/{pages[sc['id']]}",
+                         "width": 1920, "height": 1080, "steps": steps})
+        res = visual.shoot(jobs, video_dir / "work" / "frames-chips-run", lesson_sha)
+    out = {}
+    for r in res["results"]:
+        sid = r["id"].split(":", 1)[1]
+        out[sid] = {"ok": r.get("ok"), "error": r.get("error", "")[:300],
+                    "rows": sorted((r.get("values") or {}).values(), key=lambda v: v["t"])}
+    return out
+
+
 LAYOUT_JS = r"""() => {
   const W = 1920, H = 1080, problems = [];
   const root = document.querySelector('[data-composition-id]');
@@ -370,6 +458,7 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
         shutil.rmtree(snaps)
     _f, scenes = probe(lesson, video_dir, timing, [], snapshots=snaps, work_name="frames-layout", lesson_sha=lesson_sha)
     layers = layer_samples(video_dir, timing, lesson_sha)
+    chips = chip_samples(video_dir, timing, lesson_sha)
     bad, summary = {}, {}
     for s in timing["scenes"]:
         got = scenes.get(s["id"], {})
@@ -394,6 +483,10 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
             lay = layers[s["id"]]
             probs += ([] if lay["ok"] else [{"kind": "layer-probe-failed", "error": lay["error"]}])
             probs += layer_overlap_problems(lay["rows"]) if lay["rows"] else [{"kind": "layer-probe-empty"}]
+        if s["id"] in chips:
+            ch = chips[s["id"]]
+            probs += ([] if ch["ok"] else [{"kind": "chip-probe-failed", "error": ch["error"]}])
+            probs += chip_overlap_problems(ch["rows"]) if ch["rows"] else [{"kind": "chip-probe-empty"}]
         if (got.get("settled") or {}).get("state") != s["state"]:
             probs.append({"kind": "settled-state", "shows": (got.get("settled") or {}).get("state"), "scene_state": s["state"]})
         summary[s["id"]] = {n: {"state": (got.get(n) or {}).get("state"),
@@ -406,6 +499,7 @@ def scene_layout_gate(lesson, video_dir, timing, lesson_sha=None):
         bad["lesson"] = [{"kind": "states-indistinguishable", "groups": collide}]
     measured = {"scenes": summary, "problems": bad, "max_empty_bottom": MAX_EMPTY_BOTTOM, "set_collisions": collide,
                 "panel_layers": {sid: {"frames": len(v["rows"]), "max_crossfade_s": MAX_CROSSFADE} for sid, v in layers.items()},
+                "value_chips": {sid: {"frames": len(v["rows"]), "max_shown_s": MAX_CHIP_SHOWN} for sid, v in chips.items()},
                 "snapshots": sorted(f"video/work/snapshots/{p.name}" for p in snaps.glob("*.png"))}
     return visual.g("video.scene-layout", "video", not bad and len(scenes) == len(timing["scenes"]), measured,
                     "" if not bad else "scene snapshots fail the AC-5.6 layout or show no trace state")

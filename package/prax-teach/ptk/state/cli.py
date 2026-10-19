@@ -12,7 +12,8 @@ from typing import Any
 
 from .errors import ConsentRequired, PraxTeachError, ValidationError
 from .export import export_workspace
-from .io import HardlinkAccepted
+from . import sync
+from .io import HardlinkAccepted, read_only_access
 from .scheduler import due_items, move_due_date, review_item, set_review_status
 from .state import (
     DIMENSIONS,
@@ -81,6 +82,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--consent",
         action="store_true",
         help="confirm explicit consent for the printed scope and controls",
+    )
+    init.add_argument(
+        "--allow-google-drive",
+        action="store_true",
+        help="also allow learner state in a folder Google Drive for desktop backs up, after reading the notice "
+        "init prints (recorded with the consent)",
     )
     _add_timestamp(init)
 
@@ -335,22 +342,28 @@ def dispatch(args: argparse.Namespace) -> Any:
         return rebind_workspace(args.workspace, confirm=args.confirm)
     if args.command == "init":
         if not args.consent:
+            location = sync.detect(args.workspace)
             raise ConsentRequired(
                 "explicit consent is required before the learner workspace or any state file is created"
+                + (". " + sync.consent_notice(location) if location is not None else "")
             )
-        workspace, _ = initialize_workspace(
+        workspace, document = initialize_workspace(
             args.workspace,
             learner_id=args.learner_id,
             goal=args.goal,
             horizon_days=args.horizon_days,
             granted_at=args.timestamp or _now(),
+            allow_synced_location=args.allow_google_drive,
         )
-        return {
+        result = {
             "consent_controls": ["inspect", "correct", "export", "delete"],
             "consent_scope": ["goal", "practice_evidence", "reviews"],
             "status": "initialized",
             "workspace": str(workspace),
         }
+        if "synced_location" in document["consent"]:
+            result["synced_location"] = document["consent"]["synced_location"]
+        return result
     if args.command.startswith("continuity-"):
         from .continuity import (
             grant_continuity,
@@ -548,6 +561,29 @@ def dispatch(args: argparse.Namespace) -> Any:
     raise ValidationError(f"unsupported command: {args.command}")
 
 
+def _read_only(args: argparse.Namespace) -> bool:
+    """D23.3 (AC-11.4): commands that only read the workspace; they write nothing without active consent."""
+
+    if args.command in {"show", "due", "export", "continuity-show", "continuity-resume"}:
+        return True
+    if args.command == "delete":
+        return not args.confirm
+    if args.command == "rebind":
+        return not args.confirm
+    return False
+
+
+def _run(args: argparse.Namespace) -> Any:
+    if _read_only(args):
+        with read_only_access(args.workspace):
+            result = dispatch(args)
+    else:
+        result = dispatch(args)
+    if isinstance(result, dict) and result.get("warning") and args.command == "delete":
+        print(f"warning: {result['warning']}", file=sys.stderr)
+    return result
+
+
 def _format_link_warning(message, category, filename, lineno, line=None):
     """One plain stderr line per accepted hard link (see io.link_problem); other warnings keep Python's format."""
     if issubclass(category, HardlinkAccepted):
@@ -563,7 +599,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     try:
         args = parser.parse_args(argv)
-        _emit(dispatch(args))
+        _emit(_run(args))
         return 0
     except PraxTeachError as exc:
         print(f"error: {exc}", file=sys.stderr)
