@@ -183,3 +183,19 @@ def test_refine_stretch_needs_a_silence_holding_the_token_end():
     assert media.refine(inner, starts=[59.34, 60.28], ends=[59.5, 61.05])[1] == 60.28
     assert media.refine(inner, starts=[59.34, 61.2], ends=[59.5, 61.6])[1] == 61.2, "no silence holds 61.0"
     return {"counterexample_offset": 4.05}
+
+
+def test_whisper_word_never_ends_after_the_audio():
+    """B5, measured on the factorial film: whisper.cpp gave the last token of the last 30 s window the window's end
+    (112.2 s) as its end, 3.5 s past the end of the audio (108.67 s), so no silence could hold it and the sync gate
+    put the speech end at 112.2 against a cue that ends at 107.07. A word cannot end after the audio does: the end is
+    clamped to the audio's duration, and the trailing silence then holds the stretched token as usual."""
+    words = [{"text": "frame", "start": 106.26, "end": 110.5}, {"text": "above.", "start": 106.72, "end": 112.2}]
+    starts, ends = [104.771875, 107.0225], [105.12025, 108.666688]
+    clamped = media.clamp_to_audio(words, 108.666688)
+    assert [w["end"] for w in clamped] == [108.667, 108.667] and [w["start"] for w in clamped] == [106.26, 106.72]
+    assert media.refine(words, starts, ends)[1] == 112.2, "unclamped, the end lands past the audio"
+    assert media.refine(clamped, starts, ends)[1] == 107.022
+    # a token inside the audio is untouched
+    assert media.clamp_to_audio([{"text": "a", "start": 1.0, "end": 1.4}], 5.0) == [{"text": "a", "start": 1.0, "end": 1.4}]
+    return clamped
