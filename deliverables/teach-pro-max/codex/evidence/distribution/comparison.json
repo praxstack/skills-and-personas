@@ -1,0 +1,142 @@
+{
+  "before_status": "failed",
+  "after_status": "failed",
+  "release_manifest_sha256": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72",
+  "release_file_count": 275,
+  "release_unchanged": true,
+  "verification_script_sha256": "acf53a9345c127012bec3d7460c4dbe11b6513c18e708665611025154fcb2f87",
+  "locks_unchanged": true,
+  "full_reruns_after_provision": 1,
+  "gates": [
+    {
+      "name": "python-tests",
+      "before": "failed",
+      "after": "failed",
+      "exit_code": 1,
+      "output_tail": [
+        "    with Popen(*popenargs, **kwargs) as process:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py\", line 1026, in __init__",
+        "    self._execute_child(args, executable, preexec_fn, close_fds,",
+        "  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py\", line 1955, in _execute_child",
+        "    raise child_exception_type(errno_num, err_msg, err_filename)",
+        "FileNotFoundError: [Errno 2] No such file or directory: '/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2/.venv/bin/python'",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 238 tests in 103.324s",
+        "",
+        "FAILED (errors=42)"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "node-tests",
+      "before": "failed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "  duration_ms: 235.160417",
+        "  type: 'test'",
+        "  ...",
+        "1..20",
+        "# tests 20",
+        "# suites 0",
+        "# pass 20",
+        "# fail 0",
+        "# cancelled 0",
+        "# skipped 0",
+        "# todo 0",
+        "# duration_ms 6194.852209"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "visual-registry-tests",
+      "before": "passed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "test_ids_are_unique (__main__.VisualizationRegistryTests.test_ids_are_unique) ... ok",
+        "test_official_resources_use_http (__main__.VisualizationRegistryTests.test_official_resources_use_http) ... ok",
+        "test_query_probes_relative_skill_paths_at_runtime (__main__.VisualizationRegistryTests.test_query_probes_relative_skill_paths_at_runtime) ... ok",
+        "test_registry_is_portable_and_does_not_assert_installation (__main__.VisualizationRegistryTests.test_registry_is_portable_and_does_not_assert_installation) ... ok",
+        "test_retired_engine_remains_inspectable_by_exact_name (__main__.VisualizationRegistryTests.test_retired_engine_remains_inspectable_by_exact_name) ... ok",
+        "test_route_filter_only_returns_route (__main__.VisualizationRegistryTests.test_route_filter_only_returns_route) ... ok",
+        "test_visual_router_technologies_are_covered (__main__.VisualizationRegistryTests.test_visual_router_technologies_are_covered) ... ok",
+        "",
+        "----------------------------------------------------------------------",
+        "Ran 12 tests in 0.641s",
+        "",
+        "OK"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "visual-registry-count",
+      "before": "passed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "registry valid: 38 tools"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "html-exact-parity",
+      "before": "failed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "Checked 41 Markdown/HTML pair(s)"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "package-validator",
+      "before": "failed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "  \"mode\": \"full\",",
+        "  \"root\": \"/Users/prax/Developer/teach-general-20261019/skills/teach-pro-max/references/prax-teach-v2\",",
+        "  \"security\": {",
+        "    \"dangerous_tags\": 4,",
+        "    \"duplicate_ids\": 0,",
+        "    \"event_attributes\": 0,",
+        "    \"external_assets\": 0,",
+        "    \"missing_image_alt\": 0,",
+        "    \"unsafe_urls\": 0",
+        "  },",
+        "  \"status\": \"passed\"",
+        "}"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "python-lint",
+      "before": "passed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "All checks passed!"
+      ],
+      "policy_failures": []
+    },
+    {
+      "name": "python-format",
+      "before": "passed",
+      "after": "passed",
+      "exit_code": 0,
+      "output_tail": [
+        "58 files already formatted"
+      ],
+      "policy_failures": []
+    }
+  ],
+  "evidence_sha256": {
+    "before-full.json": "b3fd35fc0aae20cf55e324c69b7df5d5f6a0bbbdb94ae68480cdd8deff27ddf5",
+    "before-full.log": "b3fd35fc0aae20cf55e324c69b7df5d5f6a0bbbdb94ae68480cdd8deff27ddf5",
+    "after-full.json": "50555b1d97388a59dffb6e526305dda6515a0533248c6a38af7980788b929901",
+    "after-full.log": "50555b1d97388a59dffb6e526305dda6515a0533248c6a38af7980788b929901"
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "id": "base-rates-v3",
+  "title": "A flag is not a verdict.",
+  "subtitle": "Count the flagged group before deciding how much a positive signal means.",
+  "subject": "Mathematics · conditional probability",
+  "limits": [
+    "This is a hypothetical factory with exactly specified frequencies, not measured performance or a medical test. Boxes label groups and are not area-scaled; the final coloured bar is proportional to the flagged counts. Detector rates are conditional on item status."
+  ],
+  "level": "frequencies → Bayes' rule",
+  "lang": "en",
+  "hook": "<p>A factory flags items for inspection. A good detector can still flag many sound items when defects are rare.</p>",
+  "params": {
+    "base": {
+      "label": "Defective items in the batch",
+      "value": 1,
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    "hit": {
+      "label": "Flag rate among defective items",
+      "value": 90,
+      "min": 50,
+      "max": 100,
+      "step": 1
+    },
+    "falseRate": {
+      "label": "Flag rate among sound items",
+      "value": 5,
+      "min": 0,
+      "max": 20,
+      "step": 1
+    }
+  },
+  "sources": [
+    {
+      "title": "OpenStax · Conditional probability",
+      "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-1-terminology",
+      "locator": "Conditional probability uses the conditioning event as its denominator."
+    },
+    {
+      "title": "OpenStax · Tree and Venn diagrams",
+      "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-5-tree-and-venn-diagrams",
+      "locator": "Represent branches and joint events without reversing the conditional."
+    }
+  ],
+  "misconceptions": [],
+  "deeper": [],
+  "code": null,
+  "steps": [
+    {
+      "index": 0,
+      "id": "population",
+      "title": "Begin with the whole batch",
+      "say": "<p>Our hypothetical batch contains 10,000 items. At a 1% defect rate, 100 are defective and 9,900 are sound. Those groups are the starting denominators for the detector's rates.</p>",
+      "sayText": "Our hypothetical batch contains 10,000 items. At a 1% defect rate, 100 are defective and 9,900 are sound. Those groups are the starting denominators for the detector's rates.",
+      "lookFor": "",
+      "note": "A rare condition starts with a small group.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "number",
+        "q": "With 1% defective in this 10,000-item example, how many are defective?",
+        "why": "One percent of 10,000 is 100. The other 9,900 are sound.",
+        "model": "",
+        "points": [],
+        "answerText": "100"
+      },
+      "figureWidth": 960,
+      "figureHeight": 530,
+      "figureLabel": "Of 10000 items, 100 are defective and 9900 sound. The detector flags 90 defective and 495 sound items, giving 585 flags. 15.4 percent of flagged items are defective.",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "Flagged items",
+          "585"
+        ],
+        [
+          "Actually defective among flags",
+          "15.4%"
+        ]
+      ],
+      "answerText": "100",
+      "narrowFigure": "figures/step-1-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 690
+    },
+    {
+      "index": 1,
+      "id": "branches",
+      "title": "Apply each rate to its own group",
+      "say": "<p>A 90% hit rate flags 90 of the 100 defective items. A 5% false-flag rate flags 495 of the 9,900 sound items. The smaller percentage acts on the much bigger population.</p>",
+      "sayText": "A 90% hit rate flags 90 of the 100 defective items. A 5% false-flag rate flags 495 of the 9,900 sound items. The smaller percentage acts on the much bigger population.",
+      "lookFor": "",
+      "note": "Compare counts after multiplying, not percentages alone.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "In the stated 1%, 90%, 5% example, which produces more flags?",
+        "why": "Five percent of 9,900 is 495. Ninety percent of 100 is only 90.",
+        "model": "",
+        "points": [],
+        "answerText": "Sound items: 495"
+      },
+      "figureWidth": 960,
+      "figureHeight": 530,
+      "figureLabel": "Of 10000 items, 100 are defective and 9900 sound. The detector flags 90 defective and 495 sound items, giving 585 flags. 15.4 percent of flagged items are defective.",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "Flagged items",
+          "585"
+        ],
+        [
+          "Actually defective among flags",
+          "15.4%"
+        ]
+      ],
+      "answerText": "Sound items: 495",
+      "narrowFigure": "figures/step-2-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 690
+    },
+    {
+      "index": 2,
+      "id": "conditional",
+      "title": "Now stand inside the flagged group",
+      "say": "<p>There are 585 flags: 90 true and 495 false. Among those flags, the defective fraction is 90 / 585, about 15.4%.</p><p>The detector's 90% hit rate answers a different question: how often it flags an item already known to be defective.</p>",
+      "sayText": "There are 585 flags: 90 true and 495 false. Among those flags, the defective fraction is 90 / 585, about 15.4%.The detector's 90% hit rate answers a different question: how often it flags an item already known to be defective.",
+      "lookFor": "",
+      "note": "P(defective | flagged) is not P(flagged | defective).",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "Which denominator belongs to 'defective among flagged items'?",
+        "why": "Conditioning on a flag restricts the group to all flagged items, including false flags.",
+        "model": "",
+        "points": [],
+        "answerText": "All 585 flagged items"
+      },
+      "figureWidth": 960,
+      "figureHeight": 530,
+      "figureLabel": "Of 10000 items, 100 are defective and 9900 sound. The detector flags 90 defective and 495 sound items, giving 585 flags. 15.4 percent of flagged items are defective.",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "Flagged items",
+          "585"
+        ],
+        [
+          "Actually defective among flags",
+          "15.4%"
+        ]
+      ],
+      "answerText": "All 585 flagged items",
+      "narrowFigure": "figures/step-3-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 690
+    },
+    {
+      "index": 3,
+      "id": "limits",
+      "title": "Change the base rate, then the false flags",
+      "say": "<p>With the illustrated positive false-flag rate, keep detector rates fixed and raise the defect rate: the flagged group contains a larger defective share. If the false-flag rate is already zero, that share is already 100% and cannot increase. Now set false flags to zero. Every flagged item is defective in this model, but some defective items can still be missed when the hit rate is below 100%.</p>",
+      "sayText": "With the illustrated positive false-flag rate, keep detector rates fixed and raise the defect rate: the flagged group contains a larger defective share. If the false-flag rate is already zero, that share is already 100% and cannot increase. Now set false flags to zero. Every flagged item is defective in this model, but some defective items can still be missed when the hit rate is below 100%.",
+      "lookFor": "",
+      "note": "Base rates and both detector rates matter.",
+      "sources": [],
+      "alts": [
+        {
+          "label": "Use a fresh batch",
+          "say": "Imagine 100 defective items and 9,900 sound ones as two separate trays. Count flags in each tray before mixing the flagged items into a third tray.",
+          "set": {}
+        }
+      ],
+      "ask": {
+        "kind": "explain",
+        "q": "Why can a strong hit rate coexist with a low defective share among flags?",
+        "why": "",
+        "model": "Defects can be rare. A small false-flag rate on a large sound population can produce more flags than a large hit rate on a small defective population.",
+        "points": [
+          "Apply rates to their own groups",
+          "Include false flags in the denominator",
+          "Keep the two conditional directions separate"
+        ],
+        "answerText": ""
+      },
+      "figureWidth": 960,
+      "figureHeight": 530,
+      "figureLabel": "Of 10000 items, 1000 are defective and 9000 sound. The detector flags 900 defective and 450 sound items, giving 1350 flags. 66.7 percent of flagged items are defective.",
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5
+      },
+      "state": {
+        "total": 10000,
+        "defective": 1000,
+        "sound": 9000,
+        "trueFlags": 900,
+        "falseFlags": 450,
+        "flagged": 1350,
+        "missed": 100,
+        "precision": 0.6666666666666666
+      },
+      "readouts": [
+        [
+          "Flagged items",
+          "1,350"
+        ],
+        [
+          "Actually defective among flags",
+          "66.7%"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-4-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 690
+    }
+  ],
+  "video": {
+    "scenes": [
+      {
+        "chapter": "The batch",
+        "say": "Imagine 10000 items, with 1% defective. That is 100 defective items and 9900 sound ones.",
+        "start": 0.4,
+        "dur": 10.767,
+        "voiceAt": 1.1,
+        "voiceDur": 9.167,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5
+        },
+        "step": 0
+      },
+      {
+        "chapter": "Two kinds of flags",
+        "say": "A 90% hit rate gives 90 true flags. A 5% false flag rate on the much larger sound group gives 495 false flags.",
+        "start": 11.167,
+        "dur": 11.832916666666666,
+        "voiceAt": 11.866999999999999,
+        "voiceDur": 10.232916666666666,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5
+        },
+        "step": 0
+      },
+      {
+        "chapter": "The new denominator",
+        "say": "Now look only at the flagged group. 90 out of 585 are defective, about 15.4%. This is not the 90% hit rate.",
+        "start": 22.999916666666664,
+        "dur": 11.816875,
+        "voiceAt": 23.699916666666663,
+        "voiceDur": 10.216875,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5
+        },
+        "step": 0
+      },
+      {
+        "chapter": "Change the population",
+        "say": "At this positive false flag rate, raise the defect rate while keeping the detector fixed. More of the flagged group is now truly defective. With zero false flags, the share is already 100%.",
+        "start": 34.81679166666666,
+        "dur": 14.953708333333333,
+        "voiceAt": 35.51679166666666,
+        "voiceDur": 13.353708333333334,
+        "params": {
+          "base": 10,
+          "hit": 90,
+          "falseRate": 5
+        },
+        "step": 3
+      },
+      {
+        "chapter": "An edge case",
+        "say": "With no false flags, every flagged item is defective in this model. That still does not mean every defective item was found. Hit rate and the share among flags answer different questions.",
+        "start": 49.77049999999999,
+        "dur": 13.500916666666667,
+        "voiceAt": 50.470499999999994,
+        "voiceDur": 11.900916666666667,
+        "params": {
+          "base": 10,
+          "hit": 90,
+          "falseRate": 0
+        },
+        "step": 0
+      }
+    ],
+    "total": 64.07141666666666,
+    "captions": "WEBVTT\n\n1\n00:00:01.100 --> 00:00:11.167\nImagine 10000 items, with 1% defective. That is 100 defective items and 9900 sound ones.\n\n2\n00:00:11.867 --> 00:00:23.000\nA 90% hit rate gives 90 true flags. A 5% false flag rate on the much larger sound group gives 495 false flags.\n\n3\n00:00:23.700 --> 00:00:34.817\nNow look only at the flagged group. 90 out of 585 are defective, about 15.4%. This is not the 90% hit rate.\n\n4\n00:00:35.517 --> 00:00:49.770\nAt this positive false flag rate, raise the defect rate while keeping the detector fixed. More of the flagged group is now truly defective. With zero false flags, the share is already 100%.\n\n5\n00:00:50.470 --> 00:01:03.271\nWith no false flags, every flagged item is defective in this model. That still does not mean every defective item was found. Hit rate and the share among flags answer different questions.\n"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "npm_ci": {
+    "root": {
+      "added": 18,
+      "exit_code": 0
+    },
+    "integrations/flint": {
+      "added": 183,
+      "exit_code": 0
+    },
+    "flags": [
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "cache": "/private/tmp/prax-teach-v3-runtime/general-npm-cache"
+  },
+  "python": {
+    "environment": "/private/tmp/prax-teach-v3-runtime/venvs/distribution",
+    "interpreter": "3.12.15",
+    "sync": "uv sync --frozen --python /opt/homebrew/opt/python@3.12/bin/python3.12",
+    "fsrs": "6.3.1",
+    "typing-extensions": "4.16.0"
+  },
+  "node": "22.23.3",
+  "npm": "10.9.9",
+  "installed_direct_dependencies": {
+    "entities": "8.0.0",
+    "marked": "18.0.7",
+    "sanitize-html": "2.17.6",
+    "integrations/flint/flint-chart": "0.4.1",
+    "integrations/flint/flint-chart-mcp": "0.4.1"
+  },
+  "lock_hashes": {
+    "package-lock.json": "84760d79ac193dea8247f2186f162a418320ab5368bc824f46937526e745c526",
+    "integrations/flint/package-lock.json": "8605e8bff36e1b6bf39f8dc349ad9d11a3d719d4c1f49ecab2a29aed3d2a1d8f",
+    "uv.lock": "3fc286bdf2c465d888df898f578f95a6a030d4d639073094c0ba366e2ce7535d",
+    "integrations/skillopt/SOURCE.json": "2a2d8e0d7add0d1667de04b6f795c8c9ab18832a78e880b91f6543b1049fb456"
+  }
+}

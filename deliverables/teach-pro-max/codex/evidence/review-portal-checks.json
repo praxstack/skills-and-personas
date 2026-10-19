@@ -1,0 +1,23 @@
+{
+  "checks": [
+    {
+      "width": 1440,
+      "overflow": false,
+      "images_loaded": true,
+      "links": 37,
+      "missing": [],
+      "errors": [],
+      "passed": true
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "images_loaded": true,
+      "links": 37,
+      "missing": [],
+      "errors": [],
+      "passed": true
+    }
+  ],
+  "passed": true
+}

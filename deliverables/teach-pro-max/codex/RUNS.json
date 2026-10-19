@@ -1,0 +1,81 @@
+{
+  "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "release_ready": false,
+  "installed": false,
+  "governing_version": "general-v3.1-20261019",
+  "candidate_cap": 8,
+  "completed_candidates": 4,
+  "candidates": [
+    {
+      "commit": "ac6b65f4fa0dfb3bd643c78a1b2041190046baa7",
+      "routing": {
+        "passed": 23,
+        "total": 24
+      },
+      "e2e": {
+        "passed": 43,
+        "total": 56
+      },
+      "report": "evidence/private-evaluation/candidate1-redacted-report.json"
+    },
+    {
+      "commit": "3810ea4ac9ca882e0476d9de6a062dac5527c2d3",
+      "routing": {
+        "passed": 23,
+        "total": 24
+      },
+      "e2e": {
+        "passed": 46,
+        "total": 56
+      },
+      "report": "evidence/private-evaluation/candidate2-redacted-report.json"
+    },
+    {
+      "commit": "fa2fa358743e8fe3f9ce723df6bb9b215642315c",
+      "routing": {
+        "passed": 24,
+        "total": 24
+      },
+      "e2e": {
+        "passed": 50,
+        "total": 56
+      },
+      "report": "evidence/private-evaluation/candidate3-redacted-report.json"
+    },
+    {
+      "commit": "0d20ff7722910d12256240af0897070255cfc4f3",
+      "routing": {
+        "passed": 24,
+        "total": 24
+      },
+      "e2e": {
+        "passed": 52,
+        "total": 56
+      },
+      "report": "evidence/private-evaluation/candidate4-redacted-report.json"
+    }
+  ],
+  "baseline_routing": {
+    "passed": 23,
+    "total": 24
+  },
+  "baseline_e2e": "NOT_RUN; 56 criteria, no comparative improvement claim",
+  "valid_controls": {
+    "accepted": 8,
+    "total": 8
+  },
+  "invalid_controls": {
+    "intended_error_identified": 8,
+    "total": 8
+  },
+  "remaining_critical": [
+    "E03-MEDIA",
+    "E04-MEDIA",
+    "E07-MEDIA",
+    "E08-MEDIA"
+  ],
+  "remaining_reason": "Actual human listening NOT_RUN; automated loudness, speech alignment and stream checks do not replace it.",
+  "optional_c_product": "4a834ac",
+  "optional_c_accepted": false,
+  "frozen_gates_changed_during_candidates": false
+}

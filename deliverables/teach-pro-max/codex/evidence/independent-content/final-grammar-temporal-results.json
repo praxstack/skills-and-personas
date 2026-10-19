@@ -1,0 +1,72 @@
+{
+  "video": "deliverables/teach-pro-max/codex/lessons/voice-and-focus/lesson.mp4",
+  "sha256": "ec3905cd8e07545327af5f8678961698993179f857966fff61c03f1921714944",
+  "bundle_video_sha256": "ec3905cd8e07545327af5f8678961698993179f857966fff61c03f1921714944",
+  "timing": {
+    "scenes": [
+      {
+        "start": 0.4,
+        "dur": 8.55225,
+        "voiceAt": 1.1,
+        "voiceDur": 6.95225
+      },
+      {
+        "start": 8.952250000000001,
+        "dur": 12.038625,
+        "voiceAt": 9.65225,
+        "voiceDur": 10.438625
+      },
+      {
+        "start": 20.990875000000003,
+        "dur": 11.09925,
+        "voiceAt": 21.690875000000002,
+        "voiceDur": 9.49925
+      },
+      {
+        "start": 32.090125,
+        "dur": 12.666625,
+        "voiceAt": 32.790125,
+        "voiceDur": 11.066625
+      },
+      {
+        "start": 44.75675,
+        "dur": 12.020166666666666,
+        "voiceAt": 45.45675,
+        "voiceDur": 10.420166666666667
+      }
+    ],
+    "total": 57.57691666666666
+  },
+  "frames": [
+    {
+      "scene": 1,
+      "at": 1.3,
+      "file": "final-voice-and-focus-scene-1-1.300.png",
+      "sha256": "e5a58a7605980489640b699305b184ec0a7173a685140367cc04b80e73299954"
+    },
+    {
+      "scene": 2,
+      "at": 9.85225,
+      "file": "final-voice-and-focus-scene-2-9.852.png",
+      "sha256": "09fa3d5c0924bfa35e4701e53bfd70753a7471a30b23a46e807f70ebfc6730e9"
+    },
+    {
+      "scene": 3,
+      "at": 21.890875,
+      "file": "final-voice-and-focus-scene-3-21.891.png",
+      "sha256": "0b84929d9f88984acd749a541b94b66a84f3776a173ec68b40fd40326f286430"
+    },
+    {
+      "scene": 4,
+      "at": 32.990125000000006,
+      "file": "final-voice-and-focus-scene-4-32.990.png",
+      "sha256": "ceda30a4db854a5c78d747ca23e5376c47fdd3162ad5fa40494d1dd0d92acb2f"
+    },
+    {
+      "scene": 5,
+      "at": 45.65675,
+      "file": "final-voice-and-focus-scene-5-45.657.png",
+      "sha256": "9cc83e7dc15bb44b0864ff781f3e4355b419642dd5dfb9570331256422aba6d8"
+    }
+  ]
+}

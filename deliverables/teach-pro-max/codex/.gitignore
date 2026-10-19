@@ -1,0 +1,8 @@
+# Full rendered artifacts are preserved in the downloadable prerelease pack.
+# Keep source, receipts and reproduction code in Git, not duplicate media blobs.
+*.png
+*.svg
+*.mp4
+*.html
+!/index.html
+/archive/*

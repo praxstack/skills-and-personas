@@ -1,0 +1,30 @@
+{
+  "source": "3810ea4",
+  "scope": "Audio-only remux; no change to the independently checked video frames or narration cue timing.",
+  "results": [
+    {
+      "lesson": "voice-and-focus",
+      "same_video_bitstream": true,
+      "old_video_stream": "SHA256=13635b0ffbd6e5fb9ed68fef69166a55794ad90180641b1a9568f01c39692ab7",
+      "new_video_stream": "SHA256=13635b0ffbd6e5fb9ed68fef69166a55794ad90180641b1a9568f01c39692ab7",
+      "same_timing": true,
+      "current_mp4_sha256": "e120515fd5d0a722d19435785ae79507590c9943a93b1867eae5930eb88cd97e"
+    },
+    {
+      "lesson": "base-rates",
+      "same_video_bitstream": true,
+      "old_video_stream": "SHA256=61e60ebb8797dfaa018a65336799ccaf4f830e712eb81370b9b6ee622dee341d",
+      "new_video_stream": "SHA256=61e60ebb8797dfaa018a65336799ccaf4f830e712eb81370b9b6ee622dee341d",
+      "same_timing": true,
+      "current_mp4_sha256": "b213f9d764eab51532c3ed6f1ff650684fb83c050df97911ca3106fe1ed83164"
+    },
+    {
+      "lesson": "diffusion",
+      "same_video_bitstream": true,
+      "old_video_stream": "SHA256=b822b6635ebcfb0c5bcc3f23e78d9b641f4ed3760b163e36d4f02476a0aaf986",
+      "new_video_stream": "SHA256=b822b6635ebcfb0c5bcc3f23e78d9b641f4ed3760b163e36d4f02476a0aaf986",
+      "same_timing": true,
+      "current_mp4_sha256": "490d5c19195a43b1c037fb39aec1fb6e86b96187576c3281773a245fa6f6c49b"
+    }
+  ]
+}

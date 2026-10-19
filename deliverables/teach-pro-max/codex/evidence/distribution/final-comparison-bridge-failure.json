@@ -1,0 +1,83 @@
+{
+  "tracked_baseline": {
+    "status": "passed",
+    "root_manifest": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72",
+    "verifier": "acf53a9345c127012bec3d7460c4dbe11b6513c18e708665611025154fcb2f87"
+  },
+  "original_unprovisioned_status": "failed",
+  "after_external_venv_status": "failed",
+  "after_temporary_bridge_status": "failed",
+  "release_unchanged": true,
+  "lock_hashes_unchanged": true,
+  "release_manifest": "daacc74ff05f5ac54c6f285fff5f67198ad84a0915314153b2c3be674db4bd72",
+  "file_count": 275,
+  "full_reruns": [
+    {
+      "reason": "pinned dependency provisioning",
+      "receipt": "after-full.json"
+    },
+    {
+      "reason": "separately authorized fixed-path environment bridge",
+      "receipt": "final-full.json"
+    }
+  ],
+  "remaining_cause": {
+    "diagnosed": "review payload contains a directory symlink: .venv",
+    "source": "scripts/review_payload.py:126-130",
+    "bridge_diagnostic": "diagnostic-bridge-validator.json",
+    "bridge_absent_diagnostic": "post-rerun-diagnostic-validator.json"
+  },
+  "temporary_bridge_removed": true,
+  "runtime_target_preserved": true,
+  "final_gates": [
+    {
+      "name": "python-tests",
+      "status": "failed",
+      "exit_code": 1
+    },
+    {
+      "name": "node-tests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "visual-registry-tests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "visual-registry-count",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "html-exact-parity",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "package-validator",
+      "status": "failed",
+      "exit_code": 1
+    },
+    {
+      "name": "python-lint",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "python-format",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "sha256": {
+    "before-full.json": "b3fd35fc0aae20cf55e324c69b7df5d5f6a0bbbdb94ae68480cdd8deff27ddf5",
+    "after-full.json": "50555b1d97388a59dffb6e526305dda6515a0533248c6a38af7980788b929901",
+    "before-bridge-full.json": "50555b1d97388a59dffb6e526305dda6515a0533248c6a38af7980788b929901",
+    "final-full.json": "b0874e49de17c5b04f817c350cba3ebe698e9d426abbbd158f59232ee0ea173b",
+    "tracked-baseline-full.json": "febb8e56bf833b4a4e1aa42a3746a7280b586107635c274f75df3216887c37da",
+    "diagnostic-bridge-validator.json": "fda02681aed60e7c6f2fc998896d5473fce831f82ade546157f39f2acd2e1047",
+    "post-rerun-diagnostic-validator.json": "de2541b5dff7ebd360696ed368f27c91b51698f30bb33a45a69fba7ccacdc401"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "source_commit": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "source_sha256": {
+    "skills/teach-pro-max/SKILL.md": "c14299670afc208e88210a2e6f91bb592020f65f6a45cad8dbb5e90702036685",
+    "skills/teacher/SKILL.md": "3ac34e75072c1e18d82e395a7331807582eaa09319f47ba6534b60f879d83ed5",
+    "skills/teach-pro-max/references/PUBLIC-DISTRIBUTION.md": "9f5bba47603130d3a79779a8fa1484a79c90af8377354a50485aa769a8d3c90e",
+    "skills/teacher/skills/explorable/scripts/bundle_templates.mjs": "64e873c22fef0cac4ffa8c7c0c86e65b7e11d987d5b35c25fb86cc61be6df623"
+  },
+  "all_examined_files_match_commit": true,
+  "relative_markdown_links": [
+    {
+      "source": "skills/teach-pro-max/SKILL.md",
+      "target": "../teacher/SKILL.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teach-pro-max/SKILL.md",
+      "target": "./references/prax-teach-v2/SKILL.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teach-pro-max/SKILL.md",
+      "target": "./references/PUBLIC-DISTRIBUTION.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/HOSTS.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/STYLES.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/TEACHING-LOOP.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/MEDIUM-ROUTER.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/TOOL-DISCOVERY.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/ARTIFACT-EXPORTS.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/VOICE-AND-SOUND.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/DESIGN-INSPIRATION.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/VISUAL-QUALITY.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/SERIES.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/ORCHESTRATION.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/SUBJECTS.md",
+      "exists": true
+    },
+    {
+      "source": "skills/teacher/SKILL.md",
+      "target": "references/HOSTS.md",
+      "exists": true
+    }
+  ],
+  "teacher_command_paths": {
+    "skills/explorable/scripts/build.py": true,
+    "skills/explorable/scripts/narrate.py": true,
+    "skills/explorable/scripts/bundle_lesson.mjs": true
+  },
+  "retained_ambiguity": {
+    "source": "skills/teach-pro-max/SKILL.md:102",
+    "bare_path": "references/ARTIFACT-EXPORTS.md",
+    "wrapper_relative_exists": false,
+    "teacher_relative_exists": true,
+    "predates_reviewed_commit": true
+  }
+}

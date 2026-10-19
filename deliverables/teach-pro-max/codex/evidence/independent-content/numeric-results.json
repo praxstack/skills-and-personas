@@ -1,0 +1,217 @@
+{
+  "snapshot_sha256": {
+    "base-rates.lesson.js": "a85f2210139b8fe0a65a1cab057d92a50bae9aa023037ebe4091ea1707248e7e",
+    "diffusion.lesson.js": "33ab7e58e97310f3f901ab112a70f1fcc506cc70b779a7d2d1da0203e56deb11",
+    "voice-and-focus.lesson.js": "5ca21be31970afc7f9f0c57d61860bff27990c95c064f57a4b80ca9abd9c07c1"
+  },
+  "base_grid": 53550,
+  "base_max_posterior_abs_error": 0.0,
+  "diffusion_grid": 14091,
+  "diffusion_max_abs_error": 7.105427357601002e-15,
+  "dot_draw_calls": 28182,
+  "dot_conservation_failures": 0,
+  "voice_states": [
+    [
+      {
+        "example": 0,
+        "voice": 0,
+        "agent": 0
+      },
+      {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": false,
+        "label": "a repair",
+        "includeAgent": false,
+        "sentence": "Maya repaired the bicycle.",
+        "startsWith": "Maya",
+        "pattern": "doer + past-tense verb + object",
+        "information": "The doer is named."
+      }
+    ],
+    [
+      {
+        "example": 0,
+        "voice": 0,
+        "agent": 1
+      },
+      {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": false,
+        "label": "a repair",
+        "includeAgent": true,
+        "sentence": "Maya repaired the bicycle.",
+        "startsWith": "Maya",
+        "pattern": "doer + past-tense verb + object",
+        "information": "The doer is named."
+      }
+    ],
+    [
+      {
+        "example": 0,
+        "voice": 1,
+        "agent": 0
+      },
+      {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": true,
+        "label": "a repair",
+        "includeAgent": false,
+        "sentence": "The bicycle was repaired.",
+        "startsWith": "the bicycle",
+        "pattern": "affected thing + was + past participle",
+        "information": "Who did it is unstated."
+      }
+    ],
+    [
+      {
+        "example": 0,
+        "voice": 1,
+        "agent": 1
+      },
+      {
+        "agent": "Maya",
+        "action": "repaired",
+        "patient": "the bicycle",
+        "active": "Maya repaired the bicycle.",
+        "passive": true,
+        "label": "a repair",
+        "includeAgent": true,
+        "sentence": "The bicycle was repaired by Maya.",
+        "startsWith": "the bicycle",
+        "pattern": "affected thing + was + past participle",
+        "information": "The doer is named."
+      }
+    ],
+    [
+      {
+        "example": 1,
+        "voice": 0,
+        "agent": 0
+      },
+      {
+        "agent": "The team",
+        "action": "painted",
+        "patient": "the gate",
+        "active": "The team painted the gate.",
+        "passive": false,
+        "label": "a painting",
+        "includeAgent": false,
+        "sentence": "The team painted the gate.",
+        "startsWith": "The team",
+        "pattern": "doer + past-tense verb + object",
+        "information": "The doer is named."
+      }
+    ],
+    [
+      {
+        "example": 1,
+        "voice": 0,
+        "agent": 1
+      },
+      {
+        "agent": "The team",
+        "action": "painted",
+        "patient": "the gate",
+        "active": "The team painted the gate.",
+        "passive": false,
+        "label": "a painting",
+        "includeAgent": true,
+        "sentence": "The team painted the gate.",
+        "startsWith": "The team",
+        "pattern": "doer + past-tense verb + object",
+        "information": "The doer is named."
+      }
+    ],
+    [
+      {
+        "example": 1,
+        "voice": 1,
+        "agent": 0
+      },
+      {
+        "agent": "The team",
+        "action": "painted",
+        "patient": "the gate",
+        "active": "The team painted the gate.",
+        "passive": true,
+        "label": "a painting",
+        "includeAgent": false,
+        "sentence": "The gate was painted.",
+        "startsWith": "the gate",
+        "pattern": "affected thing + was + past participle",
+        "information": "Who did it is unstated."
+      }
+    ],
+    [
+      {
+        "example": 1,
+        "voice": 1,
+        "agent": 1
+      },
+      {
+        "agent": "The team",
+        "action": "painted",
+        "patient": "the gate",
+        "active": "The team painted the gate.",
+        "passive": true,
+        "label": "a painting",
+        "includeAgent": true,
+        "sentence": "The gate was painted by the team.",
+        "startsWith": "the gate",
+        "pattern": "affected thing + was + past participle",
+        "information": "The doer is named."
+      }
+    ]
+  ],
+  "counterexamples": {
+    "high_hit_low_posterior": {
+      "parameters": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5
+      },
+      "posterior_exact": "2/13",
+      "percent": 15.384615384615385,
+      "true_flags": 90,
+      "false_flags": 495
+    },
+    "zero_false_flags_strict_growth_exception": {
+      "base1_precision": 1,
+      "base50_precision": 1,
+      "hit": 90,
+      "falseRate": 0
+    },
+    "closed_barrier_no_relaxation": {
+      "initialLeft": 48,
+      "cross": 0,
+      "ticks": 20,
+      "left": 48,
+      "right": 12,
+      "net": 0
+    },
+    "balanced_open_barrier": {
+      "initialLeft": 30,
+      "cross": 0.2,
+      "ticks": 0,
+      "each_direction": 6,
+      "net": 0
+    },
+    "maximum_crossing_one_tick": {
+      "initialLeft": 60,
+      "cross": 0.5,
+      "ticks": 1,
+      "left": 30,
+      "right": 30
+    }
+  },
+  "mismatches": []
+}

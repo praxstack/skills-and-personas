@@ -1,0 +1,874 @@
+{
+  "passed": 170,
+  "failed": 3,
+  "checks": [
+    {
+      "id": "voice-and-focus:still:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:still:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:qa:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:cards:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:interactive-video:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:real-file-video-playable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:video-has-caption-track",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:captions-readable-below-video",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:native-overlay-off-by-default",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:caption-hide-works",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:caption-show-works",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:no-page-errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:explorer:no-js-complete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "voice-and-focus:static:no-js-complete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:still:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:qa:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:cards:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:interactive-video:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:real-file-video-playable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:video-has-caption-track",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:captions-readable-below-video",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:native-overlay-off-by-default",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:caption-hide-works",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:caption-show-works",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:no-page-errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:explorer:no-js-complete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "base-rates:static:no-js-complete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:1440:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:1440:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:1440:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:1440:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:390:light:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:390:light:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:still:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:qa:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:cards:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:interactive-video:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:390:dark:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:390:dark:has-explanation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:real-file-video-playable",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:video-has-caption-track",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:captions-readable-below-video",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:native-overlay-off-by-default",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:caption-hide-works",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:caption-show-works",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:no-page-errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:explorer:no-js-complete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "diffusion:static:no-js-complete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "portal:1440:no-overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "portal:390:no-overflow",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "limitations": [
+    "Checks content presence, responsive overflow, media playback and static availability. Does not certify factual correctness, aesthetics or human voice quality."
+  ]
+}

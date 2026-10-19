@@ -1,0 +1,96 @@
+{
+  "reviewer": "/root/c_adapter_map",
+  "independent": true,
+  "reference": {
+    "archive": "archive/teach-pro-max-evolution-20261019/neuron-atlas-production.tar.gz",
+    "viewed": [
+      "demo/exports/baseline.png",
+      "demo/exports/baseline-portrait.png",
+      "demo/index.html at 1440/390 with one range edit"
+    ],
+    "reference_looks": 9,
+    "reference_explanation": 9
+  },
+  "ratings": [
+    {
+      "lesson": "voice-and-focus",
+      "medium": "still",
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true
+    },
+    {
+      "lesson": "voice-and-focus",
+      "medium": "explorer",
+      "looks": 7,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": false
+    },
+    {
+      "lesson": "base-rates",
+      "medium": "still",
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true
+    },
+    {
+      "lesson": "base-rates",
+      "medium": "explorer",
+      "looks": 7,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": false
+    },
+    {
+      "lesson": "diffusion",
+      "medium": "still",
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true
+    },
+    {
+      "lesson": "diffusion",
+      "medium": "explorer",
+      "looks": 7,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": false
+    },
+    {
+      "lesson": "base-rates",
+      "medium": "sampled_final_video_frames",
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true,
+      "limitation": "Sampled frames only; no full playback/prosody certification."
+    },
+    {
+      "lesson": "diffusion",
+      "medium": "sampled_final_video_frames",
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true,
+      "limitation": "Sampled frames only; no full playback/prosody certification."
+    },
+    {
+      "lesson": "voice-and-focus",
+      "medium": "sampled_final_video_frames",
+      "looks": 8,
+      "explanation": 8,
+      "target_each": 8,
+      "meets_target": true,
+      "limitation": "Five scene voiceAt + 0.2 s frames only; no full playback/prosody certification."
+    }
+  ],
+  "basis": "Single-reviewer ordinal judgment, not a population study or user aesthetic approval. Mechanism clarity and actual presentation compared side by side; targets unchanged.",
+  "reference_images_sha256": {
+    "atlas-baseline.png": "8604bf510a2056525c4c57d5f9af57774405f9df8a4a6e3908b6fb27f22de3d3",
+    "atlas-baseline-portrait.png": "b51275b72f9039f5cf8f45e25119b6cea8bb199d43923561448d1d0c88e31687"
+  }
+}

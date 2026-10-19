@@ -1,0 +1,32 @@
+{
+  "schema": "explorable-bundle/v1",
+  "title": "Two-way motion. One-way net flow.",
+  "input": "explorer.html",
+  "sourceSha256": "95baf7d45a62c776fcf637fd2592b87885290cebeec1cc2c610b4192717caf14",
+  "steps": 4,
+  "still": {
+    "step": 1,
+    "width": 1440,
+    "height": 900,
+    "editable": true
+  },
+  "video": {
+    "scenes": 5,
+    "total": 72.39795833333334
+  },
+  "formats": [
+    "explorer.html",
+    "still.svg",
+    "still.png",
+    "still.html",
+    "static.html",
+    "qa.html",
+    "cards.html",
+    "cards.tsv",
+    "interactive-video.html",
+    "lesson.mp4",
+    "lesson.vtt",
+    "lesson.timing.json"
+  ],
+  "warnings": []
+}

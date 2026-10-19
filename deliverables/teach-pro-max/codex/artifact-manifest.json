@@ -1,0 +1,486 @@
+{
+  "product_source": "0d20ff7722910d12256240af0897070255cfc4f3",
+  "scope": "Public lesson and course artifacts only; receipt outside the content it hashes.",
+  "files": [
+    {
+      "path": "lessons/base-rates/bundle/bundle-manifest.json",
+      "bytes": 635,
+      "sha256": "42f6db8522c8690588c01c1922807dcafcf3d506c0034c5d9fb58a3cc31484c1"
+    },
+    {
+      "path": "lessons/base-rates/bundle/cards.html",
+      "bytes": 14841,
+      "sha256": "403eba8fde8282e4e72d4bbe5e14d7b20da77db49057965f7ce792fe58c88bb4"
+    },
+    {
+      "path": "lessons/base-rates/bundle/cards.tsv",
+      "bytes": 7146,
+      "sha256": "8878bf85c5a8ca8fe2ef0d4b94396b5e1db1898db3104558b32ab0cfc150fd3a"
+    },
+    {
+      "path": "lessons/base-rates/bundle/explorer.html",
+      "bytes": 321387,
+      "sha256": "e2e45d238105aac9b5a06bf4ac092a094d03c81befa09ee849181b5687867a09"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-1-narrow.svg",
+      "bytes": 167614,
+      "sha256": "0abbe5b02dca3fe6e4d09be610ec8b0706c435e5de4c315738714f1e9acc051d"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-1.svg",
+      "bytes": 167038,
+      "sha256": "dd759dcdf3ec5061c2434de0602474845b5f2924f053f19d32c5b3109cadd75b"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-2-narrow.svg",
+      "bytes": 167614,
+      "sha256": "0abbe5b02dca3fe6e4d09be610ec8b0706c435e5de4c315738714f1e9acc051d"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-2.svg",
+      "bytes": 167038,
+      "sha256": "dd759dcdf3ec5061c2434de0602474845b5f2924f053f19d32c5b3109cadd75b"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-3-narrow.svg",
+      "bytes": 167614,
+      "sha256": "0abbe5b02dca3fe6e4d09be610ec8b0706c435e5de4c315738714f1e9acc051d"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-3.svg",
+      "bytes": 167038,
+      "sha256": "dd759dcdf3ec5061c2434de0602474845b5f2924f053f19d32c5b3109cadd75b"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-4-narrow.svg",
+      "bytes": 167625,
+      "sha256": "8ced7bd63ec68f4e16630d174ea779b3cd8864f3525df998da8c22579ad3613c"
+    },
+    {
+      "path": "lessons/base-rates/bundle/figures/step-4.svg",
+      "bytes": 167047,
+      "sha256": "1c8f8152537cde681a410696569871e4559e9e757d564fc495aba255364b19d9"
+    },
+    {
+      "path": "lessons/base-rates/bundle/interactive-video.html",
+      "bytes": 15818,
+      "sha256": "593adad6517012eb14108f99a5c27b2413b529176038b430b5707b4046094bc5"
+    },
+    {
+      "path": "lessons/base-rates/bundle/lesson-data.json",
+      "bytes": 13273,
+      "sha256": "53f9dde77a81884fea61f3feed10f159c1c8ef571fa1ae45f4aaf539a0f6b55b"
+    },
+    {
+      "path": "lessons/base-rates/bundle/lesson.mp4",
+      "bytes": 2677064,
+      "sha256": "b213f9d764eab51532c3ed6f1ff650684fb83c050df97911ca3106fe1ed83164"
+    },
+    {
+      "path": "lessons/base-rates/bundle/lesson.timing.json",
+      "bytes": 557,
+      "sha256": "6fc59d160fac8250a5e29856dacd23b9d8b2fbca0bef47c31e9c778ffbd779ba"
+    },
+    {
+      "path": "lessons/base-rates/bundle/lesson.vtt",
+      "bytes": 858,
+      "sha256": "0d62c23372aec64ce5b151794b0c815484497780236a78009c0ce72842179bbe"
+    },
+    {
+      "path": "lessons/base-rates/bundle/poster-layout.json",
+      "bytes": 2013,
+      "sha256": "a518bc24ea66905a4434b06c840fff64add318965889a366295bb91c408f1fbc"
+    },
+    {
+      "path": "lessons/base-rates/bundle/qa.html",
+      "bytes": 17466,
+      "sha256": "8c56e0576b886cab9836a055ae8e9c7d6afa50bb241f842cc20e3302897d94d6"
+    },
+    {
+      "path": "lessons/base-rates/bundle/static.html",
+      "bytes": 15949,
+      "sha256": "0879286e8c9ba655d07000d61d8083f4b2408a4524578468ccd538d8feaf741d"
+    },
+    {
+      "path": "lessons/base-rates/bundle/still.html",
+      "bytes": 8440,
+      "sha256": "a0f69eaf6c5c582400db24e9fcde74eadd7f0bbb371885ea77d0e01cc672e09b"
+    },
+    {
+      "path": "lessons/base-rates/bundle/still.png",
+      "bytes": 118204,
+      "sha256": "224a7e5f53da38bdea9094f31a60fe3a7e8cae0b7a262798da5310015885384a"
+    },
+    {
+      "path": "lessons/base-rates/bundle/still.svg",
+      "bytes": 170079,
+      "sha256": "d8911da0f130a85e8901def675be22feae8bdc5b70868ffdf5f4d11a704df14c"
+    },
+    {
+      "path": "lessons/base-rates/explorer.html",
+      "bytes": 305353,
+      "sha256": "586e979adf4ae361dedbaca3d2325999846104a587a6f709ef44b9b23fe99810"
+    },
+    {
+      "path": "lessons/base-rates/lesson.mp4",
+      "bytes": 2677064,
+      "sha256": "b213f9d764eab51532c3ed6f1ff650684fb83c050df97911ca3106fe1ed83164"
+    },
+    {
+      "path": "lessons/base-rates/lesson.sheet.png",
+      "bytes": 760720,
+      "sha256": "745c00167f141a9f56d408dc735d472a3a501e34658222577ed3e70212ab86a3"
+    },
+    {
+      "path": "lessons/base-rates/lesson.timing.json",
+      "bytes": 557,
+      "sha256": "6fc59d160fac8250a5e29856dacd23b9d8b2fbca0bef47c31e9c778ffbd779ba"
+    },
+    {
+      "path": "lessons/base-rates/lesson.vtt",
+      "bytes": 858,
+      "sha256": "0d62c23372aec64ce5b151794b0c815484497780236a78009c0ce72842179bbe"
+    },
+    {
+      "path": "lessons/base-rates/source/lesson.lesson.js",
+      "bytes": 9289,
+      "sha256": "1d02787fdb5f8dcb948086b910d585039fda0d53e07bfb557f2988bcfa54947c"
+    },
+    {
+      "path": "lessons/base-rates/source/video-input-first.html",
+      "bytes": 303557,
+      "sha256": "06530925793199f50471f81d2210d3479be4c7489099bc05bfaab2d7f0327a68"
+    },
+    {
+      "path": "lessons/diffusion/bundle/bundle-manifest.json",
+      "bytes": 644,
+      "sha256": "21880c0e83fbf9d84f884b147b2a4985f2d546b2adeb444f29e19b16aecf0657"
+    },
+    {
+      "path": "lessons/diffusion/bundle/cards.html",
+      "bytes": 16153,
+      "sha256": "e9c2bf59ccf350aa97caab92b05aa4e49e42a0ddf451632117a996e89bfa24d2"
+    },
+    {
+      "path": "lessons/diffusion/bundle/cards.tsv",
+      "bytes": 8097,
+      "sha256": "5306b55ed8df5f9ee4a762da6138b8697d376d351c0af23f21ecb26276336378"
+    },
+    {
+      "path": "lessons/diffusion/bundle/explorer.html",
+      "bytes": 323672,
+      "sha256": "814defdbe8dc6125b9fa97fa8baadde9dbad3fc45547e951fb4e18da59b5a873"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-1-narrow.svg",
+      "bytes": 196657,
+      "sha256": "79665db5245080644eac6e2b9ca4e444b355b992b7f157bff013f586f9671f4f"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-1.svg",
+      "bytes": 197402,
+      "sha256": "b3b65e7d68bb3c2e2d771f5f861ac87a61971262138727faac5e86acee271512"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-2-narrow.svg",
+      "bytes": 196657,
+      "sha256": "79665db5245080644eac6e2b9ca4e444b355b992b7f157bff013f586f9671f4f"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-2.svg",
+      "bytes": 197402,
+      "sha256": "b3b65e7d68bb3c2e2d771f5f861ac87a61971262138727faac5e86acee271512"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-3-narrow.svg",
+      "bytes": 196683,
+      "sha256": "3d8ec483d66bb23289a1926a3ba63eca2fd717f5ed27669143a23b1f480cccff"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-3.svg",
+      "bytes": 197424,
+      "sha256": "d39f02239eef85ded131d82c8977913ed91328c055041ee1b1a43ea572947e22"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-4-narrow.svg",
+      "bytes": 196673,
+      "sha256": "6153be1935fde5e4a57efeae02f8c5cc5fc87062d1fb10b96f53b9cafccfc4a9"
+    },
+    {
+      "path": "lessons/diffusion/bundle/figures/step-4.svg",
+      "bytes": 197414,
+      "sha256": "e0c71ab6a94f6e56514d9d769ab0cee9dfcfa348c4d39826e7e25f0ed1f08c1b"
+    },
+    {
+      "path": "lessons/diffusion/bundle/interactive-video.html",
+      "bytes": 16772,
+      "sha256": "f2d864f0058af97a569e2697646d473f9e2c684c077fe31352cb8f5f45dbdf14"
+    },
+    {
+      "path": "lessons/diffusion/bundle/lesson-data.json",
+      "bytes": 14547,
+      "sha256": "596b9ba2224f04188184c1d048af75ff5d6be4a1d480130614fd9fa0dfec0352"
+    },
+    {
+      "path": "lessons/diffusion/bundle/lesson.mp4",
+      "bytes": 2978370,
+      "sha256": "490d5c19195a43b1c037fb39aec1fb6e86b96187576c3281773a245fa6f6c49b"
+    },
+    {
+      "path": "lessons/diffusion/bundle/lesson.timing.json",
+      "bytes": 542,
+      "sha256": "eb0d0857e1efa80d31316500e5bba8c4c39d25d9df5639d8b969497fe87272c7"
+    },
+    {
+      "path": "lessons/diffusion/bundle/lesson.vtt",
+      "bytes": 1126,
+      "sha256": "ee85a361e1c43a00c626d7c5e05acee92d28317d4b26c848c47f164c1e143a56"
+    },
+    {
+      "path": "lessons/diffusion/bundle/poster-layout.json",
+      "bytes": 2061,
+      "sha256": "82d88a9971ad6351bf68785a021bac350c6f7934bae121ceba669fcc0eb07781"
+    },
+    {
+      "path": "lessons/diffusion/bundle/qa.html",
+      "bytes": 19114,
+      "sha256": "3a7d0635da12be555e3325d148b07f198a8e600d10cbc7f50c03e975d2c2fe1c"
+    },
+    {
+      "path": "lessons/diffusion/bundle/static.html",
+      "bytes": 17318,
+      "sha256": "58f1801fa5ecde1c486af5ec35d4973aa5c966a79b31ed14afb4f23abb5e7dbd"
+    },
+    {
+      "path": "lessons/diffusion/bundle/still.html",
+      "bytes": 9017,
+      "sha256": "078d5d9240f26ac2c25c1b25fcb9bdb67d5df11ac09172b49a37fe841b8254fe"
+    },
+    {
+      "path": "lessons/diffusion/bundle/still.png",
+      "bytes": 125191,
+      "sha256": "58a04b4d060b6d54c49b5156007fc89776f251b7d8f51955a1e390ebd85e7fa9"
+    },
+    {
+      "path": "lessons/diffusion/bundle/still.svg",
+      "bytes": 200631,
+      "sha256": "c29fbe4ed75ede6e3f829194ce87083e9b4bea60d853fd151415dcfcbab45716"
+    },
+    {
+      "path": "lessons/diffusion/explorer.html",
+      "bytes": 306269,
+      "sha256": "95baf7d45a62c776fcf637fd2592b87885290cebeec1cc2c610b4192717caf14"
+    },
+    {
+      "path": "lessons/diffusion/lesson.mp4",
+      "bytes": 2978370,
+      "sha256": "490d5c19195a43b1c037fb39aec1fb6e86b96187576c3281773a245fa6f6c49b"
+    },
+    {
+      "path": "lessons/diffusion/lesson.sheet.png",
+      "bytes": 901920,
+      "sha256": "ec5ad63bd84882ebcaac863bafd7981cdb3f6c7eae4456ee7d33f0653596af58"
+    },
+    {
+      "path": "lessons/diffusion/lesson.timing.json",
+      "bytes": 542,
+      "sha256": "eb0d0857e1efa80d31316500e5bba8c4c39d25d9df5639d8b969497fe87272c7"
+    },
+    {
+      "path": "lessons/diffusion/lesson.vtt",
+      "bytes": 1126,
+      "sha256": "ee85a361e1c43a00c626d7c5e05acee92d28317d4b26c848c47f164c1e143a56"
+    },
+    {
+      "path": "lessons/diffusion/source/lesson.lesson.js",
+      "bytes": 10205,
+      "sha256": "557b86ebe5ec5ad8c4656e32a75bf3314ef1bb50013f878615042681bf0f631d"
+    },
+    {
+      "path": "lessons/diffusion/source/video-input-first.html",
+      "bytes": 304098,
+      "sha256": "307f91122c62f6f059ab8f9adc87971a8e2107370e4e5fb9600d534acac1cc18"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/bundle-manifest.json",
+      "bytes": 650,
+      "sha256": "c3048a42761387f2e82f5ec9682d5f0f71dae5303948c46ca835115245e71939"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/cards.html",
+      "bytes": 15305,
+      "sha256": "68e8ce8452dcb5a6fcebf93e290e82f385cd78716d88c98f7c54e77755726a93"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/cards.tsv",
+      "bytes": 7991,
+      "sha256": "1d9ba77ddc57a54df1983158d36902e24b25c2a116691ede7ec5314c98ed0870"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/explorer.html",
+      "bytes": 323416,
+      "sha256": "24e5afb892062f7efba67b2867f0e4d852fcdb6bd2a1d35a5cf992307f22afc5"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-1-narrow.svg",
+      "bytes": 161729,
+      "sha256": "18712080080c6bb9adfb7a8f64d9ebd798f3f8664f25f0464b284ea49725a1d2"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-1.svg",
+      "bytes": 161195,
+      "sha256": "859e4f47f4f6dfe87bb1014bc47b0e309faef4083b38ea0fd697c2685fa949aa"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-2-narrow.svg",
+      "bytes": 161738,
+      "sha256": "9060267e03ac02fd75750f6f08768d7c889a2e76800a8f8527c07e27589b8dbb"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-2.svg",
+      "bytes": 161204,
+      "sha256": "f17c0d52bd4b37a2057660db5e348807b147514060d865101902f587d1b5e0af"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-3-narrow.svg",
+      "bytes": 161743,
+      "sha256": "a9e8b89b8de74e8417b82b31ee1a165ee823e5f969dc4c5877b259f4a1edc789"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-3.svg",
+      "bytes": 161186,
+      "sha256": "d8154194d955ad3ce73ce31cc8048168707ce0d59c266eb69ba9701c0cf6ca2d"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-4-narrow.svg",
+      "bytes": 161741,
+      "sha256": "204c4d27351efd3f8a95a0049fb5612b04b60d6a1d58066032b981c2d3b13560"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/figures/step-4.svg",
+      "bytes": 161207,
+      "sha256": "4edf0e006eb8df3f1660ed0175609dd2b1a8a85aa1b40607a156564b2695bd44"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/interactive-video.html",
+      "bytes": 16100,
+      "sha256": "93c659daa15bb919eb1f6c3b9bc792af48d7c723cdbcb035453d92eacbc7865c"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/lesson-data.json",
+      "bytes": 14020,
+      "sha256": "60d801836b8c13365903dc549f6d54d2071b0d7e37e7c6a56658b89902eb74ff"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/lesson.mp4",
+      "bytes": 2427076,
+      "sha256": "e120515fd5d0a722d19435785ae79507590c9943a93b1867eae5930eb88cd97e"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/lesson.timing.json",
+      "bytes": 486,
+      "sha256": "4e32e415cf6d7c442623e7448c06b3c73cb692fe82826f537dc643877b913b9d"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/lesson.vtt",
+      "bytes": 910,
+      "sha256": "e25dd6db293bf6b37020efa4d27e72b0998a9e398354305a85409b7f1044b246"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/poster-layout.json",
+      "bytes": 1939,
+      "sha256": "8e3d82d151808cacc5f6021f77ba78effcf70b0cf32db9db90eac02c14984a43"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/qa.html",
+      "bytes": 18144,
+      "sha256": "d5458f3a7f91fc72c8b0c64b4d9de4313ea4ba617f385e6a81dcc465454db9c9"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/static.html",
+      "bytes": 16488,
+      "sha256": "ff69567f67dc2a1cbb0e1c2ab73adc74dbaf9369b0dea385ca0d82597016ced3"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/still.html",
+      "bytes": 8508,
+      "sha256": "bbe8bcb0da2fe7cff8cfb4918089c8bbf3b70a085d316f32d9c04a57f851fc46"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/still.png",
+      "bytes": 108284,
+      "sha256": "d2a26ae0c2b41a7ebc9aede4f8479f0c662cae0e529ac017c50e5537efcff9d4"
+    },
+    {
+      "path": "lessons/voice-and-focus/bundle/still.svg",
+      "bytes": 164588,
+      "sha256": "05ff9b3763e63dae3e38db260e0252e96f3e741c769af0c7d427c9daa5718394"
+    },
+    {
+      "path": "lessons/voice-and-focus/explorer.html",
+      "bytes": 306851,
+      "sha256": "0bfd6213617e0dead8a155cc2a2e79576b9a021e6057b2f290d54617007be793"
+    },
+    {
+      "path": "lessons/voice-and-focus/lesson.mp4",
+      "bytes": 2427076,
+      "sha256": "e120515fd5d0a722d19435785ae79507590c9943a93b1867eae5930eb88cd97e"
+    },
+    {
+      "path": "lessons/voice-and-focus/lesson.sheet.png",
+      "bytes": 666749,
+      "sha256": "dc530fb910b44246ade9c42198f5d27a4da28bff5ab5671cfb33bfc168571c0f"
+    },
+    {
+      "path": "lessons/voice-and-focus/lesson.timing.json",
+      "bytes": 486,
+      "sha256": "4e32e415cf6d7c442623e7448c06b3c73cb692fe82826f537dc643877b913b9d"
+    },
+    {
+      "path": "lessons/voice-and-focus/lesson.vtt",
+      "bytes": 910,
+      "sha256": "e25dd6db293bf6b37020efa4d27e72b0998a9e398354305a85409b7f1044b246"
+    },
+    {
+      "path": "lessons/voice-and-focus/source/lesson.lesson.js",
+      "bytes": 10779,
+      "sha256": "5ca21be31970afc7f9f0c57d61860bff27990c95c064f57a4b80ca9abd9c07c1"
+    },
+    {
+      "path": "lessons/voice-and-focus/source/video-input.html",
+      "bytes": 304979,
+      "sha256": "0176948aa92931dbd260c29c3eb3eb5d31a56e5606636266330280739505865d"
+    },
+    {
+      "path": "course/course.json",
+      "bytes": 794,
+      "sha256": "477a52335f37e5c15065a8e08034bcaa55c19f0127ac113ee8c5ebd20a57b8f9"
+    },
+    {
+      "path": "course/lessons/event-and-voice.lesson.js",
+      "bytes": 68,
+      "sha256": "de893dc081e39a24a4e03c64a18fd66a41edd4f17d2aac118b1362ad74fa4187"
+    },
+    {
+      "path": "course/lessons/unstated-agent.lesson.js",
+      "bytes": 2087,
+      "sha256": "216a7cb62b2f4fdaf5dc690dd35cee1dcc6f1dc954b86e7e729e4f86fa490fc4"
+    },
+    {
+      "path": "course/site/event-and-voice.html",
+      "bytes": 306819,
+      "sha256": "714b1e3e60410ea7882fc20d1506e9e7abe0ce8396dd5fbe69ee0bfb24708c5a"
+    },
+    {
+      "path": "course/site/index.html",
+      "bytes": 252571,
+      "sha256": "d58afd70393b4dca1940893c8ff3b983c8715c8c924ca86db30c7d9eabcae075"
+    },
+    {
+      "path": "course/site/unstated-agent.html",
+      "bytes": 308968,
+      "sha256": "c2af0df139b23ecae73421c3f9bf2522b8b30b90411098ce8a9ddccd2649556a"
+    }
+  ]
+}

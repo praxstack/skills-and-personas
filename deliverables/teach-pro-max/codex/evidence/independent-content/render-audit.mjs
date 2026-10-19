@@ -1,0 +1,10 @@
+import {createRequire} from 'node:module';import {writeFileSync,readFileSync,existsSync} from 'node:fs';import {pathToFileURL} from 'node:url';import {createHash} from 'node:crypto';
+const require=createRequire('/private/tmp/prax-teach-v3-runtime/tools/node/package.json');const {chromium}=require('playwright');const [lessonRoot,outRoot]=process.argv.slice(2);const browser=await chromium.launch();const rows=[];
+for(const slug of ['voice-and-focus','base-rates','diffusion'])for(const width of [1440,390]){
+ const source=`${lessonRoot}/${slug}/explorer.html`;if(!existsSync(source))continue;
+ const context=await browser.newContext({viewport:{width,height:900},colorScheme:'light'});const page=await context.newPage();await page.route('https://**/*',r=>r.abort());await page.goto(pathToFileURL(source).href);await page.evaluate(()=>document.fonts.ready);
+ const snap=await page.evaluate(()=>{const svg=[...document.querySelectorAll('svg')].find(s=>s.querySelectorAll('text').length>3);const bounds=[];
+ if(svg){const vb=svg.viewBox.baseVal;for(const e of svg.querySelectorAll('text')){const b=e.getBBox();if(b.x<vb.x-.5||b.y<vb.y-.5||b.x+b.width>vb.x+vb.width+.5||b.y+b.height>vb.y+vb.height+.5)bounds.push({text:e.textContent,box:[b.x,b.y,b.width,b.height],viewBox:[vb.x,vb.y,vb.width,vb.height]});}}
+ return {title:document.title,svgText:svg?.textContent,dots:svg?.querySelectorAll('circle').length,svgOverflow:bounds,bodyOverflow:document.documentElement.scrollWidth>innerWidth,inputs:[...document.querySelectorAll('input')].map(e=>({id:e.id,name:e.name,type:e.type,value:e.value,min:e.min,max:e.max})),headings:[...document.querySelectorAll('h1,h2,h3')].map(e=>e.textContent)};});
+ await page.screenshot({path:`${outRoot}/${slug}-${width}.png`,fullPage:false});rows.push({slug,width,source,sourceSha256:createHash('sha256').update(readFileSync(source)).digest('hex'),...snap});await context.close();}
+await browser.close();writeFileSync(`${outRoot}/render-results.json`,JSON.stringify(rows,null,2));console.log(rows.map(r=>({slug:r.slug,width:r.width,dots:r.dots,svgOverflow:r.svgOverflow,bodyOverflow:r.bodyOverflow})));

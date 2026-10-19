@@ -1,0 +1,316 @@
+[
+  {
+    "slug": "voice-and-focus",
+    "width": 1440,
+    "source": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/voice-and-focus/explorer.html",
+    "sourceSha256": "0dcba475eec46dea70fe738266d8ca6170f5ef7a33ac3c022853161cfe92cfae",
+    "title": "Same event. A different starting point.",
+    "svgText": "In a repair, Maya is the doer and the bicycle is affected. The selected active sentence is: Maya repaired the bicycle. The doer is named.01  THE EVENTDOERMayaAFFECTED THINGthe bicyclerepaired02  CHOOSE THE STARTING POINTACTIVEMaya repaired the bicycle.PASSIVEThe bicycle was repaired by Maya.was + past participleThe roles stay the same. The sentence starts elsewhere.",
+    "dots": 0,
+    "svgOverflow": [],
+    "bodyOverflow": false,
+    "inputs": [
+      {
+        "id": "xp-remember",
+        "name": "",
+        "type": "checkbox",
+        "value": "on",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "p-voice",
+        "name": "",
+        "type": "range",
+        "value": "0",
+        "min": "0",
+        "max": "1"
+      },
+      {
+        "id": "xp-curious-input",
+        "name": "",
+        "type": "text",
+        "value": "",
+        "min": "",
+        "max": ""
+      }
+    ],
+    "headings": [
+      "Same event. A different starting point.",
+      "Contents",
+      "Keep the event separate from word order",
+      "Sources and scope",
+      "In the margin",
+      "Your notes",
+      "Questions to chase",
+      "Notes"
+    ]
+  },
+  {
+    "slug": "voice-and-focus",
+    "width": 390,
+    "source": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/voice-and-focus/explorer.html",
+    "sourceSha256": "0dcba475eec46dea70fe738266d8ca6170f5ef7a33ac3c022853161cfe92cfae",
+    "title": "Same event. A different starting point.",
+    "svgText": "In a repair, Maya is the doer and the bicycle is affected. The selected active sentence is: Maya repaired the bicycle. The doer is named.01  THE EVENTDOERMayaAFFECTED THINGthe bicyclerepaired02  CHOOSE THE STARTING POINTACTIVEMayarepaired the bicycle.PASSIVEThe bicycle was repairedby Maya.was + past participleSame event roles. A different subject.",
+    "dots": 0,
+    "svgOverflow": [],
+    "bodyOverflow": false,
+    "inputs": [
+      {
+        "id": "xp-remember",
+        "name": "",
+        "type": "checkbox",
+        "value": "on",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "p-voice",
+        "name": "",
+        "type": "range",
+        "value": "0",
+        "min": "0",
+        "max": "1"
+      },
+      {
+        "id": "xp-curious-input",
+        "name": "",
+        "type": "text",
+        "value": "",
+        "min": "",
+        "max": ""
+      }
+    ],
+    "headings": [
+      "Same event. A different starting point.",
+      "Contents",
+      "Keep the event separate from word order",
+      "Sources and scope",
+      "In the margin",
+      "Your notes",
+      "Questions to chase",
+      "Notes"
+    ]
+  },
+  {
+    "slug": "base-rates",
+    "width": 1440,
+    "source": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/base-rates/explorer.html",
+    "sourceSha256": "b5ebf19372e47b98b60dc0572e829dc3ff6f179dd73d3677b013799f29282baa",
+    "title": "A flag is not a verdict.",
+    "svgText": "Of 10000 items, 100 are defective and 9900 sound. The detector flags 90 defective and 495 sound items, giving 585 flags. 15.4 percent of flagged items are defective.01  KEEP THE TWO POPULATIONS SEPARATEAll items10,000Defective100Sound9,900True flags90False flags49502  CHANGE THE DENOMINATOR TO ALL FLAGS90 defective / 585 flagged15.4% defective among the flagsPurple is the defective share of the flagged group, not the detector's hit rate.Base 1%; hit 90%; false flags 5%.",
+    "dots": 0,
+    "svgOverflow": [],
+    "bodyOverflow": false,
+    "inputs": [
+      {
+        "id": "xp-remember",
+        "name": "",
+        "type": "checkbox",
+        "value": "on",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "p-base",
+        "name": "",
+        "type": "range",
+        "value": "1",
+        "min": "1",
+        "max": "50"
+      },
+      {
+        "id": "",
+        "name": "",
+        "type": "number",
+        "value": "",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "xp-curious-input",
+        "name": "",
+        "type": "text",
+        "value": "",
+        "min": "",
+        "max": ""
+      }
+    ],
+    "headings": [
+      "A flag is not a verdict.",
+      "Contents",
+      "Begin with the whole batch",
+      "Sources and scope",
+      "In the margin",
+      "Your notes",
+      "Questions to chase",
+      "Notes"
+    ]
+  },
+  {
+    "slug": "base-rates",
+    "width": 390,
+    "source": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/base-rates/explorer.html",
+    "sourceSha256": "b5ebf19372e47b98b60dc0572e829dc3ff6f179dd73d3677b013799f29282baa",
+    "title": "A flag is not a verdict.",
+    "svgText": "Of 10000 items, 100 are defective and 9900 sound. The detector flags 90 defective and 495 sound items, giving 585 flags. 15.4 percent of flagged items are defective.01  KEEP THE TWO POPULATIONS SEPARATEAll items10,000Defective100Sound9,90002  FOLLOW ONLY THE FLAGSTrue flags90False flags49590 + 495 = 585 flags15.4% defective among the flagsPurple = true flags; peach = false flags.Base 1%; hit 90%; false flags 5%.Counts are exact for this hypothetical batch.Group boxes are not area-scaled.",
+    "dots": 0,
+    "svgOverflow": [],
+    "bodyOverflow": false,
+    "inputs": [
+      {
+        "id": "xp-remember",
+        "name": "",
+        "type": "checkbox",
+        "value": "on",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "p-base",
+        "name": "",
+        "type": "range",
+        "value": "1",
+        "min": "1",
+        "max": "50"
+      },
+      {
+        "id": "",
+        "name": "",
+        "type": "number",
+        "value": "",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "xp-curious-input",
+        "name": "",
+        "type": "text",
+        "value": "",
+        "min": "",
+        "max": ""
+      }
+    ],
+    "headings": [
+      "A flag is not a verdict.",
+      "Contents",
+      "Begin with the whole batch",
+      "Sources and scope",
+      "In the margin",
+      "Your notes",
+      "Questions to chase",
+      "Notes"
+    ]
+  },
+  {
+    "slug": "diffusion",
+    "width": 1440,
+    "source": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/diffusion/explorer.html",
+    "sourceSha256": "a3aa3657fd353c84353c42285a07c58c9167715b2cd2a9ccfa58e925de39a700",
+    "title": "Two-way motion. One-way net flow.",
+    "svgText": "The equal-volume compartments contain an expected 48.00 particles on the left and 12.00 on the right. Expected crossings next tick are 9.60 left to right and 2.40 right to left. Net to the right is 7.20. Total remains 60.01  COUNT THE CHANCES TO CROSSLEFT48.0RIGHT12.09.6 →← 2.402  SUBTRACT THE TWO-WAY TRAFFICNet to right: 7.20 per tickMore crossing opportunities start on the left.Equal-volume model; 20% crossing chance; 0 ticks elapsed. Dots round the split.",
+    "dots": 60,
+    "svgOverflow": [],
+    "bodyOverflow": false,
+    "inputs": [
+      {
+        "id": "xp-remember",
+        "name": "",
+        "type": "checkbox",
+        "value": "on",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "p-initialLeft",
+        "name": "",
+        "type": "range",
+        "value": "48",
+        "min": "0",
+        "max": "60"
+      },
+      {
+        "id": "p-cross",
+        "name": "",
+        "type": "range",
+        "value": "0.2",
+        "min": "0",
+        "max": "0.5"
+      },
+      {
+        "id": "xp-curious-input",
+        "name": "",
+        "type": "text",
+        "value": "",
+        "min": "",
+        "max": ""
+      }
+    ],
+    "headings": [
+      "Two-way motion. One-way net flow.",
+      "Contents",
+      "Particles can cross either way",
+      "Sources and scope",
+      "In the margin",
+      "Your notes",
+      "Questions to chase",
+      "Notes"
+    ]
+  },
+  {
+    "slug": "diffusion",
+    "width": 390,
+    "source": "/Users/prax/Developer/teach-general-20261019/deliverables/teach-pro-max/codex/lessons/diffusion/explorer.html",
+    "sourceSha256": "a3aa3657fd353c84353c42285a07c58c9167715b2cd2a9ccfa58e925de39a700",
+    "title": "Two-way motion. One-way net flow.",
+    "svgText": "The equal-volume compartments contain an expected 48.00 particles on the left and 12.00 on the right. Expected crossings next tick are 9.60 left to right and 2.40 right to left. Net to the right is 7.20. Total remains 60.01  COUNT THE CHANCES TO CROSSLEFT48.0RIGHT12.002  SUBTRACT THE TWO-WAY TRAFFIC9.6 go right  →←  2.4 go leftNet to right: 7.20 per tickMore crossing opportunities start on the left.Readouts show expected counts, not a trial.Dots preserve 60 while rounding the split.Crossing chance: 20% per tick.Equal volumes; 0 model ticks elapsed.",
+    "dots": 60,
+    "svgOverflow": [],
+    "bodyOverflow": false,
+    "inputs": [
+      {
+        "id": "xp-remember",
+        "name": "",
+        "type": "checkbox",
+        "value": "on",
+        "min": "",
+        "max": ""
+      },
+      {
+        "id": "p-initialLeft",
+        "name": "",
+        "type": "range",
+        "value": "48",
+        "min": "0",
+        "max": "60"
+      },
+      {
+        "id": "p-cross",
+        "name": "",
+        "type": "range",
+        "value": "0.2",
+        "min": "0",
+        "max": "0.5"
+      },
+      {
+        "id": "xp-curious-input",
+        "name": "",
+        "type": "text",
+        "value": "",
+        "min": "",
+        "max": ""
+      }
+    ],
+    "headings": [
+      "Two-way motion. One-way net flow.",
+      "Contents",
+      "Particles can cross either way",
+      "Sources and scope",
+      "In the margin",
+      "Your notes",
+      "Questions to chase",
+      "Notes"
+    ]
+  }
+]

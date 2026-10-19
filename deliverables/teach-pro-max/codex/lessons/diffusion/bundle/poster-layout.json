@@ -1,0 +1,99 @@
+{
+  "width": 1440,
+  "height": 900,
+  "figure": {
+    "x": 58,
+    "y": 204.41,
+    "width": 1324,
+    "height": 498.2600000000001
+  },
+  "title": {
+    "fontSize": 42,
+    "lines": 1
+  },
+  "references": 2,
+  "sourceRows": 1,
+  "textBounds": [
+    {
+      "part": "eyebrow",
+      "text": "Science · diffusion",
+      "x": 58,
+      "y": 28,
+      "width": 166.171875,
+      "height": 20
+    },
+    {
+      "part": "title",
+      "text": "Two-way motion. One-way net flow.",
+      "x": 58,
+      "y": 70,
+      "width": 662.140625,
+      "height": 51
+    },
+    {
+      "part": "step-title",
+      "text": "Particles can cross either way",
+      "x": 58,
+      "y": 141.66000366210938,
+      "width": 318.88427734375,
+      "height": 30
+    },
+    {
+      "part": "source-label",
+      "text": "Sources",
+      "x": 58,
+      "y": 851,
+      "width": 55.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[1]",
+      "x": 135.03125,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[2]",
+      "x": 168.71875,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "Full references ↗",
+      "x": 202.40625,
+      "y": 851,
+      "width": 118.375,
+      "height": 17
+    },
+    {
+      "part": "note",
+      "text": "Random motion is two-way, even with a gradient.",
+      "x": 58,
+      "y": 810.8599853515625,
+      "width": 390.65625,
+      "height": 22
+    },
+    {
+      "part": "caption",
+      "text": "The equal-volume compartments contain an expected 48.00 particles on the left and 12.00 on the right. Expected crossings next",
+      "x": 58,
+      "y": 730.6699829101562,
+      "width": 1285.3125,
+      "height": 29
+    },
+    {
+      "part": "caption",
+      "text": "tick are 9.60 left to right and 2.40 right to left. Net to the right is 7.20. Total remains 60.",
+      "x": 58,
+      "y": 760.5700073242188,
+      "width": 888.34375,
+      "height": 29
+    }
+  ],
+  "clippedText": 0
+}

@@ -1,0 +1,7 @@
+{
+ "id":"event-to-sentence-v3", "title":"From an event to a sentence", "subtitle":"Keep roles straight, choose a starting point, and notice what a sentence leaves unstated.", "level":"English · two connected lessons", "shared":["../lessons/voice-and-focus/source/lesson.lesson.js"],
+ "lessons":[
+  {"id":"event-and-voice","file":"lessons/event-and-voice.lesson.js","title":"Same event, different subject","needs":[],"minutes":4,"summary":"Separate the doer from the grammatical subject, then compare active and passive forms."},
+  {"id":"unstated-agent","file":"lessons/unstated-agent.lesson.js","title":"When the sentence leaves somebody out","needs":["event-and-voice"],"minutes":3,"summary":"An omitted doer is unstated, not nonexistent. Choose whether naming them helps the reader."}
+ ]
+}
