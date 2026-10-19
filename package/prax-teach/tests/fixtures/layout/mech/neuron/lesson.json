@@ -1,0 +1,146 @@
+{
+ "schema": "fixture",
+ "id": "fx-neuron",
+ "platform": {
+  "captured": true,
+  "sizeof": {
+   "int": 4,
+   "double": 8
+  },
+  "endianness": "little"
+ },
+ "programs": [
+  {
+   "id": "p1",
+   "path": "programs/neuron.c"
+  }
+ ],
+ "facts": [
+  {
+   "id": "f.x1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 1
+   }
+  },
+  {
+   "id": "f.w1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.t1",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 1,
+    "field": 5
+   }
+  },
+  {
+   "id": "f.x2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 1
+   }
+  },
+  {
+   "id": "f.w2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.t2",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 2,
+    "field": 5
+   }
+  },
+  {
+   "id": "f.b",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 3,
+    "field": 3
+   }
+  },
+  {
+   "id": "f.z",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 3,
+    "field": 6
+   }
+  },
+  {
+   "id": "f.a",
+   "program": "p1",
+   "kind": "derived",
+   "select": {
+    "stream": "stdout",
+    "line": 4,
+    "field": 3
+   }
+  }
+ ],
+ "trace": [
+  {
+   "id": "s3",
+   "state": {
+    "program": "p1",
+    "line": 15,
+    "path": [],
+    "output": [],
+    "vars": {}
+   }
+  }
+ ],
+ "figure": {
+  "program": "p1",
+  "states": [
+   "s3"
+  ],
+  "panel": {
+   "kind": "neuron",
+   "terms": [
+    {
+     "x": "f.x1",
+     "w": "f.w1",
+     "t": "f.t1"
+    },
+    {
+     "x": "f.x2",
+     "w": "f.w2",
+     "t": "f.t2"
+    }
+   ],
+   "bias": "f.b",
+   "sum": "f.z",
+   "out": "f.a"
+  }
+ }
+}

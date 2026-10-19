@@ -1,0 +1,7 @@
+enter factorial(3)
+enter factorial(2)
+enter factorial(1)
+factorial(1) = 1
+factorial(2) = 2
+factorial(3) = 6
+main got 6
