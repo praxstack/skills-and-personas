@@ -1,0 +1,7 @@
+{
+  "source_candidate": "4a834ac",
+  "status": "Development fixtures only. Some copied baseline assets were not regenerated; CANDIDATE1.md identifies actual candidate builds and unresolved failures. No acceptance claim.",
+  "asset": "candidate1-working-fixtures.tar.gz",
+  "bytes": 104391797,
+  "sha256": "e56cb927c233fb1cb3b7ea7c78479f40e7cb397e08c8827838e35534118f4f93"
+}
