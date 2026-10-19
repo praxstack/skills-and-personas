@@ -8,7 +8,8 @@ How it measures (in the page, in Playwright):
               control is swept alone. Then every other
               button (Next, Previous, ...) is pressed until it is disabled, at most 12 times; with 12 or fewer
               combinations, at every combination. The explorer page is the scope; in the IVE, the explore panel
-              (#xp) after "Pause and explore" near the end of the film.
+              (#xp) after "Pause and explore" near the end of the film. Each page runs at 1440 x 900 light and
+              390 x 844 dark.
   drawn state read after each step from what is drawn, never from a data flag: "name = value" pairs in visible
               text that is not prose, a slider's visible readout named by its label, a checked radio's visible
               label named by its fieldset legend ("Value of a"), and any element marked data-state-var="<name>"
@@ -168,9 +169,9 @@ WALK_JS = r"""async (opts) => {
 }"""
 
 
-def walk_job(jid, url, scope=None, pre=None, width=1440, height=900):
+def walk_job(jid, url, scope=None, pre=None, width=1440, height=900, scheme="light"):
     steps = list(pre or []) + [{"eval": f"({WALK_JS})({json.dumps({'scope': scope})})", "as": "walk"}]
-    return {"id": jid, "type": "script", "url": url, "width": width, "height": height, "steps": steps}
+    return {"id": jid, "type": "script", "url": url, "width": width, "height": height, "scheme": scheme, "steps": steps}
 
 
 def ive_pre():
@@ -246,8 +247,10 @@ def test_fixture_fixed_sentence_fails():
 def _lesson(slug):
     b = _b0.need(slug, "explorer/index.html", "ive/index.html")
     lesson = _b0.load(slug)
-    jobs = [walk_job("explorer", (b / "explorer" / "index.html").resolve().as_uri()),
-            walk_job("ive", (b / "ive" / "index.html").resolve().as_uri(), scope="#xp", pre=ive_pre())]
+    ex, ive = (b / "explorer" / "index.html").resolve().as_uri(), (b / "ive" / "index.html").resolve().as_uri()
+    jobs = [walk_job("explorer-1440-light", ex), walk_job("explorer-390-dark", ex, width=390, height=844, scheme="dark"),
+            walk_job("ive-1440-light", ive, scope="#xp", pre=ive_pre()),
+            walk_job("ive-390-dark", ive, scope="#xp", pre=ive_pre(), width=390, height=844, scheme="dark")]
     walks = run_walks(jobs, f"live-{slug}", lesson.sha256())
     explore = (lesson.data.get("figure") or {}).get("explore") or {}
     probs = problems_of(walks, need_tiny=explore.get("kind") == "neuron")
@@ -256,7 +259,10 @@ def _lesson(slug):
     for p in probs:
         counts[f"{p.get('page', 'lesson')}:{p['kind']}"] = counts.get(f"{p.get('page', 'lesson')}:{p['kind']}", 0) + 1
     first = next((p for p in probs if p["kind"] in ("mismatch", "unbound")), None)
-    assert not probs, json.dumps({"summary": _summary(walks), "problems": counts, "first": first, "record": rec})
+    short = {jid: ("error" if w.get("error") else
+                   f"steps {w['steps']}, assertions {w['assertions']}, problems {w['problem_count']}, "
+                   f"tiny {w['tiny']['reached']}/{w['tiny']['explained']} explained") for jid, w in walks.items()}
+    assert not probs, json.dumps({"problems": counts, "first": first, "pages": short, "record": rec})
     return {"summary": _summary(walks), "record": rec}
 
 
