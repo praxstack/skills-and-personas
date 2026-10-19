@@ -1,7 +1,7 @@
 # Teach v3 hardening verification
 
 Date: 2026-10-20
-Candidate branch: `fix/teach-v3-security-hardening-20261020`
+Implementation branch: `fix/teach-v3-security-hardening-20261020`
 Product patch: `4e5cd3b`
 
 ## Passed
@@ -76,3 +76,29 @@ Public side-branch cleanup remains separate because it deletes refs or rewrites
 history. The frozen quality evaluator and historical evidence were not changed.
 Release packaging verification is recorded with the new release manifest;
 v3.0.0 and its historical artifacts remain available for rollback.
+
+## Published and activated
+
+- [PR #15](https://github.com/praxstack/skills-and-personas/pull/15) merged as
+  `cf87b5dfa285c34055af6dd0742257c5710d9f3d` after both the security workflow and
+  CodeRabbit checks succeeded. The final tested skill trees match source
+  revision `33cfd556ed0387c0b4991fcb6d4bb6f2ae912fad`.
+- [Final PR security CI](https://github.com/praxstack/skills-and-personas/actions/runs/39332546209)
+  passed on Linux; local Docker/Chromium checks passed on Apple Silicon.
+- [v3.0.1](https://github.com/praxstack/skills-and-personas/releases/tag/prax-teach-v3.0.1)
+  is public, non-draft and non-prerelease, with source ZIP, both standalone ZIPs,
+  external manifest and checksums. All three anonymously downloaded ZIPs match
+  the locally verified hashes and pass archive integrity checks.
+- Both skills.sh pages return HTTP 200 with the expected skill/repository titles.
+  This verifies listing availability; indexing is controlled by skills.sh.
+- The canonical local skill links now select the versioned v3.0.1 snapshot.
+  All 1,546 installed source files match the release ZIPs. Existing Codex,
+  Claude, Hermes and Cursor aliases resolve to it. The active sandbox CLI
+  successfully ran both Python and C++ against its model.
+- The previous v3.0.0 snapshot is retained. A separate local activation manifest
+  and rollback script preserve the exact preceding links; rollback dry run passes.
+- No test containers remained. The isolated test VM was stopped; the default
+  Docker context and broken pre-existing default runtime were preserved.
+
+Public-history removal and broad portfolio redesign remain outside this patch.
+No evaluator thresholds or private holdout inputs changed.

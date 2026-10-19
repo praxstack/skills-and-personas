@@ -6,23 +6,23 @@ Evidence was checked against public revision `dc6a498`; statuses below distingui
 
 | ID | Priority | Status | Problem |
 |---|---:|---|---|
-| SEC-001 | P1 | fixed in candidate; focused exploit and control tests pass | Public video upload accepted unconfined lesson paths and followed links. |
-| SEC-002 | P1 | fixed in candidate; static sink removed | Skillpack health actions reached shell `eval`. |
+| SEC-001 | P1 | fixed in v3.0.1; focused exploit and control tests pass | Public video upload accepted unconfined lesson paths and followed links. |
+| SEC-002 | P1 | fixed in v3.0.1; static sink removed | Skillpack health actions reached shell `eval`. |
 | SEC-003 | P1 | fixed; default structural path plus disposable Docker code-checker adapter | Routine lesson validation executed authored JS, Python, and C/C++ on the host. |
-| SEC-004 | P1 | fixed in candidate; exact-host tests pass | Domainless cookie dictionaries could be sent to arbitrary resource hosts. |
+| SEC-004 | P1 | fixed in v3.0.1; exact-host tests pass | Domainless cookie dictionaries could be sent to arbitrary resource hosts. |
 | SEC-005 | P2 | fixed; connection-time numeric-IP enforcement, including browser HTTP broker | Resource enrichment permitted private-network and metadata requests and unchecked redirects. |
-| SEC-006 | P2 | fixed in candidate; mutable commands removed | Installer examples executed mutable branches, `@latest`, and raw `main` content. |
-| SEC-007 | P2 | fixed in candidate; link tests pass | Journal operations followed workspace links and used predictable replacement paths. |
+| SEC-006 | P2 | fixed in v3.0.1; mutable commands removed | Installer examples executed mutable branches, `@latest`, and raw `main` content. |
+| SEC-007 | P2 | fixed in v3.0.1; link tests pass | Journal operations followed workspace links and used predictable replacement paths. |
 | SEC-008 | P2 | fixed; descriptor-bound input snapshots and output publication | Course manifest paths and narration identifiers could escape their roots. |
-| SEC-009 | P2 | fixed in candidate; byte and artifact budget tests pass | Remote bodies and browser captures lacked transfer and artifact budgets. |
-| SEC-010 | P3 | fixed in candidate; mode tests pass | Journal privacy depended on the ambient umask. |
-| SEC-011 | P3 | fixed in candidate; scheme and CSP tests pass | Generated citation links accepted active URL schemes. |
-| REL-002 | P1 | fixed in candidate | A nested teach-pro-max copy diverged and defaulted some topics to practice-first. |
-| REL-003 | P1 | fixed in candidate; 759-file verifier passes | The published teach-pro-max integrity verifier failed on `evidence/verification/full.json`. |
-| REL-004 | P1 | fixed in candidate; isolated standalone install passes | A single-skill teach-pro-max install lacked the sibling teacher it required. |
-| PED-001 | P1 | fixed in candidate | Subject and series references still prescribed practice/recall before explanation. |
-| DIST-001 | P2 | fixed in candidate | Teaching deliverables contained unrelated Codex CLI configuration and rollback material. |
-| DOC-001 | P2 | fixed in candidate; network fallback now opt-in | Diagram rendering sent source to Kroki by default without a clear explicit network choice. |
+| SEC-009 | P2 | fixed in v3.0.1; byte and artifact budget tests pass | Remote bodies and browser captures lacked transfer and artifact budgets. |
+| SEC-010 | P3 | fixed in v3.0.1; mode tests pass | Journal privacy depended on the ambient umask. |
+| SEC-011 | P3 | fixed in v3.0.1; scheme and CSP tests pass | Generated citation links accepted active URL schemes. |
+| REL-002 | P1 | fixed in v3.0.1 | A nested teach-pro-max copy diverged and defaulted some topics to practice-first. |
+| REL-003 | P1 | fixed in v3.0.1; 759-file verifier passes | The published teach-pro-max integrity verifier failed on `evidence/verification/full.json`. |
+| REL-004 | P1 | fixed in v3.0.1; isolated standalone install passes | A single-skill teach-pro-max install lacked the sibling teacher it required. |
+| PED-001 | P1 | fixed in v3.0.1 | Subject and series references still prescribed practice/recall before explanation. |
+| DIST-001 | P2 | fixed in v3.0.1 | Teaching deliverables contained unrelated Codex CLI configuration and rollback material. |
+| DOC-001 | P2 | fixed in v3.0.1; network fallback now opt-in | Diagram rendering sent source to Kroki by default without a clear explicit network choice. |
 | DOC-002 | P3 | partly fixed | Counts, README paths, and tool inventory text contain stale values and local absolute paths. |
 
 ## Evidence/reporting corrections, not product certification failures

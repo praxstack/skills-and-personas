@@ -1,7 +1,7 @@
 # Teach v3 security and release hardening plan
 
 Date: 2026-10-20
-Status: active product-only repair
+Status: completed and published as v3.0.1
 Owner: Codex
 Branch: `fix/teach-v3-security-hardening-20261020`
 
