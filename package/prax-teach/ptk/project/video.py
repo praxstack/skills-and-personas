@@ -637,6 +637,13 @@ def scene_html(lesson, scene, index, count, timing):
         side = (f'<div class="panel qcard" data-key="question"><p class="qlabel" data-chrome="question_label">'
                 f'{esc(text.ui("question_label"))}</p><p class="qtext" data-question="{esc(sid)}">{esc(q["prompt"])}</p>'
                 f'<div class="qopts">{opts}</div></div>')
+    elif mode is None and not morph and cur["output"] and cur["program"] == lesson.data["figure"]["program"] \
+            and mech.panel_kind(lesson) == "control-path":
+        # the path through the switch (AC-10.2), the still's mechanism at this scene's state, in place of the note
+        # (the narration and its captions carry the note's sentence)
+        fig_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, width=600, mark=True,
+                                            kind="control-path", attrs='class="pathfig" preserveAspectRatio="xMidYMin meet"')
+        side = f'<div class="panel pathcard" data-key="panel">{fig_svg}</div>'
     elif mode is None:
         sizes = tuple(round(x * nt["scale"]) for x in (64, 58, 52, 48, 44))
         note_px = _fit(nt["key"], claims[note_claim]["text"], panel_w - 84, panel_h - 76, 1.18, sizes)
@@ -669,14 +676,14 @@ def scene_html(lesson, scene, index, count, timing):
         if recap:
             # a summary of the stack is the whole run, step by step (the still's strip), not the last state alone
             cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
-                                                notes=False, states=lesson.data["figure"]["states"])
+                                                notes=False, states=lesson.data["figure"]["states"], mark=True)
         else:
             cur_svg, _f, _c = mech.svg_fragment(lesson, scene["state"], "wide", theme, attrs=f'class="mlayer mcur" {fit}',
-                                                height=mh, notes=False, width=pw_)
+                                                height=mh, notes=False, width=pw_, mark=True)
         layers = cur_svg
         if replay and scene["before"] != scene["state"]:
             bef_svg, _f, _c = mech.svg_fragment(lesson, scene["before"], "wide", theme, attrs=f'class="mlayer mbefore" data-layout-allow-overlap="" {fit}',
-                                                height=mh, notes=False, width=pw_)
+                                                height=mh, notes=False, width=pw_, mark=True)
             layers = bef_svg + cur_svg
         chips = ""
         if replay and scene["before"] != scene["state"]:
@@ -835,6 +842,8 @@ def scene_html(lesson, scene, index, count, timing):
 .varlabel {{ font:{lt['weight']} 22px/1.3 {lt['family']}; letter-spacing:.12em; color:{t['label']}; margin-right:18px; }}
 .panel {{ position:absolute; left:0; top:{panel_top}px; width:{L['side_w']}px; bottom:0; box-sizing:border-box; border-radius:{22 if frame.get('panel_fill') else 0}px; padding:30px 38px; }}
 .notecard {{ {panel_fill} {panel_rule} }}
+.pathcard {{ {panel_rule} padding:12px 0 12px 22px; }}
+.pathfig {{ display:block; width:100%; height:100%; }}
 .note {{ margin:0; font:{nt['weight']} 50px/1.18 {nt['family']}; color:{t['note']}; }}
 .qcard {{ {panel_fill} border:3px solid {t['note']}; border-radius:22px; }}
 .changecard {{ {panel_fill} {panel_rule} }}
