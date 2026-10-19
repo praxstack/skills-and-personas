@@ -172,3 +172,43 @@ def test_developer_dir_pinned_and_no_xcrun_shim_runs():
     sb = host.SANDBOX_PROFILE.read_text()
     assert '(subpath (param "DEVDIR"))' in sb, "compile mode must read the developer dir"
     return {"developer_dir": dev, "clang": clang}
+
+
+def test_setup_npm_skips_ci_when_installed_tree_matches_lock():
+    """v2.2 bug fix: `npm ci` deletes node_modules before reinstalling, so a setup run (the
+    write-jail test above runs one against the shared $PTK_STATE) pulled HyperFrames and Playwright
+    out from under every concurrent build. Setup must leave a tree that already matches the pinned
+    lock alone, and still run `npm ci` when the lock or the tree differs."""
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from ptk import node
+    tmp = Path(tempfile.mkdtemp(dir=host.state_path("tmp")))
+    calls = []
+    real_state_path, real_npm = host.state_path, node.npm
+    try:
+        host.state_path = lambda *p: tmp.joinpath(*p)
+        node.npm = lambda args, cwd=None, **kw: calls.append(list(args))
+        tools = tmp / "tools" / "node"
+        mods = tools / "node_modules"
+        lock = json.loads((host.PKG / "node" / "package-lock.json").read_text())
+        for f in ("package.json", "package-lock.json"):
+            tools.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(host.PKG / "node" / f, tools / f)
+        mods.mkdir(parents=True)
+        shutil.copyfile(host.PKG / "node" / "package-lock.json", mods / ".package-lock.json")
+        for key, meta in lock.get("packages", {}).items():
+            if key and not meta.get("link"):
+                d = tools / key
+                d.mkdir(parents=True, exist_ok=True)
+                (d / "package.json").write_text(json.dumps({"version": meta.get("version")}))
+        host._setup_npm({"id": "node-tools"})
+        assert calls == [], f"npm ci ran over a tree that already matches the lock: {calls}"
+        first = next(k for k, m in lock["packages"].items() if k and not m.get("link"))
+        (tools / first / "package.json").write_text(json.dumps({"version": "0.0.0-wrong"}))
+        host._setup_npm({"id": "node-tools"})
+        assert calls and calls[-1][0] == "ci", "a tree that differs from the lock must be reinstalled"
+    finally:
+        host.state_path, node.npm = real_state_path, real_npm
+        shutil.rmtree(tmp, ignore_errors=True)
+    return {"skipped_when_current": True}
