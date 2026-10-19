@@ -92,7 +92,8 @@ def cmd_route(a):
         print(f"intent={res['intent']} mode={res['mode']} media={','.join(res['media']) or '-'} "
               f"build_needed={res['build_needed']} confidence={res['confidence']}"
               f"{' (' + '; '.join(res['reasons']) + ')' if res['reasons'] else ''}"
-              f"\nfirst turn: {res['first_turn']['instruction']}")
+              f"\nfirst turn: {res['first_turn']['instruction']}"
+              f"{chr(10) + 'workspace conflict: ' + res['workspace_conflict']['note'] if res.get('workspace_conflict') else ''}")
     return errors.EXIT_OK
 
 

@@ -1,12 +1,14 @@
-"""Read the learner workspace contract (D17.6, AC-1.3).
+"""Read what the learner workspace's AGENTS.md, MISSION.md and NOTES.md ask for (AC-1.3 v1.4).
 
-The workspace's AGENTS.md, MISSION.md and NOTES.md are read first, and their teaching rules beat
-the skill's defaults. This module only reads them and reports which teaching mode they require,
-with the lines that say so. The patterns live in route_rules.json under `workspace_contract`.
+These files never set the teaching mode: every teaching request gets a complete explanation first,
+in every workspace (FREEZE-v2 criterion 5). This module only reports which teaching style the files
+ask for, with the lines that say so, so the router can name them in a `workspace_conflict` note
+instead of obeying them. The patterns live in route_rules.json under `workspace_contract`.
 
 A line counts as predict-first evidence when a predict-first pattern matches and no negation
-pattern does ("without prediction" is explain-first, not predict-first). When files disagree,
-predict-first wins and `conflict` is set: one question is cheap to skip with "answer now".
+pattern does ("without prediction" is explain-first, not predict-first). When some file asks for
+prediction first, `asks` is "predict-first" and `evidence` holds those lines, so the conflict note
+names every one of them.
 """
 import re
 from pathlib import Path
@@ -38,9 +40,9 @@ def _evidence(lines, hit, limit):
 
 
 def read_contract(directory, spec):
-    """Return {dir, files, mode, evidence, conflict} for the workspace at `directory`.
+    """Return {dir, files, asks, evidence} for the workspace at `directory`.
 
-    mode is "predict-first", "explain-first" or None (no teaching rule found)."""
+    asks is "predict-first", "explain-first" or None (no teaching rule found). It is reported, never obeyed."""
     root = Path(directory).expanduser().resolve()
     if not root.is_dir():
         raise errors.HostError(f"workspace is not a directory: {root}", workspace=str(root))
@@ -54,7 +56,6 @@ def read_contract(directory, spec):
     return {
         "dir": str(root),
         "files": [n for n in spec["files"] if (root / n).is_file()],
-        "mode": (modes or [None])[0],
+        "asks": (modes or [None])[0],
         "evidence": predict or explain,
-        "conflict": len(modes) > 1,
     }
