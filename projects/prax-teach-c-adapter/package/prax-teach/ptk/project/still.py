@@ -716,8 +716,9 @@ def build_svg(lesson, layout, theme, tokens, math=None):
         y += px * 1.2
     svg.merge(m0)
     font, px, weight, _c, _s = svg.role("body", g["dek"])
-    y = flow.emit(X0, y + 2, claims[fig["title_claim"]]["text"], font, px, px * 1.42, t["ink_soft"],
-                  ("claim", fig["title_claim"]), X1 - X0, weight=weight)
+    if fig.get("title_claim"):
+        y = flow.emit(X0, y + 2, claims[fig["title_claim"]]["text"], font, px, px * 1.42, t["ink_soft"],
+                      ("claim", fig["title_claim"]), X1 - X0, weight=weight)
     y -= 4
     svg.line(X0, y, X1, y, t["rule"], 1)
     y += 26 if wide else 26
@@ -732,6 +733,19 @@ def build_svg(lesson, layout, theme, tokens, math=None):
         y += h + (26 if wide else 22)
         svg.line(X0, y - 14, X1, y - 14, t["rule"], 1)
         y = _neuron_band(svg, flow, lesson, g, X0, y + 6, X1 - X0, wide)
+    elif kind is None:
+        # A generic captured-state view: no fabricated domain panel or invented layout model.
+        # Each state is a labelled observation, with every displayed value bound to its fact.
+        notes = fig.get("notes", [])
+        if notes:
+            y = _code_strip(svg, lesson, fig["program"], sorted({n["line"] for n in notes}),
+                            X0, y, X1 - X0, g["code"]) + 22
+        y = _output_grid(svg, g, lesson, final, X0, y, X1 - X0, cols=2 if wide else 1) + 24
+        misconception = next((m for m in lesson.data.get("misconceptions", [])
+                              if m["id"] == fig.get("misconception")), None)
+        if misconception and not any(n["claim"] == misconception["correction"] for n in notes):
+            notes = [*notes, {"claim": misconception["correction"], "line": notes[0]["line"] if notes else 1}]
+        y = _notes(svg, flow, lesson, notes, X0, y, X1 - X0, g, belief=True)
     else:
         mw = MECH_W[kind] if wide else X1 - X0
         if wide:
@@ -783,7 +797,7 @@ def alt_text(lesson):
     facts = lesson.by_id("facts")
     fig = lesson.data["figure"]
     final = lesson.state(fig["states"][-1])["state"]["output"]
-    return " ".join([plain(claims[fig["title_claim"]]["text"]),
+    return " ".join([plain(claims[fig["title_claim"]]["text"]) if fig.get("title_claim") else lesson.data["title"],
                      text.ui("alt_output", program=lesson.program(fig["program"])["path"],
                              lines=", ".join(text.display(facts[f]) for f in final))]
                     + [plain(claims[c]["text"]) for c in fig.get("caption_claims", [])])

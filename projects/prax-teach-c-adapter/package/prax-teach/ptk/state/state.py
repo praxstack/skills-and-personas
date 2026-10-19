@@ -2974,6 +2974,10 @@ def _recover_quarantined_workspace_deletion(workspace: Path) -> dict[str, Any] |
         return {
             "plan": plan,
             "status": "all_state_deletion_recovered",
+            "deletion_scope": "workspace-local",
+            "remote_deletion": "not_verified",
+            "surviving_copy_scan": "not_replayed_after_interruption",
+            "warning": "Local workspace deletion recovered. Outside copies may survive; staging and remote copies were not rechecked during recovery.",
             "workspace": str(workspace),
         }
 
@@ -3026,6 +3030,9 @@ def delete_workspace(path: str, *, dry_run: bool, confirm: bool) -> dict[str, An
     receipt = {
         "plan": plan,
         "status": "all_state_deleted",
+        "deletion_scope": "workspace-local",
+        "remote_deletion": "not_verified",
+        "warning": "Only this local workspace was deleted. Remote copies, version history and trash were not inspected or deleted.",
         "workspace": str(workspace),
     }
     # AC-11.3: never all_state_deleted while a copy survives outside the workspace
@@ -3061,6 +3068,7 @@ def _with_copies(
 ) -> dict[str, Any]:
     """Add what survives outside the workspace to a delete result (only when something does: v2's shape else)."""
 
+    result = dict(result, deletion_scope="workspace-local", remote_deletion="not_verified")
     if not found["surviving_copies"] and not found["unlocated_links"]:
         return result
     out = dict(result)

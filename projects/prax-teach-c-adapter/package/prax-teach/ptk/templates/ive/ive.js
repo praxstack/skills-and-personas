@@ -499,7 +499,7 @@
     var s = meta[shownIdx()].p.state, n = Number((s.vars || {})[D.live.var]);
     return { n: isFinite(n) ? n : D.live.n0, brk: s.program === D.live.alt };
   }
-  function locked() { return unlockIdx >= 0 && windowAt(meta, returnTime) < unlockIdx; }
+  function locked() { return practice && unlockIdx >= 0 && windowAt(meta, returnTime) < unlockIdx; }
 
   function paint() {
     if (!booted) return;

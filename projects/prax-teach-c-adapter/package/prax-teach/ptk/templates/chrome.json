@@ -139,7 +139,7 @@
   "k_slider": "{name}",
   "k_computed": "Computed with the program's formula in double, in the program's order. Captured runs agree at {count} points.",
   "k_live": "With w2 = {g_w2} and b = {g_b}, z prints as {g_z} and a prints as {g_a}.",
-  "k_tiny": "Here z prints as {g_z}, not 0: in binary64 (double), {g_x1} × {g_w1} is rounded to the nearest double, {d_t1}, so {g_x1} × {g_w1} + {g_x2} × w2 + b does not land exactly on 0.",
+  "k_tiny": "Here z prints as {g_z}, not 0: {g_x1}, {g_x2} and most slider values have no exact double form. Each multiply and add rounds to a double, so their combined rounding leaves a tiny nonzero sum.",
   "k_captured_point": "This setting is a captured run: {file} printed these lines.",
   "qa_ask": "{ask}?",
   "qa_walk": "A walkthrough step: read it when you are ready.",

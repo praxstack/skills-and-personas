@@ -86,6 +86,17 @@ def build_cards(lesson):
     trues = [{"id": f"r:{c['id']}", "kind": "rule", "claim": c["id"],
               "front": text.ui("card_true_false", statement=c["text"]), "front_source": "chrome:card_true_false",
               "answer": [text.ui("card_true")], "facts": [], "why": []} for c in rules]
+    # Standalone cards carry their source program structurally, including misconception corrections.
+    # Facts identify the program where available; source-free rules use the figure's base program.
+    facts_by_id = lesson.by_id("facts")
+    for card in falses + trues:
+        claim = lesson.claim(card["claim"] if card["kind"] == "rule" else
+                             lesson.by_id("misconceptions")[card["misconception"]]["correction"])
+        programs = {facts_by_id[f]["program"] for f in claim.get("facts", [])}
+        if len(programs) == 1:
+            card["program"] = next(iter(programs))
+        elif not programs and lesson.data.get("figure"):
+            card["program"] = lesson.data["figure"]["program"]
     for k in range(max(len(falses), len(trues))):  # true and false statements alternate
         cards += falses[k:k + 1] + trues[k:k + 1]
     if not cards:

@@ -1,6 +1,7 @@
 r"""Q&A expander projector (WP4: AC-4.3, D4.4), explanation first (SPEC v1.4, AC-1.3).
 
-    layer 1   the storyboard's first question: the program and the prompt
+    core      complete explanation, visible before any question or optional detail control
+    layer 1   optional trace detail: the program and the storyboard's first question
     layer 2…  one per storyboard scene after the question: scene title, the scene's question or
               "a walkthrough step", then the scene's narration lines and the output facts its state
               has printed. Layer k+1's Reveal is enabled once layer k is open; layer 2 needs no answer
@@ -91,7 +92,7 @@ def _layers_html(m):
         title = (f'<h3 data-label="scene-title" data-sealed="true">{esc(L["title"])}</h3>'
                  f'<h3 class="sealed-ph" data-chrome="qa_sealed">{esc(text.ui("qa_sealed"))}</h3>') if L["sealed"] else \
             f'<h3 data-label="scene-title">{esc(L["title"])}</h3>'
-        hint = (f'<p class="ask" data-chrome="qa_ask">{esc(text.ui("qa_ask", ask=L["ask"][:-1]))}</p>' if L["ask"] else
+        hint = (f'<p class="hint" data-chrome="qa_walk">{esc(text.ui("qa_walk"))}</p>' if L["ask"] else
                 f'<p class="hint" data-chrome="qa_walk">{esc(text.ui("qa_walk"))}</p>')
         out.append(f'<li class="layer" data-layer="{k}" data-open="true" id="qa-l{k}">'
                    f'<div class="layer-head"><p class="lbl" data-chrome="qa_layer">{esc(text.ui("qa_layer", i=k, n=n))}</p></div>'
@@ -110,11 +111,16 @@ def _body(lesson, m):
     opts = "".join(f'<label class="opt"><input type="radio" name="opt" value="{o["i"]}" data-correct="{str(o["correct"]).lower()}">'
                    f'<span data-option="{m["scene"]}.{o["i"]}">{esc(o["text"])}</span></label>' for o in m["options"])
     layers, n = _layers_html(m)
+    explanation = "".join(
+        '<p data-narration="' + esc(sc["id"] + "." + str(j)) + '">' + esc(line["text"]) + '</p>'
+        for sc in lesson.data["storyboard"] if not sc.get("question")
+        for j, line in enumerate(sc["narration"]))
     return f"""<div class="wrap">
 <header class="mast"><p class="kicker" data-chrome="kicker">{esc(text.kicker(lesson))}</p>
 <h1 data-label="title">{esc(lesson.data['title'])}</h1></header>
 <main class="qa">
 <noscript><p class="nojs" data-chrome="qa_noscript">{esc(text.ui('qa_noscript'))}</p></noscript>
+<div class="explanation" role="region" aria-label="Complete explanation">{explanation}</div>
 <ol class="layers">
 <li class="layer qcard" data-layer="1" data-open="true">
 <div class="layer-head"><p class="lbl" data-chrome="qa_layer">{esc(text.ui('qa_layer', i=1, n=n))}</p>
@@ -178,6 +184,11 @@ def _texts(lesson, m):
             items.append({"text": text.ui("qa_ask", ask=L["ask"][:-1]), "claims": [], "source": "chrome:qa_ask", "where": w})
         for x in L["narration"]:
             items.append({"text": x["text"], "claims": x["claims"], "source": f"narration:{x['id']}", "where": w})
+    for scene in lesson.data["storyboard"]:
+        if not scene.get("question"):
+            for j, line in enumerate(scene["narration"]):
+                items.append({"text": line["text"], "claims": line["claims"],
+                              "source": f"narration:{scene['id']}.{j}", "where": w})
     seen, out = set(), []
     for it in items:
         k = (it["text"], it["source"])

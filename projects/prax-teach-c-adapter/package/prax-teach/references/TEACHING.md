@@ -25,10 +25,9 @@ protocol. Follow the one the route names; don't blend them.
   guess would start a long build; otherwise choose and say why in one clause.
 - **Every value comes from the lesson model** or a real run. Never type a number from memory into
   an answer key.
-- **Stop rule.** Stop when the learner says they're satisfied **and** at least one evidence item was
-  observed, or when they explicitly stop. Satisfaction alone isn't enough to call it learned: say
-  what's still unobserved and offer one check. A summary is not a close: end the session only by
-  this rule.
+- **Stop rule.** Stop when the learner says they're satisfied or asks to stop. Practice and evidence
+  collection are optional. Report only observed understanding; satisfaction does not establish
+  independent mastery. Do not require an attempt, consent, or another check to close.
 
 ## Rules for practice modes
 

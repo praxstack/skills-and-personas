@@ -1,9 +1,8 @@
 """Learner state and Google Drive for desktop (WP11, D23.1 to D23.4; evidence: plan/EVIDENCE-HARDLINKS.md).
 
-Google Drive for desktop backs up whole folders ("My Computer" roots, here ~/Developer and ~/Study). About 0.1 to
-1.5 s after a file is created it hard-links the file into ``<root>/.tmp.driveupload/<number>`` and keeps that link
-until the upload finishes; the file goes to the Google account linked to Drive. So learner state written in such a
-folder is copied to Google within seconds, and a local copy can outlive ptk's delete.
+Google Drive for desktop can back up whole folders. A local probe observed staging hard links shortly after
+file creation; this does not establish when or whether an upload completes. Learner state in a backed-up
+folder may be uploaded, and a local staged copy can outlive ptk's workspace deletion.
 
 Detection: a folder is Drive-backed when it or an ancestor holds a ``.tmp.driveupload`` (or ``.tmp.drivedownload``)
 directory. Only that directory's own entry is checked (lstat); nothing inside it is listed or read. Drive's
@@ -100,9 +99,9 @@ def consent_notice(location: SyncedLocation) -> str:
     staging = location.root / DRIVE_STAGING[0]
     return (
         f"This folder is inside {location.root}, which Google Drive for desktop backs up to the Google account "
-        "linked to Drive. Your goal, practice evidence and reviews would be copied to Google within seconds. "
+        "linked to Drive. Your goal, practice evidence and reviews may be uploaded; upload timing is not verified. "
         "Deleting them here does not delete Google's copy, its version history or its trash, and a local copy can "
-        f"stay in {staging} until Drive finishes uploading. Export shows only this workspace, not the copies Drive "
+        f"remain in {staging}. Export shows only this workspace, not the copies Drive "
         "keeps. To keep learner state off Google Drive, choose a folder Drive does not back up. To store it here "
         "anyway, run init again with --consent --allow-google-drive."
     )

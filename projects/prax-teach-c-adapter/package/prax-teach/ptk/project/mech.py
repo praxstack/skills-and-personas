@@ -428,7 +428,7 @@ def _memory(c, x, y, w):
     if c.on(v["bits"]) and not bits_done:
         y = _low_byte(c, x, y, w, v)
     if M and all(c.on(f) for f in M["double"]):
-        row = _mem_row(c, x, y + 22 * S["k"], w, f"(double){v['var']}", "double", M["double"], _size_fact(lesson, "double"))
+        row = _mem_row(c, x, y + 22 * S["k"], w, f"d = (double){v['var']}", "double", M["double"], _size_fact(lesson, "double"))
         y = row["y"]
         dbits = next((ln.get("via") for ln in P.get("lanes", []) if ln.get("via")), None)
         if dbits and c.on(dbits):

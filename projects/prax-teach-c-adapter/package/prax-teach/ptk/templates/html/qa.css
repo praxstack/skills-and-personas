@@ -50,3 +50,4 @@ html.js .layer h3[data-sealed="true"]{display:none}
 html.js .layer h3[data-sealed="false"]+.sealed-ph{display:none}
 html:not(.js) .sealed-ph{display:none}
 .sealed-ph{color:var(--label)}
+.explanation{display:grid;gap:.75rem;max-width:60ch;padding-block:.5rem 1rem}

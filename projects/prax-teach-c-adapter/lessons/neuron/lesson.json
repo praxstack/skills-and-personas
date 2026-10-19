@@ -993,7 +993,7 @@
     {
       "id": "c.add",
       "kind": "mechanism",
-      "text": "The neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
+      "text": "In neuron.c, the neuron adds the two terms and the bias, which print as +1.2, -0.4 and -0.2, and the program prints that sum, z, as 0.6.",
       "justification": "programs/neuron.c line 12: z = t1 + t2 + b, added left to right in double. With t1 = 0.8 * 1.5 (printed +1.2), t2 = 0.4 * -1 (printed -0.4) and b = -0.2, the double sum is the binary64 value just above 0.6 (0.6000000000000001), which %g on line 13 prints as 0.6 (C17 7.21.6.1p8: six significant digits). The sentence states the printed value, not an exact 0.6.",
       "sources": [
         {
@@ -1095,7 +1095,7 @@
     {
       "id": "c.round",
       "kind": "caveat",
-      "text": "On this machine, where double is binary64, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
+      "text": "In neuron.c, on this machine, where double is binary64, 0.8 × 1.5 is not exactly 1.2 and z is not exactly 0.6, which has no exact double form; %g rounds z to 6 significant digits and prints 0.6.",
       "justification": "0.8, 0.4 and 0.2 have no exact binary64 form (1.5 is exact); 0.8 * 1.5 evaluates to the double just above 1.2, so t1 + t2 + b is the double just above 0.6 (0.6000000000000001 in shortest round-trip form), and z == 0.6 is false. %g with the default precision 6 prints it as 0.6 (C17 7.21.6.1p8). On this platform double has the binary64 parameters that C17 §5.2.4.2.2 EXAMPLE 2 gives for an IEC 60559 double: programs/double_format.c prints FLT_RADIX 2, DBL_MANT_DIG 53, DBL_MIN_EXP -1021 and DBL_MAX_EXP 1024 (facts f.radix, f.mantdig, f.minexp, f.maxexp), and sizeof(double) is 8 (f.dsize). The format is measured, not taken from Annex F, which binds only implementations that define __STDC_IEC_559__.",
       "sources": [
         {
@@ -1183,7 +1183,7 @@
     {
       "id": "c.kround",
       "kind": "mechanism",
-      "text": "In binary64, 0.8 × 1.5 is the double 1.2000000000000002, not exactly 1.2, so at four explorer settings, such as w2 = -1 and b = -0.8, 0.8 × 1.5 + 0.4 × w2 + b does not come out at exactly 0: z prints as 1.11022e-16 or 2.22045e-16 instead.",
+      "text": "In binary64, input and operation rounding together leave tiny nonzero z values at four slider settings whose exact decimal sum is 0. They print as 1.11022e-16 or 2.22045e-16, the grid's only nonzero |z| below 1e-9.",
       "justification": "double_format.c's captured run prints FLT_RADIX 2 and DBL_MANT_DIG 53, so double is the IEC 60559 binary64 format: a 53-bit significand, each result rounded to the nearest representable value. 0.8 is the double 0.80000000000000004441; 1.5 is exact; their product rounds to 1.20000000000000017764, which prints with 17 significant digits as 1.2000000000000002. ptk/expect_neuron.py repeats neuron.c's lines 8, 10 and 12 in that order: at (w2, b) = (-1, -0.8), t2 = 0.4 * -1 = -0.40000000000000002220, t1 + t2 = 0.80000000000000015543, and adding b = -0.80000000000000004441 gives 1.1102230246251565e-16, which %g prints as 1.11022e-16. The same holds at (-2, -0.4) and (-1.5, -0.6); at (-0.5, -1), z is 2.220446049250313e-16, printed 2.22045e-16. These are the only nonzero values of magnitude below 1e-9 on the explorer's grid. The explorer shows the sentence only at those settings.",
       "sources": [
         {

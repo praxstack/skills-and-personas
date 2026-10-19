@@ -1322,7 +1322,7 @@
     {
       "id": "c.fprint",
       "kind": "rule",
-      "text": "%f prints a finite double with six digits after the decimal point when no precision is given, so it prints 66.000000.",
+      "text": "%f prints a finite double with six digits after the decimal point when no precision is given, so for (double)a with a = 66 it prints 66.000000.",
       "justification": "7.21.6.1p8, conversion f: style [−]ddd.ddd with precision digits after the point; a missing precision is taken as 6. The argument is the double 66.0; the run printed 66.000000 on line 5.",
       "sources": [
         {
@@ -1774,7 +1774,7 @@
     {
       "id": "c.dmem",
       "kind": "mechanism",
-      "text": "(double)a is a new object with 8 bytes of its own: 00 00 00 00 00 80 50 40. Read from the highest address down, they are 0x4050800000000000.",
+      "text": "On this machine, d, the double that bytes.c initialises from (double)a with a = 66, is 8 bytes: 00 00 00 00 00 80 50 40. Read from the highest address down, they are 0x4050800000000000.",
       "justification": "bytes.c stores (double)a in d (line 6), copies d into unsigned char db[sizeof d] with memcpy (line 10) and prints each byte with %02x from index 0 up (lines 13-14): 00 00 00 00 00 80 50 40. Reversed, from index 7 down to 0, that is 40 50 80 00 00 00 00 00, the same bits views.c prints with %#llx as 0x4050800000000000 (fact f.dbits). sizeof(double) is 8 (f.dsize).",
       "sources": [
         {

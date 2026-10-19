@@ -223,6 +223,21 @@ JS_UI = ("chapters", "code_label", "output_label", "vars_label", "question_label
 PAUSE_AFTER = 0.25  # the film stops this long after the question's last spoken word (no dead air before the pause)
 
 
+def answer_cues(lesson, cue_list):
+    """First settled cue that actually carries each question's answer fact."""
+    out = []
+    for scene in lesson.data["storyboard"]:
+        question = scene.get("question")
+        if not question:
+            continue
+        answer = question["answer_fact"]
+        cue = next((c for c in cue_list if any(row["fact"] == answer
+                    for row in c["state"]["output"] + c["state"].get("panel", []))), None)
+        if cue is not None:
+            out.append(cue)
+    return out
+
+
 def question_plan(lesson, timing, cue_list):
     """Where the film waits for a prediction in practice mode (round 18, review X1; AC-6.8). Per question
     scene with options:
@@ -242,7 +257,7 @@ def question_plan(lesson, timing, cue_list):
             continue
         q_end = max(c["end"] for c in timing["cues"] if c["scene"] == sc["id"])
         nxt = scenes[k + 1] if k + 1 < len(scenes) else None
-        ans = next((c for c in cue_list if c["kind"] == "answer" and c.get("answer_for") == sc["id"]), None)
+        ans = next((c for c in cue_list if any(row["fact"] == q["answer_fact"] for row in c["state"]["output"] + c["state"].get("panel", []))), None)
         answer_at = ans["start"] if ans else (nxt["reveal"] if nxt else timing["duration"])
         resume_at = nxt["start"] if nxt else timing["duration"]
         opts = []
@@ -291,7 +306,7 @@ def page_data(lesson, timing, cue_list, ive_dir, live):
     """window.__ptkIveData, written to ive-data.js: the exact text of the three .vtt files (the page
     turns them into blob: tracks, so they load from file://) plus UI strings and the live model.
     It is a separate file, so no cue payload or answer is in the document."""
-    answers = [c for c in cue_list if c["kind"] == "answer"]
+    answers = answer_cues(lesson, cue_list)
     return {"fps": timing["fps"], "ui": {k: text.ui(k) for k in JS_UI}, "captions_label": "English",
             "artifact_id": f"{lesson.id}:ive", "session_id": "local",
             "tracks": {k: (ive_dir / f"{k}.vtt").read_text() for k in ("captions", "chapters", "states")},
@@ -329,7 +344,7 @@ def _live_html(lesson, live, unlock):
 def page(lesson, timing, cue_list, posters, live=None):
     """The IVE page. Static text is chrome.json, the title, or narration in the no-JS block."""
     script = (IVE_DIR / "ive.js").read_text()
-    answers = [c for c in cue_list if c["kind"] == "answer"]
+    answers = answer_cues(lesson, cue_list)
     unlock = answers[-1]["start"] if answers else None
     extra = {} if (lesson.data.get("figure") or {}).get("panel") else {"kind": "control-path"}
     pchars = " ".join(mech.svg_fragment(lesson, st["id"], lay, "light", **extra)[2] for st in lesson.data["trace"]

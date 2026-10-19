@@ -17,6 +17,7 @@ renders the per-scene source. HyperFramesRenderer is the only backend today.
 Outputs in build/video/: lesson.mp4, captions.vtt, chapters.vtt, transcript.txt, timing.json,
 narration.wav, composition/ (index.html + compositions/<scene>.html), work/ (intermediates).
 """
+from collections import Counter
 import difflib
 import json
 import math
@@ -126,14 +127,15 @@ def draw_plan(lesson, before_sid, sid, budget=None):
     old = lesson.state(before_sid)["state"] if before_sid else None
     same = old is not None and old["program"] == cur["program"]
     morph = MORPH if (old is not None and not same) else 0.0
-    old_segs = {(a, b) for a, b, _k in rail.segments(old["path"])} if same else set()
+    old_segs = Counter((a, b) for a, b, _k in rail.segments(old["path"])) if same else Counter()
     steps, t = [], morph
     first = None if same else (cur["path"][0] if cur["path"] else None)
     first_at = round(t, 3)
     if first is not None:
         t += 0.15
     for a, b, kind in rail.segments(cur["path"]):
-        if (a, b) in old_segs:
+        if old_segs[(a, b)]:
+            old_segs[(a, b)] -= 1
             continue
         dur = SEG_JUMP if kind == "jump" else SEG_RUN
         steps.append({"a": a, "b": b, "kind": kind, "t0": round(t, 3), "dur": dur})
