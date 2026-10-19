@@ -975,10 +975,13 @@ def _neuron(c, x, y, w):
     svg.open(data_part="panel", data_panel="gate")
     yy = cy + S["label"]
     c.label(cx, yy, "panel_gate")
-    gx0, gx1 = cx + 14, cx + cw - 24
-    gy1 = yy + 40          # top of the plot
-    gy0 = gy1 + (140 if wide else 112)  # the z axis (a = 0)
     zlo, zhi = -1.0, 1.5
+    # one scale on both axes, so the slope of 1 reads as 1 (review: unequal scales made it read as about 0.4)
+    gx0, gx1 = cx + 14, cx + cw - 24
+    plot_h = min(140 if wide else 126, (gx1 - gx0) * zhi / (zhi - zlo))
+    gx1 = min(gx1, gx0 + plot_h * (zhi - zlo) / zhi)
+    gy1 = yy + 40          # top of the plot
+    gy0 = gy1 + plot_h     # the z axis (a = 0)
     GX = lambda z: gx0 + (z - zlo) / (zhi - zlo) * (gx1 - gx0)  # noqa: E731
     GY = lambda a: gy0 - a / zhi * (gy0 - gy1)  # noqa: E731
     svg.line(gx0, gy0, gx1, gy0, t["rule"], 1.2)
