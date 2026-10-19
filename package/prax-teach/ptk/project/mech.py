@@ -965,6 +965,16 @@ def _wiring(c, P, cx, cw, by, row, tone, scale=1.0):
              ("chrome", "neuron_add"), anchor="middle")
     ox = cx + cw - 6
     _curve_arrow(c, (sx + sr + 3, sy), (sx + sr + 12, sy), (ox - 10, sy), (ox, sy), t["value"], 2.2)
+    # the line that will add them, beside the bias row (B5): its sum is what the number line follows once it exists
+    pid = c.lesson.data["figure"]["program"]
+    for n_, ln_ in enumerate(c.lesson.program_source(pid).split("\n"), 1):
+        m_ = re.search(r"\b(\w+)\s*=\s*(\w+(?:\s*\+\s*\w+)+)\s*;", ln_)
+        if m_:
+            svg.open(data_src_line=n_)
+            c.code(cx + cw - 4, ys[-1] + S["code"] * 0.4, f"{m_.group(1)} = {m_.group(2)}", pid, size=S["code"] * 1.05,
+                   color=t["label"], anchor="end")
+            svg.close()
+            break
     svg.text((sx + sr + ox) / 2, sy - 12, text.ui("axis_z"), "mono", lp, t["label"], ("chrome", "axis_z"),
              anchor="middle")
 
@@ -994,6 +1004,8 @@ def _neuron(c, x, y, w):
     c.label(cx, yy, "panel_multiply", max_w=cw)
     yy += 20 + head_extra
     rows = [(i, tm) for i, tm in enumerate(P["terms"], 1)] + [(0, None)]
+    prods = [(n_, f"{m_.group(1)} = {m_.group(2)}") for n_, ln_ in enumerate(src, 1)
+             for m_ in [re.search(r"\b(\w+)\s*=\s*(\w+\s*\*\s*\w+)\s*;", ln_)] if m_]
     for i, tm in rows:
         yy += S["note"] * 1.6
         if tm is None:
@@ -1018,6 +1030,12 @@ def _neuron(c, x, y, w):
             if c.on(tm["t"]):
                 c.group(tm["t"])
                 c.value(cx + cw, yy + ls * 1.2, tm["t"], size=big, color=tone(tm["t"]), anchor="end")
+                svg.close()
+            elif i - 1 < len(prods):
+                # before the product is computed, the line that will compute it stands where its value will be (B5)
+                n_, expr = prods[i - 1]
+                svg.open(data_src_line=n_)
+                c.code(cx + cw, yy + ls * 1.2, expr, pid, size=S["code"] * 1.05, color=t["label"], anchor="end")
                 svg.close()
         yy += ls * 1.7 + 18
         svg.line(cx, yy, cx + cw, yy, t["rule"], 1)
