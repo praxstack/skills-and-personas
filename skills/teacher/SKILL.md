@@ -56,6 +56,8 @@ If several gaps are plausible, ask one focused question to find which. After two
 
 ## Choose the medium that makes it click
 
+When a host uses the six-format routing IDs (`still`, `explorer`, `qa`, `cards`, `narrated-video`, `interactive-video`), live question-and-answer tutoring uses **`qa`** as its primary representation. It stays in chat and does not build a Q&A page unless the learner requests a reference artifact. Practice changes the interaction order; it does not imply a still, a deck or a file. A supporting picture is optional when it carries essential information.
+
 Honor an explicitly requested delivery form before choosing a default. A live tutoring exchange (“ask me one question at a time”) stays in the conversation: it is not a flashcard export or a layered reference page. Produce cards only when the learner asks for cards or a reusable revision deck; produce a Q&A expander when they ask for an explorable reference artifact. Practice describes the teaching order, not the file format.
 
 | The idea is mostly... | Make | With |
@@ -66,6 +68,7 @@ Honor an explicitly requested delivery form before choosing a default. A live tu
 | a story: intro, walkthrough, recap to rewatch | a narrated video with a natural voice | `skills/explorable/scripts/narrate.py` turns any lesson into one; `skills/explainer-video` for bespoke films (Manim, Motion Canvas, Remotion, HyperFrames, Three.js and more) |
 | code the learner should read and run | the lesson's code panel (C++ / Python, line lit per step, Python runs in the page) | `skills/explorable` (`code` field) |
 | layered questions about one mechanism | explanation-first Q&A from the lesson | `skills/explorable/scripts/bundle_lesson.mjs` |
+| an explicitly requested live Q&A drill | a live conversation (routing ID `qa`), one exchange at a time | ordinary chat; no standalone artifact |
 | explicit recall or revision cards | contextual flashcards, with optional reveal | `skills/explorable/scripts/bundle_lesson.mjs` |
 | video plus learner-controlled state exploration | narrated video, chapters and the same live model | `skills/explorable/scripts/bundle_lesson.mjs` |
 | a whole subject over many sittings | a course: map, outline, notes, quiz, every lesson in every medium | `skills/course` |
@@ -113,7 +116,7 @@ Run `skills/visual-qa` on every page and clip, then open the screenshots and loo
 
 ## Series of sessions
 
-For anything bigger than one sitting, offer to keep a journal. Only with a yes:
+For anything bigger than one sitting, offer to keep a journal. Before consent, name the directory and the stored learner/goal/session information; explain that sync or backup software can retain or upload copies, and that forgetting this journal removes local application files only. Offer an unsynced location when appropriate. Only with a yes:
 
 ```sh
 python3 scripts/series.py init --learner "Prax" --goal "understand transformers well enough to implement one"
@@ -154,7 +157,7 @@ All live in `skills/`, so this folder works on its own. Provenance and hashes: `
 | `explain-diagram` | explained stills from Mermaid, D2, Graphviz, PlantUML, Vega-Lite, Excalidraw |
 | `visual-qa` | page and video checks |
 | `explainer-video` and 10 engines | narrated video: Manim, Motion Canvas, Remotion, Revideo, HyperFrames, GSAP, Motion, Three.js, Theatre.js, hand-drawn JS |
-| `teach-pro-max` | the deep teaching engine: adaptive tutoring, consented multi-session courses, the visualization tool registry |
+| `teach-pro-max` | preserved compatibility operations and registry references; optional, not the authority for general lessons or courses |
 | `algo-sensei` | DSA and LeetCode mentoring: progressive hints, code review, mock interviews |
 | `techtutor` | intuition-first technical mentoring in six layers: why, how, visualize, code or maths, scale, connect |
 | `eli` | decision-grade visual HTML explainers for a mature reader: evidence labels, tradeoffs, risks |
