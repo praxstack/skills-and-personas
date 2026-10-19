@@ -614,19 +614,21 @@ def check_points(scene):
 _PROBES = {}
 
 
-def probe_video(video_dir, timing, samples, name, lesson_sha=None):
-    """{label: extraction} for samples [(label, video time)], each from the scene on screen at that frame."""
-    key = (str(video_dir), tuple(samples))
+def probe_video(video_dir, timing, samples, name, lesson_sha=None, diff_sel=None):
+    """{label: extraction} for samples [(label, video time)], each from the scene on screen at that frame. With
+    diff_sel, each extraction also carries m["diff"][diff_sel]: the pixel-difference coverage of that group."""
+    key = (str(video_dir), tuple(samples), diff_sel)
     if key in _PROBES:
         return _PROBES[key]
     fps = timing.get("fps", 30)
     tmp, pages = _harness(video_dir)
+    shots = host.make_tmp(f"b0-{name}-shots-")
     per = {}
     for label, t in samples:
         ft = frame_time(t, fps)
         sc = scene_at(timing, ft)
         per.setdefault(sc["id"], []).append((label, round(ft - sc["start"], 4)))
-    out = {}
+    out, shot_of = {}, {}
     try:
         with visual.LocalServer(tmp) as srv:
             jobs = []
@@ -639,6 +641,10 @@ def probe_video(video_dir, timing, samples, name, lesson_sha=None):
                 for label, local in rows:
                     steps += [{"eval": f"{SEEK_JS}({local})", "as": f"s:{label}"},
                               extract_step({"W": 1920, "H": 1080}, f"m:{label}")]
+                    if diff_sel:
+                        k = len(shot_of)
+                        shot_of[label] = (shots / f"{k}-a.png", shots / f"{k}-b.png")
+                        steps += diff_steps(diff_sel, *shot_of[label])
                 jobs.append({"id": sid, "type": "script", "url": f"{srv.url}/{pages[sid]}", "width": 1920,
                              "height": 1080, "steps": steps})
             res = shoot(jobs, name, lesson_sha)
@@ -648,13 +654,38 @@ def probe_video(video_dir, timing, samples, name, lesson_sha=None):
                 m = vals.get(f"m:{label}")
                 if not r.get("ok") or not m:
                     out[label] = {"error": (r.get("error") or "no values")[:500]}
-                else:
-                    m["scene"], m["local"], m["scene_kind"] = r["id"], local, (vals.get(f"s:{label}") or {}).get("kind")
-                    out[label] = m
+                    continue
+                m["scene"], m["local"], m["scene_kind"] = r["id"], local, (vals.get(f"s:{label}") or {}).get("kind")
+                if diff_sel:
+                    a, b = shot_of[label]
+                    m["diff"] = {diff_sel: diff_coverage(a, b)}
+                out[label] = m
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+        shutil.rmtree(shots, ignore_errors=True)
     _PROBES[key] = out
     return out
+
+
+def mp4_gray_frames(mp4, fps=2, w=FRAME_W, h=FRAME_H, out=None):
+    """Every frame of the MP4 at `fps`, quarter size, gray, after a 3 x 3 median filter (lone specks of texture
+    cannot make an empty area look drawn). Returns [(time, raw)]; frame k is at k / fps."""
+    tmp = Path(out or host.make_tmp("b0-mp4-")) / "frames.gray"
+    host.run([host.which("ffmpeg"), "-v", "error", "-y", "-i", str(mp4), "-vf",
+              f"fps={fps},scale={w}:{h}:flags=area,format=gray,median=radius=1", "-f", "rawvideo", str(tmp)],
+             check=True, timeout=600)
+    data = tmp.read_bytes()
+    tmp.unlink()
+    n = len(data) // (w * h)
+    return [(k / fps, data[k * w * h:(k + 1) * w * h]) for k in range(n)]
+
+
+def median_gray(src, out, w=FRAME_W, h=FRAME_H):
+    """An image (a fixture screenshot) at quarter size, gray, median filtered, as mp4_gray_frames does."""
+    host.run([host.which("ffmpeg"), "-v", "error", "-y", "-i", str(src), "-vf",
+              f"scale={w}:{h}:flags=area,format=gray,median=radius=1", "-frames:v", "1", "-f", "rawvideo", str(out)],
+             check=True, timeout=120)
+    return Path(out).read_bytes()
 
 
 # ---------------------------------------------------------------- spoken words
