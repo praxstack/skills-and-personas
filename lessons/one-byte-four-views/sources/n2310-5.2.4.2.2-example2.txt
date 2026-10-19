@@ -1,0 +1,56 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §5.2.4.2.2, EXAMPLE 2 (¶17 in N2310)
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §5.2.4.2.2, EXAMPLE 2 (¶17 in N2310)
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 2315-2364 of that text
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage. pdftotext breaks the two summation formulas at the start of the example across several lines; the macro table is intact.
+---
+17   EXAMPLE 2 The following describes floating-point representations that also meet the requirements for single-precision and
+     double-precision numbers in IEC 60559,28) and the appropriate values in a <float.h> header for types float and double:
+                      24
+           xf = s2e         fk 2−k ,
+                      P
+                                       −125 ≤ e ≤ +128
+                      k=1
+
+                      53
+           xd = s2e         fk 2−k ,
+                      P
+                                       −1021 ≤ e ≤ +1024
+                      k=1
+
+
+
+               FLT_RADIX                          2
+               DECIMAL_DIG                       17
+               FLT_MANT_DIG                      24
+               FLT_EPSILON          1.19209290E-07F // decimal constant
+               FLT_EPSILON                 0X1P-23F // hex constant
+               FLT_DECIMAL_DIG                    9
+               FLT_DIG                            6
+               FLT_MIN_EXP                     -125
+               FLT_MIN              1.17549435E-38F // decimal constant
+               FLT_MIN                    0X1P-126F // hex constant
+               FLT_TRUE_MIN         1.40129846E-45F // decimal constant
+               FLT_TRUE_MIN               0X1P-149F // hex constant
+               FLT_HAS_SUBNORM                    1
+               FLT_MIN_10_EXP                   -37
+               FLT_MAX_EXP                     +128
+               FLT_MAX              3.40282347E+38F // decimal constant
+               FLT_MAX              0X1.fffffeP127F // hex constant
+               FLT_MAX_10_EXP                   +38
+               DBL_MANT_DIG                      53
+               DBL_EPSILON   2.2204460492503131E-16 // decimal constant
+               DBL_EPSILON                  0X1P-52 // hex constant
+               DBL_DECIMAL_DIG                   17
+               DBL_DIG                           15
+               DBL_MIN_EXP                    -1021
+               DBL_MIN      2.2250738585072014E-308 // decimal constant
+               DBL_MIN                    0X1P-1022 // hex constant
+               DBL_TRUE_MIN 4.9406564584124654E-324 // decimal constant
+               DBL_TRUE_MIN               0X1P-1074 // hex constant
+               DBL_HAS_SUBNORM                    1
+               DBL_MIN_10_EXP                  -307
+               DBL_MAX_EXP                    +1024
+               DBL_MAX      1.7976931348623157E+308 // decimal constant
+               DBL_MAX       0X1.fffffffffffffP1023 // hex constant
+               DBL_MAX_10_EXP                  +308

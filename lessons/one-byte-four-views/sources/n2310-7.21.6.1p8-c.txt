@@ -1,0 +1,14 @@
+document: ISO/IEC 9899 working draft N2310 (WG14, 6 November 2018: the C17 text, with diff marks on later changes)
+clause: §7.21.6.1 ¶8 (its first line and the c conversion)
+cited_as: ISO/IEC 9899:2018 (C17), working draft N2176, §7.21.6.1 ¶8 (its first line and the c conversion)
+taken_from: refs/n2310.pdf in $PTK_STATE (sha256 6a01dfbfd271a2b6682e48a13a68cf4b599beb3b7e39512bc74989d0b5991029), text by pdftotext version 26.10.0 -layout, lines 15452, 15538-15543 of that text (the lines between them, page header, footer or footnotes, left out)
+note: The N2176 PDF on this machine is password-protected, so this passage was taken from N2310, the next WG14 working draft. N2310 marks text changed since C17 with diff marks (rows of ':' under the changed text); none fall inside this passage. pdftotext drops the space in 'unsigned char,and'.
+---
+8   The conversion specifiers and their meanings are:
+
+     c            If no l length modifier is present, the int argument is converted to an unsigned char,and
+                  the resulting character is written.
+                  If an l length modifier is present, the wint_t argument is converted as if by an ls
+                  conversion specification with no precision and an argument that points to the initial
+                  element of a two-element array of wchar_t, the first element containing the wint_t
+                  argument to the lc conversion specification and the second a null wide character.

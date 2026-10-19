@@ -1,7 +1,8 @@
 """`ptk build` and `ptk claims check`: run the state machine in model.py and write the build report.
 
-build:  validate → capture → expect check → project (--only media) → automatic gates
-        → claims jobs (lesson + ≤12 mutations + controls, AC-7.1; --canary: lesson + 1 planted error, D22.1)
+build:  validate (+ stored source passages, AC-7.7) → capture → expect check → project (--only media) → automatic gates
+        → claims jobs (3 lesson jobs + ≤12 mutations + controls, AC-7.1/7.8; --canary: 3 lesson jobs + 1 planted
+          error, D22.1)
         → claims-pending (exit 4) | failed (1) | incomplete (5) | degraded (6)
 claims check: reviews vs manifests → verified (0) | canary-verified (6, --canary only) | failed | incomplete | degraded
 The report (build/build-report.json) records every gate, measurement, artifact hash and tool version.
@@ -255,6 +256,7 @@ def build(lesson_path, only=None, video_theme=None, renderer="hyperframes", cana
                                           pointer="/requested_media")
         model.validate(lesson)
         rep["lesson"] = lesson.id
+        rep["sources"] = claims_gate.check_source_excerpts(lesson)  # AC-7.7: before any capture or render
         go("valid")
         rep["cleared"] = clear_outputs(build_dir, media)
         cap = c_runner.capture_lesson(lesson)

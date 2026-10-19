@@ -8,10 +8,13 @@ and `ptk claims check`.
         │
         ▼  teaching texts only (claims, narration, captions, alt, questions, options, trace labels,
         │  titles, projector sentences); code, chrome and number labels are bound by hash, not sent
-    job body ──▶ manifest {model, body, every artifact text, sources, rubric version + sha, slot}
+    job body ──▶ manifest {model, body, every artifact text, sources, stored source passages, rubric version + sha, slot}
+        │  (AC-7.7: every outside source names its passage under lessons/<id>/sources/; a missing passage or a quote
+        │   the passage doesn't contain is SourceExcerptMissing, checked before capture and again here)
         ▼
-    build/claims-jobs/<job>.json   default (AC-7.1): 1 lesson job + ≤12 mutation jobs + 1 control per mutation
-                                   --canary (D22.1, cheaper): 1 lesson job + 1 canary mutation job
+    build/claims-jobs/<job>.json   default (AC-7.1): 3 lesson jobs (AC-7.8, one per reviewer) + ≤12 mutation jobs
+                                   + 1 control per mutation
+                                   --canary (D22.1, cheaper): 3 lesson jobs + 1 canary mutation job
                                    (roles kept in $PTK_STATE/claims-private/, never in the lesson tree)
         ▼  host agent: one subagent per job, given only the job file + ptk/verify/rubric.md
     build/claims-review/<job>.json
@@ -21,7 +24,8 @@ and `ptk claims check`.
         ▼
     echo == job manifest == manifest recomputed from current inputs? ──no──▶ stale (failed)
         ▼
-    claims.review (lesson job accepted) + claims.sensitivity (rates vs E22 thresholds)
+    claims.review (all 3 lesson jobs accepted; a split verdict is listed per claim or text, AC-7.8)
+                                        + claims.sensitivity (rates vs E22 thresholds)
                                         or, with --canary, claims.canary (planted error caught; the build
                                         is at best `canary-verified`, never `verified`)
 """
@@ -31,17 +35,19 @@ import importlib
 import json
 import re
 import shutil
+import unicodedata
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 
-from .. import host, model, text
+from .. import errors, host, model, text
 from . import media
 from . import mutation_claims as mc
 
 RUBRIC = host.PKG / "ptk" / "verify" / "rubric.md"
 REVIEW_SCHEMA = host.PKG / "schemas" / "claims-review.schema.json"
-RUBRIC_VERSION = "3"  # round 18: justifications must be literally true
-JOB_SCHEMA = "prax-teach/claims-job@2"
+RUBRIC_VERSION = "4"  # v2.2 A3: stored source passages, sentence classes, three lesson reviewers
+JOB_SCHEMA = "prax-teach/claims-job@3"
+LESSON_REVIEWERS = 3  # AC-7.8: the lesson job is written once per independent reviewer; all must accept
 MAP_ATTRS = ("data-claim", "data-chrome", "data-fact", "data-code", "data-label", "data-question", "data-trace",
              "data-narration", "data-option", "data-misconception")
 SKIP_TAGS = {"style", "script", "title", "head", "video", "track", "source"}
@@ -727,12 +733,220 @@ def mapping_gate(lesson, items):
             "reason": "ClaimsUnmapped" if unmapped else ""}
 
 
+# ---------------------------------------------------------------- stored source passages (AC-7.7)
+#
+# rc1's reviewers judged cited clauses from memory: one rejected a correct C17 quote as "the C90 wording", another
+# called a quote cut because it remembered different text. Every outside source now names the passage it relies on,
+# stored with the lesson as plain text, and the job carries that text. Reviewers judge citations only against it.
+
+EXCERPT_PATH = re.compile(r"sources/[a-z0-9][a-z0-9._-]*\.txt")
+EXCERPT_HEADER = ("document", "clause", "taken_from")
+_INTERNAL_TITLE = re.compile(r"^this lesson's storyboard\b|^captured\b|recorded by ptk capture")
+
+
+def is_document_source(src):
+    """True when a claim source cites an outside document (a standard clause, a book section, a manual page). The
+    lesson's own programs, captured runs and platform facts, recorded diagnostics and storyboard travel in the job
+    itself. Anything else counts as a document, so a new kind of source needs a stored passage until it is named here."""
+    if re.match(r"https?://", src.get("url") or ""):
+        return True
+    title, clause = src.get("title") or "", src.get("clause") or ""
+    return not ("programs/" in title or "programs/" in clause or _INTERNAL_TITLE.search(title))
+
+
+def read_excerpt(lesson_dir, rel):
+    """A stored passage: `key: value` header lines (document, clause, taken_from, ...), a `---` line, then the passage
+    text exactly as taken from the document. Raises ValueError or OSError if it is not there or not well formed."""
+    if not isinstance(rel, str) or not EXCERPT_PATH.fullmatch(rel):
+        raise ValueError(f"{rel!r} is not a sources/<name>.txt path")
+    raw = (lesson_dir / rel).read_bytes()
+    head, sep, body = raw.decode("utf-8").partition("\n---\n")
+    if not sep:
+        raise ValueError(f"{rel}: no '---' line between the header and the passage")
+    header = {}
+    for line in head.splitlines():
+        k, _, v = line.partition(":")
+        if k.strip() and v.strip():
+            header[k.strip()] = v.strip()
+    missing = [k for k in EXCERPT_HEADER if not header.get(k)]
+    if missing:
+        raise ValueError(f"{rel}: header lacks {', '.join(missing)}")
+    if not body.strip():
+        raise ValueError(f"{rel}: empty passage")
+    return {"path": rel, "sha256": hashlib.sha256(raw).hexdigest(), "header": header, "text": body}
+
+
+def _squash_quote(s):
+    """Compare quotes and passages without layout: NFKC (ligatures), U+2212 as '-', footnote reference numbers glued
+    to a word or punctuation ('60559,28)') dropped, all whitespace dropped."""
+    s = unicodedata.normalize("NFKC", s).replace("−", "-")
+    s = re.sub(r"(?<=[^\s\d(])\d{1,3}\)", "", s)
+    return re.sub(r"\s+", "", s)
+
+
+def quote_in_passages(quote, texts):
+    """Every part of the quote, in order, inside the stored passages. '…' or '[...]' in a quote marks a cut."""
+    hay = _squash_quote("\n".join(texts))
+    pos = 0
+    for part in re.split(r"\s*(?:…|\[\.\.\.\])\s*", quote):
+        sq = _squash_quote(part)
+        if not sq:
+            continue
+        i = hay.find(sq, pos)
+        if i < 0:
+            return False
+        pos = i + len(sq)
+    return True
+
+
+def _excerpt_problems(lesson_dir, sources, where):
+    problems, refs = [], []
+    for i, src in enumerate(sources or []):
+        rels = src.get("excerpts") or []
+        if not is_document_source(src) and not rels:
+            continue
+        label = f"{where} source {i} ({src.get('title', '?')}, {src.get('clause', '?')})"
+        if not rels:
+            problems.append(f"{label}: cites a document but stores no passage under sources/")
+            continue
+        texts = []
+        for rel in rels:
+            try:
+                texts.append(read_excerpt(lesson_dir, rel)["text"])
+                refs.append(rel)
+            except (ValueError, OSError, UnicodeDecodeError) as e:
+                problems.append(f"{label}: stored passage {rel} is missing or malformed: {e}")
+        if src.get("quote") and len(texts) == len(rels) and not quote_in_passages(src["quote"], texts):
+            problems.append(f"{label}: the quote is not in its stored passage {', '.join(rels)}")
+    return problems, refs
+
+
+def check_source_excerpts(lesson, mutations=None):
+    """AC-7.7: every outside source of every claim, and of every planted citation (mutations.json, or the mutations
+    given), names a stored passage that exists, and each quote is in it. Returns the passage paths used; raises
+    SourceExcerptMissing listing every problem."""
+    problems, refs = [], []
+    for c in lesson.data["claims"]:
+        p, r = _excerpt_problems(lesson.dir, c.get("sources"), f"claim {c['id']}")
+        problems += p
+        refs += r
+    for m in (mc.load_authored(lesson) if mutations is None else mutations):
+        if "sources" in m:
+            p, r = _excerpt_problems(lesson.dir, m["sources"], f"mutation {m.get('id')}")
+            problems += p
+            refs += r
+    if problems:
+        raise errors.SourceExcerptMissing(
+            f"{len(problems)} cited passage(s) not stored with the lesson (AC-7.7); first: {problems[0]}",
+            problems=problems)
+    return sorted(set(refs))
+
+
+def _source_passages(lesson, claims):
+    """{path: passage} for every stored passage the job's claims cite: the header fields, the sha256 and the text."""
+    out = {}
+    for c in claims:
+        for src in c.get("sources") or []:
+            for rel in src.get("excerpts") or []:
+                if rel not in out:
+                    ex = read_excerpt(lesson.dir, rel)
+                    out[rel] = {**ex["header"], "sha256": ex["sha256"], "text": ex["text"]}
+    return dict(sorted(out.items()))
+
+
+# ---------------------------------------------------------------- sentence classes and places (AC-7.9)
+
+TEXT_CLASSES = {"claim", "alt", "narration", "chapter-title", "lesson-title", "question", "option", "trace-label",
+                "misconception", "template", "projector"}
+_CLASS = {"scene-title": "chapter-title", "title": "lesson-title", "trace": "trace-label"}
+WHERE_LEGEND = {
+    "still": "The still explainer: one static figure with the program, its output and numbered notes, read all at "
+             "once, not in time.",
+    "still (labelled as a wrong belief)": "On the still, inside a box the still labels as a wrong belief, shown for the "
+                                          "reader to reject.",
+    "video/<scene>.html": "One scene of the narrated video (the scene id is in `scenes`): its figure and chapter title "
+                          "are on screen while its narration plays; a question scene shows the question and its options.",
+    "captions.vtt": "The video's captions: each narration line, timed to its scene.",
+    "chapters.vtt": "The video's chapter list: one chapter title per scene.",
+    "transcript.txt": "The video's plain-text transcript, for reading without the video: the lesson title, then each "
+                      "chapter title with its start time, followed by that scene's narration lines. A question scene "
+                      "gives the question prompt without its options. Nothing plays and no figure is shown.",
+    "ive/index.html": "The interactive video explorer page: the video with its captions, its chapter list and a "
+                      "transcript panel.",
+    "ive/states.vtt": "State labels and the question, cued to the interactive video's timeline.",
+    "qa/index.html": "The Q&A expander: the first question with its options and answer key, then one layer per later "
+                     "scene with its chapter title, its narration lines and the output printed so far.",
+    "qa/index.html (labelled as a wrong belief)": "In the Q&A answer key, shown as the wrong belief behind a wrong "
+                                                  "option.",
+    "cards": "The flash-card deck: its title and fixed labels.",
+    "cards .md": "The deck's Markdown export.",
+    "cards q:<scene>": "The predict card for that question scene, read on its own: front the prompt and the program, "
+                       "back the captured answer.",
+    "cards out:<program>": "An output card, read on its own: front asks what that program prints, back its captured "
+                           "output.",
+    "cards m:<misconception>": "A wrong-on-purpose card, read on its own: front 'True or false?' and the wrong belief, "
+                               "back 'False.' and its correction.",
+    "cards r:<claim>": "A rule card, read on its own: front 'True or false?' and the claim, back 'True.'",
+    "explorer/index.html": "The interactive explorer page as it first opens.",
+    "explorer/index.html step <n>": "The explorer at step n of its step-through, showing that trace state.",
+    "explorer/index.html state <setting>": "The explorer with its live controls set as named.",
+    "explorer/index.html (try another value)": "The explorer's live-control section, which rebuilds its sentences "
+                                               "from the current setting.",
+    "explorer/index.html <noscript>": "The explorer's static fallback, shown without JavaScript.",
+    "model": "Taken straight from lesson.json (a fixture with no build).",
+}
+_WHERE_RULES = ((r"video/sc\w*\.html", "video/<scene>.html"), (r"cards q:.*", "cards q:<scene>"),
+                (r"cards out:.*", "cards out:<program>"), (r"cards m:.*", "cards m:<misconception>"),
+                (r"cards r:.*", "cards r:<claim>"), (r"explorer/index\.html.*<noscript>", "explorer/index.html <noscript>"),
+                (r"explorer/index\.html step \d+.*", "explorer/index.html step <n>"),
+                (r"explorer/index\.html state .*", "explorer/index.html state <setting>"))
+
+
+def where_kind(w):
+    """The where_legend key for one `where` value, or None for a place the legend doesn't describe."""
+    if w in WHERE_LEGEND:
+        return w
+    return next((k for rx, k in _WHERE_RULES if re.fullmatch(rx, w)), None)
+
+
+def _scenes_outline(lesson, teach):
+    """Per storyboard scene: its chapter-title, narration, question and option text ids, and its state. Each
+    scene-bound teaching text gets the ids of the scenes it belongs to (`scenes`)."""
+    sb = lesson.data["storyboard"]
+    for t in teach:
+        if t["class"] == "narration":
+            t["scenes"] = [t["ref"].partition(".")[0]] if "." in t["ref"] else []
+        elif t["class"] == "chapter-title":
+            t["scenes"] = [sc["id"] for sc in sb if _norm(sc["title"]) == t["text"]]
+        elif t["class"] == "question":
+            t["scenes"] = [t["ref"]]
+        elif t["class"] == "option":
+            t["scenes"] = [(t.get("option") or {}).get("scene") or t["ref"].partition(".")[0]]
+        elif t["class"] == "trace-label":
+            t["scenes"] = [sc["id"] for sc in sb if sc.get("state") == t["ref"]]
+    out = []
+    for sc in sb:
+        mine = [t for t in teach if sc["id"] in t.get("scenes", [])]
+        narr = sorted((t for t in mine if t["class"] == "narration"), key=lambda t: int(t["ref"].partition(".")[2] or 0))
+        title = next((t["id"] for t in mine if t["class"] == "chapter-title"), None)
+        out.append({"id": sc["id"], "title": title, "state": sc.get("state"),
+                    "narration": [t["id"] for t in narr],
+                    "question": next((t["id"] for t in mine if t["class"] == "question"), None),
+                    "options": [t["id"] for t in mine if t["class"] == "option"]})
+    return out
+
+
+def _where_legend(teach):
+    kinds = {where_kind(w) for t in teach for w in t["where"]} - {None}
+    return {k: WHERE_LEGEND[k] for k in sorted(kinds)}
+
+
 # ---------------------------------------------------------------- job body and manifest
 
 def _teaching_entry(lesson, it):
     src = {"label": it["ref"], "chrome-claim": "template"}.get(it["kind"], it["kind"])
-    e = {"id": it["id"], "text": it["text"], "source": src, "ref": it["ref"], "maps_to": it.get("maps_to", []), "where": sorted({"still" if w.endswith(".svg") else w
-                                                                             for w in it["where"]})}
+    e = {"id": it["id"], "text": it["text"], "source": src, "class": _CLASS.get(src, src), "ref": it["ref"],
+         "maps_to": it.get("maps_to", []), "where": sorted({"still" if w.endswith(".svg") else w for w in it["where"]})}
     if it["kind"] == "option":
         e["option"] = _options(lesson).get(it["text"], {})
     if it["kind"] == "misconception" or (it["kind"] == "chrome-claim" and it["ref"].count("|") == 2):
@@ -751,6 +965,7 @@ def _job_body(lesson, items, variant=None):
                  "source": lesson.program_source(p["id"]),
                  "gcc-16 diagnostics": (p.get("diagnostics") or {}).get("gcc-16", "")} for p in lesson.data["programs"]]
     teach = [_teaching_entry(lesson, i) for i in items if is_teaching(i)]
+    scenes = _scenes_outline(lesson, teach)
     other = [i for i in items if not is_teaching(i)]
     kinds = {}
     for i in other:
@@ -763,6 +978,7 @@ def _job_body(lesson, items, variant=None):
             "misconceptions": lesson.data.get("misconceptions", []),
             "questions": [{"scene": s["id"], **s["question"]} for s in lesson.data["storyboard"] if s.get("question")],
             "trace": [{"id": s["id"], "label": s["label"], "state": s["state"]} for s in lesson.data["trace"]],
+            "scenes": scenes, "where_legend": _where_legend(teach),
             "teaching_texts": teach,
             "inputs": {"model_sha256": lesson.sha256(),
                        "artifact_texts_sha256": _sha([[i["kind"], i["ref"], i["text"]] for i in items]),
@@ -773,6 +989,8 @@ def _job_body(lesson, items, variant=None):
     changed = []
     if variant:
         body, changed = mc.apply(body, variant)
+    # after the mutation, so a planted citation carries the passage it names, as any citation does (AC-7.7)
+    body["source_passages"] = _source_passages(lesson, body["claims"])
     body["_changed"] = changed
     return body
 
@@ -785,6 +1003,7 @@ def manifest_for(body, slot=None):
     m = {"model_sha256": body["inputs"]["model_sha256"], "body_sha256": _sha(seen),
          "artifact_texts_sha256": body["inputs"]["artifact_texts_sha256"],
          "sources_sha256": _sha([c["sources"] for c in body["claims"]] + [p["source"] for p in body["programs"]]),
+         "source_excerpts": {rel: x["sha256"] for rel, x in body.get("source_passages", {}).items()},
          "rubric_version": RUBRIC_VERSION, "rubric_sha256": hashlib.sha256(rubric.encode()).hexdigest()}
     if slot is not None:
         m["slot"] = slot
@@ -823,13 +1042,13 @@ def mutation_count(build):
 def plan_variants(lesson, mutations=None, canary=False):
     """[(role, pair, mutation or None)].
 
-    default (AC-7.1): the lesson job, then each mutation followed by its control.
-    canary (D22.1, `ptk build --canary`): the lesson job plus every candidate mutation, rotated so the
+    default (AC-7.1): the three lesson jobs (pairs 0 to 2, AC-7.8), then each mutation followed by its control.
+    canary (D22.1, `ptk build --canary`): the three lesson jobs plus every candidate mutation, rotated so the
     deterministic pick (canary_order) comes first; write_jobs keeps the first one that applies and drops the rest.
     A mutation keeps its full-suite pair number, so its job id (a manifest hash over the slot) is the
     same in both modes and a full-suite review also answers the canary."""
     muts = (mc.select(lesson) if mutations is None else mutations)[:mc.MAX_MUTATIONS]
-    out = [("lesson", 0, None)]
+    out = [("lesson", k, None) for k in range(LESSON_REVIEWERS)]  # AC-7.8: one lesson job per reviewer
     if not canary:
         for i, m in enumerate(muts, 1):
             out += [("mutation", i, m), ("control", i, None)]
@@ -860,6 +1079,7 @@ def write_jobs(lesson, items, build, mutations=None, canary=False):
             "jobs": {}, "attempts": {}, "skipped": []}
     if items and "maps_to" not in items[0]:
         mapping_gate(lesson, items)
+    check_source_excerpts(lesson, mutations)
     written = []
     for role, pair, mut in plan_variants(lesson, mutations, canary):
         if canary and role == "mutation" and any(m["role"] == "mutation" for m in priv["jobs"].values()):
@@ -963,6 +1183,11 @@ def check(lesson, build, current_items):
     priv = load_private(build)
     if current_items and "maps_to" not in current_items[0]:
         mapping_gate(lesson, current_items)
+    try:  # AC-7.7: a passage deleted or broken after the build fails the gate, it never crashes the check
+        check_source_excerpts(lesson, [m["mutation"] for m in priv["jobs"].values() if m.get("mutation")])
+    except errors.SourceExcerptMissing as e:
+        return [{"id": "claims.review", "medium": "all", "status": "failed", "reason": "SourceExcerptMissing",
+                 "measured": {"problems": e.detail["problems"], "rubric_version": RUBRIC_VERSION}}]
     cur_sha = manifest_for(_job_body(lesson, current_items))[1]
     rows, invalid, stale, missing, retrying = [], [], [], [], []
     for job_id, meta in priv["jobs"].items():
@@ -1005,9 +1230,11 @@ def check(lesson, build, current_items):
         rows.append({**_row_meta(meta, job_id), "overall": review["overall"],
                      "rejected_claims": [c for c in review["claims"] if c["verdict"] == "reject"],
                      "rejected_texts": [t for t in review["texts"] if t["verdict"] == "reject"],
-                     "reviewer": review.get("reviewer")})
+                     "reviewer": review.get("reviewer"),
+                     **({"verdicts": review["claims"] + review["texts"]} if meta["role"] == "lesson" else {})})
     _save_private(build, priv)
     lesson_rows = [r for r in rows if r["role"] == "lesson"]
+    n_lesson = sum(1 for m in priv["jobs"].values() if m["role"] == "lesson")
     if not priv["jobs"]:
         status, reason = "not-run", "no claims jobs; rebuild (ClaimsNotRun)"
     elif invalid:
@@ -1019,11 +1246,11 @@ def check(lesson, build, current_items):
     elif retrying:
         status, reason = "pending", "invalid reviews: retry jobs written with a schema reminder"
     else:
-        lr = lesson_rows[0]
-        ok = lr["overall"] == "accept" and not lr["rejected_claims"] and not lr["rejected_texts"]
-        status, reason = ("passed", "") if ok else ("failed", "the reviewer rejected a claim or text")
+        status, reason = _lesson_verdict(lesson_rows, n_lesson)
+    split, unanimous = _lesson_findings(lesson_rows)
     gates = [{"id": "claims.review", "medium": "all", "status": status, "reason": reason,
-              "measured": {"lesson_job": _public_row(lesson_rows[0]) if lesson_rows else None, "invalid": invalid,
+              "measured": {"lesson_jobs": [_public_row(r) for r in lesson_rows], "reviewers_required": n_lesson,
+                           "disagreements": split, "rejected": unanimous, "invalid": invalid,
                            "stale": stale, "missing": missing, "retrying": retrying,
                            "current_manifest_sha256": cur_sha, "rubric_version": RUBRIC_VERSION,
                            "label": "LLM-reviewed finding, not a proof"}}]
@@ -1032,6 +1259,36 @@ def check(lesson, build, current_items):
     elif any(m["role"] == "mutation" for m in priv["jobs"].values()):
         gates.append(_sensitivity_gate(priv, rows, status))
     return gates
+
+
+def _lesson_verdict(lesson_rows, n_lesson):
+    """AC-7.8: passed only when every lesson job (LESSON_REVIEWERS of them) was reviewed and every review accepts every
+    claim and text. A split verdict fails until the claim is fixed or the rubric clarified."""
+    if n_lesson < LESSON_REVIEWERS or len(lesson_rows) < n_lesson:
+        return "not-run", f"{len(lesson_rows)} of {LESSON_REVIEWERS} lesson reviews (AC-7.8)"
+    if all(r["overall"] == "accept" and not r["rejected_claims"] and not r["rejected_texts"] for r in lesson_rows):
+        return "passed", ""
+    split, _ = _lesson_findings(lesson_rows)
+    if split:
+        return "failed", f"the {len(lesson_rows)} lesson reviewers disagree on {len(split)} claim(s) or text(s) (AC-7.8)"
+    return "failed", "the reviewers rejected a claim or text"
+
+
+def _lesson_findings(lesson_rows):
+    """Per claim or text id that any lesson reviewer rejected: every reviewer's verdict and reason. Returns
+    (disagreements: some accept and some reject, unanimous: every reviewer rejects)."""
+    verdicts = {}
+    for r in lesson_rows:
+        for e in r.get("verdicts", []):
+            verdicts.setdefault(e["id"], []).append({"job": r["job"], "reviewer": r.get("reviewer"),
+                                                     "verdict": e["verdict"], "reason": e.get("reason", "")})
+    split, unanimous = [], []
+    for i, vs in sorted(verdicts.items()):
+        kinds = {v["verdict"] for v in vs}
+        if "reject" not in kinds:
+            continue
+        (split if "accept" in kinds or len(vs) < len(lesson_rows) else unanimous).append({"id": i, "verdicts": vs})
+    return split, unanimous
 
 
 def _canary_gate(priv, rows, review_status):

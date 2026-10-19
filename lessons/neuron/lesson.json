@@ -891,7 +891,10 @@
           "title": "Goodfellow, Bengio and Courville, Deep Learning (MIT Press, 2016)",
           "url": "https://www.deeplearningbook.org/contents/mlp.html",
           "clause": "§6.3.1 Rectified Linear Units",
-          "quote": "Rectified linear units use the activation function g(z) = max{0, z}."
+          "quote": "Rectified linear units use the activation function g(z) = max{0, z}.",
+          "excerpts": [
+            "sources/dl-6.3.1-relu.txt"
+          ]
         },
         {
           "title": "programs/neuron.c",
@@ -939,19 +942,28 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.21.6.1 ¶8 (conversion g)",
-          "quote": "Let P equal the precision if nonzero, 6 if the precision is omitted, or 1 if the precision is zero. Then, if a conversion with style E would have an exponent of X: if P > X ≥ −4, the conversion is with style f (or F) and precision P − (X + 1)."
+          "quote": "Let P equal the precision if nonzero, 6 if the precision is omitted, or 1 if the precision is zero. Then, if a conversion with style E would have an exponent of X: if P > X ≥ −4, the conversion is with style f (or F) and precision P − (X + 1).",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p8-g.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.21.6.1 ¶8 (conversion g, last sentence of the rule)",
-          "quote": "Finally, unless the # flag is used, any trailing zeros are removed from the fractional portion of the result and the decimal-point character is removed if there is no fractional portion remaining."
+          "quote": "Finally, unless the # flag is used, any trailing zeros are removed from the fractional portion of the result and the decimal-point character is removed if there is no fractional portion remaining.",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p8-g.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.21.6.1 ¶6 (the + flag)",
-          "quote": "The result of a signed conversion always begins with a plus or minus sign."
+          "quote": "The result of a signed conversion always begins with a plus or minus sign.",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p6-minus-plus.txt"
+          ]
         },
         {
           "title": "captured run of programs/neuron.c",
@@ -1008,13 +1020,19 @@
           "title": "Goodfellow, Bengio and Courville, Deep Learning (MIT Press, 2016)",
           "url": "https://www.deeplearningbook.org/contents/mlp.html",
           "clause": "§6.3.1 Rectified Linear Units",
-          "quote": "Rectified linear units use the activation function g(z) = max{0, z}."
+          "quote": "Rectified linear units use the activation function g(z) = max{0, z}.",
+          "excerpts": [
+            "sources/dl-6.3.1-relu.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.12.12.2 ¶3",
-          "quote": "The fmax functions return the maximum numeric value of their arguments."
+          "quote": "The fmax functions return the maximum numeric value of their arguments.",
+          "excerpts": [
+            "sources/n2310-7.12.12.2p3.txt"
+          ]
         },
         {
           "title": "programs/neuron.c",
@@ -1055,7 +1073,10 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§7.21.6.1 ¶8"
+          "clause": "§7.21.6.1 ¶8",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p8-g.txt"
+          ]
         }
       ]
     },
@@ -1080,19 +1101,28 @@
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
-          "clause": "§7.21.6.1 ¶8"
+          "clause": "§7.21.6.1 ¶8",
+          "excerpts": [
+            "sources/n2310-7.21.6.1p8-g.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§5.2.4.2.2, EXAMPLE 2",
-          "quote": "The following describes floating-point representations that also meet the requirements for single-precision and double-precision numbers in IEC 60559, and the appropriate values in a <float.h> header for types float and double:"
+          "quote": "The following describes floating-point representations that also meet the requirements for single-precision and double-precision numbers in IEC 60559, and the appropriate values in a <float.h> header for types float and double:",
+          "excerpts": [
+            "sources/n2310-5.2.4.2.2-example2.txt"
+          ]
         },
         {
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§5.2.4.2.2, EXAMPLE 2 (the double rows)",
-          "quote": "FLT_RADIX 2 … DBL_MANT_DIG 53 … DBL_MIN_EXP -1021 … DBL_MAX_EXP +1024"
+          "quote": "FLT_RADIX 2 … DBL_MANT_DIG 53 … DBL_MIN_EXP -1021 … DBL_MAX_EXP +1024",
+          "excerpts": [
+            "sources/n2310-5.2.4.2.2-example2.txt"
+          ]
         },
         {
           "title": "captured run of programs/double_format.c",
@@ -1139,7 +1169,10 @@
           "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
           "clause": "§7.12.12.2 ¶3",
-          "quote": "The fmax functions return the maximum numeric value of their arguments."
+          "quote": "The fmax functions return the maximum numeric value of their arguments.",
+          "excerpts": [
+            "sources/n2310-7.12.12.2p3.txt"
+          ]
         },
         {
           "title": "captured runs of programs/neuron_k1.c, neuron_k2.c, neuron_k3.c",

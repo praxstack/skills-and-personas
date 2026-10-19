@@ -12,7 +12,8 @@ from ptk.verify import claims
 HINTS = ("why_false", "planted", '"role"', '"mutation"', '"control"', '"family"', "auto.value", '"expect": "reject"')
 JOB_KEYS = {"schema", "job_id", "rubric_version", "rubric_path", "review_path", "instructions", "lesson", "platform",
             "programs", "facts", "claims", "misconceptions", "questions", "trace", "teaching_texts", "inputs",
-            "manifest", "manifest_sha256"}
+            "manifest", "manifest_sha256", "source_passages", "scenes", "where_legend"}
+LESSON_REVIEWERS = 3  # AC-7.8
 
 
 def _tmp_build(prefix):
@@ -37,6 +38,16 @@ def _write_review(build, job, review):
         review if isinstance(review, str) else json.dumps(review))
 
 
+def _first_job(build):
+    """The first lesson job; the other two lesson jobs (AC-7.8) get an accepting review, so a test about one review
+    sees only that review's effect."""
+    jobs = _jobs(build)
+    first = next(iter(jobs.values()))
+    for job in list(jobs.values())[1:]:
+        _write_review(build, job, _review(job))
+    return first
+
+
 def _gate(lesson, items, build, gid="claims.review"):
     return next(g for g in claims.check(lesson, build, items) if g["id"] == gid)
 
@@ -44,8 +55,8 @@ def _gate(lesson, items, build, gid="claims.review"):
 # ---------------------------------------------------------------- AC-7.1
 
 def test_jobs_and_manifest():
-    """AC-7.1 (spec v1.3, D22.1): by default one lesson job, up to 12 mutation jobs each paired with a
-    control; each job carries a manifest of the model,
+    """AC-7.1 (spec v1.4): by default three lesson jobs (one per independent reviewer, AC-7.8), up to 12 mutation jobs
+    each paired with a control; each job carries a manifest of the model, the stored source passages (AC-7.7),
     every artifact text, the sources and the rubric version; the roles never appear in the job files; only
     teaching sentences are sent, and a job (plus rubric) stays under 30k tokens."""
     out = {}
@@ -59,7 +70,7 @@ def test_jobs_and_manifest():
         assert priv["mode"] == "full", priv.get("mode")
         roles = [priv["jobs"][j]["role"] for j in ids]
         n_mut = roles.count("mutation")
-        assert roles.count("lesson") == 1 and roles.count("control") == n_mut and 1 <= n_mut <= 12, roles
+        assert roles.count("lesson") == LESSON_REVIEWERS and roles.count("control") == n_mut and 1 <= n_mut <= 12, roles
         jobs = _jobs(build)
         assert set(jobs) == set(ids) and len(set(ids)) == len(ids)
         assert not claims.private_path(build).is_relative_to(build) and not claims.private_path(build).is_relative_to(
@@ -68,11 +79,11 @@ def test_jobs_and_manifest():
         lesson_body = None
         for jid, job in jobs.items():
             m = job["manifest"]
-            for k in ("model_sha256", "body_sha256", "artifact_texts_sha256", "sources_sha256", "rubric_version",
-                      "rubric_sha256", "slot"):
+            for k in ("model_sha256", "body_sha256", "artifact_texts_sha256", "sources_sha256", "source_excerpts",
+                      "rubric_version", "rubric_sha256", "slot"):
                 assert k in m, (jid, k)
             assert m["model_sha256"] == lesson.sha256()
-            assert m["rubric_version"] == claims.RUBRIC_VERSION == "3"
+            assert m["rubric_version"] == claims.RUBRIC_VERSION == "4"
             assert m["rubric_sha256"] == hashlib.sha256(claims.RUBRIC.read_bytes()).hexdigest()
             assert job["manifest_sha256"] == hashlib.sha256(model.canonical(m).encode()).hexdigest()
             assert jid == "job-" + job["manifest_sha256"][:10]
@@ -100,8 +111,8 @@ def test_jobs_and_manifest():
 
 
 def test_canary_jobs_only_when_asked():
-    """D22.1: `--canary` (explicit, cheaper) writes the lesson job plus exactly one canary mutation job and no
-    controls. The canary is picked deterministically from the lesson's own mutations (same lesson, same canary),
+    """D22.1: `--canary` (explicit, cheaper) writes the three lesson jobs (AC-7.8) plus exactly one canary mutation job
+    and no controls. The canary is picked deterministically from the lesson's own mutations (same lesson, same canary),
     never names its role, and carries the same manifest fields as every other job. Without it the build writes
     the full suite (test_jobs_and_manifest)."""
     out = {}
@@ -114,7 +125,7 @@ def test_canary_jobs_only_when_asked():
         priv = claims.load_private(build)
         assert priv["mode"] == "canary", priv.get("mode")
         roles = sorted(priv["jobs"][j]["role"] for j in ids)
-        assert roles == ["lesson", "mutation"], roles
+        assert roles == ["lesson"] * LESSON_REVIEWERS + ["mutation"], roles
         canary = next(m for m in priv["jobs"].values() if m["role"] == "mutation")["mutation"]["id"]
         candidates = [m["id"] for m in claims.mc.select(lesson)]
         assert canary in candidates, (canary, candidates)
@@ -229,7 +240,7 @@ def test_stale_review_rejected():
     lesson, items = fcast_lesson()
     build = _tmp_build("stale")
     claims.write_jobs(lesson, items, build, mutations=[])
-    job = next(iter(_jobs(build).values()))
+    job = _first_job(build)
     _write_review(build, job, _review(job))
     assert _gate(lesson, items, build)["status"] == "passed"
     out = {}
@@ -273,7 +284,7 @@ def test_v1_review_rejected_for_v2_job():
     lesson, items = fcast_lesson()
     build = _tmp_build("v1")
     claims.write_jobs(lesson, items, build, mutations=[])
-    job = next(iter(_jobs(build).values()))
+    job = _first_job(build)
     _write_review(build, job, _review(job, rubric="1"))
     g = _gate(lesson, items, build)
     assert g["status"] == "failed" and "rubric v1" in g["measured"]["stale"][0]["reason"], g
@@ -370,7 +381,7 @@ def test_invalid_reviews():
     for name, raw in _bad_variants(next(iter(_jobs(probe_build).values()))).items():
         build = _tmp_build(f"inv-{name}")
         claims.write_jobs(lesson, items, build, mutations=[])
-        job = next(iter(_jobs(build).values()))
+        job = _first_job(build)
         _write_review(build, job, raw)
         g = _gate(lesson, items, build)
         assert g["status"] == "pending" and g["measured"]["retrying"], (name, g["status"], g["reason"])
@@ -385,7 +396,7 @@ def test_invalid_reviews():
         out[name] = g["measured"]["invalid"][0]["errors"][0][:60]
     build = _tmp_build("inv-recover")
     claims.write_jobs(lesson, items, build, mutations=[])
-    job = next(iter(_jobs(build).values()))
+    job = _first_job(build)
     _write_review(build, job, "")
     assert _gate(lesson, items, build)["status"] == "pending"
     _write_review(build, job, _review(job))
@@ -412,3 +423,242 @@ def test_private_map_not_in_reviewer_reach():
     assert p.exists() and p.is_relative_to(host.state_dir() / "claims-private")
     assert not any(Path(build).rglob("*private*"))
     return {"private": str(p)}
+
+
+# ---------------------------------------------------------------- AC-7.7
+
+def _fixture_copy(prefix):
+    """A throwaway copy of the f-cast fixture (lesson.json, programs, mutations.json, sources) and its lesson."""
+    import shutil
+    from _claims_agent import F_CAST, _fixture
+    d = _tmp_build(prefix) / "f-cast"
+    shutil.copytree(F_CAST, d)
+    return d, _fixture(d)
+
+
+def _expect_missing(lesson, why):
+    from ptk import errors
+    try:
+        claims.check_source_excerpts(lesson)
+    except errors.SourceExcerptMissing as e:
+        assert e.detail.get("problems"), e.detail
+        return e.detail["problems"]
+    raise AssertionError(f"no SourceExcerptMissing when {why}")
+
+
+def test_source_excerpts_bound():
+    """AC-7.7: every claim source that cites an outside document (a C17 clause, a book section, a manual page) points
+    at a passage stored under the lesson's sources/; each passage records its document, clause and where its text
+    was taken from; every quote is found in its stored passage. Jobs carry the passage text and the manifest binds each
+    passage's sha256, so an edited passage makes the review stale. A missing passage, a source with none, a quote the
+    passage doesn't contain, or an unstored passage in a planted citation fails with SourceExcerptMissing, and
+    `ptk build` stops on it before capture."""
+    from ptk import build as b
+    from ptk import errors
+    out = {}
+    lessons = {"f-cast": fcast_lesson()[0]}
+    for d in sorted((host.PKG.parent.parent / "lessons").glob("*/lesson.json")):
+        lessons[d.parent.name] = model.load(d.parent)
+    for name, lesson in lessons.items():
+        refs = claims.check_source_excerpts(lesson)
+        assert refs, f"{name}: no stored source passages"
+        for rel in refs:
+            ex = claims.read_excerpt(lesson.dir, rel)
+            for k in ("document", "clause", "taken_from"):
+                assert ex["header"].get(k), (name, rel, k)
+            assert ex["text"].strip() and ex["sha256"] == hashlib.sha256((lesson.dir / rel).read_bytes()).hexdigest()
+        out[name] = len(refs)
+    # the rc1 reviewer drift came from sources quoted from memory; the stored passages hold the real wording
+    pinned = {("switch-fallthrough", "c.bodyend"): "Except as indicated, statements are executed in sequence",
+              ("neuron", "c.mul"): "the conversion is with style f (or F) and precision P − (X + 1)"}
+    for (name, cid), words in pinned.items():
+        if name not in lessons:
+            continue
+        lesson = lessons[name]
+        texts = [claims.read_excerpt(lesson.dir, r)["text"] for s in lesson.claim(cid)["sources"] for r in s.get("excerpts", [])]
+        assert any(claims._squash_quote(words) in claims._squash_quote(t) for t in texts), (name, cid)
+    # the job carries the passages and the manifest binds them
+    lesson, items = fcast_lesson()
+    build = _tmp_build("excerpts")
+    claims.write_jobs(lesson, items, build)
+    for jid, job in _jobs(build).items():
+        cited = {r for c in job["claims"] for s in c["sources"] for r in s.get("excerpts", [])}
+        assert cited and cited <= set(job["source_passages"]), (jid, cited - set(job["source_passages"]))
+        for rel, p in job["source_passages"].items():
+            ex = claims.read_excerpt(lesson.dir, rel)
+            assert p["text"] == ex["text"] and p["sha256"] == ex["sha256"] and p["document"] == ex["header"]["document"]
+            assert job["manifest"]["source_excerpts"][rel] == ex["sha256"], (jid, rel)
+    # an edited passage makes a passing review stale
+    d, copy_lesson = _fixture_copy("excerpt-stale")
+    cbuild = _tmp_build("excerpt-stale-build")
+    claims.write_jobs(copy_lesson, items, cbuild, mutations=[])
+    for job in _jobs(cbuild).values():
+        _write_review(cbuild, job, _review(job))
+    assert _gate(copy_lesson, items, cbuild)["status"] == "passed"
+    rel = sorted(claims.check_source_excerpts(copy_lesson))[0]
+    (d / rel).write_text((d / rel).read_text() + "One more sentence.\n")
+    g = _gate(copy_lesson, items, cbuild)
+    assert g["status"] == "failed" and g["measured"]["stale"], g
+    # a passage deleted after the build fails the gate (it must not crash the check)
+    (d / rel).unlink()
+    g = _gate(copy_lesson, items, cbuild)
+    assert g["status"] == "failed" and g["reason"] == "SourceExcerptMissing" and g["measured"]["problems"], g
+    # four ways to lose a cited passage
+    cases = {}
+    d, lesson = _fixture_copy("excerpt-missing-file")
+    (d / rel).unlink()
+    cases["file deleted"] = _expect_missing(lesson, "a stored passage is deleted")
+    d, lesson = _fixture_copy("excerpt-no-field")
+    src = next(s for c in lesson.data["claims"] for s in c["sources"] if s.get("excerpts"))
+    del src["excerpts"]
+    cases["no excerpts field"] = _expect_missing(lesson, "a cited document has no stored passage")
+    d, lesson = _fixture_copy("excerpt-quote")
+    src = next(s for c in lesson.data["claims"] for s in c["sources"] if s.get("quote") and s.get("excerpts"))
+    src["quote"] = src["quote"].replace("the", "no", 1)
+    cases["quote not in passage"] = _expect_missing(lesson, "a quote is not in its stored passage")
+    d, lesson = _fixture_copy("excerpt-mutation")
+    muts = json.loads((d / "mutations.json").read_text())
+    for m in muts["mutations"]:
+        for s in m.get("sources", []):
+            s.pop("excerpts", None)
+    (d / "mutations.json").write_text(json.dumps(muts))
+    cases["planted citation unstored"] = _expect_missing(lesson, "a wrong-citation mutation cites an unstored passage")
+    try:
+        claims.write_jobs(lesson, items, _tmp_build("excerpt-mutation-build"))
+    except errors.SourceExcerptMissing:
+        pass
+    else:
+        raise AssertionError("write_jobs wrote jobs for a planted citation without a stored passage")
+    # `ptk build` fails on it before capturing anything
+    d, lesson = _fixture_copy("excerpt-build")
+    (d / rel).unlink()
+    try:
+        b.build(d)
+    except errors.SourceExcerptMissing as e:
+        rep = json.loads((d / "build" / "build-report.json").read_text())
+        assert rep["status"] == "failed" and rep["error"]["error"] == "SourceExcerptMissing", rep["error"]
+        assert "captured" not in rep["transitions"], rep["transitions"]
+        out["build"] = str(e)[:80]
+    else:
+        raise AssertionError("ptk build ran with a cited passage missing")
+    out["cases"] = {k: v[0][:70] for k, v in cases.items()}
+    return out
+
+
+# ---------------------------------------------------------------- AC-7.8
+
+def _review_by(job, reviewer, rejects=()):
+    rev = _review(job)
+    rev["reviewer"] = {"host": "test", "agent": reviewer}
+    for e in rev["claims"] + rev["texts"]:
+        if e["id"] in rejects:
+            e.update(verdict="reject", reason=f"{reviewer}: {e['id']} is wrong")
+    if rejects:
+        rev["overall"] = "reject"
+    return rev
+
+
+def test_three_reviewers_agree():
+    """AC-7.8: `ptk build` writes the lesson job three times, for three independent reviewers: distinct job ids, the
+    same content. claims.review passes only when all three accept. A split verdict is listed per claim or text with
+    each reviewer's finding and fails; three rejects fail; a missing third review is not-run, never passed."""
+    from ptk import build as b
+    lesson, items = fcast_lesson()
+    out = {}
+    probe = _tmp_build("three-probe")
+    claims.write_jobs(lesson, items, probe, mutations=[])
+    priv = claims.load_private(probe)
+    lesson_ids = [j for j, m in priv["jobs"].items() if m["role"] == "lesson"]
+    assert len(lesson_ids) == LESSON_REVIEWERS == len(set(lesson_ids)), lesson_ids
+    jobs = _jobs(probe)
+    bodies = [{k: v for k, v in jobs[j].items() if k not in ("job_id", "review_path", "manifest", "manifest_sha256")}
+              for j in lesson_ids]
+    assert all(x == bodies[0] for x in bodies), "the three lesson jobs must carry the same content"
+    assert len({jobs[j]["manifest"]["slot"] for j in lesson_ids}) == LESSON_REVIEWERS
+    target = lesson.data["claims"][3]["id"]
+    for case, rejects in {"all-accept": [(), (), ()], "split": [(), (target,), ()],
+                          "all-reject": [(target,), (target,), (target,)], "missing": [(), (), None]}.items():
+        build = _tmp_build(f"three-{case}")
+        claims.write_jobs(lesson, items, build, mutations=[])
+        ids = [j for j, m in claims.load_private(build)["jobs"].items() if m["role"] == "lesson"]
+        jobs = _jobs(build)
+        for n, (jid, rej) in enumerate(zip(ids, rejects)):
+            if rej is not None:
+                _write_review(build, jobs[jid], _review_by(jobs[jid], f"reviewer {n + 1}", rej))
+        g = _gate(lesson, items, build)
+        m = g["measured"]
+        if case == "all-accept":
+            assert g["status"] == "passed" and len(m["lesson_jobs"]) == 3 and not m["disagreements"], g
+            assert b.final_status([g], False) == "verified"
+        elif case == "split":
+            assert g["status"] == "failed" and "disagree" in g["reason"], g
+            (dis,) = m["disagreements"]
+            assert dis["id"] == target and sorted(v["verdict"] for v in dis["verdicts"]) == ["accept", "accept", "reject"]
+            rej = next(v for v in dis["verdicts"] if v["verdict"] == "reject")
+            assert rej["reason"] == f"reviewer 2: {target} is wrong" and rej["reviewer"]["agent"] == "reviewer 2", dis
+            assert {v["job"] for v in dis["verdicts"]} == set(ids)
+            assert b.final_status([g], False) == "failed"
+        elif case == "all-reject":
+            assert g["status"] == "failed" and not m["disagreements"] and m["rejected"], g
+            assert {r["id"] for r in m["rejected"]} == {target}, m["rejected"]
+        else:
+            assert g["status"] == "not-run" and len(m["missing"]) == 1, g
+        out[case] = g["status"]
+    return out
+
+
+# ---------------------------------------------------------------- AC-7.9
+
+SENTENCE_CLASSES = {"narration": "Narration and transcript lines", "chapter-title": "Chapter titles",
+                    "question": "Question lines", "context": "Context sentences"}
+
+
+def test_rubric_sentence_classes():
+    """AC-7.9: the rubric says how narration/transcript lines, chapter titles, question lines and context sentences are
+    judged, each with one worked example, and that a cited source is judged only against its stored passage, never
+    against a reviewer's memory of the source. The jobs label each teaching text with its class, give scene-bound texts
+    their scene (the job's `scenes` outline), and explain every place a text appears (`where_legend`). The rubric
+    version is bumped, so a review written under rubric v3 is stale."""
+    import re
+    rubric = claims.RUBRIC.read_text()
+    assert claims.RUBRIC_VERSION == "4" and rubric.startswith("# Claims review rubric, version 4"), rubric[:60]
+    sections = {}
+    for title in SENTENCE_CLASSES.values():
+        m = re.search(rf"^### {re.escape(title)}\n(.*?)(?=^#{{2,3}} )", rubric, re.S | re.M)
+        assert m, f"no rubric section {title!r}"
+        body = m.group(1)
+        assert "Worked example" in body and re.search(r"\b(accept|reject)\b", body), f"{title}: no worked example"
+        sections[title] = len(body)
+    low = rubric.lower()
+    assert "source_passages" in rubric and "memory" in low and "only against" in low, "no stored-passage rule"
+    assert "scenes" in rubric and "where_legend" in rubric
+    lesson, items = fcast_lesson()
+    sets = {"f-cast": (lesson, items)}
+    if slice_lesson():
+        sets["switch-fallthrough"] = slice_lesson()
+    classes = set()
+    for name, (lesson, items) in sets.items():
+        build = _tmp_build(f"classes-{name}")
+        claims.write_jobs(lesson, items, build, mutations=[])
+        job = next(iter(_jobs(build).values()))
+        scene_ids = {s["id"] for s in job["scenes"]}
+        assert scene_ids == {s["id"] for s in lesson.data["storyboard"]}, name
+        for t in job["teaching_texts"]:
+            assert t["class"] in claims.TEXT_CLASSES, (name, t)
+            classes.add(t["class"])
+            if t["class"] in ("narration", "chapter-title", "question", "option"):
+                assert t.get("scenes") and set(t["scenes"]) <= scene_ids, (name, t)
+            for w in t["where"]:
+                assert claims.where_kind(w) in job["where_legend"], (name, w)
+        for s in job["scenes"]:
+            assert {x["id"] for x in job["teaching_texts"]} >= set(s["narration"]) | ({s["title"]} if s["title"] else set())
+        rubric_classes = set(re.findall(r"`class: ([a-z-]+)`", rubric))
+        assert claims.TEXT_CLASSES <= rubric_classes, claims.TEXT_CLASSES - rubric_classes
+    # a review under rubric v3 is stale for a v4 job
+    build = _tmp_build("classes-v3")
+    claims.write_jobs(lesson, items, build, mutations=[])
+    job = _first_job(build)
+    _write_review(build, job, _review(job, rubric="3"))
+    g = _gate(lesson, items, build)
+    assert g["status"] == "failed" and "rubric v3" in g["measured"]["stale"][0]["reason"], g
+    return {"sections": sections, "classes": sorted(classes)}

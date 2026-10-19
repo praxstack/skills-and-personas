@@ -42,7 +42,10 @@
      "title": "ISO/IEC 9899:2018 (C17), working draft N2176",
      "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2176.pdf",
      "clause": "§7.12.7.5 ¶2",
-     "quote": "The sqrt functions compute the nonnegative square root of x."
+     "quote": "The sqrt functions compute the nonnegative square root of x.",
+     "excerpts": [
+      "sources/n2310-7.12.7.5p2.txt"
+     ]
     }
    ],
    "why_false": "sqrt has nothing to do with ReLU; the program uses fmax (7.12.12.2)."

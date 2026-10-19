@@ -487,10 +487,19 @@
               "quote": {
                 "type": "string",
                 "maxLength": 400
+              },
+              "excerpts": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^sources/[a-z0-9][a-z0-9._-]*\\.txt$"
+                },
+                "description": "AC-7.7: the stored passages this source relies on, one file per passage under the lesson's sources/ (header lines document, clause, taken_from; a --- line; then the text as taken from the document)."
               }
             }
           },
-          "description": "At least one: a standard clause with a short quote, a reference, or the lesson's own program file."
+          "description": "At least one: a standard clause with a short quote, a reference, or the lesson's own program file. A source that cites an outside document names its stored passages in excerpts (AC-7.7)."
         },
         "facts": {
           "type": "array",

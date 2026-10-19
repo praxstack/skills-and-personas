@@ -9,7 +9,7 @@
     "schema": {"const": "prax-teach/claims-review@1"},
     "job_id": {"type": "string", "minLength": 1},
     "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "rubric_version": {"enum": ["1", "2", "3"]},
+    "rubric_version": {"enum": ["1", "2", "3", "4"]},
     "reviewer": {"type": "object", "required": ["host"], "properties": {"host": {"type": "string"}, "agent": {"type": "string"}}},
     "claims": {"type": "array", "minItems": 1, "items": {
       "type": "object", "additionalProperties": false, "required": ["id", "verdict", "reason"],
