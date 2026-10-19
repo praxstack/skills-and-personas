@@ -4,7 +4,7 @@ Other gates (values, visual, media) add their own sections here.
 
 ## Claims gate (WP7)
 
-Code: `ptk/verify/claims.py`, `ptk/verify/mutation_claims.py`. Rubric: `ptk/verify/rubric.md` (version 2).
+Code: `ptk/verify/claims.py`, `ptk/verify/mutation_claims.py`. Rubric: `ptk/verify/rubric.md` (version 4).
 Host steps: `references/HOST-ADAPTERS.md`.
 
 ### 1. Mapping (`claims.mapping`, automatic)
@@ -33,10 +33,11 @@ projector hard-codes a sentence that isn't in `chrome.json`.
 ### 2. Jobs (`ptk build`)
 
 Two modes (spec v1.3, D22.1):
-- **Default, the full suite (AC-7.1):** `build/claims-jobs/` gets the lesson job, up to 12 mutation jobs
-  and one control per mutation. This is the only mode that can reach `verified`. AC-7.5's rates come
+- **Default, the full suite (AC-7.1):** `build/claims-jobs/` gets the lesson job three times (one per
+  independent reviewer, AC-7.8: distinct job ids, the same body), up to 12 mutation jobs and one control
+  per mutation. This is the only mode that can reach `verified`. AC-7.5's rates come
   from here.
-- **`ptk build --canary` (explicit, cheaper):** the lesson job plus one canary, a mutation job with one
+- **`ptk build --canary` (explicit, cheaper):** the three lesson jobs plus one canary, a mutation job with one
   planted value or claim error picked from the lesson's mutations by its sha256. About 2 reviews per
   build instead of 23. Its best status is `canary-verified` (exit 6), never `verified`: one caught error
   says less than the rates, and there are no controls. Making it the normal mode is proposal §9 in
@@ -52,9 +53,24 @@ trace labels, titles, card and Q&A sentences, filled templates. Code, chrome str
 are counted and hashed in `inputs.not_sent`, not sent. The switch slice's job went from about
 13,100 tokens to about 5,400 to 6,800 (characters / 4), plus about 1,900 for the rubric.
 
+**Stored source passages (AC-7.7):** every claim source that cites an outside document (a C17 clause,
+a book section, a manual page) lists `excerpts`, paths to plain-text files under `lessons/<id>/sources/`.
+Each file has `document`, `clause`, `taken_from` (and usually `note`) header lines, a `---` line, then
+the passage as taken from a document on this machine. `ptk build` checks every passage and every
+quote against it before capture (and `write_jobs` again, planted citations included); a missing or
+malformed passage, or a quote the passage doesn't contain, fails with `SourceExcerptMissing`. The
+lesson's own programs, captured runs and platform facts, recorded diagnostics and storyboard need no
+passage. Jobs carry the passages in `source_passages`; the rubric says to judge citations only
+against them, never from memory.
+
+**Sentence classes (AC-7.9):** each teaching text has a `class` (claim, alt, narration, chapter-title,
+lesson-title, question, option, trace-label, misconception, template, projector); scene-bound texts
+list their `scenes`, ids into the job's `scenes` outline (chapter title, state, narration, question
+and options per scene); `where_legend` describes every place a text appears.
+
 **Manifest:** sha256 of the whole lesson model, of the job body the reviewer sees, of every artifact
-text (sent or not), of the claim sources and program sources, plus the rubric version and the
-rubric's sha256, plus a per-job slot. The review must echo `manifest_sha256`. `ptk claims check`
+text (sent or not), of the claim sources and program sources, of each stored source passage
+(`source_excerpts`), plus the rubric version and the rubric's sha256, plus a per-job slot. The review must echo `manifest_sha256`. `ptk claims check`
 recomputes every manifest from the current inputs, so any edit (lesson, artifact text, source,
 rubric) makes the old review stale.
 
@@ -82,7 +98,10 @@ changed. Rejecting some other claim isn't a catch.
 | missing | `not-run`, build `incomplete` |
 
 Gates:
-- `claims.review`: the lesson job is accepted with no rejected claim or text.
+- `claims.review`: all three lesson jobs are reviewed and every review accepts every claim and text
+  (AC-7.8). A split verdict fails and is listed in `measured.disagreements` per claim or text, with each
+  reviewer's verdict and reason; a unanimous reject is in `measured.rejected`; a missing review is
+  `not-run`.
 - `claims.sensitivity` (default): value mutations caught 100%, claim mutations caught 90% or more,
   controls accepted 95% or more. Schema rejections are counted on their own and never as catches.
 - `claims.canary` (`--canary` only): the canary review rejects overall and rejects the planted claim or a
@@ -92,14 +111,17 @@ Gates:
 
 Every verdict is an LLM-reviewed finding, not a proof.
 
-### 5. Rubric v2 in short
+### 5. Rubric v4 in short
 
 The strict rule (true as worded, not roughly), then five lenses applied to text: maths (values equal
 facts), explanation (mechanism, mechanism-not-metrics, no overgeneralising, caveats kept, analogy
 limits, UB and implementation-defined honesty, sources, misconceptions), looks (titles, alt text),
 interaction (questions don't leak answers, options and trace labels true), media and portability
-(captions match, no colour-only or medium-only wording). The `%f` "same bits" case is deliberately
-not in the rubric: it is the held-out regression.
+(captions match, no colour-only or medium-only wording). v4 adds: citations judged only against the
+stored passage, never from memory; and how each sentence class is judged, with one worked example each
+(claims and other standalone sentences, narration and transcript lines, chapter titles, question
+lines, context sentences). The worked examples use topics no lesson or planted error uses. The `%f`
+"same bits" case is deliberately not in the rubric: it is the held-out regression.
 
 ## Video and IVE gates changed in round 17
 
