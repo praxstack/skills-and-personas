@@ -349,17 +349,31 @@
     } else document.querySelectorAll('#knob-v input').forEach(function (r) { r.disabled = lk; r.checked = r.value === e.v; });
   }
 
-  // the drawn copy is cropped to its drawing, so the mechanism fills the panel's width (on a phone, the first screen)
+  // The panel's drawing at its natural size, never scaled up (a scaled-up SVG text reads as overflowing in the
+  // layout gate): each copy is cropped to its mechanism, and of the two copies for this colour scheme (portrait and
+  // wide) the one that shows the mechanism widest in the panel, within the first screen on a phone, is shown (B3).
   function fitMech(mb) {
-    mb.querySelectorAll('svg.mech').forEach(function (svg) {
-      if (!svg.getClientRects().length) return;  // the copy for another width or colour scheme
-      var g = svg.querySelector('[data-role="mechanism"]') || svg, b;
-      try { b = g.getBBox(); } catch (e) { return; }
+    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches, th = dark ? 'dark' : 'light';
+    var cw = mb.clientWidth - 6, phone = window.innerWidth < 760;
+    var maxH = phone ? window.innerHeight - (mb.getBoundingClientRect().top + window.scrollY) - 12 : Infinity;
+    var best = null;
+    ['p', 'w'].forEach(function (lay) {
+      var svg = mb.querySelector('svg.mech-' + lay + '-' + th);
+      if (!svg) return;
+      svg.style.display = 'block';
+      var g = svg.querySelector('[data-role="mechanism"]') || svg, b = null;
+      try { b = g.getBBox(); } catch (e) { b = null; }
       if (!b || !b.width || !b.height) return;
-      svg.setAttribute('viewBox', [b.x - 6, b.y - 6, b.width + 12, b.height + 12].map(function (x) { return x.toFixed(1); }).join(' '));
-      svg.removeAttribute('width'); svg.removeAttribute('height');
+      var bw = b.width + 12, bh = b.height + 12;
+      svg.setAttribute('viewBox', [b.x - 6, b.y - 6, bw, bh].map(function (x) { return x.toFixed(1); }).join(' '));
+      svg.setAttribute('width', bw.toFixed(1)); svg.setAttribute('height', bh.toFixed(1));
+      var shown = Math.min(bw, cw, maxH * bw / bh);
+      if (!best || shown > best.shown + 0.5) best = { svg: svg, shown: shown, h: Math.min(bh, maxH, cw * bh / bw) };
     });
+    mb.querySelectorAll('svg.mech').forEach(function (svg) { svg.style.display = best && svg === best.svg ? 'block' : 'none'; });
+    if (best && phone) best.svg.style.maxHeight = Math.floor(best.h) + 'px';
   }
+
   // ---- render the panel
   function render(V) {
     var xp = $('xp'), box = $('state');
