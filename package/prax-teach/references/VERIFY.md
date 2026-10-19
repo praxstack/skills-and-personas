@@ -21,7 +21,7 @@ compositions, captions, chapters, transcript, the IVE page and its state track, 
 | fact | equals the captured value, or the `alt_output` chrome string filled with those values |
 | chrome | matches its `chrome.json` string; each `{slot}` takes only values this lesson can hold (topic, program paths, compiler, fact values, integers) |
 | chrome with claims (template) | matches its `chrome.json` string, cites real claims, and every filled instance goes to the reviewer |
-| axis tick (`data-label="axis-tick"`) | a number, and the ticks of one axis (same drawing, same baseline) fit one increasing linear scale from their own positions within 1 px, with at least three ticks |
+| axis tick (`data-label="axis-tick"`) | a number, and the ticks of one axis (same drawing, same baseline) fit one increasing linear scale from their own positions within 1 px, with at least three ticks, and the axis is named (`data-axis`) and shows exactly the tick values computed from the facts' expectations |
 
 A misconception in a still is shown to the reviewer as "labelled as a wrong belief" only when a `<text>`
 saying the `wrong_belief` chrome string is painted, not hidden, and lies inside the same box as the
@@ -108,7 +108,9 @@ not in the rubric: it is the held-out regression.
   renderer's planner is used.
 - `video.scene-layout`: in a panel lesson two mechanism layers may share the screen only while one is
   fading, for at most 1.0 s, ending before the scene ends; the outgoing layer (which HyperFrames
-  exempts from its overlap audit) must be gone by then. A frame matches a trace state only when exactly
+  exempts from its overlap audit) must be gone by then. A returned-value chip (also exempt) may cover
+  drawn text only while it moves or while it rests on its own value, for at most 1.6 s, and must be gone
+  by the scene's end. A frame matches a trace state only when exactly
   one state fits (paths compare as sets, so two indistinguishable states give `ambiguous`), and a panel
   lesson's frame must draw that state's panel, except in a question scene, which hides it.
 - `video.sync`: a stretched last word moves the speech end back only to a silence that holds the word's
