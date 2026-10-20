@@ -84,7 +84,7 @@ def host_tools(cli: list[str]) -> set[str]:
     return {n.split(":", 1)[-1] for n in names}
 
 
-def inspect_tool(tool: dict, *, net: bool, mcp: set[str]) -> dict:
+def inspect_tool(tool: dict, *, net: bool, mcp: set[str], trusted_runtime_probe: bool = False) -> dict:
     """Detect prerequisites, never claim a render or remote runtime was tested."""
     p = tool.get("probe", {})
     how = tool.get("how", {})
@@ -97,6 +97,21 @@ def inspect_tool(tool: dict, *, net: bool, mcp: set[str]) -> dict:
                     "status": "missing", "evidence": []}
         evidence.append(f"bundled instructions present: {skill}")
     if tool.get("id") == "manim":
+        if not trusted_runtime_probe:
+            # Filesystem/PATH evidence only: do not load the wrapper, inspect
+            # project source configuration, or import a workspace module.
+            cli = shutil.which("manim")
+            if cli:
+                evidence.append(f"unverified Manim CLI candidate: {cli}")
+            project = Path.cwd()
+            candidates = [os.environ.get("MANIM_PYTHON"),
+                          str(project / ".venv/bin/python"),
+                          str(project / "source/.venv/bin/python"), sys.executable]
+            for candidate in dict.fromkeys(candidates):
+                if candidate and Path(candidate).is_file():
+                    evidence.append(f"unverified Python candidate: {candidate}")
+            return {"available": False, "missing": ["runtime:unverified (requires --trusted-runtime-probe)"],
+                    "status": "unknown", "evidence": evidence}
         # Use the prescribed wrapper's exact resolver, including actual imports.
         # Discovery runs in the project cwd, as does render_manim.py by default.
         wrapper = ROOT / "skills/manim-video/scripts/render_manim.py"
@@ -164,12 +179,12 @@ def inspect_tool(tool: dict, *, net: bool, mcp: set[str]) -> dict:
             "status": "missing" if local else "unknown", "evidence": evidence}
 
 
-def probe(tool: dict, *, net: bool, mcp: set[str]) -> tuple[bool, list[str]]:
-    result = inspect_tool(tool, net=net, mcp=mcp)
+def probe(tool: dict, *, net: bool, mcp: set[str], trusted_runtime_probe: bool = False) -> tuple[bool, list[str]]:
+    result = inspect_tool(tool, net=net, mcp=mcp, trusted_runtime_probe=trusted_runtime_probe)
     return result["available"], result["missing"]
 
 
-def rank(tools: list[dict], jobs: list[str], media: list[str], *, offline: bool, net: bool, mcp: set[str]) -> list[dict]:
+def rank(tools: list[dict], jobs: list[str], media: list[str], *, offline: bool, net: bool, mcp: set[str], trusted_runtime_probe: bool = False) -> list[dict]:
     out = []
     for t in tools:
         job_hits = len(set(jobs) & set(t.get("jobs", []))) if jobs else 0
@@ -180,7 +195,7 @@ def rank(tools: list[dict], jobs: list[str], media: list[str], *, offline: bool,
             continue
         if offline and not t.get("offline", False):
             continue
-        result = inspect_tool(t, net=net and not offline, mcp=mcp)
+        result = inspect_tool(t, net=net and not offline, mcp=mcp, trusted_runtime_probe=trusted_runtime_probe)
         ok = result["available"]
         score = 10 * job_hits + 4 * medium_hit + (8 if ok else 0) + (3 if t.get("notebook") == "native" else 0) + (2 if t["id"] in BUNDLED else 0)
         out.append({**t, **result, "score": score})
@@ -197,6 +212,8 @@ def main() -> int:
     ap.add_argument("--medium", action="append", default=[], choices=reg["media"])
     ap.add_argument("--offline", action="store_true", help="only tools that work without a network")
     ap.add_argument("--net", action="store_true", help="probe network services (Kroki, CDNs)")
+    ap.add_argument("--trusted-runtime-probe", action="store_true",
+                    help="execute Manim import checks in selected local Python runtimes; trust the workspace, its source config, environments and startup/import code first (not a render test)")
     ap.add_argument("--have", action="append", default=[], help="host tools available, e.g. mcp:excalidraw, mcp:hyperframes, mcp:artifact")
     ap.add_argument("--inventory", action="store_true", help="list tool prerequisite evidence (not render verification)")
     ap.add_argument("--top", type=int, default=8)
@@ -204,12 +221,12 @@ def main() -> int:
     a = ap.parse_args()
     mcp = host_tools(a.have)
     if a.inventory:
-        rows = rank(reg["tools"], [], [], offline=a.offline, net=a.net, mcp=mcp)
+        rows = rank(reg["tools"], [], [], offline=a.offline, net=a.net, mcp=mcp, trusted_runtime_probe=a.trusted_runtime_probe)
         rows.sort(key=lambda t: (not t["available"], t["name"]))
     else:
         if not a.job and not a.medium:
             ap.error("give at least one --job or --medium (or --inventory)")
-        rows = rank(reg["tools"], a.job, a.medium, offline=a.offline, net=a.net, mcp=mcp)[: a.top]
+        rows = rank(reg["tools"], a.job, a.medium, offline=a.offline, net=a.net, mcp=mcp, trusted_runtime_probe=a.trusted_runtime_probe)[: a.top]
     if a.json:
         keep = ("id", "name", "media", "jobs", "available", "missing", "status", "evidence", "score", "how", "notebook", "best_for", "avoid_when", "output", "ref")
         print(json.dumps([{k: r[k] for k in keep if k in r} for r in rows], indent=2))

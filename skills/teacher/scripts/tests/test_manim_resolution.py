@@ -50,7 +50,7 @@ class Resolution(unittest.TestCase):
         return r.find_python(str(self.project), str(self.project / 'source'), given)
 
     def discovery(self):
-        return f.inspect_tool(MANIM, net=False, mcp=set())
+        return f.inspect_tool(MANIM, net=False, mcp=set(), trusted_runtime_probe=True)
 
     def test_isolated_cli_symlink_and_spaces_shared_with_discovery(self):
         self.assertEqual(self.selected(), self.py)

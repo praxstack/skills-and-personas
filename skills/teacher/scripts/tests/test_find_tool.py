@@ -4,6 +4,7 @@ import importlib.util
 import io
 import json
 import os
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -55,6 +56,57 @@ class Discovery(unittest.TestCase):
             result = self.inspect('lesson-notebook')
             self.assertFalse(result['available'])
             self.assertEqual(result['status'], 'missing')
+
+    def test_default_manim_does_not_load_resolver_or_read_source_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / '.video-state.json').write_text('{"config":{"source":"lesson-content"}}')
+            for directory in ('.venv/bin', 'source/.venv/bin', 'lesson-content/.venv/bin'):
+                target = project / directory / 'python'
+                target.parent.mkdir(parents=True)
+                target.touch()
+            with mock.patch.object(Path, 'cwd', return_value=project), mock.patch.object(f.importlib.util, 'spec_from_file_location') as load, mock.patch.object(Path, 'read_text', side_effect=AssertionError('must not read source manifest')), mock.patch.object(f.subprocess, 'run') as execute:
+                result = self.inspect('manim')
+                self.assertFalse(result['available'])
+                self.assertEqual(result['status'], 'unknown')
+                self.assertTrue(any('unverified' in item for item in result['evidence']))
+                execute.assert_not_called()
+                load.assert_not_called()
+                self.assertFalse(f.probe(TOOLS['manim'], net=False, mcp=set())[0])
+
+    def test_default_real_marker_control(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / 'manim.py').write_text("from pathlib import Path\nPath('module-marker').touch()\n")
+            for directory in ('.venv/bin', 'source/.venv/bin', 'lesson-content/.venv/bin'):
+                candidate = project / directory / 'python'
+                candidate.parent.mkdir(parents=True)
+                candidate.write_text('#!' + sys.executable + "\nfrom pathlib import Path\nPath('interpreter-marker').touch()\n")
+                candidate.chmod(0o755)
+            (project / '.video-state.json').write_text('{"config":{"source":"lesson-content"}}')
+            code = ("import importlib.util, json; "
+                    f"s=importlib.util.spec_from_file_location('f', {str(ROOT / 'scripts/find_tool.py')!r}); "
+                    "f=importlib.util.module_from_spec(s); s.loader.exec_module(f); "
+                    f"print(json.dumps(f.inspect_tool({TOOLS['manim']!r}, net=False, mcp=set())))")
+            result = subprocess.run([sys.executable, '-c', code], cwd=project, capture_output=True, text=True, check=True)
+            self.assertFalse(json.loads(result.stdout)['available'])
+            self.assertFalse((project / 'module-marker').exists())
+            self.assertFalse((project / 'interpreter-marker').exists())
+
+    def test_trusted_cli_offline_still_disables_discovery_network(self):
+        output = io.StringIO()
+        inspected = []
+        original = f.inspect_tool
+        def inspect(tool, **kwargs):
+            inspected.append(kwargs)
+            if tool['id'] == 'manim':
+                return {'available': True, 'missing': [], 'status': 'detected', 'evidence': ['trusted mock control']}
+            return original(tool, **kwargs)
+        with mock.patch.object(sys, 'argv', ['find_tool.py', '--inventory', '--offline', '--net', '--trusted-runtime-probe', '--json']), mock.patch.object(f, 'inspect_tool', side_effect=inspect), mock.patch.object(f, 'has_net', side_effect=AssertionError('offline network')), mock.patch.object(f, 'has_node', return_value=False), contextlib.redirect_stdout(output):
+            self.assertEqual(f.main(), 0)
+        self.assertTrue(inspected)
+        self.assertTrue(all(not item['net'] and item['trusted_runtime_probe'] for item in inspected))
+        self.assertTrue(next(row for row in json.loads(output.getvalue()) if row['id'] == 'manim')['available'])
 
     def test_inventory_offline_overrides_net_without_requests(self):
         output = io.StringIO()
