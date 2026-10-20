@@ -251,42 +251,139 @@ with job_scope(JobBudget(seconds=60)) as budget:
         self.run_worker("from playwright.sync_api import sync_playwright\nimport resource_enrichment as e\nwith sync_playwright() as p:\n b,c=e.new_public_browser_context(p,executable_path='/tools/chromium',auth_origins=set())\n page=c.new_page();page.evaluate('()=>{while(true){}}')",6,True)
     def test_browser_javascript_memory_failure(self):
         self.run_worker("from playwright.sync_api import sync_playwright\nimport resource_enrichment as e\nwith sync_playwright() as p:\n b,c=e.new_public_browser_context(p,executable_path='/tools/chromium',auth_origins=set())\n page=c.new_page();page.evaluate('()=>{let a=[];while(true){let b=new Uint8Array(32*1024*1024);b.fill(1);a.push(b)}}')",15,True)
-    def host_signal(self, sig):
-        docker=['docker','--context',os.environ.get('ENRICHMENT_TEST_CONTEXT','default')]
-        script = "import sys;sys.path.insert(0,"+repr(str(sandbox.HERE))+");import sandbox_resource_enrichment as s;s.WORKER='import time;time.sleep(60)';s.execute("+repr(str(self.session))+","+repr(str(self.root/'result'))+","+repr(os.environ['ENRICHMENT_TEST_IMAGE'])+",context="+repr(os.environ.get('ENRICHMENT_TEST_CONTEXT'))+",timeout=7)"
-        before=set(subprocess.check_output(docker+['ps','-aq','--filter','name=resource-enrichment-'],text=True).split())
-        proc=subprocess.Popen([sys.executable,'-c',script],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-        owned=None; staging=None
+    def host_signal(self, sig, after_spawn=None):
+        import shutil
+        import uuid
+        docker = ['docker', '--context', os.environ.get('ENRICHMENT_TEST_CONTEXT', 'default')]
+        fixture_id = uuid.uuid4().hex
+        name = 'resource-enrichment-' + fixture_id
+        # These identities are selected before the child exists, never inferred
+        # from other jobs or from an inspected container's arbitrary mount paths.
+        staging = self.root / ('signal-stage-' + fixture_id)
+        expected_mounts = {target: str(staging / leaf) for target, leaf in
+                           [('/input', 'input'), ('/tools', 'tools'), ('/secrets', 'secrets')]}
+        script = f"""
+import sys, types, contextlib, pathlib, shutil
+sys.path.insert(0, {str(sandbox.HERE)!r})
+import sandbox_resource_enrichment as s
+s.uuid.uuid4 = lambda: types.SimpleNamespace(hex={fixture_id!r})
+@contextlib.contextmanager
+def fixture_staging(*args, **kwargs):
+    path = pathlib.Path({str(staging)!r})
+    path.mkdir(mode=0o700)
+    try:
+        yield str(path)
+    finally:
+        shutil.rmtree(path)
+s.tempfile.TemporaryDirectory = fixture_staging
+s.WORKER = 'import time;time.sleep(60)'
+s.execute({str(self.session)!r}, {str(self.root / 'result')!r},
+          {os.environ['ENRICHMENT_TEST_IMAGE']!r},
+          context={os.environ.get('ENRICHMENT_TEST_CONTEXT')!r}, timeout=7)
+"""
+        def inspect_owned():
+            result = subprocess.run(docker + ['inspect', name], capture_output=True, text=True, timeout=5)
+            if result.returncode:
+                if 'no such object:' in result.stderr.lower() or 'no such container:' in result.stderr.lower():
+                    return None
+                result.check_returncode()
+            details = json.loads(result.stdout)[0]
+            self.assertEqual(details['Name'], '/' + name)
+            actual = {m['Destination']: m['Source'] for m in details['Mounts'] if m['Type'] == 'bind'}
+            self.assertEqual(actual, expected_mounts, 'refusing an unexpected fixture mount identity')
+            return details
+
+        proc = subprocess.Popen([sys.executable, '-c', script], stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL)
+        owned = None
         try:
-            end=time.monotonic()+5
-            while time.monotonic()<end:
-                current=set(subprocess.check_output(docker+['ps','-q','--filter','name=resource-enrichment-'],text=True).split())-before
-                if current:
-                    owned=current.pop();break
+            if after_spawn:
+                after_spawn()
+            end = time.monotonic() + 5
+            while time.monotonic() < end:
+                details = inspect_owned()
+                if details and details['State']['Running']:
+                    owned = details['Id']
+                    break
                 time.sleep(0.05)
             self.assertIsNotNone(owned)
-            details=json.loads(subprocess.check_output(docker+['inspect',owned]))[0]
-            staging=Path(next(m['Source'] for m in details['Mounts'] if m['Destination']=='/tools')).parent
-            proc.send_signal(sig);proc.wait(timeout=15)
-            if sig==signal.SIGKILL:
-                end=time.monotonic()+10
-                while time.monotonic()<end:
-                    state=json.loads(subprocess.check_output(docker+['inspect','--format','{{json .State}}',owned]))
-                    if not state['Running']:break
+            proc.send_signal(sig)
+            proc.wait(timeout=15)
+            if sig == signal.SIGKILL:
+                end = time.monotonic() + 10
+                while time.monotonic() < end:
+                    state = json.loads(subprocess.check_output(
+                        docker + ['inspect', '--format', '{{json .State}}', owned], timeout=5))
+                    if not state['Running']:
+                        break
                     time.sleep(0.1)
-                self.assertFalse(state['Running']);self.assertNotEqual(state['ExitCode'],0)
-                print('HOST_LOSS_CONTROL',json.dumps({k:state.get(k) for k in ['Running','ExitCode','OOMKilled']}))
+                self.assertFalse(state['Running'])
+                self.assertNotEqual(state['ExitCode'], 0)
+                print('HOST_LOSS_CONTROL', json.dumps({k: state.get(k) for k in ['Running', 'ExitCode', 'OOMKilled']}))
             else:
-                self.assertNotIn(owned,subprocess.check_output(docker+['ps','-aq','--filter','name=resource-enrichment-'],text=True))
-            self.assertFalse((self.root/'result').exists())
+                self.assertIsNone(inspect_owned())
+            self.assertFalse((self.root / 'result').exists())
         finally:
-            if proc.poll() is None:proc.kill();proc.wait()
-            if owned:subprocess.run(docker+['rm','-f',owned],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-            if sig==signal.SIGKILL and staging and staging.name.startswith('.enrichment-'):
-                import shutil
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait(timeout=5)
+            # Revalidate the predetermined name/mounts; remove its immutable ID,
+            # never a container selected by a shared prefix or temporal difference.
+            remaining = inspect_owned()
+            if remaining:
+                if owned is not None:
+                    self.assertEqual(remaining['Id'], owned)
+                subprocess.run(docker + ['rm', '-f', remaining['Id']], check=True,
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
+            self.assertIsNone(inspect_owned())
+            if staging.exists():
                 shutil.rmtree(staging)
-    def test_sigterm_cleanup(self): self.host_signal(signal.SIGTERM)
-    def test_host_loss_internal_deadline(self): self.host_signal(signal.SIGKILL)
+
+    def test_sigterm_cleanup(self):
+        self.host_signal(signal.SIGTERM)
+
+    def test_host_loss_internal_deadline(self):
+        self.host_signal(signal.SIGKILL)
+
+    def test_signal_cleanup_preserves_concurrent_same_prefix_job(self):
+        import uuid
+        docker = ['docker', '--context', os.environ.get('ENRICHMENT_TEST_CONTEXT', 'default')]
+        for sig in (signal.SIGTERM, signal.SIGKILL):
+            with self.subTest(signal=sig):
+                name = 'resource-enrichment-foreign-' + uuid.uuid4().hex
+                foreign_stage = self.root / name
+                foreign_stage.mkdir(mode=0o700)
+                marker = foreign_stage / 'keep'
+                marker.write_bytes(b'unrelated job must survive')
+                foreign_id = None
+                def start_foreign():
+                    nonlocal foreign_id
+                    # Start after the signal fixture child, inside the old
+                    # before/after-selection race window, with the same prefix.
+                    foreign_id = subprocess.check_output(docker + [
+                        'create', '--pull=never', '--name', name, '--network=none', '--read-only',
+                        '--cap-drop=ALL', '--security-opt=no-new-privileges', '--memory=64m',
+                        '--memory-swap=64m', '--pids-limit=8', '--cpus=1',
+                        '--user', f'{os.getuid()}:{os.getgid()}', '--mount',
+                        f'type=bind,src={foreign_stage},dst=/tools,readonly',
+                        os.environ['ENRICHMENT_TEST_IMAGE'], '-c', 'import time;time.sleep(60)'],
+                        text=True, timeout=15).strip()
+                    subprocess.run(docker + ['start', foreign_id], check=True,
+                                   stdout=subprocess.DEVNULL, timeout=10)
+                try:
+                    self.host_signal(sig, after_spawn=start_foreign)
+                    details = json.loads(subprocess.check_output(docker + ['inspect', foreign_id], timeout=5))[0]
+                    self.assertEqual(details['Id'], foreign_id)
+                    self.assertEqual(details['Name'], '/' + name)
+                    self.assertTrue(details['State']['Running'])
+                    self.assertEqual(marker.read_bytes(), b'unrelated job must survive')
+                    print('FOREIGN_JOB_SURVIVAL', signal.Signals(sig).name, 'running=True marker_unchanged=True')
+                finally:
+                    # This test created this separate control explicitly; its
+                    # cleanup uses only the ID returned by that create operation.
+                    if foreign_id:
+                        subprocess.run(docker + ['rm', '-f', foreign_id], check=True,
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
 
 
 if __name__=='__main__': unittest.main()
