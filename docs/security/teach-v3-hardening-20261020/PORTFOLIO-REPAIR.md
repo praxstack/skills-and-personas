@@ -29,3 +29,7 @@ The unchanged live audit reports **129 entries, 115 unique names, 14 duplicate n
 Remaining lint failures are ten long entrypoints, seven directory-policy findings and three top-level README findings. Link findings fell from 136 to 126 through nine real reference repairs and removal of the missing idea-lineage pointer. The remaining 126 include 115 frozen attempt findings and 11 contextual/historical findings described in the triage. Frozen evidence, scanners, lint rules, evaluators and historical reports were not changed.
 
 Further work requires explicit scope: reconcile duplicate invocation ownership without losing content; consider governed directory/length policy changes separately from product edits; locate the upstream takes-versus-facts document with provenance before restoring a document pointer. Any future canonical runtime edit must update the copy and pass the parity regression.
+
+## Independent-review correction
+
+The pre-staging `git diff --check` above did not include the then-untracked restored files. Checking the committed diff `444f20d..0801771` reports existing extra final blank lines in the copied `ingest_zoom_captions.py` and `validate_coverage.py`. They are retained to preserve exact canonical runtime parity. The earlier whitespace result is not a clean committed-diff result. Functional packaging tests passed in independent review.
