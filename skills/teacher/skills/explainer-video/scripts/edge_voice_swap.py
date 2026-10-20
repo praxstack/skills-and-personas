@@ -7,6 +7,7 @@ voice says too slowly for its slot is spoken again in one breath, up to 25% fast
 is written.
 
 Setup:  pip install edge-tts      (and have ffmpeg on your PATH)
+Online synthesis requires TEACHER_ALLOW_NETWORK=1 for this command.
 Run, in the folder with the MP4, timeline.json and bed.m4a:
   python edge_voice_swap.py                         -> en-US-AriaNeural
   python edge_voice_swap.py en-IN-NeerjaNeural      (Indian English, female)
@@ -25,6 +26,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
+
+if os.environ.get("TEACHER_ALLOW_NETWORK") != "1":
+    raise SystemExit("Edge voice swap sends narration to an external service. "
+                     "Explicitly opt in with TEACHER_ALLOW_NETWORK=1 for this command.")
 
 import edge_tts
 
