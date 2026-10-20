@@ -78,3 +78,15 @@ Remaining work includes enrichment process isolation, demonstrated packaging
 repairs, improved visual artifacts, final broad review and release verification.
 Portfolio diagnostic debt is still reported honestly; its green CI job tests
 the diagnostics and does not mean the portfolio passes acceptance.
+
+## Addendum through `7777702`
+
+The preceding snapshot remains historical. Enrichment process isolation and the demonstrated packaging defects listed there now have reviewed candidate repairs. Final visual work, broad review and release verification remain pending.
+
+The explicit enrichment runner (`444f20d`) uses a standalone-built immutable image `sha256:6bae2ca9852061ba0abebef8b07f9f3ea96a799c9f7ef4d31f0a6f135ae5ea6c`. Its author ran 50 sandbox controls and 21 transport/budget controls. The controller independently reran all 50 sandbox controls, with no skips, in 38.495 seconds. Independent review also passed 18 host controls and three real browser/container controls. Resource ceilings and authenticated-header scope are documented in the runner README; direct host imports remain unsandboxed, and no personal provider authentication or kernel-enforced public-only egress is claimed.
+
+That review found a P2 in test cleanup: shared-prefix timing could select a concurrent job. Revision `7777702` binds the fixture to an identity and mounts selected before launch and removes only its inspected immutable container ID. The author and independent reviewer each passed three actual-container controls after the revision, including unrelated-job survival under SIGTERM and SIGKILL. Independent review time was 15.328 seconds. Both runtime copies remain identical. These focused revision results do not pretend the earlier full-suite run occurred after the revision.
+
+Portfolio repair `0801771` restored 19 runtime/setup/test files, repaired nine local links and six description syntax defects, corrected the techtutor name, and retained the idea-lineage distinction while removing a nonexistent document pointer. Independent review passed five packaging tests, including synthetic transcript ingestion and handoff. The copied suite passed 39 tests and skipped 33 opt-in/dependency-dependent cases. See PORTFOLIO-REPAIR.md for the retained whitespace caveat and remaining 14 duplicates, 20 lint failures and 126 link findings. No divergent skill was silently deleted.
+
+Remote candidate `1839ad37e1be28af9d01015e872704abb1384ff3` was verified after push. Its four security/diagnostic CI checks passed. CodeRabbit's green status explicitly skipped draft review; Macroscope was skipped. Neither is claimed as a substantive independent review. This addendum records local results through `7777702`; remote verification is limited to the exact hash stated. Installed snapshots and frozen evaluators remain unchanged.
