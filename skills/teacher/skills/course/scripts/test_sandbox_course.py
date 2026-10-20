@@ -313,6 +313,31 @@ if(n.status===0) throw Error('network escaped');
                 self.assertIn('course.json', self.run_course(prefix))
             self.assertEqual(sentinel.read_text(), 'host-only-value')
 
+    def test_adopted_browser_style_exits_reaped_during_live_job(self):
+        # The owned Node job stays alive while a Python child forks an orphan.
+        # Without PID 1 reaping during its wait, that orphan remains a zombie.
+        prefix = ESCAPE + r"""
+const fs=require('fs'), cp=require('child_process');
+for(let i=0;i<4;i++){
+  const r=cp.spawnSync('python3',['-c','import os,time; pid=os.fork(); time.sleep(0.05) if pid==0 else None; os._exit(0)']);
+  if(r.status!==0)throw Error('orphan fixture failed');
+}
+const deadline=Date.now()+2000;
+let zombies=[];
+do{
+  zombies=fs.readdirSync('/proc').filter(x=>/^\d+$/.test(x)).filter(pid=>{
+    try{const s=fs.readFileSync('/proc/'+pid+'/status','utf8');return /^PPid:\s*1$/m.test(s)&&/^State:\s*Z/m.test(s)}catch{return false}
+  });
+}while(zombies.length&&Date.now()<deadline);
+if(zombies.length)throw Error('PID 1 retained adopted zombie exits: '+zombies);
+"""
+        self.assertIn('course.json', self.run_course(prefix))
+
+    def test_adopted_exit_does_not_mask_owned_failure(self):
+        prefix = ESCAPE + "require('child_process').spawnSync('python3',['-c','import os,time; pid=os.fork(); time.sleep(0.05) if pid==0 else None; os._exit(0)']);p.exit(7);"
+        with self.assertRaisesRegex(RuntimeError, 'course process failed'):
+            self.run_course(prefix)
+
     def test_detached_setsid_descendant_is_killed_before_packaging(self):
         prefix = ESCAPE + "require('child_process').spawn('node',['-e',\"setTimeout(()=>require('fs').writeFileSync('/tmp/output/escaped','bad'),1000);setInterval(()=>{},1000)\"],{detached:true,stdio:'ignore'}).unref();\n"
         self.assertEqual(set(self.run_course(prefix)), {'course.json'})

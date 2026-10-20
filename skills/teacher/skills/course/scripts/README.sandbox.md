@@ -158,3 +158,30 @@ The locally built result was
 The browser recipe is unchanged. Package dependencies may change on a future
 setup; inspect the new immutable result instead of assuming this ID. Runtime
 still downloads nothing and retains every existing execution/output bound.
+
+### Runtime revision: reaping and browser lifetime (not playback acceptance)
+
+PID 1 now uses `supervisor_reaping.wait_reaping()` while waiting for both its
+browser preflight and the owned job. It reaps adopted exited descendants as
+they arrive, assigns the owned child's exact exit/signal status to its `Popen`
+object, and nonblockingly drains already-exited orphans after that child exits.
+There is one waiter, no SIGCHLD handler and no competing `Popen.wait()` for
+those objects. Live descendants remain governed by the existing kill-all and
+independent deadline. An unavailable owned status raises instead of assuming
+success. Default refusal, output validation and publication rules are unchanged.
+
+The fixed render helper closes the static-inspection context/browser before
+launching the interactive-video browser with the original launch configuration.
+It records direct `/proc`/cgroup phase samples without diagnostic subprocesses
+and captures the live explorer after scrolling it into view. Diagnostics are
+still subject to the existing 1 MiB log and output budgets.
+
+These changes eliminated observed orphan zombies and produced a visible
+explorer capture, but **did not establish reliable playback within 64 tasks**.
+A consecutive sequence passed once, then failed actual playback. A single
+media-only `NetworkServiceInProcess` experiment still showed a separate network
+utility and also failed; that ineffective flag was reverted. No process
+isolation, web security, resource limit, playback assertion or deadline change
+is retained. The three-consecutive-run requirement remains unmet. See
+`.superpowers/sdd/CONTINUATION/task-8-runtime-revision-report.md` for every run
+and the unresolved thread-budget blocker before treating render as accepted.

@@ -52,6 +52,8 @@ def deadline(signum, frame):
 signal.signal(signal.SIGALRM, deadline)
 signal.setitimer(signal.ITIMER_REAL, float(sys.argv[2]))
 base = '/tools/course/scripts/'
+sys.path.insert(0, base)
+from supervisor_reaping import wait_reaping
 env = {'PATH': '/usr/local/bin:/usr/bin:/bin', 'HOME': '/tmp', 'TMPDIR': '/tmp',
        'PYTHONDONTWRITEBYTECODE': '1', 'PLAYWRIGHT_BROWSERS_PATH': '/ms-playwright',
        'CHROMIUM_PATH': '/tools/chromium', 'UV_THREADPOOL_SIZE': '1', 'NODE_OPTIONS': '--v8-pool-size=1'}
@@ -64,15 +66,15 @@ else:
                '/input/course', '--out', '/tmp/output', '--trust-authored-code']
     output = sys.stderr
 if mode in {'validate', 'render'}:
-    probe = subprocess.run(['node', '--input-type=module', '-e',
+    probe = subprocess.Popen(['node', '--input-type=module', '-e',
         "import {loadPlaywright,launch} from '/tools/visual-qa/scripts/pw.mjs'; "
         "const {chromium}=await loadPlaywright();const b=await launch(chromium);await b.newPage();await b.close();"],
         env=env, stdout=sys.stderr, stderr=sys.stderr)
-    if probe.returncode:
+    if wait_reaping(probe):
         sys.exit('reviewed Playwright/Chromium dependencies unavailable; no authored code ran')
 child = subprocess.Popen(command, stdout=output, stderr=sys.stderr, env=env, start_new_session=True)
 try:
-    code = child.wait()
+    code = wait_reaping(child)
 finally:
     try:
         os.kill(-1, signal.SIGKILL)
