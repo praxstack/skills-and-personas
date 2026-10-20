@@ -43,6 +43,15 @@ statuses. These synthetic fixtures do not clear the separate local narrated-medi
 repeatability failure. The controller read the downloaded logs rather than
 inferring these results from a green status alone.
 
+The parallel pull-request [CI run 39468522046](https://github.com/praxstack/skills-and-personas/actions/runs/39468522046)
+failed at the same product head. Security and required controls passed, but the
+second fresh synthetic-media container failed. Its downloaded log shows
+`pthread_create: Resource temporarily unavailable`, three PID-limit events,
+`AUDIO_RENDERER_ERROR`, and a playback timeout. The sandbox failed closed without
+publishing output. This reproduces the resource-pressure failure remotely:
+synthetic-media CI is **not reliably passing**, despite the successful run above.
+No retries, limit increases or weaker assertions were used to erase this result.
+
 ## Local deliverables
 
 These artifacts were built locally from the exact product commit above.
@@ -72,12 +81,13 @@ Private test banks, credentials and raw agent-session logs are excluded.
    were not achieved within the unchanged 64-task/512-MiB limits. The reaping fix
    helps but does not close this failure. The ineffective launch experiment was
    reverted. Synthetic CI media cannot substitute for this narrated-artifact
-   requirement.
+   requirement. The parallel remote synthetic-media run also failed at its
+   second container with thread exhaustion and an audio renderer error.
 2. **Course consent checker:** the frozen checker expects persistence without
    storage consent. Its separately versioned correction still requires the
    human-owned governing-change decision. Product privacy was not weakened.
 3. **Release acceptance:** the above blockers and human visual acceptance remain
-   separate from successful packaging and synthetic-media CI.
+   separate from successful packaging and the single successful CI run.
 4. **Broader portfolio/history work:** divergent identities, remaining lint/link
    debt, portfolio-wide capability/library adoption and destructive public
    history cleanup have not been silently declared complete.
