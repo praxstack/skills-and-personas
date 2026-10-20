@@ -56,14 +56,6 @@ class Discovery(unittest.TestCase):
             self.assertFalse(result['available'])
             self.assertEqual(result['status'], 'missing')
 
-    def test_manim_module_or_isolated_cli(self):
-        for module, cli, expected in ((False, True, True), (True, False, True), (False, False, False)):
-            with self.subTest(module=module, cli=cli), mock.patch.object(f, 'has_py', return_value=module), mock.patch.object(f, 'has_bin', return_value=cli), mock.patch.object(f.subprocess, 'run') as execute:
-                result = self.inspect('manim')
-                self.assertEqual(result['available'], expected)
-                self.assertEqual(result['status'], 'detected' if expected else 'missing')
-                execute.assert_not_called()
-
     def test_inventory_offline_overrides_net_without_requests(self):
         output = io.StringIO()
         with mock.patch.object(sys, 'argv', ['find_tool.py', '--inventory', '--offline', '--net', '--json']), mock.patch.object(f, 'has_net') as network, mock.patch.object(f, 'has_bin', return_value=False), mock.patch.object(f, 'has_py', return_value=False), mock.patch.object(f, 'has_node', return_value=False), contextlib.redirect_stdout(output):

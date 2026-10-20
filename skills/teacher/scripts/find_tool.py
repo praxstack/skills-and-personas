@@ -96,6 +96,29 @@ def inspect_tool(tool: dict, *, net: bool, mcp: set[str]) -> dict:
             return {"available": False, "missing": [f"file:{skill}"],
                     "status": "missing", "evidence": []}
         evidence.append(f"bundled instructions present: {skill}")
+    if tool.get("id") == "manim":
+        # Use the prescribed wrapper's exact resolver, including actual imports.
+        # Discovery runs in the project cwd, as does render_manim.py by default.
+        wrapper = ROOT / "skills/manim-video/scripts/render_manim.py"
+        spec = importlib.util.spec_from_file_location("teacher_manim_renderer", wrapper)
+        renderer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(renderer)
+        project = os.getcwd()
+        source = "source"
+        try:
+            state = json.loads((Path(project) / ".video-state.json").read_text())
+            config = state.get("config", {}) if isinstance(state, dict) else {}
+            candidate = config.get("source") if isinstance(config, dict) else None
+            if isinstance(candidate, str):
+                source = candidate
+        except (OSError, ValueError):
+            pass
+        selected = renderer.resolve_python(project, os.path.join(project, source))
+        if selected:
+            return {"available": True, "missing": [], "status": "detected",
+                    "evidence": evidence + [f"Manim import verified with wrapper Python: {selected}"]}
+        return {"available": False, "missing": ["py:manim (no wrapper-compatible interpreter)"],
+                "status": "missing", "evidence": evidence}
     for key, check, label in (("bins", has_bin, "bin"), ("py", has_py, "py"), ("node", has_node, "node")):
         for name in p.get(key, []):
             (evidence if check(name) else missing).append(f"{label}:{name}")
