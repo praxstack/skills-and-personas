@@ -29,6 +29,8 @@ from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import requests
+import resource_budget as budgets
+from resource_budget import BudgetExceeded
 from requests.adapters import HTTPAdapter
 from urllib3.connection import HTTPConnection, HTTPSConnection
 from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
@@ -86,6 +88,9 @@ class PublicNetworkAdapter(HTTPAdapter):
         raise ValueError("resource fetching does not allow proxy transports")
 
     def send(self, request, **kwargs):
+        budgets.check()
+        budgets.charge("requests", 1)
+        kwargs["timeout"] = budgets.timeout(kwargs.get("timeout") or 40)
         validate_remote_url(request.url, resolve_dns=False)
         if kwargs.get("proxies"):
             raise ValueError("resource fetching does not allow proxy transports")
@@ -147,8 +152,14 @@ def parse_manifest(session_dir: Path) -> list[ResourceItem]:
     manifest_path = session_dir / ".pipeline" / "resource_manifest.json"
     if not manifest_path.exists():
         return []
-    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    with manifest_path.open("rb") as handle:
+        raw = handle.read(1024 * 1024 + 1)
+    if len(raw) > 1024 * 1024:
+        raise ValueError("resource manifest exceeds 1 MiB")
+    data = json.loads(raw)
     resources_raw = data.get("resources", [])
+    if not isinstance(resources_raw, list) or len(resources_raw) > 100:
+        raise ValueError("resource manifest requires a list of at most 100 entries")
     items: list[ResourceItem] = []
     for row in resources_raw:
         if not isinstance(row, dict):
@@ -158,6 +169,7 @@ def parse_manifest(session_dir: Path) -> list[ResourceItem]:
         if not name or not url:
             continue
         items.append(ResourceItem(name=name, url=url))
+    budgets.charge("resources", len(items))
     return items
 
 
@@ -240,6 +252,7 @@ def validate_remote_url(url: str, *, resolve_dns: bool = True) -> str:
 
 def read_limited_body(response: requests.Response, max_bytes: int) -> bytes:
     """Read a streamed, decoded response without crossing the byte budget."""
+    budgets.check()
     length = response.headers.get("content-length")
     if length:
         try:
@@ -254,11 +267,17 @@ def read_limited_body(response: requests.Response, max_bytes: int) -> bytes:
     for chunk in response.iter_content(chunk_size=64 * 1024):
         if not chunk:
             continue
+        try:
+            budgets.charge("transfer", len(chunk))
+        except BudgetExceeded:
+            response.close()
+            raise
         total += len(chunk)
         if total > max_bytes:
             response.close()
             raise ValueError(f"resource exceeds {max_bytes} bytes")
         chunks.append(chunk)
+    budgets.check()
     return b"".join(chunks)
 
 
@@ -284,7 +303,8 @@ def fetch_limited(
             or (current_parts.port not in {None, 443})
         ):
             raise ValueError("authenticated resource redirected outside its exact HTTPS origin")
-        response = session.get(current, timeout=timeout, allow_redirects=False, stream=True)
+        budgets.check()
+        response = session.get(current, timeout=budgets.timeout(timeout), allow_redirects=False, stream=True)
         if response.is_redirect or response.is_permanent_redirect:
             location = response.headers.get("location")
             response.close()
@@ -364,6 +384,7 @@ def provider_https_origin(url: str, provider: str) -> bool:
 
 def install_browser_transport(context):
     broker = _new_session()
+    job_budget = budgets.CURRENT.get() or budgets.JobBudget()
     remaining = [100 * 1024 * 1024]
     context.on("close", lambda: broker.close())
 
@@ -399,7 +420,19 @@ def install_browser_transport(context):
         except Exception:
             route.abort("blockedbyclient")
 
-    context.route("**/*", fulfill_public)
+    def bounded_callback(route):
+        # Playwright dispatches sync callbacks in a fresh greenlet. ContextVars
+        # are not inherited there; bind the original job explicitly.
+        token = budgets.CURRENT.set(job_budget)
+        try:
+            job_budget.check()
+            fulfill_public(route)
+        except BudgetExceeded:
+            route.abort("blockedbyclient")
+        finally:
+            budgets.CURRENT.reset(token)
+
+    context.route("**/*", bounded_callback)
 
 
 def extract_html_title(text: str) -> str | None:
@@ -413,13 +446,14 @@ def save_text(path: Path, text: str, dry_run: bool) -> None:
     if dry_run:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8", errors="ignore")
+    save_bytes(path, text.encode("utf-8", errors="ignore"), dry_run=False)
 
 
 def save_bytes(path: Path, blob: bytes, dry_run: bool) -> None:
     if dry_run:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
+    budgets.charge("output", len(blob))
     path.write_bytes(blob)
 
 
@@ -476,6 +510,7 @@ def notion_load_page_chunks(
     notes: list[str] = []
 
     for idx in range(max_calls):
+        budgets.check()
         payload = {
             "page": {"id": page_id},
             "limit": 100,
@@ -487,7 +522,7 @@ def notion_load_page_chunks(
             endpoint,
             headers=headers,
             json=payload,
-            timeout=timeout,
+            timeout=budgets.timeout(timeout),
             allow_redirects=False,
             stream=True,
         )
@@ -606,6 +641,8 @@ def enrich_generic_http(
             notes=[],
             error=None,
         )
+    except BudgetExceeded:
+        raise
     except Exception as exc:  # pragma: no cover - runtime/network dependent
         return EnrichmentResult(
             name=item.name,
@@ -645,6 +682,8 @@ def enrich_google_drive(
             base.output_files.append(to_rel(pdf_path, session_dir))
             base.notes.append("Google Drive direct PDF export captured.")
         return base
+    except BudgetExceeded:
+        raise
     except Exception as exc:  # pragma: no cover - runtime/network dependent
         base.notes.append(f"Google Drive PDF export attempt failed: {exc}")
         return base
@@ -685,6 +724,8 @@ def enrich_notion(
         fallback.output_files.extend([to_rel(md_path, session_dir), to_rel(raw_path, session_dir)])
         fallback.notes.extend(notes)
         return fallback
+    except BudgetExceeded:
+        raise
     except Exception as exc:  # pragma: no cover - runtime/network dependent
         fallback.notes.append(f"Authenticated Notion extraction failed: {exc}")
         return fallback
@@ -730,54 +771,63 @@ def enrich_canva(
             # responses are fulfilled by the pinned public-only Python transport.
             state = sanitize_playwright_state(playwright_storage_state, "canva.com")
             browser, context = new_public_browser_context(p, state)
-            page = context.new_page()
-            target = validate_remote_url(item.url)
-            target_host = (urlparse(target).hostname or "").lower().rstrip(".")
-            if not provider_https_origin(target, "canva.com"):
-                raise ValueError("authenticated Canva capture requires a canva.com HTTPS origin on port 443")
-            page.goto(target, wait_until="networkidle", timeout=90000)
-            page.wait_for_timeout(2000)
-
-            final_host = (urlparse(page.url).hostname or "").lower().rstrip(".")
-            if not provider_https_origin(page.url, "canva.com"):
-                raise ValueError("authenticated Canva capture redirected outside canva.com")
-            height = page.evaluate("Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)")
-            if int(height or 0) > MAX_BROWSER_PAGE_HEIGHT:
-                raise ValueError(f"browser page exceeds {MAX_BROWSER_PAGE_HEIGHT}px height")
-
-            html = page.content()
-            if len(html.encode("utf-8")) > MAX_BROWSER_HTML_BYTES:
-                raise ValueError(f"browser HTML exceeds {MAX_BROWSER_HTML_BYTES} bytes")
-            save_text(html_path, html, dry_run=False)
-            page.screenshot(path=str(png_path), full_page=False)
-            if png_path.stat().st_size > MAX_BROWSER_ARTIFACT_BYTES:
-                png_path.unlink(missing_ok=True)
-                raise ValueError("browser screenshot exceeded artifact budget")
-            fallback.output_files.extend([to_rel(html_path, session_dir), to_rel(png_path, session_dir)])
-            fallback.method = "playwright-auth-capture"
-            fallback.authenticated = True
-            fallback.final_url = page.url
-            fallback.title = page.title()
-
             try:
-                page.pdf(path=str(pdf_path), print_background=True)
-                if pdf_path.stat().st_size > MAX_BROWSER_ARTIFACT_BYTES:
-                    pdf_path.unlink(missing_ok=True)
-                    fallback.notes.append("Page PDF exceeded the artifact budget and was removed.")
-                else:
-                    fallback.output_files.append(to_rel(pdf_path, session_dir))
-            except Exception as pdf_exc:
-                fallback.notes.append(f"Page PDF generation unavailable: {pdf_exc}")
+                page = context.new_page()
+                target = validate_remote_url(item.url)
+                target_host = (urlparse(target).hostname or "").lower().rstrip(".")
+                if not provider_https_origin(target, "canva.com"):
+                    raise ValueError("authenticated Canva capture requires a canva.com HTTPS origin on port 443")
+                page.goto(target, wait_until="networkidle", timeout=90000)
+                budgets.check()
+                page.wait_for_timeout(min(2000, budgets.timeout(2) * 1000))
 
-            context.close()
-            browser.close()
+                final_host = (urlparse(page.url).hostname or "").lower().rstrip(".")
+                if not provider_https_origin(page.url, "canva.com"):
+                    raise ValueError("authenticated Canva capture redirected outside canva.com")
+                height = page.evaluate("Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)")
+                if int(height or 0) > MAX_BROWSER_PAGE_HEIGHT:
+                    raise ValueError(f"browser page exceeds {MAX_BROWSER_PAGE_HEIGHT}px height")
+
+                html = page.content()
+                if len(html.encode("utf-8")) > MAX_BROWSER_HTML_BYTES:
+                    raise ValueError(f"browser HTML exceeds {MAX_BROWSER_HTML_BYTES} bytes")
+                save_text(html_path, html, dry_run=False)
+                png = page.screenshot(full_page=False)
+                if len(png) > MAX_BROWSER_ARTIFACT_BYTES:
+                    raise ValueError("browser screenshot exceeded artifact budget")
+                save_bytes(png_path, png, dry_run=False)
+                fallback.output_files.extend([to_rel(html_path, session_dir), to_rel(png_path, session_dir)])
+                fallback.method = "playwright-auth-capture"
+                fallback.authenticated = True
+                fallback.final_url = page.url
+                fallback.title = page.title()
+
+                try:
+                    pdf = page.pdf(print_background=True)
+                    if len(pdf) > MAX_BROWSER_ARTIFACT_BYTES:
+                        fallback.notes.append("Page PDF exceeded the artifact budget and was removed.")
+                    else:
+                        save_bytes(pdf_path, pdf, dry_run=False)
+                        fallback.output_files.append(to_rel(pdf_path, session_dir))
+                except BudgetExceeded:
+                    raise
+                except Exception as pdf_exc:
+                    fallback.notes.append(f"Page PDF generation unavailable: {pdf_exc}")
+
+            finally:
+                try:
+                    context.close()
+                finally:
+                    browser.close()
         return fallback
+    except BudgetExceeded:
+        raise
     except Exception as exc:  # pragma: no cover - runtime/browser dependent
         fallback.notes.append(f"Authenticated Canva capture failed: {exc}")
         return fallback
 
 
-def enrich_session(
+def _enrich_session(
     session_dir: Path,
     notion_token_v2: str | None,
     notion_active_user: str | None,
@@ -797,6 +847,7 @@ def enrich_session(
 
     results: list[EnrichmentResult] = []
     for item in resources:
+        budgets.check()
         # Validate before provider routing. The same policy is reapplied to
         # every redirect inside fetch_limited.
         try:
@@ -874,8 +925,15 @@ def enrich_session(
     }
 
     if not dry_run:
-        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        save_text(report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", dry_run=False)
     return report
+
+
+def enrich_session(session_dir, notion_token_v2, notion_active_user,
+                   playwright_storage_state, cookies_json, dry_run, *, budget=None):
+    with budgets.job_scope(budget):
+        return _enrich_session(session_dir, notion_token_v2, notion_active_user,
+                               playwright_storage_state, cookies_json, dry_run)
 
 
 def collect_session_dirs(root: Path, session_dir: Path | None, all_sessions: bool) -> list[Path]:
@@ -919,7 +977,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main() -> int:
+def _main() -> int:
     args = parse_args()
     root = Path(args.root).resolve()
     session_dir = Path(args.session_dir).resolve() if args.session_dir else None
@@ -954,6 +1012,15 @@ def main() -> int:
 
     print(f"Completed resource enrichment for {enriched} session(s).")
     return 0
+
+
+def main() -> int:
+    try:
+        with budgets.job_scope(hard_deadline=True):
+            return _main()
+    except BudgetExceeded as exc:
+        print(f"ERROR: {exc}")
+        return 2
 
 
 if __name__ == "__main__":
