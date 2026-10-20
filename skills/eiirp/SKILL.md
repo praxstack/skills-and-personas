@@ -11,7 +11,7 @@ description: |
   resolvability, (7) report. Named after the Radiohead song. Nothing
   produced during significant work lives only in chat — knowledge becomes
   permanent, patterns become reusable. Also carries the always-on
-  auto-fire gate: when >=500 words of structured analysis on a
+  auto-fire gate: when at least 500 words of structured analysis on a
   user-shared document is about to be delivered, file the brain page
   first, then deliver the analysis with the link in that same reply.
 triggers:
