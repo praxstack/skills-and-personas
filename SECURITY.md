@@ -8,12 +8,12 @@ entry point for this repository is:
 
 https://github.com/praxstack/skills-and-personas/security/advisories/new
 
-Availability depends on the repository's private reporting settings; this policy
-does not establish that reporting is enabled. If that page does not offer a
-private report, contact the maintainer through an existing private channel, or
-open a public issue containing only a request to enable private reporting. Wait
-for a confirmed private channel before sharing sensitive details. GitHub does
-not provide a general direct-message fallback.
+GitHub private vulnerability reporting was enabled and confirmed through the
+repository API on 2026-10-20. If that page does not offer a private report,
+contact the maintainer through an existing private channel, or open a public
+issue containing only a request to restore private reporting. Wait for a
+confirmed private channel before sharing sensitive details. GitHub does not
+provide a general direct-message fallback.
 
 Include the affected revision or release, component, prerequisites, reproduction
 steps, expected and observed behavior, and potential impact. Use synthetic data
