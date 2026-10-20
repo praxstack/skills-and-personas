@@ -357,7 +357,7 @@ def _browser_request_allowed(url: str) -> bool:
         return False
 
 
-def new_public_browser_context(playwright, state=None, executable_path=None):
+def new_public_browser_context(playwright, state=None, executable_path=None, auth_origins=None):
     browser = playwright.chromium.launch(headless=True, executable_path=executable_path, args=[
         "--proxy-server=http://127.0.0.1:9", "--proxy-bypass-list=<-loopback>",
         "--host-resolver-rules=MAP * ~NOTFOUND", "--disable-quic",
@@ -371,7 +371,7 @@ def new_public_browser_context(playwright, state=None, executable_path=None):
     # A route with no connect_to_server() is a local sink: no upstream
     # socket is opened. Avoid a synchronous close inside the WS dispatch.
     context.route_web_socket("**/*", lambda ws: ws.on_message(lambda message: None))
-    install_browser_transport(context)
+    install_browser_transport(context, auth_origins=auth_origins)
     return browser, context
 
 
@@ -382,7 +382,7 @@ def provider_https_origin(url: str, provider: str) -> bool:
             and (host == provider or host.endswith("." + provider)))
 
 
-def install_browser_transport(context):
+def install_browser_transport(context, auth_origins=None):
     broker = _new_session()
     job_budget = budgets.CURRENT.get() or budgets.JobBudget()
     remaining = [100 * 1024 * 1024]
@@ -397,7 +397,10 @@ def install_browser_transport(context):
             headers = {k: v for k, v in request.all_headers().items()
                        if k.lower() not in {"host", "connection", "content-length", "accept-encoding"}}
             host = (urlparse(target).hostname or "").lower().rstrip(".")
-            if not provider_https_origin(target, "canva.com"):
+            origin = "https://" + host
+            credential_allowed = (provider_https_origin(target, "canva.com") if auth_origins is None
+                                  else provider_https_origin(target, "canva.com") and origin in auth_origins)
+            if not credential_allowed:
                 headers = {k: v for k, v in headers.items()
                            if k.lower() not in {"cookie", "authorization"}}
             post = request.post_data_buffer
@@ -738,6 +741,8 @@ def enrich_canva(
     resources_dir: Path,
     playwright_storage_state: Path | None,
     dry_run: bool,
+    auth_origins=None,
+    browser_executable=None,
 ) -> EnrichmentResult:
     fallback = enrich_generic_http(session, item, session_dir, resources_dir, dry_run)
     fallback.provider = "canva"
@@ -770,7 +775,7 @@ def enrich_canva(
             # Browser sockets have no usable proxy or DNS route. All HTTP(S)
             # responses are fulfilled by the pinned public-only Python transport.
             state = sanitize_playwright_state(playwright_storage_state, "canva.com")
-            browser, context = new_public_browser_context(p, state)
+            browser, context = new_public_browser_context(p, state, browser_executable, auth_origins)
             try:
                 page = context.new_page()
                 target = validate_remote_url(item.url)
@@ -834,6 +839,8 @@ def _enrich_session(
     playwright_storage_state: Path | None,
     cookies_json: Path | None,
     dry_run: bool,
+    auth_origins=None,
+    browser_executable=None,
 ) -> dict[str, Any]:
     resources = parse_manifest(session_dir)
     resources_dir = session_dir / ".resources"
@@ -889,7 +896,7 @@ def _enrich_session(
                 session_dir=session_dir,
                 resources_dir=resources_dir,
                 playwright_storage_state=playwright_storage_state,
-                dry_run=dry_run,
+                dry_run=dry_run, auth_origins=auth_origins, browser_executable=browser_executable,
             )
         elif provider == "google-drive":
             res = enrich_google_drive(
@@ -930,10 +937,10 @@ def _enrich_session(
 
 
 def enrich_session(session_dir, notion_token_v2, notion_active_user,
-                   playwright_storage_state, cookies_json, dry_run, *, budget=None):
+                   playwright_storage_state, cookies_json, dry_run, *, budget=None, auth_origins=None, browser_executable=None):
     with budgets.job_scope(budget):
         return _enrich_session(session_dir, notion_token_v2, notion_active_user,
-                               playwright_storage_state, cookies_json, dry_run)
+                               playwright_storage_state, cookies_json, dry_run, auth_origins, browser_executable)
 
 
 def collect_session_dirs(root: Path, session_dir: Path | None, all_sessions: bool) -> list[Path]:
