@@ -1,0 +1,59 @@
+{
+  "id": "base-rates-candidate",
+  "title": "A flag is not a verdict.",
+  "lessons": [
+    {
+      "id": "base-rates",
+      "file": "lesson.lesson.js",
+      "title": "A flag is not a verdict.",
+      "minutes": 3
+    }
+  ],
+  "renderTiming": {
+    "scenes": [
+      {
+        "start": 0,
+        "dur": 10.375,
+        "voiceAt": 1.3,
+        "voiceDur": 8.65805
+      },
+      {
+        "start": 10.375,
+        "dur": 9.375,
+        "voiceAt": 11.675,
+        "voiceDur": 7.671202
+      },
+      {
+        "start": 19.75,
+        "dur": 12.458333333333334,
+        "voiceAt": 21.05,
+        "voiceDur": 10.749796
+      },
+      {
+        "start": 32.208333333333336,
+        "dur": 12.916666666666666,
+        "voiceAt": 33.50833333333333,
+        "voiceDur": 11.217279
+      },
+      {
+        "start": 45.125,
+        "dur": 12.75,
+        "voiceAt": 46.425,
+        "voiceDur": 11.047347
+      },
+      {
+        "start": 57.875,
+        "dur": 15.041666666666666,
+        "voiceAt": 59.175,
+        "voiceDur": 13.346032
+      },
+      {
+        "start": 72.91666666666667,
+        "dur": 13.125,
+        "voiceAt": 74.21666666666667,
+        "voiceDur": 11.4361
+      }
+    ],
+    "total": 86.04166666666667
+  }
+}

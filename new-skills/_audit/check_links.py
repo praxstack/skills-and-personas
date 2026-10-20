@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path("/Users/praxlannister/Documents/workspace/skills-and-personas/new-skills")
+ROOT = Path(__file__).resolve().parent.parent
 
 # [text](url) — capture url only. Exclude URLs with http/https/mailto/pure anchor.
 MD_LINK_RE = re.compile(r'\[[^\]]*\]\(((?!https?://|mailto:|#)[^)\s]+)(?:\s+"[^"]*")?\)')

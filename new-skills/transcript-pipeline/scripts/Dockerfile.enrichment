@@ -1,0 +1,11 @@
+# Explicit offline assembly; see README.enrichment-sandbox.md for setup/review.
+ARG BASE_IMAGE=sha256:cd98c1146024024c8588e3064ef8297d2838b921223daf755afbe56b18afaf57
+FROM ${BASE_IMAGE}
+USER 0:0
+COPY wheels/ /opt/wheels/
+COPY enrichment-wheels-arm64.json /opt/enrichment-wheels-arm64.json
+RUN python3 -c "import json,hashlib,pathlib,zipfile; root=pathlib.Path('/opt/wheels'); expected=json.loads(pathlib.Path('/opt/enrichment-wheels-arm64.json').read_text()); assert {p.name for p in root.iterdir()} == set(expected); assert all(hashlib.sha256((root/n).read_bytes()).hexdigest()==h for n,h in expected.items()); [zipfile.ZipFile(root/n).extractall('/opt/enrichment') for n in expected]; pathlib.Path('/opt/enrichment/playwright/driver/node').chmod(0o755)"
+ENV PYTHONPATH=/opt/enrichment
+RUN python3 -c "import requests,urllib3; from playwright.sync_api import sync_playwright; import importlib.metadata as m; print({n:m.version(n) for n in ['requests','urllib3','playwright','pyee','greenlet','certifi','charset-normalizer','idna','typing-extensions']})"
+USER 65534:65534
+ENTRYPOINT ["python3"]

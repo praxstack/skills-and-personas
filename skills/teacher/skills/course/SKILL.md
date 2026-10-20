@@ -25,15 +25,56 @@ Each `lessons[]` entry: `id` (letters, digits, `-` and `_`; it becomes a file na
 
 Course lessons are executable JavaScript. The builder validates every manifest
 path first and refuses to execute lesson code unless the caller passes
-`--trust-authored-code` after reviewing all lesson and shared files. Third-party
-courses need an external restricted sandbox; the flag is a trust decision, not
-a sandbox.
+`--trust-authored-code` after reviewing all lesson and shared files. For third-party courses, use the explicit Docker sandbox below. The trust flag
+allows host execution; it does not provide isolation.
 
 ```sh
 python3 scripts/build_course.py courses/segment-tree -o site/segment-tree --trust-authored-code     # one reviewed course
 python3 scripts/build_course.py --catalog courses -o site --trust-authored-code                      # reviewed catalog
 python3 scripts/test_course.py courses/segment-tree --trust-authored-code       # reviewed code, interactions and looks, then the course page
 ```
+
+### Restricted whole-course execution
+
+`scripts/sandbox_course.py` runs the existing public extractor, builder, or full
+browser checks in a disposable Docker container. Supply an explicitly reviewed,
+locally present image ID (`sha256:…`); runtime execution never pulls or installs
+anything. See [sandbox setup](scripts/README.sandbox.md) for the build recipe and
+tested image IDs.
+
+```sh
+python3 scripts/sandbox_course.py extract courses/segment-tree -o extracted --image "$COURSE_IMAGE" --docker-context colima-teach-security
+python3 scripts/sandbox_course.py build courses/segment-tree -o site-segment-tree --image "$COURSE_IMAGE" --docker-context colima-teach-security
+python3 scripts/sandbox_course.py validate courses/segment-tree -o validated --image "$COURSE_BROWSER_IMAGE" --docker-context colima-teach-security --timeout 180
+```
+
+Each destination must be new and its existing parent must contain no symlink
+components. Extraction writes `course.json`; build writes the ordinary relative
+static pages; validation runs `test_course.py` including interaction checks and
+visual QA screenshots. Validation requires the reviewed Playwright/Chromium
+image and fails closed without it. In the current shipped checker, the course
+reload test omits the required progress-consent opt-in; full validation reports
+that failure and publishes no output. Lesson interactions and browser rendering
+were verified, but a wholly passing validation is pending that checker repair.
+Course input is limited to 128 lessons and
+64 MiB, including local videos; output to 1,024 entries and 64 MiB. Local MP4/VTT
+files and a `videos.json` beside a linked course keep their existing behavior.
+
+The container has no network or host credentials, uses a non-root UID, read-only
+root/input/tools, 512 MiB memory, one CPU, 64 PIDs/threads, and bounded temporary
+storage. The default wall timeout is 90 seconds (maximum 300). The supervisor
+waits for the authored process, kills and reaps its descendants (including
+`setsid` children), then streams output. The host validates the bounded archive
+and publishes it only after clean container exit. No writable host output is
+mounted into authored code. Failures remove the container and publish no result;
+a host disk error during final publication can leave a partial new private
+folder, which is reported.
+
+This adapter handles one course per invocation. Catalog generation, narration,
+remote fetches, video publication, and opening generated pages on the host are
+outside its supported modes. Browser code runs only in the container during
+`validate`; generated pages still contain authored JavaScript and should be
+reviewed before opening outside the sandbox.
 
 `--fragment` builds pages for hosts that wrap them (Claude artifacts). Pages are single files and work from disk. For a web host, pass `--base /courses/` (the URL path the output folder is served at): links become root-absolute, so they still work when the host serves `/courses/ai-math/` as `/courses/ai-math` (clean URLs, no trailing slash, as on Vercel).
 

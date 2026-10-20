@@ -83,33 +83,49 @@
     "explainer-video": {
       "files": 29,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=ef7bff1d774f216b816852a24d55723783894c72888ab29bb1903f4dd1f23199; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=88bb26ed419f1e66cad14006b5b473630cb6c2e86af115d2cc5d8436d8278522. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/explainer-video",
-      "tree_sha256": "ef7bff1d774f216b816852a24d55723783894c72888ab29bb1903f4dd1f23199",
+      "tree_sha256": "f8ef189eb22d3f134960e9901adbef4690f142a49a36d32e0f5e21799017f0ed",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "gsap-video": {
       "files": 48,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=8ec056a048eb5d8cbee741687ad1202f32e6a9bf0a60112037363d52c971e057; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=463137cfc870778b4ba25a20a1bd9a8786982e0c0059eb16e45a603ce65b2b09. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/gsap-video",
-      "tree_sha256": "8ec056a048eb5d8cbee741687ad1202f32e6a9bf0a60112037363d52c971e057",
+      "tree_sha256": "67d3ac98c7df244f57d0465fe233c3df48aa0e2e4e7f372331c7ebd1b3506a9c",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "handdrawn-js-video": {
       "files": 65,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=6236604eb649636c1233267a80833b02fd9f294b7dbe8701ab364aa130c2d586; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=6997b6c0b4282acc55ab495584185daaeb82c0dc57e0fa46bd6b6705e4e9d095. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/handdrawn-js-video",
-      "tree_sha256": "6236604eb649636c1233267a80833b02fd9f294b7dbe8701ab364aa130c2d586",
+      "tree_sha256": "8e2c0596d0c221987a139b89466c3884afda1f8d377ba1ba856df1780a311a6d",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "hyperframes-video": {
       "files": 58,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=5fa6e3d106e01b0e983cbc768b82d978388ab495adf46fcf76578dada428f3e6; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=651f731920dd92f9304834fb64ef2721867e4d78b8cd1546d23ed136290e9a70. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/hyperframes-video",
-      "tree_sha256": "5fa6e3d106e01b0e983cbc768b82d978388ab495adf46fcf76578dada428f3e6",
+      "tree_sha256": "028253506a34fa5e5c2ebd6821ab1e38fc8c88c01a56d2df5ee0f72b63623ded",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "lecture-alchemist": {
@@ -123,41 +139,62 @@
     "manim-video": {
       "files": 52,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=a58377aa8536f7aeffbc76cbb8544317102a26221d5d2bb61153bef85a2ce178; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=fd834869c4c0942c906b0fa41694531c7622b62f0866f1eece0bc242e39dba09. Upstream provenance unchanged.",
+        "Task10: share import-validated interpreter resolution with discovery; support resolved CLI absolute Python shebangs while preserving explicit and module environment precedence. No scene or render verification claimed."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/manim-video",
-      "tree_sha256": "a58377aa8536f7aeffbc76cbb8544317102a26221d5d2bb61153bef85a2ce178",
+      "tree_sha256": "bc9d536a8f495d0ca7577dd744c3e5b4d75433df5e7e22e9f1e660d2b1d009d7",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "motion-canvas-video": {
       "files": 68,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=0c6fa7fbb0e1a57218afc9c1575046ac1ad4cd2186b6334ce9a8208a1498feba; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=07805aea66b2ba15e4268f0082cc34564d246d1e8a6f88f97ed648a02110d490. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/motion-canvas-video",
-      "tree_sha256": "0c6fa7fbb0e1a57218afc9c1575046ac1ad4cd2186b6334ce9a8208a1498feba",
+      "tree_sha256": "b5e8be0d36e8732f80f7fa2107f319a966f0a3cea6ae57b0945f5f03eb331e31",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "motion-video": {
       "files": 61,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=92762146122b9a6d1791b3f3ec13d259fd3f5ec109abbd2f124823283c1e88ac; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=e155dead3513a08ab05f6aec99e88f836da24e9e8ee9d87c08e09afd0adcc30b. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/motion-video",
-      "tree_sha256": "92762146122b9a6d1791b3f3ec13d259fd3f5ec109abbd2f124823283c1e88ac",
+      "tree_sha256": "56f2daf2747a7be7f45573ab8d2991ab81f3479b18cbc55cf7167b9217a7a562",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "remotion-video": {
       "files": 71,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=56d1ab10baac6ca2e04b57d8f6f2852c26f58ce79062db37d060a6b2c9dffda8; upstream source_commit unchanged. Remotion npm/browser acquisition also requires opt-in; local browser paths/cache remain supported.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=b7142a259eeffbd3ee01116832f8b65594cca39241b2207970087bb6f50a1111. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/remotion-video",
-      "tree_sha256": "56d1ab10baac6ca2e04b57d8f6f2852c26f58ce79062db37d060a6b2c9dffda8",
+      "tree_sha256": "335397840eb4e733902412475731c4f7d8bcc1462db14b6dc0180de7a5ae9f36",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "revideo-video": {
       "files": 57,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=20b6f9e99c66cf212fff70bf480287ed89b49480cceef25e717ed8f933b54255; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=a40a5feb38ff80e6f682804025e8eebc1fbb273e6d5c6c9cb47f1c5547bc2077. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/revideo-video",
-      "tree_sha256": "20b6f9e99c66cf212fff70bf480287ed89b49480cceef25e717ed8f933b54255",
+      "tree_sha256": "8f23cd5e938eea2eecf230b65e230f1ca11dd76b52c008f3a6c3ea90bb11a7a3",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "techtutor": {
@@ -171,17 +208,25 @@
     "theatrejs-video": {
       "files": 64,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=14014ebef620fe65aee3bcd67e8f1b8579e98fcbad860df95bf6ebc7ead32331; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=3043a409b1a818dfe9831f87e2e5d7872e8d7699fe3fec1bbf3eb59e3ff7e878. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/theatrejs-video",
-      "tree_sha256": "14014ebef620fe65aee3bcd67e8f1b8579e98fcbad860df95bf6ebc7ead32331",
+      "tree_sha256": "6943b636cd30180a7217f3bc352fa05f825317388d4ebf89d06886d0da7d04a9",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "threejs-video": {
       "files": 52,
       "license": "same as the video skills repo",
+      "local_changes": [
+        "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=24c6d66ab32275a37b6616bf3a799f7623aa86b9b4cc907b9ddf980065cb6b56; upstream source_commit unchanged.",
+        "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=ab72ead2e4634fd5eb143906ce5d7dbb9a9536609cba11d6a77dfb2576a0b8ec. Upstream provenance unchanged."
+      ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/threejs-video",
-      "tree_sha256": "24c6d66ab32275a37b6616bf3a799f7623aa86b9b4cc907b9ddf980065cb6b56",
+      "tree_sha256": "5659b8249d8c23f764c0c9feffb21bbbc3611df92d7b14665e0381056b39a244",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     }
   }

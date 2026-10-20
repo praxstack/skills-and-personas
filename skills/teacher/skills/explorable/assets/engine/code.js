@@ -233,6 +233,9 @@ export function createCodePanel(code, { h, getParams = () => ({}) }) {
   const editor = h("textarea", { class: "xp-code-edit nb-field", spellcheck: "false", "aria-label": "Edit the Python code", hidden: true });
   const tabs = h("div", { class: "xp-code-tabs", role: "group", "aria-label": "Code language" });
   const runBtn = h("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Run" });
+  const networkConsent = h("input", { type: "checkbox", "aria-label": "Allow Python runtime download from jsDelivr" });
+  const networkNotice = h("label", { class: "xp-muted" }, networkConsent,
+    " Allow downloading Python (Pyodide) and its runtime files from cdn.jsdelivr.net to run this code. This uses an external service and requires an internet connection on first use.");
   const stopBtn = h("button", { type: "button", class: "nb-btn", text: "Stop", hidden: true });
   const editBtn = h("button", { type: "button", class: "nb-btn", text: "Edit" });
   const copyBtn = h("button", { type: "button", class: "nb-btn nb-btn-quiet", text: "Copy" });
@@ -279,6 +282,7 @@ export function createCodePanel(code, { h, getParams = () => ({}) }) {
     tabs.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
     const canRun = lang === "python" && (code.runnable || ["python"]).includes("python");
     runBtn.hidden = !canRun;
+    networkNotice.hidden = !canRun;
     editBtn.hidden = !canRun;
     editor.hidden = !editing;
     pre.hidden = editing;
@@ -316,6 +320,11 @@ export function createCodePanel(code, { h, getParams = () => ({}) }) {
   let running = null;
   runBtn.addEventListener("click", async () => {
     runBox.hidden = false;
+    if (!networkConsent.checked) {
+      runBox.textContent = "To run Python here, first allow the external runtime download above. You can also copy the code and run it locally.";
+      networkConsent.focus();
+      return;
+    }
     runBox.textContent = "Starting Python in your browser (the first run downloads it)…";
     runBtn.disabled = true;
     stopBtn.hidden = false;
@@ -381,6 +390,7 @@ export function createCodePanel(code, { h, getParams = () => ({}) }) {
     h("figcaption", { class: "xp-code-head" }, h("span", { class: "nb-label", text: code.title || "Code" }), tabs),
     pre,
     editor,
+    networkNotice,
     h("div", { class: "xp-row" }, runBtn, stopBtn, editBtn, copyBtn),
     note,
     expectBox,

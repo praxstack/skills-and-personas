@@ -20,7 +20,8 @@ Options:
                      run the same command again to continue
   --only A,B         re-render these segments (by scene name) even if done
   --force            re-render everything
-  --python PATH      the Python that has manim (default: <project>/.venv/bin/python, then this Python)
+  --python PATH      prefer this Python, then MANIM_PYTHON, project/source venvs, this Python,
+                     then a verified absolute Python shebang from the resolved manim CLI
 Exit codes: 0 done, 1 error, 3 budget reached (re-run to continue).
 """
 import argparse
@@ -58,13 +59,48 @@ def probe_frames(path):
             "fps": float(n) / float(d), "codec": s["codec_name"], "pix": s.get("pix_fmt")}
 
 
-def find_python(project, source, given):
+def cli_python():
+    """Read a console script's absolute Python shebang; never execute a launcher.
+
+    Resolve the CLI symlink, but retain the interpreter's venv path (resolving
+    the Python symlink itself would lose its virtual environment). Shell and
+    /usr/bin/env launchers are deliberately unsupported.
+    """
+    cli = shutil.which("manim")
+    if not cli:
+        return None
+    try:
+        with open(os.path.realpath(cli), "rb") as stream:
+            line = stream.readline(4096).decode("utf-8").rstrip("\r\n")
+    except (OSError, UnicodeError):
+        return None
+    candidate = line[2:] if line.startswith("#!") else ""
+    if (os.path.isabs(candidate)
+            and re.fullmatch(r"python(?:[0-9]+(?:\.[0-9]+)*)?", os.path.basename(candidate))
+            and os.path.isfile(candidate) and os.access(candidate, os.X_OK)):
+        return candidate
+    return None
+
+
+def resolve_python(project, source, given=None):
+    """Shared discovery/render selection; a successful import is not render proof."""
     cands = [given, os.environ.get("MANIM_PYTHON"), os.path.join(project, ".venv", "bin", "python"),
              os.path.join(source, ".venv", "bin", "python"), sys.executable]
-    for c in cands:
-        if c and os.path.exists(c):
-            if run([c, "-c", "import manim"]).returncode == 0:
-                return c
+    # Probe existing module paths first, preserving their precedence.
+    for c in cands + [cli_python()]:
+        if c and os.path.isfile(c):
+            try:
+                if run([c, "-c", "import manim"], timeout=10).returncode == 0:
+                    return c
+            except (OSError, subprocess.SubprocessError):
+                pass
+    return None
+
+
+def find_python(project, source, given):
+    selected = resolve_python(project, source, given)
+    if selected:
+        return selected
     sys.exit("no Python with manim found. Set it up (references/manim-guide.md, Setup):\n"
              f"  python3 -m venv {project}/.venv && {project}/.venv/bin/pip install -r {source}/requirements.txt")
 

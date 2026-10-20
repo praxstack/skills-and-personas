@@ -3,7 +3,7 @@
 //
 // The project layout is the one vstate.py uses: <project>/timing.json, <project>/source (the Remotion project,
 // copied from the skill's assets/template), <project>/build. The script:
-//   1. installs the source's npm dependencies if node_modules is missing
+//   1. uses installed npm dependencies; missing packages need TEACHER_ALLOW_NETWORK=1 setup
 //   2. bundles once (`npx remotion bundle`) and re-bundles only when source files change
 //   3. renders frame ranges (`npx remotion render <bundle> <Comp> --frames=a-b`) into build/segments/,
 //      recording each in build/segments/manifest.json {"segments": [{"from","to","done"}]}; done ones are skipped
@@ -21,7 +21,8 @@
 // Options: --comp Film  --browser <path>  --force (discard finished segments)  --out build/silent.mp4
 //          --stills-dir stills  --scale 1 (stills)  --keep-segments
 // Environment: REMOTION_BROWSER_EXECUTABLE overrides the browser. On a laptop with no override and no
-// /opt/pw-browsers, Remotion downloads its own headless shell on first use.
+// /opt/pw-browsers or a cached headless shell, browser acquisition requires TEACHER_ALLOW_NETWORK=1.
+// Cached browsers may also be supplied through --browser or REMOTION_BROWSER_EXECUTABLE.
 import {spawn, spawnSync} from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -89,6 +90,24 @@ const fps = timing.fps || 30;
 const total = Math.max(1, Math.round(timing.total * fps)); // same formula as src/lib/timing.ts
 
 // ------------------------------------------------------------------ browser
+const networkAllowed = process.env.TEACHER_ALLOW_NETWORK === '1';
+const executable = (file) => {
+  try { fs.accessSync(file, fs.constants.X_OK); return fs.statSync(file).isFile(); }
+  catch { return false; }
+};
+// Search only Remotion's project-local cache roots, never invoke its downloader.
+const cachedBrowser = (dir, depth = 0) => {
+  if (depth > 6 || !fs.existsSync(dir)) return null;
+  for (const entry of fs.readdirSync(dir, {withFileTypes: true}).sort((a, b) => a.name.localeCompare(b.name))) {
+    const file = path.join(dir, entry.name);
+    if (entry.isFile() && ['chrome-headless-shell', 'headless_shell', 'chrome-headless-shell.exe'].includes(entry.name) && executable(file)) return file;
+    if (entry.isDirectory()) {
+      const found = cachedBrowser(file, depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+};
 const findBrowser = () => {
   if (opt.browser) return opt.browser;
   if (process.env.REMOTION_BROWSER_EXECUTABLE) return process.env.REMOTION_BROWSER_EXECUTABLE;
@@ -100,15 +119,25 @@ const findBrowser = () => {
       if (fs.existsSync(p)) return p;
     }
   }
-  return null; // Remotion downloads its own
+  for (const root of [source, project]) {
+    const cached = cachedBrowser(path.join(root, 'node_modules', '.remotion'));
+    if (cached) return cached;
+  }
+  return null; // Only explicit network opt-in permits Remotion to acquire one.
 };
 const browser = findBrowser();
+if (browser && !executable(browser)) die(`browser is not an executable file: ${browser}`);
 const browserArgs = browser ? [`--browser-executable=${browser}`] : [];
 
 // ------------------------------------------------------------------ helpers
 const run = (args, {cwd = source, quiet = false} = {}) =>
   new Promise((resolve, reject) => {
-    const p = spawn('npx', ['--no-install', 'remotion', ...args], {cwd, env: {...process.env, FORCE_COLOR: '0'}});
+    if (['render', 'still'].includes(args[0]) && !browser && !networkAllowed) {
+      return reject(new Error('No cached browser found. Supply an installed browser with --browser or '
+        + 'REMOTION_BROWSER_EXECUTABLE, or explicitly allow browser acquisition with TEACHER_ALLOW_NETWORK=1.'));
+    }
+    const p = spawn('npx', ['--no-install', 'remotion', ...args], {cwd, env: {...process.env, FORCE_COLOR: '0',
+      ...(networkAllowed ? {} : {npm_config_offline: 'true', npm_config_yes: 'false'})}});
     let last = 0;
     let tail = '';
     const onData = (d) => {
@@ -149,6 +178,7 @@ const hashTree = () => {
 
 const ensureDeps = () => {
   if (fs.existsSync(path.join(source, 'node_modules', 'remotion'))) return;
+  if (!networkAllowed) die('Missing npm dependencies. Install them separately or explicitly opt in with TEACHER_ALLOW_NETWORK=1.');
   log(`installing npm dependencies in ${source} ...`);
   const t0 = Date.now();
   const lock = fs.existsSync(path.join(source, 'package-lock.json'));

@@ -27,7 +27,7 @@ implement without asking clarifying questions.
 
 The target quality level is a **portable implementation contract** — the kind of document a
 principal engineer writes so any competent engineer (or AI agent) in any language can build a
-conforming implementation. Read `references/quality-bar.md` for the full quality rubric before
+conforming implementation. Read [quality-bar.md](./quality-bar.md) for the full quality rubric before
 starting any spec.
 
 Key quality markers (internalize these, don't just check them off):
@@ -75,7 +75,7 @@ Continue rounds until all 10 knowledge domains are sufficiently covered for the 
 Not every domain applies to every task — use judgment. But never skip a domain without consciously
 deciding it's irrelevant.
 
-Read `references/brainstorm-domains.md` for the full questioning framework. Here is the summary:
+Read [brainstorm-domains.md](./brainstorm-domains.md) for the full questioning framework. Here is the summary:
 
 **The 10 Knowledge Domains:**
 
@@ -118,7 +118,7 @@ failure recovery section," you need another round.
 
 ### Phase 3: Drafting the SPEC.md
 
-Read `references/section-templates.md` for the canonical section structure and what belongs in each
+Read [section-templates.md](./section-templates.md) for the canonical section structure and what belongs in each
 section. Then draft the full spec.
 
 **Section Structure (adapt to the task — not every section applies to every system):**
@@ -191,7 +191,7 @@ section. Then draft the full spec.
 ### Phase 4: Self-Review
 
 Before presenting the spec to the user, run a self-review against the quality bar. Read
-`references/self-review-checklist.md` for the full checklist.
+[self-review-checklist.md](./self-review-checklist.md) for the full checklist.
 
 **Self-review process:**
 

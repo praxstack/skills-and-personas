@@ -11,7 +11,7 @@ description: |
   tests: 3 frontier models from different providers critique the output
   against the contract, you iterate to quality, THEN write/update tests that
   lock in the proven-good behavior. NO-REGRESSION LAW: any edit to a skill
-  must score >= the previous iteration's eval — forward only, never back.
+  must score at least the previous iteration's eval score — forward only, never back.
   For skills that back a scheduled job, an edit MUST re-run a representative
   task and eval it before shipping.
 eval_contract:
