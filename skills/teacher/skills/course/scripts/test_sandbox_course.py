@@ -4,11 +4,15 @@ from __future__ import annotations
 import io
 import json
 import os
+import signal
+import shutil
 from pathlib import Path
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
+import threading
 import unittest
 from unittest import mock
 
@@ -123,6 +127,32 @@ class ArchiveTests(unittest.TestCase):
         self.assertEqual(missing_image.returncode, 2)
         self.assertIn('runtime or reviewed local image unavailable', missing_image.stderr)
 
+    def test_cancellation_handlers_restore_and_reject_worker_threads(self):
+        signals = (signal.SIGTERM, signal.SIGHUP, signal.SIGINT)
+        previous = {number: signal.getsignal(number) for number in signals}
+        for number in signals:
+            with self.assertRaises(sandbox.SandboxCancelled):
+                with sandbox.cancellation_handlers():
+                    signal.getsignal(number)(number, None)
+            self.assertEqual(previous, {item: signal.getsignal(item) for item in signals})
+        with self.assertRaises(sandbox.SandboxCancelled):
+            with sandbox.cancellation_handlers() as state:
+                state['cleaning'] = True
+                signal.getsignal(signal.SIGTERM)(signal.SIGTERM, None)
+                self.assertEqual(state['signal'], signal.SIGTERM)
+        failures = []
+        def worker():
+            try:
+                sandbox.execute(Path('absent'), Path('new'), 'sha256:' + '0' * 64)
+            except RuntimeError as exc:
+                failures.append(str(exc))
+        thread = threading.Thread(target=worker)
+        thread.start()
+        thread.join(timeout=2)
+        self.assertEqual(len(failures), 1)
+        self.assertIn('main Python thread', failures[0])
+        self.assertEqual(previous, {item: signal.getsignal(item) for item in signals})
+
     def test_input_links_and_aggregate_budget_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp).resolve()
@@ -159,6 +189,103 @@ class DockerTests(unittest.TestCase):
             output = root / 'output'
             sandbox.execute(course, output, IMAGE, mode=mode, context=CONTEXT, timeout=timeout)
             return {p.relative_to(output).as_posix(): p.read_bytes() for p in output.rglob('*') if p.is_file()}
+
+    def cancellation_control(self, signum, *, mode='extract', prefix=None):
+        token = sandbox.uuid.uuid4().hex
+        name = 'teacher-course-' + token
+        docker = ['docker', '--context', CONTEXT]
+        staging = None
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp).resolve()
+            source = prefix if prefix is not None else ESCAPE + "require('child_process').spawnSync('python3',['-c','while True: pass']);"
+            course = fixture(root, source)
+            private_temp = root / 'host-temporaries'
+            private_temp.mkdir(mode=0o700)
+            # Fix only this invocation's UUID so cancellation never touches or
+            # attributes another concurrently running invocation's container.
+            driver = "import sys,uuid;sys.path.insert(0,sys.argv.pop(1));import sandbox_course as s;token=sys.argv.pop(1);s.uuid.uuid4=lambda:uuid.UUID(hex=token);sys.exit(s.main())"
+            command = [sys.executable, '-c', driver, str(sandbox.HERE), token, mode, str(course), '-o', str(root / 'output'), '--image', IMAGE, '--docker-context', CONTEXT, '--timeout', '8']
+            with tempfile.TemporaryFile(mode='w+') as log:
+                proc = subprocess.Popen(command, stdout=log, stderr=log, env={**os.environ, 'TMPDIR': str(private_temp)})
+                started = time.monotonic()
+                try:
+                    running = None
+                    deadline = time.monotonic() + 12
+                    while time.monotonic() < deadline:
+                        result = subprocess.run([*docker, 'inspect', name], capture_output=True, text=True, timeout=5)
+                        if result.returncode == 0:
+                            row = json.loads(result.stdout)[0]
+                            if row['State']['Running']:
+                                running = row
+                                break
+                        if proc.poll() is not None:
+                            break
+                        time.sleep(0.05)
+                    self.assertIsNotNone(running, 'owned container never started')
+                    staging = Path(next(item['Source'] for item in running['Mounts'] if item['Destination'] == '/input')).parent
+                    self.assertEqual(staging.parent, Path.home().resolve())
+                    self.assertTrue(staging.name.startswith('.teacher-course-'))
+                    # Wait for actual native/browser authored execution, rather
+                    # than merely a live dependency preflight or supervisor.
+                    marker_deadline = time.monotonic() + 6
+                    while time.monotonic() < marker_deadline:
+                        check = subprocess.run([*docker, 'top', name, '-eo', 'pid,args'], capture_output=True, text=True, timeout=5)
+                        if (mode == 'extract' and 'python3 -c while True: pass' in check.stdout) or (mode == 'validate' and 'test_lesson.mjs' in check.stdout and 'headless_shell' in check.stdout):
+                            break
+                        time.sleep(0.05)
+                    else:
+                        self.fail(f'authored process did not start before cancellation; top={check.stdout!r}; error={check.stderr!r}')
+                    proc.send_signal(signum)
+                    proc.wait(timeout=20)
+                    if signum != signal.SIGKILL:
+                        self.assertEqual(proc.returncode, 128 + signum)
+                        inspect = subprocess.run([*docker, 'inspect', name], capture_output=True, text=True, timeout=5)
+                        self.assertNotEqual(inspect.returncode, 0, 'catchable cancellation leaked container')
+                        self.assertFalse(staging.exists(), 'catchable cancellation leaked staging')
+                        self.assertEqual(list(private_temp.iterdir()), [])
+                    else:
+                        self.assertEqual(proc.returncode, -signal.SIGKILL)
+                        end = started + 13
+                        stopped = None
+                        while time.monotonic() < end:
+                            result = subprocess.run([*docker, 'inspect', '--format', '{{json .State}}', name], capture_output=True, text=True, timeout=5)
+                            self.assertEqual(result.returncode, 0)
+                            state = json.loads(result.stdout)
+                            if not state['Running']:
+                                stopped = state
+                                break
+                            time.sleep(0.1)
+                        self.assertIsNotNone(stopped, 'container deadline failed after host SIGKILL')
+                        self.assertEqual(stopped['ExitCode'], 124)
+                        self.assertTrue(staging.exists(), 'SIGKILL recovery limitation changed')
+                    self.assertFalse((root / 'output').exists())
+                    elapsed = time.monotonic() - started
+                    print(f'cancellation control: {signal.Signals(signum).name}, mode={mode}, stopped in {elapsed:.2f}s, no publication')
+                finally:
+                    if proc.poll() is None:
+                        proc.kill()
+                        proc.wait(timeout=5)
+                    subprocess.run([*docker, 'rm', '--force', name], capture_output=True, timeout=15)
+                    if staging is not None and staging.parent == Path.home().resolve() and staging.name.startswith('.teacher-course-'):
+                        for path in staging.rglob('*'):
+                            if path.is_dir():
+                                path.chmod(0o700)
+                        shutil.rmtree(staging, ignore_errors=True)
+
+    def test_host_sigterm_cleans_infinite_native_child(self):
+        self.cancellation_control(signal.SIGTERM)
+
+    def test_host_sigkill_container_deadline_stops_infinite_native_child(self):
+        self.cancellation_control(signal.SIGKILL)
+
+    def test_host_sigkill_deadline_stops_detached_descendant(self):
+        prefix = ESCAPE + "require('child_process').spawn('python3',['-c','while True: pass'],{detached:true,stdio:'ignore'}).unref();require('child_process').spawnSync('python3',['-c','while True: pass']);"
+        self.cancellation_control(signal.SIGKILL, prefix=prefix)
+
+    def test_host_sigkill_deadline_stops_browser_authored_js(self):
+        if os.environ.get('COURSE_SANDBOX_BROWSER') != '1':
+            self.skipTest('set COURSE_SANDBOX_BROWSER=1 for reviewed browser image')
+        self.cancellation_control(signal.SIGKILL, mode='validate', prefix="if(typeof document!=='undefined'){while(true){}};")
 
     def test_legitimate_extract_and_build_offline(self):
         self.assertIn('course.json', self.run_course())

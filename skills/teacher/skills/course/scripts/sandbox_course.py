@@ -13,12 +13,14 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import selectors
+import signal
 import stat
 import shutil
 import subprocess
 import sys
 import tarfile
 import tempfile
+import threading
 import time
 import uuid
 
@@ -38,6 +40,17 @@ FILE_LIMIT = 1024
 SUPERVISOR = r'''
 import json, os, pathlib, signal, stat, subprocess, sys, tarfile
 mode = sys.argv[1]
+# PID 1 owns an independent deadline. Exiting the namespace init also causes
+# Linux to kill namespace descendants, even if the host client disappeared.
+def deadline(signum, frame):
+    try:
+        os.kill(-1, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    finally:
+        os._exit(124)
+signal.signal(signal.SIGALRM, deadline)
+signal.setitimer(signal.ITIMER_REAL, float(sys.argv[2]))
 base = '/tools/course/scripts/'
 env = {'PATH': '/usr/local/bin:/usr/bin:/bin', 'HOME': '/tmp', 'TMPDIR': '/tmp',
        'PYTHONDONTWRITEBYTECODE': '1', 'PLAYWRIGHT_BROWSERS_PATH': '/ms-playwright',
@@ -284,8 +297,45 @@ def capture(command: list[str], archive: Path, timeout: float) -> int:
         proc.stderr.close()
 
 
+class SandboxCancelled(RuntimeError):
+    def __init__(self, signum: int):
+        self.signum = signum
+        super().__init__(f'cancelled by {signal.Signals(signum).name}; sandbox cleanup attempted')
+
+
+@contextmanager
+def cancellation_handlers():
+    if threading.current_thread() is not threading.main_thread():
+        raise RuntimeError('sandbox execution requires the main Python thread for cancellation handling; no authored code ran')
+    state = {'cleaning': False, 'signal': None}
+    previous = {}
+
+    def cancelled(signum, frame):
+        state['signal'] = signum
+        if not state['cleaning']:
+            state['cleaning'] = True
+            raise SandboxCancelled(signum)
+
+    try:
+        for signum in (signal.SIGTERM, signal.SIGHUP, signal.SIGINT):
+            previous[signum] = signal.signal(signum, cancelled)
+        yield state
+        if state['signal'] is not None:
+            raise SandboxCancelled(state['signal'])
+    finally:
+        for signum, handler in previous.items():
+            signal.signal(signum, handler)
+
+
 def execute(course: Path, output: Path, image: str, *, mode: str = 'build',
             context: str | None = None, timeout: float = 90) -> None:
+    with cancellation_handlers() as cancellation:
+        _execute(course, output, image, mode=mode, context=context, timeout=timeout,
+                 cancellation=cancellation)
+
+
+def _execute(course: Path, output: Path, image: str, *, mode: str,
+             context: str | None, timeout: float, cancellation: dict) -> None:
     if mode not in {'extract', 'build', 'validate'}:
         raise ValueError('supported modes: extract, build, validate; narration is unsupported')
     if not re.fullmatch(r'sha256:[0-9a-f]{64}', image):
@@ -325,7 +375,7 @@ def execute(course: Path, output: Path, image: str, *, mode: str = 'build',
             path.chmod(0o500 if path.is_dir() else 0o400)
         (tools / 'chromium').chmod(0o500)
         staging.chmod(0o700)
-        command = [*docker, 'create', '--pull=never', '--name', name,
+        command = [*docker, 'create', '--pull=never', '--init=false', '--name', name,
                    '--network=none', '--log-driver=none', '--read-only', f'--user={os.getuid()}:{os.getgid()}',
                    '--cap-drop=ALL', '--security-opt=no-new-privileges', '--pids-limit=64',
                    '--memory=512m', '--memory-swap=512m', '--cpus=1',
@@ -336,14 +386,17 @@ def execute(course: Path, output: Path, image: str, *, mode: str = 'build',
                    '--mount', f'type=bind,src={tools},dst=/tools,readonly',
                    '--workdir=/tmp', '--env=HOME=/tmp', '--env=TMPDIR=/tmp',
                    '--env=PYTHONDONTWRITEBYTECODE=1', '--entrypoint=python3', image,
-                   '/tools/supervisor.py', mode]
+                   '/tools/supervisor.py', mode, str(timeout)]
         try:
             created = subprocess.run(command, capture_output=True, timeout=20)
             if created.returncode:
                 raise RuntimeError('sandbox container creation failed; no authored code ran')
             # Archive is not bind-mounted and is never writable by authored code.
             archive = staging / 'output.tar'
-            if capture([*docker, 'start', '--attach', name], archive, timeout):
+            exit_code = capture([*docker, 'start', '--attach', name], archive, timeout)
+            if exit_code == 124:
+                raise TimeoutError('sandbox container wall-clock budget exhausted')
+            if exit_code:
                 raise RuntimeError('sandbox course process failed; no output published')
             state = subprocess.run([*docker, 'inspect', '--format', '{{json .State}}', name], capture_output=True, timeout=15)
             if state.returncode:
@@ -353,6 +406,7 @@ def execute(course: Path, output: Path, image: str, *, mode: str = 'build',
                 raise RuntimeError('sandbox did not exit cleanly; no output published')
             publish_archive(archive, output)
         finally:
+            cancellation['cleaning'] = True
             try:
                 removed = subprocess.run([*docker, 'rm', '--force', name], capture_output=True, timeout=15)
                 if removed.returncode:
@@ -377,6 +431,9 @@ def main() -> int:
     args = parser.parse_args()
     try:
         execute(args.course, args.out, args.image, mode=args.mode, context=args.docker_context, timeout=args.timeout)
+    except SandboxCancelled as exc:
+        print(f'sandbox failed closed: {exc}', file=sys.stderr)
+        return 128 + exc.signum
     except (OSError, ValueError, RuntimeError, TimeoutError, subprocess.SubprocessError, tarfile.TarError) as exc:
         print(f'sandbox failed closed: {exc}', file=sys.stderr)
         return 2

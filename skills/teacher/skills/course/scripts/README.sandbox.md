@@ -69,7 +69,10 @@ non-root numeric UID to read its read-only input/tools mounts.
 Bounds are 128 lessons, 128 shared files, 64 MiB aggregate input, 64 MiB output,
 1,024 archive entries, 1 MiB logs, 512 MiB memory (no swap), one CPU, 64
 PIDs/threads, 256 MiB `/tmp`, 64 MiB `/dev/shm`, 128 file descriptors, and 64 MiB
-per file. Wall timeout defaults to 90 seconds and cannot exceed 300 seconds.
+per file. Wall timeout defaults to 90 seconds and cannot exceed 300 seconds. Both the
+host capture loop and trusted container PID 1 enforce that requested limit;
+the container timer starts before browser preflight or authored execution and
+remains armed through descendant cleanup and packaging.
 Paths in returned archives are limited to 16 components and 240 UTF-8 bytes.
 
 A trusted container PID 1 waits for the authored process, kills every remaining
@@ -78,9 +81,37 @@ before packaging output. A descendant that cannot exit prevents packaging and
 hits the external wall timeout. The host bounds both archive/log transfer,
 requires clean container exit, rejects traversal/duplicates/links/special files,
 then publishes through an exclusive new directory. The container is forcibly
-removed on success or failure. A local disk error during publication may leave
+removed on success or a handled failure, including catchable host cancellation
+by SIGTERM, SIGHUP, or SIGINT. Those handlers are scoped to `execute()` and
+restored afterward. Library execution from a non-main Python thread is rejected
+before authored code runs because that thread cannot own signal handlers. A local disk error during publication may leave
 a partial new owner-only directory; the adapter reports that condition and does
 not delete paths another local process might have replaced.
+
+### Abrupt host termination and recovery
+
+Host SIGKILL cannot run Python cleanup. A disconnected or SIGKILLed client
+therefore cannot guarantee container removal or deletion of its private host
+snapshots. Container PID 1 still reaches its independent deadline, kills
+remaining descendants, and exits with code 124; Linux also terminates processes
+in a PID namespace when its init exits. No output is published by the dead host
+client. This stops execution while preserving the fixed resource limits.
+
+The stopped container and host temporary directories can remain. For an
+invocation you own, inspect the exact UUID name and its read-only bind sources:
+
+```sh
+docker --context colima-teach-security inspect OWNED_CONTAINER_NAME --format '{{json .State}} {{json .Mounts}}'
+docker --context colima-teach-security rm --force OWNED_CONTAINER_NAME
+```
+
+Match the invocation and creation time before removing anything; do not remove
+all containers sharing the prefix. The two bind sources identify that run’s
+owner-only `~/.teacher-course-*` staging directory. Input capture can also leave
+owner-only `teacher-bounded-*` and `teacher-course-*` directories beneath the
+host's temporary directory. Remove only the exact directories established to
+belong to the interrupted invocation. Normal completion and catchable
+cancellation clean these automatically; SIGKILL recovery cannot be automatic.
 
 Published HTML still contains authored JavaScript. Review it before opening on
 the host; browser execution during `validate` stays inside Docker.
