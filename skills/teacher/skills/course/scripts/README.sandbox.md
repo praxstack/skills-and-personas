@@ -126,3 +126,35 @@ Without `COURSE_SANDBOX_IMAGE`, Docker integration tests are explicitly skipped.
 `COURSE_SANDBOX_BROWSER=1` adds the real browser controls. The focused suite
 also exercises malicious host archives, missing runtime/image CLI errors,
 create/start/copy failure cleanup, and legitimate/hostile authored courses.
+
+## Fixed causal-exemplar render
+
+`render` adds a fixed offline job for the base-rates candidate: one lesson,
+seven film scenes, `base`/`hit`/`falseRate` mathematical contract, still step 5.
+It builds the page, bundles static formats, exports nine sampled frames per
+scene, exercises the model and controls, and records the unchanged lesson and
+visual checker results. Those checker return codes are recorded even on failure;
+`render` success is an export result, not a successful `validate` claim.
+
+An optional existing `videos/<lesson-id>.mp4` and adjacent VTT use the same
+confined descriptor-bound snapshot as ordinary course builds. Matching
+`renderTiming` is JSON data in the captured course manifest; the existing bundle
+exporter checks it against video duration, caption cues and source scenes.
+There are no extra host paths, commands, mounts or changed resource limits.
+Native narration is a separate reviewed-text job outside this mode. The direct
+render helpers require `--trust-authored-code` and do not sandbox themselves;
+use `sandbox_course.py render` for authored execution inside Docker.
+
+The original browser image lacks `ffprobe`; video bundling fails closed there.
+For actual video export, the explicitly authorized media setup derivative adds
+Debian `ffmpeg=7:5.1.9-0+deb12u1` (observed package candidate 2026-10-20):
+
+```sh
+docker --context colima-teach-security build --pull=false --build-arg BROWSER_IMAGE=sha256:f24361b3ee8ca3b348faf3d5b4eee5a217f4fa0618553b0e9f8fce57953c7c9b -f scripts/Dockerfile.media -t teacher-course-media:review-local scripts
+```
+
+The locally built result was
+`sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f`.
+The browser recipe is unchanged. Package dependencies may change on a future
+setup; inspect the new immutable result instead of assuming this ID. Runtime
+still downloads nothing and retains every existing execution/output bound.

@@ -60,10 +60,10 @@ if mode == 'extract':
     command = ['node', base+'extract.mjs', '/input/course', '--trust-authored-code']
     output = open('/tmp/output/course.json', 'wb')
 else:
-    command = ['python3', base+('test_course.py' if mode == 'validate' else 'build_course.py'),
+    command = ['python3', base+('test_course.py' if mode == 'validate' else 'render_course.py' if mode == 'render' else 'build_course.py'),
                '/input/course', '--out', '/tmp/output', '--trust-authored-code']
     output = sys.stderr
-if mode == 'validate':
+if mode in {'validate', 'render'}:
     probe = subprocess.run(['node', '--input-type=module', '-e',
         "import {loadPlaywright,launch} from '/tools/visual-qa/scripts/pw.mjs'; "
         "const {chromium}=await loadPlaywright();const b=await launch(chromium);await b.newPage();await b.close();"],
@@ -336,8 +336,8 @@ def execute(course: Path, output: Path, image: str, *, mode: str = 'build',
 
 def _execute(course: Path, output: Path, image: str, *, mode: str,
              context: str | None, timeout: float, cancellation: dict) -> None:
-    if mode not in {'extract', 'build', 'validate'}:
-        raise ValueError('supported modes: extract, build, validate; narration is unsupported')
+    if mode not in {'extract', 'build', 'validate', 'render'}:
+        raise ValueError('supported modes: extract, build, validate, render; narration is unsupported')
     if not re.fullmatch(r'sha256:[0-9a-f]{64}', image):
         raise ValueError('sandbox image must be an immutable local sha256 image ID')
     if not 0 < timeout <= 300:
@@ -422,7 +422,7 @@ def _execute(course: Path, output: Path, image: str, *, mode: str,
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['extract', 'build', 'validate'])
+    parser.add_argument('mode', choices=['extract', 'build', 'validate', 'render'])
     parser.add_argument('course', type=Path)
     parser.add_argument('-o', '--out', required=True, type=Path)
     parser.add_argument('--image', required=True)

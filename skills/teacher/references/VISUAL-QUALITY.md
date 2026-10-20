@@ -31,3 +31,11 @@ Real failures found while building the bundled examples. Look for them first:
 - Arrowheads floated free of their shafts because `vector-effect: non-scaling-stroke` broke `pathLength` dashes in Chromium. Removed.
 - Vollkorn's oldstyle figures made "1.0" read like "I.O" in a figure. Figures now use lining numerals.
 - A weight label sat on top of its own line. Labels go beside what they name, never on it.
+
+## Worked mechanism example
+
+[Collecting flags before changing the denominator](MECHANISM-STORYBOARD-EXAMPLE.md)
+shows stable segment identities, explicit scale changes, a presentation-only
+phase parameter, and different compositions for an opening scene and complete
+still. It records the current export hooks and motion limits without adding a
+new evaluator or acceptance threshold.
