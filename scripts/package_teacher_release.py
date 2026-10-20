@@ -73,6 +73,9 @@ Source commit: {commit}
     manifest = {"version": version, "source_commit": commit, "scope": "teacher and teach-pro-max source; no runtime weights or new lessons", "assets": []}
     if candidate:
         collections["transcript-pipeline.zip"] = {p[len("skills/"):]: v for p, v in trees.items() if p.startswith("skills/transcript-pipeline/")}
+        for component in ("teacher", "teach-pro-max", "transcript-pipeline"):
+            notice = (candidate_notice + f"Source commit: {commit}\n").encode()
+            collections[f"{component}.zip"][f"{component}/CANDIDATE-STATUS.txt"] = (notice, 0o100644)
         manifest["status"] = "unaccepted-candidate"
         manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline and exemplar source; generated media separate"
     for name, files in collections.items():

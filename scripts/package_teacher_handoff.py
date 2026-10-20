@@ -17,8 +17,18 @@ def digest(path):
 
 def package(source, media, historical, output, media_provenance):
     if output.exists(): raise ValueError('output must be a new directory')
+    if not source.is_dir() or source.is_symlink(): raise ValueError('regular source directory required')
+    for path in source.iterdir():
+        if not stat.S_ISREG(path.lstat().st_mode):
+            raise ValueError(f'source accepts regular files only: {path.name}')
     manifest = json.loads((source/'RELEASE-MANIFEST.json').read_text())
     if manifest.get('status') != 'unaccepted-candidate': raise ValueError('candidate source manifest required')
+    names = [asset['name'] for asset in manifest['assets']]
+    sidecars = {'RELEASE-MANIFEST.json', 'SHA256SUMS'}
+    if len(set(names)) != len(names) or any(Path(name).name != name or name in sidecars for name in names):
+        raise ValueError('source asset names must be unique basenames distinct from sidecars')
+    if {path.name for path in source.iterdir()} != set(names) | sidecars:
+        raise ValueError('source must contain exactly manifest assets and named sidecars')
     for asset in manifest['assets']:
         path = source/asset['name']
         if path.parent != source or digest(path) != asset['sha256']: raise ValueError('source asset mismatch')
