@@ -1,9 +1,9 @@
 name: Teacher security regressions
 on:
   push:
-    paths: ['skills/teacher/**', 'skills/teach-pro-max/**', 'skills/transcript-pipeline/**', '.github/workflows/teacher-security.yml']
+    paths: ['skills/teacher/**', 'skills/teach-pro-max/**', 'skills/transcript-pipeline/**', 'scripts/**', 'examples/teach-visual-candidate/**', '.github/workflows/teacher-security.yml']
   pull_request:
-    paths: ['skills/teacher/**', 'skills/teach-pro-max/**', 'skills/transcript-pipeline/**', '.github/workflows/teacher-security.yml']
+    paths: ['skills/teacher/**', 'skills/teach-pro-max/**', 'skills/transcript-pipeline/**', 'scripts/**', 'examples/teach-visual-candidate/**', '.github/workflows/teacher-security.yml']
 permissions:
   contents: read
 jobs:
@@ -28,3 +28,32 @@ jobs:
           docker build -t teacher-code-sandbox:ci skills/teacher/skills/explorable/assets/sandbox
           export TEACHER_SANDBOX_IMAGE="$(docker image inspect teacher-code-sandbox:ci --format '{{.Id}}')"
           python3 skills/teacher/skills/explorable/scripts/test_sandbox_code.py -v
+
+  bounded-regressions:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11.17'
+          architecture: arm64
+          check-latest: false
+      - name: Explicit dependencies and reviewed images
+        run: |
+          mkdir -p "$RUNNER_TEMP/teacher-receipts"
+          { git rev-parse HEAD; uname -a; printf '%s\n' "$ImageVersion"; python3 --version; node --version; docker --context default version; } > "$RUNNER_TEMP/teacher-receipts/host.txt"
+          bash scripts/setup_teacher_ci.sh 2>&1 | tee "$RUNNER_TEMP/teacher-receipts/setup.txt"
+      - name: Required controls (no optional-runtime skips)
+        run: |
+          "$CI_PY" scripts/run_teacher_regressions.py 2>&1 | tee "$RUNNER_TEMP/teacher-receipts/tests.txt"
+      - name: Three fresh media containers and explicit QA receipts
+        run: |
+          "$CI_PY" scripts/ci_media_regression.py --image "$MEDIA_IMAGE" --docker-context default 2>&1 | tee "$RUNNER_TEMP/teacher-receipts/media.txt"
+      - name: Save bounded execution provenance
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: teacher-regression-receipts
+          path: ${{ runner.temp }}/teacher-receipts/
+          if-no-files-found: error

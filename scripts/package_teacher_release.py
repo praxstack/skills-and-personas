@@ -15,13 +15,15 @@ def git(*args):
     return subprocess.check_output(["git", *args], cwd=ROOT)
 
 
-def package(revision, version, output):
+def package(revision, version, output, candidate=False):
     if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version):
         raise ValueError("version must have three numeric components")
     commit = git("rev-parse", "--verify", revision + "^{commit}").decode().strip()
+    if output.exists() and any(output.iterdir()):
+        raise ValueError("output must be empty; preserve previous artifacts")
     output.mkdir(parents=True, exist_ok=True)
     trees = {}
-    for entry in git("ls-tree", "-rz", commit, "--", "skills/teacher", "skills/teach-pro-max").split(b"\0"):
+    for entry in git("ls-tree", "-rz", commit, "--", "skills/teacher", "skills/teach-pro-max", *(["skills/transcript-pipeline", "examples/teach-visual-candidate/base-rates", "scripts/check_render_receipts.py"] if candidate else [])).split(b"\0"):
         if not entry:
             continue
         meta, raw_path = entry.split(b"\t", 1)
@@ -34,7 +36,8 @@ def package(revision, version, output):
         trees[path] = (git("cat-file", "blob", oid), int(mode, 8))
     if not all(f"skills/{name}/SKILL.md" in trees for name in ("teacher", "teach-pro-max")):
         raise ValueError("both public skill entries must be present")
-    start = f"""# Prax Teach {version}
+    candidate_notice = ("UNACCEPTED CANDIDATE: Task 8 consecutive playback failed; course consent checker approval pending. Not eligible for stable release or installation: validation incomplete. Historical evidence is not current acceptance.\n\n" if candidate else "")
+    start = f"""{candidate_notice}# Prax Teach {version}
 
 The complete teacher and compatible teach-pro-max source trees are in skills/.
 Keep every supporting file. Core use is explanation first; practice and
@@ -68,6 +71,10 @@ Source commit: {commit}
     for name in ("LICENSE", "docs/teach-pro-max/USAGE-GUIDE.md"):
         collections[f"prax-teach-v{version}-source.zip"][name] = (git("show", f"{commit}:{name}"), 0o100644)
     manifest = {"version": version, "source_commit": commit, "scope": "teacher and teach-pro-max source; no runtime weights or new lessons", "assets": []}
+    if candidate:
+        collections["transcript-pipeline.zip"] = {p[len("skills/"):]: v for p, v in trees.items() if p.startswith("skills/transcript-pipeline/")}
+        manifest["status"] = "unaccepted-candidate"
+        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline and exemplar source; generated media separate"
     for name, files in collections.items():
         path = output / name
         with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -95,5 +102,6 @@ if __name__ == "__main__":
     parser.add_argument("--revision", default="HEAD")
     parser.add_argument("--version", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--candidate", action="store_true", help="Include transcript/exemplar source and explicit unaccepted labels")
     args = parser.parse_args()
-    package(args.revision, args.version, args.output)
+    package(args.revision, args.version, args.output, args.candidate)

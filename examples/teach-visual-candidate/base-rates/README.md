@@ -15,14 +15,14 @@ by Git. The worked authoring reference is
 
 Run from the repository root after explicitly reviewing/building the media
 image described in `skills/teacher/skills/course/scripts/README.sandbox.md`.
-The scripts select immutable local image
-`sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f`
-and context `colima-teach-security`; they do not change the default context.
+Pass your reviewed immutable local image ID and explicit Docker context. The
+historical local setup used `colima-teach-security`; a recipient must build and
+inspect their own image. No script changes the global context.
 
 ```sh
-python3 examples/teach-visual-candidate/base-rates/reproduction/render.py render-04 --no-video
+python3 examples/teach-visual-candidate/base-rates/reproduction/render.py render-04 --no-video --image "$MEDIA_IMAGE" --docker-context "$DOCKER_CONTEXT"
 python3 examples/teach-visual-candidate/base-rates/reproduction/narrate.py
-python3 examples/teach-visual-candidate/base-rates/reproduction/render.py final-verified
+python3 examples/teach-visual-candidate/base-rates/reproduction/render.py new-candidate --image "$MEDIA_IMAGE" --docker-context "$DOCKER_CONTEXT"
 python3 -m unittest discover -s skills/teacher/skills/course/scripts -p test_render_refusal.py -v
 ```
 
@@ -49,3 +49,11 @@ does not advertise H.264 support; that does not make the H.264 file invalid.
 Both files have complete constant-rate video tracks through the last narrated
 hold and pass native decoding. Browser coverage is the reviewed Chromium
 runtime; no universal browser-compatibility claim is made.
+
+`render.py` now checks both existing QA return-code receipts and every existing
+render check/errors/network receipt. An export exit code alone is insufficient.
+These checks do not grant human visual acceptance or full-course acceptance.
+Task 8 remains unaccepted: three consecutive narrated playback passes were not
+achieved. The completed local audio/video stays available as an unaccepted demo;
+macOS `say` narration is platform-specific. CI uses a labelled synthetic codec
+fixture with the actual exemplar to exercise runtime behavior, not voice quality.
