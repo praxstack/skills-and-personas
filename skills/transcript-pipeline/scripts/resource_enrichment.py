@@ -173,9 +173,34 @@ def parse_manifest(session_dir: Path) -> list[ResourceItem]:
     return items
 
 
+def _discard_redirect_body(response: requests.Response, **kwargs):
+    """Close redirects before Requests prepares Response.next and drains content.
+
+    Even allow_redirects=False invokes resolve_redirects(yield_requests=True).
+    A response hook runs before that step. Cache an empty body after closing the
+    unread stream so neither Requests nor the browser broker can materialize it.
+    Status and Location stay intact for the caller's validated redirect handling.
+    """
+    if response.is_redirect or response.is_permanent_redirect:
+        response.close()
+        response._content = b""
+        response._content_consumed = True
+    return response
+
+
+def _transport_hooks(session) -> dict:
+    # Per-request hooks also protect caller-supplied ordinary Requests Sessions.
+    # Keep caller hooks, but run our discard before they can inspect the body.
+    existing = session.hooks.get("response", []) if isinstance(session, requests.Session) else []
+    return {"response": [_discard_redirect_body] + [
+        hook for hook in existing if hook is not _discard_redirect_body
+    ]}
+
+
 def _new_session() -> requests.Session:
     session = requests.Session()
     session.trust_env = False
+    session.hooks = _transport_hooks(session)
     session.mount("https://", PublicNetworkAdapter())
     session.mount("http://", PublicNetworkAdapter())
     session.headers.update({"User-Agent": "Mozilla/5.0"})
@@ -304,7 +329,8 @@ def fetch_limited(
         ):
             raise ValueError("authenticated resource redirected outside its exact HTTPS origin")
         budgets.check()
-        response = session.get(current, timeout=budgets.timeout(timeout), allow_redirects=False, stream=True)
+        response = session.get(current, timeout=budgets.timeout(timeout), allow_redirects=False, stream=True,
+                               hooks=_transport_hooks(session))
         if response.is_redirect or response.is_permanent_redirect:
             location = response.headers.get("location")
             response.close()
@@ -411,7 +437,7 @@ def install_browser_transport(context, auth_origins=None):
             broker.cookies.clear()
             response = broker.request(request.method, target, headers=headers,
                                       data=post, stream=True,
-                                      allow_redirects=False, timeout=30)
+                                      allow_redirects=False, timeout=30, hooks=_transport_hooks(broker))
             try:
                 body = read_limited_body(response, min(MAX_HTTP_BYTES, remaining[0]))
                 remaining[0] -= len(body)
