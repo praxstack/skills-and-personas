@@ -8,10 +8,10 @@
   python3 scripts/find_tool.py --job process --json
 
 Ranking: how many of the asked jobs a tool does, the asked medium, whether
-every probe passes on this host (binaries on PATH, Python modules, Node
+prerequisites are detected on this host (binaries on PATH, Python modules, Node
 packages, network hosts with --net, MCP tools named with --have or in
-$TEACHER_HOST_TOOLS), then bundled notebook-native tools first. A tool that
-can't run here is still listed, last, with what's missing, so the teacher can
+$TEACHER_HOST_TOOLS), then bundled notebook-native tools first. A tool with
+unverified prerequisites is still listed, last, with what's missing, so the teacher can
 offer to install it or pick the next one.
 """
 
@@ -84,26 +84,66 @@ def host_tools(cli: list[str]) -> set[str]:
     return {n.split(":", 1)[-1] for n in names}
 
 
-def probe(tool: dict, *, net: bool, mcp: set[str]) -> tuple[bool, list[str]]:
+def inspect_tool(tool: dict, *, net: bool, mcp: set[str]) -> dict:
+    """Detect prerequisites, never claim a render or remote runtime was tested."""
     p = tool.get("probe", {})
-    missing = [f"bin:{b}" for b in p.get("bins", []) if not has_bin(b)]
-    missing += [f"py:{m}" for m in p.get("py", []) if not has_py(m)]
-    missing += [f"node:{m}" for m in p.get("node", []) if not has_node(m)]
-    alts_ok = True
-    # mcp and net are alternatives to a local install: any one passing is enough.
-    alt = []
-    if p.get("mcp"):
-        alt.append(any(m in mcp for m in p["mcp"]))
-    if p.get("net"):
-        alt.append(net and any(has_net(u) for u in p["net"]))
-    local_only = not p.get("bins") and not p.get("py") and not p.get("node")
-    if alt and (local_only or missing):
-        alts_ok = any(alt)
-        if alts_ok:
-            missing = []
+    how = tool.get("how", {})
+    evidence = []
+    missing = []
+    skill = how.get("skill")
+    if skill:
+        if not (ROOT / skill).is_file():
+            return {"available": False, "missing": [f"file:{skill}"],
+                    "status": "missing", "evidence": []}
+        evidence.append(f"bundled instructions present: {skill}")
+    for key, check, label in (("bins", has_bin, "bin"), ("py", has_py, "py"), ("node", has_node, "node")):
+        for name in p.get(key, []):
+            (evidence if check(name) else missing).append(f"{label}:{name}")
+    local = any(p.get(key) for key in ("bins", "py", "node"))
+    # Declared CLI alternatives only look up executable names on PATH. Never
+    # execute registry command strings, installers, or shell expressions.
+    cli = [name for name in p.get("cli", []) if has_bin(name)]
+    if cli:
+        evidence.extend(f"CLI on PATH: {name}" for name in cli)
+        missing = []
+        local = True
+    elif p.get("cli") and (not local or missing):
+        missing.extend(f"bin:{name} (alternative)" for name in p["cli"])
+    declared = [name for name in p.get("mcp", []) if name in mcp]
+    if not p and tool.get("id") in mcp:
+        declared.append(tool["id"])
+    if declared:
+        evidence.extend(f"host declared: {name}" for name in declared)
+        return {"available": True, "missing": [], "status": "declared", "evidence": evidence}
+    if local and not missing:
+        return {"available": True, "missing": [], "status": "detected", "evidence": evidence}
+    if not p and not how.get("cdn"):
+        if skill:
+            return {"available": True, "missing": [], "status": "instructions", "evidence": evidence}
+        if tool.get("id") == "svg":
+            return {"available": True, "missing": [], "status": "authoring",
+                    "evidence": ["SVG can be authored directly; viewing is untested"]}
+    urls = p.get("net", []) or ([how["cdn"]] if how.get("cdn") else [])
+    if urls:
+        if net:
+            reachable = [url for url in urls if has_net(url)]
+            if reachable:
+                evidence.extend(f"HTTP host reachable: {url}" for url in reachable)
+                return {"available": False, "missing": ["runtime:unverified"],
+                        "status": "reachable", "evidence": evidence}
+            missing.extend(f"net:{url}" for url in urls)
         else:
-            missing += [f"mcp:{m}" for m in p.get("mcp", [])] + ([f"net:{p['net'][0]}"] if p.get("net") else [])
-    return (not missing and alts_ok), missing
+            missing.append("network:unverified (use --net to check reachability only)")
+    missing.extend(f"host:{name} (declare with --have)" for name in p.get("mcp", []))
+    if not missing:
+        missing.append(f"host:{tool.get('id', 'unknown')} (unverified; declare with --have)")
+    return {"available": False, "missing": missing,
+            "status": "missing" if local else "unknown", "evidence": evidence}
+
+
+def probe(tool: dict, *, net: bool, mcp: set[str]) -> tuple[bool, list[str]]:
+    result = inspect_tool(tool, net=net, mcp=mcp)
+    return result["available"], result["missing"]
 
 
 def rank(tools: list[dict], jobs: list[str], media: list[str], *, offline: bool, net: bool, mcp: set[str]) -> list[dict]:
@@ -117,9 +157,10 @@ def rank(tools: list[dict], jobs: list[str], media: list[str], *, offline: bool,
             continue
         if offline and not t.get("offline", False):
             continue
-        ok, missing = probe(t, net=net, mcp=mcp)
+        result = inspect_tool(t, net=net and not offline, mcp=mcp)
+        ok = result["available"]
         score = 10 * job_hits + 4 * medium_hit + (8 if ok else 0) + (3 if t.get("notebook") == "native" else 0) + (2 if t["id"] in BUNDLED else 0)
-        out.append({**t, "available": ok, "missing": missing, "score": score})
+        out.append({**t, **result, "score": score})
     return sorted(out, key=lambda t: (-t["score"], t["name"]))
 
 
@@ -134,27 +175,27 @@ def main() -> int:
     ap.add_argument("--offline", action="store_true", help="only tools that work without a network")
     ap.add_argument("--net", action="store_true", help="probe network services (Kroki, CDNs)")
     ap.add_argument("--have", action="append", default=[], help="host tools available, e.g. mcp:excalidraw, mcp:hyperframes, mcp:artifact")
-    ap.add_argument("--inventory", action="store_true", help="list every tool with whether it runs here")
+    ap.add_argument("--inventory", action="store_true", help="list tool prerequisite evidence (not render verification)")
     ap.add_argument("--top", type=int, default=8)
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     mcp = host_tools(a.have)
     if a.inventory:
-        rows = rank(reg["tools"], [], [], offline=False, net=a.net, mcp=mcp)
+        rows = rank(reg["tools"], [], [], offline=a.offline, net=a.net, mcp=mcp)
         rows.sort(key=lambda t: (not t["available"], t["name"]))
     else:
         if not a.job and not a.medium:
             ap.error("give at least one --job or --medium (or --inventory)")
         rows = rank(reg["tools"], a.job, a.medium, offline=a.offline, net=a.net, mcp=mcp)[: a.top]
     if a.json:
-        keep = ("id", "name", "media", "jobs", "available", "missing", "score", "how", "notebook", "best_for", "avoid_when", "output", "ref")
+        keep = ("id", "name", "media", "jobs", "available", "missing", "status", "evidence", "score", "how", "notebook", "best_for", "avoid_when", "output", "ref")
         print(json.dumps([{k: r[k] for k in keep if k in r} for r in rows], indent=2))
         return 0
     if not rows:
         print("nothing matches; drop --offline or a --medium, or write SVG by hand with lesson-notebook")
         return 1
     for r in rows:
-        mark = "ready" if r["available"] else "needs " + ", ".join(r["missing"])
+        mark = r["status"] + ("" if r["available"] else ": " + ", ".join(r["missing"]))
         how = r["how"].get("skill") or r["how"].get("command") or r["how"].get("cdn") or r["how"].get("mcp") or r["how"].get("note", "")
         print(f"{r['name']:<44} {mark}")
         if r.get("best_for") and not a.inventory:

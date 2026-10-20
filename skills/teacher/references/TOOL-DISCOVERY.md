@@ -5,7 +5,7 @@ Hosts differ wildly: one has a browser, Manim and an Excalidraw MCP; another has
 ## Probe once per session
 
 ```sh
-python3 scripts/find_tool.py --inventory --net                         # everything, ready or not
+python3 scripts/find_tool.py --inventory --net                         # prerequisite and reachability evidence
 python3 scripts/find_tool.py --job cause --job change                  # ranked for this idea
 python3 scripts/find_tool.py --job structure --medium still --offline  # nothing that needs a network
 python3 scripts/find_tool.py --job story --have mcp:hyperframes --json
@@ -13,7 +13,13 @@ python3 scripts/find_tool.py --job story --have mcp:hyperframes --json
 
 - Probes: binaries on PATH, Python modules, Node packages (from the working folder, the teacher folder, `PLAYWRIGHT_MODULE`, global npm), network hosts with `--net`, and host tools you name with `--have` or `TEACHER_HOST_TOOLS=mcp:excalidraw,mcp:artifact`.
 - The script can't see your host's tool list. Look at it yourself and pass what matters: an Excalidraw or HyperFrames MCP, an image generator, artifact publishing, a canvas.
-- Ranking: jobs matched, medium matched, runs here, notebook-native, bundled.
+- `--offline` filters inventory as well as ranked results and suppresses network requests even when combined with `--net`.
+- `available` remains a boolean. `status` and `evidence` distinguish detected local prerequisites, declared host tools, bundled instructions, direct SVG authoring, unknown dependencies, and reachable HTTP hosts. None proves a successful render. Missing or unverified requirements remain in `missing`.
+- CDN libraries without local probes remain unknown by default. `--net` checks HTTP reachability only; even a reachable host does not establish that a package is installed or can run. No dependencies are downloaded or installed.
+- Declare host-only capabilities by registry id, for example `--have canvas --have browser-voice`, or use `TEACHER_HOST_TOOLS`. These are caller declarations, not measured runtime checks.
+- Manim accepts either its host Python module or a declared `probe.cli` executable on PATH. This supports isolated CLI installations. Executable detection does not check its version, rendering dependencies, or output; run the skill's render verification separately. Registry shell commands are never executed by discovery.
+- Bundled skill paths are checked for file presence, including instruction-only lesson-notebook assets. Presence is not build or browser verification.
+- Ranking: jobs matched, medium matched, available prerequisites or declarations, notebook-native, bundled.
 
 ## The registry
 
