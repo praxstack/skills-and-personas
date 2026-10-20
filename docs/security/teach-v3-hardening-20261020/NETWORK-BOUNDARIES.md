@@ -72,3 +72,27 @@ Known remaining boundaries:
 - Historical packaged archives and the frozen teach-pro-max embedded runtime
   retain their recorded behavior until a separately authorized release updates
   them. Current source changes are not installation/deployment evidence.
+
+## Task 4 private-environment revision
+
+All eleven video `need()` helpers now try an existing private environment before
+requiring acquisition opt-in. The sibling-script and single-reexec guards remain
+in force. `_make_venv()` also checks opt-in after checking for an existing Python,
+so offline execution cannot create a replacement environment if it disappears.
+
+The focused network suite now passes 12 tests. Its new subprocess test enumerates
+all eleven copies and runs six cases per copy: a dependency missing on the host,
+host NumPy/soundfile fixtures followed by an engine available only in the private
+environment, an absent environment, a dependency still missing after reexec, an
+already-set reexec marker, and a nonsibling caller. It creates one temporary real
+venv with `with_pip=False` before invoking the product, writes a synthetic engine
+module into that environment, and checks interpreter prefixes and execution
+counts. Subprocess and socket audit guards reject acquisition during each
+synthetic sibling `voice.py` run. The existing explicit-online mocked installer
+control remains; direct offline environment creation is also tested.
+
+The new subprocess test fails against the preceding HEAD helpers in 33 subcases
+and passes against the revision. This covers environment selection and loop
+prevention, not real speech synthesis or third-party package behavior. No package
+or model is downloaded. Updated local vendor receipts preserve upstream metadata
+and the preceding tree digests; vendor verification reports zero problems.

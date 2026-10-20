@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import importlib.util
 import io
+import json
 import os
 from pathlib import Path
 import runpy
@@ -13,6 +14,7 @@ import sys
 import tempfile
 import types
 import unittest
+import venv
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -55,10 +57,94 @@ class NetworkPolicy(unittest.TestCase):
                         deps.need('_teacher_nonexistent_dependency_')
                     with self.assertRaisesRegex(RuntimeError, 'TEACHER_ALLOW_NETWORK=1'):
                         deps._pip(sys.executable, 'example')
+                    with mock.patch.object(deps, 'VENV', str(self.directory / 'absent')):
+                        with self.assertRaisesRegex(RuntimeError, 'TEACHER_ALLOW_NETWORK=1'):
+                            deps._make_venv()
+                        self.assertFalse((self.directory / 'absent').exists())
                     run.assert_not_called()
                 with mock.patch.dict(os.environ, {'TEACHER_ALLOW_NETWORK': '1'}), mock.patch.object(deps.subprocess, 'run', return_value=types.SimpleNamespace(returncode=0)) as run:
                     self.assertIsNone(deps._pip(sys.executable, 'example'))
                     self.assertIn('install', run.call_args.args[0])
+
+    def test_all_pydeps_reuse_real_private_venv_offline(self):
+        paths = sorted(SKILLS.glob('*/scripts/pydeps.py'))
+        self.assertEqual(len(paths), 11)
+        private = self.directory / 'private'
+        # Fixture setup only: stdlib venv, no ensurepip or package downloads.
+        venv.EnvBuilder(with_pip=False).create(private)
+        python = private / 'bin/python'
+        probe = subprocess.run([str(python), '-c',
+                                'import sysconfig; print(sysconfig.get_path("purelib"))'],
+                               check=True, capture_output=True, text=True)
+        package = Path(probe.stdout.strip()) / '_teacher_private_engine.py'
+        package.write_text('VALUE = "private engine"\n')
+        host = self.directory / 'host'
+        host.mkdir()
+        for name in ('numpy', 'soundfile'):
+            (host / (name + '.py')).write_text('VALUE = "host fixture"\n')
+        harness = r'''import json, os, pathlib, sys
+sys.path.insert(0, os.environ['TEST_HELPERS'])
+import pydeps
+
+def prohibit_acquisition(event, args):
+    if event in ('subprocess.Popen', 'os.system') or event.startswith('socket.'):
+        raise AssertionError('offline acquisition reached: ' + event)
+sys.addaudithook(prohibit_acquisition)
+trace = pathlib.Path(os.environ['TEST_TRACE'])
+with trace.open('a') as f:
+    f.write(json.dumps({'prefix': sys.prefix, 'mark': os.environ.get(pydeps._MARK)}) + '\n')
+if sys.argv[1] == 'engine_only':
+    assert pydeps.need('numpy').VALUE == 'host fixture'
+    assert pydeps.need('soundfile').VALUE == 'host fixture'
+name = '_teacher_missing_everywhere' if sys.argv[1] == 'missing_everywhere' else '_teacher_private_engine'
+try:
+    module = pydeps.need(name)
+except RuntimeError as exc:
+    print(json.dumps({'error': str(exc), 'prefix': sys.prefix}))
+    sys.exit(7)
+print(json.dumps({'value': module.VALUE, 'file': module.__file__, 'prefix': sys.prefix}))
+'''
+        for path in paths:
+            folder = self.directory / path.parent.parent.name
+            folder.mkdir()
+            shutil.copy2(path, folder / 'pydeps.py')
+            script = folder / 'voice.py'
+            script.write_text(harness)
+            outside = folder / 'outside'
+            outside.mkdir()
+            nonsibling = outside / 'voice.py'
+            nonsibling.write_text(harness)
+            cases = ('missing_host', 'engine_only', 'absent_venv',
+                     'missing_everywhere', 'already_switched', 'nonsibling')
+            for case in cases:
+                with self.subTest(path=path, case=case):
+                    trace = folder / (case + '.jsonl')
+                    absent = folder / 'absent'
+                    env = dict(os.environ, TEACHER_ALLOW_NETWORK='0',
+                               VIDEO_SKILLS_VENV=str(absent if case == 'absent_venv' else private),
+                               TEST_HELPERS=str(folder), TEST_TRACE=str(trace),
+                               PYTHONPATH=str(host), PYTHONNOUSERSITE='1')
+                    env.pop('VIDEO_SKILLS_PYDEPS_SWITCHED', None)
+                    if case == 'already_switched':
+                        env['VIDEO_SKILLS_PYDEPS_SWITCHED'] = '1'
+                    result = subprocess.run([sys.executable,
+                                             str(nonsibling if case == 'nonsibling' else script), case],
+                                            env=env, capture_output=True, text=True, timeout=15)
+                    runs = [json.loads(line) for line in trace.read_text().splitlines()]
+                    success = case in ('missing_host', 'engine_only')
+                    self.assertEqual(result.returncode, 0 if success else 7, result.stderr)
+                    output = json.loads(result.stdout)
+                    self.assertEqual(len(runs), 2 if success or case == 'missing_everywhere' else 1)
+                    if len(runs) == 2:
+                        self.assertIsNone(runs[0]['mark'])
+                        self.assertEqual(runs[1]['mark'], '1')
+                        self.assertEqual(Path(runs[1]['prefix']).resolve(), private.resolve())
+                    if success:
+                        self.assertEqual(output['value'], 'private engine')
+                        self.assertEqual(Path(output['file']), package)
+                    else:
+                        self.assertIn('TEACHER_ALLOW_NETWORK=1', output['error'])
+                    self.assertFalse(absent.exists(), 'offline call created an environment')
 
     def test_all_voice_downloads_and_edge_are_denied_before_transport(self):
         for path, voice in self.voices():

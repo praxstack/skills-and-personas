@@ -89,6 +89,7 @@ def _pip(python, pkg, user=False):
 def _make_venv():
     if os.path.exists(venv_python()):
         return
+    require_network("Creating a private Python environment")
     base = base_python()
     log(f"pip cannot install into {sys.executable}; making a private environment at {VENV} from {base}")
     r = subprocess.run([base, "-m", "venv", VENV], capture_output=True, text=True)
@@ -133,6 +134,8 @@ def need(mod, pip_name=None):
     except ImportError:
         pass
     pkg = pip_name or mod
+    if os.path.exists(venv_python()):
+        _switch(f"{mod} not installed for {sys.executable}")
     require_network(f"Missing Python dependency {pkg}")
     log(f"installing {pkg} ...")
     err = _pip(sys.executable, pkg)
