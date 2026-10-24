@@ -374,24 +374,49 @@ if(zombies.length)throw Error('PID 1 retained adopted zombie exits: '+zombies);
             self.assertEqual((root / 'local/videos/seasons.mp4').read_bytes(), b'local-video-fixture')
             self.assertIn('videos/seasons.mp4', (root / 'local/index.html').read_text())
 
-    def test_browser_validation_propagates_existing_course_check_failure(self):
+    def test_browser_validation_passes_consent_v2(self):
         if os.environ.get('COURSE_SANDBOX_BROWSER') != '1':
             self.skipTest('set COURSE_SANDBOX_BROWSER=1 for reviewed browser image')
-        # The public checker expects persistence without selecting the course
-        # consent checkbox. Preserve that governing check and prove propagation.
         with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryFile(mode='w+', encoding='utf-8') as log:
             root = Path(temp).resolve()
             course = fixture(root)
             with mock.patch.object(sandbox.sys, 'stderr', log):
+                sandbox.execute(course, root / 'output', IMAGE, mode='validate', context=CONTEXT, timeout=180)
+            self.assertTrue((root / 'output/index.html').is_file())
+            self.assertTrue((root / 'output/seasons.html').is_file())
+            log.seek(0)
+            result = log.read()
+            self.assertIn('interactions 59/59, looks clean', result)
+            self.assertIn('course page: 26 passed, 0 failed', result)
+            self.assertIn('ok   course page looks', result)
+            self.assertIn('seasons: 1 lessons, all passed', result)
+            print('browser evidence: 59/59 lesson interactions, consent v2 26/26, lesson/course visual QA passed; output published')
+
+    def test_browser_validation_propagates_real_course_check_failure(self):
+        if os.environ.get('COURSE_SANDBOX_BROWSER') != '1':
+            self.skipTest('set COURSE_SANDBOX_BROWSER=1 for reviewed browser image')
+        # Corrupt only this test's private tool snapshot. A genuine course-page
+        # JavaScript error must fail v2 and prevent publication, even though the
+        # otherwise valid lesson and visual checks still pass.
+        copy_tools = sandbox.copy_tools
+        def inject_page_error(destination):
+            copy_tools(destination)
+            engine = destination / 'course/assets/engine/course.js'
+            with engine.open('a') as sink:
+                sink.write('\nthrow new Error("intentional-course-validation-control");\n')
+        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryFile(mode='w+', encoding='utf-8') as log:
+            root = Path(temp).resolve()
+            course = fixture(root)
+            with mock.patch.object(sandbox, 'copy_tools', side_effect=inject_page_error), mock.patch.object(sandbox.sys, 'stderr', log):
                 with self.assertRaisesRegex(RuntimeError, 'course process failed'):
                     sandbox.execute(course, root / 'output', IMAGE, mode='validate', context=CONTEXT, timeout=180)
             self.assertFalse((root / 'output').exists())
             log.seek(0)
             result = log.read()
             self.assertIn('interactions 59/59, looks clean', result)
-            self.assertIn('FAIL status survives a reload', result)
-            self.assertIn('ok   course page looks', result)
-            print('browser evidence: 59/59 lesson interactions, lesson/course visual QA passed; existing consent-check failure propagated')
+            self.assertIn('FAIL no page errors intentional-course-validation-control', result)
+            self.assertIn('course page: 25 passed, 1 failed', result)
+            print('browser evidence: deliberate real course-page error failed v2 and prevented publication')
 
     def test_browser_infinite_authored_js_is_stopped(self):
         if os.environ.get('COURSE_SANDBOX_BROWSER') != '1':
