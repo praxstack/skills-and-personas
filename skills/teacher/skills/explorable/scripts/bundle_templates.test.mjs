@@ -1,7 +1,31 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { page, safeSourceUrl, sources } from "./bundle_templates.mjs";
+import { page, readableCaptionCues, safeSourceUrl, sources } from "./bundle_templates.mjs";
+
+const opening={startTime:1,endTime:2,text:'Opening'},closing={startTime:4,endTime:5,text:'Closing'};
+test('readable captions preserve native cue intervals and earlier gaps',()=>{
+ assert.deepEqual(readableCaptionCues([opening,closing],0.5),[]);
+ assert.deepEqual(readableCaptionCues([opening,closing],1),[opening]);
+ assert.deepEqual(readableCaptionCues([opening,closing],2.5),[]);
+ assert.deepEqual(readableCaptionCues([opening,closing],4.5),[closing]);
+});
+test('terminal still retains actual final cue and seeking back clears it',()=>{
+ assert.deepEqual(readableCaptionCues([opening,closing],5),[closing]);
+ assert.deepEqual(readableCaptionCues([opening,closing],8),[closing]);
+ assert.deepEqual(readableCaptionCues([opening,closing],0),[]);
+ assert.deepEqual(readableCaptionCues([opening,closing],3),[]);
+});
+test('final means latest ending cue, including overlapping tracks',()=>{
+ const long={startTime:1,endTime:7,text:'Long'},short={startTime:4,endTime:5,text:'Short'};
+ assert.deepEqual(readableCaptionCues([long,short],4.5),[long,short]);
+ assert.deepEqual(readableCaptionCues([long,short],6),[long]);
+ assert.deepEqual(readableCaptionCues([long,short],8),[long]);
+});
+test('unloaded or empty tracks never invent readable words',()=>{
+ assert.deepEqual(readableCaptionCues(null,8),[]);
+ assert.deepEqual(readableCaptionCues([],8),[]);
+});
 
 test("source URLs allow only web schemes", () => {
   assert.equal(safeSourceUrl("javascript:alert(1)"), null);
