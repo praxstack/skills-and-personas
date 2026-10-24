@@ -9,6 +9,15 @@ import subprocess
 import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
+CANDIDATE_PATHS = (
+    "skills/transcript-pipeline",
+    "examples/teach-visual-candidate/base-rates",
+    "examples/teach-visual-candidate/merge-sort-stability",
+    "examples/teach-visual-candidate/momentum",
+    "scripts/check_render_receipts.py",
+    "docs/teach-finish-20261024/behavior/audit-behavior-v1.mjs",
+    "docs/teach-finish-20261024/behavior/check-course-consent-v2.proposed.mjs",
+)
 
 
 def git(*args):
@@ -23,7 +32,7 @@ def package(revision, version, output, candidate=False):
         raise ValueError("output must be empty; preserve previous artifacts")
     output.mkdir(parents=True, exist_ok=True)
     trees = {}
-    for entry in git("ls-tree", "-rz", commit, "--", "skills/teacher", "skills/teach-pro-max", *(["skills/transcript-pipeline", "examples/teach-visual-candidate/base-rates", "scripts/check_render_receipts.py"] if candidate else [])).split(b"\0"):
+    for entry in git("ls-tree", "-rz", commit, "--", "skills/teacher", "skills/teach-pro-max", *(CANDIDATE_PATHS if candidate else [])).split(b"\0"):
         if not entry:
             continue
         meta, raw_path = entry.split(b"\t", 1)
@@ -36,7 +45,7 @@ def package(revision, version, output, candidate=False):
         trees[path] = (git("cat-file", "blob", oid), int(mode, 8))
     if not all(f"skills/{name}/SKILL.md" in trees for name in ("teacher", "teach-pro-max")):
         raise ValueError("both public skill entries must be present")
-    candidate_notice = ("UNACCEPTED CANDIDATE: Task 8 consecutive playback failed; course consent checker approval pending. Not eligible for stable release or installation: validation incomplete. Historical evidence is not current acceptance.\n\n" if candidate else "")
+    candidate_notice = ("UNACCEPTED CANDIDATE: Actual narrated playback repeatability remains BLOCKED at 64 tasks/512 MiB; proposed consent checker remains UNAPPROVED. Not eligible for stable release or installation: validation incomplete. Historical evidence is not current acceptance.\n\n" if candidate else "")
     start = f"""{candidate_notice}# Prax Teach {version}
 
 The complete teacher and compatible teach-pro-max source trees are in skills/.
@@ -77,7 +86,7 @@ Source commit: {commit}
             notice = (candidate_notice + f"Source commit: {commit}\n").encode()
             collections[f"{component}.zip"][f"{component}/CANDIDATE-STATUS.txt"] = (notice, 0o100644)
         manifest["status"] = "unaccepted-candidate"
-        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline and exemplar source; generated media separate"
+        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline, three authored exemplars and supplemental unapproved audit source; no receipt or acceptance claim"
     for name, files in collections.items():
         path = output / name
         with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -94,7 +103,8 @@ Source commit: {commit}
                 if info.filename.startswith("/") or ".." in Path(info.filename).parts or (info.external_attr >> 16) & 0o170000 == 0o120000:
                     raise ValueError("unsafe archive member")
         manifest["assets"].append({"name": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-                                   "bytes": path.stat().st_size, "files": len(files)})
+                                   "bytes": path.stat().st_size, "files": len(files),
+                                   "members": [{"name": n, "sha256": hashlib.sha256(d).hexdigest(), "mode": oct(m)} for n, (d, m) in sorted(files.items())]})
     (output / "RELEASE-MANIFEST.json").write_text(json.dumps(manifest, indent=2) + "\n")
     (output / "SHA256SUMS").write_text("".join(f"{a['sha256']}  {a['name']}\n" for a in manifest["assets"]))
     print(json.dumps(manifest, indent=2))

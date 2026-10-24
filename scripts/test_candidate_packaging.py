@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
-from package_teacher_release import package
+from package_teacher_release import package, git, CANDIDATE_PATHS
 from package_teacher_handoff import package as handoff
 
 
@@ -23,6 +23,19 @@ class Candidate(unittest.TestCase):
             with zipfile.ZipFile(root/'one/prax-teach-v3.0.2-source.zip') as z:
                 self.assertIn('examples/teach-visual-candidate/base-rates/source/course.json', z.namelist())
                 self.assertIn(b'UNACCEPTED CANDIDATE', z.read('START-HERE.md'))
+                for topic in ('merge-sort-stability', 'momentum'):
+                    self.assertIn(f'examples/teach-visual-candidate/{topic}/source/lesson.lesson.js', z.namelist())
+                    self.assertIn(f'examples/teach-visual-candidate/{topic}/bundle/static.html', z.namelist())
+                expected = set(git('ls-tree', '-r', '--name-only', 'HEAD', '--', 'skills/teacher', 'skills/teach-pro-max', *CANDIDATE_PATHS).decode().splitlines())
+                expected = {n for n in expected if not any(part in {'node_modules', '__pycache__', '.tmp.driveupload'} for part in Path(n).parts)}
+                self.assertEqual(set(z.namelist()), expected | {'START-HERE.md', 'LICENSE', 'docs/teach-pro-max/USAGE-GUIDE.md'})
+            manifest = json.loads((root/'one/RELEASE-MANIFEST.json').read_text())
+            import hashlib
+            for asset in manifest['assets']:
+                with zipfile.ZipFile(root/'one'/asset['name']) as z:
+                    self.assertEqual(z.namelist(), [m['name'] for m in asset['members']])
+                    for member in asset['members']:
+                        self.assertEqual(hashlib.sha256(z.read(member['name'])).hexdigest(), member['sha256'])
             for component in ('teacher', 'teach-pro-max', 'transcript-pipeline'):
                 with zipfile.ZipFile(root/'one'/f'{component}.zip') as z:
                     notice = z.read(f'{component}/CANDIDATE-STATUS.txt')
