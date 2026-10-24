@@ -21,6 +21,7 @@ class Candidate(unittest.TestCase):
             with zipfile.ZipFile(root/'one/transcript-pipeline.zip') as z:
                 self.assertIn('transcript-pipeline/SKILL.md', z.namelist())
                 self.assertIn('transcript-pipeline/scripts/safe_resource_output.py', z.namelist())
+                self.assertIn('transcript-pipeline/scripts/safe_resource_manifest.py', z.namelist())
             with zipfile.ZipFile(root/'one/prax-teach-v3.0.2-source.zip') as z:
                 self.assertIn('examples/teach-visual-candidate/base-rates/source/course.json', z.namelist())
                 self.assertIn(b'UNACCEPTED CANDIDATE', z.read('START-HERE.md'))

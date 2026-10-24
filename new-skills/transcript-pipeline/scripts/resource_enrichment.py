@@ -31,6 +31,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 import resource_budget as budgets
 import safe_resource_output as safe_output
+from safe_resource_manifest import read_manifest
 from resource_budget import BudgetExceeded
 from requests.adapters import HTTPAdapter
 from urllib3.connection import HTTPConnection, HTTPSConnection
@@ -150,13 +151,9 @@ def detect_provider(url: str) -> str:
 
 
 def parse_manifest(session_dir: Path) -> list[ResourceItem]:
-    manifest_path = session_dir / ".pipeline" / "resource_manifest.json"
-    if not manifest_path.exists():
+    raw = read_manifest(session_dir)
+    if raw is None:
         return []
-    with manifest_path.open("rb") as handle:
-        raw = handle.read(1024 * 1024 + 1)
-    if len(raw) > 1024 * 1024:
-        raise ValueError("resource manifest exceeds 1 MiB")
     data = json.loads(raw)
     resources_raw = data.get("resources", [])
     if not isinstance(resources_raw, list) or len(resources_raw) > 100:

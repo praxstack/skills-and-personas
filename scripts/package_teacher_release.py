@@ -15,6 +15,11 @@ CANDIDATE_PATHS = (
     "examples/teach-visual-candidate/merge-sort-stability",
     "examples/teach-visual-candidate/momentum",
     "scripts/check_render_receipts.py",
+    "scripts/run_teacher_regressions.py",
+    "scripts/setup_teacher_ci.sh",
+    "scripts/ci_media_regression.py",
+    "scripts/package_teacher_release.py",
+    "docs/teach-resume-20261024/consent/AUTHORITY.md",
     "docs/teach-finish-20261024/behavior/audit-behavior-v1.mjs",
     "docs/teach-finish-20261024/behavior/audit-behavior-v2.mjs",
     "docs/teach-finish-20261024/quality/verify-offline-v2.mjs",
@@ -47,7 +52,7 @@ def package(revision, version, output, candidate=False):
         trees[path] = (git("cat-file", "blob", oid), int(mode, 8))
     if not all(f"skills/{name}/SKILL.md" in trees for name in ("teacher", "teach-pro-max")):
         raise ValueError("both public skill entries must be present")
-    candidate_notice = ("UNACCEPTED CANDIDATE: Actual narrated playback repeatability remains BLOCKED at 64 tasks/512 MiB; proposed consent checker remains UNAPPROVED. Not eligible for stable release or installation: validation incomplete. Historical evidence is not current acceptance.\n\n" if candidate else "")
+    candidate_notice = ("UNACCEPTED CANDIDATE: consent-aware evaluator v2 was approved and adopted on 2026-10-24. Three original narrated fresh-container runs pass at 64 tasks/512 MiB; the disclosed independent fixture passes regression after caption repair. Whole-branch review and release decisions remain pending. No installation or stable release is authorized by this archive. Historical evidence retains its original scope.\n\n" if candidate else "")
     start = f"""{candidate_notice}# Prax Teach {version}
 
 The complete teacher and compatible teach-pro-max source trees are in skills/.
@@ -69,8 +74,8 @@ For untrusted executable examples, use the bundled Docker sandbox instructions:
 skills/teacher/skills/explorable/references/SANDBOX.md
 A Docker daemon and explicitly provisioned image are required for that mode.
 
-Original quality evidence: 52 automated criteria plus 4 human listening
-approvals. This patch makes no new claim of learning gains or world-best design.
+Engineering and runtime evidence has the scope recorded in current delivery receipts.
+No subjective listening, learner outcome or perfection claim is made.
 Source commit: {commit}
 """.encode()
     collections = {
@@ -88,7 +93,7 @@ Source commit: {commit}
             notice = (candidate_notice + f"Source commit: {commit}\n").encode()
             collections[f"{component}.zip"][f"{component}/CANDIDATE-STATUS.txt"] = (notice, 0o100644)
         manifest["status"] = "unaccepted-candidate"
-        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline, three authored exemplars and supplemental unapproved audit source; no receipt or acceptance claim"
+        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline, three authored exemplars and approved consent-v2 evaluator and supplemental audit source; no receipt or acceptance claim"
     for name, files in collections.items():
         path = output / name
         with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:

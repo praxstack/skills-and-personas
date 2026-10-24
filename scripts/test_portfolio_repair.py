@@ -73,7 +73,7 @@ class PipelinePackagingTests(unittest.TestCase):
         modules = sorted(p.stem for p in COPY.glob('*.py') if not p.name.startswith('test_'))
         self.run_python('-c', '; '.join(f'import {name}' for name in modules), cwd=COPY)
         for module in modules:
-            if module in {'resource_budget', 'safe_resource_output'}:
+            if module in {'resource_budget', 'safe_resource_output', 'safe_resource_manifest'}:
                 continue  # Shared library, not a CLI.
             with self.subTest(module=module):
                 result = self.run_python(COPY / (module + '.py'), '--help')

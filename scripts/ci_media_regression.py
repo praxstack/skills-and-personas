@@ -46,3 +46,5 @@ with tempfile.TemporaryDirectory(prefix='teacher-media-ci-') as tmp:
         out = root/f'media-{index}'
         render(source, out)  # Any failed run stops the sequence; never retry or skip.
         print(f'fresh container {index+1}: {check(out)} existing checks; both QA statuses passed', flush=True)
+    # Ordinary caption behavior uses the explicit synthetic codec fixture above.
+    subprocess.run(['node', str(ROOT/'skills/teacher/skills/explorable/scripts/test_caption_tail.mjs'), str(videos/'base-rates.mp4')], check=True)

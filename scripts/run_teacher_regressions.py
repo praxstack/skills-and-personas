@@ -15,10 +15,13 @@ SUITES = [
     ('skills/teacher/skills/explorable/scripts', 'test_sandbox_code.py'),
     ('skills/teacher/skills/course/scripts', 'test_sandbox_course.py'),
     ('skills/transcript-pipeline/scripts', 'test_sandbox_resource_enrichment.py'),
+    ('skills/teacher/skills/course/scripts', 'test_chromium_wrapper.py'),
     ('skills/teacher/skills/course/scripts', 'test_render_refusal.py'),
     ('skills/teacher/skills/course/scripts', 'test_supervisor_reaping.py'),
     ('scripts', 'test_render_receipts.py'),
     ('scripts', 'test_candidate_packaging.py'),
+    ('scripts', 'test_portfolio_repair.py'),
+    ('skills/transcript-pipeline/scripts', 'test_safe_output.py'),
 ]
 if len(sys.argv) == 1:
     for directory, pattern in SUITES:

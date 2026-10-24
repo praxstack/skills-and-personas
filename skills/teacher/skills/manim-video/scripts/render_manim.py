@@ -120,7 +120,8 @@ def list_segments(py, source, fps):
 
 def load_manifest(path):
     try:
-        return json.load(open(path))
+        with open(path) as source:
+            return json.load(source)
     except (OSError, ValueError):
         return {"segments": []}
 
@@ -128,7 +129,8 @@ def load_manifest(path):
 def save_manifest(path, man, lock):
     with lock:
         tmp = path + ".tmp"
-        json.dump(man, open(tmp, "w"), indent=1)
+        with open(tmp, "w") as sink:
+            json.dump(man, sink, indent=1)
         os.replace(tmp, path)
 
 
@@ -163,7 +165,8 @@ def main():
     st = {}
     sp = os.path.join(project, ".video-state.json")
     if os.path.exists(sp):
-        st = json.load(open(sp))
+        with open(sp) as source_spec:
+            st = json.load(source_spec)
     cfg = st.get("config", {})
     source = os.path.join(project, cfg.get("source", "source"))
     W, H, FPS = int(cfg.get("width", 1920)), int(cfg.get("height", 1080)), int(cfg.get("fps", 30))
@@ -235,17 +238,18 @@ def main():
         cmd = [py, "-m", "manim", "render", *quality, "--disable_caching", "--media_dir", media, "--progress_bar",
                "none", "-v", "WARNING", "-o", seg["id"], "scenes.py", seg["scene"]]
         t = time.time()
-        logf = open(os.path.join(bdir, "logs", f"{seg['id']}.log"), "w")
-        p = subprocess.Popen(cmd, cwd=source, stdout=logf, stderr=subprocess.STDOUT, text=True)
-        procs[seg["id"]] = p
-        while p.poll() is None:
-            if time.time() - T0 > budget:
-                p.terminate()
-                stop.set()
-            time.sleep(0.5)
-        logf.close()
+        log_path = os.path.join(bdir, "logs", f"{seg['id']}.log")
+        with open(log_path, "w") as logf:
+            p = subprocess.Popen(cmd, cwd=source, stdout=logf, stderr=subprocess.STDOUT, text=True)
+            procs[seg["id"]] = p
+            while p.poll() is None:
+                if time.time() - T0 > budget:
+                    p.terminate()
+                    stop.set()
+                time.sleep(0.5)
         procs.pop(seg["id"], None)
-        txt = open(os.path.join(bdir, "logs", f"{seg['id']}.log")).read()
+        with open(log_path) as source_log:
+            txt = source_log.read()
         if p.returncode != 0:
             return seg, "budget" if stop.is_set() else f"failed:\n{txt[-2500:]}"
         hits = [f for f in glob.glob(os.path.join(media, "videos", "**", f"{seg['id']}.mp4"), recursive=True)

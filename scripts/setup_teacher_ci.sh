@@ -30,6 +30,8 @@ PY
 "$CI_PY" -c 'import requests,yaml;from playwright.sync_api import sync_playwright;import importlib.metadata as m;print({n:m.version(n) for n in ["requests","playwright","greenlet"]})'
 export PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/teacher-pw"
 "$CI_PY" -m playwright install --with-deps chromium
+npm install --prefix "$RUNNER_TEMP/teacher-node" --no-audit --no-fund --save-exact playwright@1.58.0
+export PLAYWRIGHT_MODULE="$RUNNER_TEMP/teacher-node/node_modules/playwright"
 # Save CI_PY and PLAYWRIGHT_BROWSERS_PATH in GITHUB_ENV across actual YAML steps.
 
 # Match the locally exercised classic builder for local sha256 FROM references.
@@ -67,6 +69,6 @@ docker --context default build --platform linux/arm64 --pull=false --build-arg B
 MEDIA_IMAGE=$(docker --context default image inspect teacher-course-media:ci --format '{{.Id}}')
 [[ "$MEDIA_IMAGE" =~ ^sha256:[0-9a-f]{64}$ ]]
 docker --context default image inspect "$COURSE_BASE" "$COURSE_IMAGE" "$ENRICHMENT_IMAGE" "$MEDIA_IMAGE" --format '{{.Id}} {{.Architecture}}'
-for name in CI_PY PLAYWRIGHT_BROWSERS_PATH TEACHER_SANDBOX_IMAGE TEACHER_SANDBOX_CONTEXT COURSE_SANDBOX_IMAGE COURSE_SANDBOX_CONTEXT COURSE_SANDBOX_BROWSER ENRICHMENT_TEST_IMAGE ENRICHMENT_TEST_CONTEXT TEACHER_BROWSER_TESTS MEDIA_IMAGE; do
+for name in CI_PY PLAYWRIGHT_BROWSERS_PATH PLAYWRIGHT_MODULE TEACHER_SANDBOX_IMAGE TEACHER_SANDBOX_CONTEXT COURSE_SANDBOX_IMAGE COURSE_SANDBOX_CONTEXT COURSE_SANDBOX_BROWSER ENRICHMENT_TEST_IMAGE ENRICHMENT_TEST_CONTEXT TEACHER_BROWSER_TESTS MEDIA_IMAGE; do
   printf '%s=%s\n' "$name" "${!name}" >> "$GITHUB_ENV"
 done

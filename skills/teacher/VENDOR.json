@@ -142,11 +142,13 @@
       "local_changes": [
         "2026-10-20 local network boundary: pydeps package setup, voice model downloads and EdgeTTS, and edge_voice_swap require TEACHER_ALLOW_NETWORK=1; verified local assets remain supported. Prior vendor tree_sha256=a58377aa8536f7aeffbc76cbb8544317102a26221d5d2bb61153bef85a2ce178; upstream source_commit unchanged.",
         "2026-10-20 task-4 P2 revision: reuse existing private Python environment before denying offline acquisition; guard environment creation. Previous tree_sha256=fd834869c4c0942c906b0fa41694531c7622b62f0866f1eece0bc242e39dba09. Upstream provenance unchanged.",
-        "Task10: share import-validated interpreter resolution with discovery; support resolved CLI absolute Python shebangs while preserving explicit and module environment precedence. No scene or render verification claimed."
+        "Task10: share import-validated interpreter resolution with discovery; support resolved CLI absolute Python shebangs while preserving explicit and module environment precedence. No scene or render verification claimed.",
+        "Close manifest, spec and worker log handles on normal and exception paths; retain existing render content, budget and subprocess behavior.",
+        "Finalize scoped handle cleanup with the existing optional spec parsing indentation preserved."
       ],
       "source_commit": "9098b862a463b36fe2b6c35d14b1ba196698228a",
       "source_path": "skills/manim-video",
-      "tree_sha256": "bc9d536a8f495d0ca7577dd744c3e5b4d75433df5e7e22e9f1e660d2b1d009d7",
+      "tree_sha256": "447a3926ed1ea7ad6232757c2bbf419179f6e01f71b74eaef16496f6748e6267",
       "upstream": "https://github.com/praxstack/claude-video-skills-for-people-who-feel-neglected-by-claude"
     },
     "motion-canvas-video": {

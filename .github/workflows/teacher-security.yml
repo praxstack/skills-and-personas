@@ -16,13 +16,14 @@ jobs:
         run: |
           python3 skills/teacher/scripts/tests/test_teacher.py
           python3 -m unittest discover -s skills/teacher/skills/course/scripts -p test_safe_course.py -v
-          node --test skills/teacher/skills/course/scripts/publish_videos.test.mjs skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs
+          node --test skills/teacher/skills/course/scripts/publish_videos.test.mjs skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs skills/teacher/skills/explorable/scripts/report.test.mjs
+          python3 -m unittest discover -s skills/teacher/skills/course/scripts -p test_chromium_wrapper.py -v
           python3 skills/teach-pro-max/scripts/verify_distribution.py
       - name: HTTP transport regressions
         run: |
           python3 -m venv "$RUNNER_TEMP/teacher-http"
           "$RUNNER_TEMP/teacher-http/bin/pip" install requests==2.34.2
-          "$RUNNER_TEMP/teacher-http/bin/python" -m unittest discover -s skills/transcript-pipeline/scripts -p test_resource_enrichment.py -v
+          "$RUNNER_TEMP/teacher-http/bin/python" -m unittest discover -s skills/transcript-pipeline/scripts -p 'test_resource*.py' -v
       - name: Container isolation regressions
         run: |
           docker build -t teacher-code-sandbox:ci skills/teacher/skills/explorable/assets/sandbox
