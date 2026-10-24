@@ -1,0 +1,15 @@
+test_active_session_rejects_output_path_escape (test_safe_output.OutputConfinementTests.test_active_session_rejects_output_path_escape) ... ok
+test_artifact_link_is_rejected_by_same_boundary (test_safe_output.OutputConfinementTests.test_artifact_link_is_rejected_by_same_boundary) ... ok
+test_destination_swap_during_staging_is_rejected (test_safe_output.OutputConfinementTests.test_destination_swap_during_staging_is_rejected) ... ok
+test_output_directory_swap_after_open_is_rejected (test_safe_output.OutputConfinementTests.test_output_directory_swap_after_open_is_rejected) ... ok
+test_report_fifo_is_rejected_without_opening (test_safe_output.OutputConfinementTests.test_report_fifo_is_rejected_without_opening) ... ok
+test_selected_session_swap_is_rejected (test_safe_output.OutputConfinementTests.test_selected_session_swap_is_rejected) ... ok
+test_valid_report_and_artifact_and_overwrite (test_safe_output.OutputConfinementTests.test_valid_report_and_artifact_and_overwrite) ... ok
+test_zero_resource_directory_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_directory_symlink_is_rejected) ... ok
+test_zero_resource_report_hardlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_hardlink_is_rejected) ... ok
+test_zero_resource_report_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_symlink_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.010s
+
+OK

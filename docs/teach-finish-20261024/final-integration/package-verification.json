@@ -1,0 +1,35 @@
+{
+  "source_commit": "e7d00ed165d79c76508cb810b822a69add9ef3ce",
+  "assets": [
+    {
+      "name": "prax-teach-v3.0.2-source.zip",
+      "sha256": "28740d5fca4d49c68408e8f4aaea7a3ee2273ad7fef451a719b24c8f82ef176b",
+      "bytes": 11177872,
+      "files": 1670
+    },
+    {
+      "name": "teacher.zip",
+      "sha256": "247ada8d890f1cf2f14e833f2aa131e0389bd5e0a33c5241fbfc3145cc6a446e",
+      "bytes": 4438455,
+      "files": 758
+    },
+    {
+      "name": "teach-pro-max.zip",
+      "sha256": "13b89b44c4bd5af683f956f9a9a15ba12f499e8fa2ece790c05ae92e29819603",
+      "bytes": 3536019,
+      "files": 805
+    },
+    {
+      "name": "transcript-pipeline.zip",
+      "sha256": "d3521762feec2f9d251e21e35b237d3744ef7cbb0e28d8f3dbadcb164bd6534d",
+      "bytes": 169717,
+      "files": 51
+    }
+  ],
+  "independent_repeat_files": 6,
+  "exact_member_hashes_modes": 3284,
+  "historical_receipts_unchanged": 29,
+  "status": "unaccepted-candidate",
+  "narrated": "BLOCKED",
+  "governing_proposal": "UNAPPROVED"
+}
