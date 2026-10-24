@@ -1,0 +1,14 @@
+test_actual_builder_defends_reserved_output_path (test_safe_course.SafeCourseTests.test_actual_builder_defends_reserved_output_path) ... ok
+test_hard_linked_video_is_not_a_course_input (test_safe_course.SafeCourseTests.test_hard_linked_video_is_not_a_course_input) ... ok
+test_linked_course_keeps_manifest_beside_link (test_safe_course.SafeCourseTests.test_linked_course_keeps_manifest_beside_link) ... ok
+test_open_descriptor_does_not_follow_replaced_parent (test_safe_course.SafeCourseTests.test_open_descriptor_does_not_follow_replaced_parent) ... ok
+test_publish_replaces_link_without_modifying_target (test_safe_course.SafeCourseTests.test_publish_replaces_link_without_modifying_target) ... ok
+test_reserved_landing_lesson_id_is_rejected_before_build (test_safe_course.SafeCourseTests.test_reserved_landing_lesson_id_is_rejected_before_build) ... ok
+test_snapshot_uses_captured_bytes_after_original_is_replaced (test_safe_course.SafeCourseTests.test_snapshot_uses_captured_bytes_after_original_is_replaced) ... ok
+test_traversal_absolute_and_linked_inputs_fail (test_safe_course.SafeCourseTests.test_traversal_absolute_and_linked_inputs_fail) ... ok
+test_valid_manifest_resolves_owned_regular_files (test_safe_course.SafeCourseTests.test_valid_manifest_resolves_owned_regular_files) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.125s
+
+OK

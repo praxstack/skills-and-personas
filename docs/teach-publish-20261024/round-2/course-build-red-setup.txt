@@ -1,0 +1,24 @@
+extract failed for /private/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teacher-course-ylgqu8za/course:
+file:///Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/extract.mjs:21
+if (captured.status !== 0) throw new Error(`safe course snapshot failed: ${captured.stderr}`);
+                                 ^
+
+Error: safe course snapshot failed: Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/safe_course.py", line 257, in <module>
+    with snapshot_course(Path(sys.argv[1])) as root:
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0_1/Frameworks/Python.framework/Versions/3.15/lib/python3.15/contextlib.py", line 203, in __enter__
+    return next(self.gen)
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/safe_course.py", line 193, in snapshot_course
+    ident = safe_lesson_id(lesson.get("id"), "lesson id")
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/safe_course.py", line 34, in safe_lesson_id
+    raise ValueError(f"{label} {text!r} is reserved for the course landing page")
+ValueError: lesson id 'index' is reserved for the course landing page
+
+    at file:///Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/extract.mjs:21:34
+    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+    at async node:internal/modules/esm/loader:650:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
+
+Node.js v26.12.1
+

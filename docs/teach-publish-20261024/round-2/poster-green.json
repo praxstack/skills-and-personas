@@ -1,0 +1,33 @@
+{
+  "work": "/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teach-pr2-poster-srsFpX",
+  "browser": "153.0.8010.12",
+  "observed": {
+    "marker": null,
+    "links": [
+      "https://example.invalid/reference?x=1&y=2",
+      "still.html#references"
+    ],
+    "titles": [
+      "Poster source control — One step",
+      "Local marker <unsafe> — javascript:document.documentElement.setAttribute('data-local-probe','executed')",
+      "Data — data:text/html,local-marker",
+      "File — file:///local-marker",
+      "Safe <reference> — https://example.invalid/reference?x=1&y=2",
+      "All source titles, locators and URLs"
+    ]
+  },
+  "checks": [
+    {
+      "name": "standalone unsafe reference click remains inert",
+      "ok": true
+    },
+    {
+      "name": "only safe external and authored local summary links remain",
+      "ok": true
+    },
+    {
+      "name": "source title escaping preserved",
+      "ok": true
+    }
+  ]
+}

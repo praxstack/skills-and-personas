@@ -1,0 +1,4 @@
+BASELINE index exit 0 HTML files ['index.html']
+index source is map: True
+FIXED index exit 1 output exists False
+VALID outputs byte-identical: {'lesson-one.html': '793518bb54c8c30e3ad8afd9374a97f6bf39174210a14fd31552a73b9efd6084', 'index.html': '9414358c2c4a9b7c4f5fd418ed95f5c85d30eb76ba07e3378466acaf7c28106d'}
