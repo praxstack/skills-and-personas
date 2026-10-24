@@ -1,0 +1,21 @@
+test_supervisor_resources (unittest.loader._FailedTest.test_supervisor_resources) ... ERROR
+
+======================================================================
+ERROR: test_supervisor_resources (unittest.loader._FailedTest.test_supervisor_resources)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_supervisor_resources
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0_1/Frameworks/Python.framework/Versions/3.15/lib/python3.15/unittest/loader.py", line 433, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0_1/Frameworks/Python.framework/Versions/3.15/lib/python3.15/unittest/loader.py", line 374, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/test_supervisor_resources.py", line 5, in <module>
+    from supervisor_resources import constrain_cpu_affinity
+ModuleNotFoundError: No module named 'supervisor_resources'. Did you mean: 'test_supervisor_resources'?
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

@@ -1,0 +1,8 @@
+test_absent_denied_empty_or_unapplied_affinity_fails_closed (test_supervisor_resources.CpuAffinityTests.test_absent_denied_empty_or_unapplied_affinity_fails_closed) ... ok
+test_selects_one_already_allowed_cpu_and_verifies_effective_mask (test_supervisor_resources.CpuAffinityTests.test_selects_one_already_allowed_cpu_and_verifies_effective_mask) ... ok
+test_single_cpu_is_preserved (test_supervisor_resources.CpuAffinityTests.test_single_cpu_is_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK

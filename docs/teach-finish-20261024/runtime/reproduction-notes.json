@@ -1,0 +1,22 @@
+{
+  "affinityOnlyPassCommand": "python3 skills/teacher/skills/course/scripts/sandbox_course.py render .superpowers/sdd/PLAN/runtime-raw/source -o .superpowers/sdd/PLAN/runtime-raw/candidate-1 --image sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f --docker-context colima-teach-security --timeout 180",
+  "affinityOnlyRepeatFailureCommand": [
+    "python3",
+    "skills/teacher/skills/course/scripts/sandbox_course.py",
+    "render",
+    ".superpowers/sdd/PLAN/runtime-raw/source",
+    "-o",
+    ".superpowers/sdd/PLAN/runtime-raw/after-1",
+    "--image",
+    "sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f",
+    "--docker-context",
+    "colima-teach-security",
+    "--timeout",
+    "180"
+  ],
+  "repeatFailureInitialStdout": "RUNTIME_CPU_AFFINITY {\"before\": [0, 1], \"after\": [0]}\n",
+  "repeatFailureLogNote": "after-1.session.log is the subsequent session output; the initial one-line affinity output was returned on launch.",
+  "inputPreparation": "Input bytes were rewritten into fresh inodes immediately before capture because intervening host snapshots added hardlinks. Source hashes were verified for the final candidate. Two rejected pre-launch invocations produced the same one-link refusal; after-1.stderr.log retains one exact refusal. They are safety results, not media runs.",
+  "failedSourceChanges": "candidate-1-allocation.patch records only allocation code; candidate-2.patch records the complete second candidate including the added decoder observation which was never reached. All allocation and decoder additions were reverted.",
+  "governingChecks": "No frozen evaluator/assertion, QA check, resource ceiling or public ref changed."
+}

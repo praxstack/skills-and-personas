@@ -13,7 +13,7 @@ async function measure(phase){
  for(const pid of (await readdir('/proc')).filter(p=>/^\d+$/.test(p))){
   try{const text=await readFile('/proc/'+pid+'/status','utf8'),field=name=>text.match(new RegExp('^'+name+':\\s*(.+)$','m'))?.[1];
    const args=(await readFile('/proc/'+pid+'/cmdline','utf8')).split('\0');
-   processes.push({pid:Number(pid),name:field('Name'),state:field('State'),ppid:Number(field('PPid')),threads:Number(field('Threads')),role:[...args.join(' ').matchAll(/--(?:type|utility-sub-type)=([^\s\0]+)/g)].map(m=>m[0])});
+   processes.push({pid:Number(pid),name:field('Name'),state:field('State'),ppid:Number(field('PPid')),threads:Number(field('Threads')),cpuAllowed:field('Cpus_allowed_list'),role:[...args.join(' ').matchAll(/--(?:type|utility-sub-type)=([^\s\0]+)/g)].map(m=>m[0])});
   }catch(e){if(e.code!=='ENOENT'&&e.code!=='ESRCH')throw e;}
  }
  const sample={phase,pids:Number(await readFile('/sys/fs/cgroup/pids.current','utf8')),events:(await readFile('/sys/fs/cgroup/pids.events','utf8')).trim(),processes};
