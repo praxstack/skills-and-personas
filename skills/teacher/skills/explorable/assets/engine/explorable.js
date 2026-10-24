@@ -53,9 +53,13 @@ function plainText(html) {
     .replace(/<[^>]+>/g, " ");
   // Decode only after markup removal, in an inert template. Escaped markup
   // remains text; no detached image or iframe can start a resource request.
-  const template = document.createElement("template");
-  template.innerHTML = markup;
-  return template.content.textContent
+  let decoded = markup;
+  if (markup.includes("&")) {
+    const template = document.createElement("template");
+    template.innerHTML = markup;
+    decoded = template.content.textContent;
+  }
+  return decoded
     .replace(/\s+/g, " ")
     .replace(/\s+([,.;:!?)])/g, "$1")
     .replace(/\(\s+/g, "(")

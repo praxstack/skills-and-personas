@@ -1,5 +1,5 @@
 {
-  "work": "/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teach-pr1-sT3jto",
+  "work": "/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teach-pr1-eJ3QLO",
   "browser": "153.0.8010.12",
   "checks": [
     {
@@ -141,7 +141,7 @@
     {
       "name": "native video advances JSfalse file",
       "ok": true,
-      "actual": 0.109564
+      "actual": 0.122729
     },
     {
       "name": "no runtime errors JSfalse file",
@@ -162,7 +162,7 @@
     {
       "name": "native video advances JSfalse http",
       "ok": true,
-      "actual": 0.264381
+      "actual": 0.262351
     },
     {
       "name": "no runtime errors JSfalse http",
@@ -183,7 +183,7 @@
     {
       "name": "native video advances JStrue file",
       "ok": true,
-      "actual": 0.254011
+      "actual": 0.258403
     },
     {
       "name": "no runtime errors JStrue file",
@@ -204,7 +204,7 @@
     {
       "name": "native video advances JStrue http",
       "ok": true,
-      "actual": 0.259677
+      "actual": 0.26048
     },
     {
       "name": "no runtime errors JStrue http",

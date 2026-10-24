@@ -59,3 +59,9 @@ No new subjective listening, learning, authored Manim rendering or sandbox
 qualification claim follows from these host controls. The secondary repository
 receives exact tracked teacher/wrapper bytes and modes from the resulting primary
 commit, with an updated external provenance manifest.
+
+The secondary full core rerun caught the existing Node-only formula-spacing
+control needing no DOM. Entity-free text now avoids the decode parser entirely;
+entity-containing browser text still uses the inert template. The assertion and
+its expected formula spacing are unchanged. Full core and browser controls were
+rerun after this integration correction before the final source freeze.
