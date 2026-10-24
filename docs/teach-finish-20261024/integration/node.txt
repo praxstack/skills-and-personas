@@ -1,0 +1,20 @@
+✔ portable identifiers reject traversal and separators (0.439583ms)
+✔ a regular in-root video is bound to one descriptor (8.204292ms)
+✔ a symlinked video cannot disclose another file (2.491708ms)
+✔ a hard-linked video is rejected (2.379583ms)
+✔ source URLs allow only web schemes (0.364875ms)
+✔ unsafe sources render as inert text (0.767958ms)
+✔ generated pages include a restrictive CSP (0.120625ms)
+✔ unattempted absent and empty answers never claim correctness (1.126125ms)
+✔ unattempted question can still report an actual alternate explanation (0.251625ms)
+✔ actually correct first attempt is reported as right first time (0.23025ms)
+✔ a correct answer after a miss retains its miss history (0.242584ms)
+✔ asking to be shown is not reported as a correct answer (0.348625ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 124.098875

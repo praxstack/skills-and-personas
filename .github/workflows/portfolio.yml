@@ -1,0 +1,41 @@
+name: Portfolio diagnostics (not portfolio acceptance)
+on:
+  push:
+    paths: ['skills/**', 'new-skills/**', 'scripts/portfolio*', '.github/workflows/portfolio.yml']
+  pull_request:
+    paths: ['skills/**', 'new-skills/**', 'scripts/portfolio*', '.github/workflows/portfolio.yml']
+permissions:
+  contents: read
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install diagnostic parser
+        run: |
+          python3 -m venv "$RUNNER_TEMP/portfolio-venv"
+          "$RUNNER_TEMP/portfolio-venv/bin/pip" install PyYAML==6.0.3
+      - name: Test diagnostic behavior
+        run: '"$RUNNER_TEMP/portfolio-venv/bin/python" scripts/portfolio_test.py -v'
+      - name: Collect current findings (existing debt remains visible)
+        run: |
+          "$RUNNER_TEMP/portfolio-venv/bin/python" scripts/portfolio_audit.py > "$RUNNER_TEMP/portfolio-current.json"
+          python3 - "$RUNNER_TEMP/portfolio-current.json" <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          report = json.loads(Path(sys.argv[1]).read_text())
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+              out.write('## Current portfolio findings\n\nThis job tests diagnostics; it does not certify portfolio acceptance.\n\n```json\n')
+              out.write(json.dumps(report['summary'], indent=2) + '\n```\n')
+              out.write('\nDuplicate identities:\n')
+              for group in report['duplicates']:
+                  out.write('- ' + group['name'] + ': ' + ', '.join(group['paths']) + '\n')
+          PY
+      - name: Save full current diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: portfolio-current
+          path: ${{ runner.temp }}/portfolio-current.json
+          if-no-files-found: error

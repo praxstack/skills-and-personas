@@ -1,0 +1,6 @@
+{
+  "sourceCommit": "e7d00ed unchanged resource module",
+  "probe": "synthetic session/.pipeline link to outside manifest; parse only, no network",
+  "readOutsideSession": true,
+  "resourceCount": 1
+}

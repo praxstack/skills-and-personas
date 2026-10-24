@@ -73,6 +73,35 @@ class SafeCourseTests(unittest.TestCase):
             with snapshot_course(catalog / "alias") as snapshot:
                 self.assertIn("example.com/video.mp4", (snapshot.parent / "videos.json").read_text())
 
+    def test_reserved_landing_lesson_id_is_rejected_before_build(self):
+        import subprocess
+        for ident in ("index", "INDEX"):
+            with self.subTest(ident=ident), tempfile.TemporaryDirectory() as tmp:
+                course = self.fixture(Path(tmp))
+                manifest = json.loads((course / "course.json").read_text())
+                manifest["lessons"][0]["id"] = ident
+                (course / "course.json").write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, "reserved"):
+                    validate_course_manifest(course)
+                output = Path(tmp) / "output"
+                result = subprocess.run([sys.executable, str(Path(__file__).with_name("build_course.py")), str(course), "-o", str(output), "--trust-authored-code"], capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("reserved", result.stderr)
+                self.assertFalse((output / "index.html").exists())
+
+    def test_actual_builder_defends_reserved_output_path(self):
+        from unittest import mock
+        import build_course
+        from safe_course import ValidatedCourse
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data = {"id": "one", "lessons": [{"id": "index", "kind": "explorable"}]}
+            validated = ValidatedCourse(root, data, (), {"index": root / "input.lesson.js"})
+            with mock.patch.object(build_course, "validate_course_manifest", return_value=validated), mock.patch.object(build_course, "extract", return_value=data), mock.patch.object(build_course, "load_manifest", return_value={}):
+                with self.assertRaisesRegex(SystemExit, "reserved"):
+                    build_course.build_course.__wrapped__(root, root / "out", trust_authored_code=True)
+            self.assertFalse((root / "out/index.html").exists())
+
     def test_valid_manifest_resolves_owned_regular_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = validate_course_manifest(self.fixture(Path(tmp)))

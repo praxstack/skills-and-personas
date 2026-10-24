@@ -1,0 +1,30 @@
+WEBVTT
+
+1
+00:00:01.300 --> 00:00:10.375
+The hypothetical batch has 100 defective items and 9,900 sound items. Each rate starts with its own population.
+
+2
+00:00:11.675 --> 00:00:19.750
+The detector flags 90 of the 100 defective items. Its 90% hit rate leaves 10 defective items missed.
+
+3
+00:00:21.050 --> 00:00:32.208
+Five percent of 9,900 sound items gives 495 false flags. A smaller rate can produce more flags because its population is larger.
+
+4
+00:00:33.508 --> 00:00:45.125
+Move the 90 true flags and 495 false flags into one group. Leave 9,415 unflagged items outside, including 10 missed defects.
+
+5
+00:00:46.425 --> 00:00:57.875
+Expand the same selected group. Its count stays 585. The defective share is 90 divided by 585, or 15.4%.
+
+6
+00:00:59.175 --> 00:01:12.917
+At a 10% defect rate, the same detector gives 900 true flags and 450 false flags. Of 1,350 flags, 66.7% are defective.
+
+7
+00:01:14.217 --> 00:01:26.042
+With zero false flags, all 900 flags are true. Yet 100 defective items remain missed. Precision is 100%; hit rate is still 90%.
+

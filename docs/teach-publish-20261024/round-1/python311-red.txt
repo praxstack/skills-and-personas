@@ -1,0 +1,2 @@
+skills/transcript-pipeline/scripts/enhance_final_notes.py f-string expression part cannot include a backslash (enhance_final_notes.py, line 293)
+new-skills/transcript-pipeline/scripts/enhance_final_notes.py f-string expression part cannot include a backslash (enhance_final_notes.py, line 293)

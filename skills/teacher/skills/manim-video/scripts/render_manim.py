@@ -20,7 +20,8 @@ Options:
                      run the same command again to continue
   --only A,B         re-render these segments (by scene name) even if done
   --force            re-render everything
-  --python PATH      the Python that has manim (default: <project>/.venv/bin/python, then this Python)
+  --python PATH      prefer this Python, then MANIM_PYTHON, project/source venvs, this Python,
+                     then a verified absolute Python shebang from the resolved manim CLI
 Exit codes: 0 done, 1 error, 3 budget reached (re-run to continue).
 """
 import argparse
@@ -58,13 +59,48 @@ def probe_frames(path):
             "fps": float(n) / float(d), "codec": s["codec_name"], "pix": s.get("pix_fmt")}
 
 
-def find_python(project, source, given):
+def cli_python():
+    """Read a console script's absolute Python shebang; never execute a launcher.
+
+    Resolve the CLI symlink, but retain the interpreter's venv path (resolving
+    the Python symlink itself would lose its virtual environment). Shell and
+    /usr/bin/env launchers are deliberately unsupported.
+    """
+    cli = shutil.which("manim")
+    if not cli:
+        return None
+    try:
+        with open(os.path.realpath(cli), "rb") as stream:
+            line = stream.readline(4096).decode("utf-8").rstrip("\r\n")
+    except (OSError, UnicodeError):
+        return None
+    candidate = line[2:] if line.startswith("#!") else ""
+    if (os.path.isabs(candidate)
+            and re.fullmatch(r"python(?:[0-9]+(?:\.[0-9]+)*)?", os.path.basename(candidate))
+            and os.path.isfile(candidate) and os.access(candidate, os.X_OK)):
+        return candidate
+    return None
+
+
+def resolve_python(project, source, given=None):
+    """Shared discovery/render selection; a successful import is not render proof."""
     cands = [given, os.environ.get("MANIM_PYTHON"), os.path.join(project, ".venv", "bin", "python"),
              os.path.join(source, ".venv", "bin", "python"), sys.executable]
-    for c in cands:
-        if c and os.path.exists(c):
-            if run([c, "-c", "import manim"]).returncode == 0:
-                return c
+    # Probe existing module paths first, preserving their precedence.
+    for c in cands + [cli_python()]:
+        if c and os.path.isfile(c):
+            try:
+                if run([c, "-c", "import manim"], timeout=10).returncode == 0:
+                    return c
+            except (OSError, subprocess.SubprocessError):
+                pass
+    return None
+
+
+def find_python(project, source, given):
+    selected = resolve_python(project, source, given)
+    if selected:
+        return selected
     sys.exit("no Python with manim found. Set it up (references/manim-guide.md, Setup):\n"
              f"  python3 -m venv {project}/.venv && {project}/.venv/bin/pip install -r {source}/requirements.txt")
 
@@ -84,7 +120,8 @@ def list_segments(py, source, fps):
 
 def load_manifest(path):
     try:
-        return json.load(open(path))
+        with open(path) as source:
+            return json.load(source)
     except (OSError, ValueError):
         return {"segments": []}
 
@@ -92,7 +129,8 @@ def load_manifest(path):
 def save_manifest(path, man, lock):
     with lock:
         tmp = path + ".tmp"
-        json.dump(man, open(tmp, "w"), indent=1)
+        with open(tmp, "w") as sink:
+            json.dump(man, sink, indent=1)
         os.replace(tmp, path)
 
 
@@ -127,7 +165,8 @@ def main():
     st = {}
     sp = os.path.join(project, ".video-state.json")
     if os.path.exists(sp):
-        st = json.load(open(sp))
+        with open(sp) as source_spec:
+            st = json.load(source_spec)
     cfg = st.get("config", {})
     source = os.path.join(project, cfg.get("source", "source"))
     W, H, FPS = int(cfg.get("width", 1920)), int(cfg.get("height", 1080)), int(cfg.get("fps", 30))
@@ -199,17 +238,18 @@ def main():
         cmd = [py, "-m", "manim", "render", *quality, "--disable_caching", "--media_dir", media, "--progress_bar",
                "none", "-v", "WARNING", "-o", seg["id"], "scenes.py", seg["scene"]]
         t = time.time()
-        logf = open(os.path.join(bdir, "logs", f"{seg['id']}.log"), "w")
-        p = subprocess.Popen(cmd, cwd=source, stdout=logf, stderr=subprocess.STDOUT, text=True)
-        procs[seg["id"]] = p
-        while p.poll() is None:
-            if time.time() - T0 > budget:
-                p.terminate()
-                stop.set()
-            time.sleep(0.5)
-        logf.close()
+        log_path = os.path.join(bdir, "logs", f"{seg['id']}.log")
+        with open(log_path, "w") as logf:
+            p = subprocess.Popen(cmd, cwd=source, stdout=logf, stderr=subprocess.STDOUT, text=True)
+            procs[seg["id"]] = p
+            while p.poll() is None:
+                if time.time() - T0 > budget:
+                    p.terminate()
+                    stop.set()
+                time.sleep(0.5)
         procs.pop(seg["id"], None)
-        txt = open(os.path.join(bdir, "logs", f"{seg['id']}.log")).read()
+        with open(log_path) as source_log:
+            txt = source_log.read()
         if p.returncode != 0:
             return seg, "budget" if stop.is_set() else f"failed:\n{txt[-2500:]}"
         hits = [f for f in glob.glob(os.path.join(media, "videos", "**", f"{seg['id']}.mp4"), recursive=True)

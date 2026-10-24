@@ -5,7 +5,9 @@ The picture follows the voice, never the other way round: each line gets a slot 
     lead + spoken length + pad + think   (at least `min`)
 and the scene code reads the resulting timing file, so audio and animation are in sync by construction.
 
-Engines, tried in this order by --engine auto (the default):
+Offline runtime is the default. TEACHER_ALLOW_NETWORK=1 explicitly permits package/model
+setup and online EdgeTTS synthesis for this invocation. Verified local models remain usable.
+Engines, tried in this order by --engine auto (the default; edge-tts requires opt-in):
   kokoro    Kokoro-82M, offline neural TTS (pip install kokoro-onnx soundfile; model auto-downloaded)
   edge-tts  Microsoft neural voices (needs network access to speech.platform.bing.com; works on most laptops)
   piper     Piper offline neural TTS (pip install piper-tts; voice model auto-downloaded)
@@ -105,6 +107,7 @@ def verified(path, sha256, algo="sha256"):
 
 
 def download(url, dest, tries=4, sha256=None, md5=None):
+    pydeps.require_network(f"Downloading model {os.path.basename(dest)}")
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     last = None
     tmp = dest + ".part"
@@ -166,11 +169,13 @@ class EdgeTTS:
     name = "edge-tts"
 
     def __init__(self, voice, speed):
+        pydeps.require_network("Online EdgeTTS synthesis")
         need("edge_tts", PINS["edge-tts"])
         self.voice, self.rate = voice, f"{int(round((speed - 1) * 100)):+d}%"
         self.say("Test.")  # fail fast if the service is blocked
 
     def say(self, text):
+        pydeps.require_network("Online EdgeTTS synthesis")
         import edge_tts
         with tempfile.TemporaryDirectory() as td:
             mp3 = os.path.join(td, "a.mp3")
@@ -307,7 +312,7 @@ def say_line(eng, text, pause):
 
 
 def pick_engine(want, voice, speed, model_dir, allow_robotic, lang=None):
-    order = ["kokoro", "edge-tts", "piper"] if want == "auto" else [want]
+    order = (["kokoro", "edge-tts", "piper"] if pydeps.network_allowed() else ["kokoro", "piper"]) if want == "auto" else [want]
     if want == "auto" and voice_engine(voice) in order:  # an explicit voice is honoured: its engine goes first
         order.remove(voice_engine(voice))
         order.insert(0, voice_engine(voice))

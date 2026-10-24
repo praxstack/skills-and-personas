@@ -1,0 +1,1 @@
+{"ok":true,"browser":"153.0.8010.12","loadedNativeCues":[{"start":1,"end":2,"text":"Opening explanation"},{"start":4,"end":5,"text":"Closing explanation"}],"checks":["prefirst","active","interior-gap","final-cue","terminal-still","native-end","seek-back","replay-clear","toggle-retention","native-timing-unchanged","no-page-errors"]}

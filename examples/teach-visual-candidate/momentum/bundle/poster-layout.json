@@ -1,0 +1,83 @@
+{
+  "width": 1440,
+  "height": 900,
+  "figure": {
+    "x": 58,
+    "y": 204.41,
+    "width": 1324,
+    "height": 528.1600000000001
+  },
+  "title": {
+    "fontSize": 42,
+    "lines": 1
+  },
+  "references": 1,
+  "sourceRows": 1,
+  "textBounds": [
+    {
+      "part": "eyebrow",
+      "text": "Physics · conservation of momentum",
+      "x": 58,
+      "y": 28,
+      "width": 328.78125,
+      "height": 20
+    },
+    {
+      "part": "title",
+      "text": "Two carts, one momentum total",
+      "x": 58,
+      "y": 70,
+      "width": 584.453125,
+      "height": 51
+    },
+    {
+      "part": "step-title",
+      "text": "Choose the system before conserving",
+      "x": 58,
+      "y": 141.66000366210938,
+      "width": 402.0625,
+      "height": 30
+    },
+    {
+      "part": "source-label",
+      "text": "Sources",
+      "x": 58,
+      "y": 851,
+      "width": 55.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[1]",
+      "x": 135.03125,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "Full references ↗",
+      "x": 168.71875,
+      "y": 851,
+      "width": 118.375,
+      "height": 17
+    },
+    {
+      "part": "note",
+      "text": "Momentum is mass × signed velocity. The before values change when you move a slider.",
+      "x": 58,
+      "y": 810.8599853515625,
+      "width": 695.421875,
+      "height": 22
+    },
+    {
+      "part": "caption",
+      "text": "The dashed boundary includes both contributions; all bars share the same scale and zero.",
+      "x": 58,
+      "y": 760.5700073242188,
+      "width": 896.734375,
+      "height": 29
+    }
+  ],
+  "clippedText": 0
+}

@@ -1,0 +1,2865 @@
+{
+  "duplicates": [
+    {
+      "entrypoint_content_differs": true,
+      "name": "backend-pe",
+      "paths": [
+        "skills/backend-pe/SKILL.md",
+        "new-skills/backend-pe/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "blueprint-creator",
+      "paths": [
+        "skills/blueprint-creator/SKILL.md",
+        "new-skills/blueprint-creator/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "chronicle",
+      "paths": [
+        "skills/chronicle/SKILL.md",
+        "new-skills/chronicle/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "concept-cartographer",
+      "paths": [
+        "skills/concept-cartographer/SKILL.md",
+        "new-skills/concept-cartographer/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "constellation-team",
+      "paths": [
+        "skills/constellation-team/SKILL.md",
+        "new-skills/constellation-team/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "frontend-pe",
+      "paths": [
+        "skills/frontend-pe/SKILL.md",
+        "new-skills/frontend-pe/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "idea-capturer",
+      "paths": [
+        "skills/idea-capturer/SKILL.md",
+        "new-skills/idea-capturer/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "lecture-alchemist",
+      "paths": [
+        "skills/lecture-alchemist/SKILL.md",
+        "new-skills/lecture-alchemist/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "obsidian-cli",
+      "paths": [
+        "skills/obsidian-cli/SKILL.md",
+        "new-skills/obsidian-cli/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "spec-creator",
+      "paths": [
+        "skills/spec-creator/SKILL.md",
+        "new-skills/spec-creator/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "svg-logo-designer",
+      "paths": [
+        "skills/svg-logo-designer/SKILL.md",
+        "new-skills/svg-logo-designer/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "techtutor",
+      "paths": [
+        "skills/techtutor/SKILL.md",
+        "new-skills/techtutor/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "transcribe-refiner",
+      "paths": [
+        "skills/transcribe-refiner/SKILL.md",
+        "new-skills/transcribe-refiner/SKILL.md"
+      ]
+    },
+    {
+      "entrypoint_content_differs": true,
+      "name": "transcript-pipeline",
+      "paths": [
+        "skills/transcript-pipeline/SKILL.md",
+        "new-skills/transcript-pipeline/SKILL.md"
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "allowed_tools_declared": false,
+      "name": "academic-verify",
+      "path": "skills/academic-verify/SKILL.md",
+      "sha256": "1c19e27e75249d869da428ce8d060075feef8fbbfe146af58b305d11a260ebbc"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "archive-crawler",
+      "path": "skills/archive-crawler/SKILL.md",
+      "sha256": "10c529797e1cba75da5bdb13bdd3609ae5f962f7dcc429c3b85d51c0032d9a26"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "article-enrichment",
+      "path": "skills/article-enrichment/SKILL.md",
+      "sha256": "fcdbce0f250aa2c38b86299dae510b8dc7f1e1cd854961cb8520c61642309549"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "ask-user",
+      "path": "skills/ask-user/SKILL.md",
+      "sha256": "3eb82b0aeb87f195798940e91ac49560c3f31eb6f95e8ba21767663e4f5f8e1e"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe",
+      "path": "skills/backend-pe/SKILL.md",
+      "sha256": "6e9667a2e2061158c0ed9421205fab8885c1baf8ee5cea15b667c73a59e4431a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-cpp-pro-max",
+      "path": "skills/backend-principle-eng-cpp-pro-max/SKILL.md",
+      "sha256": "71ad26e67a3ccd6802c0b9247d8dd518ef82f576f1f929e549b8fd7cb546ea4c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-java-pro-max",
+      "path": "skills/backend-principle-eng-java-pro-max/SKILL.md",
+      "sha256": "df9821601b2ff778a48589f2eaffe00127573f431c6051917e9fc87a3a25b761"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-javascript-pro-max",
+      "path": "skills/backend-principle-eng-javascript-pro-max/SKILL.md",
+      "sha256": "de36844fc7d1c9af7676fdd0394703784899676528ec58dc40f383b5ea5915c7"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-nodejs-pro-max",
+      "path": "skills/backend-principle-eng-nodejs-pro-max/SKILL.md",
+      "sha256": "c440d2daff2b387ca46956205cd11f219dd391a405e76afe514e22d89ef08d7a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-python-ml-pro-max",
+      "path": "skills/backend-principle-eng-python-ml-pro-max/SKILL.md",
+      "sha256": "ef7e2368368336a1c5ec0d039095d581e9bc81107546274f8ade6ea25d6cf086"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-python-pro-max",
+      "path": "skills/backend-principle-eng-python-pro-max/SKILL.md",
+      "sha256": "ff408e3fc3cffd444460f305182db9217772803e924ac99e17d8d1d30c00f90f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-principle-eng-typescript-pro-max",
+      "path": "skills/backend-principle-eng-typescript-pro-max/SKILL.md",
+      "sha256": "40a56d18e08a82a862e752c388d8d8fe292cb6de87874f9e2af8aaab51821d50"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "blog-ingest",
+      "path": "skills/blog-ingest/SKILL.md",
+      "sha256": "8fad548e780b56a8e79dd08f0bc7a79eb84aa03447798983acef949e4abefd3f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "blueprint-creator",
+      "path": "skills/blueprint-creator/SKILL.md",
+      "sha256": "a2cc4884ef48da5fad24984e22962b9000b8fb8c58c46976680737292ae398ea"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "book-mirror",
+      "path": "skills/book-mirror/SKILL.md",
+      "sha256": "5327e87f6159c4f904b1817ba8a0e96743e5a478fe71c6a070c6867c392bdc8c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "brain-ingest-gate",
+      "path": "skills/brain-ingest-gate/SKILL.md",
+      "sha256": "61a47001723d9b44998114ca5c3edee306606077d097061663bae22e86926cb7"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "brain-link-discipline",
+      "path": "skills/brain-link-discipline/SKILL.md",
+      "sha256": "489268f71a01abb6213df8a8bb5f4d16d587b09dd670ac3c47876a8ed808b5ae"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "brain-ops",
+      "path": "skills/brain-ops/SKILL.md",
+      "sha256": "56bdac549eb45849668a7d1b911f758c793ea17ff224779dd32afc035f7ef87b"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "brain-pdf",
+      "path": "skills/brain-pdf/SKILL.md",
+      "sha256": "13c3e3162763a4503685db0a10663475d3687c4874b5f04d539af83a990f643e"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "brain-taxonomist",
+      "path": "skills/brain-taxonomist/SKILL.md",
+      "sha256": "dea4557b540868ec2c56bf43ee7f63c5d03a22d4047cd0dfbeaf19adef334f60"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "briefing",
+      "path": "skills/briefing/SKILL.md",
+      "sha256": "7ff51d8cc9ebbeb5145c414d2767726d25ec8718a90e26bf0c14ac3e452eeaeb"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "bulk-ingestion",
+      "path": "skills/bulk-ingestion/SKILL.md",
+      "sha256": "bf23978d710d53884252b15f647212c7f59e7ca081b05aa2fb5a93941893f546"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "capture",
+      "path": "skills/capture/SKILL.md",
+      "sha256": "98568ac96331f57397ea072749641d9748b1ce31e8b09d512b8db25c8fcda65f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "chronicle",
+      "path": "skills/chronicle/SKILL.md",
+      "sha256": "c7a64b806f4fea7de933424168ca961e04d0bf1dc681d455602fb5dbb04cadfc"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "citation-fixer",
+      "path": "skills/citation-fixer/SKILL.md",
+      "sha256": "abdadbf0740a529b9c4f86f05bba416417624503fdcbc6054402d5546afd08b4"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "citation-graph-ingest",
+      "path": "skills/citation-graph-ingest/SKILL.md",
+      "sha256": "849b0cdc64b7ff14d0e6771bde15f0edc3c2fc29af08be015753a5f88a03205f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "coding-agent-leadership-principles",
+      "path": "skills/coding-agent-leadership-principles/SKILL.md",
+      "sha256": "a40b63504ce6ea2460a2bf8dc15414f925a4be7e256f6ac6010c510bfb44213f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "cold-start",
+      "path": "skills/cold-start/SKILL.md",
+      "sha256": "36ffea23af6fde97ff6b70d6a12e547bf2097a66d4f8b8146ffea9ead6144cf3"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "company-brainify",
+      "path": "skills/company-brainify/SKILL.md",
+      "sha256": "ae48372512645f532820e43faaf18a8fa768a691b2144973dfc89465f84d84c6"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "concept-cartographer",
+      "path": "skills/concept-cartographer/SKILL.md",
+      "sha256": "0bd940753bf5e7395245658ba2ab918981bc2f970855a945fec6393ac00d08ae"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "concept-synthesis",
+      "path": "skills/concept-synthesis/SKILL.md",
+      "sha256": "ed02d2e385143b16a1e69ee5934288fb4d0b755f68c4312faff663e6b2d7c4ed"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "constellation-team",
+      "path": "skills/constellation-team/SKILL.md",
+      "sha256": "c63c9fe5a3db77424714b22cf75920c8f6f3e5c29e5b09745962ddf04adf0ad0"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "context-audit",
+      "path": "skills/context-audit/SKILL.md",
+      "sha256": "6c811783349f740f039078bef991077bdc85007b2f730897465266e4c31b66da"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "conversation-archive",
+      "path": "skills/conversation-archive/SKILL.md",
+      "sha256": "3c1d342c58444a8b2c7fd961dee1ff8c08bfa3487877f877699abd4d0582b003"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "correction-pipeline",
+      "path": "skills/correction-pipeline/SKILL.md",
+      "sha256": "caf1264b7afec46569d30f6d92b07f37ae375e3f4e6aeddd58866aec327053de"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "cron-scheduler",
+      "path": "skills/cron-scheduler/SKILL.md",
+      "sha256": "e3f9745c4f8e2dacba5b055f408b1ffe541b450aee6bbfe4773f7b424d90e04c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "cross-agent-handoff",
+      "path": "skills/cross-agent-handoff/SKILL.md",
+      "sha256": "599106ad16a998224de6189fe9880d8763bc8d4611f9da6848e0539105f8ef89"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "cross-modal-review",
+      "path": "skills/cross-modal-review/SKILL.md",
+      "sha256": "685233b1afd477e96697562c502233eea22eda5db8df116b81dd2fa78f01f80c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "daily-task-manager",
+      "path": "skills/daily-task-manager/SKILL.md",
+      "sha256": "a0e019eb2b0c8aff5bf97889f30a3f13e61c0052289a79d00effd7b84177f4b0"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "daily-task-prep",
+      "path": "skills/daily-task-prep/SKILL.md",
+      "sha256": "9fe89f85fae139adac25c3bdc6f23bbf64239f3738a9e679c447e686175516f0"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "data-loss-gate",
+      "path": "skills/data-loss-gate/SKILL.md",
+      "sha256": "95ed4cf41deec4df50a56a1d28efb43738f0d76792392693d1b0956c93bcb3e7"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "data-research",
+      "path": "skills/data-research/SKILL.md",
+      "sha256": "1dc6161088475e1e6d0b0ce7890e4ea1371a321b45adfe877cd312d7ee275e36"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "draft-in-voice",
+      "path": "skills/draft-in-voice/SKILL.md",
+      "sha256": "936fd5149d98c0046c8a75493a9ab45950653ff928d3e201da53bc44d6436f06"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "eiirp",
+      "path": "skills/eiirp/SKILL.md",
+      "sha256": "3903a7ea7385caabf3100098f0e228e97a6e08341fc7fedcca26174ce7dba438"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "enrich",
+      "path": "skills/enrich/SKILL.md",
+      "sha256": "9988168348f6c3391d3aeec6621f9c99c8d75d1e1bfdd6c44d48e4c1067ab775"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "fact-check",
+      "path": "skills/fact-check/SKILL.md",
+      "sha256": "21a28e6cf6c5494e7c3e97dfa6bf6139b97c735fc229c974bbad89db4a2ff4a9"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "frontend-pe",
+      "path": "skills/frontend-pe/SKILL.md",
+      "sha256": "c1593f864642a57722d9e48c80d41d14688bf52a291dc8adb2b36a1b42446a21"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "functional-area-resolver",
+      "path": "skills/functional-area-resolver/SKILL.md",
+      "sha256": "52df04bc4f8e678f931c3b2078b2126524e6d2d72676ad46b6b710d13271b46c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "gbrain-advisor",
+      "path": "skills/gbrain-advisor/SKILL.md",
+      "sha256": "c15c7a88bee2c96733d718a168dd9afcb123b7b6b2c0014c5260d37c72e8736a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "idea-capturer",
+      "path": "skills/idea-capturer/SKILL.md",
+      "sha256": "3e6e6454e80a13cef28fcbc4c79070b0d23f3e95ae9ce869e5a8f6b05fd3f3ba"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "idea-ingest",
+      "path": "skills/idea-ingest/SKILL.md",
+      "sha256": "01ef449b7d5df52553cfd7c05d1365085058eda32de4fad3e67a22311ccd49f5"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "idea-lineage",
+      "path": "skills/idea-lineage/SKILL.md",
+      "sha256": "ab9dfda91dee6fe0e9ecee533022dc87e1debbee46a2dbba2bf29d3f096a6902"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "ingest",
+      "path": "skills/ingest/SKILL.md",
+      "sha256": "dc40ecc0072806fb8c7bb6ab9cf1f103842e05653eb55d67632d7e3ffc4dd7d2"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "lecture-alchemist",
+      "path": "skills/lecture-alchemist/SKILL.md",
+      "sha256": "1a65be1b5154e76fee1360f9db569c1bbae3f8d536d170569405f34b29248015"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "maintain",
+      "path": "skills/maintain/SKILL.md",
+      "sha256": "3c3ae93af3b224b1f4e2fce313a45b5306809e13eeae3908ba19eacfac7d9d5f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "measure-before-you-fix",
+      "path": "skills/measure-before-you-fix/SKILL.md",
+      "sha256": "1fd3b40ab65cbd08f50dea16107701859165469be3c85c57d779c7b4bbf92db8"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "media-ingest",
+      "path": "skills/media-ingest/SKILL.md",
+      "sha256": "4cb0dee1011dce0d5a65dfa4610820511ed6e2da005c7ba15500c79f0b9bcb2f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "meeting-ingestion",
+      "path": "skills/meeting-ingestion/SKILL.md",
+      "sha256": "949a491b98e7dabe51e3d1640f49a7dbfacb543703d22619a1aed36611eb383b"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "minion-orchestrator",
+      "path": "skills/minion-orchestrator/SKILL.md",
+      "sha256": "0b6799dbe6bccc83984371545db0d1d6216d152578d035bb869471cca7ab9b69"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "obsidian-cli",
+      "path": "skills/obsidian-cli/SKILL.md",
+      "sha256": "ffaded7e876ee3e5475b02a54b8fffb869813b793bba5927d3bd74d332d32b18"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "perplexity-research",
+      "path": "skills/perplexity-research/SKILL.md",
+      "sha256": "c25f5c471cbe3c6e0f975d8397e8382b00a85f8aa75302231d53c52855369e97"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "publish",
+      "path": "skills/publish/SKILL.md",
+      "sha256": "e06b609db780a3cc93a1755a87b30ff08ffdc0fdbc834c1422b2ad2489b57497"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "query",
+      "path": "skills/query/SKILL.md",
+      "sha256": "b12aae4e86b893038b1d9e97a977bd6a7939db9f5c57dde12c11d8d7451e0762"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "repo-architecture",
+      "path": "skills/repo-architecture/SKILL.md",
+      "sha256": "4ec2b8f45d168aaa55f17ecd1ed404ab04217a75c2317f0710c71705846f5394"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "reports",
+      "path": "skills/reports/SKILL.md",
+      "sha256": "02b67964afa4543050ea42631ed0a4a0f2946c73541e766bdf6370b6471192d2"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "research-compendium",
+      "path": "skills/research-compendium/SKILL.md",
+      "sha256": "3394628692d6722bb73d3c019051f7c6d3f8cf2e8b42ecdfa4c36d2a7e8dbad5"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "resolve-before-asking",
+      "path": "skills/resolve-before-asking/SKILL.md",
+      "sha256": "1882c45b2e603bbb1e251d388cc2682270ee7eae99211d5a5322430f4667fb39"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "signal-detector",
+      "path": "skills/signal-detector/SKILL.md",
+      "sha256": "c85772f129b3a5b5b0edfa191e11b1048942e52b7472bbaea224e7188f8af75a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "skill-autobench",
+      "path": "skills/skill-autobench/SKILL.md",
+      "sha256": "9cf1480b48b6d463551fc84080ef517e1de4032f42f99475af610ccd6facbe93"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "skill-creator",
+      "path": "skills/skill-creator/SKILL.md",
+      "sha256": "4a11f8935d4214b21b4664a5c0c03149733731020ec0d5d09dc9fd8c40bd92f6"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "skillify",
+      "path": "skills/skillify/SKILL.md",
+      "sha256": "6fab15ea567a75b33acd980c256b26c11ead0480c6de0906f2865c7f42073de1"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "skillpack-check",
+      "path": "skills/skillpack-check/SKILL.md",
+      "sha256": "c9feb4ab8b7249c713b3e90a44c75996bb40a039c71bea6f60dd799a8c2a4ab2"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "skillpack-harvest",
+      "path": "skills/skillpack-harvest/SKILL.md",
+      "sha256": "775133021077f49e6b9da0cf1eafa8df87a9f311b946063db572273effb6dd15"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "soul-audit",
+      "path": "skills/soul-audit/SKILL.md",
+      "sha256": "d612ee6860c21766e2215c3a7664b5c652cd3ab434f70c6c49b966c9db455378"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "spec-creator",
+      "path": "skills/spec-creator/SKILL.md",
+      "sha256": "a3c6c9aac9789f99073456e5846e24fd3c6439937b982b3a6bc76626262c773e"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "strategic-reading",
+      "path": "skills/strategic-reading/SKILL.md",
+      "sha256": "5be656c39c830153ec7c2f328dc8bdeac05c1412b01b3415de6b5b008926e7a2"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "superimprove",
+      "path": "skills/superimprove/SKILL.md",
+      "sha256": "b9aa1d39d0a5c1ff9f091481736ed982a8d5a006eab90cb1b76f1dd6d18f688f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "svg-logo-designer",
+      "path": "skills/svg-logo-designer/SKILL.md",
+      "sha256": "6aa24ee0078b1aa6f409df9b1098d2c7a2bdacdbcd6e1183aab953abde35a95c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "teach-pro-max",
+      "path": "skills/teach-pro-max/SKILL.md",
+      "sha256": "1e9cbfaa7608b38f9d835f8d98678326b792ff37221d6b47250e7fa88a777452"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "teacher",
+      "path": "skills/teacher/SKILL.md",
+      "sha256": "40be152a1e7604827eec7548c16ee521c018bf7437768fd61e51f6ca1c108a3e"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "techtutor",
+      "path": "skills/techtutor/SKILL.md",
+      "sha256": "2c2ebb28bec9c61862c072bfb08d9d4c0268b99508d56e7edf11b18521b16b8b"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "testing",
+      "path": "skills/testing/SKILL.md",
+      "sha256": "f1846ba7c35076d910744a6b867c9ee850c1895f75a104a319c9b7d18b1d5e90"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "transcribe-refiner",
+      "path": "skills/transcribe-refiner/SKILL.md",
+      "sha256": "85f892823c32af6080fdc9aa2ded99dc3a7bccbff3d1fd411fbe84d9de1112ef"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "transcript-pipeline",
+      "path": "skills/transcript-pipeline/SKILL.md",
+      "sha256": "4d3a0d14b283cb13a935967f61167d73a380ae5382bdcad323c5b47db27d17b6"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "two-tier-extraction",
+      "path": "skills/two-tier-extraction/SKILL.md",
+      "sha256": "b1cf8000cb587a0f3dc9d17f42c83f9a038a7be8065ee628c81e75a3e597d043"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "ultra-reasoning-operator",
+      "path": "skills/ultra-reasoning-operator/SKILL.md",
+      "sha256": "bc7fc4a387f3d387f837e9035e31ca6eed78fc46b5c484b188214fab93e4c2d9"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "voice-note-ingest",
+      "path": "skills/voice-note-ingest/SKILL.md",
+      "sha256": "145c02e636430abba5648e026aef77606d6ba2594285fbfee4f4dd4253cf833a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "webhook-transforms",
+      "path": "skills/webhook-transforms/SKILL.md",
+      "sha256": "b774293297af4d513c7efa92a79cf65b8438a714adafc16802b492613e679d17"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "apex-autonomous-mode",
+      "path": "new-skills/apex-autonomous-mode/SKILL.md",
+      "sha256": "a4120310bbdbb93bbe89ff87fd20e35cf483ce1e69fb21306e17372518fa909c"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "autonomous-orchestrion",
+      "path": "new-skills/autonomous-orchestrion/SKILL.md",
+      "sha256": "49774237e49c7c82d15f6e070782a693b1ca487bc1910b1050dc372480916473"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-architecture-standards",
+      "path": "new-skills/backend-architecture-standards/SKILL.md",
+      "sha256": "53aace3d80de76c6472d1e75f575799aedb9eefa46c47729a270983cb485eb13"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe",
+      "path": "new-skills/backend-pe/SKILL.md",
+      "sha256": "438c1b0d0bd669e5650f024303d028c8abcb5bffaa99c15e61450e63f6df6a3f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-cpp",
+      "path": "new-skills/backend-pe-cpp/SKILL.md",
+      "sha256": "a39324bc4c27b5f77907d0312d5dfcf243bad66e4d6dd198a334acd8c8d392d8"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-java",
+      "path": "new-skills/backend-pe-java/SKILL.md",
+      "sha256": "1f441f557f1eaa06eec3701d65916ed904d369167a076682b0e1da5e21008e3f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-javascript",
+      "path": "new-skills/backend-pe-javascript/SKILL.md",
+      "sha256": "45ba90aa6ae2a030dfc4d0b35ace05b7c5715a8ff29857429450ec86d3f0df93"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-nodejs",
+      "path": "new-skills/backend-pe-nodejs/SKILL.md",
+      "sha256": "6b47a77fc17631a8a0f99ab21add9d234f49d18df482497cac613192c3bb086f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-python",
+      "path": "new-skills/backend-pe-python/SKILL.md",
+      "sha256": "fa57ecfe89108a4ddc5d0f16b06a793e545c02e32d2b41e63b922f2e4218dfff"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-python-ml",
+      "path": "new-skills/backend-pe-python-ml/SKILL.md",
+      "sha256": "a949934c116cd007a8401cf098229844b99b9ade7c93969a9e90c3bde5cbc181"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-pe-typescript",
+      "path": "new-skills/backend-pe-typescript/SKILL.md",
+      "sha256": "9e5f6f4aeae05ab609c40759bbff3f0402724671c9f29e58a0a314afa7106e12"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "backend-system-design-expert",
+      "path": "new-skills/backend-system-design-expert/SKILL.md",
+      "sha256": "7e86c4b6e520857d64751bf3d3c1bac8e5ea86a9b15e8ce270484a9fe941eefc"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "baron-von-markup",
+      "path": "new-skills/baron-von-markup/SKILL.md",
+      "sha256": "796bd61eaa096f3f27d9bbfd808437e7d96b8135abb0bd5e631173780b68d47a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "blueprint-creator",
+      "path": "new-skills/blueprint-creator/SKILL.md",
+      "sha256": "6512f97e59644661e263a33d64ccd133850b729fae25e1b957d21e6543f7e80a"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "chronicle",
+      "path": "new-skills/chronicle/SKILL.md",
+      "sha256": "f114f0f74272ad50c3c9644677bb1b7a82358d41bf4a6fef1f330a74db9d21e4"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "concept-cartographer",
+      "path": "new-skills/concept-cartographer/SKILL.md",
+      "sha256": "d15efe7f53b2585fec1a391be05405e2c935331f5c5865da1f88f24ea5da66a7"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "constellation-team",
+      "path": "new-skills/constellation-team/SKILL.md",
+      "sha256": "edd6f341d860bd1e03da564c2d2c4f7b22b6c3aa93ce529c4e3c01cb360073f9"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "devops-sre-engineer",
+      "path": "new-skills/devops-sre-engineer/SKILL.md",
+      "sha256": "fef4cc5933d8c806cd67926baeea668393a9868808b72cc448899cf74d3a16c9"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "frontend-design-excellence",
+      "path": "new-skills/frontend-design-excellence/SKILL.md",
+      "sha256": "6210c5b6a55374dc0438867a6fedc133fd3f60b6cfcc2f9bd01ac2003f6dd3c3"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "frontend-excellence-standards",
+      "path": "new-skills/frontend-excellence-standards/SKILL.md",
+      "sha256": "acdc4dea41ac0b84e68d019224426c915a3009ad3d011fc389249e5e7f885eb9"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "frontend-pe",
+      "path": "new-skills/frontend-pe/SKILL.md",
+      "sha256": "77a37b3ad9a20a0421dc85618ebf11a09ba2c3295cec983da4082a5aa9b32019"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "frontend-uiux-designer",
+      "path": "new-skills/frontend-uiux-designer/SKILL.md",
+      "sha256": "8bb70d263c96d952a0f80bea4530b73fa7af48eaea692e0670949b9b5372bf12"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "gabriel-petersson-topdown-mentor",
+      "path": "new-skills/gabriel-petersson-topdown-mentor/SKILL.md",
+      "sha256": "a09cd41e2568dad86f319e9e435f947357aeb3fa6f9fe17262484eb21f7d3aeb"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "idea-capturer",
+      "path": "new-skills/idea-capturer/SKILL.md",
+      "sha256": "604db1df545359d21ff3db54adad5c2a0b9d9f88f4df07ffa66db0f3628425b5"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "kingmode",
+      "path": "new-skills/kingmode/SKILL.md",
+      "sha256": "8fb66b10c557ce11f788d84b06ee742e788159783ba202d04d850446bc5dd9ab"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "lecture-alchemist",
+      "path": "new-skills/lecture-alchemist/SKILL.md",
+      "sha256": "250c807c0fd4297918ae6b8f6539a388bd3cac627bcaffa866177ed31dbdf25f"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "mental-health-screening-companion",
+      "path": "new-skills/mental-health-screening-companion/SKILL.md",
+      "sha256": "b221f00c38a8121f14e8d020dda6be418cefb21679cd725f03c1a47d8d8662c2"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "obsidian-cli",
+      "path": "new-skills/obsidian-cli/SKILL.md",
+      "sha256": "823266c98d039f412748e6a929428182a4527e821e467c30e47d6131586d3492"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "orchestrion-universal-agent-router",
+      "path": "new-skills/orchestrion-universal-agent-router/SKILL.md",
+      "sha256": "d6ded4974656f27bfc112f572c120e2ac13a17bfc00c34ee981561e6a0f8f1b2"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "principal-engineer",
+      "path": "new-skills/principal-engineer/SKILL.md",
+      "sha256": "5f28664223fe91d05b03d5523b18b193fac6255466c440886aae494a74e15186"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "product-manager",
+      "path": "new-skills/product-manager/SKILL.md",
+      "sha256": "6f854f2b3e13ce7b7501eb5cb234473a4fdfe962423aa379a200dd05c9dd26eb"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "professor-alex-interview",
+      "path": "new-skills/professor-alex-interview/SKILL.md",
+      "sha256": "7e6c2e67be1857f4675506573174b3ab6e7ccf6aeb0c9fcb7896b00938725df8"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "qa-security-engineer",
+      "path": "new-skills/qa-security-engineer/SKILL.md",
+      "sha256": "3863ac17f55c4a0190322f91675e5b2013b1de5e3bbd571faab87928e187133e"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "security-compliance-standards",
+      "path": "new-skills/security-compliance-standards/SKILL.md",
+      "sha256": "91d2257df27ae81e79714d26315753d0249d8f081ede39551ef00a026e9bf1ae"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "spec-creator",
+      "path": "new-skills/spec-creator/SKILL.md",
+      "sha256": "c14d233cc041d8716e902c77507a92b7375d4f5dcaae8c2ee8fcf5b3d2c7adee"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "super-mode-core",
+      "path": "new-skills/super-mode-core/SKILL.md",
+      "sha256": "a525cffb7d4720add0c5f7e9795917c666ed21fdaa99ee041cd455963a537007"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "svg-logo-designer",
+      "path": "new-skills/svg-logo-designer/SKILL.md",
+      "sha256": "c20911220b2829fb7abaee806f976ca115d5c08fbfd824a304c7334726d4fde7"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "techtutor",
+      "path": "new-skills/techtutor/SKILL.md",
+      "sha256": "d2009922ce850acb9342fdf6a56d189087a141251ebefc4fcdcb1cf7cf7f3cd0"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "transcribe-refiner",
+      "path": "new-skills/transcribe-refiner/SKILL.md",
+      "sha256": "bbee50edb738bf579f71896e4410a4eef329a47b3da97a88e50091ec59cdc553"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "transcript-pipeline",
+      "path": "new-skills/transcript-pipeline/SKILL.md",
+      "sha256": "e8b11f7367574d44c6c6750da9977a2603c1af56de1d88a84955e4fcd9c45b49"
+    },
+    {
+      "allowed_tools_declared": false,
+      "name": "ultrathink-frontend",
+      "path": "new-skills/ultrathink-frontend/SKILL.md",
+      "sha256": "4dce85ea4a5e413daa9b552e3a7ce0a07f982fc13bdc2deaba97a6f271f89710"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Nested skill identities and packaged archives are not inventoried.",
+    "Link results are heuristic and need triage; network URLs are not verified.",
+    "Identical entrypoint hashes do not establish identical skill directories.",
+    "allowed-tools metadata is not an enforced authorization boundary."
+  ],
+  "link_findings": [
+    {
+      "exists": false,
+      "link": "scripts/skill-dry-check.mjs",
+      "path": "skills/eiirp/SKILL.md",
+      "resolved": "skills/eiirp/scripts/skill-dry-check.mjs",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/ARTIFACT-CONTRACT.md",
+      "path": "skills/teach-pro-max/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/ARTIFACT-CONTRACT.md",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/VISUALIZATION-ROUTER.md",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/PUBLIC-DISTRIBUTION.md",
+      "resolved": "skills/teach-pro-max/references/OPERATIONS.md",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "scripts/praxteach/routing.py",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/README.md",
+      "resolved": "skills/teach-pro-max/scripts/praxteach/routing.py",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "./references/LEARNER-STATE.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/LEARNER-STATE.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/OPERATIONS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/OPERATIONS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SOURCES-AND-PRIVACY.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/SOURCES-AND-PRIVACY.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/EVALUATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/EVALUATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./references/SKILLOPT-OPTIMIZATION.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/SKILLOPT-OPTIMIZATION.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/ARTIFACT-CONTRACT.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "./FLINT-CHARTS.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/FLINT-CHARTS.md",
+      "type": "md_link"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/ARTIFACT-CONTRACT.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-7/README.md",
+      "resolved": "skills/teach-pro-max/references/ARTIFACT-CONTRACT.md",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/ARTIFACT-CONTRACT.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-9/README.md",
+      "resolved": "skills/teach-pro-max/references/ARTIFACT-CONTRACT.md",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/VISUALIZATION-ROUTER.md",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-9/README.md",
+      "resolved": "skills/teach-pro-max/references/VISUALIZATION-ROUTER.md",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "scripts/praxteach/routing.py",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-9/README.md",
+      "resolved": "skills/teach-pro-max/scripts/praxteach/routing.py",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/eval-cases.json",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/EVALUATION.md",
+      "resolved": "skills/teach-pro-max/references/eval-cases.json",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "scripts/train.py",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+      "resolved": "skills/teach-pro-max/scripts/train.py",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "scripts/eval_only.py",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+      "resolved": "skills/teach-pro-max/scripts/eval_only.py",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "scripts/evaluate.py",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+      "resolved": "skills/teach-pro-max/scripts/evaluate.py",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "scripts/study.py",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+      "resolved": "skills/teach-pro-max/scripts/study.py",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "references/eval-cases.json",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/SKILLOPT-OPTIMIZATION.md",
+      "resolved": "skills/teach-pro-max/references/eval-cases.json",
+      "type": "backtick_path"
+    },
+    {
+      "exists": false,
+      "link": "assets/data/",
+      "path": "skills/teach-pro-max/references/prax-teach-v2/references/VISUALIZATION-ROUTER.md",
+      "resolved": "skills/teach-pro-max/assets/data",
+      "type": "backtick_path"
+    }
+  ],
+  "lint_findings": [
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/academic-verify/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/archive-crawler/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [105, 106, 107, 108]",
+      "path": "skills/archive-crawler/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/article-enrichment/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers', 'version']",
+      "path": "skills/ask-user/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 6 lines outside code blocks: [36, 37, 89, 90, 91]",
+      "path": "skills/ask-user/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_MARKETING",
+      "message": "description contains marketing words: ['world-class']",
+      "path": "skills/backend-pe/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-pe/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-cpp-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-java-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-javascript-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-nodejs-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-python-ml-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-python-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/backend-principle-eng-typescript-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/blog-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [4, 155, 209, 222]",
+      "path": "skills/blog-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/blueprint-creator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 11 lines outside code blocks: [7, 42, 57, 75, 76]",
+      "path": "skills/blueprint-creator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/book-mirror/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/book-mirror/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 600 lines (max 500)",
+      "path": "skills/book-mirror/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [10, 90, 272, 407]",
+      "path": "skills/book-mirror/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['brain_first', 'mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/brain-ingest-gate/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [4, 142, 220, 221, 232]",
+      "path": "skills/brain-ingest-gate/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['brain_first', 'mutating', 'triggers', 'upstream', 'version', 'writes_pages']",
+      "path": "skills/brain-link-discipline/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 2 lines outside code blocks: [100, 102]",
+      "path": "skills/brain-link-discipline/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/brain-ops/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 8 lines outside code blocks: [34, 52, 82, 111, 126]",
+      "path": "skills/brain-ops/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/brain-pdf/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers', 'version']",
+      "path": "skills/brain-pdf/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'prompt_version', 'triggers', 'version']",
+      "path": "skills/brain-taxonomist/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [51, 52, 53, 54, 55]",
+      "path": "skills/brain-taxonomist/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/briefing/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/briefing/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/bulk-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 422 lines (approaching 500-line limit)",
+      "path": "skills/bulk-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 9 lines outside code blocks: [1, 91, 122, 123, 160]",
+      "path": "skills/bulk-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/capture/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers', 'writes_pages']",
+      "path": "skills/capture/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [15, 69, 70, 71]",
+      "path": "skills/capture/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/chronicle/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/citation-fixer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/citation-graph-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'requires', 'triggers', 'upstream', 'version', 'writes_pages']",
+      "path": "skills/citation-graph-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 1 lines outside code blocks: [171]",
+      "path": "skills/citation-graph-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/coding-agent-leadership-principles/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'agents' not allowed (only scripts/references/assets)",
+      "path": "skills/coding-agent-leadership-principles/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/cold-start/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 533 lines (max 500)",
+      "path": "skills/cold-start/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 13 lines outside code blocks: [134, 145, 247, 255, 256]",
+      "path": "skills/cold-start/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['brain_first', 'mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/company-brainify/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 687 lines (max 500)",
+      "path": "skills/company-brainify/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 3 lines outside code blocks: [1, 345, 348]",
+      "path": "skills/company-brainify/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/concept-cartographer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [102, 103, 104, 105]",
+      "path": "skills/concept-cartographer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/concept-synthesis/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 513 lines (max 500)",
+      "path": "skills/concept-synthesis/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 12 lines outside code blocks: [81, 90, 122, 123, 124]",
+      "path": "skills/concept-synthesis/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/constellation-team/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version', 'writes_pages']",
+      "path": "skills/context-audit/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/conversation-archive/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/conversation-archive/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 417 lines (approaching 500-line limit)",
+      "path": "skills/conversation-archive/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 9 lines outside code blocks: [4, 24, 27, 28, 80]",
+      "path": "skills/conversation-archive/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/correction-pipeline/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 3 lines outside code blocks: [35, 45, 71]",
+      "path": "skills/correction-pipeline/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/cron-scheduler/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/cron-scheduler/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/cross-agent-handoff/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'agents' not allowed (only scripts/references/assets)",
+      "path": "skills/cross-agent-handoff/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/cross-modal-review/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/daily-task-manager/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/daily-task-manager/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 20 lines outside code blocks: [7, 27, 28, 29, 30]",
+      "path": "skills/daily-task-manager/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/daily-task-prep/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/daily-task-prep/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['brain_first', 'mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/data-loss-gate/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/data-research/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [70, 71, 72, 79]",
+      "path": "skills/data-research/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/draft-in-voice/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 3 lines outside code blocks: [70, 121, 233]",
+      "path": "skills/draft-in-voice/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['distinct_from', 'filing_exempt', 'mutating', 'prompt_version', 'tools', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/eiirp/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 530 lines (max 500)",
+      "path": "skills/eiirp/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [21, 98, 118, 216, 217]",
+      "path": "skills/eiirp/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/enrich/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version', 'writes_pages']",
+      "path": "skills/fact-check/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 458 lines (approaching 500-line limit)",
+      "path": "skills/fact-check/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 6 lines outside code blocks: [31, 34, 229, 248, 250]",
+      "path": "skills/fact-check/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_MARKETING",
+      "message": "description contains marketing words: ['world-class']",
+      "path": "skills/frontend-pe/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/frontend-pe/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['brain_first', 'mutating', 'prompt_version', 'tools', 'triggers', 'version']",
+      "path": "skills/functional-area-resolver/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 3 lines outside code blocks: [99, 209, 237]",
+      "path": "skills/functional-area-resolver/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/gbrain-advisor/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/idea-capturer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 475 lines (approaching 500-line limit)",
+      "path": "skills/idea-capturer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 1 lines outside code blocks: [176]",
+      "path": "skills/idea-capturer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/idea-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [10, 34, 35, 39, 40]",
+      "path": "skills/idea-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/idea-lineage/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'writes_pages', 'writes_to']",
+      "path": "skills/ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/lecture-alchemist/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [160, 161, 162, 163]",
+      "path": "skills/lecture-alchemist/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/maintain/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 472 lines (approaching 500-line limit)",
+      "path": "skills/maintain/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 2 lines outside code blocks: [30, 99]",
+      "path": "skills/maintain/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/measure-before-you-fix/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/media-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/meeting-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/meeting-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 497 lines (approaching 500-line limit)",
+      "path": "skills/meeting-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 6 lines outside code blocks: [102, 217, 222, 336, 337]",
+      "path": "skills/meeting-ingestion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/minion-orchestrator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 525 lines (max 500)",
+      "path": "skills/minion-orchestrator/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 6 lines outside code blocks: [271, 272, 275, 278, 332]",
+      "path": "skills/minion-orchestrator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/obsidian-cli/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 938 lines (max 500)",
+      "path": "skills/obsidian-cli/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/perplexity-research/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/publish/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers']",
+      "path": "skills/publish/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/query/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 4 lines outside code blocks: [113, 114, 115, 116]",
+      "path": "skills/query/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/repo-architecture/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [16, 17, 18, 19, 20]",
+      "path": "skills/repo-architecture/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/reports/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 6 lines outside code blocks: [7, 17, 18, 19, 20]",
+      "path": "skills/reports/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/research-compendium/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/research-compendium/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "APPROACHING_LIMIT",
+      "message": "SKILL.md is 432 lines (approaching 500-line limit)",
+      "path": "skills/research-compendium/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 14 lines outside code blocks: [15, 16, 26, 82, 83]",
+      "path": "skills/research-compendium/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/resolve-before-asking/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 9 lines outside code blocks: [4, 32, 34, 60, 73]",
+      "path": "skills/resolve-before-asking/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/signal-detector/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/signal-detector/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 9 lines outside code blocks: [37, 65, 66, 67, 79]",
+      "path": "skills/signal-detector/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'requires', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/skill-autobench/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 2 lines outside code blocks: [144, 185]",
+      "path": "skills/skill-autobench/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/skill-creator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['eval_contract', 'mutating', 'tools', 'triggers', 'upstream', 'version']",
+      "path": "skills/skillify/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 641 lines (max 500)",
+      "path": "skills/skillify/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 1 lines outside code blocks: [258]",
+      "path": "skills/skillify/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/skillpack-check/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/skillpack-harvest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 15 lines outside code blocks: [8, 9, 125, 126, 128]",
+      "path": "skills/skillpack-harvest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/soul-audit/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/spec-creator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [164, 165, 166, 167, 168]",
+      "path": "skills/spec-creator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['brain_first', 'mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/strategic-reading/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 1 lines outside code blocks: [19]",
+      "path": "skills/strategic-reading/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/superimprove/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'agents' not allowed (only scripts/references/assets)",
+      "path": "skills/superimprove/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/svg-logo-designer/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/teach-pro-max/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'agents' not allowed (only scripts/references/assets)",
+      "path": "skills/teach-pro-max/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'skills' not allowed (only scripts/references/assets)",
+      "path": "skills/teacher/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/techtutor/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/testing/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 8 lines outside code blocks: [47, 128, 129, 130, 131]",
+      "path": "skills/testing/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/transcribe-refiner/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 5 lines outside code blocks: [37, 98, 99, 100, 101]",
+      "path": "skills/transcribe-refiner/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers', 'version']",
+      "path": "skills/transcript-pipeline/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOP_LEVEL_README",
+      "message": "README.md at skill top level not allowed: /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/transcript-pipeline/README.md",
+      "path": "skills/transcript-pipeline/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'docs' not allowed (only scripts/references/assets)",
+      "path": "skills/transcript-pipeline/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'upstream', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/two-tier-extraction/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [12, 61, 65, 69, 193]",
+      "path": "skills/two-tier-extraction/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['triggers']",
+      "path": "skills/ultra-reasoning-operator/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "DESC_NO_ROUTING",
+      "message": "description lacks routing keywords ('use when', 'triggers on', etc.)",
+      "path": "skills/voice-note-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'triggers', 'version', 'writes_pages', 'writes_to']",
+      "path": "skills/voice-note-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 7 lines outside code blocks: [37, 41, 45, 48, 51]",
+      "path": "skills/voice-note-ingest/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['mutating', 'tools', 'triggers', 'version']",
+      "path": "skills/webhook-transforms/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "ASCII_ART",
+      "message": "box-drawing/arrow chars on 1 lines outside code blocks: [46]",
+      "path": "skills/webhook-transforms/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "FRONTMATTER_EXTRA",
+      "message": "unexpected frontmatter fields: ['aliases']",
+      "path": "new-skills/autonomous-orchestrion/SKILL.md",
+      "severity": "WARN"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 1494 lines (max 500)",
+      "path": "new-skills/autonomous-orchestrion/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "TOP_LEVEL_README",
+      "message": "README.md at skill top level not allowed: /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/new-skills/autonomous-orchestrion/README.md",
+      "path": "new-skills/autonomous-orchestrion/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "TOO_LONG",
+      "message": "SKILL.md is 978 lines (max 500)",
+      "path": "new-skills/orchestrion-universal-agent-router/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "TOP_LEVEL_README",
+      "message": "README.md at skill top level not allowed: /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/new-skills/orchestrion-universal-agent-router/README.md",
+      "path": "new-skills/orchestrion-universal-agent-router/SKILL.md",
+      "severity": "FAIL"
+    },
+    {
+      "code": "INVALID_SUBDIR",
+      "message": "subdir 'agents' not allowed (only scripts/references/assets)",
+      "path": "new-skills/techtutor/SKILL.md",
+      "severity": "FAIL"
+    }
+  ],
+  "schema_version": 1,
+  "scope": "skills/*/SKILL.md and new-skills/*/SKILL.md; links also scan references/**/*.md",
+  "summary": {
+    "allowed_tools_declarations": 0,
+    "duplicate_names": 14,
+    "entries": 129,
+    "errors": 0,
+    "link_findings": 126,
+    "lint_failures": 20,
+    "passed": false,
+    "unique_names": 115
+  }
+}

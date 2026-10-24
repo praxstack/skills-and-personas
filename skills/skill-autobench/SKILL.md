@@ -7,7 +7,7 @@ description: |
   (conversations/) and per-harness session transcripts — a user correction
   after an invocation is the gold signal — then synthesize an eval_contract
   plus 4-8 replayable cases with honesty labels (SPEC-DERIVED vs
-  HISTORY-IMPLIED) and stage the result at skills/<name>/eval/autobench-<date>.md
+  HISTORY-IMPLIED) and stage the result at skills/{name}/eval/autobench-{date}.md
   as PENDING-HUMAN-APPROVAL. Never rewrites SKILL.md. Ships two guard
   companions: panel integrity (multi-model judging must prove each provider
   actually responded) and the fail-improve taxonomy (logged LLM-fallback

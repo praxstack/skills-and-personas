@@ -1,0 +1,72 @@
+test_actual_browser_callback_budget (test_sandbox_resource_enrichment.DockerControls.test_actual_browser_callback_budget) ... ok
+test_all_post_create_failures_cleanup (test_sandbox_resource_enrichment.DockerControls.test_all_post_create_failures_cleanup) ... ok
+test_archive_count_byte_limits (test_sandbox_resource_enrichment.DockerControls.test_archive_count_byte_limits) ... ok
+test_artifact_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_artifact_exhaustion) ... ok
+test_browser_javascript_cpu_deadline (test_sandbox_resource_enrichment.DockerControls.test_browser_javascript_cpu_deadline) ... ok
+test_browser_javascript_memory_failure (test_sandbox_resource_enrichment.DockerControls.test_browser_javascript_memory_failure) ... ok
+test_capture_archive_limit (test_sandbox_resource_enrichment.DockerControls.test_capture_archive_limit) ... ok
+test_capture_log_limit_is_secret_free (test_sandbox_resource_enrichment.DockerControls.test_capture_log_limit_is_secret_free) ... ok
+test_cleanup_verification_failure_is_explicit (test_sandbox_resource_enrichment.DockerControls.test_cleanup_verification_failure_is_explicit) ... ok
+test_cpu_deadline (test_sandbox_resource_enrichment.DockerControls.test_cpu_deadline) ... ok
+test_credential_validation (test_sandbox_resource_enrichment.DockerControls.test_credential_validation) ... ok
+test_descriptor_snapshot_survives_path_substitution (test_sandbox_resource_enrichment.DockerControls.test_descriptor_snapshot_survives_path_substitution) ... ok
+test_detached_descendant_terminated_before_archive (test_sandbox_resource_enrichment.DockerControls.test_detached_descendant_terminated_before_archive) ... ok
+test_exact_create_flags_and_no_ambient_secrets (test_sandbox_resource_enrichment.DockerControls.test_exact_create_flags_and_no_ambient_secrets) ... ok
+test_host_loss_internal_deadline (test_sandbox_resource_enrichment.DockerControls.test_host_loss_internal_deadline) ... ok
+test_image_timeout_rejected_before_docker (test_sandbox_resource_enrichment.DockerControls.test_image_timeout_rejected_before_docker) ... ok
+test_input_no_follow_and_hardlinks (test_sandbox_resource_enrichment.DockerControls.test_input_no_follow_and_hardlinks) ... ok
+test_lifecycle_failure_removes_owned_container (test_sandbox_resource_enrichment.DockerControls.test_lifecycle_failure_removes_owned_container) ... ok
+test_log_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_log_exhaustion) ... ok
+test_manifest_bounds_and_missing (test_sandbox_resource_enrichment.DockerControls.test_manifest_bounds_and_missing) ... ok
+test_memory_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_memory_exhaustion) ... ok
+test_normal_public_manifest (test_sandbox_resource_enrichment.DockerControls.test_normal_public_manifest) ... ok
+test_physical_pax_header_rejected (test_sandbox_resource_enrichment.DockerControls.test_physical_pax_header_rejected) ... ok
+test_pid_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_pid_exhaustion) ... ok
+test_real_limits_browser_and_public_broker (test_sandbox_resource_enrichment.DockerControls.test_real_limits_browser_and_public_broker) ... ok
+test_runtime_image_missing_no_fallback (test_sandbox_resource_enrichment.DockerControls.test_runtime_image_missing_no_fallback) ... ok
+test_safe_publish_private_and_new_only (test_sandbox_resource_enrichment.DockerControls.test_safe_publish_private_and_new_only) ... ok
+test_signal_cleanup_preserves_concurrent_same_prefix_job (test_sandbox_resource_enrichment.DockerControls.test_signal_cleanup_preserves_concurrent_same_prefix_job) ... ok
+test_signal_handlers_restore_and_cleanup_state (test_sandbox_resource_enrichment.DockerControls.test_signal_handlers_restore_and_cleanup_state) ... ok
+test_sigterm_cleanup (test_sandbox_resource_enrichment.DockerControls.test_sigterm_cleanup) ... ok
+test_snapshot_scope_and_permissions (test_sandbox_resource_enrichment.DockerControls.test_snapshot_scope_and_permissions) ... ok
+test_tmpfs_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_tmpfs_exhaustion) ... ok
+test_unsafe_archives (test_sandbox_resource_enrichment.DockerControls.test_unsafe_archives) ... ok
+test_all_post_create_failures_cleanup (test_sandbox_resource_enrichment.SandboxTests.test_all_post_create_failures_cleanup) ... ok
+test_archive_count_byte_limits (test_sandbox_resource_enrichment.SandboxTests.test_archive_count_byte_limits) ... ok
+test_capture_archive_limit (test_sandbox_resource_enrichment.SandboxTests.test_capture_archive_limit) ... ok
+test_capture_log_limit_is_secret_free (test_sandbox_resource_enrichment.SandboxTests.test_capture_log_limit_is_secret_free) ... ok
+test_cleanup_verification_failure_is_explicit (test_sandbox_resource_enrichment.SandboxTests.test_cleanup_verification_failure_is_explicit) ... ok
+test_credential_validation (test_sandbox_resource_enrichment.SandboxTests.test_credential_validation) ... ok
+test_descriptor_snapshot_survives_path_substitution (test_sandbox_resource_enrichment.SandboxTests.test_descriptor_snapshot_survives_path_substitution) ... ok
+test_exact_create_flags_and_no_ambient_secrets (test_sandbox_resource_enrichment.SandboxTests.test_exact_create_flags_and_no_ambient_secrets) ... ok
+test_image_timeout_rejected_before_docker (test_sandbox_resource_enrichment.SandboxTests.test_image_timeout_rejected_before_docker) ... ok
+test_input_no_follow_and_hardlinks (test_sandbox_resource_enrichment.SandboxTests.test_input_no_follow_and_hardlinks) ... ok
+test_lifecycle_failure_removes_owned_container (test_sandbox_resource_enrichment.SandboxTests.test_lifecycle_failure_removes_owned_container) ... ok
+test_manifest_bounds_and_missing (test_sandbox_resource_enrichment.SandboxTests.test_manifest_bounds_and_missing) ... ok
+test_physical_pax_header_rejected (test_sandbox_resource_enrichment.SandboxTests.test_physical_pax_header_rejected) ... ok
+test_runtime_image_missing_no_fallback (test_sandbox_resource_enrichment.SandboxTests.test_runtime_image_missing_no_fallback) ... ok
+test_safe_publish_private_and_new_only (test_sandbox_resource_enrichment.SandboxTests.test_safe_publish_private_and_new_only) ... ok
+test_signal_handlers_restore_and_cleanup_state (test_sandbox_resource_enrichment.SandboxTests.test_signal_handlers_restore_and_cleanup_state) ... ok
+test_snapshot_scope_and_permissions (test_sandbox_resource_enrichment.SandboxTests.test_snapshot_scope_and_permissions) ... ok
+test_unsafe_archives (test_sandbox_resource_enrichment.SandboxTests.test_unsafe_archives) ... ok
+
+----------------------------------------------------------------------
+Ran 51 tests in 47.720s
+
+OK
+REAL_EXIT_CONTROL test_actual_browser_callback_budget {"Running": false, "ExitCode": 0, "OOMKilled": false}
+REAL_EXIT_CONTROL test_artifact_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": false}
+REAL_EXIT_CONTROL test_browser_javascript_cpu_deadline {"Running": true, "ExitCode": 0, "OOMKilled": false}
+REAL_EXIT_CONTROL test_browser_javascript_memory_failure {"Running": false, "ExitCode": 124, "OOMKilled": true}
+REAL_EXIT_CONTROL test_cpu_deadline {"Running": false, "ExitCode": 124, "OOMKilled": false}
+REAL_EXIT_CONTROL test_detached_descendant_terminated_before_archive {"Running": false, "ExitCode": 0, "OOMKilled": false}
+HOST_LOSS_CONTROL {"Running": false, "ExitCode": 124, "OOMKilled": false}
+REAL_EXIT_CONTROL test_log_exhaustion {"Running": false, "ExitCode": 124, "OOMKilled": false}
+REAL_EXIT_CONTROL test_memory_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": true}
+REAL_EXIT_CONTROL test_pid_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": false}
+REAL_EXIT_CONTROL test_real_limits_browser_and_public_broker {"Running": false, "ExitCode": 0, "OOMKilled": false}
+REAL_NETWORK_CONTROL {"limits": {"memory.max": "1073741824", "memory.swap.max": "0", "pids.max": "128", "cpu.max": "100000 100000", "tmp_bytes": 536870912, "shm_bytes": 67108864}, "requests": 4, "transfer": 3694, "public_subresource": 200, "private_blocked": true}
+FOREIGN_JOB_SURVIVAL SIGTERM running=True marker_unchanged=True
+HOST_LOSS_CONTROL {"Running": false, "ExitCode": 124, "OOMKilled": false}
+FOREIGN_JOB_SURVIVAL SIGKILL running=True marker_unchanged=True
+REAL_EXIT_CONTROL test_tmpfs_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": false}

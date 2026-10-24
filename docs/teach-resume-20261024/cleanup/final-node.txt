@@ -1,0 +1,26 @@
+✔ portable identifiers reject traversal and separators (0.480667ms)
+✔ a regular in-root video is bound to one descriptor (8.609791ms)
+✔ a symlinked video cannot disclose another file (2.032875ms)
+✔ a hard-linked video is rejected (1.956834ms)
+✔ readable captions preserve native cue intervals and earlier gaps (1.006333ms)
+✔ terminal still retains actual final cue and seeking back clears it (0.069084ms)
+✔ final means latest ending cue, including overlapping tracks (0.067ms)
+✔ unloaded or empty tracks never invent readable words (0.044459ms)
+✔ source URLs allow only web schemes (0.070708ms)
+✔ unsafe sources render as inert text (0.177916ms)
+✔ generated pages include a restrictive CSP (0.210333ms)
+✔ chapter selection shares whole-microsecond media boundaries (0.165625ms)
+✔ exact microsecond boundaries do not move into the preceding microsecond (0.064042ms)
+✔ unattempted absent and empty answers never claim correctness (1.307833ms)
+✔ unattempted question can still report an actual alternate explanation (0.316333ms)
+✔ actually correct first attempt is reported as right first time (0.245541ms)
+✔ a correct answer after a miss retains its miss history (0.231875ms)
+✔ asking to be shown is not reported as a correct answer (0.223583ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 117.482458

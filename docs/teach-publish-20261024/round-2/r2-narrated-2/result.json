@@ -1,0 +1,1127 @@
+{
+  "source": {
+    "source": "0b47dfaa22c7df47657ca5e966955c0b527e025d",
+    "files": {
+      "skills/teacher/skills/course/scripts/chromium_wrapper.py": "54fbbe96c3bbc4b6ad3927904071dec94a25104454257630e03f84f1c5d2f570",
+      "skills/teacher/skills/course/scripts/sandbox_course.py": "8572e0dc7eb41187bccacb3361555e4705e8195bf3cc135f92e8fbffd05e0419",
+      "skills/teacher/skills/explorable/scripts/bundle_templates.mjs": "0f583fd4ddffe2945a28280be18fc6324a6825418b13ea8618ddb7413836d242",
+      "skills/teacher/skills/explorable/scripts/bundle_lesson.mjs": "ecd3b18596d2654386cc51e1fd9134fe8048f188d4013b1067cd8e9e3eb5a080",
+      "skills/teacher/skills/explorable/assets/engine/explorable.js": "c6949921f14407e53228b789b2de0796158aff6743e7c625e871f9c220fb24ec",
+      "skills/teacher/skills/explorable/assets/engine/explorable.css": "2c517319594699b9322794986ea15fd4cccbd2e346c5e380c7cc0b685984d7fc",
+      "skills/teacher/skills/explorable/assets/engine/code.js": "3bdc430d4e24ee0681565170da9bcd83d991459ccad5643e72b0bc0d8e7296b1",
+      "skills/teacher/scripts/series.py": "bf186aa5842438f5611c6347f2c908e1e529c457c685c2dc61d5ebd29d8a743a",
+      "skills/teacher/skills/course/scripts/build_course.py": "4134b7a41a101327d37bb76c8a67c354f2492dec311e08f057042129dda61eea",
+      "skills/teacher/skills/course/scripts/safe_course.py": "fc4e1908d0744c96d1d006a7b4a84662cf95b1dc5a4d954c6c681ce405ae1325",
+      "skills/teacher/skills/explorable/scripts/bundle_poster.mjs": "49296fda913fa6a9e04bfb35aab0a4a910b47da164e7e050232306e07e2b581c"
+    },
+    "governingMethodsUnchangedFrom": "bf0bcf9"
+  },
+  "inputHashes": {
+    "course.json": "56792804f58d87ba935037f7fbdbb26a2d0a130d71f2b2058a91ce0a82b09020",
+    "lesson.lesson.js": "939b58ec9b72ec9fe4100aa382ed533a418a0adaea44b9fd256a23757dcd20f6",
+    "videos/base-rates.mp4": "ae739d97750cc01e43032128f9a13d003ca7533fcc50b251443d526801732d71",
+    "videos/base-rates.vtt": "436fe14b95b2bee7ac93c9c06b4e0ede605e75e09a98fac287776fde30cbdadd"
+  },
+  "seconds": 27.323,
+  "checks": [
+    {
+      "name": "53550 original-grid model equivalence",
+      "ok": true
+    },
+    {
+      "name": "phase is presentation only",
+      "ok": true
+    },
+    {
+      "name": "posterior at 1%",
+      "ok": true
+    },
+    {
+      "name": "posterior at 20%",
+      "ok": true
+    },
+    {
+      "name": "posterior at 50%",
+      "ok": true
+    },
+    {
+      "name": "zero false flags retains 100 missed",
+      "ok": true
+    },
+    {
+      "name": "no storage before consent",
+      "ok": true
+    },
+    {
+      "name": "keyboard slider changes value",
+      "ok": true
+    },
+    {
+      "name": "all explanation steps reachable without answers",
+      "ok": true
+    },
+    {
+      "name": "first three settled geometries distinct",
+      "ok": true
+    },
+    {
+      "name": "captions hidden throughout unsettled transitions",
+      "ok": true
+    },
+    {
+      "name": "qa keyboard disclosure opens",
+      "ok": true
+    },
+    {
+      "name": "cards keyboard disclosure opens",
+      "ok": true
+    },
+    {
+      "name": "VP9 MP4 codec advertised",
+      "ok": true
+    },
+    {
+      "name": "actual video playback advances",
+      "ok": true
+    },
+    {
+      "name": "interactive video chapter and paused model transfer",
+      "ok": true
+    },
+    {
+      "name": "explorer receives scene parameters",
+      "ok": true
+    },
+    {
+      "name": "video speed control",
+      "ok": true
+    },
+    {
+      "name": "caption toggle",
+      "ok": true
+    },
+    {
+      "name": "seek near end reaches final chapter and captions",
+      "ok": true
+    },
+    {
+      "name": "no unexpected network requests",
+      "ok": true
+    },
+    {
+      "name": "no browser errors",
+      "ok": true
+    }
+  ],
+  "qa": {
+    "lesson": {
+      "returncode": 0
+    },
+    "visual": {
+      "returncode": 0
+    }
+  },
+  "runtime": [
+    {
+      "phase": "before-render-browser",
+      "pids": 7,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-render-browser-launch",
+      "pids": 39,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "R (running)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 118,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 118,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 136,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-lesson-model-checks",
+      "pids": 49,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "R (running)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 118,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 136,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 151,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 10,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-film-frames",
+      "pids": 50,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 118,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 136,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 151,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 10,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-static-formats",
+      "pids": 50,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 118,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 136,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 151,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 118,
+          "threads": 10,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-static-browser-close",
+      "pids": 7,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "before-video-navigation",
+      "pids": 46,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 188,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-video-navigation",
+      "pids": 46,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 188,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "before-play",
+      "pids": 49,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 188,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 163,
+          "threads": 11,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-playback-advance",
+      "pids": 58,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 188,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 13,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 206,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=audio.mojom.AudioService"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-visible-explorer",
+      "pids": 59,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 188,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 13,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 206,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=audio.mojom.AudioService"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-all-browser-checks",
+      "pids": 59,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 112,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 54,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 112,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 188,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 13,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 206,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=audio.mojom.AudioService"
+          ]
+        },
+        {
+          "pid": 54,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    }
+  ],
+  "artifactHashes": {
+    "visual-check.txt": "a3e9936f0900d7cf711f3319ab7a2406ff217d8f571c8c773c5d74f9b3d6e208",
+    "runtime-evidence.json": "3819aad350eb5cefb4b5c09fb2bd8a6762a9913933b71b4689722ae0fcc433f2",
+    "lesson-status.json": "c365161d39236fe0f1d32937fbc549796b8487d8faf65ed3879b96897c78ea5d",
+    "timing.json": "5e93716971bc42d669b536d84c31e0a17e5623bc288a7438149145c7f0ac9c1e",
+    "lesson-check.txt": "ecc57faf4a70e4cad70d6a396601084b141590b5c9ec3b98e43a14af5f3683f2",
+    "interactive-explorer-viewport.png": "baa435d17ba40bb5383df3f4093b2ee0cd6ef9a501ac512f7f5c7d6e8795cd62",
+    "visual-status.json": "c365161d39236fe0f1d32937fbc549796b8487d8faf65ed3879b96897c78ea5d",
+    "render-evidence.json": "c8e02dd55c84694d3a74846de5a7cdf19e56fbc73345466e4f7adec78ad1e454",
+    "interactive-explorer-visible.png": "220a8c26d5158848ac8a8da147d3678a382b786ef6c153b65cf8b2d187b0dfb2",
+    "interactive-video.png": "720823dc91a3d2211ff4fd33b93e21cafc326a6cbc6222420a987c6e7aa71b15",
+    "frames/scene-2-8.png": "5c84a22e51309c1abfd6a0c51837ae22b327e0b5220e60a08e24cce8d21863de",
+    "frames/scene-0-8.png": "bdb9dfa05d3a220624af19db4cd14a7ac04973ff9ccd9734bf731736390feca4",
+    "frames/scene-4-8.png": "cf6f1fbed1635be7520d9db68aa4f3b076341efac94e72f473d5e203f39bf9b2",
+    "frames/scene-6-8.png": "b33b7c6f5ec2a1c326e7ab3743eb28c40b4b4e307f3f6318a32b6f915995c8f1",
+    "frames/scene-1-8.png": "bdc4427d236216ae7682d1717c93b11de4bcaf8355cc021b6562a7cd4be5c7f9",
+    "frames/scene-3-8.png": "72a2d1e1771d1627385716adf902ec4747afffa43c53773096486f02df384f00",
+    "frames/scene-5-8.png": "258e94d6838ab5d7ad8312fc8b39c02f1916cfd22f92493536ed07522a0f45a2",
+    "frames/scene-5-4.png": "212775417f753716b57febafc0a2e61c535ec3e940b341150a91e4d57cc64d81",
+    "frames/scene-3-2.png": "e3e60b0aa9e9a76973c9fb7b8401a8ae467bc9c6fe425270731c47bfa83d9c9b",
+    "frames/scene-1-0.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-1-1.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-3-3.png": "be6fb21f073e4e84a893720d300a449c1db01a0bb3f1b139e19c23d5af8126db",
+    "frames/scene-5-5.png": "aa003edcd02de809064ac1cce929154b46c9a6e489dc489d0fa396ab4b6d5de2",
+    "frames/scene-5-7.png": "77d8a5439369168da615d816f6566328d5705cc4d93c20377d4af8e0e719fd80",
+    "frames/scene-3-1.png": "47397bf1bcf876b1468cff12d2eb3757faf8532add6fb8ca9175d0955622a8cd",
+    "frames/scene-1-3.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-1-2.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-3-0.png": "a1449c4c254ff735c8d00af6f9988780d365ffe4d072a4285f8a7e99bc4b6d2b",
+    "frames/scene-5-6.png": "d366883d48d0f92ce80d04783749c25584a3184d02bea0cc5c25ea96730883ff",
+    "frames/scene-5-2.png": "4163bc3857e8340f0b385c5620b2e2465a8a33220ead769903c08b3cc4b53ad8",
+    "frames/scene-3-4.png": "a3c0582fc2655dc029afc67c2f589f12117054e403f820bad8cf27c988bfd464",
+    "frames/scene-1-6.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-1-7.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-3-5.png": "bf22219e1ca2837592d4fd20e5b4d5899f1a98cb8525e75b99c75ffbd39e7a44",
+    "frames/scene-5-3.png": "8754b6254fe795179c1af73e4b40817f43d379e0b8cef963be6342c36183d142",
+    "frames/scene-5-1.png": "d1bbee5cbd81f5562f593ad614545098cd4fd7f6c709a4c0fc6ddfb9337402a6",
+    "frames/scene-3-7.png": "aacef4aeb2f09ef2118347a94a0f66d392be253841f929545fe09063764d1cf8",
+    "frames/scene-1-5.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-1-4.png": "e352bcb69974b77cf1f4ad4011ac88640041f258f129cd4453308f3859abd067",
+    "frames/scene-3-6.png": "b98c95cde48c42bc917ac52f3e53b6f223db04eb82b0dd4916505f47891e2fb6",
+    "frames/scene-5-0.png": "d1bbee5cbd81f5562f593ad614545098cd4fd7f6c709a4c0fc6ddfb9337402a6",
+    "frames/scene-0-3.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-2-1.png": "43aa81ea371a5ddaa42015ca739a7a165c36b02fc4d139b005aa7d15382b6f13",
+    "frames/scene-4-7.png": "2e4635cfed8e01ccf9fa1e804573973747a17be93a410cdcac5f90c02310dfa1",
+    "frames/scene-6-5.png": "f7722e151368d036e311e5801e306c8700a378adaf187b2f497b28611ff881ae",
+    "frames/scene-6-4.png": "8074cc63e6dcaf5b57bdb16cd0c818139ab41d2cccd0d2e1ba54e9dc6c7b1629",
+    "frames/scene-4-6.png": "e5b9321fb10a7779a57d6a0983f122b74f6a33a43f3908f8397d69678e95f4e6",
+    "frames/scene-2-0.png": "56d6842e591477a7986b77660cee894fcdfb2ec43a654fadc9e6b4c8f0b14d26",
+    "frames/scene-0-2.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-0-0.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-2-2.png": "0f17c029eb7ee29c62dd8c5ece747763264645311b3c00649f60b38f2d89d8a7",
+    "frames/scene-4-4.png": "bc54c7536ae2c512a23b563f1e8ec1c6d760044211ce07007cf2f1daec4469ed",
+    "frames/scene-6-6.png": "f17bcf4eb6cd3b3258a24ada5a246f1b185e2132d0e8b4572e00c33faf12085a",
+    "frames/scene-6-7.png": "f17bcf4eb6cd3b3258a24ada5a246f1b185e2132d0e8b4572e00c33faf12085a",
+    "frames/scene-4-5.png": "69ff2f16a23ae2b1b5fb29bd5279330de450be20143209fcfd9ad02f980e7ed0",
+    "frames/scene-2-3.png": "021f58650ff8096cf904f6100d2430fdae2831852378d5e12061605bac747ff3",
+    "frames/scene-0-1.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-0-5.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-2-7.png": "d8ac0a56ca7c9d3b5ecdcf6fc10c7b15cc4f10a35436cac81a18e481a071b712",
+    "frames/scene-4-1.png": "bd119157285a545d12a7968b6c05673e2776e328499ef1c1c5daabd8ad152661",
+    "frames/scene-6-3.png": "ec87fe565ade0367ab0f5f31ab7e9a849b270ad941fa8ceb6449484f2f6bdb80",
+    "frames/scene-6-2.png": "31957f825ba8ad949315ab43d8b5817c5009e077eb721e8b7976596b18a7abbb",
+    "frames/scene-4-0.png": "485fac762519d1f364ce4da8461edf811c69e94c8339f1ea55ea07d5d5a51e24",
+    "frames/scene-2-6.png": "60f027a0b6712581c8aea8f6e7e143d0ccfc5d83bc45efd3806bf2b7c406683f",
+    "frames/scene-0-4.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-0-6.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "frames/scene-2-4.png": "295a76553ce1f8df33bc87000d1cadfebbc006b4bba1be5664f6bfb22fed1fac",
+    "frames/scene-4-2.png": "3c686be7677df064ef2da95fa27f7f82889ace425498691724066843f5f8521b",
+    "frames/scene-6-0.png": "31957f825ba8ad949315ab43d8b5817c5009e077eb721e8b7976596b18a7abbb",
+    "frames/scene-6-1.png": "31957f825ba8ad949315ab43d8b5817c5009e077eb721e8b7976596b18a7abbb",
+    "frames/scene-4-3.png": "2abd68e620e08ecde87b476f85f3a2d6bd13a7cd497b4ee40a727d46c2839092",
+    "frames/scene-2-5.png": "3300fd8fee93083c83a1425f40cba895529d84dd1a231d8c877fe6a4e1b2e51a",
+    "frames/scene-0-7.png": "876f974bc7cb599f325098f2a0ae0ca0bc1e216c903d7790eb4c8f53318f3b1f",
+    "bundle/lesson.vtt": "436fe14b95b2bee7ac93c9c06b4e0ede605e75e09a98fac287776fde30cbdadd",
+    "bundle/lesson.timing.json": "5e93716971bc42d669b536d84c31e0a17e5623bc288a7438149145c7f0ac9c1e",
+    "bundle/explorer.html": "3430c18b1d8e4a474c669607c4d63cad5b49838d9c17cceca94a4552ca70127d",
+    "bundle/still.html": "e1e0235593af0bbd185049472e15741c2d352dc97bee41bde22278188f9a8c1a",
+    "bundle/poster-layout.json": "9ec2e759241cdf425ea098f2330174b729002e12ebfbf7da28dd1bbbada264ca",
+    "bundle/interactive-video.html": "ee40d0b5d14f8d6bfd0125ff8ae400664cb9046b0840a40b5bba038ff7b71c8d",
+    "bundle/lesson-data.json": "a74c1d471a91bcc3acf823f37dd85ff52a7ad5c0ee44d2e75a652b718461790d",
+    "bundle/cards.html": "8b1a1dd1541dded7dece44137602f31b9e01cf65185a6e865213224c788741a4",
+    "bundle/cards.tsv": "bd073a027271e1eb13b3c2d8c32292092998fc7c61bf1952fee46c91e10b20bb",
+    "bundle/still.png": "78f560f7e07fdc7d5780e0d68fa58cbda7989719e591e4a4589e10d2bd059c64",
+    "bundle/lesson.mp4": "ae739d97750cc01e43032128f9a13d003ca7533fcc50b251443d526801732d71",
+    "bundle/static.html": "68e049ac2e0cce25a12eb526d04d8892815eab0f2317125d5c034f6839d32e47",
+    "bundle/qa.html": "ffc4f8482f0f709d54d01a781c35de59a7712b86132852d3e560304a4c93a950",
+    "bundle/bundle-manifest.json": "716aab8a51cc1c3ed771283087c955369256d33bf18348c2df4816170faec1db",
+    "bundle/still.svg": "7ee7d35aed8c548934cab1ce4c768c74e591b700475d42114dc802b538c9e92c",
+    "qa/desktop-light-step-2.png": "bdb118c61127c9a5469d9d456757b44ab00a8a9fe141816b61c48b67fd78a87c",
+    "qa/desktop-light-step-3.png": "b86fd781379c28c306e6361609e742bd9fd2e3c100ef260e1f1c8c144a6d5cac",
+    "qa/desktop-light-step-7.png": "9338c26626ffd94ab5b71fa4e76e03e6f7cf1bdac1e8009da09c5a3dd7b5dd77",
+    "qa/desktop-light-step-6.png": "b704f326b2156bf8451f38975513f827ff2243dc37579829facd7ee6237aa6c0",
+    "qa/desktop-light-step-4.png": "a609ea86f9e53dc7f81f86277dfb08aad9edbb44fb19ad6dc42a12b5dfc44665",
+    "qa/desktop-light-step-5.png": "e5d3dbec1c46891f1bb88b52e53ee61798faa07928eea6ecc9f03d8e69f455c1",
+    "qa/desktop-dark-step-7.png": "d87d60c3a252fd817caeef593d77a63e45b36b98682f34d97ab3a79265e3bf77",
+    "qa/phone-dark-step-5.png": "11ae0d34d1db053092a0ef1053680c5b02792cfe4346310288aab90ffe12aa91",
+    "qa/phone-dark-step-4.png": "afd3296587cf72767a417bce8bf50aae203b8ce0cd0fe04abbcf037b63be82b5",
+    "qa/desktop-dark-step-6.png": "89af1ffcc22ce292bdc81ea82185ae831416c5a1e59959dddc752100095c93a2",
+    "qa/desktop-dark-step-4.png": "6ce9681ce4f7daf2bc02721c17b8b4cb468876dccb40281419cc6952165d3303",
+    "qa/phone-dark-step-6.png": "437bba9f86b317ea1c3e4aa7bd797c601ea08dcb45c1c70f1ebc772e6d438af8",
+    "qa/phone-light-step-2.png": "4e85231e893e0d9db55e51603eaefd97c4932aa6c03b1a7927d305ac74f9b515",
+    "qa/phone-light-step-3.png": "d019d5fe9515f8a43ce326077a263d00def0ed06af2efcf2f91558e7d756f7b9",
+    "qa/phone-dark-step-7.png": "f0476b6e1b65bf2c9c8854ab3d80fc47e69fcb2ae1ba1d4856d08a53e1e00f08",
+    "qa/desktop-dark-step-5.png": "8017332dbf6a4563cbbe20e61ee7e4d592b5855bc15977e97ed161da302bdf25",
+    "qa/phone-dark-step-3.png": "e9b358ce8d17388717dd32c7f83c0d3b2be06230ae25f93e9f6014cefb134558",
+    "qa/phone-light-step-7.png": "257856291b8156002dd30b6e37117dced7eca0cef58c0e9ef9aef32b04f315fe",
+    "qa/phone-light-step-6.png": "919873dcddbae69b1536556721b9545cda651d6bbecf8fdce7ccb6b5f9f15733",
+    "qa/phone-dark-step-2.png": "a2dccf1ef0254fef0ba0cfa3bbb3d051bb1f76a22324a3fb8f279bf02d380555",
+    "qa/desktop-dark-step-2.png": "2297fa0c9ce4245d9e5aa8d5ff2f68f77221a2ce844dcf91c37d1faed3ce9326",
+    "qa/phone-light-step-4.png": "a31599af65c740d0bdf0fcdaa5ca5d535e7ece4fc45b15d4de6eb16fe042e6bc",
+    "qa/phone-light-step-5.png": "1454303628965fb4913e615e03ab35abf1515d36c6caf51d358ea1c3da498952",
+    "qa/phone-dark.png": "558627a6e084608aafbdf407215c78255156dfac0c47153f6d3c5f1cefd2704f",
+    "qa/desktop-dark-step-3.png": "751f38a0b80ef7209d9e02049f5fed9aa326247b78c86523e991e6b9c4ab6173",
+    "qa/desktop-light-reduced.png": "00f23c9cab5ab6cbca8d0b01e8ab20c92522c08baa7fc1e28d3dc9feb1b18d46",
+    "qa/phone-light.png": "3e8594624ab440c93c08cbd0064f35ca7cfdb2d15d98b0961040eb7c19cf588a",
+    "qa/desktop-light.png": "00f23c9cab5ab6cbca8d0b01e8ab20c92522c08baa7fc1e28d3dc9feb1b18d46",
+    "qa/phone-light-reduced.png": "3e8594624ab440c93c08cbd0064f35ca7cfdb2d15d98b0961040eb7c19cf588a",
+    "qa/desktop-dark.png": "557edadd66b26e5af27b4e040e93197b3618de618685bbef3f73093ba4fab409",
+    "site/index.html": "ace25290d54631dc300caba42fbad93ec65001d73f937a6dc624fcbfd38fa77c",
+    "site/base-rates.html": "32d9564f067f311013d7e138c0dc664119245c61b13c8c83edb020f8f3c0683e",
+    "bundle/figures/step-2-narrow.svg": "a910e77d593c9e3ce06c203381731afdac31e36ebb85cb380db1f10a8b46b364",
+    "bundle/figures/step-7-narrow.svg": "bb87f1f5a56e5481368580d490b888de1537244072f2cc47927998d21579d0ee",
+    "bundle/figures/step-2.svg": "73b63aa6ee02713afd29c219792ae423cf5834302c8e62b3582c6ddff0c2b5c9",
+    "bundle/figures/step-3.svg": "d0cbfea728b8c53a919c6185faccd7ecb88c669ffaa8403326881562c65f4f15",
+    "bundle/figures/step-1.svg": "3ebf27c3708664276f28f2e43259b42123a7cddd1397458e3465c2ed0ff1b85e",
+    "bundle/figures/step-4.svg": "96517e242f359a5a83cb2e68615b59047a8756f1581848e395eb245a538e595c",
+    "bundle/figures/step-5.svg": "46dd8b8aa25c05c0db22e925bdbd22537a057845a7b1b0bb65eba31f65b8546a",
+    "bundle/figures/step-5-narrow.svg": "4797950fb19ceabe3a85fda37a20824ebe0c108a0e7ec3141a27cb167a877e7c",
+    "bundle/figures/step-7.svg": "7367dce05002ec3e6f6792cc679b2a40a892e6470d66d8c69ebab867d925c12a",
+    "bundle/figures/step-6.svg": "c536991b6cdcbb10b5713a9278c65534010cf7e87b6bc5cb3894a182a1ea8082",
+    "bundle/figures/step-6-narrow.svg": "9a996d320c94a7ff5513102cbe7f41ff899e53a0fdfe7a9d58ebb0d0a4044de7",
+    "bundle/figures/step-3-narrow.svg": "e0c1492172da3c3369527f4a186e6483eb0b174e2d8c6f262c785379987b3771",
+    "bundle/figures/step-4-narrow.svg": "bad457c01e12a7982fdb8a4484d8e46f4de50003a22a31b415f46d6e34b00d5e",
+    "bundle/figures/step-1-narrow.svg": "2204aca77ef7cf32f80789560f1bdbd7cf4be0b240036f4830942437063fc4c8",
+    "site/videos/base-rates.vtt": "436fe14b95b2bee7ac93c9c06b4e0ede605e75e09a98fac287776fde30cbdadd",
+    "site/videos/base-rates.mp4": "ae739d97750cc01e43032128f9a13d003ca7533fcc50b251443d526801732d71"
+  }
+}

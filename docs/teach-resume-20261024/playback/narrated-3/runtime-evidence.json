@@ -1,0 +1,899 @@
+[
+  {
+    "phase": "before-render-browser",
+    "pids": 7,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-render-browser-launch",
+    "pids": 27,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "R (running)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 117,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 131,
+        "name": "headless_shell",
+        "state": "R (running)",
+        "ppid": 117,
+        "threads": 2,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 135,
+        "name": "exe",
+        "state": "R (running)",
+        "ppid": 117,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-lesson-model-checks",
+    "pids": 49,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 117,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 131,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 6,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 135,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 150,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 10,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-film-frames",
+    "pids": 50,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 117,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 131,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 135,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 150,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 10,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-static-formats",
+    "pids": 50,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 117,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 131,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 135,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 150,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 117,
+        "threads": 10,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-static-browser-close",
+    "pids": 7,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "before-video-navigation",
+    "pids": 47,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 163,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 176,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 6,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 181,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 189,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 8,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-video-navigation",
+    "pids": 47,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "R (running)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 163,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 176,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 6,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 181,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 189,
+        "name": "headless_shell",
+        "state": "R (running)",
+        "ppid": 163,
+        "threads": 8,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "before-play",
+    "pids": 50,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 163,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 176,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 6,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 181,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 189,
+        "name": "headless_shell",
+        "state": "R (running)",
+        "ppid": 163,
+        "threads": 11,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-playback-advance",
+    "pids": 59,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 163,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 176,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 6,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 181,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 189,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 13,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 207,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=audio.mojom.AudioService"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-visible-explorer",
+    "pids": 60,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "S (sleeping)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 163,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 176,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 181,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 189,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 13,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 207,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=audio.mojom.AudioService"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-all-browser-checks",
+    "pids": 60,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "R (running)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 163,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 111,
+        "threads": 17,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 176,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=gpu-process"
+        ]
+      },
+      {
+        "pid": 181,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 9,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=network.mojom.NetworkService"
+        ]
+      },
+      {
+        "pid": 189,
+        "name": "headless_shell",
+        "state": "R (running)",
+        "ppid": 163,
+        "threads": 13,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=renderer"
+        ]
+      },
+      {
+        "pid": 207,
+        "name": "headless_shell",
+        "state": "S (sleeping)",
+        "ppid": 163,
+        "threads": 7,
+        "cpuAllowed": "0-1",
+        "role": [
+          "--type=utility",
+          "--utility-sub-type=audio.mojom.AudioService"
+        ]
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  },
+  {
+    "phase": "after-browser-close",
+    "pids": 7,
+    "events": "max 0",
+    "processes": [
+      {
+        "pid": 1,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 0,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 111,
+        "name": "node",
+        "state": "R (running)",
+        "ppid": 53,
+        "threads": 5,
+        "cpuAllowed": "0-1",
+        "role": []
+      },
+      {
+        "pid": 53,
+        "name": "python3",
+        "state": "S (sleeping)",
+        "ppid": 1,
+        "threads": 1,
+        "cpuAllowed": "0-1",
+        "role": []
+      }
+    ]
+  }
+]

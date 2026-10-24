@@ -1,0 +1,54 @@
+{
+  "baseline": "a06cea0",
+  "canonical_identical_to_approved_proposal_except_authority_usage_import": true,
+  "sources": [
+    {
+      "path": "skills/teacher/skills/course/scripts/check_course_page.mjs",
+      "sha256": "6668f5a3b7b74ef9019416151a112a2c723003bfd9ae57c78d18092baa19a109",
+      "baseline_sha256": "6668f5a3b7b74ef9019416151a112a2c723003bfd9ae57c78d18092baa19a109",
+      "unchanged_from_a06cea0": true
+    },
+    {
+      "path": "skills/teacher/skills/course/scripts/check_course_page_v2.mjs",
+      "sha256": "b2d29644b699a8e9fd5cb072d1969188b3969354a70bd5be65afbda513541ebc",
+      "baseline_sha256": null,
+      "unchanged_from_a06cea0": false
+    },
+    {
+      "path": "skills/teacher/skills/course/scripts/test_course.py",
+      "sha256": "d3d39e01ddd58d78761819b3103a4bde87f05c46e8bec24ad379d75f6844ead3",
+      "baseline_sha256": "c7b4da4f9c53d9e1b3863e37fdf573be20d342470be6935275c8c8611867bf57",
+      "unchanged_from_a06cea0": false
+    },
+    {
+      "path": "skills/teacher/skills/course/scripts/test_sandbox_course.py",
+      "sha256": "57a0bdadd22ba2b1a0f6acb303e3cc3131849d314b2d5cd572bb87add22054a7",
+      "baseline_sha256": "ebadb56c5ba370233f90337ed7a611cffa7580f138e665ea4636af6fcedca089",
+      "unchanged_from_a06cea0": false
+    },
+    {
+      "path": "skills/teacher/skills/course/scripts/sandbox_course.py",
+      "sha256": "3342a28f8f52f3b0143735d76b4ede09ff36691e9efd19959a65524f0ec80c96",
+      "baseline_sha256": "3342a28f8f52f3b0143735d76b4ede09ff36691e9efd19959a65524f0ec80c96",
+      "unchanged_from_a06cea0": true
+    },
+    {
+      "path": "skills/teacher/skills/course/scripts/render_course.py",
+      "sha256": "73afe59e61a76c384eb5439edbab0d736f20dc608a6695af8b38e3712751ef92",
+      "baseline_sha256": "73afe59e61a76c384eb5439edbab0d736f20dc608a6695af8b38e3712751ef92",
+      "unchanged_from_a06cea0": true
+    },
+    {
+      "path": "skills/teacher/skills/course/scripts/render_course.mjs",
+      "sha256": "7c5ceeacc6055d973a813cf2fd0c4a23700cc302ad455b9e30eda968c5849b51",
+      "baseline_sha256": "7c5ceeacc6055d973a813cf2fd0c4a23700cc302ad455b9e30eda968c5849b51",
+      "unchanged_from_a06cea0": true
+    },
+    {
+      "path": "docs/teach-finish-20261024/behavior/check-course-consent-v2.proposed.mjs",
+      "sha256": "f9fd595aac5487685df1af61567ae7d8641f6dc068d20dd0ae15ac774a6b96ca",
+      "baseline_sha256": "f9fd595aac5487685df1af61567ae7d8641f6dc068d20dd0ae15ac774a6b96ca",
+      "unchanged_from_a06cea0": true
+    }
+  ]
+}

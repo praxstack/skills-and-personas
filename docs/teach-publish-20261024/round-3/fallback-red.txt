@@ -1,0 +1,42 @@
+✔ readable captions preserve native cue intervals and earlier gaps (0.993916ms)
+✔ terminal still retains actual final cue and seeking back clears it (0.064083ms)
+✔ final means latest ending cue, including overlapping tracks (0.060208ms)
+✔ unloaded or empty tracks never invent readable words (0.044833ms)
+✔ source URLs allow only web schemes (0.068167ms)
+✔ unsafe sources render as inert text (0.193125ms)
+✔ generated pages include a restrictive CSP (0.072791ms)
+✔ chapter selection shares whole-microsecond media boundaries (0.097333ms)
+✔ exact microsecond boundaries do not move into the preceding microsecond (0.064125ms)
+✔ native caption source contains the actual VTT before any script runs (0.638625ms)
+✔ static export retains every live code language and the JavaScript alias as text (0.226666ms)
+✔ poster source preparation shares the HTTP/HTTPS allowlist (1.128167ms)
+✖ exporter inserts authored fallback replacement tokens literally (3.338417ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.0715
+
+✖ failing tests:
+
+test at skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs:96:1
+✖ exporter inserts authored fallback replacement tokens literally (3.338417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'prefix<noscript><noscript>old</noscript> prefix suffix $ $1 $<name> &lt;b&gt;code&lt;/b&gt;</noscript>suffix'
+  - "prefix<noscript>$& $` $' $$ $1 $<name> &lt;b&gt;code&lt;/b&gt;</noscript>suffix"
+  
+      at TestContext.<anonymous> (file:///Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs:102:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'prefix<noscript><noscript>old</noscript> prefix suffix $ $1 $<name> &lt;b&gt;code&lt;/b&gt;</noscript>suffix',
+    expected: "prefix<noscript>$& $` $' $$ $1 $<name> &lt;b&gt;code&lt;/b&gt;</noscript>suffix",
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

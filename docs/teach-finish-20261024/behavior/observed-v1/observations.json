@@ -1,0 +1,284 @@
+{
+  "schema": "supplemental-behavior-observation/v1",
+  "authority": "non-governing; proposal unapproved",
+  "observedAt": "2026-10-24T13:11:29.771Z",
+  "checks": [
+    {
+      "name": "course consent defaults declined",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course no-consent Done works in session",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course declined writes neither local nor session storage",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course declined progress resets after reload",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course grant writes consent and progress",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course granted progress resumes after reload",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course withdrawal removes progress and consent",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course withdrawn progress does not resume",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer defaults explanation-first with declined consent",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 1 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 2 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 3 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 4 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 5 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "default closure accepts satisfaction without answers",
+      "ok": false,
+      "observed": null
+    },
+    {
+      "name": "explorer declined notes and viewed steps write no storage",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer declined note and location reset",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer granted note, location and consent resume",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer withdrawal removes progress and consent",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer withdrawn note and location reset",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explicit practice requests attempt-first navigation",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "requested practice answer initially unrevealed",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "Show me answers immediately without attempt",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "exit practice restores explanation-first without quiz barrier",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "practice actions without consent remain ephemeral",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "JS-disabled explorer has complete static fallback",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "offline static navigation retains explanation",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "frozen checker reproduces only historical no-consent reload failure",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "unapproved proposed checker executes consent-aware branches diagnostically",
+      "ok": false,
+      "observed": null
+    },
+    {
+      "name": "offline browser observed no HTTP requests",
+      "ok": true,
+      "observed": []
+    },
+    {
+      "name": "no browser page errors",
+      "ok": true,
+      "observed": []
+    }
+  ],
+  "observations": {
+    "hashes": {
+      "skills/teacher/skills/explorable/assets/examples/seasons.lesson.js": "9b339519c0e89c83f6b6868ce6728fd1cee07cafedbf0cf82d6e6567f7558b87",
+      "course/course.json": "f309779d06e46e06d68fbafe29562e20fe091671365ce2c2f9c4912ffd92f026",
+      "site/index.html": "77212b0c9a188c77d0cadd5a859ba0683f7cf75f98ff219530868291864a30d7",
+      "site/seasons.html": "0bcda326c2deeb1cbbedc7a81e3b7d0685db1032ee0561f14302d2d7739ac3dd",
+      "bundle/explorer.html": "d1abb08cdd2ba044c3a49f23cb14661eca60d04e8ff0869f26b291158d14281e",
+      "bundle/static.html": "c631af58b7ab254c2abfdfb0572cc09549fa37b7abb1e516bc84a43f26f1a742",
+      "skills/teacher/skills/course/scripts/check_course_page.mjs": "6668f5a3b7b74ef9019416151a112a2c723003bfd9ae57c78d18092baa19a109"
+    },
+    "browser": "153.0.8010.12",
+    "courseDeclined": {
+      "local": {},
+      "session": {}
+    },
+    "courseGranted": {
+      "local": {
+        "course:synthetic-behavior-v1": "{\"status\":{\"seasons\":\"done\"}}",
+        "course:synthetic-behavior-v1:consent": "yes"
+      },
+      "session": {}
+    },
+    "courseWithdrawn": {
+      "local": {},
+      "session": {}
+    },
+    "explanationWalk": [
+      {
+        "step": 0,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 1,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 2,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": [],
+          "2": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 3,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": [],
+          "2": [],
+          "3": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 4,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": [],
+          "2": [],
+          "3": [],
+          "4": []
+        },
+        "nextDisabled": false
+      }
+    ],
+    "explorerDeclined": {
+      "local": {},
+      "session": {}
+    },
+    "explorerGranted": {
+      "local": {
+        "explorable:v3:seasons-v1:explain:consent": "yes",
+        "explorable:v3:seasons-v1:explain": "{\"steps\":[\"17rptlr\",\"1utcrc2\",\"jr805u\",\"uljiu6\",\"9xrhze\"],\"step\":1,\"done\":[0,1],\"attempts\":{\"0\":[],\"1\":[]},\"tried\":{},\"notes\":\"SYNTHETIC CONSENTED NOTE\",\"curious\":[],\"explained\":{}}"
+      },
+      "session": {}
+    },
+    "explorerWithdrawn": {
+      "local": {},
+      "session": {}
+    },
+    "frozen": {
+      "exit": 1,
+      "stdout": "FAIL status survives a reload \ncourse page: 18 passed, 1 failed\n",
+      "stderr": ""
+    },
+    "unapprovedProposal": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "file:///Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/docs/teach-finish-20261024/behavior/check-course-consent-v2.proposed.mjs:2\n#!/usr/bin/env node\n^\n\nSyntaxError: Invalid or unexpected token\n    at compileSourceTextModule (node:internal/modules/esm/utils:355:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:94:18)\n    at #translate (node:internal/modules/esm/loader:441:20)\n    at afterLoad (node:internal/modules/esm/loader:509:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)\n    at afterResolve (node:internal/modules/esm/loader:614:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)\n    at node:internal/modules/esm/loader:639:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:582:22)\n\nNode.js v26.12.1\n"
+    }
+  },
+  "errors": [],
+  "network": [],
+  "limits": [
+    "Only reviewed first-party seasons fixture and Chromium were exercised.",
+    "Page behavior does not prove live-chat instruction adherence or human learning.",
+    "No narrated media acceptance; no sandbox repeatability claim.",
+    "No learner journal created; only synthetic temporary browser state."
+  ]
+}

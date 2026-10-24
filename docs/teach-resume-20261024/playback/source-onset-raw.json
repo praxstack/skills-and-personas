@@ -1,0 +1,20 @@
+{
+  "command": [
+    "ffmpeg",
+    "-hide_banner",
+    "-nostdin",
+    "-i",
+    "/Users/prax/Developer/prax-teach-candidate-handoff-20261020/staging/media/lesson.mp4",
+    "-map",
+    "0:a:0",
+    "-af",
+    "silencedetect=noise=-45dB:d=0.05",
+    "-t",
+    "3",
+    "-f",
+    "null",
+    "-"
+  ],
+  "returncode": 0,
+  "output": "Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/prax/Developer/prax-teach-candidate-handoff-20261020/staging/media/lesson.mp4':\n  Metadata:\n    major_brand     : isom\n    minor_version   : 512\n    compatible_brands: isomiso2mp41\n    encoder         : Lavf63.1.102\n  Duration: 00:01:26.05, start: 0.000000, bitrate: 350 kb/s\n  Stream #0:0[0x1](und): Video: vp9 (Profile 0) (vp09 / 0x39307076), yuv420p(tv, progressive), 1280x720, 224 kb/s, 24 fps, 24 tbr, 12288 tbn, start 0.006510 (default)\n    Metadata:\n      handler_name    : VideoHandler\n      encoder         : Lavc63.1.102 libvpx-vp9\n  Stream #0:1[0x2](und): Audio: opus (Opus / 0x7375704F), 48000 Hz, mono, fltp, 121 kb/s (default)\n    Metadata:\n      handler_name    : SoundHandler\nStream mapping:\n  Stream #0:1 -> #0:0 (opus (native) -> pcm_s16le (native))\nOutput #0, null, to 'pipe:':\n  Metadata:\n    major_brand     : isom\n    minor_version   : 512\n    compatible_brands: isomiso2mp41\n    encoder         : Lavf63.1.102\n  Stream #0:0(und): Audio: pcm_s16le, 48000 Hz, mono, s16, 768 kb/s (default)\n    Metadata:\n      encoder         : Lavc63.1.102 pcm_s16le\n      handler_name    : SoundHandler\n[Parsed_silencedetect_0 @ 0x774cc11080] silence_start: 0.0065\n[Parsed_silencedetect_0 @ 0x774cc11080] silence_end: 1.307625 | silence_duration: 1.301125\n[out#0/null @ 0x774cc109c0] video:0KiB audio:281KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:03.00 bitrate=N/A speed= 733x elapsed=0:00:00.00    \n"
+}

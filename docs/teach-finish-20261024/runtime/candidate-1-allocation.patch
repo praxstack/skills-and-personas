@@ -1,0 +1,43 @@
+--- a/skills/teacher/skills/course/scripts/sandbox_course.py
++++ b/skills/teacher/skills/course/scripts/sandbox_course.py
+@@ -54,6 +54,9 @@
+ base = '/tools/course/scripts/'
+ sys.path.insert(0, base)
+ from supervisor_reaping import wait_reaping
++from supervisor_resources import constrain_cpu_affinity
++before, after = constrain_cpu_affinity()
++print('RUNTIME_CPU_AFFINITY '+json.dumps({'before': before, 'after': after}), file=sys.stderr, flush=True)
+ env = {'PATH': '/usr/local/bin:/usr/bin:/bin', 'HOME': '/tmp', 'TMPDIR': '/tmp',
+        'PYTHONDONTWRITEBYTECODE': '1', 'PLAYWRIGHT_BROWSERS_PATH': '/ms-playwright',
+        'CHROMIUM_PATH': '/tools/chromium', 'UV_THREADPOOL_SIZE': '1', 'NODE_OPTIONS': '--v8-pool-size=1'}
+--- /dev/null
++++ b/skills/teacher/skills/course/scripts/supervisor_resources.py
+@@ -0,0 +1,28 @@
++"""Trusted Linux worker-allocation bound, in addition to Docker's CPU quota."""
++import os
++
++
++def constrain_cpu_affinity():
++    """Expose one already-allowed CPU to children; fail before authored execution.
++
++    A CPU-time quota does not constrain the CPU count used to size worker pools.
++    The container already has a one-CPU quota. Inheriting a one-CPU affinity mask
++    lets browser/media workers respect that bound without spending the fixed
++    PID budget on workers for CPUs that cannot run concurrently under the quota.
++    """
++    get_affinity = getattr(os, 'sched_getaffinity', None)
++    set_affinity = getattr(os, 'sched_setaffinity', None)
++    if not callable(get_affinity) or not callable(set_affinity):
++        raise RuntimeError('CPU affinity unavailable; no authored code ran')
++    try:
++        before = get_affinity(0)
++        if not before:
++            raise RuntimeError('no allowed CPU; no authored code ran')
++        selected = {min(before)}
++        set_affinity(0, selected)
++        after = get_affinity(0)
++    except OSError as exc:
++        raise RuntimeError('CPU affinity unavailable; no authored code ran') from exc
++    if after != selected:
++        raise RuntimeError('CPU affinity did not apply; no authored code ran')
++    return sorted(before), sorted(after)

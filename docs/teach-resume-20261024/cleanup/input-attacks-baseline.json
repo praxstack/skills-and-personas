@@ -1,0 +1,22 @@
+{
+  "source": "d246f6f",
+  "scope": "synthetic parse only; no network; before any manifest fix",
+  "controls": [
+    {
+      "attack": "pipeline-symlink",
+      "baselineReadOutsideMarker": true
+    },
+    {
+      "attack": "leaf-symlink",
+      "baselineReadOutsideMarker": true
+    },
+    {
+      "attack": "hardlink",
+      "baselineReadOutsideMarker": true
+    },
+    {
+      "attack": "directory-swap-before-open",
+      "baselineReadOutsideMarker": true
+    }
+  ]
+}

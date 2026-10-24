@@ -3,8 +3,8 @@
 
   python3 check_speech.py clip.mp4 [--vtt clip.vtt] [--model base.en] [--min-recall 0.85] [--json]
 
-Listens to the clip with Whisper (faster-whisper, offline after the first
-model download) and, cue by cue, checks how many of the caption's words were
+Listens to the clip with Whisper (faster-whisper, local model cache by default;
+TEACHER_ALLOW_NETWORK=1 permits model download) and, cue by cue, checks how many of the caption's words were
 actually heard near that cue's time. Catches a voice that skips, slurs or
 mangles words, mispronounces a symbol, or drifts out of sync with the
 captions: things nobody can hear in a frame-by-frame check. Fails when
@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import subprocess
 import sys
@@ -185,7 +186,14 @@ def main() -> int:
     if raw.returncode or not raw.stdout:
         raise SystemExit(f"ffmpeg couldn't read the audio: {raw.stderr.decode()[-500:]}")
     audio = np.frombuffer(raw.stdout, dtype=np.float32)
-    model = WhisperModel(a.model, device="cpu", compute_type="int8")
+    try:
+        model = WhisperModel(a.model, device="cpu", compute_type="int8",
+                             local_files_only=os.environ.get("TEACHER_ALLOW_NETWORK") != "1")
+    except Exception as exc:
+        if os.environ.get("TEACHER_ALLOW_NETWORK") != "1":
+            raise SystemExit("Whisper could not load a local model. Prepare the model separately or "
+                             "explicitly opt in with TEACHER_ALLOW_NETWORK=1. " + str(exc)) from exc
+        raise
     segments, _ = model.transcribe(audio, beam_size=1, word_timestamps=True, vad_filter=False)
     heard = [(w.start, w.end, ww) for s in segments for w in (s.words or []) for ww in words(w.word)]
 

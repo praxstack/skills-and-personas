@@ -1,0 +1,9 @@
+test_adopted_exits_do_not_replace_owned_failure (test_supervisor_reaping.SupervisorReapingTests.test_adopted_exits_do_not_replace_owned_failure) ... ok
+test_drain_does_not_wait_for_live_descendants (test_supervisor_reaping.SupervisorReapingTests.test_drain_does_not_wait_for_live_descendants) ... ok
+test_lost_owned_status_is_not_assumed_success (test_supervisor_reaping.SupervisorReapingTests.test_lost_owned_status_is_not_assumed_success) ... ok
+test_owned_signal_status_survives_reaping (test_supervisor_reaping.SupervisorReapingTests.test_owned_signal_status_survives_reaping) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK

@@ -1,0 +1,180 @@
+[
+  {
+    "name": "environment",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-c",
+      "import sys,requests,yaml; print(sys.version); print(requests.__version__,requests.__file__); print(yaml.__file__)"
+    ],
+    "returncode": 0,
+    "seconds": 0.18,
+    "log": "environment.txt",
+    "environment": {
+      "PYTHONPATH": "/Users/prax/.cache/uv/archive-v0/ZYsqvPvo6Drakewc:/Users/prax/.local/share/uv/tools/headroom-ai/lib/python3.13/site-packages",
+      "runtime_env": "/Users/prax/.local/share/prax-teach/runtime/v3/env.sh",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TEACHER_SANDBOX_IMAGE": "sha256:c3adc592ed3413a4e7d4e9496911f317e223efb5d86712a18cb2286231c79a6a",
+      "TEACHER_SANDBOX_CONTEXT": "colima-teach-security",
+      "COURSE_SANDBOX_IMAGE": "sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f",
+      "COURSE_SANDBOX_CONTEXT": "colima-teach-security",
+      "COURSE_SANDBOX_BROWSER": "1",
+      "ENRICHMENT_TEST_IMAGE": "sha256:6bae2ca9852061ba0abebef8b07f9f3ea96a799c9f7ef4d31f0a6f135ae5ea6c",
+      "ENRICHMENT_TEST_CONTEXT": "colima-teach-security",
+      "TEACHER_BROWSER_TESTS": "1"
+    }
+  },
+  {
+    "name": "teacher",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/teacher/scripts/tests",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 18.38,
+    "log": "teacher.txt"
+  },
+  {
+    "name": "course",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/teacher/skills/course/scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 131.395,
+    "log": "course.txt"
+  },
+  {
+    "name": "code-sandbox",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/teacher/skills/explorable/scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 11.45,
+    "log": "code-sandbox.txt"
+  },
+  {
+    "name": "transport",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/transcript-pipeline/scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 48.621,
+    "log": "transport.txt"
+  },
+  {
+    "name": "integration",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "seconds": 26.056,
+    "log": "integration.txt"
+  },
+  {
+    "name": "node",
+    "command": [
+      "node",
+      "--test",
+      "skills/teacher/skills/course/scripts/publish_videos.test.mjs",
+      "skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs",
+      "skills/teacher/skills/explorable/scripts/report.test.mjs"
+    ],
+    "returncode": 0,
+    "seconds": 0.238,
+    "log": "node.txt"
+  },
+  {
+    "name": "distribution",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "skills/teach-pro-max/scripts/verify_distribution.py"
+    ],
+    "returncode": 0,
+    "seconds": 0.237,
+    "log": "distribution.txt"
+  },
+  {
+    "name": "merge",
+    "command": [
+      "node",
+      "skills/teacher/skills/explorable/scripts/test_lesson.mjs",
+      "examples/teach-visual-candidate/merge-sort-stability/explorer.html"
+    ],
+    "returncode": 0,
+    "seconds": 1.519,
+    "log": "merge.txt"
+  },
+  {
+    "name": "momentum",
+    "command": [
+      "node",
+      "skills/teacher/skills/explorable/scripts/test_lesson.mjs",
+      "examples/teach-visual-candidate/momentum/explorer.html"
+    ],
+    "returncode": 0,
+    "seconds": 1.1,
+    "log": "momentum.txt"
+  },
+  {
+    "name": "transport-supported-runtime",
+    "command": [
+      "/Users/prax/.local/share/uv/tools/crawl4ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/transcript-pipeline/scripts",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "returncode": 0,
+    "log": "transport-supported-runtime.txt",
+    "environment": {
+      "PYTHONPATH": "/Users/prax/.cache/uv/archive-v0/ZYsqvPvo6Drakewc",
+      "runtime_env": "/Users/prax/.local/share/prax-teach/runtime/v3/env.sh",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TEACHER_BROWSER_TESTS": "1",
+      "ENRICHMENT_TEST_IMAGE": "sha256:6bae2ca9852061ba0abebef8b07f9f3ea96a799c9f7ef4d31f0a6f135ae5ea6c",
+      "ENRICHMENT_TEST_CONTEXT": "colima-teach-security"
+    }
+  }
+]

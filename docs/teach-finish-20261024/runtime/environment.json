@@ -1,0 +1,10 @@
+{
+  "runtimeImage": "sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f",
+  "context": "colima-teach-security",
+  "python": "3.15.0",
+  "host": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "dockerInfo": "2 CPUs / 2054832128 memory",
+  "baselineCommit": "f7c609c",
+  "planningCommit": "0eaa898",
+  "installedReleaseUntouched": "v3.0.1-33cfd55"
+}

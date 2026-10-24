@@ -27,6 +27,7 @@
 .xp-main { min-width: 0; }
 .xp-step { display: grid; gap: var(--s-4); }
 .xp-step h2:focus { outline: none; }
+.xp-say[hidden] { display: none; }
 .xp-say { max-width: 64ch; display: grid; gap: var(--s-3); }
 .xp-say p + p { margin-top: 0; }
 .xp-figure { margin: 0; padding: var(--s-3); display: grid; gap: var(--s-2); }

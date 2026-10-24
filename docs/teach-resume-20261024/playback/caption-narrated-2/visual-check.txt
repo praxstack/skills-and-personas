@@ -1,0 +1,29 @@
+{
+  "url": "file:///tmp/output/site/base-rates.html",
+  "results": [
+    {
+      "run": "desktop-light",
+      "problems": []
+    },
+    {
+      "run": "desktop-light-reduced",
+      "problems": []
+    },
+    {
+      "run": "desktop-dark",
+      "problems": []
+    },
+    {
+      "run": "phone-light",
+      "problems": []
+    },
+    {
+      "run": "phone-light-reduced",
+      "problems": []
+    },
+    {
+      "run": "phone-dark",
+      "problems": []
+    }
+  ]
+}

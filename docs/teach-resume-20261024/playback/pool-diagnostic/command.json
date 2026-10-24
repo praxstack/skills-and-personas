@@ -1,0 +1,21 @@
+{
+  "argv": [
+    ".superpowers/sdd/RESUME-20261024/run_playback.py",
+    "pool-diagnostic",
+    "--diagnostic"
+  ],
+  "image": "sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f",
+  "context": "colima-teach-security",
+  "diagnosticOnly": true,
+  "source": {
+    "course.json": "56792804f58d87ba935037f7fbdbb26a2d0a130d71f2b2058a91ce0a82b09020",
+    "lesson.lesson.js": "939b58ec9b72ec9fe4100aa382ed533a418a0adaea44b9fd256a23757dcd20f6",
+    "videos/base-rates.mp4": "ae739d97750cc01e43032128f9a13d003ca7533fcc50b251443d526801732d71",
+    "videos/base-rates.vtt": "436fe14b95b2bee7ac93c9c06b4e0ede605e75e09a98fac287776fde30cbdadd"
+  },
+  "product": {
+    "skills/teacher/skills/course/scripts/sandbox_course.py": "8572e0dc7eb41187bccacb3361555e4705e8195bf3cc135f92e8fbffd05e0419",
+    "skills/teacher/skills/course/scripts/render_course.mjs": "7c5ceeacc6055d973a813cf2fd0c4a23700cc302ad455b9e30eda968c5849b51",
+    "skills/teacher/skills/course/scripts/render_course.py": "73afe59e61a76c384eb5439edbab0d736f20dc608a6695af8b38e3712751ef92"
+  }
+}

@@ -5,7 +5,7 @@ description: |
   Re-run or deepen the agent's identity interview. Drives the SHARED bootstrap
   answer bank (state/interview.json) via `gbrain bootstrap interview
   --set/--show/--confirm`, then re-renders the identity files with
-  `gbrain bootstrap render --only <FILE> --force`. One answer store, two
+  `gbrain bootstrap render --only FILE --force`. One answer store, two
   surfaces: first-boot bootstrap and this re-run skill write the same bank, so
   an updated answer flows into SOUL.md, USER.md, ACCESS_POLICY.md, and
   HEARTBEAT.md without hand-editing rendered files. Every answer is the user's

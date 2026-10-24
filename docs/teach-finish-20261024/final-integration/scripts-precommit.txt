@@ -1,0 +1,25 @@
+test_committed_repeat_and_preservation (test_candidate_packaging.Candidate.test_committed_repeat_and_preservation) ... FAIL
+test_local_imports_and_cli_help (test_portfolio_repair.PipelinePackagingTests.test_local_imports_and_cli_help) ... ok
+test_parity_rejects_fourth_path_substitution (test_portfolio_repair.PipelinePackagingTests.test_parity_rejects_fourth_path_substitution) ... ok
+test_parity_rejects_runtime_drift (test_portfolio_repair.PipelinePackagingTests.test_parity_rejects_runtime_drift) ... ok
+test_source_parity (test_portfolio_repair.PipelinePackagingTests.test_source_parity) ... ok
+test_synthetic_ingestion_and_stage_handoff (test_portfolio_repair.PipelinePackagingTests.test_synthetic_ingestion_and_stage_handoff) ... ok
+test_bad_evidence (test_render_receipts.Receipts.test_bad_evidence) ... ok
+test_missing_playback (test_render_receipts.Receipts.test_missing_playback) ... ok
+test_missing_receipt (test_render_receipts.Receipts.test_missing_receipt) ... ok
+test_qa_failure_even_with_successful_export (test_render_receipts.Receipts.test_qa_failure_even_with_successful_export) ... ok
+test_valid (test_render_receipts.Receipts.test_valid) ... ok
+
+======================================================================
+FAIL: test_committed_repeat_and_preservation (test_candidate_packaging.Candidate.test_committed_repeat_and_preservation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/scripts/test_candidate_packaging.py", line 23, in test_committed_repeat_and_preservation
+    self.assertIn('transcript-pipeline/scripts/safe_resource_output.py', z.namelist())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'transcript-pipeline/scripts/safe_resource_output.py' not found in ['transcript-pipeline/CANDIDATE-STATUS.txt', 'transcript-pipeline/README.md', 'transcript-pipeline/SKILL.md', 'transcript-pipeline/USAGEGUIDE.md', 'transcript-pipeline/docs/Chat-Provider-Orchestration-Guide.md', 'transcript-pipeline/docs/Colab-Notebook-Explainer-Pipeline.md', 'transcript-pipeline/docs/Deep-Pass-Quality-Gate.md', 'transcript-pipeline/docs/Design-Review-Record-KiloCode-OpenCode.md', 'transcript-pipeline/docs/Multi-Agent-Contribution-SOP.md', 'transcript-pipeline/docs/Resource-Enrichment-Authenticated-Flow.md', 'transcript-pipeline/docs/Transcript-Intelligence-Master-Blueprint.md', 'transcript-pipeline/docs/prompts/Chat-Pipeline-Controller-Prompt.md', 'transcript-pipeline/docs/prompts/references/tutorial-tech-bar-raiser.md', 'transcript-pipeline/docs/prompts/stages/stage1-refine.md', 'transcript-pipeline/docs/prompts/stages/stage2-synthesize.md', 'transcript-pipeline/docs/prompts/stages/stage3-enhance.md', 'transcript-pipeline/docs/prompts/stages/stage4-validate.md', 'transcript-pipeline/references/colab-notebook-explainer-pipeline.md', 'transcript-pipeline/references/domain-corrections.md', 'transcript-pipeline/references/output-template.md', 'transcript-pipeline/references/resource-enrichment-authenticated-flow.md', 'transcript-pipeline/references/stage1-refine-guide.md', 'transcript-pipeline/references/stage1-refine.md', 'transcript-pipeline/references/stage2-synthesize-guide.md', 'transcript-pipeline/references/stage2-synthesize.md', 'transcript-pipeline/references/stage3-enhance-guide.md', 'transcript-pipeline/references/stage3-enhance.md', 'transcript-pipeline/references/stage4-validate-guide.md', 'transcript-pipeline/references/stage4-validate.md', 'transcript-pipeline/references/tutorial-tech-bar-raiser.md', 'transcript-pipeline/scripts/Dockerfile.enrichment', 'transcript-pipeline/scripts/Dockerfile.enrichment-base', 'transcript-pipeline/scripts/README.enrichment-sandbox.md', 'transcript-pipeline/scripts/enhance_final_notes.py', 'transcript-pipeline/scripts/enrichment-wheels-arm64.json', 'transcript-pipeline/scripts/ingest_zoom_captions.py', 'transcript-pipeline/scripts/merge_chunks.py', 'transcript-pipeline/scripts/publish_tutorial_notes.py', 'transcript-pipeline/scripts/resource_budget.py', 'transcript-pipeline/scripts/resource_enrichment.py', 'transcript-pipeline/scripts/run_chat_pipeline.py', 'transcript-pipeline/scripts/run_colab_notebook_pipeline.py', 'transcript-pipeline/scripts/sandbox_resource_enrichment.py', 'transcript-pipeline/scripts/test_browser_transport.py', 'transcript-pipeline/scripts/test_resource_budget.py', 'transcript-pipeline/scripts/test_resource_enrichment.py', 'transcript-pipeline/scripts/test_sandbox_resource_enrichment.py', 'transcript-pipeline/scripts/update_ai_notes_with_resources_and_colab.py', 'transcript-pipeline/scripts/validate_coverage.py']
+
+----------------------------------------------------------------------
+Ran 11 tests in 24.447s
+
+FAILED (failures=1)

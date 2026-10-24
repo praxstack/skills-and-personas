@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "checks": 22,
+  "seconds": 26.10848116700072,
+  "lesson": {
+    "returncode": 0
+  },
+  "visual": {
+    "returncode": 0
+  }
+}

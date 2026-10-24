@@ -1,0 +1,10 @@
+test_local_imports_and_cli_help (__main__.PipelinePackagingTests.test_local_imports_and_cli_help) ... ok
+test_parity_rejects_fourth_path_substitution (__main__.PipelinePackagingTests.test_parity_rejects_fourth_path_substitution) ... ok
+test_parity_rejects_runtime_drift (__main__.PipelinePackagingTests.test_parity_rejects_runtime_drift) ... ok
+test_source_parity (__main__.PipelinePackagingTests.test_source_parity) ... ok
+test_synthetic_ingestion_and_stage_handoff (__main__.PipelinePackagingTests.test_synthetic_ingestion_and_stage_handoff) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.765s
+
+OK

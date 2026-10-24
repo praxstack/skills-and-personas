@@ -1,0 +1,10 @@
+build-1 0 built seasons-1: 1 lessons into /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-m9z2x186/built-1
+v2-1 0 course page: 26 passed, 0 failed
+v1-historical 1 course page: 18 passed, 1 failed
+manifest-before-runner os.stat_result(st_mode=33188, st_ino=191370265, st_dev=16777230, st_nlink=2, st_uid=501, st_gid=20, st_size=200, st_atime=1792855503, st_mtime=1792855502, st_ctime=1792855503) uid 501
+v1-runner-historical 1 ValueError: input must be an owned regular file with one link
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/verify_method.py", line 51, in <module>
+    assert 'course page: 18 passed, 1 failed' in old_runner
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -46,11 +46,20 @@ function h(tag, attrs = {}, ...kids) {
 // together, and one with no full stop gets one), then no space is left
 // before punctuation ("outside , it").
 function plainText(html) {
-  return String(html || "")
+  const markup = String(html || "")
     // A paragraph that ends without a stop gets one (looking past closing </strong> and the like),
     // unless a formula follows: "the points with</p><p class="nb-print">w₁x₁ + ..." reads on into it.
     .replace(/([^\s>])((?:<\/(?:strong|em|b|i|span|a|code|var|sub|sup)>)*)\s*<\/(p|li|h\d)>(?=[\s\S]*\S)(?!\s*<(?:pre\b|(?:p|div)\b[^>]*\bclass="[^"]*\b(?:nb-print|formula|math)\b))/g, (m, c, inl, tag) => `${c}${/[.!?:;]/.test(c) ? "" : "."}${inl}</${tag}>`)
-    .replace(/<[^>]+>/g, " ")
+    .replace(/<[^>]+>/g, " ");
+  // Decode only after markup removal, in an inert template. Escaped markup
+  // remains text; no detached image or iframe can start a resource request.
+  let decoded = markup;
+  if (markup.includes("&")) {
+    const template = document.createElement("template");
+    template.innerHTML = markup;
+    decoded = template.content.textContent;
+  }
+  return decoded
     .replace(/\s+/g, " ")
     .replace(/\s+([,.;:!?)])/g, "$1")
     .replace(/\(\s+/g, "(")
@@ -344,7 +353,9 @@ function explainBox(step, i) {
   text.value = prev?.text || "";
   const reveal = h("div", { class: "xp-feedback", "aria-live": "polite" });
   const go = h("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Compare with the teacher's version" });
-  const box = h("div", { class: "xp-ask nb-sheet", role: "group", "aria-label": "Explain it back" }, h("p", { class: "xp-q", text: ask.q }), h("p", { class: "xp-muted", text: "Write it before you look. A rough answer is fine; the gaps are the point." }), text, h("div", { class: "xp-row" }, go), reveal);
+  const giveUp = h("button", { type: "button", class: "nb-btn nb-btn-quiet", text: "Show me", hidden: !PRACTICE });
+  const log = (S.attempts[i] ||= []);
+  const box = h("div", { class: "xp-ask nb-sheet", role: "group", "aria-label": "Explain it back" }, h("p", { class: "xp-q", text: ask.q }), h("p", { class: "xp-muted", text: "Write it before you look. A rough answer is fine; the gaps are the point." }), text, h("div", { class: "xp-row" }, go, giveUp), reveal);
   const covered = new Set(prev?.covered || []);
   const keep = () => {
     S.explained[i] = { text: text.value.trim(), covered: [...covered] };
@@ -353,15 +364,18 @@ function explainBox(step, i) {
   // Once the teacher's version is shown, later edits are saved too (the report
   // reads them), a moment after typing stops and when the box loses focus.
   let revealed = false;
+  let responseAccepted = false;
   let typing;
   text.addEventListener("input", () => {
-    if (!revealed) return;
+    if (!revealed || !responseAccepted) return;
     clearTimeout(typing);
     typing = setTimeout(keep, 400);
   });
-  text.addEventListener("change", () => revealed && (clearTimeout(typing), keep()));
-  const showModel = () => {
+  text.addEventListener("change", () => revealed && responseAccepted && (clearTimeout(typing), keep()));
+  const showModel = ({ saveResponse = true } = {}) => {
     revealed = true;
+    responseAccepted = saveResponse;
+    giveUp.hidden = true;
     const checks = (ask.points || []).map((pt, k) => {
       const cb = h("input", { type: "checkbox", id: `xp-pt-${i}-${k}`, checked: covered.has(k) ? true : null });
       cb.addEventListener("change", () => {
@@ -373,11 +387,11 @@ function explainBox(step, i) {
     put(reveal, 
       h("p", { class: "nb-label", text: "How the teacher would put it" }),
       h("div", { class: "xp-why", html: ask.model || "" }),
-      checks.length ? h("p", { class: "nb-label", text: "Tick what your answer covered" }) : null,
-      checks.length ? h("ul", { class: "xp-points" }, checks) : null,
+      checks.length && saveResponse ? h("p", { class: "nb-label", text: "Tick what your answer covered" }) : null,
+      checks.length && saveResponse ? h("ul", { class: "xp-points" }, checks) : null,
       h("p", { class: "nb-hand", text: "Missed something? That's the bit to say out loud once more." }),
     );
-    keep();
+    if (saveResponse) keep();
     finishStep(i);
   };
   go.addEventListener("click", () => {
@@ -387,7 +401,13 @@ function explainBox(step, i) {
     }
     showModel();
   });
+  giveUp.addEventListener("click", () => {
+    log.push({ given: null, right: false, asked: true });
+    persist();
+    showModel({ saveResponse: false });
+  });
   if (prev) showModel();
+  else if (log.some(attempt => attempt.asked)) showModel({ saveResponse: false });
   return box;
 }
 
@@ -515,6 +535,8 @@ function finishStep(i) {
   persist();
   paintOutline();
   paintTakeaways();
+  const explanation = stepBox.querySelector(".xp-say");
+  if (explanation) explanation.hidden = false;
   const next = stepBox.querySelector(".xp-next");
   if (next) next.disabled = false;
 }
@@ -552,7 +574,7 @@ function goStep(i, { focus = true } = {}) {
     stage,
     controls,
     !PRACTICE ? hook : null,
-    h("div", { class: "xp-say", html: step.say }),
+    h("div", { class: "xp-say", hidden: PRACTICE && step.ask && !S.done.has(S.step), html: step.say }),
     stepCode ? stepCode.el : null,
     step.lookFor ? h("p", { class: "xp-lookfor" }, h("span", { class: "nb-label", text: "Look for" }), h("span", { class: "nb-hand", text: step.lookFor })) : null,
     !PRACTICE && step.ask && (step.ask.why || step.ask.model) ? h("div", { class: "xp-explanation nb-printout", html: step.ask.why || step.ask.model }) : null,
@@ -575,10 +597,10 @@ function report(choice, text) {
   L.steps.forEach((st, i) => {
     const a = S.attempts[i];
     const t = S.tried[i];
-    if (!a && !t) return;
+    if (!a?.length && !t?.length) return;
     const misses = (a || []).filter((x) => !x.right).length;
     const parts = [];
-    if (a) parts.push(misses ? `${misses} miss${misses > 1 ? "es" : ""}${a.some((x) => x.asked) ? ", asked to be shown" : ""}` : "right first time");
+    if (a?.length) parts.push(misses ? `${misses} miss${misses > 1 ? "es" : ""}${a.some((x) => x.asked) ? ", asked to be shown" : ""}` : "right first time");
     if (t?.length) parts.push(`tried other explanations: ${t.join("; ")}`);
     lines.push(`- ${st.title}: ${parts.join(", ")}`);
   });

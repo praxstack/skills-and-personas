@@ -1,0 +1,33 @@
+# Teach Pro Max completion — 2026-10-24
+
+## Spec and objective
+
+Deliver the existing general, explanation-first visual teacher: intuition through mechanism-led drawings, animation and interaction; complete explanations; optional practice; factual accuracy; private consented state; usable offline outputs. Product, review machinery and reference-library cleanup remain distinct.
+
+Binding specification: `docs/security/teach-v3-hardening-20261020/SPEC.md`; continuation contract: `docs/security/teach-v3-hardening-20261020/CONTINUATION.md`. Original baseline `dc6a49857d07643e3bcf6bfece9272f6f28f1bb7`; installed/accepted baseline `33cfd556ed0387c0b4991fcb6d4bb6f2ae912fad`; starting candidate/rollback `f7c609c602b37d26620432c622803d6f5d769577`.
+
+## Global Constraints
+
+- Explain first for ordinary teaching. Require practice first only when explicitly requested. Preserve consent, no-provider-API and offline boundaries.
+- Do not change the governing specification, frozen evaluators, private banks, thresholds, historical receipts or installed release snapshots. Proposed evaluator changes must be new, separately versioned files and cannot certify this run.
+- Retain the existing 64-task/512-MiB media-container limits and actual narrated-media acceptance requirement. Synthetic fixtures cannot substitute for narrated playback.
+- Never silently merge or remove divergent skills. Preserve unrelated work. Do not delete refs, rewrite public history, merge, publish or activate an unaccepted candidate.
+- Mutable surface: teacher implementation and mirrored tools, ordinary regression tests, new examples, packaging and additive current documentation. Preserve all previous receipts.
+- Run at most four implementation waves, one implementer at a time; per-wave task review and a final independent whole-branch review. At most two product repair candidates per persistent failure, stop after two consecutive no-gain candidates; do not weaken checks. Overall execution budget: 90 minutes; runtime wave: 25 minutes; other waves: 15 minutes each; retain remaining time for integration/review. A budget stop is incomplete, never acceptance.
+- Evidence must name exact code/artifact bytes, commands, outcomes, skips and limitations. Engineering checks do not establish human learning or subjective listening quality.
+
+## Task 1: Repair real narrated-media repeatability
+
+Own `skills/teacher/skills/course/scripts/`, directly related renderer files and focused ordinary regression tests; add current evidence under `docs/teach-finish-20261024/`. Read prior runtime receipts and existing image/runner documentation. Reproduce the real narrated exemplar failure in the preserved sandbox, identify and repair its cause without increasing limits, weakening browser/QA assertions, substituting codec fixtures or importing untrusted host code. Use the existing provisioned runtime and local narration; no model/API downloads. Preserve command logs outside attested content. Demonstrate three consecutive fresh-container runs of actual narrated source with lesson/visual QA and advancing audio/video playback. Record before/after reproduction, lifecycle/negative/ordinary controls and exact artifact hashes. Run affected unit/security controls. If the bounded repair cannot succeed, retain the failure and report BLOCKED or DONE_WITH_CONCERNS with the concrete cause; do not consume all subsequent work. Commit only owned changes and write the implementer report.
+
+## Task 2: Observe privacy and teaching behavior; prepare evaluator decision
+
+Own additive `docs/teach-finish-20261024/behavior/`, an independently named supplemental behavior-audit tool/test if necessary, and fixes to product behavior it directly demonstrates. Read the frozen checker's actual assertions but never edit it. Exercise real pages with consent declined and granted, ephemeral default operation, requested practice versus default explanation-first, answer/closure without a quiz barrier, static fallback and offline behavior. Report observed results separately from instructions or assertions. Prepare a concrete separately versioned consent-aware evaluator proposal and comparison showing why the historical checker fails; it must not replace the governing checker or become this run's acceptance authority. Ensure both refused-consent nonpersistence and granted-consent resume work. Do not claim universal prompt adherence from source inspection. Run affected focused tests, commit the scoped changes and write the implementer report.
+
+## Task 3: Demonstrate visual quality and triage remaining scope
+
+Own new examples and additive `docs/teach-finish-20261024/quality/` and `portfolio/`. After runtime code is frozen, create and actually render a fresh DSA lesson on merge-sort stability and a non-programming lesson on conservation of momentum, using the canonical teacher. Pick still/explorer/video by explanatory job, not a media quota. Include assumptions, source provenance, readable desktop/mobile diagrams, exact semantic relationships, meaningful controls, accessible static fallbacks and real narration when it adds explanatory value. Inspect rendered screenshots; verify model arithmetic and interactions. Preserve editable source and record limitations. Compare pertinent artifacts with the original accepted visual direction and current installed version without inventing measured learning gains. Run the current portfolio audit; distinguish actual live broken dependencies from frozen historical findings. Prepare a lossless duplicate-identity ownership/migration proposal and exact public-history cleanup inventory; do not delete/rename divergent identities or refs. These are separately scoped decisions, not reasons to silently rewrite the entire skills portfolio. Commit scoped deliverables and write the implementer report.
+
+## Task 4: Integrate, verify and prepare the exact release candidate
+
+Own release tooling only as necessary, `docs/teach-finish-20261024/` final reports and local candidate deliverables. Run the applicable complete teacher/security/transport/packaging suites with required supported runtimes enabled; record genuine failures/skips. Independently verify installed baseline unchanged, protected-file diffs, source/runtime mirror parity and deterministic package membership/hashes. Produce a local candidate package and a concise HTML status report linking real demonstrations and receipts; identify every unresolved acceptance or approval item without changing history. Retain rollback pointers. No merge, publication, history cleanup or installation is authorized before final review and required governing decisions. Commit current additive receipts outside attested product archives and write the implementer report.

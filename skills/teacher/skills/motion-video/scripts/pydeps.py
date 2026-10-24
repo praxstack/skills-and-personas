@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""pydeps.py: install the pipeline's Python packages on any machine, including ones where pip says no.
+"""pydeps.py: import installed packages; explicit setup may install missing packages.
+
+Package installation requires TEACHER_ALLOW_NETWORK=1. The default never invokes pip.
 
 Plain `pip install` fails on many laptops. Homebrew's Python and Debian/Ubuntu's mark themselves "externally
 managed" (PEP 668) and refuse both system and --user installs, and kokoro-onnx has no build for Python 3.14
@@ -65,7 +67,18 @@ def base_python():
     return sys.executable
 
 
+def network_allowed():
+    return os.environ.get("TEACHER_ALLOW_NETWORK") == "1"
+
+
+def require_network(action):
+    if not network_allowed():
+        raise RuntimeError(f"{action} requires network setup. Install the dependency/assets separately, "
+                           "or explicitly opt in with TEACHER_ALLOW_NETWORK=1 for this command.")
+
+
 def _pip(python, pkg, user=False):
+    require_network(f"Installing {pkg}")
     cmd = [python, "-m", "pip", "install", "-q", "--disable-pip-version-check"] + (["--user"] if user else []) + [pkg]
     # a user install cannot land in a virtual environment, so PIP_USER or a pip.conf user = true is off there
     env = dict(os.environ, PIP_USER="0") if sys.prefix != sys.base_prefix else None
@@ -76,6 +89,7 @@ def _pip(python, pkg, user=False):
 def _make_venv():
     if os.path.exists(venv_python()):
         return
+    require_network("Creating a private Python environment")
     base = base_python()
     log(f"pip cannot install into {sys.executable}; making a private environment at {VENV} from {base}")
     r = subprocess.run([base, "-m", "venv", VENV], capture_output=True, text=True)
@@ -114,12 +128,15 @@ def _add_user_site():
 
 
 def need(mod, pip_name=None):
-    """Import a module, installing it with pip once if it is missing (in the environment if pip refuses here)."""
+    """Import a module; install a missing dependency only with explicit network opt-in."""
     try:
         return importlib.import_module(mod)
     except ImportError:
         pass
     pkg = pip_name or mod
+    if os.path.exists(venv_python()):
+        _switch(f"{mod} not installed for {sys.executable}")
+    require_network(f"Missing Python dependency {pkg}")
     log(f"installing {pkg} ...")
     err = _pip(sys.executable, pkg)
     if err is not None and not in_venv() and sys.prefix == sys.base_prefix:

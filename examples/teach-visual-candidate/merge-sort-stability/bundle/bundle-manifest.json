@@ -1,0 +1,25 @@
+{
+  "schema": "explorable-bundle/v1",
+  "title": "Equal keys still have an order",
+  "input": "explorer.html",
+  "sourceSha256": "c544e69f1cdffce24fd86386788cf672d81a289a1c188e31a1141d2d3b1c31c9",
+  "steps": 4,
+  "still": {
+    "step": 1,
+    "width": 1440,
+    "height": 900,
+    "editable": true
+  },
+  "video": null,
+  "formats": [
+    "explorer.html",
+    "still.svg",
+    "still.png",
+    "still.html",
+    "static.html",
+    "qa.html",
+    "cards.html",
+    "cards.tsv"
+  ],
+  "warnings": []
+}

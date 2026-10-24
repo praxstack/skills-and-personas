@@ -196,5 +196,31 @@ class ResourceSecurityTests(unittest.TestCase):
             self.assertEqual(len(state["origins"]), 1)
 
 
+class ExactBrowserOriginTests(unittest.TestCase):
+    def test_strict_origins_strip_credentials_on_other_hosts_ports_and_downgrade(self):
+        broker = mock.Mock()
+        context = mock.Mock()
+        with mock.patch.object(MODULE, '_new_session', return_value=broker):
+            MODULE.install_browser_transport(context, auth_origins={'https://www.canva.com'})
+        callback = context.route.call_args.args[1]
+        for url, permitted in [('https://www.canva.com/a', True), ('https://www.canva.com:443/b', True),
+                               ('https://api.canva.com/a', False), ('http://www.canva.com/a', False),
+                               ('https://www.canva.com:8443/a', False), ('https://cdn.example/a', False)]:
+            route = mock.Mock()
+            route.request.url = url
+            route.request.method = 'GET'
+            route.request.post_data_buffer = None
+            route.request.all_headers.return_value = {'Cookie':'synthetic', 'Authorization':'synthetic', 'Accept':'*/*'}
+            broker.request.return_value = FakeResponse(chunks=[b'ok'])
+            with mock.patch.object(MODULE, 'validate_remote_url', side_effect=lambda value: value):
+                callback(route)
+            headers = broker.request.call_args.kwargs['headers']
+            self.assertEqual('Cookie' in headers, permitted, url)
+            self.assertEqual('Authorization' in headers, permitted, url)
+            self.assertFalse(broker.request.call_args.kwargs['allow_redirects'])
+            route.fulfill.assert_called_once()
+        self.assertEqual(broker.cookies.clear.call_count, 6)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -58,8 +58,8 @@ const persist = () => {
 };
 
 // ---------- order and layout ----------
-const byId = Object.fromEntries(C.lessons.map((l) => [l.id, l]));
-const layer = {};
+const byId = Object.assign(Object.create(null), Object.fromEntries(C.lessons.map((l) => [l.id, l])));
+const layer = Object.create(null);
 const depthOf = (id, seen = new Set()) => {
   if (layer[id] !== undefined) return layer[id];
   if (seen.has(id)) return 0;
@@ -169,7 +169,7 @@ function availableWidth() {
 const LANE = 13;
 const LANE_GAP = 12;
 function nodePos(vertical = narrow()) {
-  const pos = {};
+  const pos = Object.create(null);
   const { w: NODE_W, h: NODE_H } = size();
   const gapMain = vertical ? NODE_H + 44 : 255;
   const gapCross = vertical ? NODE_W + (narrow() ? 12 : 60) : NODE_H + 32;

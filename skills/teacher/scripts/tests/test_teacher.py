@@ -145,7 +145,7 @@ class Registry(unittest.TestCase):
         for t in self.reg["tools"]:
             self.assertTrue(set(t["jobs"]) <= set(self.reg["jobs"]), t["id"])
             self.assertTrue(t["media"] and set(t["media"]) <= set(self.reg["media"]), t["id"])
-            self.assertTrue(set(t.get("probe", {})) <= {"bins", "py", "node", "mcp", "net"}, t["id"])
+            self.assertTrue(set(t.get("probe", {})) <= {"bins", "py", "node", "mcp", "net", "cli"}, t["id"])
             self.assertIn("how", t, t["id"])
 
     def test_skill_paths_exist(self):
@@ -192,6 +192,40 @@ class Scripts(unittest.TestCase):
         r = run(str(ROOT / "scripts/find_tool.py"), "--job", "structure", "--medium", "still", "--offline", "--json")
         self.assertTrue(all(row["id"] not in ("mermaid", "kroki") for row in json.loads(r.stdout)), "offline filter")
 
+    def test_explain_practice_reveal_is_not_an_unaided_response(self):
+        js = r"""
+const src=require('fs').readFileSync(process.argv[1],'utf8');
+const fn=src.match(/function explainBox\(step, i\) \{[\s\S]*?\n\}/)[0];
+let S,finished; const PRACTICE=true,persist=()=>{},finishStep=()=>{finished=true};
+const h=(tag,attrs={},...kids)=>({tag,attrs,children:kids.flat().filter(Boolean),value:'',hidden:attrs.hidden,events:{},addEventListener(k,f){this.events[k]=f},focus(){}});
+const put=(node,...kids)=>{node.children=kids};eval(fn);
+const walk=n=>typeof n==='object'?[n,...n.children.flatMap(walk)]:[];
+const outputs=[];
+for(const text of ['', 'short', 'A sufficiently detailed actual response.']){
+ S={explained:{},attempts:{}};finished=false;const box=explainBox({ask:{q:'Explain',model:'Model',points:['one']}},0),nodes=walk(box),input=nodes.find(n=>n.tag==='textarea');input.value=text;nodes.find(n=>n.attrs.text==="Compare with the teacher's version").events.click();
+ if(text.length<12){if(finished)throw Error('short answer accepted');nodes.find(n=>n.attrs.text==='Show me').events.click();if(!finished||S.explained[0]||S.attempts[0].length!==1||!S.attempts[0][0].asked||S.attempts[0][0].right!==false)throw Error('reveal fabricated response');input.value='edited after seeing model';input.events.change();if(S.explained[0])throw Error('aided edit saved as response')}
+ else if(!finished||S.explained[0].text!==text||S.attempts[0].some(a=>a.asked))throw Error('real response lost');outputs.push(text.length);
+}console.log(JSON.stringify(outputs));
+"""
+        result = subprocess.run(["node", "-e", js, str(SKILLS / "explorable/assets/engine/explorable.js")], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), [0, 5, 40])
+
+    def test_course_layout_supports_prototype_like_lesson_ids(self):
+        js = r"""
+const src = require('fs').readFileSync(process.argv[1], 'utf8');
+const block = src.split('// ---------- order and layout ----------')[1].split('// ---------- header ----------')[0];
+const layout = new Function('C', block + ';return {ids:ordered.map(l=>l.id),depths:C.lessons.map(l=>[l.id,typeof layer[l.id],layer[l.id]])}');
+console.log(JSON.stringify({prototype:layout({lessons:[{id:'constructor'},{id:'toString',needs:['constructor']},{id:'valueOf',needs:['toString']},{id:'ordinary',needs:['hasOwnProperty']}]}),cycle:layout({lessons:[{id:'a',needs:['b']},{id:'b',needs:['a']}]})}));
+"""
+        result = subprocess.run(["node", "-e", js, str(SKILLS / "course/assets/engine/course.js")], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertEqual(out["prototype"]["ids"], ["constructor", "ordinary", "toString", "valueOf"])
+        self.assertEqual(out["prototype"]["depths"], [["constructor", "number", 0], ["toString", "number", 1], ["valueOf", "number", 2], ["ordinary", "number", 0]])
+        self.assertEqual(out["cycle"]["ids"], ["b", "a"])
+        self.assertEqual(out["cycle"]["depths"], [["a", "number", 2], ["b", "number", 1]])
+
     def test_series_flow(self):
         s = str(ROOT / "scripts/series.py")
         with tempfile.TemporaryDirectory() as tmp:
@@ -218,6 +252,32 @@ class Scripts(unittest.TestCase):
             self.assertNotEqual(run(s, "forget", cwd=Path(tmp)).returncode, 0, "forget needs --yes")
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists())
+
+    def test_later_failed_or_aided_recall_returns_and_can_be_reearned(self):
+        script = str(ROOT / "scripts/series.py")
+        for outcome in (["--wrong", "--unaided"], ["--right"]):
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as tmp:
+                work = Path(tmp)
+                def cmd(*args):
+                    result = run(script, *args, cwd=work)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    return result.stdout
+                cmd("init", "--learner", "L", "--goal", "g")
+                cmd("thread", "add", "t", "--title", "T", "--level", "L1")
+                cmd("recall", "add", "t", "review point")
+                cmd("resume")
+                cmd("recall", "result", "t", "0", "--right", "--unaided")
+                cmd("resume")
+                self.assertEqual(cmd("recall", "result", "t", "0", *outcome).strip(), "recorded")
+                point = json.loads((work / ".teacher/journal.json").read_text())["threads"]["t"]["recall"][0]
+                self.assertFalse(point["demonstrated"])
+                self.assertEqual(len(point["results"]), 2)
+                self.assertEqual(point["results"][0], {"session": 2, "right": True, "unaided": True})
+                self.assertIn("review point", cmd("resume"))
+                self.assertEqual(cmd("recall", "result", "t", "0", "--right", "--unaided").strip(), "demonstrated")
+                point = json.loads((work / ".teacher/journal.json").read_text())["threads"]["t"]["recall"][0]
+                self.assertTrue(point["demonstrated"])
+                self.assertEqual(len(point["results"]), 3)
 
     def test_recall_asked_late_is_no_longer_due(self):
         s = str(ROOT / "scripts/series.py")

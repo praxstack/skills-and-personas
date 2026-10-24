@@ -1,0 +1,15 @@
+{
+  "installedFiles": 1546,
+  "resolvedLinks": 5,
+  "frozenMethods": {
+    "skills/teacher/skills/course/scripts/check_course_page.mjs": "6668f5a3b7b74ef9019416151a112a2c723003bfd9ae57c78d18092baa19a109",
+    "skills/teacher/skills/course/scripts/check_course_page_v2.mjs": "b2d29644b699a8e9fd5cb072d1969188b3969354a70bd5be65afbda513541ebc",
+    "skills/teacher/skills/course/scripts/test_course.py": "d3d39e01ddd58d78761819b3103a4bde87f05c46e8bec24ad379d75f6844ead3",
+    "skills/teacher/skills/course/scripts/render_course.mjs": "7c5ceeacc6055d973a813cf2fd0c4a23700cc302ad455b9e30eda968c5849b51",
+    "skills/teacher/skills/course/scripts/render_course.py": "73afe59e61a76c384eb5439edbab0d736f20dc608a6695af8b38e3712751ef92",
+    "docs/teach-finish-20261024/behavior/check-course-consent-v2.proposed.mjs": "f9fd595aac5487685df1af61567ae7d8641f6dc068d20dd0ae15ac774a6b96ca"
+  },
+  "runtimeTemplate": "6a97834085b010b28f6dc733275c5cabf3e617d43f8902ea26f6181c1960d742",
+  "demoMembersMatched": 36,
+  "runtimeChanged": false
+}

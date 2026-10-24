@@ -1,0 +1,216 @@
+[
+  {
+    "name": "merge-sort-stability",
+    "width": 1280,
+    "checks": [
+      {
+        "name": "left tie preserves all equal identities",
+        "ok": true
+      },
+      {
+        "name": "right tie is sorted but unstable",
+        "ok": true
+      },
+      {
+        "name": "every prefix has unique input identities",
+        "ok": true
+      }
+    ],
+    "params": {
+      "taken": 6,
+      "rightTie": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "merge-sort-stability",
+    "width": 390,
+    "checks": [
+      {
+        "name": "left tie preserves all equal identities",
+        "ok": true
+      },
+      {
+        "name": "right tie is sorted but unstable",
+        "ok": true
+      },
+      {
+        "name": "every prefix has unique input identities",
+        "ok": true
+      }
+    ],
+    "params": {
+      "taken": 6,
+      "rightTie": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "merge-sort-stability",
+    "staticNoJavaScript": true,
+    "figures": 4
+  },
+  {
+    "name": "momentum",
+    "width": 1280,
+    "checks": [
+      {
+        "name": "known sticking result",
+        "ok": true
+      },
+      {
+        "name": "momentum conserved and energy nonincreasing over full slider grid",
+        "ok": true
+      },
+      {
+        "name": "opposite equal momenta stop shared mass",
+        "ok": true
+      },
+      {
+        "name": "equal initial velocities lose no kinetic energy",
+        "ok": true
+      }
+    ],
+    "params": {
+      "m1": 4,
+      "u1": 3,
+      "m2": 1,
+      "u2": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "momentum",
+    "width": 390,
+    "checks": [
+      {
+        "name": "known sticking result",
+        "ok": true
+      },
+      {
+        "name": "momentum conserved and energy nonincreasing over full slider grid",
+        "ok": true
+      },
+      {
+        "name": "opposite equal momenta stop shared mass",
+        "ok": true
+      },
+      {
+        "name": "equal initial velocities lose no kinetic energy",
+        "ok": true
+      }
+    ],
+    "params": {
+      "m1": 4,
+      "u1": 3,
+      "m2": 1,
+      "u2": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "momentum",
+    "staticNoJavaScript": true,
+    "figures": 4
+  },
+  {
+    "name": "installed-v3.0.1-merge",
+    "width": 1280,
+    "checks": [
+      {
+        "name": "left tie preserves all equal identities",
+        "ok": true
+      },
+      {
+        "name": "right tie is sorted but unstable",
+        "ok": true
+      },
+      {
+        "name": "every prefix has unique input identities",
+        "ok": true
+      }
+    ],
+    "params": {
+      "taken": 6,
+      "rightTie": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "installed-v3.0.1-merge",
+    "width": 390,
+    "checks": [
+      {
+        "name": "left tie preserves all equal identities",
+        "ok": true
+      },
+      {
+        "name": "right tie is sorted but unstable",
+        "ok": true
+      },
+      {
+        "name": "every prefix has unique input identities",
+        "ok": true
+      }
+    ],
+    "params": {
+      "taken": 6,
+      "rightTie": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "original-accepted-merge",
+    "width": 1280,
+    "checks": [
+      {
+        "name": "left tie preserves all equal identities",
+        "ok": true
+      },
+      {
+        "name": "right tie is sorted but unstable",
+        "ok": true
+      },
+      {
+        "name": "every prefix has unique input identities",
+        "ok": true
+      }
+    ],
+    "params": {
+      "taken": 6,
+      "rightTie": 0
+    },
+    "remote": [],
+    "storage": []
+  },
+  {
+    "name": "original-accepted-merge",
+    "width": 390,
+    "checks": [
+      {
+        "name": "left tie preserves all equal identities",
+        "ok": true
+      },
+      {
+        "name": "right tie is sorted but unstable",
+        "ok": true
+      },
+      {
+        "name": "every prefix has unique input identities",
+        "ok": true
+      }
+    ],
+    "params": {
+      "taken": 6,
+      "rightTie": 0
+    },
+    "remote": [],
+    "storage": []
+  }
+]

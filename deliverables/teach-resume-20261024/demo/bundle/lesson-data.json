@@ -1,0 +1,492 @@
+{
+  "id": "base-rates-v3",
+  "title": "A flag is not a verdict.",
+  "subtitle": "Count the flagged group before deciding how much a positive signal means.",
+  "subject": "Mathematics · conditional probability",
+  "limits": [
+    "This is a hypothetical factory with exactly specified frequencies, not measured performance or a medical test. Population strip uses the whole batch. Detail bars name their local denominators; collection bars use one common count scale, then expand to all flags. Detector rates are conditional on item status."
+  ],
+  "level": "frequencies → Bayes' rule",
+  "lang": "en",
+  "hook": "<p>A factory flags items for inspection. A good detector can still flag many sound items when defects are rare.</p>",
+  "params": {
+    "base": {
+      "label": "Defective items in the batch",
+      "value": 1,
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    "hit": {
+      "label": "Flag rate among defective items",
+      "value": 90,
+      "min": 50,
+      "max": 100,
+      "step": 1
+    },
+    "falseRate": {
+      "label": "Flag rate among sound items",
+      "value": 5,
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    "phase": {
+      "label": "Visual stage",
+      "value": 0,
+      "min": 0,
+      "max": 6,
+      "step": 0.01
+    }
+  },
+  "sources": [
+    {
+      "title": "OpenStax · Conditional probability",
+      "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-1-terminology",
+      "locator": "Conditional probability uses the conditioning event as its denominator."
+    },
+    {
+      "title": "OpenStax · Tree and Venn diagrams",
+      "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-5-tree-and-venn-diagrams",
+      "locator": "Represent branches and joint events without reversing the conditional."
+    }
+  ],
+  "misconceptions": [],
+  "deeper": [],
+  "code": null,
+  "steps": [
+    {
+      "index": 0,
+      "id": "population",
+      "title": "Start with the batch",
+      "say": "<p><strong>Worked example: base 1%, hit 90%, false flags 5%.</strong> The hypothetical batch has 100 defective items and 9,900 sound items. Each rate starts with its own population.</p>",
+      "sayText": "Worked example: base 1%, hit 90%, false flags 5%. The hypothetical batch has 100 defective items and 9,900 sound items. Each rate starts with its own population.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 100 defective and 9900 sound.    ",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "Defective",
+          "100"
+        ],
+        [
+          "Sound",
+          "9,900"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-1-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    },
+    {
+      "index": 1,
+      "id": "true-selection",
+      "title": "Select within defective items",
+      "say": "<p><strong>Worked example: base 1%, hit 90%, false flags 5%.</strong> The detector flags 90 of the 100 defective items. Its 90% hit rate leaves 10 defective items missed.</p>",
+      "sayText": "Worked example: base 1%, hit 90%, false flags 5%. The detector flags 90 of the 100 defective items. Its 90% hit rate leaves 10 defective items missed.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 100 defective and 9900 sound. 90 true flags and 10 missed defective.   ",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "True flags",
+          "90"
+        ],
+        [
+          "False flags",
+          "Not selected yet"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-2-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    },
+    {
+      "index": 2,
+      "id": "branches",
+      "title": "Select within sound items",
+      "say": "<p><strong>Worked example: base 1%, hit 90%, false flags 5%.</strong> Five percent of 9,900 sound items gives 495 false flags. A smaller rate can produce more flags because its population is larger.</p>",
+      "sayText": "Worked example: base 1%, hit 90%, false flags 5%. Five percent of 9,900 sound items gives 495 false flags. A smaller rate can produce more flags because its population is larger.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 100 defective and 9900 sound. 90 true flags and 10 missed defective. 495 false flags.  ",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "True flags",
+          "90"
+        ],
+        [
+          "False flags",
+          "495"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-3-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    },
+    {
+      "index": 3,
+      "id": "collection",
+      "title": "Collect only flags",
+      "say": "<p><strong>Worked example: base 1%, hit 90%, false flags 5%.</strong> Move the 90 true flags and 495 false flags into one group. Leave 9,415 unflagged items outside, including 10 missed defects.</p>",
+      "sayText": "Worked example: base 1%, hit 90%, false flags 5%. Move the 90 true flags and 495 false flags into one group. Leave 9,415 unflagged items outside, including 10 missed defects.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 100 defective and 9900 sound. 90 true flags and 10 missed defective. 495 false flags. Selected: 585 flags; excluded: 9415. ",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "True flags",
+          "90"
+        ],
+        [
+          "False flags",
+          "495"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-4-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    },
+    {
+      "index": 4,
+      "id": "conditional",
+      "title": "Change the denominator",
+      "say": "<p><strong>Worked example: base 1%, hit 90%, false flags 5%.</strong> Expand the same selected group. Its count stays 585. The defective share is 90 divided by 585, or 15.4%.</p>",
+      "sayText": "Worked example: base 1%, hit 90%, false flags 5%. Expand the same selected group. Its count stays 585. The defective share is 90 divided by 585, or 15.4%.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "Which denominator answers defective among flagged items?",
+        "why": "A flag selects all 585 flagged items, including false flags.",
+        "model": "",
+        "points": [],
+        "answerText": "585 flagged"
+      },
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 100 defective and 9900 sound. 90 true flags and 10 missed defective. 495 false flags. Selected: 585 flags; excluded: 9415. Defective among flags: 90/585, 15.4 percent.",
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4
+      },
+      "state": {
+        "total": 10000,
+        "defective": 100,
+        "sound": 9900,
+        "trueFlags": 90,
+        "falseFlags": 495,
+        "flagged": 585,
+        "missed": 10,
+        "precision": 0.15384615384615385
+      },
+      "readouts": [
+        [
+          "All flags",
+          "585"
+        ],
+        [
+          "Defective among flags",
+          "15.4%"
+        ]
+      ],
+      "answerText": "585 flagged",
+      "narrowFigure": "figures/step-5-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    },
+    {
+      "index": 5,
+      "id": "prior",
+      "title": "Change the base rate",
+      "say": "<p><strong>Worked example: base 10%, hit 90%, false flags 5%.</strong> At a 10% defect rate, the same detector gives 900 true flags and 450 false flags. Of 1,350 flags, 66.7% are defective.</p>",
+      "sayText": "Worked example: base 10%, hit 90%, false flags 5%. At a 10% defect rate, the same detector gives 900 true flags and 450 false flags. Of 1,350 flags, 66.7% are defective.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 1000 defective and 9000 sound. 900 true flags and 100 missed defective. 450 false flags. Selected: 1350 flags; excluded: 8650. Defective among flags: 900/1350, 66.7 percent.",
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 5
+      },
+      "state": {
+        "total": 10000,
+        "defective": 1000,
+        "sound": 9000,
+        "trueFlags": 900,
+        "falseFlags": 450,
+        "flagged": 1350,
+        "missed": 100,
+        "precision": 0.6666666666666666
+      },
+      "readouts": [
+        [
+          "All flags",
+          "1,350"
+        ],
+        [
+          "Defective among flags",
+          "66.7%"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-6-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    },
+    {
+      "index": 6,
+      "id": "limits",
+      "title": "Remove false flags",
+      "say": "<p><strong>Worked example: base 10%, hit 90%, false flags 0%.</strong> With zero false flags, all 900 flags are true. Yet 100 defective items remain missed. Precision is 100%; hit rate is still 90%.</p>",
+      "sayText": "Worked example: base 10%, hit 90%, false flags 0%. With zero false flags, all 900 flags are true. Yet 100 defective items remain missed. Precision is 100%; hit rate is still 90%.",
+      "lookFor": "",
+      "note": "Hypothetical exact frequencies; every denominator names its group.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 960,
+      "figureHeight": 590,
+      "figureLabel": "Batch: 1000 defective and 9000 sound. 900 true flags and 100 missed defective. 0 false flags. Selected: 900 flags; excluded: 9100. Defective among flags: 900/900, 100.0 percent.",
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 0,
+        "phase": 6
+      },
+      "state": {
+        "total": 10000,
+        "defective": 1000,
+        "sound": 9000,
+        "trueFlags": 900,
+        "falseFlags": 0,
+        "flagged": 900,
+        "missed": 100,
+        "precision": 1
+      },
+      "readouts": [
+        [
+          "All flags",
+          "900"
+        ],
+        [
+          "Defective among flags",
+          "100.0%"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-7-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 790
+    }
+  ],
+  "video": {
+    "scenes": [
+      {
+        "chapter": "Start with the batch",
+        "say": "The hypothetical batch has 100 defective items and 9,900 sound items. Each rate starts with its own population.",
+        "start": 0,
+        "dur": 10.375,
+        "voiceAt": 1.3,
+        "voiceDur": 8.65805,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5,
+          "phase": 0
+        },
+        "step": 0
+      },
+      {
+        "chapter": "Select within defective items",
+        "say": "The detector flags 90 of the 100 defective items. Its 90% hit rate leaves 10 defective items missed.",
+        "start": 10.375,
+        "dur": 9.375,
+        "voiceAt": 11.675,
+        "voiceDur": 7.671202,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5,
+          "phase": 1
+        },
+        "step": 1
+      },
+      {
+        "chapter": "Select within sound items",
+        "say": "Five percent of 9,900 sound items gives 495 false flags. A smaller rate can produce more flags because its population is larger.",
+        "start": 19.75,
+        "dur": 12.458333333333334,
+        "voiceAt": 21.05,
+        "voiceDur": 10.749796,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5,
+          "phase": 2
+        },
+        "step": 2
+      },
+      {
+        "chapter": "Collect only flags",
+        "say": "Move the 90 true flags and 495 false flags into one group. Leave 9,415 unflagged items outside, including 10 missed defects.",
+        "start": 32.208333333333336,
+        "dur": 12.916666666666666,
+        "voiceAt": 33.50833333333333,
+        "voiceDur": 11.217279,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5,
+          "phase": 3
+        },
+        "step": 3
+      },
+      {
+        "chapter": "Change the denominator",
+        "say": "Expand the same selected group. Its count stays 585. The defective share is 90 divided by 585, or 15.4%.",
+        "start": 45.125,
+        "dur": 12.75,
+        "voiceAt": 46.425,
+        "voiceDur": 11.047347,
+        "params": {
+          "base": 1,
+          "hit": 90,
+          "falseRate": 5,
+          "phase": 4
+        },
+        "step": 4
+      },
+      {
+        "chapter": "Change the base rate",
+        "say": "At a 10% defect rate, the same detector gives 900 true flags and 450 false flags. Of 1,350 flags, 66.7% are defective.",
+        "start": 57.875,
+        "dur": 15.041666666666666,
+        "voiceAt": 59.175,
+        "voiceDur": 13.346032,
+        "params": {
+          "base": 10,
+          "hit": 90,
+          "falseRate": 5,
+          "phase": 5
+        },
+        "step": 5
+      },
+      {
+        "chapter": "Remove false flags",
+        "say": "With zero false flags, all 900 flags are true. Yet 100 defective items remain missed. Precision is 100%; hit rate is still 90%.",
+        "start": 72.91666666666667,
+        "dur": 13.125,
+        "voiceAt": 74.21666666666667,
+        "voiceDur": 11.4361,
+        "params": {
+          "base": 10,
+          "hit": 90,
+          "falseRate": 0,
+          "phase": 6
+        },
+        "step": 6
+      }
+    ],
+    "total": 86.04166666666667,
+    "captions": "WEBVTT\n\n1\n00:00:01.300 --> 00:00:10.375\nThe hypothetical batch has 100 defective items and 9,900 sound items. Each rate starts with its own population.\n\n2\n00:00:11.675 --> 00:00:19.750\nThe detector flags 90 of the 100 defective items. Its 90% hit rate leaves 10 defective items missed.\n\n3\n00:00:21.050 --> 00:00:32.208\nFive percent of 9,900 sound items gives 495 false flags. A smaller rate can produce more flags because its population is larger.\n\n4\n00:00:33.508 --> 00:00:45.125\nMove the 90 true flags and 495 false flags into one group. Leave 9,415 unflagged items outside, including 10 missed defects.\n\n5\n00:00:46.425 --> 00:00:57.875\nExpand the same selected group. Its count stays 585. The defective share is 90 divided by 585, or 15.4%.\n\n6\n00:00:59.175 --> 00:01:12.917\nAt a 10% defect rate, the same detector gives 900 true flags and 450 false flags. Of 1,350 flags, 66.7% are defective.\n\n7\n00:01:14.217 --> 00:01:26.042\nWith zero false flags, all 900 flags are true. Yet 100 defective items remain missed. Precision is 100%; hit rate is still 90%.\n\n"
+  }
+}
