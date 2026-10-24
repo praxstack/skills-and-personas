@@ -92,3 +92,12 @@ test('poster source preparation shares the HTTP/HTTPS allowlist', async()=>{
  assert.deepEqual(refs.map(r=>r.posterHref),[null,null,null,sources[3].url,sources[4].url]);
  assert.equal(refs[0].url,sources[0].url,'provenance text is retained');
 });
+
+test('exporter inserts authored fallback replacement tokens literally', async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const source=await readFile(new URL('./bundle_lesson.mjs',import.meta.url),'utf8');
+ const statement=source.match(/let bundledExplorer=inputHTML\.replace[^\n]+/)[0];
+ const replace=new Function('inputHTML','fallback',statement+';return bundledExplorer');
+ const fallback="<noscript>$& $` $' $$ $1 $<name> &lt;b&gt;code&lt;/b&gt;</noscript>";
+ assert.equal(replace('prefix<noscript>old</noscript>suffix',fallback),'prefix'+fallback+'suffix');
+});

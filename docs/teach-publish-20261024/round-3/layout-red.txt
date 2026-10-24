@@ -1,0 +1,22 @@
+test_course_layout_supports_prototype_like_lesson_ids (__main__.Scripts.test_course_layout_supports_prototype_like_lesson_ids) ... FAIL
+
+======================================================================
+FAIL: test_course_layout_supports_prototype_like_lesson_ids (__main__.Scripts.test_course_layout_supports_prototype_like_lesson_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/scripts/tests/test_teacher.py", line 205, in test_course_layout_supports_prototype_like_lesson_ids
+    self.assertEqual(out["prototype"]["ids"], ["constructor", "ordinary", "toString", "valueOf"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['constructor', 'ordinary', 'toString', 'valueOf']
+
+Second list contains 4 additional elements.
+First extra element 0:
+'constructor'
+
+- []
++ ['constructor', 'ordinary', 'toString', 'valueOf']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.102s
+
+FAILED (failures=1)

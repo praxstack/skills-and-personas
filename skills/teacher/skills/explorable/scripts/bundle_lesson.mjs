@@ -126,7 +126,7 @@ try{
  const staticHTML=staticLesson(data);await writeFile(join(out,'static.html'),staticHTML);
  const staticBody=staticHTML.match(/<body>([\s\S]*?)<\/body>/)[1];
  const fallback='<noscript><style>'+css+'</style>'+staticBody+'</noscript>';
- let bundledExplorer=inputHTML.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/i,fallback);
+ let bundledExplorer=inputHTML.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/i,()=>fallback);
  if(bundledExplorer===inputHTML)bundledExplorer=inputHTML.replace(/<body\b[^>]*>/i,m=>m+fallback);
  bundledExplorer=bundledExplorer.replace(/<body\b[^>]*>/i,m=>m+'<p class="bundle-static-link" style="margin:12px 24px;font:16px/1.5 sans-serif"><a href="static.html">Read the complete static lesson</a></p>');
  const viewportAdapter='<script>if(window.parent!==window)window.addEventListener("message",event=>{if(event.source!==window.parent||event.data?.type!=="teach:set-params")return;requestAnimationFrame(()=>{const figure=document.querySelector(".xp-figure");if(figure)window.scrollTo({top:Math.max(0,figure.getBoundingClientRect().top+window.scrollY-14),behavior:"instant"})})});</script>';

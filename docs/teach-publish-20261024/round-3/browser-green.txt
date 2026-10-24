@@ -1,0 +1,94 @@
+{
+  "work": "/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teach-pr3-RpGTKo",
+  "browser": "153.0.8010.12",
+  "checks": [
+    {
+      "name": "normal short attempt remains unresolved \"\"",
+      "ok": true
+    },
+    {
+      "name": "reveal without fabricated response \"\"",
+      "ok": true,
+      "actual": {
+        "attempts": [
+          {
+            "given": null,
+            "right": false,
+            "asked": true
+          }
+        ],
+        "report": "Lesson: Why seasons happen (seasons-v1)\nSteps done: 1/5\nPractice: requested\n- Same light, more ground: 1 miss, asked to be shown\nNext: (not chosen yet)"
+      }
+    },
+    {
+      "name": "reveal unlocks teaching and navigation \"\"",
+      "ok": true
+    },
+    {
+      "name": "Next reaches step 2 \"\"",
+      "ok": true
+    },
+    {
+      "name": "normal short attempt remains unresolved \"short\"",
+      "ok": true
+    },
+    {
+      "name": "reveal without fabricated response \"short\"",
+      "ok": true,
+      "actual": {
+        "attempts": [
+          {
+            "given": null,
+            "right": false,
+            "asked": true
+          }
+        ],
+        "report": "Lesson: Why seasons happen (seasons-v1)\nSteps done: 1/5\nPractice: requested\n- Same light, more ground: 1 miss, asked to be shown\nNext: (not chosen yet)"
+      }
+    },
+    {
+      "name": "reveal unlocks teaching and navigation \"short\"",
+      "ok": true
+    },
+    {
+      "name": "Next reaches step 2 \"short\"",
+      "ok": true
+    },
+    {
+      "name": "normal actual explanation retained",
+      "ok": true
+    },
+    {
+      "name": "default complete explanation remains visible",
+      "ok": true
+    },
+    {
+      "name": "entire fallback inserted byte-for-byte literally",
+      "ok": true,
+      "actual": {
+        "expectedBytes": 15835,
+        "actualBytes": 15835
+      }
+    },
+    {
+      "name": "replacement tokens and code survive JS-off text",
+      "ok": true,
+      "actual": "text.replace(/x/g, '$&'); // $& $` $' $$ $1 $<name> <b>escaped code</b>"
+    },
+    {
+      "name": "prototype-like IDs retained in map",
+      "ok": true,
+      "actual": 3
+    },
+    {
+      "name": "prototype-like IDs retained in outline",
+      "ok": true,
+      "actual": 3
+    },
+    {
+      "name": "prototype-like IDs retained in notes",
+      "ok": true,
+      "actual": 3
+    }
+  ]
+}

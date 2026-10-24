@@ -192,6 +192,40 @@ class Scripts(unittest.TestCase):
         r = run(str(ROOT / "scripts/find_tool.py"), "--job", "structure", "--medium", "still", "--offline", "--json")
         self.assertTrue(all(row["id"] not in ("mermaid", "kroki") for row in json.loads(r.stdout)), "offline filter")
 
+    def test_explain_practice_reveal_is_not_an_unaided_response(self):
+        js = r"""
+const src=require('fs').readFileSync(process.argv[1],'utf8');
+const fn=src.match(/function explainBox\(step, i\) \{[\s\S]*?\n\}/)[0];
+let S,finished; const PRACTICE=true,persist=()=>{},finishStep=()=>{finished=true};
+const h=(tag,attrs={},...kids)=>({tag,attrs,children:kids.flat().filter(Boolean),value:'',hidden:attrs.hidden,events:{},addEventListener(k,f){this.events[k]=f},focus(){}});
+const put=(node,...kids)=>{node.children=kids};eval(fn);
+const walk=n=>typeof n==='object'?[n,...n.children.flatMap(walk)]:[];
+const outputs=[];
+for(const text of ['', 'short', 'A sufficiently detailed actual response.']){
+ S={explained:{},attempts:{}};finished=false;const box=explainBox({ask:{q:'Explain',model:'Model',points:['one']}},0),nodes=walk(box),input=nodes.find(n=>n.tag==='textarea');input.value=text;nodes.find(n=>n.attrs.text==="Compare with the teacher's version").events.click();
+ if(text.length<12){if(finished)throw Error('short answer accepted');nodes.find(n=>n.attrs.text==='Show me').events.click();if(!finished||S.explained[0]||S.attempts[0].length!==1||!S.attempts[0][0].asked||S.attempts[0][0].right!==false)throw Error('reveal fabricated response');input.value='edited after seeing model';input.events.change();if(S.explained[0])throw Error('aided edit saved as response')}
+ else if(!finished||S.explained[0].text!==text||S.attempts[0].some(a=>a.asked))throw Error('real response lost');outputs.push(text.length);
+}console.log(JSON.stringify(outputs));
+"""
+        result = subprocess.run(["node", "-e", js, str(SKILLS / "explorable/assets/engine/explorable.js")], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), [0, 5, 40])
+
+    def test_course_layout_supports_prototype_like_lesson_ids(self):
+        js = r"""
+const src = require('fs').readFileSync(process.argv[1], 'utf8');
+const block = src.split('// ---------- order and layout ----------')[1].split('// ---------- header ----------')[0];
+const layout = new Function('C', block + ';return {ids:ordered.map(l=>l.id),depths:C.lessons.map(l=>[l.id,typeof layer[l.id],layer[l.id]])}');
+console.log(JSON.stringify({prototype:layout({lessons:[{id:'constructor'},{id:'toString',needs:['constructor']},{id:'valueOf',needs:['toString']},{id:'ordinary',needs:['hasOwnProperty']}]}),cycle:layout({lessons:[{id:'a',needs:['b']},{id:'b',needs:['a']}]})}));
+"""
+        result = subprocess.run(["node", "-e", js, str(SKILLS / "course/assets/engine/course.js")], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertEqual(out["prototype"]["ids"], ["constructor", "ordinary", "toString", "valueOf"])
+        self.assertEqual(out["prototype"]["depths"], [["constructor", "number", 0], ["toString", "number", 1], ["valueOf", "number", 2], ["ordinary", "number", 0]])
+        self.assertEqual(out["cycle"]["ids"], ["b", "a"])
+        self.assertEqual(out["cycle"]["depths"], [["a", "number", 2], ["b", "number", 1]])
+
     def test_series_flow(self):
         s = str(ROOT / "scripts/series.py")
         with tempfile.TemporaryDirectory() as tmp:

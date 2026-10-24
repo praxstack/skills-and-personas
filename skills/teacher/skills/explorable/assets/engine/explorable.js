@@ -353,7 +353,9 @@ function explainBox(step, i) {
   text.value = prev?.text || "";
   const reveal = h("div", { class: "xp-feedback", "aria-live": "polite" });
   const go = h("button", { type: "button", class: "nb-btn nb-btn-primary", text: "Compare with the teacher's version" });
-  const box = h("div", { class: "xp-ask nb-sheet", role: "group", "aria-label": "Explain it back" }, h("p", { class: "xp-q", text: ask.q }), h("p", { class: "xp-muted", text: "Write it before you look. A rough answer is fine; the gaps are the point." }), text, h("div", { class: "xp-row" }, go), reveal);
+  const giveUp = h("button", { type: "button", class: "nb-btn nb-btn-quiet", text: "Show me", hidden: !PRACTICE });
+  const log = (S.attempts[i] ||= []);
+  const box = h("div", { class: "xp-ask nb-sheet", role: "group", "aria-label": "Explain it back" }, h("p", { class: "xp-q", text: ask.q }), h("p", { class: "xp-muted", text: "Write it before you look. A rough answer is fine; the gaps are the point." }), text, h("div", { class: "xp-row" }, go, giveUp), reveal);
   const covered = new Set(prev?.covered || []);
   const keep = () => {
     S.explained[i] = { text: text.value.trim(), covered: [...covered] };
@@ -362,15 +364,18 @@ function explainBox(step, i) {
   // Once the teacher's version is shown, later edits are saved too (the report
   // reads them), a moment after typing stops and when the box loses focus.
   let revealed = false;
+  let responseAccepted = false;
   let typing;
   text.addEventListener("input", () => {
-    if (!revealed) return;
+    if (!revealed || !responseAccepted) return;
     clearTimeout(typing);
     typing = setTimeout(keep, 400);
   });
-  text.addEventListener("change", () => revealed && (clearTimeout(typing), keep()));
-  const showModel = () => {
+  text.addEventListener("change", () => revealed && responseAccepted && (clearTimeout(typing), keep()));
+  const showModel = ({ saveResponse = true } = {}) => {
     revealed = true;
+    responseAccepted = saveResponse;
+    giveUp.hidden = true;
     const checks = (ask.points || []).map((pt, k) => {
       const cb = h("input", { type: "checkbox", id: `xp-pt-${i}-${k}`, checked: covered.has(k) ? true : null });
       cb.addEventListener("change", () => {
@@ -382,11 +387,11 @@ function explainBox(step, i) {
     put(reveal, 
       h("p", { class: "nb-label", text: "How the teacher would put it" }),
       h("div", { class: "xp-why", html: ask.model || "" }),
-      checks.length ? h("p", { class: "nb-label", text: "Tick what your answer covered" }) : null,
-      checks.length ? h("ul", { class: "xp-points" }, checks) : null,
+      checks.length && saveResponse ? h("p", { class: "nb-label", text: "Tick what your answer covered" }) : null,
+      checks.length && saveResponse ? h("ul", { class: "xp-points" }, checks) : null,
       h("p", { class: "nb-hand", text: "Missed something? That's the bit to say out loud once more." }),
     );
-    keep();
+    if (saveResponse) keep();
     finishStep(i);
   };
   go.addEventListener("click", () => {
@@ -396,7 +401,13 @@ function explainBox(step, i) {
     }
     showModel();
   });
+  giveUp.addEventListener("click", () => {
+    log.push({ given: null, right: false, asked: true });
+    persist();
+    showModel({ saveResponse: false });
+  });
   if (prev) showModel();
+  else if (log.some(attempt => attempt.asked)) showModel({ saveResponse: false });
   return box;
 }
 
