@@ -575,10 +575,10 @@ function report(choice, text) {
   L.steps.forEach((st, i) => {
     const a = S.attempts[i];
     const t = S.tried[i];
-    if (!a && !t) return;
+    if (!a?.length && !t?.length) return;
     const misses = (a || []).filter((x) => !x.right).length;
     const parts = [];
-    if (a) parts.push(misses ? `${misses} miss${misses > 1 ? "es" : ""}${a.some((x) => x.asked) ? ", asked to be shown" : ""}` : "right first time");
+    if (a?.length) parts.push(misses ? `${misses} miss${misses > 1 ? "es" : ""}${a.some((x) => x.asked) ? ", asked to be shown" : ""}` : "right first time");
     if (t?.length) parts.push(`tried other explanations: ${t.join("; ")}`);
     lines.push(`- ${st.title}: ${parts.join(", ")}`);
   });

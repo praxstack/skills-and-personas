@@ -30,7 +30,7 @@ try {
   execFileSync('python3', [join(scripts, 'build_course.py'), course, '-o', site, '--trust-authored-code']);
   execFileSync('node', [join(exp, 'bundle_lesson.mjs'), join(site, 'seasons.html'), '--out', bundle]);
   observations.hashes = {};
-  for (const p of [fixture, join(course,'course.json'), join(site,'index.html'), join(site,'seasons.html'), join(bundle,'explorer.html'), join(bundle,'static.html'), join(scripts,'check_course_page.mjs')]) observations.hashes[p.startsWith(root) ? p.slice(root.length+1) : p.slice(work.length+1)] = await sha(p);
+  for (const p of [fixture, join(exp,'../assets/engine/explorable.js'), fileURLToPath(import.meta.url), join(course,'course.json'), join(site,'index.html'), join(site,'seasons.html'), join(bundle,'explorer.html'), join(bundle,'static.html'), join(scripts,'check_course_page.mjs')]) observations.hashes[p.startsWith(root) ? p.slice(root.length+1) : p.slice(work.length+1)] = await sha(p);
   const {chromium} = await loadPlaywright();
   browser = await launch(chromium);
   observations.browser = browser.version();
@@ -87,6 +87,7 @@ try {
     await page.getByRole('button',{name:"I've got it. I'm done with this.",exact:true}).click();
     observations.closureReport = await page.locator('.xp-report').inputValue();
     check('default closure accepts satisfaction without answers', observations.closureReport.includes("Next: I've got it. I'm done with this.") && !Object.values(await page.evaluate(()=>window.__explorable.state.attempts)).some(a=>a.length));
+    check('unattempted closure fabricates no correctness claims', !/right first time|^- (?:Same light|Why the noon|It isn.t distance|Switch the tilt|Longer days)/m.test(observations.closureReport),observations.closureReport);
     await page.getByRole('tab',{name:'Lesson',exact:true}).click();
     await page.locator('.xp-notes-box').fill('SYNTHETIC DECLINED NOTE'); await page.locator('.xp-notes-box').blur();
     observations.explorerDeclined = await storage(page);
@@ -104,6 +105,21 @@ try {
     check('explorer withdrawal removes progress and consent', empty(observations.explorerWithdrawn));
     await page.reload(); await ready(page);
     check('explorer withdrawn note and location reset', await page.locator('.xp-notes-box').inputValue()==='' && await page.evaluate(()=>window.__explorable.state.step===0));
+    await ctx.close();
+  }
+  {
+    const {ctx,page} = await open(join(bundle,'explorer.html'),'?practice=1'); await ready(page);
+    // Actual fixture answers: step 1 is option 2; step 2 is option 1.
+    await page.locator('.xp-option[data-k="2"]').click();
+    await page.getByRole('button',{name:'Check',exact:true}).click();
+    await page.locator('.xp-next').click();
+    await page.locator('.xp-option[data-k="0"]').click();
+    await page.getByRole('button',{name:'Check',exact:true}).click();
+    await page.locator('.xp-option[data-k="1"]').click();
+    await page.getByRole('button',{name:'Check',exact:true}).click();
+    observations.answeredReport = await page.evaluate(()=>({text:window.__explorable.report(),attempts:window.__explorable.state.attempts}));
+    check('actual correct first try is reported accurately', observations.answeredReport.text.includes('- Same light, more ground: right first time') && observations.answeredReport.attempts[0].length===1 && observations.answeredReport.attempts[0][0].right,observations.answeredReport);
+    check('actual previously missed answer is not reported correct first try', observations.answeredReport.text.includes('- Why the noon sun moves: 1 miss') && !observations.answeredReport.text.includes('- Why the noon sun moves: right first time') && observations.answeredReport.attempts[1].map(a=>a.right).join(',')==='false,true');
     await ctx.close();
   }
   {

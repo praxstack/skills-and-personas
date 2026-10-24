@@ -6,6 +6,8 @@ is **UNAPPROVED**, version `course-consent/v2`; it cannot certify this run.
 
 ## Observed page behavior
 
+`observed-v3/observations.json` records 34/34 supplemental observations after the
+report-correctness repair described below. The earlier
 `observed-v2/observations.json` records 31/31 supplemental observations in real
 Chromium 153.0.8010.12. The fixture is the reviewed, first-party
 `skills/teacher/skills/explorable/assets/examples/seasons.lesson.js`. Only its
@@ -39,6 +41,29 @@ localStorage/sessionStorage, not every browser persistence API. Withdrawing
 consent clears stored state; current in-memory state can remain until reload.
 The page calls the immediate-answer control “Show me”; no literal “Answer now”
 button or chat instruction was exercised.
+
+## Report-correctness repair after independent review
+
+Independent review found a product defect in the retained v2 receipt: its
+closure report claimed five answers were “right first time” although all
+attempt arrays were empty. The original audit checked closure availability,
+not the accuracy of its claims, and missed this defect. The initial conclusion
+that no product defect was demonstrated was incorrect.
+
+`explorable.js` now includes an answer outcome only when there is at least one
+recorded attempt. Empty question/alternate arrays produce no outcome line;
+actual alternate explanations remain reportable without inventing correctness.
+Correct first tries and prior misses retain their existing reports.
+
+The strengthened real-browser v3 receipt records a five-step unanswered closure
+with **no correctness claims**, an actual correct first try, and an actual
+wrong-then-correct answer reported as one miss. `fix-round-1/` retains the raw
+focused unit-test failure before the repair (3 passed, 2 failed), passing output
+after the repair (5/5 passed), and browser output (34/34 observations passed).
+The source-byte hashes and corrected reports are in the v3 JSON receipt. V1/v2
+receipts remain unchanged and should not be interpreted as report-correctness
+evidence. The frozen checker still fails its same historical reload assertion;
+the proposed checker remains unapproved.
 
 ## Frozen checker comparison and proposed decision
 
@@ -86,4 +111,5 @@ Two harness mistakes caused its failures: an assertion expected an internal
 closure key instead of the actual visible report label; the proposal's notice
 preceded its shebang. Both were corrected. A preceding import-depth mistake
 prevented startup and generated no receipt. These were audit-tool errors,
-not demonstrated product defects; no product repair was made.
+not the later report-correctness defect. The initial implementation made no
+product repair; independent review then identified the defect repaired above.

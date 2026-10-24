@@ -1,0 +1,63 @@
+✖ unattempted absent and empty answers never claim correctness (1.9085ms)
+✖ unattempted question can still report an actual alternate explanation (0.320208ms)
+✔ actually correct first attempt is reported as right first time (0.256541ms)
+✔ a correct answer after a miss retains its miss history (0.2305ms)
+✔ asking to be shown is not reported as a correct answer (0.210583ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.4315
+
+✖ failing tests:
+
+test at skills/teacher/skills/explorable/scripts/report.test.mjs:16:1
+✖ unattempted absent and empty answers never claim correctness (1.9085ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /right first time|^- Question:/m. Input:
+  
+  'Lesson: Synthetic\n' +
+    'Steps viewed: 1/1\n' +
+    'Practice: optional; viewing is not proof of learning\n' +
+    '- Question: \n' +
+    'Next: finished'
+  
+      at TestContext.<anonymous> (file:///Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/explorable/scripts/report.test.mjs:19:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Lesson: Synthetic\nSteps viewed: 1/1\nPractice: optional; viewing is not proof of learning\n- Question: \nNext: finished',
+    expected: /right first time|^- Question:/m,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }
+
+test at skills/teacher/skills/explorable/scripts/report.test.mjs:23:1
+✖ unattempted question can still report an actual alternate explanation (0.320208ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /- Question: tried other explanations: Torch/. Input:
+  
+  'Lesson: Synthetic\n' +
+    'Steps viewed: 1/1\n' +
+    'Practice: optional; viewing is not proof of learning\n' +
+    '- Question: right first time, tried other explanations: Torch\n' +
+    'Next: finished'
+  
+      at TestContext.<anonymous> (file:///Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/explorable/scripts/report.test.mjs:25:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Lesson: Synthetic\nSteps viewed: 1/1\nPractice: optional; viewing is not proof of learning\n- Question: right first time, tried other explanations: Torch\nNext: finished',
+    expected: /- Question: tried other explanations: Torch/,
+    operator: 'match',
+    diff: 'simple'
+  }

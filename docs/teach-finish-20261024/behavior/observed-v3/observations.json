@@ -1,0 +1,343 @@
+{
+  "schema": "supplemental-behavior-observation/v1",
+  "authority": "non-governing; proposal unapproved",
+  "observedAt": "2026-10-24T13:18:14.951Z",
+  "checks": [
+    {
+      "name": "course consent defaults declined",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course no-consent Done works in session",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course declined writes neither local nor session storage",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course declined progress resets after reload",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course grant writes consent and progress",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course granted progress resumes after reload",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course withdrawal removes progress and consent",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "course withdrawn progress does not resume",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer defaults explanation-first with declined consent",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 1 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 2 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 3 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 4 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explanation step 5 precedes closed optional check; navigation open",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "default closure accepts satisfaction without answers",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "unattempted closure fabricates no correctness claims",
+      "ok": true,
+      "observed": "Lesson: Why seasons happen (seasons-v1)\nSteps viewed: 5/5\nPractice: optional; viewing is not proof of learning\nNext: I've got it. I'm done with this."
+    },
+    {
+      "name": "explorer declined notes and viewed steps write no storage",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer declined note and location reset",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer granted note, location and consent resume",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer withdrawal removes progress and consent",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explorer withdrawn note and location reset",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "actual correct first try is reported accurately",
+      "ok": true,
+      "observed": {
+        "text": "Lesson: Why seasons happen (seasons-v1)\nSteps done: 2/5\nPractice: requested\n- Same light, more ground: right first time\n- Why the noon sun moves: 1 miss\nNext: (not chosen yet)",
+        "attempts": {
+          "0": [
+            {
+              "given": "more ground",
+              "right": true
+            }
+          ],
+          "1": [
+            {
+              "given": "March",
+              "right": false
+            },
+            {
+              "given": "June",
+              "right": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "actual previously missed answer is not reported correct first try",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "explicit practice requests attempt-first navigation",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "requested practice answer initially unrevealed",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "Show me answers immediately without attempt",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "exit practice restores explanation-first without quiz barrier",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "practice actions without consent remain ephemeral",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "JS-disabled explorer has complete static fallback",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "offline static navigation retains explanation",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "frozen checker reproduces only historical no-consent reload failure",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "unapproved proposed checker executes consent-aware branches diagnostically",
+      "ok": true,
+      "observed": null
+    },
+    {
+      "name": "offline browser observed no HTTP requests",
+      "ok": true,
+      "observed": []
+    },
+    {
+      "name": "no browser page errors",
+      "ok": true,
+      "observed": []
+    }
+  ],
+  "observations": {
+    "hashes": {
+      "skills/teacher/skills/explorable/assets/examples/seasons.lesson.js": "9b339519c0e89c83f6b6868ce6728fd1cee07cafedbf0cf82d6e6567f7558b87",
+      "skills/teacher/skills/explorable/assets/engine/explorable.js": "914a40a13fcfc862b5473fd58fc6b14d5116ceed34165bcb9cc6e28416f18309",
+      "docs/teach-finish-20261024/behavior/audit-behavior-v1.mjs": "32f12ed8d81e0f3fcba1f57900d40e6850fef4a1d691a39ae35bd7436afa7b77",
+      "course/course.json": "f309779d06e46e06d68fbafe29562e20fe091671365ce2c2f9c4912ffd92f026",
+      "site/index.html": "77212b0c9a188c77d0cadd5a859ba0683f7cf75f98ff219530868291864a30d7",
+      "site/seasons.html": "aebaa9c60930385cec4d60bb358c054de511af2165de4a61bb78b8ea21deea73",
+      "bundle/explorer.html": "c8264c3ff239544b7b6c847977a09d6e00bbb0d0110519ee227360c9d6cc263c",
+      "bundle/static.html": "c631af58b7ab254c2abfdfb0572cc09549fa37b7abb1e516bc84a43f26f1a742",
+      "skills/teacher/skills/course/scripts/check_course_page.mjs": "6668f5a3b7b74ef9019416151a112a2c723003bfd9ae57c78d18092baa19a109"
+    },
+    "browser": "153.0.8010.12",
+    "courseDeclined": {
+      "local": {},
+      "session": {}
+    },
+    "courseGranted": {
+      "local": {
+        "course:synthetic-behavior-v1": "{\"status\":{\"seasons\":\"done\"}}",
+        "course:synthetic-behavior-v1:consent": "yes"
+      },
+      "session": {}
+    },
+    "courseWithdrawn": {
+      "local": {},
+      "session": {}
+    },
+    "explanationWalk": [
+      {
+        "step": 0,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 1,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 2,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": [],
+          "2": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 3,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": [],
+          "2": [],
+          "3": []
+        },
+        "nextDisabled": false
+      },
+      {
+        "step": 4,
+        "explained": true,
+        "practiceClosed": true,
+        "before": true,
+        "answers": {
+          "0": [],
+          "1": [],
+          "2": [],
+          "3": [],
+          "4": []
+        },
+        "nextDisabled": false
+      }
+    ],
+    "closureReport": "Lesson: Why seasons happen (seasons-v1)\nSteps viewed: 5/5\nPractice: optional; viewing is not proof of learning\nNext: I've got it. I'm done with this.",
+    "explorerDeclined": {
+      "local": {},
+      "session": {}
+    },
+    "explorerGranted": {
+      "local": {
+        "explorable:v3:seasons-v1:explain:consent": "yes",
+        "explorable:v3:seasons-v1:explain": "{\"steps\":[\"17rptlr\",\"1utcrc2\",\"jr805u\",\"uljiu6\",\"9xrhze\"],\"step\":1,\"done\":[0,1],\"attempts\":{\"0\":[],\"1\":[]},\"tried\":{},\"notes\":\"SYNTHETIC CONSENTED NOTE\",\"curious\":[],\"explained\":{}}"
+      },
+      "session": {}
+    },
+    "explorerWithdrawn": {
+      "local": {},
+      "session": {}
+    },
+    "answeredReport": {
+      "text": "Lesson: Why seasons happen (seasons-v1)\nSteps done: 2/5\nPractice: requested\n- Same light, more ground: right first time\n- Why the noon sun moves: 1 miss\nNext: (not chosen yet)",
+      "attempts": {
+        "0": [
+          {
+            "given": "more ground",
+            "right": true
+          }
+        ],
+        "1": [
+          {
+            "given": "March",
+            "right": false
+          },
+          {
+            "given": "June",
+            "right": true
+          }
+        ]
+      }
+    },
+    "frozen": {
+      "exit": 1,
+      "stdout": "FAIL status survives a reload \ncourse page: 18 passed, 1 failed\n",
+      "stderr": ""
+    },
+    "unapprovedProposal": {
+      "exit": 0,
+      "stdout": "course page: 26 passed, 0 failed\n",
+      "stderr": ""
+    }
+  },
+  "errors": [],
+  "network": [],
+  "limits": [
+    "Only reviewed first-party seasons fixture and Chromium were exercised.",
+    "Page behavior does not prove live-chat instruction adherence or human learning.",
+    "No narrated media acceptance; no sandbox repeatability claim.",
+    "No learner journal created; only synthetic temporary browser state."
+  ]
+}
