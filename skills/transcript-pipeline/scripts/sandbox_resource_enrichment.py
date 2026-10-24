@@ -143,7 +143,7 @@ def snapshot(session, staging, cookies=None, notion=None, canva=None):
             if total > 4 * 1024 * 1024:
                 raise ValueError('aggregate input byte budget exhausted')
             private_write(staging / 'secrets' / (kind + '.json'), data)
-    for name in ('resource_enrichment.py', 'resource_budget.py'):
+    for name in ('resource_enrichment.py', 'resource_budget.py', 'safe_resource_output.py'):
         # Installation tools may use hardlink mirrors. Read an owned descriptor.
         fd = os.open(HERE / name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
         with os.fdopen(fd, 'rb') as source:

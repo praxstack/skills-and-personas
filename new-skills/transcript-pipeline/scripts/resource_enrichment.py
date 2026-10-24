@@ -30,6 +30,7 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 import resource_budget as budgets
+import safe_resource_output as safe_output
 from resource_budget import BudgetExceeded
 from requests.adapters import HTTPAdapter
 from urllib3.connection import HTTPConnection, HTTPSConnection
@@ -474,16 +475,14 @@ def extract_html_title(text: str) -> str | None:
 def save_text(path: Path, text: str, dry_run: bool) -> None:
     if dry_run:
         return
-    path.parent.mkdir(parents=True, exist_ok=True)
     save_bytes(path, text.encode("utf-8", errors="ignore"), dry_run=False)
 
 
 def save_bytes(path: Path, blob: bytes, dry_run: bool) -> None:
     if dry_run:
         return
-    path.parent.mkdir(parents=True, exist_ok=True)
     budgets.charge("output", len(blob))
-    path.write_bytes(blob)
+    safe_output.write_bytes(path, blob)
 
 
 def to_rel(path: Path, session_dir: Path) -> str:
@@ -872,9 +871,6 @@ def _enrich_session(
     resources_dir = session_dir / ".resources"
     report_path = resources_dir / "resource_enrichment_report.json"
 
-    if not dry_run:
-        resources_dir.mkdir(parents=True, exist_ok=True)
-
     public_session = _new_session()
     cookie_sessions = load_cookie_sessions(cookies_json) if cookies_json else {}
 
@@ -964,7 +960,7 @@ def _enrich_session(
 
 def enrich_session(session_dir, notion_token_v2, notion_active_user,
                    playwright_storage_state, cookies_json, dry_run, *, budget=None, auth_origins=None, browser_executable=None):
-    with budgets.job_scope(budget):
+    with budgets.job_scope(budget), safe_output.session_output(session_dir, dry_run):
         return _enrich_session(session_dir, notion_token_v2, notion_active_user,
                                playwright_storage_state, cookies_json, dry_run, auth_origins, browser_executable)
 

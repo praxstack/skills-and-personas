@@ -16,6 +16,8 @@ CANDIDATE_PATHS = (
     "examples/teach-visual-candidate/momentum",
     "scripts/check_render_receipts.py",
     "docs/teach-finish-20261024/behavior/audit-behavior-v1.mjs",
+    "docs/teach-finish-20261024/behavior/audit-behavior-v2.mjs",
+    "docs/teach-finish-20261024/quality/verify-offline-v2.mjs",
     "docs/teach-finish-20261024/behavior/check-course-consent-v2.proposed.mjs",
 )
 

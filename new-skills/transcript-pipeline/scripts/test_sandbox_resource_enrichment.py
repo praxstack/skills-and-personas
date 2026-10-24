@@ -58,6 +58,7 @@ class SandboxTests(unittest.TestCase):
         (self.session/'private-media').write_text('must not enter')
         stage = self.root/'stage'; stage.mkdir()
         sandbox.snapshot(self.session, stage)
+        self.assertEqual((stage/'tools/safe_resource_output.py').read_bytes(), (sandbox.HERE/'safe_resource_output.py').read_bytes())
         self.assertEqual([x.name for x in (stage/'input/session').iterdir()], ['.pipeline'])
         for p in stage.rglob('*'):
             self.assertEqual(p.stat().st_mode & 0o077, 0)
