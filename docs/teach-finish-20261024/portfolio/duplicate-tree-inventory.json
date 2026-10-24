@@ -1,0 +1,990 @@
+[
+  {
+    "name": "backend-pe",
+    "variants": [
+      {
+        "entrypoint": "skills/backend-pe/SKILL.md",
+        "entrypoint_sha256": "6e9667a2e2061158c0ed9421205fab8885c1baf8ee5cea15b667c73a59e4431a",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "6e9667a2e2061158c0ed9421205fab8885c1baf8ee5cea15b667c73a59e4431a"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/backend-pe/SKILL.md",
+        "entrypoint_sha256": "438c1b0d0bd669e5650f024303d028c8abcb5bffaa99c15e61450e63f6df6a3f",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "438c1b0d0bd669e5650f024303d028c8abcb5bffaa99c15e61450e63f6df6a3f"
+          },
+          {
+            "path": "references/methodology.md",
+            "sha256": "017a49e95535dbf317d6edb0d8c48c60be5694a202ac02735c4b333a69b261fc"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "blueprint-creator",
+    "variants": [
+      {
+        "entrypoint": "skills/blueprint-creator/SKILL.md",
+        "entrypoint_sha256": "a2cc4884ef48da5fad24984e22962b9000b8fb8c58c46976680737292ae398ea",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "a2cc4884ef48da5fad24984e22962b9000b8fb8c58c46976680737292ae398ea"
+          },
+          {
+            "path": "brainstorm-patterns.md",
+            "sha256": "d1db59f5548309b98510d835b48bb195f4a9ba288c4873283549f9a15db71115"
+          },
+          {
+            "path": "expansion-patterns.md",
+            "sha256": "10abaa165f6cfed3cdd7e3aef8c1a8aa2b4949d82447bac971749bb0ab317997"
+          },
+          {
+            "path": "quality-bar.md",
+            "sha256": "ae4b19a0ca096fabea69567bca6dea5f59046a71654ef1a77bdf92ec26023d68"
+          },
+          {
+            "path": "section-templates.md",
+            "sha256": "86083b2667d31ad031ca02afdb3668c0a6e97b0c17a26a39b885b46dd264670d"
+          },
+          {
+            "path": "self-review-checklist.md",
+            "sha256": "77a9b4f1312922ea040cd073d47808923d674aa8c29ba37443fd6ded74c6d936"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/blueprint-creator/SKILL.md",
+        "entrypoint_sha256": "6512f97e59644661e263a33d64ccd133850b729fae25e1b957d21e6543f7e80a",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "6512f97e59644661e263a33d64ccd133850b729fae25e1b957d21e6543f7e80a"
+          },
+          {
+            "path": "references/brainstorm-patterns.md",
+            "sha256": "d1db59f5548309b98510d835b48bb195f4a9ba288c4873283549f9a15db71115"
+          },
+          {
+            "path": "references/expansion-patterns.md",
+            "sha256": "10abaa165f6cfed3cdd7e3aef8c1a8aa2b4949d82447bac971749bb0ab317997"
+          },
+          {
+            "path": "references/quality-bar.md",
+            "sha256": "ae4b19a0ca096fabea69567bca6dea5f59046a71654ef1a77bdf92ec26023d68"
+          },
+          {
+            "path": "references/section-templates.md",
+            "sha256": "86083b2667d31ad031ca02afdb3668c0a6e97b0c17a26a39b885b46dd264670d"
+          },
+          {
+            "path": "references/self-review-checklist.md",
+            "sha256": "77a9b4f1312922ea040cd073d47808923d674aa8c29ba37443fd6ded74c6d936"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "chronicle",
+    "variants": [
+      {
+        "entrypoint": "skills/chronicle/SKILL.md",
+        "entrypoint_sha256": "c7a64b806f4fea7de933424168ca961e04d0bf1dc681d455602fb5dbb04cadfc",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "c7a64b806f4fea7de933424168ca961e04d0bf1dc681d455602fb5dbb04cadfc"
+          },
+          {
+            "path": "references/example-output.md",
+            "sha256": "371d7c961567f4eace1e92d5cda12b168a3daa917eb2ae0ef055c59e7bda5b6c"
+          },
+          {
+            "path": "references/output-template.md",
+            "sha256": "a44cda6a5339d70e868453b715b8eaed086ba88b8c6c0cf7d62f3bd9c7088b6e"
+          },
+          {
+            "path": "references/psychology-guide.md",
+            "sha256": "77f64ea49f8625414c61b27843981ab96e57c492107f8b18f6b54889a90356cc"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/chronicle/SKILL.md",
+        "entrypoint_sha256": "f114f0f74272ad50c3c9644677bb1b7a82358d41bf4a6fef1f330a74db9d21e4",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "f114f0f74272ad50c3c9644677bb1b7a82358d41bf4a6fef1f330a74db9d21e4"
+          },
+          {
+            "path": "references/examples.md",
+            "sha256": "a6eb7dae8f51997cef0884d63eedd7dbaa77fe2b0d1d7e737096b2eef1094c35"
+          },
+          {
+            "path": "references/pattern-library-template.md",
+            "sha256": "d364802e505822297082c1b507d44804bc2307c6975df86e58ab9c5dc11c5e69"
+          },
+          {
+            "path": "references/platform-adaptations.md",
+            "sha256": "6a3b0bd58e034610f1ba21687cb36e0b62b544f6f45873451f29c595a06f4b21"
+          },
+          {
+            "path": "references/psychological-frameworks.md",
+            "sha256": "8c4de178070caed0b5c8e1c8afb77e9cac1aed4357c9e73468f8905e2d2fc14b"
+          },
+          {
+            "path": "references/user-profile-template.md",
+            "sha256": "41137207b2e6797db28ee9a4e6283b47b187fcedce8ab80182ab4e6765ef8c5a"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "concept-cartographer",
+    "variants": [
+      {
+        "entrypoint": "skills/concept-cartographer/SKILL.md",
+        "entrypoint_sha256": "0bd940753bf5e7395245658ba2ab918981bc2f970855a945fec6393ac00d08ae",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "0bd940753bf5e7395245658ba2ab918981bc2f970855a945fec6393ac00d08ae"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/concept-cartographer/SKILL.md",
+        "entrypoint_sha256": "d15efe7f53b2585fec1a391be05405e2c935331f5c5865da1f88f24ea5da66a7",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "d15efe7f53b2585fec1a391be05405e2c935331f5c5865da1f88f24ea5da66a7"
+          },
+          {
+            "path": "references/mermaid-examples.md",
+            "sha256": "451a25b009f343f95b23ec4befed3e88b12832ff29a2645f19175ea689a039ea"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "constellation-team",
+    "variants": [
+      {
+        "entrypoint": "skills/constellation-team/SKILL.md",
+        "entrypoint_sha256": "c63c9fe5a3db77424714b22cf75920c8f6f3e5c29e5b09745962ddf04adf0ad0",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "c63c9fe5a3db77424714b22cf75920c8f6f3e5c29e5b09745962ddf04adf0ad0"
+          },
+          {
+            "path": "references/backend-system-design.md",
+            "sha256": "3fb2be59a6677c7985f71e9b9f4709e5cdca2d86b7f67ba1dac8e33e89b3ad40"
+          },
+          {
+            "path": "references/devops-sre.md",
+            "sha256": "e39ef569fac6039a01da8cd634d5c9c873b308a4751b44aacd6e8f56c2ce46ed"
+          },
+          {
+            "path": "references/frontend-uiux.md",
+            "sha256": "022efe991c5b8499f692fbf3c4a214bc4a94ef6b8c16d437bf65e7b21cb7181d"
+          },
+          {
+            "path": "references/principal-engineer.md",
+            "sha256": "0a8b4c8d9c984bd7028803b6e99a2992a9d0fa33852b64000bf1fbd27c718937"
+          },
+          {
+            "path": "references/product-manager.md",
+            "sha256": "8a9f650f49918b2bbff6d386ff93e7b5c97fcfbd97cfd34d3f0ed9bf6e312bda"
+          },
+          {
+            "path": "references/qa-security.md",
+            "sha256": "070ffa8f22d29f5ef24e7e0a42edf363e4aa95fa90d15731fae39c6c8974da0d"
+          },
+          {
+            "path": "references/related-skills.md",
+            "sha256": "544c3630cb5b0411c250690418baf0061e7cb4aca25264f67274444154c11a7a"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/constellation-team/SKILL.md",
+        "entrypoint_sha256": "edd6f341d860bd1e03da564c2d2c4f7b22b6c3aa93ce529c4e3c01cb360073f9",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "edd6f341d860bd1e03da564c2d2c4f7b22b6c3aa93ce529c4e3c01cb360073f9"
+          },
+          {
+            "path": "references/backend-system-design.md",
+            "sha256": "3fb2be59a6677c7985f71e9b9f4709e5cdca2d86b7f67ba1dac8e33e89b3ad40"
+          },
+          {
+            "path": "references/devops-sre.md",
+            "sha256": "e39ef569fac6039a01da8cd634d5c9c873b308a4751b44aacd6e8f56c2ce46ed"
+          },
+          {
+            "path": "references/frontend-uiux.md",
+            "sha256": "022efe991c5b8499f692fbf3c4a214bc4a94ef6b8c16d437bf65e7b21cb7181d"
+          },
+          {
+            "path": "references/methodology.md",
+            "sha256": "7972b854c9acc57aade9c59d3fb373a89208971588d3fa5720919f3525b0b4b2"
+          },
+          {
+            "path": "references/principal-engineer.md",
+            "sha256": "0a8b4c8d9c984bd7028803b6e99a2992a9d0fa33852b64000bf1fbd27c718937"
+          },
+          {
+            "path": "references/product-manager.md",
+            "sha256": "8a9f650f49918b2bbff6d386ff93e7b5c97fcfbd97cfd34d3f0ed9bf6e312bda"
+          },
+          {
+            "path": "references/qa-security.md",
+            "sha256": "070ffa8f22d29f5ef24e7e0a42edf363e4aa95fa90d15731fae39c6c8974da0d"
+          },
+          {
+            "path": "references/related-skills.md",
+            "sha256": "544c3630cb5b0411c250690418baf0061e7cb4aca25264f67274444154c11a7a"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "frontend-pe",
+    "variants": [
+      {
+        "entrypoint": "skills/frontend-pe/SKILL.md",
+        "entrypoint_sha256": "c1593f864642a57722d9e48c80d41d14688bf52a291dc8adb2b36a1b42446a21",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "c1593f864642a57722d9e48c80d41d14688bf52a291dc8adb2b36a1b42446a21"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/frontend-pe/SKILL.md",
+        "entrypoint_sha256": "77a37b3ad9a20a0421dc85618ebf11a09ba2c3295cec983da4082a5aa9b32019",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "77a37b3ad9a20a0421dc85618ebf11a09ba2c3295cec983da4082a5aa9b32019"
+          },
+          {
+            "path": "references/design-rules.md",
+            "sha256": "63bec4a648949d4e688a093fd36e96f49b8c22dc19a95dbe0abf6e7981de8a76"
+          },
+          {
+            "path": "references/methodology.md",
+            "sha256": "8ae672e7716354e6a4055d75b3c40e5257b5d281cb19555a87373309f76157e7"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "idea-capturer",
+    "variants": [
+      {
+        "entrypoint": "skills/idea-capturer/SKILL.md",
+        "entrypoint_sha256": "3e6e6454e80a13cef28fcbc4c79070b0d23f3e95ae9ce869e5a8f6b05fd3f3ba",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "3e6e6454e80a13cef28fcbc4c79070b0d23f3e95ae9ce869e5a8f6b05fd3f3ba"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/idea-capturer/SKILL.md",
+        "entrypoint_sha256": "604db1df545359d21ff3db54adad5c2a0b9d9f88f4df07ffa66db0f3628425b5",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "604db1df545359d21ff3db54adad5c2a0b9d9f88f4df07ffa66db0f3628425b5"
+          },
+          {
+            "path": "references/templates.md",
+            "sha256": "86ed7f95a88e3ca3772d69bc73a4261446b2eef3dbcc0b63d3f5347fd00129a1"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "lecture-alchemist",
+    "variants": [
+      {
+        "entrypoint": "skills/lecture-alchemist/SKILL.md",
+        "entrypoint_sha256": "1a65be1b5154e76fee1360f9db569c1bbae3f8d536d170569405f34b29248015",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "1a65be1b5154e76fee1360f9db569c1bbae3f8d536d170569405f34b29248015"
+          },
+          {
+            "path": "references/example-output.md",
+            "sha256": "7df448f19147837231b931f7667edf9c998a02c7c0d60bbdee3ee99f251b5bb1"
+          },
+          {
+            "path": "references/output-template.md",
+            "sha256": "9e0a072527b9dfbd3f7cc6563f3f8326ac64477a1ff00b26fb4a0de5e6d45897"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/lecture-alchemist/SKILL.md",
+        "entrypoint_sha256": "250c807c0fd4297918ae6b8f6539a388bd3cac627bcaffa866177ed31dbdf25f",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "250c807c0fd4297918ae6b8f6539a388bd3cac627bcaffa866177ed31dbdf25f"
+          },
+          {
+            "path": "references/domain-knowledge.md",
+            "sha256": "03de8c3d9038f2ab2d4e725608476b7190c31896c5afe61c0f2234774a1af41c"
+          },
+          {
+            "path": "references/example-output.md",
+            "sha256": "17510186ad03bffeffe37947951d9ac9337269b7968b6bfa508e99a3ff964653"
+          },
+          {
+            "path": "references/examples.md",
+            "sha256": "1664884749d93d008dbbeea88e95e440833423f1616096bb1159a3862e772d8b"
+          },
+          {
+            "path": "references/output-template.md",
+            "sha256": "9e0a072527b9dfbd3f7cc6563f3f8326ac64477a1ff00b26fb4a0de5e6d45897"
+          },
+          {
+            "path": "references/platform-adaptations.md",
+            "sha256": "3e1006b02f249ad513b36af7152780563fa8ddb7c88ada850a3af033edecaf9c"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "obsidian-cli",
+    "variants": [
+      {
+        "entrypoint": "skills/obsidian-cli/SKILL.md",
+        "entrypoint_sha256": "ffaded7e876ee3e5475b02a54b8fffb869813b793bba5927d3bd74d332d32b18",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "ffaded7e876ee3e5475b02a54b8fffb869813b793bba5927d3bd74d332d32b18"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/obsidian-cli/SKILL.md",
+        "entrypoint_sha256": "823266c98d039f412748e6a929428182a4527e821e467c30e47d6131586d3492",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "823266c98d039f412748e6a929428182a4527e821e467c30e47d6131586d3492"
+          },
+          {
+            "path": "references/commands.md",
+            "sha256": "7f92739b7e1263428d6a437150b51cd06a69151f9faaacfab19f221dd97d2243"
+          },
+          {
+            "path": "references/properties.md",
+            "sha256": "4739df87a86116f4a317942c57cb718b28517ec414e69c42521ffd4ab7b39b20"
+          },
+          {
+            "path": "references/queries.md",
+            "sha256": "28ae2bae99f5685d64581df9463a22c12d4359263474ec7053705c525a2f4b01"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "spec-creator",
+    "variants": [
+      {
+        "entrypoint": "skills/spec-creator/SKILL.md",
+        "entrypoint_sha256": "a3c6c9aac9789f99073456e5846e24fd3c6439937b982b3a6bc76626262c773e",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "a3c6c9aac9789f99073456e5846e24fd3c6439937b982b3a6bc76626262c773e"
+          },
+          {
+            "path": "brainstorm-domains.md",
+            "sha256": "6d2b0435c0f2aabce10744d2df63756bc0b8fada86435b82084fd76d2682e6f9"
+          },
+          {
+            "path": "quality-bar.md",
+            "sha256": "65020794fb47a1522c7b52bd0c582f74896db535b2ce88c5c1fb290eca528bb1"
+          },
+          {
+            "path": "section-templates.md",
+            "sha256": "c5c502f08801458d92e3ab8e15fa50efa59d3d7a2474b89b66972900d209fc32"
+          },
+          {
+            "path": "self-review-checklist.md",
+            "sha256": "ed956fb731419aa456fcb30ddeab9265a6e3479f5bd623775cc0d11936a79d18"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/spec-creator/SKILL.md",
+        "entrypoint_sha256": "c14d233cc041d8716e902c77507a92b7375d4f5dcaae8c2ee8fcf5b3d2c7adee",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "c14d233cc041d8716e902c77507a92b7375d4f5dcaae8c2ee8fcf5b3d2c7adee"
+          },
+          {
+            "path": "references/brainstorm-domains.md",
+            "sha256": "6d2b0435c0f2aabce10744d2df63756bc0b8fada86435b82084fd76d2682e6f9"
+          },
+          {
+            "path": "references/quality-bar.md",
+            "sha256": "65020794fb47a1522c7b52bd0c582f74896db535b2ce88c5c1fb290eca528bb1"
+          },
+          {
+            "path": "references/section-templates.md",
+            "sha256": "c5c502f08801458d92e3ab8e15fa50efa59d3d7a2474b89b66972900d209fc32"
+          },
+          {
+            "path": "references/self-review-checklist.md",
+            "sha256": "ed956fb731419aa456fcb30ddeab9265a6e3479f5bd623775cc0d11936a79d18"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "svg-logo-designer",
+    "variants": [
+      {
+        "entrypoint": "skills/svg-logo-designer/SKILL.md",
+        "entrypoint_sha256": "6aa24ee0078b1aa6f409df9b1098d2c7a2bdacdbcd6e1183aab953abde35a95c",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "6aa24ee0078b1aa6f409df9b1098d2c7a2bdacdbcd6e1183aab953abde35a95c"
+          },
+          {
+            "path": "references/design-system.md",
+            "sha256": "c01bab2512b5623bfaeac44d1ed4f4a158e600436b39b6f09041d1d2774b8209"
+          },
+          {
+            "path": "references/discovery-questions.md",
+            "sha256": "d24c696add34695b578cdfac70854acbfd7deeb1706738012064f315d903fad2"
+          },
+          {
+            "path": "references/svg-techniques.md",
+            "sha256": "d263f224bdb2116fd56b58e64541b1d6734f987b06f635fa5a0a48232da1297a"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/svg-logo-designer/SKILL.md",
+        "entrypoint_sha256": "c20911220b2829fb7abaee806f976ca115d5c08fbfd824a304c7334726d4fde7",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "c20911220b2829fb7abaee806f976ca115d5c08fbfd824a304c7334726d4fde7"
+          },
+          {
+            "path": "references/design-system.md",
+            "sha256": "0221425ef02126130e9f5e3ca65ec7f07372ab86dfed6b0daad236dd758d2960"
+          },
+          {
+            "path": "references/discovery-questions.md",
+            "sha256": "eddc3b438a368bd05a4f660f7ebea78688396dda54cc799c7963ece6e35be386"
+          },
+          {
+            "path": "references/svg-techniques.md",
+            "sha256": "3b169df135c15aba468c360f39c2f91d088d51d110deb77cbe5dfbca4a49971d"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "techtutor",
+    "variants": [
+      {
+        "entrypoint": "skills/techtutor/SKILL.md",
+        "entrypoint_sha256": "2c2ebb28bec9c61862c072bfb08d9d4c0268b99508d56e7edf11b18521b16b8b",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "2c2ebb28bec9c61862c072bfb08d9d4c0268b99508d56e7edf11b18521b16b8b"
+          },
+          {
+            "path": "references/anti-patterns.md",
+            "sha256": "f602192bd88596c3ed0b07c64aaf187254b223ac3af72153b3c1f6930464ecef"
+          },
+          {
+            "path": "references/connection-framework.md",
+            "sha256": "472a50bb6eafa159465819335370539edcc13ba37c7df0e6afbae62e09811054"
+          },
+          {
+            "path": "references/handling-requests.md",
+            "sha256": "0c9c678e2b1af16de052e6e7ac9a49824bf710ad7ff942740db570bb0e81cf9b"
+          },
+          {
+            "path": "references/layered-framework.md",
+            "sha256": "e36faf5250dfaf51548896b6afbee3c2d15713bfa5b436401db006b78986338d"
+          },
+          {
+            "path": "references/visual-guidelines.md",
+            "sha256": "f361a7caa78876855f19120ca5b7013d84294138c2703f5fb3541f2d9e81d788"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/techtutor/SKILL.md",
+        "entrypoint_sha256": "d2009922ce850acb9342fdf6a56d189087a141251ebefc4fcdcb1cf7cf7f3cd0",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "d2009922ce850acb9342fdf6a56d189087a141251ebefc4fcdcb1cf7cf7f3cd0"
+          },
+          {
+            "path": "agents/openai.yaml",
+            "sha256": "37859d3368129e91aca7d5a730faf03f342060382dc00d5274b7150ad67364d1"
+          },
+          {
+            "path": "references/anti-patterns.md",
+            "sha256": "bf9ad5ca9676407fe28c9363e94ece73bc93f44560da3e19ca24da44fc3646be"
+          },
+          {
+            "path": "references/connection-framework.md",
+            "sha256": "12e809db16f60c9ab424342fa65cd0f195f17857d393a73f2616890489ac103a"
+          },
+          {
+            "path": "references/handling-requests.md",
+            "sha256": "59f5a87d0413e693176cb0dc9121f6cc506fbdb51f474bb36f94819e0eba3d29"
+          },
+          {
+            "path": "references/layered-framework.md",
+            "sha256": "c9b0c9b7b65310efcef540d8f3acb5c3876b9798fbae5a57f05bc611c34ac82a"
+          },
+          {
+            "path": "references/user-profile-template.md",
+            "sha256": "1c5c63ad688824029f10294fe25c43f132a325757a3e886951b1ed0a1c1baaa2"
+          },
+          {
+            "path": "references/visual-guidelines.md",
+            "sha256": "31a4a04fd0b578b4265dd4a92e3ffa88ff7b3e3a31020894085dfabb2d12fb2b"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "transcribe-refiner",
+    "variants": [
+      {
+        "entrypoint": "skills/transcribe-refiner/SKILL.md",
+        "entrypoint_sha256": "85f892823c32af6080fdc9aa2ded99dc3a7bccbff3d1fd411fbe84d9de1112ef",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "85f892823c32af6080fdc9aa2ded99dc3a7bccbff3d1fd411fbe84d9de1112ef"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/transcribe-refiner/SKILL.md",
+        "entrypoint_sha256": "bbee50edb738bf579f71896e4410a4eef329a47b3da97a88e50091ec59cdc553",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "bbee50edb738bf579f71896e4410a4eef329a47b3da97a88e50091ec59cdc553"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  },
+  {
+    "name": "transcript-pipeline",
+    "variants": [
+      {
+        "entrypoint": "skills/transcript-pipeline/SKILL.md",
+        "entrypoint_sha256": "4d3a0d14b283cb13a935967f61167d73a380ae5382bdcad323c5b47db27d17b6",
+        "files": [
+          {
+            "path": "README.md",
+            "sha256": "a1a072a7d8194bb124bf9276b329b4cabe0eefe3c6f2dade67eea54e8a18a4bf"
+          },
+          {
+            "path": "SKILL.md",
+            "sha256": "4d3a0d14b283cb13a935967f61167d73a380ae5382bdcad323c5b47db27d17b6"
+          },
+          {
+            "path": "USAGEGUIDE.md",
+            "sha256": "5651af78554eac2f543f004f21882eaebf5e8d2a43a9c96622337f093d9da4af"
+          },
+          {
+            "path": "docs/Chat-Provider-Orchestration-Guide.md",
+            "sha256": "f0cfdc4da426e1b630cc927fdb0072485dff57fd7c094e215efbb32f98092243"
+          },
+          {
+            "path": "docs/Colab-Notebook-Explainer-Pipeline.md",
+            "sha256": "9bfbecf4e3dfd77fe580263e6257cb1dc2ecbabba0ec873afaf163ea0bec92a4"
+          },
+          {
+            "path": "docs/Deep-Pass-Quality-Gate.md",
+            "sha256": "02a16da1eca1959826175e55edbef0ad651bf99daa5bc275fb30622fae7be478"
+          },
+          {
+            "path": "docs/Design-Review-Record-KiloCode-OpenCode.md",
+            "sha256": "3377c125e0423cb867603faf7cd9669ff7307e900b197b9285a4951d3925bca7"
+          },
+          {
+            "path": "docs/Multi-Agent-Contribution-SOP.md",
+            "sha256": "60867e09977e8db8016b3a5c9772002efdd3d6bb3750565b4dcbed071f9dbf91"
+          },
+          {
+            "path": "docs/Resource-Enrichment-Authenticated-Flow.md",
+            "sha256": "8b1ad802b5442d4f929a07d1911d9083164c061e48027d79b8c6cd7d679764f1"
+          },
+          {
+            "path": "docs/Transcript-Intelligence-Master-Blueprint.md",
+            "sha256": "a77ec6c61e310d7de11a4618d065241440287499032aa465743d1f3dd89efddf"
+          },
+          {
+            "path": "docs/prompts/Chat-Pipeline-Controller-Prompt.md",
+            "sha256": "cab7a11ae10df60f0a5e86ddef0bbf40bc716a3ec5500df93104b668e4680d3e"
+          },
+          {
+            "path": "docs/prompts/references/tutorial-tech-bar-raiser.md",
+            "sha256": "fc8d390934480fb8191b8affae29470637f384981eed58a1a0ba30f73cff03aa"
+          },
+          {
+            "path": "docs/prompts/stages/stage1-refine.md",
+            "sha256": "5127fe105f5f92a4d08e256503767a517b23502ac25c32cfbaf3dd199ea1b667"
+          },
+          {
+            "path": "docs/prompts/stages/stage2-synthesize.md",
+            "sha256": "2f5551ff959a1edf53b72387f1b8292556ec2050fdb682971e4fba1f1e62f4fa"
+          },
+          {
+            "path": "docs/prompts/stages/stage3-enhance.md",
+            "sha256": "64631ffeca2c997b41e3dca79b39726ee1c291d61aeb45d573ed890cee4610f4"
+          },
+          {
+            "path": "docs/prompts/stages/stage4-validate.md",
+            "sha256": "bf2d4f98857a4f7923f027ac3dd448e30ca75dc89c1565c33db2586176651f3b"
+          },
+          {
+            "path": "references/colab-notebook-explainer-pipeline.md",
+            "sha256": "9bfbecf4e3dfd77fe580263e6257cb1dc2ecbabba0ec873afaf163ea0bec92a4"
+          },
+          {
+            "path": "references/domain-corrections.md",
+            "sha256": "ad412c74c4db0c1314debd486b27d22d706323a6dc40359030c1f483871c2139"
+          },
+          {
+            "path": "references/output-template.md",
+            "sha256": "11edb183abf270d586730cfe5892b8e7da0dcce8c898a481583d42511d14ac2d"
+          },
+          {
+            "path": "references/resource-enrichment-authenticated-flow.md",
+            "sha256": "8b1ad802b5442d4f929a07d1911d9083164c061e48027d79b8c6cd7d679764f1"
+          },
+          {
+            "path": "references/stage1-refine-guide.md",
+            "sha256": "3427c767a1104eafb89235292367a76b3cdf6ae8e718e573afec217140e35add"
+          },
+          {
+            "path": "references/stage1-refine.md",
+            "sha256": "5127fe105f5f92a4d08e256503767a517b23502ac25c32cfbaf3dd199ea1b667"
+          },
+          {
+            "path": "references/stage2-synthesize-guide.md",
+            "sha256": "aa22088534fda62ade64fe8fd7191a80564851b5effa7baaf04368dcca9a5a33"
+          },
+          {
+            "path": "references/stage2-synthesize.md",
+            "sha256": "2f5551ff959a1edf53b72387f1b8292556ec2050fdb682971e4fba1f1e62f4fa"
+          },
+          {
+            "path": "references/stage3-enhance-guide.md",
+            "sha256": "275f344204cd8683a7e3519b060f29837c9889581e2c6fcbc00c0f9a4c21747a"
+          },
+          {
+            "path": "references/stage3-enhance.md",
+            "sha256": "64631ffeca2c997b41e3dca79b39726ee1c291d61aeb45d573ed890cee4610f4"
+          },
+          {
+            "path": "references/stage4-validate-guide.md",
+            "sha256": "568dd61eb31c2dc17aaddcebfc93d8dce7e873d204816df41c71adc96c310302"
+          },
+          {
+            "path": "references/stage4-validate.md",
+            "sha256": "bf2d4f98857a4f7923f027ac3dd448e30ca75dc89c1565c33db2586176651f3b"
+          },
+          {
+            "path": "references/tutorial-tech-bar-raiser.md",
+            "sha256": "fc8d390934480fb8191b8affae29470637f384981eed58a1a0ba30f73cff03aa"
+          },
+          {
+            "path": "scripts/Dockerfile.enrichment",
+            "sha256": "8248fd995f8e07f28c3433e29aec7822773f1671ccd34fb804c17cc1600da1c9"
+          },
+          {
+            "path": "scripts/Dockerfile.enrichment-base",
+            "sha256": "af5ee3701b73820dff9b86712aa76a95637c0ca44b0f1dc16ca0d109fdc349aa"
+          },
+          {
+            "path": "scripts/README.enrichment-sandbox.md",
+            "sha256": "7530c0b294e984f5e96d34300089bc0ffa37a7cb8a58740968a13e2ec8855bff"
+          },
+          {
+            "path": "scripts/enhance_final_notes.py",
+            "sha256": "43aa93ff254f5d7fa90a8845133d20befb14559079996883a57bb773eab56539"
+          },
+          {
+            "path": "scripts/enrichment-wheels-arm64.json",
+            "sha256": "e99a0a4f47b42d3c1a51c2cebda2b83fc679eb79a0dea703cd52d6d5c7d8045c"
+          },
+          {
+            "path": "scripts/ingest_zoom_captions.py",
+            "sha256": "dc15f3f0122014895cec473862e5f9d4bd2c546518af5d29abba460729e5b8c4"
+          },
+          {
+            "path": "scripts/merge_chunks.py",
+            "sha256": "d5cf7e573359d0b6f161c8cb165134aaa4e9096b4ba4f8e4fae510bd66b49d91"
+          },
+          {
+            "path": "scripts/publish_tutorial_notes.py",
+            "sha256": "1f0fa6fc7e7b15a63d8802933e4fa0ab4896054fcc929cafc74da33d960bdb8c"
+          },
+          {
+            "path": "scripts/resource_budget.py",
+            "sha256": "d903e25eac45ce0bda53e8d72c0ed3c09f79ef8647fd785c1aab7dcf7b1cbfab"
+          },
+          {
+            "path": "scripts/resource_enrichment.py",
+            "sha256": "2c0ce1c572082f6bccca1694487ef645de099005204393fd6c055f7f73424073"
+          },
+          {
+            "path": "scripts/run_chat_pipeline.py",
+            "sha256": "d5cbd8e79c2102ec2162cc31ba70e3c70be6140af4a74b44c50d05f9a47361a5"
+          },
+          {
+            "path": "scripts/run_colab_notebook_pipeline.py",
+            "sha256": "979e5c5a33ceaf11a7846db3040e27bbbedc01d39ff60e3d4f40b57250ce9b30"
+          },
+          {
+            "path": "scripts/sandbox_resource_enrichment.py",
+            "sha256": "4d522386584e8de05ddc5a9bae563e7c4b6fea1858f913bb10345070be52752c"
+          },
+          {
+            "path": "scripts/test_browser_transport.py",
+            "sha256": "ede93729827dd089f54915a2ffa387d3ba9e4a0b498caa2916a894e6f14f241e"
+          },
+          {
+            "path": "scripts/test_resource_budget.py",
+            "sha256": "6a25396f564836e5e0b7507d8e9df075cd0261de22e90b7f641dc50c138be41b"
+          },
+          {
+            "path": "scripts/test_resource_enrichment.py",
+            "sha256": "8e2330c192f9e1acb59ae1c6aa2bca64cc7a99e11a377eb612d32eccfc11bf0a"
+          },
+          {
+            "path": "scripts/test_sandbox_resource_enrichment.py",
+            "sha256": "db48ca7875045d26e90fd808ac12e0cbc8bfa5be150edc00102f58c8b058403a"
+          },
+          {
+            "path": "scripts/update_ai_notes_with_resources_and_colab.py",
+            "sha256": "325a452eb3c67e3db934b90d1f147329d423b0c3336322f4aedec5c4749ea6f8"
+          },
+          {
+            "path": "scripts/validate_coverage.py",
+            "sha256": "6d58535686ae2a0b1800d8f89228fdd54e1eea0ac0ad43e20045d898aa8af03a"
+          }
+        ]
+      },
+      {
+        "entrypoint": "new-skills/transcript-pipeline/SKILL.md",
+        "entrypoint_sha256": "e8b11f7367574d44c6c6750da9977a2603c1af56de1d88a84955e4fcd9c45b49",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "sha256": "e8b11f7367574d44c6c6750da9977a2603c1af56de1d88a84955e4fcd9c45b49"
+          },
+          {
+            "path": "references/colab-notebook-explainer-pipeline.md",
+            "sha256": "15c6d8588e5280301b114041960ad6e5dd46fc2a54d07202f31ef7617146c210"
+          },
+          {
+            "path": "references/readme.md",
+            "sha256": "4da9e52d5668d9745cb2ad3f870d5ea64e56e49971db0f055e777742b6cf24f9"
+          },
+          {
+            "path": "references/resource-enrichment-authenticated-flow.md",
+            "sha256": "91ff5516cf8b530b3802788a5875159f4a009e5a6f20ac9271be11eda13fa5ed"
+          },
+          {
+            "path": "references/stage1-refine.md",
+            "sha256": "05fbbbd4dc5fd559095ac4ef96583385eb49e5999476157d6995098aa97c78b9"
+          },
+          {
+            "path": "references/stage2-synthesize.md",
+            "sha256": "67a9352a6a23c84a649a7856844a9dbd37b63b8581d55a60b02a8cf4d232f193"
+          },
+          {
+            "path": "references/stage3-enhance.md",
+            "sha256": "1a8755bf568a75dfa8243beedbf428baf238377c78cb6e0c9c0f0566161d18d0"
+          },
+          {
+            "path": "references/stage4-validate.md",
+            "sha256": "f55a3c9ace140ff5030910d5173b1cdd335ec571b94b397575f856e9477edfb4"
+          },
+          {
+            "path": "references/tutorial-tech-bar-raiser.md",
+            "sha256": "ca44d61e9f3db8566e711091dbe387e6d9f48e7d3506f6e6f3cb86e0af8a13e0"
+          },
+          {
+            "path": "references/usage-guide.md",
+            "sha256": "59857077ae144a234330732a3560ab3dfd6a4f9949c5f6ee2268e65ec3faffb8"
+          },
+          {
+            "path": "scripts/Dockerfile.enrichment",
+            "sha256": "8248fd995f8e07f28c3433e29aec7822773f1671ccd34fb804c17cc1600da1c9"
+          },
+          {
+            "path": "scripts/Dockerfile.enrichment-base",
+            "sha256": "af5ee3701b73820dff9b86712aa76a95637c0ca44b0f1dc16ca0d109fdc349aa"
+          },
+          {
+            "path": "scripts/README.enrichment-sandbox.md",
+            "sha256": "7530c0b294e984f5e96d34300089bc0ffa37a7cb8a58740968a13e2ec8855bff"
+          },
+          {
+            "path": "scripts/enhance_final_notes.py",
+            "sha256": "43aa93ff254f5d7fa90a8845133d20befb14559079996883a57bb773eab56539"
+          },
+          {
+            "path": "scripts/enrichment-wheels-arm64.json",
+            "sha256": "e99a0a4f47b42d3c1a51c2cebda2b83fc679eb79a0dea703cd52d6d5c7d8045c"
+          },
+          {
+            "path": "scripts/ingest_zoom_captions.py",
+            "sha256": "dc15f3f0122014895cec473862e5f9d4bd2c546518af5d29abba460729e5b8c4"
+          },
+          {
+            "path": "scripts/merge_chunks.py",
+            "sha256": "d5cf7e573359d0b6f161c8cb165134aaa4e9096b4ba4f8e4fae510bd66b49d91"
+          },
+          {
+            "path": "scripts/publish_tutorial_notes.py",
+            "sha256": "1f0fa6fc7e7b15a63d8802933e4fa0ab4896054fcc929cafc74da33d960bdb8c"
+          },
+          {
+            "path": "scripts/resource_budget.py",
+            "sha256": "d903e25eac45ce0bda53e8d72c0ed3c09f79ef8647fd785c1aab7dcf7b1cbfab"
+          },
+          {
+            "path": "scripts/resource_enrichment.py",
+            "sha256": "2c0ce1c572082f6bccca1694487ef645de099005204393fd6c055f7f73424073"
+          },
+          {
+            "path": "scripts/run_chat_pipeline.py",
+            "sha256": "8ff9fdf034eacf52fddadf2ef82b92c308490325c407b78376023d6983442fa2"
+          },
+          {
+            "path": "scripts/run_colab_notebook_pipeline.py",
+            "sha256": "979e5c5a33ceaf11a7846db3040e27bbbedc01d39ff60e3d4f40b57250ce9b30"
+          },
+          {
+            "path": "scripts/sandbox_resource_enrichment.py",
+            "sha256": "4d522386584e8de05ddc5a9bae563e7c4b6fea1858f913bb10345070be52752c"
+          },
+          {
+            "path": "scripts/test_browser_transport.py",
+            "sha256": "ede93729827dd089f54915a2ffa387d3ba9e4a0b498caa2916a894e6f14f241e"
+          },
+          {
+            "path": "scripts/test_resource_budget.py",
+            "sha256": "6a25396f564836e5e0b7507d8e9df075cd0261de22e90b7f641dc50c138be41b"
+          },
+          {
+            "path": "scripts/test_resource_enrichment.py",
+            "sha256": "8e2330c192f9e1acb59ae1c6aa2bca64cc7a99e11a377eb612d32eccfc11bf0a"
+          },
+          {
+            "path": "scripts/test_sandbox_resource_enrichment.py",
+            "sha256": "db48ca7875045d26e90fd808ac12e0cbc8bfa5be150edc00102f58c8b058403a"
+          },
+          {
+            "path": "scripts/update_ai_notes_with_resources_and_colab.py",
+            "sha256": "325a452eb3c67e3db934b90d1f147329d423b0c3336322f4aedec5c4749ea6f8"
+          },
+          {
+            "path": "scripts/validate_coverage.py",
+            "sha256": "6d58535686ae2a0b1800d8f89228fdd54e1eea0ac0ad43e20045d898aa8af03a"
+          }
+        ]
+      }
+    ],
+    "proposed_owner": "Prax or explicitly appointed domain maintainer",
+    "decision": "Unresolved. Retain both identities; use collection-qualified lookup until owner approves a versioned mapping.",
+    "migration": "Freeze both tree manifests, compare behavior, preserve each old invocation as an alias, record new canonical identity and original lineage separately, prove replay/rollback before changing routing."
+  }
+]

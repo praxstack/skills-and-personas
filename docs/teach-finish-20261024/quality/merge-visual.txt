@@ -1,0 +1,7 @@
+ok   desktop-light
+ok   desktop-light-reduced
+ok   desktop-dark
+ok   phone-light
+ok   phone-light-reduced
+ok   phone-dark
+all 6 runs clean

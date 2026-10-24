@@ -1,0 +1,566 @@
+{
+  "id": "merge-stability-fresh-v1",
+  "title": "Equal keys still have an order",
+  "subtitle": "Trace one merge: the tie rule decides whether identity survives.",
+  "subject": "DSA · stable sorting",
+  "limits": [
+    "This is the final merge of two already sorted contiguous halves. Letters mark original positions A before B before C before D before E before F; compare keys only. A whole mergesort is stable only if every recursive merge preserves ties. The right-on-equal control deliberately breaks stability while retaining sorted keys. No execution-time or learning-gain measurement is claimed."
+  ],
+  "level": "L1 mechanism → L2 invariant",
+  "lang": "en",
+  "hook": "<p>A key tells us where a record sorts. Its letter tells us which record it is. A stable sort preserves the earlier identity when keys tie.</p>",
+  "params": {
+    "taken": {
+      "label": "Records emitted",
+      "value": 0,
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "rightTie": {
+      "label": "Tie rule (0 left, 1 right)",
+      "value": 0,
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  },
+  "sources": [
+    {
+      "title": "Princeton Algorithms · Merge",
+      "url": "https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/Merge.html",
+      "locator": "The documented top-down implementation is stable; its merge takes the left item unless the right key is strictly less."
+    },
+    {
+      "title": "Princeton Algorithms · Mergesort",
+      "url": "https://algs4.cs.princeton.edu/22mergesort/index.php",
+      "locator": "Merge sorted subarrays to build larger sorted subarrays."
+    }
+  ],
+  "misconceptions": [],
+  "deeper": [],
+  "code": null,
+  "steps": [
+    {
+      "index": 0,
+      "id": "identity",
+      "title": "Read the record, not just its key",
+      "say": "<p>The original order is 1A, 2B, 2C | 1D, 2E, 3F. Each half is already sorted. The heavy outlines mark the next available heads. Move <em>Records emitted</em> to trace the merge one decision at a time.</p>",
+      "sayText": "The original order is 1A, 2B, 2C | 1D, 2E, 3F. Each half is already sorted. The heavy outlines mark the next available heads. Move Records emitted to trace the merge one decision at a time.",
+      "lookFor": "Same number, different letter: 1A must stay before 1D in a stable result.",
+      "note": "Stability describes equal-key identities, not whether keys are ascending.",
+      "sources": [],
+      "alts": [
+        {
+          "label": "Think of dated tickets",
+          "say": "<p>Imagine the number is ticket priority and the letter is arrival order. Equal priorities should keep earlier arrivals first.</p>",
+          "set": {}
+        }
+      ],
+      "ask": null,
+      "figureWidth": 800,
+      "figureHeight": 430,
+      "figureLabel": "0 records emitted using left on equal. Output empty. Left head A; right head D. Full merge preserves equal-key identity order.",
+      "params": {
+        "taken": 0,
+        "rightTie": 0
+      },
+      "state": {
+        "left": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          }
+        ],
+        "right": [
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "out": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "visible": [],
+        "i": 0,
+        "j": 0,
+        "stable": true,
+        "policy": "left on equal"
+      },
+      "readouts": [
+        [
+          "Emitted",
+          "0 / 6"
+        ],
+        [
+          "Tie rule",
+          "left on equal"
+        ],
+        [
+          "Final order stable?",
+          "Yes"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-1-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 610
+    },
+    {
+      "index": 1,
+      "id": "tie",
+      "title": "A tie has a direction",
+      "say": "<p>At the first comparison both keys are 1. Taking the left head emits 1A before 1D. This matters because the entire left half came earlier in the original sequence. Switch the tie rule and trace again: sortedness survives, identity order does not.</p>",
+      "sayText": "At the first comparison both keys are 1. Taking the left head emits 1A before 1D. This matters because the entire left half came earlier in the original sequence. Switch the tie rule and trace again: sortedness survives, identity order does not.",
+      "lookFor": "With right on equal, the first emitted identity becomes D.",
+      "note": "Use left.key ≤ right.key; equivalently take right only when right.key < left.key.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 800,
+      "figureHeight": 430,
+      "figureLabel": "1 records emitted using left on equal. Output 1A. Left head B; right head D. Full merge preserves equal-key identity order.",
+      "params": {
+        "taken": 1,
+        "rightTie": 0
+      },
+      "state": {
+        "left": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          }
+        ],
+        "right": [
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "out": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "visible": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          }
+        ],
+        "i": 1,
+        "j": 0,
+        "stable": true,
+        "policy": "left on equal"
+      },
+      "readouts": [
+        [
+          "Emitted",
+          "1 / 6"
+        ],
+        [
+          "Tie rule",
+          "left on equal"
+        ],
+        [
+          "Final order stable?",
+          "Yes"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-2-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 610
+    },
+    {
+      "index": 2,
+      "id": "repeated",
+      "title": "Keep the same rule for every tie",
+      "say": "<p>With left on equal, the full result is 1A, 1D, 2B, 2C, 2E, 3F. For key 2 the original identity order B → C → E survives. The order inside each half is preserved because only its head can be taken.</p>",
+      "sayText": "With left on equal, the full result is 1A, 1D, 2B, 2C, 2E, 3F. For key 2 the original identity order B → C → E survives. The order inside each half is preserved because only its head can be taken.",
+      "lookFor": "Trace the two 1s and three 2s separately; the letters retain original order.",
+      "note": "This local merge invariant extends through recursion when every merge follows it.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 800,
+      "figureHeight": 430,
+      "figureLabel": "6 records emitted using left on equal. Output 1A, 1D, 2B, 2C, 2E, 3F. Left head exhausted; right head exhausted. Full merge preserves equal-key identity order.",
+      "params": {
+        "taken": 6,
+        "rightTie": 0
+      },
+      "state": {
+        "left": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          }
+        ],
+        "right": [
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "out": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "visible": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "i": 3,
+        "j": 3,
+        "stable": true,
+        "policy": "left on equal"
+      },
+      "readouts": [
+        [
+          "Emitted",
+          "6 / 6"
+        ],
+        [
+          "Tie rule",
+          "left on equal"
+        ],
+        [
+          "Final order stable?",
+          "Yes"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-3-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 610
+    },
+    {
+      "index": 3,
+      "id": "counterexample",
+      "title": "Sorted can still be unstable",
+      "say": "<p>The counterexample gives 1D, 1A, 2E, 2B, 2C, 3F. Keys are ascending, but D crossed A and E crossed B and C. Restore left on equal to repair this merge. Stability is an extra promise beyond sortedness.</p>",
+      "sayText": "The counterexample gives 1D, 1A, 2E, 2B, 2C, 3F. Keys are ascending, but D crossed A and E crossed B and C. Restore left on equal to repair this merge. Stability is an extra promise beyond sortedness.",
+      "lookFor": "The orange right-half identity wins a tie despite arriving later.",
+      "note": "This is a deliberate broken tie rule, not a claim that mergesort is inherently unstable.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "Which tie rule preserves the earlier original identity in this merge?",
+        "why": "Equal-key left identities originally precede the right-half identities.",
+        "model": "",
+        "points": [],
+        "answerText": "Take the left head on equal keys"
+      },
+      "figureWidth": 800,
+      "figureHeight": 430,
+      "figureLabel": "6 records emitted using right on equal. Output 1D, 1A, 2E, 2B, 2C, 3F. Left head exhausted; right head exhausted. Full merge breaks equal-key identity order.",
+      "params": {
+        "taken": 6,
+        "rightTie": 1
+      },
+      "state": {
+        "left": [
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          }
+        ],
+        "right": [
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "out": [
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "visible": [
+          {
+            "key": 1,
+            "id": "D",
+            "pos": 3
+          },
+          {
+            "key": 1,
+            "id": "A",
+            "pos": 0
+          },
+          {
+            "key": 2,
+            "id": "E",
+            "pos": 4
+          },
+          {
+            "key": 2,
+            "id": "B",
+            "pos": 1
+          },
+          {
+            "key": 2,
+            "id": "C",
+            "pos": 2
+          },
+          {
+            "key": 3,
+            "id": "F",
+            "pos": 5
+          }
+        ],
+        "i": 3,
+        "j": 3,
+        "stable": false,
+        "policy": "right on equal"
+      },
+      "readouts": [
+        [
+          "Emitted",
+          "6 / 6"
+        ],
+        [
+          "Tie rule",
+          "right on equal"
+        ],
+        [
+          "Final order stable?",
+          "No"
+        ]
+      ],
+      "answerText": "Take the left head on equal keys",
+      "narrowFigure": "figures/step-4-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 610
+    }
+  ]
+}

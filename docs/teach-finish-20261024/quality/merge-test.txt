@@ -1,0 +1,45 @@
+ok   lesson has steps
+ok   model: left tie preserves all equal identities
+ok   model: right tie is sorted but unstable
+ok   model: every prefix has unique input identities
+ok   step 1 heading
+ok   step 1 figure has a text alternative
+ok   step 1 slider changes the figure
+ok   step 1 other explanation shown and recorded
+ok   step 1 no question: Next open
+ok   step 1 shows no stray "null" or "undefined"
+ok   step 2 heading
+ok   step 2 figure has a text alternative
+ok   step 2 slider changes the figure
+ok   step 2 no question: Next open
+ok   step 2 shows no stray "null" or "undefined"
+ok   step 3 heading
+ok   step 3 figure has a text alternative
+ok   step 3 slider changes the figure
+ok   step 3 no question: Next open
+ok   step 3 shows no stray "null" or "undefined"
+ok   step 4 heading
+ok   step 4 figure has a text alternative
+ok   step 4 slider changes the figure
+ok   step 4 Next locked before answering
+ok   step 4 a miss gets a hint and keeps Next locked
+ok   step 4 a second miss teaches it
+ok   step 4 shows no stray "null" or "undefined"
+ok   every step done
+ok   margin notes filled
+ok   report counts steps
+ok   report records misses
+ok   report records the choice
+ok   report records other explanations tried
+ok   film shows
+ok   film next scene changes the caption
+ok   film scrub back to the start
+ok   film plays
+ok   film transcript lists every scene
+ok   curiosity list keeps a question
+ok   report carries the curiosity list
+ok   notes view lists key ideas
+ok   progress survives a reload
+ok   notes survive a reload
+ok   no console or page errors
+44 passed, 0 failed

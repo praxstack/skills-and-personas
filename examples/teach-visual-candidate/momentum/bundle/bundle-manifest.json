@@ -1,0 +1,25 @@
+{
+  "schema": "explorable-bundle/v1",
+  "title": "Two carts, one momentum total",
+  "input": "explorer.html",
+  "sourceSha256": "4f8b489feebde13d93b9e4ae8f7cd2ef1238438bbe73a1392b0e41acaab2e75d",
+  "steps": 4,
+  "still": {
+    "step": 1,
+    "width": 1440,
+    "height": 900,
+    "editable": true
+  },
+  "video": null,
+  "formats": [
+    "explorer.html",
+    "still.svg",
+    "still.png",
+    "still.html",
+    "static.html",
+    "qa.html",
+    "cards.html",
+    "cards.tsv"
+  ],
+  "warnings": []
+}

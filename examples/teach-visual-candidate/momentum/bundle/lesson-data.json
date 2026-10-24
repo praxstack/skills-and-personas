@@ -1,0 +1,283 @@
+{
+  "id": "momentum-fresh-v1",
+  "title": "Two carts, one momentum total",
+  "subtitle": "Signed contributions add; sticking changes speed, not the system total.",
+  "subject": "Physics · conservation of momentum",
+  "limits": [
+    "Idealized one-dimensional, nonrelativistic collision. The system is both carts; external impulse during the collision is negligible, masses constant, and they stick afterward. Positive is right. Sliders specify velocities just before an assumed contact; positions and collision timing are not simulated. Bars show signed momentum, not distance or speed. Internal forces redistribute momentum. Kinetic energy loss becomes deformation, thermal energy and sound; total energy is conserved. Values are model examples, not measured data."
+  ],
+  "level": "L1 mechanism → L2 model",
+  "lang": "en",
+  "hook": "<p>A moving cart hits another cart and they latch together. Their shared speed is determined by the momentum they brought into the collision.</p>",
+  "params": {
+    "m1": {
+      "label": "Cart A mass",
+      "value": 2,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "u1": {
+      "label": "Cart A velocity before",
+      "value": 3,
+      "min": -4,
+      "max": 4,
+      "step": 1
+    },
+    "m2": {
+      "label": "Cart B mass",
+      "value": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "u2": {
+      "label": "Cart B velocity before",
+      "value": 0,
+      "min": -4,
+      "max": 4,
+      "step": 1
+    }
+  },
+  "sources": [
+    {
+      "title": "OpenStax · Types of Collisions",
+      "url": "https://openstax.org/books/university-physics-volume-1/pages/9-4-types-of-collisions",
+      "locator": "A closed system conserves momentum. In a perfectly inelastic collision objects stick; kinetic energy may decrease."
+    }
+  ],
+  "misconceptions": [],
+  "deeper": [],
+  "code": null,
+  "steps": [
+    {
+      "index": 0,
+      "id": "system",
+      "title": "Choose the system before conserving",
+      "say": "<p>For the worked starting case, A brings 2 × 3 = 6 kg·m/s and B brings zero. Draw the boundary around <strong>both carts</strong>. With negligible external impulse, forces between the carts change their individual momenta by equal and opposite amounts, so the system total stays fixed.</p>",
+      "sayText": "For the worked starting case, A brings 2 × 3 = 6 kg·m/s and B brings zero. Draw the boundary around both carts. With negligible external impulse, forces between the carts change their individual momenta by equal and opposite amounts, so the system total stays fixed.",
+      "lookFor": "The dashed boundary includes both contributions; all bars share the same scale and zero.",
+      "note": "Momentum is mass × signed velocity. The before values change when you move a slider.",
+      "sources": [],
+      "alts": [
+        {
+          "label": "Add signed amounts",
+          "say": "<p>Treat rightward momentum as a positive contribution and leftward momentum as a negative contribution. Internal transfers change the parts while leaving their sum unchanged.</p>",
+          "set": {}
+        }
+      ],
+      "ask": null,
+      "figureWidth": 820,
+      "figureHeight": 560,
+      "figureLabel": "Both carts form one closed system. Before: A 2 kg at 3 m/s contributes 6 kg m/s; B 1 kg at 0 m/s contributes 0. Total 6. They stick: mass 3 kg, velocity 2 m/s, final momentum 6. Kinetic energy changes from 9 to 6 joules.",
+      "params": {
+        "m1": 2,
+        "u1": 3,
+        "m2": 1,
+        "u2": 0
+      },
+      "state": {
+        "pa": 6,
+        "pb": 0,
+        "total": 6,
+        "mass": 3,
+        "v": 2,
+        "after": 6,
+        "ki": 9,
+        "kf": 6,
+        "loss": 3
+      },
+      "readouts": [
+        [
+          "Momentum before",
+          "6 kg·m/s"
+        ],
+        [
+          "Shared velocity after",
+          "2 m/s"
+        ],
+        [
+          "Momentum after",
+          "6 kg·m/s"
+        ],
+        [
+          "Kinetic energy before → after",
+          "9 → 6 J"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-1-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 660
+    },
+    {
+      "index": 1,
+      "id": "stick",
+      "title": "One shared velocity follows from the total",
+      "say": "<p>Sticking gives one final mass mA + mB and one shared velocity v. Conservation gives (mA + mB)v = mA uA + mB uB. Divide the total momentum by total mass. In the worked case, 6 / 3 = 2 m/s. The two green bars have equal signed lengths for every setting.</p>",
+      "sayText": "Sticking gives one final mass mA + mB and one shared velocity v. Conservation gives (mA + mB)v = mA uA + mB uB. Divide the total momentum by total mass. In the worked case, 6 / 3 = 2 m/s. The two green bars have equal signed lengths for every setting.",
+      "lookFor": "Change a mass: total momentum and total mass both enter the calculation.",
+      "note": "Conservation alone does not imply sticking. That is the extra collision assumption used here.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 820,
+      "figureHeight": 560,
+      "figureLabel": "Both carts form one closed system. Before: A 2 kg at 3 m/s contributes 6 kg m/s; B 1 kg at 0 m/s contributes 0. Total 6. They stick: mass 3 kg, velocity 2 m/s, final momentum 6. Kinetic energy changes from 9 to 6 joules.",
+      "params": {
+        "m1": 2,
+        "u1": 3,
+        "m2": 1,
+        "u2": 0
+      },
+      "state": {
+        "pa": 6,
+        "pb": 0,
+        "total": 6,
+        "mass": 3,
+        "v": 2,
+        "after": 6,
+        "ki": 9,
+        "kf": 6,
+        "loss": 3
+      },
+      "readouts": [
+        [
+          "Momentum before",
+          "6 kg·m/s"
+        ],
+        [
+          "Shared velocity after",
+          "2 m/s"
+        ],
+        [
+          "Momentum after",
+          "6 kg·m/s"
+        ],
+        [
+          "Kinetic energy before → after",
+          "9 → 6 J"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-2-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 660
+    },
+    {
+      "index": 2,
+      "id": "opposite",
+      "title": "Opposite directions cancel in the sum",
+      "say": "<p>With equal masses and opposite velocities, the contributions are +4 and −4 kg·m/s. Their sum is zero, so the latched pair rests. Neither cart had zero momentum beforehand. Restore any unequal contribution and the pair moves in the direction of the remaining signed total.</p>",
+      "sayText": "With equal masses and opposite velocities, the contributions are +4 and −4 kg·m/s. Their sum is zero, so the latched pair rests. Neither cart had zero momentum beforehand. Restore any unequal contribution and the pair moves in the direction of the remaining signed total.",
+      "lookFor": "The blue and tan bars extend on opposite sides of zero. Both green totals vanish.",
+      "note": "Zero total momentum does not mean zero motion or zero kinetic energy before impact.",
+      "sources": [],
+      "alts": [],
+      "ask": null,
+      "figureWidth": 820,
+      "figureHeight": 560,
+      "figureLabel": "Both carts form one closed system. Before: A 2 kg at 2 m/s contributes 4 kg m/s; B 2 kg at -2 m/s contributes -4. Total 0. They stick: mass 4 kg, velocity 0 m/s, final momentum 0. Kinetic energy changes from 8 to 0 joules.",
+      "params": {
+        "m1": 2,
+        "u1": 2,
+        "m2": 2,
+        "u2": -2
+      },
+      "state": {
+        "pa": 4,
+        "pb": -4,
+        "total": 0,
+        "mass": 4,
+        "v": 0,
+        "after": 0,
+        "ki": 8,
+        "kf": 0,
+        "loss": 8
+      },
+      "readouts": [
+        [
+          "Momentum before",
+          "0 kg·m/s"
+        ],
+        [
+          "Shared velocity after",
+          "0 m/s"
+        ],
+        [
+          "Momentum after",
+          "0 kg·m/s"
+        ],
+        [
+          "Kinetic energy before → after",
+          "8 → 0 J"
+        ]
+      ],
+      "answerText": "",
+      "narrowFigure": "figures/step-3-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 660
+    },
+    {
+      "index": 3,
+      "id": "energy",
+      "title": "Momentum stays; kinetic energy can change",
+      "say": "<p>In the worked starting case, kinetic energy falls from 9 J to 6 J even though momentum stays at 6 kg·m/s. Some energy becomes deformation, thermal energy and sound. Total energy is conserved; kinetic energy alone is not. If initial velocities are equal, there is no relative motion and this model predicts no kinetic-energy loss.</p>",
+      "sayText": "In the worked starting case, kinetic energy falls from 9 J to 6 J even though momentum stays at 6 kg·m/s. Some energy becomes deformation, thermal energy and sound. Total energy is conserved; kinetic energy alone is not. If initial velocities are equal, there is no relative motion and this model predicts no kinetic-energy loss.",
+      "lookFor": "The momentum equality survives when the kinetic-energy readout changes.",
+      "note": "The interaction is idealized; no force-time curve, trajectory or sound is simulated.",
+      "sources": [],
+      "alts": [],
+      "ask": {
+        "kind": "choice",
+        "q": "Which assumption permits conserving momentum for both carts?",
+        "why": "Net external impulse changes total momentum; internal forces cancel in the system sum.",
+        "model": "",
+        "points": [],
+        "answerText": "Negligible external impulse during the collision"
+      },
+      "figureWidth": 820,
+      "figureHeight": 560,
+      "figureLabel": "Both carts form one closed system. Before: A 2 kg at 3 m/s contributes 6 kg m/s; B 1 kg at 0 m/s contributes 0. Total 6. They stick: mass 3 kg, velocity 2 m/s, final momentum 6. Kinetic energy changes from 9 to 6 joules.",
+      "params": {
+        "m1": 2,
+        "u1": 3,
+        "m2": 1,
+        "u2": 0
+      },
+      "state": {
+        "pa": 6,
+        "pb": 0,
+        "total": 6,
+        "mass": 3,
+        "v": 2,
+        "after": 6,
+        "ki": 9,
+        "kf": 6,
+        "loss": 3
+      },
+      "readouts": [
+        [
+          "Momentum before",
+          "6 kg·m/s"
+        ],
+        [
+          "Shared velocity after",
+          "2 m/s"
+        ],
+        [
+          "Momentum after",
+          "6 kg·m/s"
+        ],
+        [
+          "Kinetic energy before → after",
+          "9 → 6 J"
+        ]
+      ],
+      "answerText": "Negligible external impulse during the collision",
+      "narrowFigure": "figures/step-4-narrow.svg",
+      "narrowWidth": 360,
+      "narrowHeight": 660
+    }
+  ]
+}

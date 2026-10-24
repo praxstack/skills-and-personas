@@ -1,0 +1,91 @@
+{
+  "width": 1440,
+  "height": 900,
+  "figure": {
+    "x": 58,
+    "y": 204.41,
+    "width": 1324,
+    "height": 528.1600000000001
+  },
+  "title": {
+    "fontSize": 42,
+    "lines": 1
+  },
+  "references": 2,
+  "sourceRows": 1,
+  "textBounds": [
+    {
+      "part": "eyebrow",
+      "text": "DSA · stable sorting",
+      "x": 58,
+      "y": 28,
+      "width": 179.3125,
+      "height": 20
+    },
+    {
+      "part": "title",
+      "text": "Equal keys still have an order",
+      "x": 58,
+      "y": 70,
+      "width": 538.671875,
+      "height": 51
+    },
+    {
+      "part": "step-title",
+      "text": "Read the record, not just its key",
+      "x": 58,
+      "y": 141.66000366210938,
+      "width": 346.39892578125,
+      "height": 30
+    },
+    {
+      "part": "source-label",
+      "text": "Sources",
+      "x": 58,
+      "y": 851,
+      "width": 55.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[1]",
+      "x": 135.03125,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[2]",
+      "x": 168.71875,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "Full references ↗",
+      "x": 202.40625,
+      "y": 851,
+      "width": 118.375,
+      "height": 17
+    },
+    {
+      "part": "note",
+      "text": "Stability describes equal-key identities, not whether keys are ascending.",
+      "x": 58,
+      "y": 810.8599853515625,
+      "width": 562.90625,
+      "height": 22
+    },
+    {
+      "part": "caption",
+      "text": "Same number, different letter: 1A must stay before 1D in a stable result.",
+      "x": 58,
+      "y": 760.5700073242188,
+      "width": 722.40625,
+      "height": 29
+    }
+  ],
+  "clippedText": 0
+}
