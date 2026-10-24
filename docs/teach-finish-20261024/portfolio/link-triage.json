@@ -957,7 +957,8 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/EVALUATION.md",
     "resolved": "skills/teach-pro-max/references/eval-cases.json",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
   },
   {
     "exists": false,
@@ -965,7 +966,8 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
     "resolved": "skills/teach-pro-max/scripts/train.py",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "actual missing embedded documentation dependency; not used by canonical general teacher; preserved fallback operation is unresolved and needs separate scoped decision",
+    "engine_relative_exists": false
   },
   {
     "exists": false,
@@ -973,7 +975,8 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
     "resolved": "skills/teach-pro-max/scripts/eval_only.py",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "actual missing embedded documentation dependency; not used by canonical general teacher; preserved fallback operation is unresolved and needs separate scoped decision",
+    "engine_relative_exists": false
   },
   {
     "exists": false,
@@ -981,7 +984,8 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
     "resolved": "skills/teach-pro-max/scripts/evaluate.py",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
   },
   {
     "exists": false,
@@ -989,7 +993,8 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
     "resolved": "skills/teach-pro-max/scripts/study.py",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
   },
   {
     "exists": false,
@@ -997,7 +1002,8 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/SKILLOPT-OPTIMIZATION.md",
     "resolved": "skills/teach-pro-max/references/eval-cases.json",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
   },
   {
     "exists": false,
@@ -1005,6 +1011,7 @@
     "path": "skills/teach-pro-max/references/prax-teach-v2/references/VISUALIZATION-ROUTER.md",
     "resolved": "skills/teach-pro-max/assets/data",
     "type": "backtick_path",
-    "triage": "frozen historical source or reference; preserve receipt bytes"
+    "triage": "actual missing embedded documentation dependency; not used by canonical general teacher; preserved fallback operation is unresolved and needs separate scoped decision",
+    "engine_relative_exists": false
   }
 ]
