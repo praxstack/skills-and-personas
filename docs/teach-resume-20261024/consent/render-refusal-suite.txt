@@ -1,0 +1,7 @@
+test_javascript_refuses_before_browser_or_input (test_render_refusal.RenderRefusalTests.test_javascript_refuses_before_browser_or_input) ... ok
+test_python_refuses_before_input_or_output (test_render_refusal.RenderRefusalTests.test_python_refuses_before_input_or_output) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.157s
+
+OK

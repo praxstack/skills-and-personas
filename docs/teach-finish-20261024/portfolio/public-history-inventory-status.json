@@ -1,0 +1,6 @@
+{
+  "command": "git ls-remote --heads --tags origin; git rev-list --objects <all advertised ref object ids>",
+  "rev_list_exit": 0,
+  "limitations": "Public means remotely advertised refs, not independently checked repository visibility. Hosting caches, releases, forks, PR refs and clones are outside this read-only inventory. No cleanup authorized or executed.",
+  "stderr": ""
+}

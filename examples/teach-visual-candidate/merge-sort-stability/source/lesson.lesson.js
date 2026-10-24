@@ -1,0 +1,34 @@
+// First-party authored source, trusted for local model/render tests. No network or storage calls.
+const records=[{key:1,id:"A",pos:0},{key:2,id:"B",pos:1},{key:2,id:"C",pos:2},{key:1,id:"D",pos:3},{key:2,id:"E",pos:4},{key:3,id:"F",pos:5}];
+function mergeModel(p){
+ const left=records.slice(0,3),right=records.slice(3),out=[],trace=[];let i=0,j=0;
+ while(i<left.length||j<right.length){const a=left[i],b=right[j];const takeLeft=!b||(a&&(a.key<b.key||(a.key===b.key&&!p.rightTie)));const chosen=takeLeft?left[i++]:right[j++];out.push(chosen);trace.push({i,j,chosen});}
+ const count=Math.round(p.taken),visible=out.slice(0,count),prev=count?trace[count-1]:{i:0,j:0};
+ return {left,right,out,visible,i:prev.i,j:prev.j,stable:out.every((x,k)=>!k||out[k-1].key!==x.key||out[k-1].pos<x.pos),policy:p.rightTie?"right on equal":"left on equal"};
+}
+window.LESSON={id:"merge-stability-fresh-v1",title:"Equal keys still have an order",subtitle:"Trace one merge: the tie rule decides whether identity survives.",subject:"DSA · stable sorting",level:"L1 mechanism → L2 invariant",style:"visual-explain",
+ hook:"<p>A key tells us where a record sorts. Its letter tells us which record it is. A stable sort preserves the earlier identity when keys tie.</p>",
+ sources:[{title:"Princeton Algorithms · Merge",url:"https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/Merge.html",note:"The documented top-down implementation is stable; its merge takes the left item unless the right key is strictly less."},{title:"Princeton Algorithms · Mergesort",url:"https://algs4.cs.princeton.edu/22mergesort/index.php",note:"Merge sorted subarrays to build larger sorted subarrays."}],
+ limits:"This is the final merge of two already sorted contiguous halves. Letters mark original positions A before B before C before D before E before F; compare keys only. A whole mergesort is stable only if every recursive merge preserves ties. The right-on-equal control deliberately breaks stability while retaining sorted keys. No execution-time or learning-gain measurement is claimed.",
+ params:{taken:{label:"Records emitted",min:0,max:6,step:1,value:0},rightTie:{label:"Tie rule (0 left, 1 right)",min:0,max:1,step:1,value:0,fmt:v=>v?"right on equal":"left on equal"}},model:mergeModel,
+ readouts:(s,p)=>[["Emitted",`${s.visible.length} / 6`],["Tie rule",s.policy],["Final order stable?",s.stable?"Yes":"No"]],
+ figure:{viewBox:n=>n?"0 0 360 610":"0 0 800 430",label:(s,p)=>`${s.visible.length} records emitted using ${s.policy}. Output ${s.visible.map(x=>x.key+x.id).join(", ")||"empty"}. Left head ${s.left[s.i]?.id||"exhausted"}; right head ${s.right[s.j]?.id||"exhausted"}. Full merge ${s.stable?"preserves":"breaks"} equal-key identity order.`,draw(g,s,p,k){
+ const {el,narrow:n}=k,W=n?360:800;const ink="#263c44",blue="#d9e8ef",orange="#f3dfc6";
+ const t=(x,y,text,size=18)=>el("text",{x,y,text,"font-size":size,fill:ink,"font-family":"Georgia,serif"});
+ el("rect",{x:0,y:0,width:W,height:n?610:430,fill:"#fcfcf8"});
+ const row=(xs,y,items,head=-1)=>items.forEach((r,q)=>{const x=xs+q*(n?49:59);el("rect",{x,y,width:n?43:51,height:46,rx:5,fill:r.pos<3?blue:orange,stroke:ink,"stroke-width":q===head?3:1});t(x+7,y+29,`${r.key}${r.id}`,21);});
+ t(22,30,"ORIGINAL IDENTITY ORDER",n?17:20);row(22,45,records);t(22,119,"Number = key · letter = identity",n?17:19);
+ t(22,164,"LEFT SORTED HALF",17);row(22,180,s.left,s.i);
+ t(n?22:427,n?273:164,"RIGHT SORTED HALF",17);row(n?22:427,n?289:180,s.right,s.j);
+ t(22,n?381:264,`Compare heads: ${s.left[s.i]?s.left[s.i].key+s.left[s.i].id:"—"} and ${s.right[s.j]?s.right[s.j].key+s.right[s.j].id:"—"}`,n?18:22);
+ t(22,n?411:294,`On equality choose ${p.rightTie?"RIGHT":"LEFT"}.`,n?18:21);
+ t(22,n?462:339,"OUTPUT PREFIX →",17);row(22,n?478:352,s.visible);
+ t(22,n?565:423,`${s.visible.length} emitted · ${s.policy}`,n?18:19);
+ }},
+ steps:[
+ {id:"identity",title:"Read the record, not just its key",set:{taken:0,rightTie:0},controls:["taken"],say:"<p>The original order is 1A, 2B, 2C | 1D, 2E, 3F. Each half is already sorted. The heavy outlines mark the next available heads. Move <em>Records emitted</em> to trace the merge one decision at a time.</p>",lookFor:"Same number, different letter: 1A must stay before 1D in a stable result.",note:"Stability describes equal-key identities, not whether keys are ascending.",alts:[{label:"Think of dated tickets",say:"<p>Imagine the number is ticket priority and the letter is arrival order. Equal priorities should keep earlier arrivals first.</p>"}]},
+ {id:"tie",title:"A tie has a direction",set:{taken:1,rightTie:0},controls:["taken","rightTie"],say:"<p>At the first comparison both keys are 1. Taking the left head emits 1A before 1D. This matters because the entire left half came earlier in the original sequence. Switch the tie rule and trace again: sortedness survives, identity order does not.</p>",lookFor:"With right on equal, the first emitted identity becomes D.",note:"Use left.key ≤ right.key; equivalently take right only when right.key < left.key."},
+ {id:"repeated",title:"Keep the same rule for every tie",set:{taken:6,rightTie:0},controls:["taken","rightTie"],say:"<p>With left on equal, the full result is 1A, 1D, 2B, 2C, 2E, 3F. For key 2 the original identity order B → C → E survives. The order inside each half is preserved because only its head can be taken.</p>",lookFor:"Trace the two 1s and three 2s separately; the letters retain original order.",note:"This local merge invariant extends through recursion when every merge follows it."},
+ {id:"counterexample",ask:{kind:"choice",q:"Which tie rule preserves the earlier original identity in this merge?",options:["Take the left head on equal keys","Take the right head on equal keys"],answer:0,hint:"The entire left half originally came first.",why:"Equal-key left identities originally precede the right-half identities."},title:"Sorted can still be unstable",set:{taken:6,rightTie:1},controls:["taken","rightTie"],say:"<p>The counterexample gives 1D, 1A, 2E, 2B, 2C, 3F. Keys are ascending, but D crossed A and E crossed B and C. Restore left on equal to repair this merge. Stability is an extra promise beyond sortedness.</p>",lookFor:"The orange right-half identity wins a tie despite arriving later.",note:"This is a deliberate broken tie rule, not a claim that mergesort is inherently unstable."}
+ ],checks:[{name:"left tie preserves all equal identities",test:m=>{const s=m({taken:6,rightTie:0});return s.stable&&s.out.map(x=>x.id).join("")==="ADBCEF";}},{name:"right tie is sorted but unstable",test:m=>{const s=m({taken:6,rightTie:1});return !s.stable&&s.out.every((x,i)=>!i||s.out[i-1].key<=x.key);}},{name:"every prefix has unique input identities",test:m=>[0,1].every(rightTie=>Array.from({length:7},(_,taken)=>m({taken,rightTie})).every(s=>new Set(s.visible.map(x=>x.id)).size===s.visible.length&&s.i+s.j===s.visible.length))}]
+};

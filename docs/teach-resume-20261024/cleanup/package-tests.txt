@@ -1,0 +1,6 @@
+test_committed_repeat_and_preservation (test_candidate_packaging.Candidate.test_committed_repeat_and_preservation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 25.859s
+
+OK

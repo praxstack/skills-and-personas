@@ -1,0 +1,4 @@
+error: No solution found when resolving `--with` dependencies
+  cause: Because requests was not found in the cache and you require requests==2.34.2, we can conclude that your requirements are unsatisfiable.
+
+hint: Packages were unavailable because the network was disabled. When the network is disabled, registry packages may only be read from the cache.

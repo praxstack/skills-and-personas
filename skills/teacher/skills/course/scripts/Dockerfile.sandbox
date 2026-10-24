@@ -1,0 +1,12 @@
+# Explicit setup only: runtime adapter accepts the resulting local sha256 ID.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+USER root
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN npm install --prefix /opt/playwright --ignore-scripts --no-audit --no-fund playwright@1.58.0 \
+    && ln -s /opt/playwright/node_modules /node_modules \
+    && /node_modules/.bin/playwright install --with-deps chromium \
+    && chmod -R a+rX /ms-playwright /node_modules \
+    && rm -rf /root/.npm /var/lib/apt/lists/*
+USER 65534:65534
+WORKDIR /tmp

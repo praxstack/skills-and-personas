@@ -1,0 +1,46 @@
+test_output_directory_swap_after_open_is_rejected (test_safe_output.OutputConfinementTests.test_output_directory_swap_after_open_is_rejected) ... FAIL
+test_valid_report_and_artifact_and_overwrite (test_safe_output.OutputConfinementTests.test_valid_report_and_artifact_and_overwrite) ... ok
+test_zero_resource_directory_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_directory_symlink_is_rejected) ... FAIL
+test_zero_resource_report_hardlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_hardlink_is_rejected) ... FAIL
+test_zero_resource_report_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_symlink_is_rejected) ... FAIL
+
+======================================================================
+FAIL: test_output_directory_swap_after_open_is_rejected (test_safe_output.OutputConfinementTests.test_output_directory_swap_after_open_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/transcript-pipeline/scripts/test_safe_output.py", line 52, in test_output_directory_swap_after_open_is_rejected
+    with self.assertRaises((ValueError, OSError)):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'ValueError'>, <class 'OSError'>) not raised
+
+======================================================================
+FAIL: test_zero_resource_directory_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_directory_symlink_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/transcript-pipeline/scripts/test_safe_output.py", line 21, in test_zero_resource_directory_symlink_is_rejected
+    with self.assertRaises((ValueError, OSError)):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'ValueError'>, <class 'OSError'>) not raised
+
+======================================================================
+FAIL: test_zero_resource_report_hardlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_hardlink_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/transcript-pipeline/scripts/test_safe_output.py", line 39, in test_zero_resource_report_hardlink_is_rejected
+    with self.assertRaises((ValueError, OSError)):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'ValueError'>, <class 'OSError'>) not raised
+
+======================================================================
+FAIL: test_zero_resource_report_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_symlink_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/transcript-pipeline/scripts/test_safe_output.py", line 30, in test_zero_resource_report_symlink_is_rejected
+    with self.assertRaises((ValueError, OSError)):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'ValueError'>, <class 'OSError'>) not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.006s
+
+FAILED (failures=4)

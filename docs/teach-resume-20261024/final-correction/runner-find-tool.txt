@@ -1,0 +1,13 @@
+test_default_manim_does_not_load_resolver_or_read_source_manifest (test_find_tool.Discovery.test_default_manim_does_not_load_resolver_or_read_source_manifest) ... ok
+test_default_real_marker_control (test_find_tool.Discovery.test_default_real_marker_control) ... ok
+test_empty_external_probes_are_unknown (test_find_tool.Discovery.test_empty_external_probes_are_unknown) ... ok
+test_host_declarations (test_find_tool.Discovery.test_host_declarations) ... ok
+test_instruction_asset_and_svg (test_find_tool.Discovery.test_instruction_asset_and_svg) ... ok
+test_inventory_offline_overrides_net_without_requests (test_find_tool.Discovery.test_inventory_offline_overrides_net_without_requests) ... ok
+test_network_is_reachability_only (test_find_tool.Discovery.test_network_is_reachability_only) ... ok
+test_trusted_cli_offline_still_disables_discovery_network (test_find_tool.Discovery.test_trusted_cli_offline_still_disables_discovery_network) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.098s
+
+OK

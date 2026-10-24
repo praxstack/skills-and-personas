@@ -1,0 +1,1017 @@
+[
+  {
+    "exists": false,
+    "link": "scripts/skill-dry-check.mjs",
+    "path": "skills/eiirp/SKILL.md",
+    "resolved": "skills/eiirp/scripts/skill-dry-check.mjs",
+    "type": "backtick_path",
+    "triage": "upstream example path, not local runtime dependency (line 528 explicitly says upstream)"
+  },
+  {
+    "exists": false,
+    "link": "references/ARTIFACT-CONTRACT.md",
+    "path": "skills/teach-pro-max/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/ARTIFACT-CONTRACT.md",
+    "type": "backtick_path",
+    "triage": "engine-relative reference; actual embedded target exists beneath references/prax-teach-v2/"
+  },
+  {
+    "exists": false,
+    "link": "references/VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/VISUALIZATION-ROUTER.md",
+    "type": "backtick_path",
+    "triage": "engine-relative reference; actual embedded target exists beneath references/prax-teach-v2/"
+  },
+  {
+    "exists": false,
+    "link": "references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/PUBLIC-DISTRIBUTION.md",
+    "resolved": "skills/teach-pro-max/references/OPERATIONS.md",
+    "type": "backtick_path",
+    "triage": "active documentation debt: unqualified reference/architecture description; actual embedded OPERATIONS.md exists; no local executable dependency proved missing"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-11/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-12/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-13/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-14/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-15/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "scripts/praxteach/routing.py",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/README.md",
+    "resolved": "skills/teach-pro-max/scripts/praxteach/routing.py",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-16/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-17/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-18/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-19/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-20/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/LEARNER-STATE.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/LEARNER-STATE.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/OPERATIONS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/OPERATIONS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SOURCES-AND-PRIVACY.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/SOURCES-AND-PRIVACY.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/EVALUATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/EVALUATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./references/SKILLOPT-OPTIMIZATION.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/SKILL.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/SKILLOPT-OPTIMIZATION.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/ARTIFACT-CONTRACT.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./LEGACY-VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/LEGACY-VISUALIZATION-ROUTER.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "./FLINT-CHARTS.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/FLINT-CHARTS.md",
+    "type": "md_link",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-21/source/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "references/ARTIFACT-CONTRACT.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-7/README.md",
+    "resolved": "skills/teach-pro-max/references/ARTIFACT-CONTRACT.md",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "references/ARTIFACT-CONTRACT.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-9/README.md",
+    "resolved": "skills/teach-pro-max/references/ARTIFACT-CONTRACT.md",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "references/VISUALIZATION-ROUTER.md",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-9/README.md",
+    "resolved": "skills/teach-pro-max/references/VISUALIZATION-ROUTER.md",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "scripts/praxteach/routing.py",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/evidence/forward/attempts/attempt-9/README.md",
+    "resolved": "skills/teach-pro-max/scripts/praxteach/routing.py",
+    "type": "backtick_path",
+    "triage": "frozen historical source or reference; preserve receipt bytes"
+  },
+  {
+    "exists": false,
+    "link": "references/eval-cases.json",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/EVALUATION.md",
+    "resolved": "skills/teach-pro-max/references/eval-cases.json",
+    "type": "backtick_path",
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
+  },
+  {
+    "exists": false,
+    "link": "scripts/train.py",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+    "resolved": "skills/teach-pro-max/scripts/train.py",
+    "type": "backtick_path",
+    "triage": "actual missing embedded documentation dependency; not used by canonical general teacher; preserved fallback operation is unresolved and needs separate scoped decision",
+    "engine_relative_exists": false
+  },
+  {
+    "exists": false,
+    "link": "scripts/eval_only.py",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+    "resolved": "skills/teach-pro-max/scripts/eval_only.py",
+    "type": "backtick_path",
+    "triage": "actual missing embedded documentation dependency; not used by canonical general teacher; preserved fallback operation is unresolved and needs separate scoped decision",
+    "engine_relative_exists": false
+  },
+  {
+    "exists": false,
+    "link": "scripts/evaluate.py",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+    "resolved": "skills/teach-pro-max/scripts/evaluate.py",
+    "type": "backtick_path",
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
+  },
+  {
+    "exists": false,
+    "link": "scripts/study.py",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/OPERATIONS.md",
+    "resolved": "skills/teach-pro-max/scripts/study.py",
+    "type": "backtick_path",
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
+  },
+  {
+    "exists": false,
+    "link": "references/eval-cases.json",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/SKILLOPT-OPTIMIZATION.md",
+    "resolved": "skills/teach-pro-max/references/eval-cases.json",
+    "type": "backtick_path",
+    "triage": "embedded engine-relative target exists; wrapper-root heuristic resolution is false positive",
+    "engine_relative_exists": true
+  },
+  {
+    "exists": false,
+    "link": "assets/data/",
+    "path": "skills/teach-pro-max/references/prax-teach-v2/references/VISUALIZATION-ROUTER.md",
+    "resolved": "skills/teach-pro-max/assets/data",
+    "type": "backtick_path",
+    "triage": "actual missing embedded documentation dependency; not used by canonical general teacher; preserved fallback operation is unresolved and needs separate scoped decision",
+    "engine_relative_exists": false
+  }
+]

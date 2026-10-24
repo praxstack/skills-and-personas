@@ -63,14 +63,14 @@ is that same contract exploded into exhaustive detail. Here's the concrete delta
 | "Normalize to lowercase" | Exact normalization pipeline: input → step 1 → step 2 → output, with 3+ examples including edge cases |
 | Config key with default | Config key with default, validation, dynamic reload behavior, and trace to every behavioral impact |
 
-Read `references/expansion-patterns.md` for the full expansion rulebook.
+Read [expansion-patterns.md](./expansion-patterns.md) for the full expansion rulebook.
 
 ## Quality Bar
 
 The Blueprint's quality bar is: **Could an AI agent implement every behavior by mechanically
 translating Blueprint content into code, without ever needing to make an interpretive decision?**
 
-Read `references/quality-bar.md` for the detailed rubric. Key markers:
+Read [quality-bar.md](./quality-bar.md) for the detailed rubric. Key markers:
 
 - Every validation rule has explicit valid/invalid examples
 - Every error has a code, message template, HTTP status (if applicable), and trigger condition
@@ -114,7 +114,7 @@ granular detail. The questions are specific and operational.
 Ask questions **one round at a time**, 3-6 questions per round. Focus on areas where the SPEC
 left deliberate flexibility that the Blueprint needs to lock down.
 
-Read `references/brainstorm-patterns.md` for the questioning framework. Common areas:
+Read [brainstorm-patterns.md](./brainstorm-patterns.md) for the questioning framework. Common areas:
 
 - **Validation edge cases:** "The SPEC says `poll_interval_ms` is an integer with default 30000.
   What should happen with: zero? Negative? Float? String? Extremely large values?"
@@ -132,7 +132,7 @@ entry, and every step of every sequence diagram without inventing anything.
 
 ### Phase 3: Drafting the BLUEPRINT.md
 
-Read `references/section-templates.md` for the canonical Blueprint section structure. Then
+Read [section-templates.md](./section-templates.md) for the canonical Blueprint section structure. Then
 draft the full document.
 
 **Blueprint Section Structure:**
@@ -212,7 +212,7 @@ draft the full document.
 ### Phase 4: Self-Review
 
 Before presenting the Blueprint, run a self-review. Read
-`references/self-review-checklist.md` for the full checklist.
+[self-review-checklist.md](./self-review-checklist.md) for the full checklist.
 
 **Self-review process:**
 

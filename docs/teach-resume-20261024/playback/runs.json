@@ -1,0 +1,1059 @@
+[
+  {
+    "label": "baseline-diagnostic",
+    "result": {
+      "ok": false,
+      "error": "sandbox course process failed; no output published",
+      "seconds": 10.322155542002292
+    },
+    "outerTimeoutSeconds": 300,
+    "mediaWaitTimeoutMs": 5000,
+    "diagnosticOnly": true
+  },
+  {
+    "label": "baseline-matched",
+    "result": {
+      "ok": false,
+      "error": "sandbox course process failed; no output published",
+      "seconds": 10.350157583001419
+    },
+    "outerTimeoutSeconds": 180,
+    "mediaWaitTimeoutMs": 5000,
+    "diagnosticOnly": true,
+    "baselineAdapterCommit": "bf0bcf9"
+  },
+  {
+    "label": "pool-diagnostic",
+    "result": {
+      "ok": true,
+      "checks": 22,
+      "seconds": 28.54878920900228,
+      "lesson": {
+        "returncode": 0
+      },
+      "visual": {
+        "returncode": 0
+      }
+    },
+    "outerTimeoutSeconds": 180,
+    "mediaWaitTimeoutMs": 5000,
+    "diagnosticOnly": true
+  },
+  {
+    "label": "narrated-1",
+    "result": {
+      "ok": true,
+      "checks": 22,
+      "seconds": 26.10848116700072,
+      "lesson": {
+        "returncode": 0
+      },
+      "visual": {
+        "returncode": 0
+      }
+    },
+    "outerTimeoutSeconds": 180,
+    "mediaWaitTimeoutMs": 5000,
+    "diagnosticOnly": false,
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "tasks": 7,
+        "pidEvents": "max 0",
+        "processes": []
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "tasks": 31,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          }
+        ]
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "tasks": 48,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 9
+          }
+        ]
+      },
+      {
+        "phase": "after-film-frames",
+        "tasks": 50,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-static-formats",
+        "tasks": 50,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-static-browser-close",
+        "tasks": 7,
+        "pidEvents": "max 0",
+        "processes": []
+      },
+      {
+        "phase": "before-video-navigation",
+        "tasks": 46,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 8
+          }
+        ]
+      },
+      {
+        "phase": "after-video-navigation",
+        "tasks": 46,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 8
+          }
+        ]
+      },
+      {
+        "phase": "before-play",
+        "tasks": 49,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 11
+          }
+        ]
+      },
+      {
+        "phase": "after-playback-advance",
+        "tasks": 58,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      },
+      {
+        "phase": "after-visible-explorer",
+        "tasks": 59,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      },
+      {
+        "phase": "after-all-browser-checks",
+        "tasks": 59,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "narrated-2",
+    "result": {
+      "ok": true,
+      "checks": 22,
+      "seconds": 25.83523845799209,
+      "lesson": {
+        "returncode": 0
+      },
+      "visual": {
+        "returncode": 0
+      }
+    },
+    "outerTimeoutSeconds": 180,
+    "mediaWaitTimeoutMs": 5000,
+    "diagnosticOnly": false,
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "tasks": 7,
+        "pidEvents": "max 0",
+        "processes": []
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "tasks": 27,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 2
+          }
+        ]
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "tasks": 48,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-film-frames",
+        "tasks": 49,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-static-formats",
+        "tasks": 49,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 8
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-static-browser-close",
+        "tasks": 7,
+        "pidEvents": "max 0",
+        "processes": []
+      },
+      {
+        "phase": "before-video-navigation",
+        "tasks": 47,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 8
+          }
+        ]
+      },
+      {
+        "phase": "after-video-navigation",
+        "tasks": 47,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 8
+          }
+        ]
+      },
+      {
+        "phase": "before-play",
+        "tasks": 50,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 11
+          }
+        ]
+      },
+      {
+        "phase": "after-playback-advance",
+        "tasks": 59,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      },
+      {
+        "phase": "after-visible-explorer",
+        "tasks": 60,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      },
+      {
+        "phase": "after-all-browser-checks",
+        "tasks": 60,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "narrated-3",
+    "result": {
+      "ok": true,
+      "checks": 22,
+      "seconds": 26.768229374996736,
+      "lesson": {
+        "returncode": 0
+      },
+      "visual": {
+        "returncode": 0
+      }
+    },
+    "outerTimeoutSeconds": 180,
+    "mediaWaitTimeoutMs": 5000,
+    "diagnosticOnly": false,
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "tasks": 7,
+        "pidEvents": "max 0",
+        "processes": []
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "tasks": 27,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 2
+          }
+        ]
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "tasks": 49,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-film-frames",
+        "tasks": 50,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-static-formats",
+        "tasks": 50,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 10
+          }
+        ]
+      },
+      {
+        "phase": "after-static-browser-close",
+        "tasks": 7,
+        "pidEvents": "max 0",
+        "processes": []
+      },
+      {
+        "phase": "before-video-navigation",
+        "tasks": 47,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 8
+          }
+        ]
+      },
+      {
+        "phase": "after-video-navigation",
+        "tasks": 47,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 8
+          }
+        ]
+      },
+      {
+        "phase": "before-play",
+        "tasks": 50,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 11
+          }
+        ]
+      },
+      {
+        "phase": "after-playback-advance",
+        "tasks": 59,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 6
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      },
+      {
+        "phase": "after-visible-explorer",
+        "tasks": 60,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      },
+      {
+        "phase": "after-all-browser-checks",
+        "tasks": 60,
+        "pidEvents": "max 0",
+        "processes": [
+          {
+            "role": [],
+            "threads": 17
+          },
+          {
+            "role": [
+              "--type=gpu-process"
+            ],
+            "threads": 7
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=network.mojom.NetworkService"
+            ],
+            "threads": 9
+          },
+          {
+            "role": [
+              "--type=renderer"
+            ],
+            "threads": 13
+          },
+          {
+            "role": [
+              "--type=utility",
+              "--utility-sub-type=audio.mojom.AudioService"
+            ],
+            "threads": 7
+          }
+        ]
+      }
+    ]
+  }
+]

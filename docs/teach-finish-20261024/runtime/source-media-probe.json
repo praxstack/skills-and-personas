@@ -1,0 +1,25 @@
+{
+    "programs": [
+
+    ],
+    "stream_groups": [
+
+    ],
+    "streams": [
+        {
+            "codec_name": "vp9",
+            "codec_type": "video",
+            "duration": "86.041667"
+        },
+        {
+            "codec_name": "opus",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 1,
+            "duration": "86.048167"
+        }
+    ],
+    "format": {
+        "duration": "86.048177"
+    }
+}

@@ -24,6 +24,44 @@ class BrowserTransport(unittest.TestCase):
     def tearDownClass(cls):
         faulthandler.cancel_dump_traceback_later()
 
+    def test_actual_callback_keeps_job_budget_and_blocks_oversized_response(self):
+        body = b"<html><title>Budget control</title></html>"
+        for maximum in (1, 1024):
+            budget = module.budgets.JobBudget(max_transfer=maximum)
+            session = module._new_session()
+            def request(*args, **kwargs):
+                self.assertIs(module.budgets.CURRENT.get(), budget)
+                response = mock.Mock()
+                response.status_code = 200
+                response.headers = {"content-type": "text/html"}
+                response.iter_content.return_value = [body]
+                return response
+            session.request = request
+            # Bind during registration, then leave the context before callbacks.
+            # The browser must retain the same job even across Playwright greenlets.
+            with sync_playwright() as pw, mock.patch.object(module, "_new_session", return_value=session):
+                token = module.budgets.CURRENT.set(budget)
+                try:
+                    browser, context = module.new_public_browser_context(
+                        pw, executable_path=os.environ.get("CHROMIUM_PATH"))
+                finally:
+                    module.budgets.CURRENT.reset(token)
+                try:
+                    page = context.new_page()
+                    if maximum == 1:
+                        with self.assertRaises(Exception):
+                            page.goto("https://8.8.8.8/budget", timeout=5000)
+                        with self.assertRaises(module.BudgetExceeded):
+                            budget.check()
+                    else:
+                        page.goto("https://8.8.8.8/budget", timeout=5000)
+                        self.assertEqual(page.title(), "Budget control")
+                        budget.check()
+                    self.assertGreaterEqual(budget.transfer, len(body))
+                finally:
+                    context.close()
+                    browser.close()
+
     def test_public_broker_and_blocked_local_and_websocket(self):
         session = module._new_session()
         seen = []

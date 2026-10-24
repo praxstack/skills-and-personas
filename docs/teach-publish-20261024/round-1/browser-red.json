@@ -1,0 +1,142 @@
+{
+  "work": "/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teach-pr1-yXSx7A",
+  "browser": "153.0.8010.12",
+  "checks": [
+    {
+      "name": "default full explanation visible",
+      "ok": true
+    },
+    {
+      "name": "practice explanation initially hidden",
+      "ok": false
+    },
+    {
+      "name": "Show me reveals explanation",
+      "ok": true
+    },
+    {
+      "name": "correct practice answer reveals explanation",
+      "ok": true
+    },
+    {
+      "name": "narration decodes operators unicode and paragraph spacing",
+      "ok": false,
+      "actual": "If x &lt; 0 &amp;&amp; y &gt; 2. \u03c0 &#8804; &#x221e; &quot;yes&quot; &nbsp; \u2713"
+    },
+    {
+      "name": "HTML decoding treats markup as inert text",
+      "ok": false,
+      "actual": {
+        "text": "&lt;img src=x&gt;",
+        "bad": 0
+      }
+    },
+    {
+      "name": "export preserves cpp",
+      "ok": true,
+      "actual": "int x = 1;"
+    },
+    {
+      "name": "export preserves python",
+      "ok": true,
+      "actual": "x = 1"
+    },
+    {
+      "name": "export preserves js",
+      "ok": false
+    },
+    {
+      "name": "export preserves java",
+      "ok": false
+    },
+    {
+      "name": "export preserves go",
+      "ok": false
+    },
+    {
+      "name": "export preserves rust",
+      "ok": false
+    },
+    {
+      "name": "export preserves javascript",
+      "ok": true,
+      "actual": "ALIAS_SENTINEL"
+    },
+    {
+      "name": "static renders JS_SENTINEL",
+      "ok": false
+    },
+    {
+      "name": "static renders JAVA_SENTINEL",
+      "ok": false
+    },
+    {
+      "name": "static renders GO_SENTINEL",
+      "ok": false
+    },
+    {
+      "name": "static renders RUST_SENTINEL",
+      "ok": false
+    },
+    {
+      "name": "static renders ALIAS_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static code escapes markup",
+      "ok": false
+    },
+    {
+      "name": "native captions JSfalse file",
+      "ok": false,
+      "actual": "page.waitForFunction: Timeout 4000ms exceeded."
+    },
+    {
+      "name": "no runtime errors JSfalse file",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "native captions JSfalse http",
+      "ok": false,
+      "actual": "page.waitForFunction: Timeout 4000ms exceeded."
+    },
+    {
+      "name": "no runtime errors JSfalse http",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "native captions JStrue file",
+      "ok": true,
+      "actual": {
+        "source": "blob",
+        "cues": [
+          "Native caption \u03c0 < 2"
+        ],
+        "ready": 2
+      }
+    },
+    {
+      "name": "no runtime errors JStrue file",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "native captions JStrue http",
+      "ok": true,
+      "actual": {
+        "source": "blob",
+        "cues": [
+          "Native caption \u03c0 < 2"
+        ],
+        "ready": 2
+      }
+    },
+    {
+      "name": "no runtime errors JStrue http",
+      "ok": true,
+      "actual": []
+    }
+  ]
+}

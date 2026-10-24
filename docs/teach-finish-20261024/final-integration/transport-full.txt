@@ -1,0 +1,109 @@
+test_actual_callback_keeps_job_budget_and_blocks_oversized_response (test_browser_transport.BrowserTransport.test_actual_callback_keeps_job_budget_and_blocks_oversized_response) ... skipped 'explicit browser test opt-in'
+test_public_broker_and_blocked_local_and_websocket (test_browser_transport.BrowserTransport.test_public_broker_and_blocked_local_and_websocket) ... skipped 'explicit browser test opt-in'
+test_failed_streams_still_consume_cumulative_transfer (test_resource_budget.JobBudgetTests.test_failed_streams_still_consume_cumulative_transfer) ... ok
+test_hard_deadline_interrupts_blocking_operation (test_resource_budget.JobBudgetTests.test_hard_deadline_interrupts_blocking_operation) ... ok
+test_manifest_size_and_count_fail_before_network (test_resource_budget.JobBudgetTests.test_manifest_size_and_count_fail_before_network) ... ok
+test_nested_scope_cannot_reset_deadline_or_consumption (test_resource_budget.JobBudgetTests.test_nested_scope_cannot_reset_deadline_or_consumption) ... ok
+test_output_accounting_includes_overwrites_and_encoded_bytes (test_resource_budget.JobBudgetTests.test_output_accounting_includes_overwrites_and_encoded_bytes) ... ok
+test_provider_cannot_convert_exhaustion_to_fallback_success (test_resource_budget.JobBudgetTests.test_provider_cannot_convert_exhaustion_to_fallback_success) ... ok
+test_report_write_is_budgeted (test_resource_budget.JobBudgetTests.test_report_write_is_budgeted) ... ok
+test_resources_accumulate_across_sessions_before_network (test_resource_budget.JobBudgetTests.test_resources_accumulate_across_sessions_before_network) ... ok
+test_small_control_produces_report_and_restores_context (test_resource_budget.JobBudgetTests.test_small_control_produces_report_and_restores_context) ... ok
+test_browser_normal_body_over_limits_aborts_and_accounts_consumption (test_resource_budget.RealRequestsRedirectBudgetTests.test_browser_normal_body_over_limits_aborts_and_accounts_consumption) ... ok
+test_browser_redirect_is_empty_then_final_body_is_charged (test_resource_budget.RealRequestsRedirectBudgetTests.test_browser_redirect_is_empty_then_final_body_is_charged) ... ok
+test_large_redirect_is_never_consumed_and_manual_follow_succeeds (test_resource_budget.RealRequestsRedirectBudgetTests.test_large_redirect_is_never_consumed_and_manual_follow_succeeds) ... ok
+test_normal_body_still_enforces_response_and_aggregate_limits (test_resource_budget.RealRequestsRedirectBudgetTests.test_normal_body_still_enforces_response_and_aggregate_limits) ... ok
+test_redirect_target_is_validated_before_next_send (test_resource_budget.RealRequestsRedirectBudgetTests.test_redirect_target_is_validated_before_next_send) ... ok
+test_strict_origins_strip_credentials_on_other_hosts_ports_and_downgrade (test_resource_enrichment.ExactBrowserOriginTests.test_strict_origins_strip_credentials_on_other_hosts_ports_and_downgrade) ... ok
+test_adapter_used_for_both_schemes_and_no_proxy_bypass (test_resource_enrichment.ResourceSecurityTests.test_adapter_used_for_both_schemes_and_no_proxy_bypass) ... ok
+test_authenticated_session_cannot_change_origin (test_resource_enrichment.ResourceSecurityTests.test_authenticated_session_cannot_change_origin) ... ok
+test_connection_uses_checked_numeric_address_without_second_lookup (test_resource_enrichment.ResourceSecurityTests.test_connection_uses_checked_numeric_address_without_second_lookup) ... ok
+test_cookie_files_require_exact_domains_and_isolate_sessions (test_resource_enrichment.ResourceSecurityTests.test_cookie_files_require_exact_domains_and_isolate_sessions) ... ok
+test_decoded_body_budget_is_enforced (test_resource_enrichment.ResourceSecurityTests.test_decoded_body_budget_is_enforced) ... ok
+test_dns_answer_set_must_be_entirely_public (test_resource_enrichment.ResourceSecurityTests.test_dns_answer_set_must_be_entirely_public) ... ok
+test_notion_credentials_are_exact_host_and_redirects_are_not_followed (test_resource_enrichment.ResourceSecurityTests.test_notion_credentials_are_exact_host_and_redirects_are_not_followed) ... ok
+test_private_and_active_urls_are_rejected (test_resource_enrichment.ResourceSecurityTests.test_private_and_active_urls_are_rejected) ... ok
+test_redirect_is_revalidated_before_following (test_resource_enrichment.ResourceSecurityTests.test_redirect_is_revalidated_before_following) ... ok
+test_storage_state_keeps_only_provider_credentials (test_resource_enrichment.ResourceSecurityTests.test_storage_state_keeps_only_provider_credentials) ... ok
+test_transport_rejects_rebinding_before_opening_socket (test_resource_enrichment.ResourceSecurityTests.test_transport_rejects_rebinding_before_opening_socket) ... ok
+test_active_session_rejects_output_path_escape (test_safe_output.OutputConfinementTests.test_active_session_rejects_output_path_escape) ... ok
+test_artifact_link_is_rejected_by_same_boundary (test_safe_output.OutputConfinementTests.test_artifact_link_is_rejected_by_same_boundary) ... ok
+test_destination_swap_during_staging_is_rejected (test_safe_output.OutputConfinementTests.test_destination_swap_during_staging_is_rejected) ... ok
+test_output_directory_swap_after_open_is_rejected (test_safe_output.OutputConfinementTests.test_output_directory_swap_after_open_is_rejected) ... ok
+test_report_fifo_is_rejected_without_opening (test_safe_output.OutputConfinementTests.test_report_fifo_is_rejected_without_opening) ... ok
+test_valid_report_and_artifact_and_overwrite (test_safe_output.OutputConfinementTests.test_valid_report_and_artifact_and_overwrite) ... ok
+test_zero_resource_directory_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_directory_symlink_is_rejected) ... ok
+test_zero_resource_report_hardlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_hardlink_is_rejected) ... ok
+test_zero_resource_report_symlink_is_rejected (test_safe_output.OutputConfinementTests.test_zero_resource_report_symlink_is_rejected) ... ok
+test_actual_browser_callback_budget (test_sandbox_resource_enrichment.DockerControls.test_actual_browser_callback_budget) ... ok
+test_all_post_create_failures_cleanup (test_sandbox_resource_enrichment.DockerControls.test_all_post_create_failures_cleanup) ... ok
+test_archive_count_byte_limits (test_sandbox_resource_enrichment.DockerControls.test_archive_count_byte_limits) ... ok
+test_artifact_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_artifact_exhaustion) ... ok
+test_browser_javascript_cpu_deadline (test_sandbox_resource_enrichment.DockerControls.test_browser_javascript_cpu_deadline) ... ok
+test_browser_javascript_memory_failure (test_sandbox_resource_enrichment.DockerControls.test_browser_javascript_memory_failure) ... ok
+test_capture_archive_limit (test_sandbox_resource_enrichment.DockerControls.test_capture_archive_limit) ... ok
+test_capture_log_limit_is_secret_free (test_sandbox_resource_enrichment.DockerControls.test_capture_log_limit_is_secret_free) ... ok
+test_cleanup_verification_failure_is_explicit (test_sandbox_resource_enrichment.DockerControls.test_cleanup_verification_failure_is_explicit) ... ok
+test_cpu_deadline (test_sandbox_resource_enrichment.DockerControls.test_cpu_deadline) ... ok
+test_credential_validation (test_sandbox_resource_enrichment.DockerControls.test_credential_validation) ... ok
+test_descriptor_snapshot_survives_path_substitution (test_sandbox_resource_enrichment.DockerControls.test_descriptor_snapshot_survives_path_substitution) ... ok
+test_detached_descendant_terminated_before_archive (test_sandbox_resource_enrichment.DockerControls.test_detached_descendant_terminated_before_archive) ... ok
+test_exact_create_flags_and_no_ambient_secrets (test_sandbox_resource_enrichment.DockerControls.test_exact_create_flags_and_no_ambient_secrets) ... ok
+test_host_loss_internal_deadline (test_sandbox_resource_enrichment.DockerControls.test_host_loss_internal_deadline) ... ok
+test_image_timeout_rejected_before_docker (test_sandbox_resource_enrichment.DockerControls.test_image_timeout_rejected_before_docker) ... ok
+test_input_no_follow_and_hardlinks (test_sandbox_resource_enrichment.DockerControls.test_input_no_follow_and_hardlinks) ... ok
+test_lifecycle_failure_removes_owned_container (test_sandbox_resource_enrichment.DockerControls.test_lifecycle_failure_removes_owned_container) ... ok
+test_log_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_log_exhaustion) ... ok
+test_manifest_bounds_and_missing (test_sandbox_resource_enrichment.DockerControls.test_manifest_bounds_and_missing) ... ok
+test_memory_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_memory_exhaustion) ... ok
+test_normal_public_manifest (test_sandbox_resource_enrichment.DockerControls.test_normal_public_manifest) ... ok
+test_physical_pax_header_rejected (test_sandbox_resource_enrichment.DockerControls.test_physical_pax_header_rejected) ... ok
+test_pid_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_pid_exhaustion) ... ok
+test_real_limits_browser_and_public_broker (test_sandbox_resource_enrichment.DockerControls.test_real_limits_browser_and_public_broker) ... ok
+test_runtime_image_missing_no_fallback (test_sandbox_resource_enrichment.DockerControls.test_runtime_image_missing_no_fallback) ... ok
+test_safe_publish_private_and_new_only (test_sandbox_resource_enrichment.DockerControls.test_safe_publish_private_and_new_only) ... ok
+test_signal_cleanup_preserves_concurrent_same_prefix_job (test_sandbox_resource_enrichment.DockerControls.test_signal_cleanup_preserves_concurrent_same_prefix_job) ... ok
+test_signal_handlers_restore_and_cleanup_state (test_sandbox_resource_enrichment.DockerControls.test_signal_handlers_restore_and_cleanup_state) ... ok
+test_sigterm_cleanup (test_sandbox_resource_enrichment.DockerControls.test_sigterm_cleanup) ... ok
+test_snapshot_scope_and_permissions (test_sandbox_resource_enrichment.DockerControls.test_snapshot_scope_and_permissions) ... ok
+test_tmpfs_exhaustion (test_sandbox_resource_enrichment.DockerControls.test_tmpfs_exhaustion) ... ok
+test_unsafe_archives (test_sandbox_resource_enrichment.DockerControls.test_unsafe_archives) ... ok
+test_all_post_create_failures_cleanup (test_sandbox_resource_enrichment.SandboxTests.test_all_post_create_failures_cleanup) ... ok
+test_archive_count_byte_limits (test_sandbox_resource_enrichment.SandboxTests.test_archive_count_byte_limits) ... ok
+test_capture_archive_limit (test_sandbox_resource_enrichment.SandboxTests.test_capture_archive_limit) ... ok
+test_capture_log_limit_is_secret_free (test_sandbox_resource_enrichment.SandboxTests.test_capture_log_limit_is_secret_free) ... ok
+test_cleanup_verification_failure_is_explicit (test_sandbox_resource_enrichment.SandboxTests.test_cleanup_verification_failure_is_explicit) ... ok
+test_credential_validation (test_sandbox_resource_enrichment.SandboxTests.test_credential_validation) ... ok
+test_descriptor_snapshot_survives_path_substitution (test_sandbox_resource_enrichment.SandboxTests.test_descriptor_snapshot_survives_path_substitution) ... ok
+test_exact_create_flags_and_no_ambient_secrets (test_sandbox_resource_enrichment.SandboxTests.test_exact_create_flags_and_no_ambient_secrets) ... ok
+test_image_timeout_rejected_before_docker (test_sandbox_resource_enrichment.SandboxTests.test_image_timeout_rejected_before_docker) ... ok
+test_input_no_follow_and_hardlinks (test_sandbox_resource_enrichment.SandboxTests.test_input_no_follow_and_hardlinks) ... ok
+test_lifecycle_failure_removes_owned_container (test_sandbox_resource_enrichment.SandboxTests.test_lifecycle_failure_removes_owned_container) ... ok
+test_manifest_bounds_and_missing (test_sandbox_resource_enrichment.SandboxTests.test_manifest_bounds_and_missing) ... ok
+test_physical_pax_header_rejected (test_sandbox_resource_enrichment.SandboxTests.test_physical_pax_header_rejected) ... ok
+test_runtime_image_missing_no_fallback (test_sandbox_resource_enrichment.SandboxTests.test_runtime_image_missing_no_fallback) ... ok
+test_safe_publish_private_and_new_only (test_sandbox_resource_enrichment.SandboxTests.test_safe_publish_private_and_new_only) ... ok
+test_signal_handlers_restore_and_cleanup_state (test_sandbox_resource_enrichment.SandboxTests.test_signal_handlers_restore_and_cleanup_state) ... ok
+test_snapshot_scope_and_permissions (test_sandbox_resource_enrichment.SandboxTests.test_snapshot_scope_and_permissions) ... ok
+test_unsafe_archives (test_sandbox_resource_enrichment.SandboxTests.test_unsafe_archives) ... ok
+
+----------------------------------------------------------------------
+Ran 88 tests in 46.657s
+
+OK (skipped=2)
+REAL_EXIT_CONTROL test_actual_browser_callback_budget {"Running": false, "ExitCode": 0, "OOMKilled": false}
+REAL_EXIT_CONTROL test_artifact_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": false}
+REAL_EXIT_CONTROL test_browser_javascript_cpu_deadline {"Running": true, "ExitCode": 0, "OOMKilled": false}
+REAL_EXIT_CONTROL test_browser_javascript_memory_failure {"Running": false, "ExitCode": 124, "OOMKilled": true}
+REAL_EXIT_CONTROL test_cpu_deadline {"Running": false, "ExitCode": 124, "OOMKilled": false}
+REAL_EXIT_CONTROL test_detached_descendant_terminated_before_archive {"Running": false, "ExitCode": 0, "OOMKilled": false}
+HOST_LOSS_CONTROL {"Running": false, "ExitCode": 124, "OOMKilled": false}
+REAL_EXIT_CONTROL test_log_exhaustion {"Running": false, "ExitCode": 124, "OOMKilled": false}
+REAL_EXIT_CONTROL test_memory_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": true}
+REAL_EXIT_CONTROL test_pid_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": false}
+REAL_EXIT_CONTROL test_real_limits_browser_and_public_broker {"Running": false, "ExitCode": 0, "OOMKilled": false}
+REAL_NETWORK_CONTROL {"limits": {"memory.max": "1073741824", "memory.swap.max": "0", "pids.max": "128", "cpu.max": "100000 100000", "tmp_bytes": 536870912, "shm_bytes": 67108864}, "requests": 4, "transfer": 3694, "public_subresource": 200, "private_blocked": true}
+FOREIGN_JOB_SURVIVAL SIGTERM running=True marker_unchanged=True
+HOST_LOSS_CONTROL {"Running": false, "ExitCode": 124, "OOMKilled": false}
+FOREIGN_JOB_SURVIVAL SIGKILL running=True marker_unchanged=True
+REAL_EXIT_CONTROL test_tmpfs_exhaustion {"Running": false, "ExitCode": 1, "OOMKilled": false}

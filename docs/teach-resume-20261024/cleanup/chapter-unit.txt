@@ -1,0 +1,17 @@
+✔ readable captions preserve native cue intervals and earlier gaps (1.09025ms)
+✔ terminal still retains actual final cue and seeking back clears it (0.072292ms)
+✔ final means latest ending cue, including overlapping tracks (0.068042ms)
+✔ unloaded or empty tracks never invent readable words (0.047042ms)
+✔ source URLs allow only web schemes (0.074333ms)
+✔ unsafe sources render as inert text (0.186208ms)
+✔ generated pages include a restrictive CSP (0.078583ms)
+✔ chapter selection shares whole-microsecond media boundaries (0.099667ms)
+✔ exact microsecond boundaries do not move into the preceding microsecond (0.05925ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.695042

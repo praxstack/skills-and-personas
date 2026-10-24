@@ -27,7 +27,7 @@
 
 Needs: kokoro-onnx, soundfile and numpy in the Python running this script
 (pip install kokoro-onnx==0.6.1 soundfile==0.14.0), the Kokoro model files
-(downloaded and SHA-256 checked into ~/.cache/kokoro on first use; KOKORO_DIR
+(downloaded only with TEACHER_ALLOW_NETWORK=1 and SHA-256 checked into ~/.cache/kokoro; KOKORO_DIR
 moves them), Node with Playwright, and ffmpeg. Spoken clips are cached in
 ~/.cache/kai-mori-voice; NARRATE_CACHE moves the cache. The bundled explainer-video skill documents the full
 voice ladder (Kokoro, then edge-tts, then Piper) if Kokoro can't run.
@@ -82,6 +82,9 @@ def kokoro():
     for name, (url, digest) in KOKORO_FILES.items():
         path = KOKORO_DIR / name
         if not path.exists() or sha256(path) != digest:
+            if os.environ.get("TEACHER_ALLOW_NETWORK") != "1":
+                raise RuntimeError(f"Missing or invalid Kokoro model {path}. Install verified assets separately, "
+                                   "or explicitly opt in to downloading with TEACHER_ALLOW_NETWORK=1.")
             print(f"downloading {name}…")
             urllib.request.urlretrieve(url, path)
             if sha256(path) != digest:
@@ -124,10 +127,28 @@ def trim(x: np.ndarray, thr: float = 0.004) -> np.ndarray:
 
 
 def chatterbox():
+    # Configure Hugging Face before Chatterbox imports it. The constants update
+    # also covers a host that imported huggingface_hub earlier in this process.
+    # This is the HF cache policy, not a general network sandbox.
+    if os.environ.get("TEACHER_ALLOW_NETWORK") != "1":
+        os.environ["HF_HUB_OFFLINE"] = "1"
+        os.environ["TRANSFORMERS_OFFLINE"] = "1"
+        from huggingface_hub import constants
+        constants.HF_HUB_OFFLINE = True
+        loaded = sys.modules.get("transformers.utils.hub")
+        if loaded is not None:
+            loaded._is_offline_mode = True
     import torch
     from chatterbox.tts import ChatterboxTTS
 
-    return ChatterboxTTS.from_pretrained(device="cuda" if torch.cuda.is_available() else "cpu")
+    try:
+        return ChatterboxTTS.from_pretrained(device="cuda" if torch.cuda.is_available() else "cpu")
+    except Exception as exc:
+        if os.environ.get("TEACHER_ALLOW_NETWORK") != "1":
+            raise RuntimeError("Chatterbox could not load from its local Hugging Face cache. "
+                               "Prepare the models separately or explicitly opt in with "
+                               "TEACHER_ALLOW_NETWORK=1. " + str(exc)) from exc
+        raise
 
 
 def has_gpu_chatterbox() -> bool:

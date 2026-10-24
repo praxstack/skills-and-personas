@@ -1,0 +1,32 @@
+{
+  "schema": "explorable-bundle/v1",
+  "title": "A flag is not a verdict.",
+  "input": "base-rates.html",
+  "sourceSha256": "987a2222378da2b626d073041f4c7e1a003ee04159448d40c36f12e7b86ee625",
+  "steps": 7,
+  "still": {
+    "step": 5,
+    "width": 1440,
+    "height": 900,
+    "editable": true
+  },
+  "video": {
+    "scenes": 7,
+    "total": 86.04166666666667
+  },
+  "formats": [
+    "explorer.html",
+    "still.svg",
+    "still.png",
+    "still.html",
+    "static.html",
+    "qa.html",
+    "cards.html",
+    "cards.tsv",
+    "interactive-video.html",
+    "lesson.mp4",
+    "lesson.vtt",
+    "lesson.timing.json"
+  ],
+  "warnings": []
+}

@@ -328,6 +328,9 @@
       "probe": {
         "py": [
           "manim"
+        ],
+        "cli": [
+          "manim"
         ]
       },
       "offline": true,

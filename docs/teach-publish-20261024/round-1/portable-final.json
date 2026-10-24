@@ -1,0 +1,68 @@
+[
+  {
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "skills/teacher/scripts/vendor.py",
+      "verify"
+    ],
+    "exit_code": 0,
+    "output": "16 vendored (12 with local changes: eli, explainer-video, gsap-video, handdrawn-js-video, hyperframes-video, manim-video, motion-canvas-video, motion-video, remotion-video, revideo-video, theatrejs-video, threejs-video), 6 copied files, 6 native, 0 problems\n"
+  },
+  {
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "skills/teach-pro-max/scripts/verify_distribution.py"
+    ],
+    "exit_code": 0,
+    "output": "PASS: 759 embedded engine files match 40e1a1b6b406788b4a74c3cf74a8a91c740587ab; wrapper name line checked (wrapper content is not hashed)\n"
+  },
+  {
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "skills/teacher/scripts/tests/test_teacher.py"
+    ],
+    "exit_code": 0,
+    "output": ".....s.......................s.........................................\n----------------------------------------------------------------------\nRan 71 tests in 12.727s\n\nOK (skipped=2)\n"
+  },
+  {
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/teacher/scripts/tests",
+      "-p",
+      "test_find_tool.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "output": "test_default_manim_does_not_load_resolver_or_read_source_manifest (test_find_tool.Discovery.test_default_manim_does_not_load_resolver_or_read_source_manifest) ... ok\ntest_default_real_marker_control (test_find_tool.Discovery.test_default_real_marker_control) ... ok\ntest_empty_external_probes_are_unknown (test_find_tool.Discovery.test_empty_external_probes_are_unknown) ... ok\ntest_host_declarations (test_find_tool.Discovery.test_host_declarations) ... ok\ntest_instruction_asset_and_svg (test_find_tool.Discovery.test_instruction_asset_and_svg) ... ok\ntest_inventory_offline_overrides_net_without_requests (test_find_tool.Discovery.test_inventory_offline_overrides_net_without_requests) ... ok\ntest_network_is_reachability_only (test_find_tool.Discovery.test_network_is_reachability_only) ... ok\ntest_trusted_cli_offline_still_disables_discovery_network (test_find_tool.Discovery.test_trusted_cli_offline_still_disables_discovery_network) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.064s\n\nOK\n"
+  },
+  {
+    "command": [
+      "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "skills/teacher/scripts/tests",
+      "-p",
+      "test_manim_resolution.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "output": "test_absent_tool (test_manim_resolution.Resolution.test_absent_tool) ... ok\ntest_explicit_and_environment_priority (test_manim_resolution.Resolution.test_explicit_and_environment_priority) ... ok\ntest_invalid_import_and_timeout_fail_closed (test_manim_resolution.Resolution.test_invalid_import_and_timeout_fail_closed) ... ok\ntest_isolated_cli_symlink_and_spaces_shared_with_discovery (test_manim_resolution.Resolution.test_isolated_cli_symlink_and_spaces_shared_with_discovery) ... ok\ntest_malformed_project_state_does_not_crash_discovery (test_manim_resolution.Resolution.test_malformed_project_state_does_not_crash_discovery) ... ok\ntest_module_only_existing_current_interpreter (test_manim_resolution.Resolution.test_module_only_existing_current_interpreter) ... ok\ntest_project_then_source_venv_precedence (test_manim_resolution.Resolution.test_project_then_source_venv_precedence) ... ok\ntest_selected_python_flows_to_introspection_and_render (test_manim_resolution.Resolution.test_selected_python_flows_to_introspection_and_render) ... ok\ntest_unsupported_shell_and_env_shims_are_never_executed (test_manim_resolution.Resolution.test_unsupported_shell_and_env_shims_are_never_executed) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.500s\n\nOK\n"
+  },
+  {
+    "command": [
+      "node",
+      "--test",
+      "skills/teacher/skills/course/scripts/publish_videos.test.mjs",
+      "skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs",
+      "skills/teacher/skills/explorable/scripts/report.test.mjs"
+    ],
+    "exit_code": 0,
+    "output": "\u2714 portable identifiers reject traversal and separators (0.470208ms)\n\u2714 a regular in-root video is bound to one descriptor (10.687458ms)\n\u2714 a symlinked video cannot disclose another file (3.463208ms)\n\u2714 a hard-linked video is rejected (2.791667ms)\n\u2714 readable captions preserve native cue intervals and earlier gaps (0.838375ms)\n\u2714 terminal still retains actual final cue and seeking back clears it (0.073084ms)\n\u2714 final means latest ending cue, including overlapping tracks (0.06975ms)\n\u2714 unloaded or empty tracks never invent readable words (0.046041ms)\n\u2714 source URLs allow only web schemes (0.079125ms)\n\u2714 unsafe sources render as inert text (0.192291ms)\n\u2714 generated pages include a restrictive CSP (0.078875ms)\n\u2714 chapter selection shares whole-microsecond media boundaries (0.108209ms)\n\u2714 exact microsecond boundaries do not move into the preceding microsecond (0.062875ms)\n\u2714 native caption source contains the actual VTT before any script runs (0.3335ms)\n\u2714 static export retains every live code language and the JavaScript alias as text (0.2065ms)\n\u2714 unattempted absent and empty answers never claim correctness (1.61875ms)\n\u2714 unattempted question can still report an actual alternate explanation (0.78525ms)\n\u2714 actually correct first attempt is reported as right first time (0.876666ms)\n\u2714 a correct answer after a miss retains its miss history (0.367833ms)\n\u2714 asking to be shown is not reported as a correct answer (0.287625ms)\n\u2139 tests 20\n\u2139 suites 0\n\u2139 pass 20\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 139.318667\n"
+  }
+]

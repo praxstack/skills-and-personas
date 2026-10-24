@@ -1,0 +1,18 @@
+{
+  "source_commit": "e7d00ed165d79c76508cb810b822a69add9ef3ce",
+  "installed_files": 1546,
+  "installed_links": 5,
+  "frozen_checkers": 5,
+  "protected_git_blobs": 869,
+  "issues": [],
+  "original_general_teacher": {
+    "reference": "0d20ff7",
+    "builder_sha256": "d2a37f8ba9163e025368ba5d87bc697fb8dc38fe309dfb30edfb6962d11bb91c",
+    "git_builder_sha256": "d2a37f8ba9163e025368ba5d87bc697fb8dc38fe309dfb30edfb6962d11bb91c",
+    "equal": true,
+    "historical_dc6a498_e2e": "NOT RUN: different historical baseline; no equivalence or held-out improvement inferred"
+  },
+  "original": "dc6a49857d07643e3bcf6bfece9272f6f28f1bb7",
+  "accepted": "33cfd556ed0387c0b4991fcb6d4bb6f2ae912fad",
+  "rollback": "Installed links remain at v3.0.1-33cfd55; no activation. Candidate rollback: preserve base 4b30f53; do not alter unrelated work."
+}

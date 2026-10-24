@@ -1,0 +1,9 @@
+test_conflicting_owned_feature_replaced_once (test_chromium_wrapper.BrowserArgumentsTests.test_conflicting_owned_feature_replaced_once) ... ok
+test_existing_unrelated_features_and_arguments_survive (test_chromium_wrapper.BrowserArgumentsTests.test_existing_unrelated_features_and_arguments_survive) ... ok
+test_incomplete_separate_value_is_rejected (test_chromium_wrapper.BrowserArgumentsTests.test_incomplete_separate_value_is_rejected) ... ok
+test_no_existing_switch (test_chromium_wrapper.BrowserArgumentsTests.test_no_existing_switch) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK

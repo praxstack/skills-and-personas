@@ -1,0 +1,10 @@
+{
+  "candidate_source_commit": "c060f028e46c7c73a18cc027db3ff76d9f411f8a",
+  "source": "examples/teach-visual-candidate/merge-sort-stability/source/lesson.lesson.js",
+  "source_sha256": "159488f3f234740cd2f160146373798c7fc80f754d71086875bc7338b087d35b",
+  "source_matches_git": true,
+  "builder": "v3-0d20ff7",
+  "rebuilt_comparison_equals_task3_bytes": true,
+  "comparison_sha256": "f8a2b95bb3987dbfcf9b334656bf7535331d4503bcd7f053be9ef9255c7de105",
+  "limitation": "0d20ff7 general-teacher compatibility only; dc6a498 E2E not run; no learning gain claim"
+}

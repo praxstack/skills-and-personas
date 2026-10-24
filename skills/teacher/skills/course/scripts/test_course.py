@@ -37,6 +37,8 @@ def main() -> int:
     ap.add_argument("--out", type=Path)
     ap.add_argument("--skip-qa", action="store_true", help="skip the 6-run visual QA (faster)")
     ap.add_argument("--trust-authored-code", action="store_true", help="after review, allow lesson and shown code to execute")
+    ap.add_argument("--course-checker", choices=("v1", "v2"), default="v2",
+                    help="course-consent/v2 (default); v1 reproduces the historical consent-unaware diagnostic")
     a = ap.parse_args()
     sys.path.insert(0, str(HERE))
     if a.out:
@@ -106,7 +108,8 @@ def check_snapshot(a: argparse.Namespace, out: Path) -> int:
             parts.append("no video")
         failed += not ok
         print(f"{'ok  ' if ok else 'FAIL'} {lesson['id']}: {', '.join(parts)}")
-    code, text = run(["node", str(HERE / "check_course_page.mjs"), str(out / "index.html")])
+    checker = "check_course_page.mjs" if a.course_checker == "v1" else "check_course_page_v2.mjs"
+    code, text = run(["node", str(HERE / checker), str(out / "index.html")])
     print(text.strip().splitlines()[-1] if text.strip() else "course page: no output")
     failed += code != 0
     if code:

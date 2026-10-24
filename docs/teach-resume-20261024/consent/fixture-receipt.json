@@ -1,0 +1,98 @@
+{
+  "scope": "first-party synthetic fixture; no learner state or media generation; temporary inputs removed",
+  "fixture_sha256": "9b339519c0e89c83f6b6868ce6728fd1cee07cafedbf0cf82d6e6567f7558b87",
+  "records": [
+    {
+      "label": "build-1",
+      "command": [
+        "python3",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/build_course.py",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/course-1",
+        "--out",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-1",
+        "--trust-authored-code"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "output": "build-1.txt",
+      "raw_output": "built seasons-1: 1 lessons into /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-1\n"
+    },
+    {
+      "label": "html-1",
+      "sha256": "c1072cd697f0020de9f6d6ca966d2792493910061ef597ac924dd113833eff67"
+    },
+    {
+      "label": "v2-1",
+      "command": [
+        "node",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/check_course_page_v2.mjs",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-1/index.html"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "output": "v2-1.txt",
+      "raw_output": "course page: 26 passed, 0 failed\n"
+    },
+    {
+      "label": "v1-historical",
+      "command": [
+        "node",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/check_course_page.mjs",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-1/index.html"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "output": "v1-historical.txt",
+      "raw_output": "FAIL status survives a reload \ncourse page: 18 passed, 1 failed\n"
+    },
+    {
+      "label": "v1-runner-historical",
+      "command": [
+        "python3",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/test_course.py",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/course-1",
+        "--out",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/runner-v1",
+        "--skip-qa",
+        "--trust-authored-code",
+        "--course-checker",
+        "v1"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "output": "v1-runner-historical.txt",
+      "raw_output": "ok   seasons-1: interactions 59/59, no video\ncourse page: 18 passed, 1 failed\nFAIL status survives a reload \ncourse page: 18 passed, 1 failed\n\nseasons-1: 1 lessons, 1 failed (outputs in /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/runner-v1)\n"
+    },
+    {
+      "label": "build-2",
+      "command": [
+        "python3",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/build_course.py",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/course-2",
+        "--out",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-2",
+        "--trust-authored-code"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "output": "build-2.txt",
+      "raw_output": "built seasons-2: 2 lessons into /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-2\n"
+    },
+    {
+      "label": "html-2",
+      "sha256": "0fd377caf79939bc0a41dff35720ec294d48a51f174730792954f693098ec356"
+    },
+    {
+      "label": "v2-2",
+      "command": [
+        "node",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/course/scripts/check_course_page_v2.mjs",
+        "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/.superpowers/sdd/RESUME-20261024/task-1-scratch/method-fixtures-0ktnz30h/built-2/index.html"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "output": "v2-2.txt",
+      "raw_output": "course page: 32 passed, 0 failed\n"
+    }
+  ]
+}

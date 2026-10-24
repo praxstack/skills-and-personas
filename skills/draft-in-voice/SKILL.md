@@ -4,7 +4,7 @@ version: 1.0.0
 description: >
   Ghostwrite content in a specific person's voice from a VALIDATED voice
   profile — tweets, replies, short posts, launch copy, recruiting blurbs,
-  emails. Loads the subject's voice profile (people/<slug>-voice) plus
+  emails. Loads the subject's voice profile (people/{slug}-voice) plus
   first-party context from the brain, drafts 2-3 options in-register, then
   runs a hard voice-fidelity self-check before showing anything. Includes
   the profile BUILDER: if no validated profile exists, drafting hard-stops

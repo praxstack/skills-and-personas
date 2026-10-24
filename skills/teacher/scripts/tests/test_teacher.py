@@ -145,7 +145,7 @@ class Registry(unittest.TestCase):
         for t in self.reg["tools"]:
             self.assertTrue(set(t["jobs"]) <= set(self.reg["jobs"]), t["id"])
             self.assertTrue(t["media"] and set(t["media"]) <= set(self.reg["media"]), t["id"])
-            self.assertTrue(set(t.get("probe", {})) <= {"bins", "py", "node", "mcp", "net"}, t["id"])
+            self.assertTrue(set(t.get("probe", {})) <= {"bins", "py", "node", "mcp", "net", "cli"}, t["id"])
             self.assertIn("how", t, t["id"])
 
     def test_skill_paths_exist(self):

@@ -1,0 +1,16 @@
+test_committed_repeat_and_preservation (test_candidate_packaging.Candidate.test_committed_repeat_and_preservation) ... ok
+test_local_imports_and_cli_help (test_portfolio_repair.PipelinePackagingTests.test_local_imports_and_cli_help) ... ok
+test_parity_rejects_fourth_path_substitution (test_portfolio_repair.PipelinePackagingTests.test_parity_rejects_fourth_path_substitution) ... ok
+test_parity_rejects_runtime_drift (test_portfolio_repair.PipelinePackagingTests.test_parity_rejects_runtime_drift) ... ok
+test_source_parity (test_portfolio_repair.PipelinePackagingTests.test_source_parity) ... ok
+test_synthetic_ingestion_and_stage_handoff (test_portfolio_repair.PipelinePackagingTests.test_synthetic_ingestion_and_stage_handoff) ... ok
+test_bad_evidence (test_render_receipts.Receipts.test_bad_evidence) ... ok
+test_missing_playback (test_render_receipts.Receipts.test_missing_playback) ... ok
+test_missing_receipt (test_render_receipts.Receipts.test_missing_receipt) ... ok
+test_qa_failure_even_with_successful_export (test_render_receipts.Receipts.test_qa_failure_even_with_successful_export) ... ok
+test_valid (test_render_receipts.Receipts.test_valid) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 29.357s
+
+OK

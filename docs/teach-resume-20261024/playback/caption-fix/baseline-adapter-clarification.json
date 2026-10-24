@@ -1,0 +1,17 @@
+{
+  "priorReceipt": "../baseline-matched/command.json",
+  "priorReceiptUnchanged": true,
+  "checkoutProductHashes": {
+    "skills/teacher/skills/course/scripts/sandbox_course.py": "8572e0dc7eb41187bccacb3361555e4705e8195bf3cc135f92e8fbffd05e0419",
+    "skills/teacher/skills/course/scripts/render_course.mjs": "7c5ceeacc6055d973a813cf2fd0c4a23700cc302ad455b9e30eda968c5849b51",
+    "skills/teacher/skills/course/scripts/render_course.py": "73afe59e61a76c384eb5439edbab0d736f20dc608a6695af8b38e3712751ef92"
+  },
+  "effectiveExecutedAdapter": {
+    "commit": "bf0bcf9",
+    "path": "skills/teacher/skills/course/scripts/sandbox_course.py",
+    "sha256": "3342a28f8f52f3b0143735d76b4ede09ff36691e9efd19959a65524f0ec80c96",
+    "exactGitShowCopy": true,
+    "scope": "scratch diagnostic only"
+  },
+  "distinction": "The prior product object describes checkout bytes. The baseline diagnostic actually executed the exact bf0bcf9 adapter loaded into scratch; its trusted tool tree came from the checkout. The separate effective adapter identity is authoritative for the baseline runtime adapter."
+}

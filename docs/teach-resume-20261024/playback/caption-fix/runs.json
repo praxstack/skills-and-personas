@@ -1,0 +1,44 @@
+[
+  {
+    "label": "caption-narrated-1",
+    "ok": true,
+    "checks": 22,
+    "seconds": 27.193700208008522,
+    "lesson": {
+      "returncode": 0
+    },
+    "visual": {
+      "returncode": 0
+    },
+    "allPhasePidEventsZero": true,
+    "sourceHashesUnchanged": true
+  },
+  {
+    "label": "caption-narrated-2",
+    "ok": true,
+    "checks": 22,
+    "seconds": 26.234596957991016,
+    "lesson": {
+      "returncode": 0
+    },
+    "visual": {
+      "returncode": 0
+    },
+    "allPhasePidEventsZero": true,
+    "sourceHashesUnchanged": true
+  },
+  {
+    "label": "caption-narrated-3",
+    "ok": true,
+    "checks": 22,
+    "seconds": 26.458793333993526,
+    "lesson": {
+      "returncode": 0
+    },
+    "visual": {
+      "returncode": 0
+    },
+    "allPhasePidEventsZero": true,
+    "sourceHashesUnchanged": true
+  }
+]

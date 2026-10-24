@@ -1,0 +1,265 @@
+[
+  {
+    "run": "baseline",
+    "log": "before.stderr.log",
+    "exitCode": 2,
+    "maxSampledTasks": 62,
+    "lastPidLimitEvents": "max 3",
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 52,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 61,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 62,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 62,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 58,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 58,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-play",
+        "pids": 61,
+        "events": "max 0"
+      },
+      {
+        "phase": "playback-failure",
+        "pids": 61,
+        "events": "max 3"
+      }
+    ],
+    "pthreadCreateFailure": true,
+    "audioRendererError": true,
+    "published": false
+  },
+  {
+    "run": "affinity-only-pass",
+    "log": "candidate-1.stderr.log",
+    "exitCode": 0,
+    "maxSampledTasks": 64,
+    "lastPidLimitEvents": "max 1",
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 36,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 53,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 54,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 54,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 52,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 52,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-play",
+        "pids": 55,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-playback-advance",
+        "pids": 64,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-visible-explorer",
+        "pids": 64,
+        "events": "max 1"
+      },
+      {
+        "phase": "after-all-browser-checks",
+        "pids": 64,
+        "events": "max 1"
+      },
+      {
+        "phase": "after-browser-close",
+        "pids": 7,
+        "events": "max 1"
+      }
+    ],
+    "pthreadCreateFailure": true,
+    "audioRendererError": false,
+    "published": true
+  },
+  {
+    "run": "affinity-only-repeat-failure",
+    "log": "after-1.session.log",
+    "exitCode": 2,
+    "maxSampledTasks": 61,
+    "lastPidLimitEvents": "max 3",
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 37,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 52,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 53,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 53,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 58,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 58,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-play",
+        "pids": 61,
+        "events": "max 0"
+      },
+      {
+        "phase": "playback-failure",
+        "pids": 61,
+        "events": "max 3"
+      }
+    ],
+    "pthreadCreateFailure": true,
+    "audioRendererError": true,
+    "published": false
+  },
+  {
+    "run": "final-allocation-failure",
+    "log": "candidate-2-run-1.stderr.log",
+    "exitCode": 2,
+    "maxSampledTasks": 57,
+    "lastPidLimitEvents": "max 1",
+    "phases": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 35,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 51,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 52,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 52,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 54,
+        "events": "max 0"
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 54,
+        "events": "max 0"
+      },
+      {
+        "phase": "before-play",
+        "pids": 57,
+        "events": "max 0"
+      },
+      {
+        "phase": "playback-failure",
+        "pids": 57,
+        "events": "max 1"
+      }
+    ],
+    "pthreadCreateFailure": true,
+    "audioRendererError": true,
+    "published": false
+  }
+]

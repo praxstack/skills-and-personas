@@ -1,0 +1,5 @@
+{
+  "command": "python3 skills/teacher/skills/course/scripts/sandbox_course.py render .runtime-task1/source -o .runtime-task1/before --image sha256:96e50ad889f7fb38c3360c76c7908d3a9b6b26ec590b82cc316993d6eeae520f --docker-context colima-teach-security --timeout 180",
+  "returncode": 2,
+  "note": "Raw work directory was subsequently moved to .superpowers/sdd/PLAN/runtime-raw at controller request."
+}

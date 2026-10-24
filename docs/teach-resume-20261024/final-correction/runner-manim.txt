@@ -1,0 +1,14 @@
+test_absent_tool (test_manim_resolution.Resolution.test_absent_tool) ... ok
+test_explicit_and_environment_priority (test_manim_resolution.Resolution.test_explicit_and_environment_priority) ... ok
+test_invalid_import_and_timeout_fail_closed (test_manim_resolution.Resolution.test_invalid_import_and_timeout_fail_closed) ... ok
+test_isolated_cli_symlink_and_spaces_shared_with_discovery (test_manim_resolution.Resolution.test_isolated_cli_symlink_and_spaces_shared_with_discovery) ... ok
+test_malformed_project_state_does_not_crash_discovery (test_manim_resolution.Resolution.test_malformed_project_state_does_not_crash_discovery) ... ok
+test_module_only_existing_current_interpreter (test_manim_resolution.Resolution.test_module_only_existing_current_interpreter) ... ok
+test_project_then_source_venv_precedence (test_manim_resolution.Resolution.test_project_then_source_venv_precedence) ... ok
+test_selected_python_flows_to_introspection_and_render (test_manim_resolution.Resolution.test_selected_python_flows_to_introspection_and_render) ... ok
+test_unsupported_shell_and_env_shims_are_never_executed (test_manim_resolution.Resolution.test_unsupported_shell_and_env_shims_are_never_executed) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.615s
+
+OK

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/Users/prax/.local/share/uv/tools/crawl4ai/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "skills/transcript-pipeline/scripts",
+    "-p",
+    "test_browser_transport.py",
+    "-v"
+  ],
+  "environment": {
+    "PYTHONPATH": "/Users/prax/.cache/uv/archive-v0/ZYsqvPvo6Drakewc",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TEACHER_BROWSER_TESTS": "1",
+    "runtime_env": "/Users/prax/.local/share/prax-teach/runtime/v3/env.sh"
+  },
+  "result": "2 tests passed; zero skips",
+  "log": "browser-transport.txt",
+  "limitation": "Local Playwright1.64.1/greenlet3.5.6/pyee14.0.0 differs from pinned CI1.58.0/3.3.2/13.0.1; this is local supported-runtime evidence, not a claim that pinned CI executed."
+}
