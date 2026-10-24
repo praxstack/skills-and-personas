@@ -1,6 +1,6 @@
 # Prax Teach candidate — 24 October 2026
 
-Current source snapshot: `eaa524e`; governing method adoption: `bf0bcf9`.
+Current source/package snapshot: `e97fe5b`; demonstrated runtime: `eaa524e`; governing method adoption: `bf0bcf9`.
 This is an unaccepted local candidate. Final whole-branch review and release
 choices are pending; nothing has been installed, published or activated.
 
@@ -9,12 +9,12 @@ choices are pending; nothing has been installed, published or activated.
 - [Explorer](demo-eaa524e/bundle/explorer.html) · [QA](demo-eaa524e/bundle/qa.html) · [Cards](demo-eaa524e/bundle/cards.html)
 - [Original browser-tested VP9/Opus MP4](demo-eaa524e/bundle/lesson.mp4)
 - [Historical alternate H264/AAC MP4](demo-eaa524e/lesson-h264.mp4) — same retained generation, no new browser certification
-- [Complete source archive](source-eaa524e/prax-teach-v3.0.2-source.zip)
-- [Teacher](source-eaa524e/teacher.zip) · [Teach Pro Max](source-eaa524e/teach-pro-max.zip) · [Transcript pipeline](source-eaa524e/transcript-pipeline.zip)
-- [Archive/member hashes and modes](source-eaa524e/RELEASE-MANIFEST.json) · [SHA256SUMS](source-eaa524e/SHA256SUMS)
+- [Complete source archive](source-e97fe5b/prax-teach-v3.0.2-source.zip)
+- [Teacher](source-e97fe5b/teacher.zip) · [Teach Pro Max](source-e97fe5b/teach-pro-max.zip) · [Transcript pipeline](source-e97fe5b/transcript-pipeline.zip)
+- [Archive/member hashes and modes](source-e97fe5b/RELEASE-MANIFEST.json) · [SHA256SUMS](source-e97fe5b/SHA256SUMS)
 
-Both `source-eaa524e/` and `repeat-eaa524e/` were built from committed Git objects
-and are byte-identical. The earlier d8085a4 `source/`, `repeat/` and `demo/` remain
+Both `source-e97fe5b/` and `repeat-e97fe5b/` were built from committed Git objects
+and are byte-identical. The earlier d8085a4 and eaa524e source archives, plus `demo/`, remain
 preserved snapshots before the chapter precision repair; use the eaa524e paths.
 
 The separately named consent-aware evaluator v2 is approved and adopted; its
@@ -53,3 +53,10 @@ is `d246f6f`; installed rollback is
 `/Users/prax/.local/share/prax-teach/releases/v3.0.1-33cfd55`.
 Divergent portfolio identity/content and destructive history changes remain pending
 separate exact ownership decisions. No public history was deleted.
+
+Full regression orchestration and CI setup require the complete exact Git checkout,
+including Git metadata, test utilities and the new-skills mirror. They are not
+source-ZIP validation commands; the shipped runner and setup refuse an archive
+clearly before running tests or provisioning dependencies. Individual included
+skill checks and vendor/distribution verification retain their documented scope.
+See [validation scope](../../scripts/TEACHER-CANDIDATE.md).

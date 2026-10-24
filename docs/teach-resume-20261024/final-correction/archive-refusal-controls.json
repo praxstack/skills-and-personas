@@ -1,0 +1,22 @@
+[
+  {
+    "command": [
+      "python3",
+      "scripts/run_teacher_regressions.py",
+      "scripts",
+      "test_render_receipts.py"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Full regression validation requires the complete exact Git checkout, including Git metadata, test utilities and the new-skills mirror. Source archives are unsupported; no tests were run.\n"
+  },
+  {
+    "command": [
+      "bash",
+      "scripts/setup_teacher_ci.sh"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "CI setup requires the complete exact Git checkout with Git metadata, test utilities and new-skills mirror. Source archives are unsupported; no setup was run.\n"
+  }
+]
