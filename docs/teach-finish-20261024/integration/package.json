@@ -1,0 +1,32 @@
+{
+  "source_commit": "c060f028e46c7c73a18cc027db3ff76d9f411f8a",
+  "deterministic_repeat": true,
+  "exact_member_hashes_verified": true,
+  "external_manifest": "../../../deliverables/teach-finish-20261024/source/RELEASE-MANIFEST.json",
+  "assets": [
+    {
+      "name": "prax-teach-v3.0.2-source.zip",
+      "sha256": "32b3c436706749c3caf59e3e91b1f6bd09b770aff8b0b6353927cc35f1e2a896",
+      "bytes": 11168799,
+      "files": 1666
+    },
+    {
+      "name": "teacher.zip",
+      "sha256": "b4283a71993e0c09bc2022df45fec137ba35af5f898538367b2e7640c6ff81ed",
+      "bytes": 4438455,
+      "files": 758
+    },
+    {
+      "name": "teach-pro-max.zip",
+      "sha256": "8273b5637d84b5ee5e5c451fafcf81c95815152c9fb031cc125baac482794f21",
+      "bytes": 3536019,
+      "files": 805
+    },
+    {
+      "name": "transcript-pipeline.zip",
+      "sha256": "057ef6e10eb7f1a14aeec48e2460382ef8021fae62377700119e2fdc0e0013d0",
+      "bytes": 166691,
+      "files": 49
+    }
+  ]
+}
