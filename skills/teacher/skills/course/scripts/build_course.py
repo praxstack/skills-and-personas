@@ -49,7 +49,7 @@ sys.path.insert(0, str(SKILLS / "lesson-notebook" / "scripts"))
 sys.path.insert(0, str(SKILLS / "explorable" / "scripts"))
 import bundle  # noqa: E402
 import build as explorable_build  # noqa: E402
-from safe_course import optional_confined_file, validate_course_manifest, private_course_inputs  # noqa: E402
+from safe_course import safe_lesson_id, optional_confined_file, validate_course_manifest, private_course_inputs  # noqa: E402
 
 ENGINE = HERE.parent / "assets" / "engine"
 ANIM = SKILLS / "concept-animation" / "scripts"
@@ -148,7 +148,10 @@ def build_course(course_dir: Path, out: Path, fragment: bool = False, titles: di
     stale = []
     for lesson in data["lessons"]:
         src = validated.lessons[lesson["id"]]
-        page = f"{lesson['id']}.html"
+        try:
+            page = f"{safe_lesson_id(lesson['id'])}.html"
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from None
         if lesson["kind"] == "animation":
             r = subprocess.run([sys.executable, str(ANIM / "build.py"), str(src), "-o", str(out / page), *(["--fragment"] if fragment else []), *[x for f in shared for x in ("--include", str(f))]], capture_output=True, text=True)
             if r.returncode:

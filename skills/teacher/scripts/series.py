@@ -370,6 +370,7 @@ def main() -> int:
                 # A miss, or a right answer that needed help (or came in the
                 # session it was taught), brings it back next session, then
                 # restarts the spacing: it stays due until shown unaided.
+                p["demonstrated"] = False
                 p["due"] = sorted(set(p["asked_in"]) | {j.session + s for s in SPACING})
             j.save()
             print("demonstrated" if p["demonstrated"] else "recorded")

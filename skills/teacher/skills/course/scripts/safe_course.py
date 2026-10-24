@@ -28,6 +28,13 @@ def safe_id(value: object, label: str) -> str:
     return text
 
 
+def safe_lesson_id(value: object, label: str = "lesson id") -> str:
+    text = safe_id(value, label)
+    if text.casefold() == "index":
+        raise ValueError(f"{label} {text!r} is reserved for the course landing page")
+    return text
+
+
 def _no_link_components(root: Path, candidate: Path) -> None:
     rel = candidate.relative_to(root)
     current = root
@@ -88,7 +95,7 @@ def validate_course_manifest(course_dir: Path) -> ValidatedCourse:
     for row in lessons_raw:
         if not isinstance(row, dict):
             raise ValueError("every lesson must be an object")
-        lesson_id = safe_id(row.get("id"), f"lesson id in {course_id}")
+        lesson_id = safe_lesson_id(row.get("id"), f"lesson id in {course_id}")
         if lesson_id in lessons:
             raise ValueError(f"duplicate lesson id: {lesson_id}")
         lessons[lesson_id] = confined_file(root, row.get("file"), f"lesson file {lesson_id}", (".lesson.js", ".anim.js"))
@@ -183,7 +190,7 @@ def snapshot_course(course_dir: Path):
         if not isinstance(lessons, list) or not lessons:
             raise ValueError("course needs lessons")
         for lesson in lessons:
-            ident = safe_id(lesson.get("id"), "lesson id")
+            ident = safe_lesson_id(lesson.get("id"), "lesson id")
             inputs.append(lesson.get("file"))
             for suffix in ("mp4", "vtt"):
                 relative = f"videos/{ident}.{suffix}"

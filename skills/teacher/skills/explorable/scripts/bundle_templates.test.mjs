@@ -84,3 +84,11 @@ test('static export retains every live code language and the JavaScript alias as
  for(const lang of Object.keys(code))assert.ok(html.includes(`${lang} &lt;b&gt;example&lt;/b&gt;`));
  assert.doesNotMatch(html,/<b>example<\/b>/);
 });
+
+test('poster source preparation shares the HTTP/HTTPS allowlist', async()=>{
+ const {createPoster}=await import('./bundle_poster.mjs');
+ const sources=['javascript:localMarker()','data:text/html,marker','file:///marker','https://example.invalid/a?x=1&y=2','http://example.invalid/a'].map(url=>({title:'Reference',url}));
+ const refs=await createPoster({evaluate:async(_fn,args)=>args.refs},{sources},{sources:[]});
+ assert.deepEqual(refs.map(r=>r.posterHref),[null,null,null,sources[3].url,sources[4].url]);
+ assert.equal(refs[0].url,sources[0].url,'provenance text is retained');
+});

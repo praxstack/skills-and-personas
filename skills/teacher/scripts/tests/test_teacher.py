@@ -219,6 +219,32 @@ class Scripts(unittest.TestCase):
             run(s, "forget", "--yes", cwd=Path(tmp))
             self.assertFalse((Path(tmp) / ".teacher").exists())
 
+    def test_later_failed_or_aided_recall_returns_and_can_be_reearned(self):
+        script = str(ROOT / "scripts/series.py")
+        for outcome in (["--wrong", "--unaided"], ["--right"]):
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as tmp:
+                work = Path(tmp)
+                def cmd(*args):
+                    result = run(script, *args, cwd=work)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    return result.stdout
+                cmd("init", "--learner", "L", "--goal", "g")
+                cmd("thread", "add", "t", "--title", "T", "--level", "L1")
+                cmd("recall", "add", "t", "review point")
+                cmd("resume")
+                cmd("recall", "result", "t", "0", "--right", "--unaided")
+                cmd("resume")
+                self.assertEqual(cmd("recall", "result", "t", "0", *outcome).strip(), "recorded")
+                point = json.loads((work / ".teacher/journal.json").read_text())["threads"]["t"]["recall"][0]
+                self.assertFalse(point["demonstrated"])
+                self.assertEqual(len(point["results"]), 2)
+                self.assertEqual(point["results"][0], {"session": 2, "right": True, "unaided": True})
+                self.assertIn("review point", cmd("resume"))
+                self.assertEqual(cmd("recall", "result", "t", "0", "--right", "--unaided").strip(), "demonstrated")
+                point = json.loads((work / ".teacher/journal.json").read_text())["threads"]["t"]["recall"][0]
+                self.assertTrue(point["demonstrated"])
+                self.assertEqual(len(point["results"]), 3)
+
     def test_recall_asked_late_is_no_longer_due(self):
         s = str(ROOT / "scripts/series.py")
         with tempfile.TemporaryDirectory() as tmp:
