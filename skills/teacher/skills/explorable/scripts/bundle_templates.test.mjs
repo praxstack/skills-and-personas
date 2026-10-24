@@ -63,3 +63,24 @@ test('exact microsecond boundaries do not move into the preceding microsecond',(
  assert.equal(sceneIndexAtTime(scenes,1),0);
  assert.equal(sceneIndexAtTime(scenes,1.000001),1);
 });
+
+// PR1 4367933993/4367933995: portable export regressions.
+test('native caption source contains the actual VTT before any script runs', async()=>{
+ const {videoLesson}=await import('./bundle_templates.mjs');
+ const vtt='WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nπ < 2 & 3\n';
+ const data={title:'Caption',sources:[],video:{captions:vtt,scenes:[]}};
+ const html=videoLesson(data),track=html.match(/<track\b[^>]+>/)[0];
+ assert.match(track,/\bdefault\b/);
+ const uri=track.match(/\bsrc="([^"]+)"/)[1];
+ assert.equal(decodeURIComponent(uri.split(',').slice(1).join(',')),vtt);
+ assert.match(uri,/^data:text\/vtt;charset=utf-8,/);
+ assert.match(html,/track.src=URL.createObjectURL/);
+ assert.match(html,/connect-src 'none'/);
+});
+test('static export retains every live code language and the JavaScript alias as text', async()=>{
+ const {staticLesson}=await import('./bundle_templates.mjs');
+ const code=Object.fromEntries(['cpp','python','js','javascript','java','go','rust'].map(k=>[k,k+' <b>example</b>']));
+ const html=staticLesson({title:'Code',sources:[],steps:[],misconceptions:[],deeper:[],code});
+ for(const lang of Object.keys(code))assert.ok(html.includes(`${lang} &lt;b&gt;example&lt;/b&gt;`));
+ assert.doesNotMatch(html,/<b>example<\/b>/);
+});

@@ -10,7 +10,7 @@
 // Ported from Kai Mori's learner loop (public/learn/src/engine/code.js).
 
 const CODE_MARKER = /\s*(?:\/\/|#)@([\w-]+)\s*$/;
-const LANG_NAMES = { cpp: "C++", python: "Python", js: "JavaScript", java: "Java", go: "Go", rust: "Rust" };
+const LANG_NAMES = { cpp: "C++", python: "Python", js: "JavaScript", javascript: "JavaScript", java: "Java", go: "Go", rust: "Rust" };
 const PYODIDE = "https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js";
 // Subresource integrity: the browser refuses the loader if the CDN ever serves different bytes.
 const PYODIDE_SRI = "sha384-i3R37b3tF+HWudsUf1VSEOY2YxwSNMqY8DQa9Z0O3xh+NkJ9o+yjcGyIi5huj+nB";

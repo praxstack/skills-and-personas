@@ -203,6 +203,10 @@ def _render(cfg: GuideConfig, topic_index: list[str], folder_name: str) -> str:
 
     related_block = "\n".join(f"- {note}" for note in cfg.related_notes) or "- [[Bootcamp Index]]"
 
+    concept_block = "\n\n".join(concept_sections)
+    math_block = "\n\n".join(math_sections)
+    example_block = "\n\n".join(example_sections)
+
     rendered = dedent(
         f"""
         ---
@@ -251,13 +255,13 @@ def _render(cfg: GuideConfig, topic_index: list[str], folder_name: str) -> str:
 ```
 
 ## 📚 Core Concepts (Intuition First)
-{'\n\n'.join(concept_sections)}
+{concept_block}
 
 ## ➗ Mathematical Intuition
-{'\n\n'.join(math_sections)}
+{math_block}
 
 ## 💻 Coding Walkthroughs
-{'\n\n'.join(example_sections)}
+{example_block}
 
 ## 🚀 Advanced Real-World Scenario
 {cfg.advanced_scenario}

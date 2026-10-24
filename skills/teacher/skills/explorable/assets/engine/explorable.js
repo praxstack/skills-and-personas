@@ -46,11 +46,16 @@ function h(tag, attrs = {}, ...kids) {
 // together, and one with no full stop gets one), then no space is left
 // before punctuation ("outside , it").
 function plainText(html) {
-  return String(html || "")
+  const markup = String(html || "")
     // A paragraph that ends without a stop gets one (looking past closing </strong> and the like),
     // unless a formula follows: "the points with</p><p class="nb-print">w₁x₁ + ..." reads on into it.
     .replace(/([^\s>])((?:<\/(?:strong|em|b|i|span|a|code|var|sub|sup)>)*)\s*<\/(p|li|h\d)>(?=[\s\S]*\S)(?!\s*<(?:pre\b|(?:p|div)\b[^>]*\bclass="[^"]*\b(?:nb-print|formula|math)\b))/g, (m, c, inl, tag) => `${c}${/[.!?:;]/.test(c) ? "" : "."}${inl}</${tag}>`)
-    .replace(/<[^>]+>/g, " ")
+    .replace(/<[^>]+>/g, " ");
+  // Decode only after markup removal, in an inert template. Escaped markup
+  // remains text; no detached image or iframe can start a resource request.
+  const template = document.createElement("template");
+  template.innerHTML = markup;
+  return template.content.textContent
     .replace(/\s+/g, " ")
     .replace(/\s+([,.;:!?)])/g, "$1")
     .replace(/\(\s+/g, "(")
@@ -515,6 +520,8 @@ function finishStep(i) {
   persist();
   paintOutline();
   paintTakeaways();
+  const explanation = stepBox.querySelector(".xp-say");
+  if (explanation) explanation.hidden = false;
   const next = stepBox.querySelector(".xp-next");
   if (next) next.disabled = false;
 }
@@ -552,7 +559,7 @@ function goStep(i, { focus = true } = {}) {
     stage,
     controls,
     !PRACTICE ? hook : null,
-    h("div", { class: "xp-say", html: step.say }),
+    h("div", { class: "xp-say", hidden: PRACTICE && step.ask && !S.done.has(S.step), html: step.say }),
     stepCode ? stepCode.el : null,
     step.lookFor ? h("p", { class: "xp-lookfor" }, h("span", { class: "nb-label", text: "Look for" }), h("span", { class: "nb-hand", text: step.lookFor })) : null,
     !PRACTICE && step.ask && (step.ask.why || step.ask.model) ? h("div", { class: "xp-explanation nb-printout", html: step.ask.why || step.ask.model }) : null,

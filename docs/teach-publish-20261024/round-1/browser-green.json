@@ -1,0 +1,215 @@
+{
+  "work": "/var/folders/n0/4hwt0zvx1vx60vk91xlm1y700000gn/T/teach-pr1-sT3jto",
+  "browser": "153.0.8010.12",
+  "checks": [
+    {
+      "name": "default full explanation visible",
+      "ok": true
+    },
+    {
+      "name": "practice explanation initially hidden",
+      "ok": true
+    },
+    {
+      "name": "Show me reveals explanation",
+      "ok": true
+    },
+    {
+      "name": "correct practice answer reveals explanation",
+      "ok": true
+    },
+    {
+      "name": "narration decodes operators unicode and paragraph spacing",
+      "ok": true,
+      "actual": "If x < 0 && y > 2. \u03c0 \u2264 \u221e \"yes\" \u2713"
+    },
+    {
+      "name": "HTML decoding treats markup as inert text",
+      "ok": true,
+      "actual": {
+        "text": "<img src=x>",
+        "bad": 0
+      }
+    },
+    {
+      "name": "HTML-to-text does not fetch resources",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "export preserves cpp",
+      "ok": true,
+      "actual": "int x = 1;"
+    },
+    {
+      "name": "export preserves python",
+      "ok": true,
+      "actual": "x = 1"
+    },
+    {
+      "name": "export preserves js",
+      "ok": true,
+      "actual": "JS_SENTINEL <b>bad()</b>"
+    },
+    {
+      "name": "export preserves java",
+      "ok": true,
+      "actual": "JAVA_SENTINEL"
+    },
+    {
+      "name": "export preserves go",
+      "ok": true,
+      "actual": "GO_SENTINEL"
+    },
+    {
+      "name": "export preserves rust",
+      "ok": true,
+      "actual": "RUST_SENTINEL"
+    },
+    {
+      "name": "export preserves javascript",
+      "ok": true,
+      "actual": "ALIAS_SENTINEL"
+    },
+    {
+      "name": "static renders JS_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static renders JAVA_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static renders GO_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static renders RUST_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static renders ALIAS_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static code escapes markup",
+      "ok": true
+    },
+    {
+      "name": "static.html JS-off code JS_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static.html JS-off code JAVA_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static.html JS-off code GO_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "static.html JS-off code RUST_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "explorer.html JS-off code JS_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "explorer.html JS-off code JAVA_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "explorer.html JS-off code GO_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "explorer.html JS-off code RUST_SENTINEL",
+      "ok": true
+    },
+    {
+      "name": "native captions JSfalse file",
+      "ok": true,
+      "actual": {
+        "source": "data",
+        "cues": [
+          "Native caption \u03c0 < 2"
+        ],
+        "ready": 2
+      }
+    },
+    {
+      "name": "native video advances JSfalse file",
+      "ok": true,
+      "actual": 0.109564
+    },
+    {
+      "name": "no runtime errors JSfalse file",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "native captions JSfalse http",
+      "ok": true,
+      "actual": {
+        "source": "data",
+        "cues": [
+          "Native caption \u03c0 < 2"
+        ],
+        "ready": 2
+      }
+    },
+    {
+      "name": "native video advances JSfalse http",
+      "ok": true,
+      "actual": 0.264381
+    },
+    {
+      "name": "no runtime errors JSfalse http",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "native captions JStrue file",
+      "ok": true,
+      "actual": {
+        "source": "blob",
+        "cues": [
+          "Native caption \u03c0 < 2"
+        ],
+        "ready": 2
+      }
+    },
+    {
+      "name": "native video advances JStrue file",
+      "ok": true,
+      "actual": 0.254011
+    },
+    {
+      "name": "no runtime errors JStrue file",
+      "ok": true,
+      "actual": []
+    },
+    {
+      "name": "native captions JStrue http",
+      "ok": true,
+      "actual": {
+        "source": "blob",
+        "cues": [
+          "Native caption \u03c0 < 2"
+        ],
+        "ready": 2
+      }
+    },
+    {
+      "name": "native video advances JStrue http",
+      "ok": true,
+      "actual": 0.259677
+    },
+    {
+      "name": "no runtime errors JStrue http",
+      "ok": true,
+      "actual": []
+    }
+  ]
+}
