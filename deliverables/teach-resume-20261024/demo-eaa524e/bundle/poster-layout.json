@@ -1,0 +1,99 @@
+{
+  "width": 1440,
+  "height": 900,
+  "figure": {
+    "x": 58,
+    "y": 204.41,
+    "width": 1324,
+    "height": 498.2600000000001
+  },
+  "title": {
+    "fontSize": 42,
+    "lines": 1
+  },
+  "references": 2,
+  "sourceRows": 1,
+  "textBounds": [
+    {
+      "part": "eyebrow",
+      "text": "Mathematics · conditional probability",
+      "x": 58,
+      "y": 29,
+      "width": 329.53125,
+      "height": 19
+    },
+    {
+      "part": "title",
+      "text": "A flag is not a verdict.",
+      "x": 58,
+      "y": 74,
+      "width": 373.25,
+      "height": 46
+    },
+    {
+      "part": "step-title",
+      "text": "Change the denominator",
+      "x": 58,
+      "y": 143.66000366210938,
+      "width": 246.43896484375,
+      "height": 27
+    },
+    {
+      "part": "source-label",
+      "text": "Sources",
+      "x": 58,
+      "y": 851,
+      "width": 55.03125,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[1]",
+      "x": 135.03125,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "[2]",
+      "x": 168.71875,
+      "y": 851,
+      "width": 16.6875,
+      "height": 17
+    },
+    {
+      "part": "source-ref",
+      "text": "Full references ↗",
+      "x": 202.40625,
+      "y": 851,
+      "width": 118.375,
+      "height": 17
+    },
+    {
+      "part": "note",
+      "text": "Hypothetical exact frequencies; every denominator names its group.",
+      "x": 58,
+      "y": 812.8599853515625,
+      "width": 490.828125,
+      "height": 20
+    },
+    {
+      "part": "caption",
+      "text": "Batch: 100 defective and 9900 sound. 90 true flags and 10 missed defective. 495 false flags. Selected: 585 flags; excluded: 9415. Defective",
+      "x": 58,
+      "y": 733.6699829101562,
+      "width": 1281.875,
+      "height": 25
+    },
+    {
+      "part": "caption",
+      "text": "among flags: 90/585, 15.4 percent.",
+      "x": 58,
+      "y": 763.5700073242188,
+      "width": 320.015625,
+      "height": 25
+    }
+  ],
+  "clippedText": 0
+}

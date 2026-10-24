@@ -1,0 +1,116 @@
+{
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/Users/prax/.cache/uv/archive-v0/ZYsqvPvo6Drakewc",
+    "TMPDIR": "/Users/prax"
+  },
+  "runs": [
+    {
+      "name": "teacher",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "-W",
+        "error::ResourceWarning",
+        "skills/teacher/scripts/tests/test_teacher.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 11.886
+    },
+    {
+      "name": "teacher-extra",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/teacher/scripts/tests",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 14.69
+    },
+    {
+      "name": "transcript",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/transcript-pipeline/scripts",
+        "-p",
+        "test_resource*.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "name": "safe-output",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/transcript-pipeline/scripts",
+        "-p",
+        "test_safe_output.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 0.105
+    },
+    {
+      "name": "packaging-parity",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_portfolio_repair.py",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 0.698
+    },
+    {
+      "name": "vendor",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "skills/teacher/scripts/vendor.py",
+        "verify"
+      ],
+      "returncode": 0,
+      "seconds": 0.063
+    },
+    {
+      "name": "distribution",
+      "command": [
+        "/Users/prax/.local/share/uv/tools/headroom-ai/bin/python",
+        "skills/teach-pro-max/scripts/verify_distribution.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.187
+    },
+    {
+      "name": "node",
+      "command": [
+        "node",
+        "--test",
+        "skills/teacher/skills/course/scripts/publish_videos.test.mjs",
+        "skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs",
+        "skills/teacher/skills/explorable/scripts/report.test.mjs"
+      ],
+      "returncode": 0,
+      "seconds": 0.204
+    }
+  ]
+}

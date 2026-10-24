@@ -1,0 +1,13 @@
+test_host_files_environment_and_network_are_unavailable (test_sandbox_code.SandboxCodeTests.test_host_files_environment_and_network_are_unavailable) ... ok
+test_infinite_authored_js_is_terminated (test_sandbox_code.SandboxCodeTests.test_infinite_authored_js_is_terminated) ... ok
+test_legitimate_python_and_cpp_match_model (test_sandbox_code.SandboxCodeTests.test_legitimate_python_and_cpp_match_model) ... ok
+test_memory_exhaustion_fails (test_sandbox_code.SandboxCodeTests.test_memory_exhaustion_fails) ... ok
+test_missing_image_fails_closed (test_sandbox_code.SandboxCodeTests.test_missing_image_fails_closed) ... ok
+test_outer_deadline_stops_model_hang (test_sandbox_code.SandboxCodeTests.test_outer_deadline_stops_model_hang) ... ok
+test_output_flood_fails (test_sandbox_code.SandboxCodeTests.test_output_flood_fails) ... ok
+test_process_limit_prevents_fork_exhaustion (test_sandbox_code.SandboxCodeTests.test_process_limit_prevents_fork_exhaustion) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 11.361s
+
+OK

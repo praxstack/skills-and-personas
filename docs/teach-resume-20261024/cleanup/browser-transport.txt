@@ -1,0 +1,7 @@
+test_actual_callback_keeps_job_budget_and_blocks_oversized_response (test_browser_transport.BrowserTransport.test_actual_callback_keeps_job_budget_and_blocks_oversized_response) ... ok
+test_public_broker_and_blocked_local_and_websocket (test_browser_transport.BrowserTransport.test_public_broker_and_blocked_local_and_websocket) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.618s
+
+OK

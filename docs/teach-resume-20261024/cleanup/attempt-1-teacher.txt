@@ -1,0 +1,76 @@
+test_animation_builds (__main__.Builds.test_animation_builds) ... ok
+test_animation_includes_shared_scripts_first (__main__.Builds.test_animation_includes_shared_scripts_first) ... ok
+test_bundler_refuses_name_clash (__main__.Builds.test_bundler_refuses_name_clash) ... ok
+test_catalog_brand_is_a_setting (__main__.Builds.test_catalog_brand_is_a_setting) ... ok
+test_code_check_does_not_execute_authored_javascript_by_default (__main__.Builds.test_code_check_does_not_execute_authored_javascript_by_default) ... ok
+test_code_check_fails_when_nothing_can_run (__main__.Builds.test_code_check_fails_when_nothing_can_run) ... skipped "needs a site's courses/ (kai-mori-fanout-sh)"
+test_code_check_passes_a_lesson_that_only_shows_other_languages (__main__.Builds.test_code_check_passes_a_lesson_that_only_shows_other_languages) ... ok
+test_course_links_with_and_without_base (__main__.Builds.test_course_links_with_and_without_base) ... ok
+test_course_pages_link_the_site_icon (__main__.Builds.test_course_pages_link_the_site_icon) ... ok
+test_diagram_network_fallback_requires_explicit_opt_in (__main__.Builds.test_diagram_network_fallback_requires_explicit_opt_in) ... ok
+test_diagram_page_needs_a_claim (__main__.Builds.test_diagram_page_needs_a_claim) ... ok
+test_diagram_sanitizer_blocks_css_fetches (__main__.Builds.test_diagram_sanitizer_blocks_css_fetches) ... ok
+test_diagram_sanitizer_blocks_resource_fetches (__main__.Builds.test_diagram_sanitizer_blocks_resource_fetches) ... ok
+test_diagram_sanitizer_escapes_markup_in_values (__main__.Builds.test_diagram_sanitizer_escapes_markup_in_values) ... ok
+test_diagram_sanitizer_keeps_css_and_raster_data (__main__.Builds.test_diagram_sanitizer_keeps_css_and_raster_data) ... ok
+test_diagram_sanitizer_reads_css_escapes_like_a_browser (__main__.Builds.test_diagram_sanitizer_reads_css_escapes_like_a_browser) ... ok
+test_diagram_sanitizer_strips_active_content (__main__.Builds.test_diagram_sanitizer_strips_active_content) ... ok
+test_explorable_builds (__main__.Builds.test_explorable_builds) ... ok
+test_publish_videos_dry_run_lists_lesson_videos_only (__main__.Builds.test_publish_videos_dry_run_lists_lesson_videos_only) ... ok
+test_publish_videos_streams_the_file (__main__.Builds.test_publish_videos_streams_the_file) ... ok
+test_python_worker_runs_one_job_at_a_time (__main__.Builds.test_python_worker_runs_one_job_at_a_time) ... ok
+test_queued_python_run_waits_for_its_turn_to_time_out (__main__.Builds.test_queued_python_run_waits_for_its_turn_to_time_out) ... ok
+test_video_comes_from_local_file_then_manifest_then_none (__main__.Builds.test_video_comes_from_local_file_then_manifest_then_none) ... ok
+test_narrate_course_remuxes_published_videos (__main__.Captions.test_narrate_course_remuxes_published_videos) ... ok
+test_narrate_removes_its_work_folder_when_a_render_fails (__main__.Captions.test_narrate_removes_its_work_folder_when_a_render_fails) ... ok
+test_narrate_speed_default_leaves_chatterbox_free (__main__.Captions.test_narrate_speed_default_leaves_chatterbox_free) ... ok
+test_plain_text_reads_into_a_formula (__main__.Captions.test_plain_text_reads_into_a_formula) ... ok
+test_remux_refuses_a_changed_timing (__main__.Captions.test_remux_refuses_a_changed_timing) ... ok
+test_saved_progress_follows_its_step (__main__.Captions.test_saved_progress_follows_its_step) ... ok
+test_shipped_captions_are_escaped (__main__.Captions.test_shipped_captions_are_escaped) ... skipped "needs a site's courses/ (kai-mori-fanout-sh)"
+test_speech_check_fails_with_nothing_to_check (__main__.Captions.test_speech_check_fails_with_nothing_to_check) ... ok
+test_speech_counts_each_heard_word_once (__main__.Captions.test_speech_counts_each_heard_word_once) ... ok
+test_speech_credits_a_heard_word_to_one_cue (__main__.Captions.test_speech_credits_a_heard_word_to_one_cue) ... ok
+test_vtt_escapes_and_reads_back (__main__.Captions.test_vtt_escapes_and_reads_back) ... ok
+test_only_the_root_svg_loses_its_size (__main__.DiagramSanitizer.test_only_the_root_svg_loses_its_size) ... ok
+test_strips_scripts_handlers_and_bad_links (__main__.DiagramSanitizer.test_strips_scripts_handlers_and_bad_links) ... ok
+test_cdn_urls_are_pinned_and_allowed (__main__.Registry.test_cdn_urls_are_pinned_and_allowed) ... ok
+test_refs_point_into_teach_pro_max_registry (__main__.Registry.test_refs_point_into_teach_pro_max_registry) ... ok
+test_shape (__main__.Registry.test_shape) ... ok
+test_skill_paths_exist (__main__.Registry.test_skill_paths_exist) ... ok
+test_find_tool_ranks_bundled_first (__main__.Scripts.test_find_tool_ranks_bundled_first) ... ok
+test_forget_deletes_a_corrupt_journal (__main__.Scripts.test_forget_deletes_a_corrupt_journal) ... ok
+test_forget_keeps_other_files (__main__.Scripts.test_forget_keeps_other_files) ... ok
+test_forget_leaves_a_journal_md_it_did_not_write (__main__.Scripts.test_forget_leaves_a_journal_md_it_did_not_write) ... ok
+test_forget_only_deletes_the_journal (__main__.Scripts.test_forget_only_deletes_the_journal) ... ok
+test_forget_stops_when_journal_md_cannot_be_read (__main__.Scripts.test_forget_stops_when_journal_md_cannot_be_read) ... ok
+test_install_force_never_replaces_its_own_source (__main__.Scripts.test_install_force_never_replaces_its_own_source) ... ok
+test_install_leaves_other_links_alone (__main__.Scripts.test_install_leaves_other_links_alone) ... ok
+test_pen_samples_are_embedded_and_fresh (__main__.Scripts.test_pen_samples_are_embedded_and_fresh) ... ok
+test_recall_asked_late_is_no_longer_due (__main__.Scripts.test_recall_asked_late_is_no_longer_due) ... ok
+test_recall_due_moves_on_after_an_overdue_ask (__main__.Scripts.test_recall_due_moves_on_after_an_overdue_ask) ... ok
+test_recall_result_refuses_a_negative_index (__main__.Scripts.test_recall_result_refuses_a_negative_index) ... ok
+test_recall_stays_due_until_shown_unaided (__main__.Scripts.test_recall_stays_due_until_shown_unaided) ... ok
+test_series_flow (__main__.Scripts.test_series_flow) ... ok
+test_series_refuses_to_chmod_a_nonprivate_custom_directory (__main__.Scripts.test_series_refuses_to_chmod_a_nonprivate_custom_directory) ... ok
+test_series_rejects_hard_linked_state (__main__.Scripts.test_series_rejects_hard_linked_state) ... ok
+test_series_rejects_linked_journal_directory_and_files (__main__.Scripts.test_series_rejects_linked_journal_directory_and_files) ... ok
+test_vendor_refuses_dirty_git_source (__main__.Scripts.test_vendor_refuses_dirty_git_source) ... ok
+test_vendor_sync_keeps_unrecorded_edits (__main__.Scripts.test_vendor_sync_keeps_unrecorded_edits) ... ok
+test_vendor_verify (__main__.Scripts.test_vendor_verify) ... ok
+test_frontmatter (__main__.SkillFormat.test_frontmatter) ... ok
+test_frontmatter_is_valid_yaml (__main__.SkillFormat.test_frontmatter_is_valid_yaml) ... ok
+test_length_and_layout (__main__.SkillFormat.test_length_and_layout) ... ok
+test_no_em_dashes_in_our_prose (__main__.SkillFormat.test_no_em_dashes_in_our_prose) ... ok
+test_no_persona_statements (__main__.SkillFormat.test_no_persona_statements) ... ok
+test_relative_links_resolve (__main__.SkillFormat.test_relative_links_resolve) ... ok
+test_repo_lint_on_native_skills (__main__.SkillFormat.test_repo_lint_on_native_skills) ... ok
+test_flags_black_and_small (__main__.VideoChecker.test_flags_black_and_small) ... ok
+test_flags_missing_captions_then_passes (__main__.VideoChecker.test_flags_missing_captions_then_passes) ... ok
+test_undecodable_frames_fail (__main__.VideoCheckerAudio.test_undecodable_frames_fail) ... ok
+test_unmeasurable_audio_fails (__main__.VideoCheckerAudio.test_unmeasurable_audio_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 71 tests in 11.491s
+
+OK (skipped=2)

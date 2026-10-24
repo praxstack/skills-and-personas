@@ -1,0 +1,24 @@
+✔ portable identifiers reject traversal and separators (1.293458ms)
+✔ a regular in-root video is bound to one descriptor (11.101ms)
+✔ a symlinked video cannot disclose another file (6.087584ms)
+✔ a hard-linked video is rejected (5.190375ms)
+✔ readable captions preserve native cue intervals and earlier gaps (1.459125ms)
+✔ terminal still retains actual final cue and seeking back clears it (0.106166ms)
+✔ final means latest ending cue, including overlapping tracks (0.095209ms)
+✔ unloaded or empty tracks never invent readable words (0.096542ms)
+✔ source URLs allow only web schemes (0.155917ms)
+✔ unsafe sources render as inert text (0.277ms)
+✔ generated pages include a restrictive CSP (0.11525ms)
+✔ unattempted absent and empty answers never claim correctness (1.453875ms)
+✔ unattempted question can still report an actual alternate explanation (0.306834ms)
+✔ actually correct first attempt is reported as right first time (0.277ms)
+✔ a correct answer after a miss retains its miss history (0.250209ms)
+✔ asking to be shown is not reported as a correct answer (0.248666ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 167.060792

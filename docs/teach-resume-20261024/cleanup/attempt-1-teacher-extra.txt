@@ -1,0 +1,119 @@
+test_default_manim_does_not_load_resolver_or_read_source_manifest (test_find_tool.Discovery.test_default_manim_does_not_load_resolver_or_read_source_manifest) ... ok
+test_default_real_marker_control (test_find_tool.Discovery.test_default_real_marker_control) ... ok
+test_empty_external_probes_are_unknown (test_find_tool.Discovery.test_empty_external_probes_are_unknown) ... ok
+test_host_declarations (test_find_tool.Discovery.test_host_declarations) ... ok
+test_instruction_asset_and_svg (test_find_tool.Discovery.test_instruction_asset_and_svg) ... ok
+test_inventory_offline_overrides_net_without_requests (test_find_tool.Discovery.test_inventory_offline_overrides_net_without_requests) ... ok
+test_network_is_reachability_only (test_find_tool.Discovery.test_network_is_reachability_only) ... ok
+test_trusted_cli_offline_still_disables_discovery_network (test_find_tool.Discovery.test_trusted_cli_offline_still_disables_discovery_network) ... ok
+test_manim_resolution (unittest.loader._FailedTest.test_manim_resolution) ... ERROR
+test_all_edge_swap_scripts_refuse_before_import_or_artifact_access (test_network_policy.NetworkPolicy.test_all_edge_swap_scripts_refuse_before_import_or_artifact_access) ... ok
+test_all_piper_cached_assets_and_explicit_online_edge (test_network_policy.NetworkPolicy.test_all_piper_cached_assets_and_explicit_online_edge) ... ok
+test_all_pydeps_deny_install_allow_installed_and_explicit_setup (test_network_policy.NetworkPolicy.test_all_pydeps_deny_install_allow_installed_and_explicit_setup) ... ok
+test_all_pydeps_reuse_real_private_venv_offline (test_network_policy.NetworkPolicy.test_all_pydeps_reuse_real_private_venv_offline) ... ok
+test_all_voice_auto_uses_offline_fallback (test_network_policy.NetworkPolicy.test_all_voice_auto_uses_offline_fallback) ... ok
+test_all_voice_downloads_and_edge_are_denied_before_transport (test_network_policy.NetworkPolicy.test_all_voice_downloads_and_edge_are_denied_before_transport) ... ok
+test_chatterbox_default_forces_hf_offline_even_if_preimported (test_network_policy.NetworkPolicy.test_chatterbox_default_forces_hf_offline_even_if_preimported) ... ok
+test_narrate_model_missing_denied_cached_accepted_and_setup_allowed (test_network_policy.NetworkPolicy.test_narrate_model_missing_denied_cached_accepted_and_setup_allowed) ... ok
+test_pyodide_ui_does_not_start_worker_without_consent (test_network_policy.NetworkPolicy.test_pyodide_ui_does_not_start_worker_without_consent) ... ok
+test_remotion_missing_setup_denied_cached_browser_and_online_opt_in (test_network_policy.NetworkPolicy.test_remotion_missing_setup_denied_cached_browser_and_online_opt_in) ... ok
+test_verified_kokoro_cache_and_opted_download (test_network_policy.NetworkPolicy.test_verified_kokoro_cache_and_opted_download) ... ok
+test_whisper_loader_receives_cache_only_default_and_explicit_opt_in (test_network_policy.NetworkPolicy.test_whisper_loader_receives_cache_only_default_and_explicit_opt_in) ... ok
+test_animation_builds (test_teacher.Builds.test_animation_builds) ... ok
+test_animation_includes_shared_scripts_first (test_teacher.Builds.test_animation_includes_shared_scripts_first) ... ok
+test_bundler_refuses_name_clash (test_teacher.Builds.test_bundler_refuses_name_clash) ... ok
+test_catalog_brand_is_a_setting (test_teacher.Builds.test_catalog_brand_is_a_setting) ... ok
+test_code_check_does_not_execute_authored_javascript_by_default (test_teacher.Builds.test_code_check_does_not_execute_authored_javascript_by_default) ... ok
+test_code_check_fails_when_nothing_can_run (test_teacher.Builds.test_code_check_fails_when_nothing_can_run) ... skipped "needs a site's courses/ (kai-mori-fanout-sh)"
+test_code_check_passes_a_lesson_that_only_shows_other_languages (test_teacher.Builds.test_code_check_passes_a_lesson_that_only_shows_other_languages) ... ok
+test_course_links_with_and_without_base (test_teacher.Builds.test_course_links_with_and_without_base) ... ok
+test_course_pages_link_the_site_icon (test_teacher.Builds.test_course_pages_link_the_site_icon) ... ok
+test_diagram_network_fallback_requires_explicit_opt_in (test_teacher.Builds.test_diagram_network_fallback_requires_explicit_opt_in) ... ok
+test_diagram_page_needs_a_claim (test_teacher.Builds.test_diagram_page_needs_a_claim) ... ok
+test_diagram_sanitizer_blocks_css_fetches (test_teacher.Builds.test_diagram_sanitizer_blocks_css_fetches) ... ok
+test_diagram_sanitizer_blocks_resource_fetches (test_teacher.Builds.test_diagram_sanitizer_blocks_resource_fetches) ... ok
+test_diagram_sanitizer_escapes_markup_in_values (test_teacher.Builds.test_diagram_sanitizer_escapes_markup_in_values) ... ok
+test_diagram_sanitizer_keeps_css_and_raster_data (test_teacher.Builds.test_diagram_sanitizer_keeps_css_and_raster_data) ... ok
+test_diagram_sanitizer_reads_css_escapes_like_a_browser (test_teacher.Builds.test_diagram_sanitizer_reads_css_escapes_like_a_browser) ... ok
+test_diagram_sanitizer_strips_active_content (test_teacher.Builds.test_diagram_sanitizer_strips_active_content) ... ok
+test_explorable_builds (test_teacher.Builds.test_explorable_builds) ... ok
+test_publish_videos_dry_run_lists_lesson_videos_only (test_teacher.Builds.test_publish_videos_dry_run_lists_lesson_videos_only) ... ok
+test_publish_videos_streams_the_file (test_teacher.Builds.test_publish_videos_streams_the_file) ... ok
+test_python_worker_runs_one_job_at_a_time (test_teacher.Builds.test_python_worker_runs_one_job_at_a_time) ... ok
+test_queued_python_run_waits_for_its_turn_to_time_out (test_teacher.Builds.test_queued_python_run_waits_for_its_turn_to_time_out) ... ok
+test_video_comes_from_local_file_then_manifest_then_none (test_teacher.Builds.test_video_comes_from_local_file_then_manifest_then_none) ... ok
+test_narrate_course_remuxes_published_videos (test_teacher.Captions.test_narrate_course_remuxes_published_videos) ... ok
+test_narrate_removes_its_work_folder_when_a_render_fails (test_teacher.Captions.test_narrate_removes_its_work_folder_when_a_render_fails) ... ok
+test_narrate_speed_default_leaves_chatterbox_free (test_teacher.Captions.test_narrate_speed_default_leaves_chatterbox_free) ... ok
+test_plain_text_reads_into_a_formula (test_teacher.Captions.test_plain_text_reads_into_a_formula) ... ok
+test_remux_refuses_a_changed_timing (test_teacher.Captions.test_remux_refuses_a_changed_timing) ... ok
+test_saved_progress_follows_its_step (test_teacher.Captions.test_saved_progress_follows_its_step) ... ok
+test_shipped_captions_are_escaped (test_teacher.Captions.test_shipped_captions_are_escaped) ... skipped "needs a site's courses/ (kai-mori-fanout-sh)"
+test_speech_check_fails_with_nothing_to_check (test_teacher.Captions.test_speech_check_fails_with_nothing_to_check) ... ok
+test_speech_counts_each_heard_word_once (test_teacher.Captions.test_speech_counts_each_heard_word_once) ... ok
+test_speech_credits_a_heard_word_to_one_cue (test_teacher.Captions.test_speech_credits_a_heard_word_to_one_cue) ... ok
+test_vtt_escapes_and_reads_back (test_teacher.Captions.test_vtt_escapes_and_reads_back) ... ok
+test_only_the_root_svg_loses_its_size (test_teacher.DiagramSanitizer.test_only_the_root_svg_loses_its_size) ... ok
+test_strips_scripts_handlers_and_bad_links (test_teacher.DiagramSanitizer.test_strips_scripts_handlers_and_bad_links) ... ok
+test_cdn_urls_are_pinned_and_allowed (test_teacher.Registry.test_cdn_urls_are_pinned_and_allowed) ... ok
+test_refs_point_into_teach_pro_max_registry (test_teacher.Registry.test_refs_point_into_teach_pro_max_registry) ... ok
+test_shape (test_teacher.Registry.test_shape) ... ok
+test_skill_paths_exist (test_teacher.Registry.test_skill_paths_exist) ... ok
+test_find_tool_ranks_bundled_first (test_teacher.Scripts.test_find_tool_ranks_bundled_first) ... ok
+test_forget_deletes_a_corrupt_journal (test_teacher.Scripts.test_forget_deletes_a_corrupt_journal) ... ok
+test_forget_keeps_other_files (test_teacher.Scripts.test_forget_keeps_other_files) ... ok
+test_forget_leaves_a_journal_md_it_did_not_write (test_teacher.Scripts.test_forget_leaves_a_journal_md_it_did_not_write) ... ok
+test_forget_only_deletes_the_journal (test_teacher.Scripts.test_forget_only_deletes_the_journal) ... ok
+test_forget_stops_when_journal_md_cannot_be_read (test_teacher.Scripts.test_forget_stops_when_journal_md_cannot_be_read) ... ok
+test_install_force_never_replaces_its_own_source (test_teacher.Scripts.test_install_force_never_replaces_its_own_source) ... ok
+test_install_leaves_other_links_alone (test_teacher.Scripts.test_install_leaves_other_links_alone) ... ok
+test_pen_samples_are_embedded_and_fresh (test_teacher.Scripts.test_pen_samples_are_embedded_and_fresh) ... ok
+test_recall_asked_late_is_no_longer_due (test_teacher.Scripts.test_recall_asked_late_is_no_longer_due) ... ok
+test_recall_due_moves_on_after_an_overdue_ask (test_teacher.Scripts.test_recall_due_moves_on_after_an_overdue_ask) ... ok
+test_recall_result_refuses_a_negative_index (test_teacher.Scripts.test_recall_result_refuses_a_negative_index) ... ok
+test_recall_stays_due_until_shown_unaided (test_teacher.Scripts.test_recall_stays_due_until_shown_unaided) ... ok
+test_series_flow (test_teacher.Scripts.test_series_flow) ... ok
+test_series_refuses_to_chmod_a_nonprivate_custom_directory (test_teacher.Scripts.test_series_refuses_to_chmod_a_nonprivate_custom_directory) ... ok
+test_series_rejects_hard_linked_state (test_teacher.Scripts.test_series_rejects_hard_linked_state) ... ok
+test_series_rejects_linked_journal_directory_and_files (test_teacher.Scripts.test_series_rejects_linked_journal_directory_and_files) ... ok
+test_vendor_refuses_dirty_git_source (test_teacher.Scripts.test_vendor_refuses_dirty_git_source) ... ok
+test_vendor_sync_keeps_unrecorded_edits (test_teacher.Scripts.test_vendor_sync_keeps_unrecorded_edits) ... ok
+test_vendor_verify (test_teacher.Scripts.test_vendor_verify) ... ok
+test_frontmatter (test_teacher.SkillFormat.test_frontmatter) ... ok
+test_frontmatter_is_valid_yaml (test_teacher.SkillFormat.test_frontmatter_is_valid_yaml) ... ok
+test_length_and_layout (test_teacher.SkillFormat.test_length_and_layout) ... ok
+test_no_em_dashes_in_our_prose (test_teacher.SkillFormat.test_no_em_dashes_in_our_prose) ... ok
+test_no_persona_statements (test_teacher.SkillFormat.test_no_persona_statements) ... ok
+test_relative_links_resolve (test_teacher.SkillFormat.test_relative_links_resolve) ... ok
+test_repo_lint_on_native_skills (test_teacher.SkillFormat.test_repo_lint_on_native_skills) ... ok
+test_flags_black_and_small (test_teacher.VideoChecker.test_flags_black_and_small) ... ok
+test_flags_missing_captions_then_passes (test_teacher.VideoChecker.test_flags_missing_captions_then_passes) ... ok
+test_undecodable_frames_fail (test_teacher.VideoCheckerAudio.test_undecodable_frames_fail) ... ok
+test_unmeasurable_audio_fails (test_teacher.VideoCheckerAudio.test_unmeasurable_audio_fails) ... ok
+
+======================================================================
+ERROR: test_manim_resolution (unittest.loader._FailedTest.test_manim_resolution)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_manim_resolution
+Traceback (most recent call last):
+  File "/Users/prax/.local/share/mise/installs/python/3.13.17/lib/python3.13/unittest/loader.py", line 403, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/Users/prax/.local/share/mise/installs/python/3.13.17/lib/python3.13/unittest/loader.py", line 346, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/scripts/tests/test_manim_resolution.py", line 24, in <module>
+    r = load('render_manim', ROOT / 'skills/manim-video/scripts/render_manim.py')
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/scripts/tests/test_manim_resolution.py", line 20, in load
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-finish-20261024/skills/teacher/skills/manim-video/scripts/render_manim.py", line 169
+    st = json.load(source_spec)
+    ^^
+IndentationError: expected an indented block after 'with' statement on line 168
+
+
+----------------------------------------------------------------------
+Ran 92 tests in 14.374s
+
+FAILED (errors=1, skipped=2)
+downloading kokoro-v1.0.onnx…

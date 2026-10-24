@@ -1,0 +1,25 @@
+{
+  "browser": "153.0.8010.12",
+  "results": [
+    {
+      "view": "desktop",
+      "file": "static.html",
+      "ok": true
+    },
+    {
+      "view": "desktop",
+      "file": "interactive-video.html",
+      "ok": true
+    },
+    {
+      "view": "mobile",
+      "file": "static.html",
+      "ok": true
+    },
+    {
+      "view": "mobile",
+      "file": "interactive-video.html",
+      "ok": true
+    }
+  ]
+}

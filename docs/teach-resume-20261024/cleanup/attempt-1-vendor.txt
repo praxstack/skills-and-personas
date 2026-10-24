@@ -1,0 +1,1 @@
+16 vendored (12 with local changes: eli, explainer-video, gsap-video, handdrawn-js-video, hyperframes-video, manim-video, motion-canvas-video, motion-video, remotion-video, revideo-video, theatrejs-video, threejs-video), 6 copied files, 6 native, 0 problems
