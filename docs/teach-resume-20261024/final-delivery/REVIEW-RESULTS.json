@@ -1,0 +1,23 @@
+{
+  "reviewedArtifactHead": "536a54fb775044f252e81a42b123228969c7de8f",
+  "packageSource": "e97fe5b916095c69401f59dc573bcf2fd628ce04",
+  "demonstratedRuntime": "eaa524e",
+  "methodAdoption": "bf0bcf9",
+  "status": "No open Critical or Important findings after whole-branch review and one combined correction. One nonblocking README navigation sentence parked; current e97 packages/eaa demo are linked in REVIEW-RESULTS.md.",
+  "dockerContext": "default",
+  "colimaVerification": {
+    "returncode": 0,
+    "stdout": "{\"name\":\"default\",\"status\":\"Stopped\",\"arch\":\"aarch64\",\"cpus\":2,\"memory\":2147483648,\"disk\":107374182400,\"runtime\":\"docker\"}\n{\"name\":\"teach-security\",\"status\":\"Stopped\",\"arch\":\"aarch64\",\"cpus\":2,\"memory\":2147483648,\"disk\":10737418240,\"runtime\":\"docker\"}\n",
+    "stderr": "time=\"2026-10-24T22:25:00+05:30\" level=warning msg=\"found ~/.colima, ignoring $XDG_CONFIG_HOME...\"\ntime=\"2026-10-24T22:25:00+05:30\" level=warning msg=\"delete ~/.colima to use $XDG_CONFIG_HOME as config directory\"\ntime=\"2026-10-24T22:25:00+05:30\" level=warning msg=\"or run `mv ~/.colima \\\"/Users/prax/.config/colima\\\"`\"\n"
+  },
+  "reviewHashes": {
+    "WHOLE-BRANCH-REVIEW.md": "310c120ebff2f09ab44f721de89baf9d6185aadb465d10a2431826e486919e9d",
+    "FINAL-CORRECTION-REVIEW.md": "977e4ebbf33b336adbc909fe8e83f8688ad328603df866ac3ede44bd238d11bd",
+    "RUN-LEDGER.md": "b5827435aa0ad42eee6b18e701775a2346ebe780028f59d62dcfb56602058050",
+    "environment-restoration.json": "68f15ecfa930fe96b89a260624a6ea5a2312d17d2f3d30bb92e948a051730fe7"
+  },
+  "controllerVisualInspection": [
+    "Final delivered mobile interactive screenshot and desktop static screenshot opened; readable wrapped navigation/actual player/static lesson. Separate original independent explorer screenshot shows true/false-flag proportions and correct denominator."
+  ],
+  "mockDownloadOutputOrigin": "narrate.py:88 output from test_network_policy.py:209-225, mocked URL retrieval and temporary bfixture file. No actual model acquisition established by this message."
+}

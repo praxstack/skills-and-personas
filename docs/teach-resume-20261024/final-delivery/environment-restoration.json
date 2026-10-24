@@ -1,0 +1,13 @@
+{
+  "command": [
+    "colima",
+    "stop",
+    "--profile",
+    "teach-security"
+  ],
+  "returncode": 0,
+  "stdout": "Stopping 'docker.service', but its triggering units are still active:\ndocker.socket\ncolima-teach-security\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"Sending SIGINT to hostagent process 60484\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"Waiting for the host agent and the driver processes to shut down\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] Received SIGINT, shutting down the host agent\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] Shutting down the host agent\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] Stopping forwarding `/var/run/docker.sock` (guest) to `/Users/prax/.colima/teach-security/docker.sock` (host)\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] Stopping forwarding `/var/run/containerd/containerd.sock` (guest) to `/Users/prax/.colima/teach-security/containerd.sock` (host)\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] Unmounting disk `colima-teach-security`\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] Shutting down VZ\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"[hostagent] [VZ] - vm state change: stopped\"\ntime=\"2026-10-24T22:17:47+05:30\" level=info msg=\"Waiting for the instance to shut down\"\ntime=\"2026-10-24T22:17:48+05:30\" level=info msg=\"The instance colima-teach-security has shut down\"\n",
+  "stderr": "time=\"2026-10-24T22:17:46+05:30\" level=warning msg=\"found ~/.colima, ignoring $XDG_CONFIG_HOME...\"\ntime=\"2026-10-24T22:17:46+05:30\" level=warning msg=\"delete ~/.colima to use $XDG_CONFIG_HOME as config directory\"\ntime=\"2026-10-24T22:17:46+05:30\" level=warning msg=\"or run `mv ~/.colima \\\"/Users/prax/.config/colima\\\"`\"\ntime=\"2026-10-24T22:17:46+05:30\" level=info msg=\"stopping colima [profile=teach-security]\"\ntime=\"2026-10-24T22:17:46+05:30\" level=info msg=\"stopping ...\" context=docker\ntime=\"2026-10-24T22:17:46+05:30\" level=info msg=\"stopping ...\" context=vm\ntime=\"2026-10-24T22:17:48+05:30\" level=info msg=done\ntime=\"2026-10-24T22:17:48+05:30\" level=warning msg=\"found ~/.colima, ignoring $XDG_CONFIG_HOME...\"\ntime=\"2026-10-24T22:17:48+05:30\" level=warning msg=\"delete ~/.colima to use $XDG_CONFIG_HOME as config directory\"\ntime=\"2026-10-24T22:17:48+05:30\" level=warning msg=\"or run `mv ~/.colima \\\"/Users/prax/.config/colima\\\"`\"\n",
+  "seconds": 2.2529982080013724,
+  "precondition": "Explicit Docker context listed zero running containers; profile was stopped before this run and started by this controller."
+}
