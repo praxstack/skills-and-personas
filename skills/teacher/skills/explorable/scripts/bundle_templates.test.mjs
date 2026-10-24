@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { page, readableCaptionCues, safeSourceUrl, sources } from "./bundle_templates.mjs";
+import { page, readableCaptionCues, sceneIndexAtTime, safeSourceUrl, sources } from "./bundle_templates.mjs";
 
 const opening={startTime:1,endTime:2,text:'Opening'},closing={startTime:4,endTime:5,text:'Closing'};
 test('readable captions preserve native cue intervals and earlier gaps',()=>{
@@ -45,4 +45,21 @@ test("generated pages include a restrictive CSP", () => {
   assert.match(html, /Content-Security-Policy/);
   assert.match(html, /connect-src 'none'/);
   assert.match(html, /object-src 'none'/);
+});
+
+
+test('chapter selection shares whole-microsecond media boundaries',()=>{
+ const scenes=[{start:0},{start:1.23456789},{start:4.3456789123}];
+ assert.equal(sceneIndexAtTime(scenes,1.234566),0);
+ assert.equal(sceneIndexAtTime(scenes,1.234567),1);
+ assert.equal(sceneIndexAtTime(scenes,1.23456789),1);
+ assert.equal(sceneIndexAtTime(scenes,4.345677),1);
+ assert.equal(sceneIndexAtTime(scenes,4.345678),2);
+ assert.equal(sceneIndexAtTime(scenes,0.5),0);
+ assert.deepEqual(scenes,[{start:0},{start:1.23456789},{start:4.3456789123}]);
+});
+test('exact microsecond boundaries do not move into the preceding microsecond',()=>{
+ const scenes=[{start:0},{start:1.000001}];
+ assert.equal(sceneIndexAtTime(scenes,1),0);
+ assert.equal(sceneIndexAtTime(scenes,1.000001),1);
 });
