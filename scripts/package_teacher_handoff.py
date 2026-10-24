@@ -46,7 +46,7 @@ def package(source, media, historical, output, media_provenance):
     receipt = {'status': 'unaccepted-candidate', 'source_commit': manifest['source_commit'], 'media_provenance': media_provenance, 'historical_notice': 'Historical artifacts retain their original source revisions and are not current acceptance.', 'files': []}
     for name, path in files:
         receipt['files'].append({'name': name, 'bytes': path.stat().st_size, 'sha256': digest(path)})
-    notice = ('UNACCEPTED CANDIDATE\nTask 8 three consecutive narrated playback passes were not achieved. Full-course consent checker approval is pending. Not eligible for stable release or installation: validation incomplete.\nCurrent committed source: '+manifest['source_commit']+'\nMedia provenance: '+media_provenance+'\nHistorical artifacts retain original provenance, not current acceptance.\n').encode()
+    notice = ('UNACCEPTED CANDIDATE\nApproval and playback outcomes require evidence for the named source revision. Packaging alone does not establish release or installation eligibility.\nCurrent committed source: '+manifest['source_commit']+'\nMedia provenance: '+media_provenance+'\nHistorical artifacts retain original provenance, not current acceptance.\n').encode()
     # Two assets: current source+six-format demo, and complete historical-inclusive handoff.
     for archive_name, include_history in [('current-source-and-demo.zip', False), ('complete-dot-handoff-candidate.zip', True)]:
         path = output/archive_name

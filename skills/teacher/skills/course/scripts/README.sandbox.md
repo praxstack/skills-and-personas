@@ -52,12 +52,14 @@ folder must be new. `extract` produces `course.json`; `build` uses the public
 interaction checks and visual QA/screenshots. Missing runtime/image/browser
 dependencies fail closed. A course that fails its existing checks is rejected.
 
-Current limitation: the public course-page checker expects progress persistence
-after reload without selecting the engine’s required consent checkbox. The
-ordinary seasons lesson passed 59/59 interactions and lesson/course visual QA,
-but full `validate` correctly reports `FAIL status survives a reload` and
-publishes no output. A wholly successful validation remains unverified pending
-a separately approved checker repair. The adapter does not bypass that check.
+The separately named consent-aware evaluator v2 was approved and adopted on
+2026-10-24 (`bf0bcf9`); full validation selects that canonical version. The old
+reload-without-consent failure remains historical evidence. The final playback
+source `eaa524e` passed three consecutive original narrated fresh-container runs,
+each 22/22 plus lesson/visual QA and zero phase PID-limit events. Both disclosed
+independent cases pass later regression; their earlier failures remain retained.
+Current delivery and exact scope: `deliverables/teach-resume-20261024/README.md`
+in the full checkout. These results do not imply a stable release or activation.
 
 Inputs are descriptor-bound private snapshots. Only the declared lesson/shared
 JS, matching lesson MP4/VTT files, and `videos.json` beside the logical course
@@ -176,12 +178,9 @@ It records direct `/proc`/cgroup phase samples without diagnostic subprocesses
 and captures the live explorer after scrolling it into view. Diagnostics are
 still subject to the existing 1 MiB log and output budgets.
 
-These changes eliminated observed orphan zombies and produced a visible
-explorer capture, but **did not establish reliable playback within 64 tasks**.
-A consecutive sequence passed once, then failed actual playback. A single
-media-only `NetworkServiceInProcess` experiment still showed a separate network
-utility and also failed; that ineffective flag was reverted. No process
-isolation, web security, resource limit, playback assertion or deadline change
-is retained. The three-consecutive-run requirement remains unmet. See
-`.superpowers/sdd/CONTINUATION/task-8-runtime-revision-report.md` for every run
-and the unresolved thread-budget blocker before treating render as accepted.
+Historical reaping-only results eliminated observed orphan zombies but did not
+establish reliable playback. A retained earlier sequence passed once and then
+failed; an ineffective NetworkServiceInProcess experiment was reverted. Those
+failures remain historical evidence. The later approved method and final playback
+status are described above. Resource limits, isolation, original render assertions
+and deadlines remain unchanged.

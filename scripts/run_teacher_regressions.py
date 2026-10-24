@@ -8,8 +8,17 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 os.chdir(ROOT)
+_REQUIRED = ('scripts/test_render_receipts.py', 'scripts/test_candidate_packaging.py',
+             'scripts/test_portfolio_repair.py', 'scripts/package_teacher_handoff.py',
+             'new-skills/transcript-pipeline/scripts/resource_enrichment.py')
+if not (ROOT / '.git').exists() or any(not (ROOT / name).is_file() for name in _REQUIRED):
+    sys.exit('Full regression validation requires the complete exact Git checkout, '
+             'including Git metadata, test utilities and the new-skills mirror. '
+             'Source archives are unsupported; no tests were run.')
 SUITES = [
     ('skills/teacher/scripts/tests', 'test_network_policy.py'),
+    ('skills/teacher/scripts/tests', 'test_find_tool.py'),
+    ('skills/teacher/scripts/tests', 'test_manim_resolution.py'),
     ('skills/transcript-pipeline/scripts', 'test_resource*.py'),
     ('skills/transcript-pipeline/scripts', 'test_browser_transport.py'),
     ('skills/teacher/skills/explorable/scripts', 'test_sandbox_code.py'),

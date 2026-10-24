@@ -59,6 +59,7 @@ The fixed `sandbox_course.py render` mode currently serves this one-lesson,
 seven-scene example with still step 5 and the `base`/`hit`/`falseRate` model
 contract. It is not a general arbitrary-course media service. Use its explicit
 local immutable image and context; do not run authored JavaScript on the host.
-`validate` remains separate and retains its existing course progress-consent
-checker failure. Export receipts do not erase that failure or establish human
-acceptance of the visual quality.
+`validate` remains separate and uses the approved consent-aware evaluator v2.
+The earlier consent-checker failure remains historical evidence; current final
+source eaa524e passes the three original narrated runs and disclosed-case
+regressions. Export receipts do not establish human acceptance of visual quality.

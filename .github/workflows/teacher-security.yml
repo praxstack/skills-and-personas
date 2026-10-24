@@ -15,6 +15,8 @@ jobs:
       - name: Core and path regressions
         run: |
           python3 skills/teacher/scripts/tests/test_teacher.py
+          python3 -m unittest discover -s skills/teacher/scripts/tests -p test_find_tool.py -v
+          python3 -m unittest discover -s skills/teacher/scripts/tests -p test_manim_resolution.py -v
           python3 -m unittest discover -s skills/teacher/skills/course/scripts -p test_safe_course.py -v
           node --test skills/teacher/skills/course/scripts/publish_videos.test.mjs skills/teacher/skills/explorable/scripts/bundle_templates.test.mjs skills/teacher/skills/explorable/scripts/report.test.mjs
           python3 -m unittest discover -s skills/teacher/skills/course/scripts -p test_chromium_wrapper.py -v

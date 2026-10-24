@@ -38,8 +38,9 @@ The fixed render helper targets this seven-scene frequency example and still
 step 5; it is not a general course-rendering API. Nine frames per scene provide
 sampled causal motion with holds, not fluid full-rate animation. The ordinary
 Film tab switches settled states. Whole-course `validate` remains a separate
-command and still fails its pre-existing course progress-consent expectation.
-Consult the task report and receipts before making a completion claim.
+command using the separately named approved consent-aware evaluator v2. Its
+previous consent-checker failure is retained as history. Consult revision-specific
+receipts before making a completion claim.
 
 The interactive bundle uses VP9 video plus Opus audio in an MP4 container,
 which the reviewed Chromium runtime can actually play. The separate
@@ -53,7 +54,13 @@ runtime; no universal browser-compatibility claim is made.
 `render.py` now checks both existing QA return-code receipts and every existing
 render check/errors/network receipt. An export exit code alone is insufficient.
 These checks do not grant human visual acceptance or full-course acceptance.
-Task 8 remains unaccepted: three consecutive narrated playback passes were not
-achieved. The completed local audio/video stays available as an unaccepted demo;
+The final playback source eaa524e passed three consecutive original narrated
+fresh-container runs (22/22 plus lesson/visual QA, zero PID-limit events), and
+disclosed immutable cases pass subsequent regression. Earlier failures remain
+preserved. Whole-branch review and release decisions are separate. The completed
+local audio/video stays available as an unaccepted demo;
 macOS `say` narration is platform-specific. CI uses a labelled synthetic codec
 fixture with the actual exemplar to exercise runtime behavior, not voice quality.
+
+Public historical visual inspection: [INSPECTION.md](../../../docs/teach-finish-20261024/quality/INSPECTION.md).
+This retained inspection is not current runtime acceptance.

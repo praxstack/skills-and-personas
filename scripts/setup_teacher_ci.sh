@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # Explicit setup for the ARM64 Actions job; never changes the global context.
 set -euo pipefail
+# Full-checkout CI setup is deliberately unsupported in source ZIPs.
+TEACHER_CI_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ ! -e "$TEACHER_CI_ROOT/.git" ] || [ ! -f "$TEACHER_CI_ROOT/scripts/test_candidate_packaging.py" ] || [ ! -d "$TEACHER_CI_ROOT/new-skills/transcript-pipeline" ]; then
+  printf '%s\n' 'CI setup requires the complete exact Git checkout with Git metadata, test utilities and new-skills mirror. Source archives are unsupported; no setup was run.' >&2
+  exit 2
+fi
 test "$(uname -m)" = aarch64
 test "$(id -u)" -ne 0
 docker --context default info --format '{{.OSType}} {{.Architecture}} cgroup={{.CgroupVersion}}'

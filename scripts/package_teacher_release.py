@@ -19,6 +19,8 @@ CANDIDATE_PATHS = (
     "scripts/setup_teacher_ci.sh",
     "scripts/ci_media_regression.py",
     "scripts/package_teacher_release.py",
+    "scripts/TEACHER-CANDIDATE.md",
+    "docs/teach-finish-20261024/quality/INSPECTION.md",
     "docs/teach-resume-20261024/consent/AUTHORITY.md",
     "docs/teach-finish-20261024/behavior/audit-behavior-v1.mjs",
     "docs/teach-finish-20261024/behavior/audit-behavior-v2.mjs",
@@ -52,7 +54,7 @@ def package(revision, version, output, candidate=False):
         trees[path] = (git("cat-file", "blob", oid), int(mode, 8))
     if not all(f"skills/{name}/SKILL.md" in trees for name in ("teacher", "teach-pro-max")):
         raise ValueError("both public skill entries must be present")
-    candidate_notice = ("UNACCEPTED CANDIDATE: consent-aware evaluator v2 was approved and adopted on 2026-10-24. Three original narrated fresh-container runs pass at 64 tasks/512 MiB; the disclosed independent fixture passes regression after caption repair. Whole-branch review and release decisions remain pending. No installation or stable release is authorized by this archive. Historical evidence retains its original scope.\n\n" if candidate else "")
+    candidate_notice = ("UNACCEPTED CANDIDATE: this archive identifies source only. Approval and runtime outcomes require revision-specific evidence; packaging does not establish acceptance, installation authorization or a stable release. Historical evidence retains its original scope.\n\n" if candidate else "")
     start = f"""{candidate_notice}# Prax Teach {version}
 
 The complete teacher and compatible teach-pro-max source trees are in skills/.
@@ -66,7 +68,13 @@ Install teacher to an explicit agent folder:
 teach-pro-max can also be copied as one whole folder. It uses teacher when
 present and its bundled compatibility engine when installed alone.
 
-Python and Node are needed by build/check scripts. Browser/video work also needs
+Full regression orchestration and CI setup require the complete exact Git checkout,
+including Git metadata, test utilities and the new-skills mirror. The source ZIP
+is not a full-checkout validation environment. run_teacher_regressions.py and
+setup_teacher_ci.sh fail explicitly there before tests or dependency setup.
+See scripts/TEACHER-CANDIDATE.md in the combined candidate archive.
+
+Python and Node are needed by individual included skill build/check scripts. Browser/video work also needs
 Playwright, Chromium and ffmpeg. Optional voices/models are separate setup
 steps. No dependency downloads or paid services start merely by extracting.
 
@@ -93,7 +101,7 @@ Source commit: {commit}
             notice = (candidate_notice + f"Source commit: {commit}\n").encode()
             collections[f"{component}.zip"][f"{component}/CANDIDATE-STATUS.txt"] = (notice, 0o100644)
         manifest["status"] = "unaccepted-candidate"
-        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline, three authored exemplars and approved consent-v2 evaluator and supplemental audit source; no receipt or acceptance claim"
+        manifest["scope"] = "committed teacher, teach-pro-max, transcript-pipeline, three authored exemplars and revision-specific evaluator/audit source; no receipt or acceptance claim"
     for name, files in collections.items():
         path = output / name
         with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:

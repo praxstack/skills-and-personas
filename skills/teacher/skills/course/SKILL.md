@@ -52,10 +52,14 @@ Each destination must be new and its existing parent must contain no symlink
 components. Extraction writes `course.json`; build writes the ordinary relative
 static pages; validation runs `test_course.py` including interaction checks and
 visual QA screenshots. Validation requires the reviewed Playwright/Chromium
-image and fails closed without it. In the current shipped checker, the course
-reload test omits the required progress-consent opt-in; full validation reports
-that failure and publishes no output. Lesson interactions and browser rendering
-were verified, but a wholly passing validation is pending that checker repair.
+image and fails closed without it. The separately named consent-aware evaluator v2 was approved and adopted on
+2026-10-24 (`bf0bcf9`); full validation selects that canonical version. The old
+reload-without-consent failure remains historical evidence. The final playback
+source `eaa524e` passed three consecutive original narrated fresh-container runs,
+each 22/22 plus lesson/visual QA and zero phase PID-limit events. Both disclosed
+independent cases pass later regression; their earlier failures remain retained.
+Current delivery and exact scope: `deliverables/teach-resume-20261024/README.md`
+in the full checkout. These results do not imply a stable release or activation.
 Course input is limited to 128 lessons and
 64 MiB, including local videos; output to 1,024 entries and 64 MiB. Local MP4/VTT
 files and a `videos.json` beside a linked course keep their existing behavior.

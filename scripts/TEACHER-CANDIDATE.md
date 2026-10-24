@@ -1,9 +1,20 @@
 # Unaccepted candidate packaging
 
-Task 8 narrated playback did not achieve three consecutive fresh-container
-passes. The full-course consent checker proposal awaits approval. Passing unit
-or synthetic-media tests does not change either status. No stable publication,
-merge or installed-snapshot changes are part of these commands.
+The separately named consent-aware evaluator v2 was approved and adopted on
+2026-10-24 (`bf0bcf9`); full validation selects that canonical version. The old
+reload-without-consent failure remains historical evidence. The final playback
+source `eaa524e` passed three consecutive original narrated fresh-container runs,
+each 22/22 plus lesson/visual QA and zero phase PID-limit events. Both disclosed
+independent cases pass later regression; their earlier failures remain retained.
+Current delivery and exact scope: `deliverables/teach-resume-20261024/README.md`
+in the full checkout. These results do not imply a stable release or activation.
+
+The source ZIP supports individual included skill build/check commands and the
+embedded vendor/distribution verifiers. Full regression orchestration and CI setup
+(`run_teacher_regressions.py`, `setup_teacher_ci.sh`, `ci_media_regression.py`)
+require the complete exact Git checkout, its Git metadata, test utilities and
+new-skills mirror. They are not archive validation commands. The runner and setup
+refuse incomplete source archives explicitly before tests or dependency setup.
 
 After review and commit, use a new empty output directory:
 
@@ -38,7 +49,6 @@ An output already present is refused. Packaging does not prove delivery to Dot.
 The ARM CI job explicitly builds pinned-base course/enrichment/media images,
 uses the returned immutable IDs with the default context, installs hash-locked
 requests/Playwright wheels, and fails if required controls skip. Its synthetic
-media sequence has three fresh runs and stops at the first failure. Actual
-narrated artifact acceptance remains blocked independently. Existing core and
+media sequence has three fresh runs and stops at the first failure. Revision-specific actual narrated results remain distinct from synthetic CI. Existing core and
 portfolio diagnostic jobs retain their scopes. Runtime limits and existing
 checker assertions remain unchanged.
