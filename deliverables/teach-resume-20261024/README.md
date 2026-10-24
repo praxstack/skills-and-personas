@@ -14,8 +14,10 @@ choices are pending; nothing has been installed, published or activated.
 - [Archive/member hashes and modes](source-e97fe5b/RELEASE-MANIFEST.json) · [SHA256SUMS](source-e97fe5b/SHA256SUMS)
 
 Both `source-e97fe5b/` and `repeat-e97fe5b/` were built from committed Git objects
-and are byte-identical. The earlier d8085a4 and eaa524e source archives, plus `demo/`, remain
-preserved snapshots before the chapter precision repair; use the eaa524e paths.
+and are byte-identical. The d8085a4 source archives and `demo/` preserve the
+snapshot before the chapter precision repair. The eaa524e archives and
+`demo-eaa524e/` contain the chapter-corrected runtime and demonstration; use the
+`source-e97fe5b/` paths above for the current package.
 
 The separately named consent-aware evaluator v2 is approved and adopted; its
 canonical source is `skills/teacher/skills/course/scripts/check_course_page_v2.mjs`.
