@@ -1,0 +1,4131 @@
+{
+  "checks": [
+    {
+      "name": "53550 original-grid model equivalence",
+      "ok": true
+    },
+    {
+      "name": "phase is presentation only",
+      "ok": true
+    },
+    {
+      "name": "posterior at 1%",
+      "ok": true
+    },
+    {
+      "name": "posterior at 20%",
+      "ok": true
+    },
+    {
+      "name": "posterior at 50%",
+      "ok": true
+    },
+    {
+      "name": "zero false flags retains 100 missed",
+      "ok": true
+    },
+    {
+      "name": "no storage before consent",
+      "ok": true
+    },
+    {
+      "name": "keyboard slider changes value",
+      "ok": true
+    },
+    {
+      "name": "all explanation steps reachable without answers",
+      "ok": true
+    },
+    {
+      "name": "first three settled geometries distinct",
+      "ok": true
+    },
+    {
+      "name": "captions hidden throughout unsettled transitions",
+      "ok": true
+    },
+    {
+      "name": "qa keyboard disclosure opens",
+      "ok": true
+    },
+    {
+      "name": "cards keyboard disclosure opens",
+      "ok": true
+    },
+    {
+      "name": "VP9 MP4 codec advertised",
+      "ok": true
+    },
+    {
+      "name": "actual video playback advances",
+      "ok": true
+    },
+    {
+      "name": "interactive video chapter and paused model transfer",
+      "ok": true
+    },
+    {
+      "name": "explorer receives scene parameters",
+      "ok": true
+    },
+    {
+      "name": "video speed control",
+      "ok": true
+    },
+    {
+      "name": "caption toggle",
+      "ok": true
+    },
+    {
+      "name": "seek near end reaches final chapter and captions",
+      "ok": true
+    },
+    {
+      "name": "no unexpected network requests",
+      "ok": true
+    },
+    {
+      "name": "no browser errors",
+      "ok": true
+    }
+  ],
+  "meta": {
+    "scenes": [
+      {
+        "chapter": "Start with the batch",
+        "say": "The hypothetical batch has 100 defective items and 9,900 sound items. Each rate starts with its own population."
+      },
+      {
+        "chapter": "Select within defective items",
+        "say": "The detector flags 90 of the 100 defective items. Its 90% hit rate leaves 10 defective items missed."
+      },
+      {
+        "chapter": "Select within sound items",
+        "say": "Five percent of 9,900 sound items gives 495 false flags. A smaller rate can produce more flags because its population is larger."
+      },
+      {
+        "chapter": "Collect only flags",
+        "say": "Move the 90 true flags and 495 false flags into one group. Leave 9,415 unflagged items outside, including 10 missed defects."
+      },
+      {
+        "chapter": "Change the denominator",
+        "say": "Expand the same selected group. Its count stays 585. The defective share is 90 divided by 585, or 15.4%."
+      },
+      {
+        "chapter": "Change the base rate",
+        "say": "At a 10% defect rate, the same detector gives 900 true flags and 450 false flags. Of 1,350 flags, 66.7% are defective."
+      },
+      {
+        "chapter": "Remove false flags",
+        "say": "With zero false flags, all 900 flags are true. Yet 100 defective items remain missed. Precision is 100%; hit rate is still 90%."
+      }
+    ],
+    "states": [
+      {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1
+      },
+      {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2
+      },
+      {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3
+      },
+      {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4
+      },
+      {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 5
+      },
+      {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 0,
+        "phase": 6
+      }
+    ]
+  },
+  "receipts": [
+    {
+      "scene": 0,
+      "settled": 0,
+      "filename": "scene-0-0.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.125,
+      "filename": "scene-0-1.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.25,
+      "filename": "scene-0-2.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.375,
+      "filename": "scene-0-3.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.5,
+      "filename": "scene-0-4.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.625,
+      "filename": "scene-0-5.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.75,
+      "filename": "scene-0-6.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 0.875,
+      "filename": "scene-0-7.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 0,
+      "settled": 1,
+      "filename": "scene-0-8.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0,
+      "filename": "scene-1-0.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.125,
+      "filename": "scene-1-1.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.0078125
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.25,
+      "filename": "scene-1-2.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.0625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.375,
+      "filename": "scene-1-3.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.2109375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.5,
+      "filename": "scene-1-4.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.625,
+      "filename": "scene-1-5.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.7890625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.75,
+      "filename": "scene-1-6.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.9375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 0.875,
+      "filename": "scene-1-7.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 0.9921875
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        }
+      ]
+    },
+    {
+      "scene": 1,
+      "settled": 1,
+      "filename": "scene-1-8.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0,
+      "filename": "scene-2-0.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.125,
+      "filename": "scene-2-1.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.0078125
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "815.02875"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.25,
+      "filename": "scene-2-2.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.0625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "774.63"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.375,
+      "filename": "scene-2-3.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.2109375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "664.9762499999999"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.5,
+      "filename": "scene-2-4.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.625,
+      "filename": "scene-2-5.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.7890625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "237.90375000000006"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.75,
+      "filename": "scene-2-6.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.9375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "128.25"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 0.875,
+      "filename": "scene-2-7.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 1.9921875
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "87.85125000000005"
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "settled": 1,
+      "filename": "scene-2-8.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "24",
+          "y": "290",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0,
+      "filename": "scene-3-0.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "190",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "24",
+          "y": "290",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.125,
+      "filename": "scene-3-1.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.0078125
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "191.8125",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "24.64125",
+          "y": "291.03125",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.25,
+      "filename": "scene-3-2.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.0625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "204.5",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "29.13",
+          "y": "298.25",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.375,
+      "filename": "scene-3-3.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.2109375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "238.9375",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "41.31375",
+          "y": "317.84375",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.5,
+      "filename": "scene-3-4.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "306",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "65.03999999999999",
+          "y": "356",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.625,
+      "filename": "scene-3-5.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.7890625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "373.0625",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "88.76625",
+          "y": "394.15625",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.75,
+      "filename": "scene-3-6.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.9375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "407.5",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "100.95",
+          "y": "413.75",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 0.875,
+      "filename": "scene-3-7.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 2.9921875
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "420.1875",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "105.43875",
+          "y": "420.96875",
+          "width": "451.44"
+        }
+      ]
+    },
+    {
+      "scene": 3,
+      "settled": 1,
+      "filename": "scene-3-8.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "106.08",
+          "y": "422",
+          "width": "451.44"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "543.52"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0,
+      "filename": "scene-4-0.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "82.08"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "106.08",
+          "y": "422",
+          "width": "451.44"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "543.52"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.125,
+      "filename": "scene-4-1.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.0078125
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "82.53490384615384"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "106.53490384615384",
+          "y": "422",
+          "width": "453.94197115384617"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "546.476875"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.25,
+      "filename": "scene-4-2.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.0625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "85.71923076923076"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "109.71923076923076",
+          "y": "422",
+          "width": "471.45576923076925"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "567.175"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.375,
+      "filename": "scene-4-3.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.2109375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "94.36240384615385"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "118.36240384615385",
+          "y": "422",
+          "width": "518.9932211538462"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "623.355625"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.5,
+      "filename": "scene-4-4.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "111.19384615384615"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "135.19384615384615",
+          "y": "422",
+          "width": "611.5661538461538"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "732.76"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.625,
+      "filename": "scene-4-5.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.7890625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "128.02528846153848"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "152.02528846153848",
+          "y": "422",
+          "width": "704.1390865384616"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "842.1643750000001"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.75,
+      "filename": "scene-4-6.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.9375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "136.66846153846154"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "160.66846153846154",
+          "y": "422",
+          "width": "751.6765384615385"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "898.345"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 0.875,
+      "filename": "scene-4-7.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 3.9921875
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "139.85278846153847"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "163.85278846153847",
+          "y": "422",
+          "width": "769.1903365384616"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "919.0431249999999"
+        }
+      ]
+    },
+    {
+      "scene": 4,
+      "settled": 1,
+      "filename": "scene-4-8.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "140.30769230769232"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "164.30769230769232",
+          "y": "422",
+          "width": "771.6923076923077"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0,
+      "filename": "scene-5-0.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "140.30769230769232"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "164.30769230769232",
+          "y": "422",
+          "width": "771.6923076923077"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.125,
+      "filename": "scene-5-1.png",
+      "marks": [],
+      "params": {
+        "base": 1,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.0078125
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "9.12"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "140.30769230769232"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "164.30769230769232",
+          "y": "422",
+          "width": "771.6923076923077"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.25,
+      "filename": "scene-5-2.png",
+      "marks": [],
+      "params": {
+        "base": 2,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.0625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "18.24"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "245.01492537313433"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "269.01492537313436",
+          "y": "422",
+          "width": "666.9850746268656"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.375,
+      "filename": "scene-5-3.png",
+      "marks": [],
+      "params": {
+        "base": 3,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.2109375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "27.36"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "326.1456953642384"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "350.1456953642384",
+          "y": "422",
+          "width": "585.8543046357615"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.5,
+      "filename": "scene-5-4.png",
+      "marks": [],
+      "params": {
+        "base": 6,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "54.72"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "487.6039603960396"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "511.6039603960396",
+          "y": "422",
+          "width": "424.3960396039604"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.625,
+      "filename": "scene-5-5.png",
+      "marks": [],
+      "params": {
+        "base": 8,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.7890625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "72.96"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "556.4745762711865"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "580.4745762711865",
+          "y": "422",
+          "width": "355.5254237288135"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.75,
+      "filename": "scene-5-6.png",
+      "marks": [],
+      "params": {
+        "base": 9,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.9375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "82.08"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "583.9683794466403"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "607.9683794466403",
+          "y": "422",
+          "width": "328.0316205533597"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 0.875,
+      "filename": "scene-5-7.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 4.9921875
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "608"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "632",
+          "y": "422",
+          "width": "304.00000000000006"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 5,
+      "settled": 1,
+      "filename": "scene-5-8.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 5
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "608"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "632",
+          "y": "422",
+          "width": "304.00000000000006"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0,
+      "filename": "scene-6-0.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "608"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "632",
+          "y": "422",
+          "width": "304.00000000000006"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.125,
+      "filename": "scene-6-1.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 5.0078125
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "608"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "632",
+          "y": "422",
+          "width": "304.00000000000006"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.25,
+      "filename": "scene-6-2.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 5,
+        "phase": 5.0625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "45.6"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "608"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "632",
+          "y": "422",
+          "width": "304.00000000000006"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.375,
+      "filename": "scene-6-3.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 4,
+        "phase": 5.2109375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "36.48"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "651.4285714285714"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "675.4285714285714",
+          "y": "422",
+          "width": "260.57142857142856"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.5,
+      "filename": "scene-6-4.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 3,
+        "phase": 5.5
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "27.36"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "701.5384615384615"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "725.5384615384615",
+          "y": "422",
+          "width": "210.46153846153842"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.625,
+      "filename": "scene-6-5.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 1,
+        "phase": 5.7890625
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "9.12"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "829.090909090909"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "853.090909090909",
+          "y": "422",
+          "width": "82.90909090909093"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.75,
+      "filename": "scene-6-6.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 0,
+        "phase": 5.9375
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "0"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "912"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "936",
+          "y": "422",
+          "width": "0"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 0.875,
+      "filename": "scene-6-7.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 0,
+        "phase": 5.9921875
+      },
+      "captionVisible": false,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "0"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "912"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "936",
+          "y": "422",
+          "width": "0"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "settled": 1,
+      "filename": "scene-6-8.png",
+      "marks": [],
+      "params": {
+        "base": 10,
+        "hit": 90,
+        "falseRate": 0,
+        "phase": 6
+      },
+      "captionVisible": true,
+      "geometry": [
+        {
+          "id": "population-sound",
+          "x": "24",
+          "y": "48",
+          "width": "912"
+        },
+        {
+          "id": "population-defective",
+          "x": "24",
+          "y": "48",
+          "width": "91.2"
+        },
+        {
+          "id": "defective-detail-total",
+          "x": "24",
+          "y": "190",
+          "width": "912"
+        },
+        {
+          "id": "defective-detail-reference",
+          "x": "24",
+          "y": "190",
+          "width": "820.8"
+        },
+        {
+          "id": "sound-detail-total",
+          "x": "24",
+          "y": "290",
+          "width": "912"
+        },
+        {
+          "id": "sound-detail-reference",
+          "x": "24",
+          "y": "290",
+          "width": "0"
+        },
+        {
+          "id": "true-flag-segment",
+          "x": "24",
+          "y": "422",
+          "width": "912"
+        },
+        {
+          "id": "false-flag-segment",
+          "x": "936",
+          "y": "422",
+          "width": "0"
+        },
+        {
+          "id": "selected-boundary",
+          "x": "19",
+          "y": "417",
+          "width": "922"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "network": [],
+  "runtime": [
+    {
+      "phase": "before-render-browser",
+      "pids": 7,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-render-browser-launch",
+      "pids": 27,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "R (running)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 117,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 117,
+          "threads": 2,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 135,
+          "name": "exe",
+          "state": "R (running)",
+          "ppid": 117,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-lesson-model-checks",
+      "pids": 49,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 117,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 135,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 150,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 10,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-film-frames",
+      "pids": 50,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 117,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 135,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 150,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 10,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-static-formats",
+      "pids": 50,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 117,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 131,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 135,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 150,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 117,
+          "threads": 10,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-static-browser-close",
+      "pids": 7,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "before-video-navigation",
+      "pids": 47,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 189,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-video-navigation",
+      "pids": 47,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "R (running)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 189,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 163,
+          "threads": 8,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "before-play",
+      "pids": 50,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 189,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 163,
+          "threads": 11,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-playback-advance",
+      "pids": 59,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 6,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 189,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 13,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 207,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=audio.mojom.AudioService"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-visible-explorer",
+      "pids": 60,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "S (sleeping)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 189,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 13,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 207,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=audio.mojom.AudioService"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    },
+    {
+      "phase": "after-all-browser-checks",
+      "pids": 60,
+      "events": "max 0",
+      "processes": [
+        {
+          "pid": 1,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 0,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 111,
+          "name": "node",
+          "state": "R (running)",
+          "ppid": 53,
+          "threads": 5,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 163,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 111,
+          "threads": 17,
+          "cpuAllowed": "0-1",
+          "role": []
+        },
+        {
+          "pid": 176,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=gpu-process"
+          ]
+        },
+        {
+          "pid": 181,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 9,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=network.mojom.NetworkService"
+          ]
+        },
+        {
+          "pid": 189,
+          "name": "headless_shell",
+          "state": "R (running)",
+          "ppid": 163,
+          "threads": 13,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=renderer"
+          ]
+        },
+        {
+          "pid": 207,
+          "name": "headless_shell",
+          "state": "S (sleeping)",
+          "ppid": 163,
+          "threads": 7,
+          "cpuAllowed": "0-1",
+          "role": [
+            "--type=utility",
+            "--utility-sub-type=audio.mojom.AudioService"
+          ]
+        },
+        {
+          "pid": 53,
+          "name": "python3",
+          "state": "S (sleeping)",
+          "ppid": 1,
+          "threads": 1,
+          "cpuAllowed": "0-1",
+          "role": []
+        }
+      ]
+    }
+  ],
+  "mediaBrowserLifetime": "fresh browser after static capture"
+}

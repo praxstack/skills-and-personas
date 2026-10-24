@@ -1,0 +1,1434 @@
+{
+  "baseline-diagnostic": {
+    "version": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/145.0.7632.0",
+      "revision": "@0bbdf2913883391365383b0a5dfe7bf9fd1a5213",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+      "jsVersion": "14.5.201.1"
+    },
+    "samples": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 41,
+        "events": "max 0",
+        "browserThreads": 20,
+        "browserForegroundComms": 6,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 51,
+        "events": "max 0",
+        "browserThreads": 20,
+        "browserForegroundComms": 6,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 53,
+        "events": "max 0",
+        "browserThreads": 20,
+        "browserForegroundComms": 6,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 54,
+        "events": "max 0",
+        "browserThreads": 21,
+        "browserForegroundComms": 7,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 56,
+        "events": "max 0",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 56,
+        "events": "max 0",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "before-play",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "playback-failure",
+        "pids": 59,
+        "events": "max 3",
+        "browserThreads": 26,
+        "browserForegroundComms": 12,
+        "audioUtilityThreads": []
+      }
+    ],
+    "audioObservations": [],
+    "mediaEvents": [
+      {
+        "event": "playerEventsAdded",
+        "data": {
+          "playerId": "5A22CEC3D136CBE6A3A44D68E46723EF",
+          "events": [
+            {
+              "timestamp": 1204.963042,
+              "value": "{\"created\":\"2026-10-24 15:39:47.404221 UTC\",\"event\":\"kMediaLogCreated\"}"
+            },
+            {
+              "timestamp": 1204.964415,
+              "value": "{\"event\":\"kWebMediaPlayerCreated\",\"origin_url\":\"file:///\"}"
+            },
+            {
+              "timestamp": 1204.964698,
+              "value": "{\"event\":\"kLoad\",\"url\":\"file:///tmp/output/bundle/lesson.mp4\"}"
+            },
+            {
+              "timestamp": 1205.025169,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kStarting\"}"
+            },
+            {
+              "timestamp": 1205.027648,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kSuspended\"}"
+            },
+            {
+              "timestamp": 1205.052283,
+              "value": "{\"event\":\"kSuspended\"}"
+            },
+            {
+              "timestamp": 1205.092684,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kResuming\"}"
+            },
+            {
+              "timestamp": 1205.107683,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kPlaying\"}"
+            },
+            {
+              "timestamp": 1205.113904,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kStopping\"}"
+            },
+            {
+              "timestamp": 1205.114059,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kStopped\"}"
+            },
+            {
+              "timestamp": 1205.027624,
+              "value": "{\"duration\":86.048177,\"event\":\"kDurationChanged\"}"
+            },
+            {
+              "timestamp": 1205.108218,
+              "value": "{\"audio_buffering_state\":{\"state\":\"BUFFERING_HAVE_ENOUGH\"},\"event\":\"kBufferingStateChanged\"}"
+            },
+            {
+              "timestamp": 1205.052317,
+              "value": "{\"event\":\"kBufferingStateChanged\",\"pipeline_buffering_state\":{\"for_suspended_start\":true,\"state\":\"BUFFERING_HAVE_ENOUGH\"}}"
+            },
+            {
+              "timestamp": 1205.092642,
+              "value": "{\"event\":\"kPlay\"}"
+            },
+            {
+              "timestamp": 1205.114124,
+              "value": "{\"event\":\"kPause\"}"
+            }
+          ]
+        }
+      },
+      {
+        "event": "playerPropertiesChanged",
+        "data": {
+          "playerId": "5A22CEC3D136CBE6A3A44D68E46723EF",
+          "properties": [
+            {
+              "name": "kVideoDecoderName",
+              "value": "VpxVideoDecoder"
+            },
+            {
+              "name": "kIsStreaming",
+              "value": "false"
+            },
+            {
+              "name": "kFrameUrl",
+              "value": "file:///tmp/output/bundle/interactive-video.html"
+            },
+            {
+              "name": "kAudioTracks",
+              "value": "[{\"bytes per channel\":2,\"bytes per frame\":2,\"channel layout\":\"MONO\",\"channels\":1,\"codec\":\"opus\",\"codec delay\":312,\"discard decoder delay\":true,\"encryption scheme\":\"Unencrypted\",\"has extra data\":true,\"profile\":\"unknown\",\"sample format\":\"Signed 16-bit\",\"samples per second\":48000,\"seek preroll\":\"80000us\"}]"
+            },
+            {
+              "name": "kRendererName",
+              "value": "RendererImpl"
+            },
+            {
+              "name": "kTotalBytes",
+              "value": "0x398834"
+            },
+            {
+              "name": "kMaxDuration",
+              "value": "86.048177"
+            },
+            {
+              "name": "kFrameTitle",
+              "value": "A flag is not a verdict. \u2014 Interactive video"
+            },
+            {
+              "name": "kIsPlatformAudioDecoder",
+              "value": "false"
+            },
+            {
+              "name": "kAudioDecoderName",
+              "value": "FFmpegAudioDecoder"
+            },
+            {
+              "name": "kVideoTracks",
+              "value": "[{\"alpha mode\":\"is_opaque\",\"codec\":\"vp9\",\"coded size\":\"1280x720\",\"color space\":{\"matrix\":\"UNSPECIFIED\",\"primaries\":\"UNSPECIFIED\",\"range\":\"LIMITED\",\"transfer\":\"UNSPECIFIED\"},\"encryption scheme\":\"Unencrypted\",\"has extra data\":false,\"hdr metadata\":{},\"natural size\":\"1280x720\",\"orientation\":\"0\u00b0\",\"profile\":\"vp9 profile0\",\"visible rect\":\"0,0 1280x720\"}]"
+            },
+            {
+              "name": "kIsRangeHeaderSupported",
+              "value": "false"
+            },
+            {
+              "name": "kIsVideoDecryptingDemuxerStream",
+              "value": "false"
+            },
+            {
+              "name": "kStartTime",
+              "value": "0.0"
+            },
+            {
+              "name": "kBitrate",
+              "value": "350540"
+            },
+            {
+              "name": "kIsPlatformVideoDecoder",
+              "value": "false"
+            },
+            {
+              "name": "kIsSingleOrigin",
+              "value": "true"
+            },
+            {
+              "name": "kIsAudioDecryptingDemuxerStream",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      {
+        "event": "playerMessagesLogged",
+        "data": {
+          "playerId": "5A22CEC3D136CBE6A3A44D68E46723EF",
+          "messages": [
+            {
+              "level": "info",
+              "message": "FFmpegDemuxer: created video stream, config codec: vp9, profile: vp9 profile0, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: false, encryption scheme: Unencrypted, rotation: 0\u00b0, flipped: 0, color space: {primaries:INVALID, transfer:INVALID, matrix:INVALID, range:INVALID}"
+            },
+            {
+              "level": "info",
+              "message": "FFmpegDemuxer: created audio stream, config codec: opus, profile: unknown, bytes_per_channel: 2, channel_layout: MONO, channels: 1, samples_per_second: 48000, sample_format: Signed 16-bit, bytes_per_frame: 2, seek_preroll: 80000us, codec_delay: 312, has extra data: true, encryption scheme: Unencrypted, discard decoder delay: true, target_output_channel_layout: NONE, target_output_sample_format: Unknown sample format"
+            },
+            {
+              "level": "info",
+              "message": "Effective playback rate changed from 0 to 1"
+            },
+            {
+              "level": "info",
+              "message": "Selected FFmpegAudioDecoder for audio decoding, config: codec: opus, profile: unknown, bytes_per_channel: 2, channel_layout: MONO, channels: 1, samples_per_second: 48000, sample_format: Signed 16-bit, bytes_per_frame: 2, seek_preroll: 80000us, codec_delay: 312, has extra data: true, encryption scheme: Unencrypted, discard decoder delay: true, target_output_channel_layout: STEREO, target_output_sample_format: Unknown sample format"
+            },
+            {
+              "level": "info",
+              "message": "Cannot select DecryptingVideoDecoder for video decoding"
+            },
+            {
+              "level": "info",
+              "message": "Selected VpxVideoDecoder for video decoding, config: codec: vp9, profile: vp9 profile0, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: false, encryption scheme: Unencrypted, rotation: 0\u00b0, flipped: 0, color space: {primaries:INVALID, transfer:INVALID, matrix:INVALID, range:INVALID}"
+            },
+            {
+              "level": "error",
+              "message": "audio render error"
+            }
+          ]
+        }
+      },
+      {
+        "event": "playerErrorsRaised",
+        "data": {
+          "playerId": "5A22CEC3D136CBE6A3A44D68E46723EF",
+          "errors": [
+            {
+              "errorType": "PipelineStatus::AUDIO_RENDERER_ERROR",
+              "code": 19,
+              "stack": [
+                {
+                  "file": "base/functional/bind_internal.h",
+                  "line": 730
+                }
+              ],
+              "cause": [],
+              "data": {}
+            }
+          ]
+        }
+      }
+    ],
+    "beforePlayArgv": [
+      "/ms-playwright/chromium_headless_shell-1208/chrome-linux/headless_shell",
+      "--no-zygote",
+      "--renderer-process-limit=1",
+      "--num-raster-threads=1",
+      "--disable-gpu",
+      "--disable-software-rasterizer",
+      "--disable-field-trial-config",
+      "--disable-background-networking",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-back-forward-cache",
+      "--disable-breakpad",
+      "--disable-client-side-phishing-detection",
+      "--disable-component-extensions-with-background-pages",
+      "--disable-component-update",
+      "--no-default-browser-check",
+      "--disable-default-apps",
+      "--disable-dev-shm-usage",
+      "--disable-extensions",
+      "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints",
+      "--enable-features=CDPScreenshotNewSurface",
+      "--allow-pre-commit-input",
+      "--disable-hang-monitor",
+      "--disable-ipc-flooding-protection",
+      "--disable-popup-blocking",
+      "--disable-prompt-on-repost",
+      "--disable-renderer-backgrounding",
+      "--force-color-profile=srgb",
+      "--metrics-recording-only",
+      "--no-first-run",
+      "--password-store=basic",
+      "--use-mock-keychain",
+      "--no-service-autorun",
+      "--export-tagged-pdf",
+      "--disable-search-engine-choice-screen",
+      "--unsafely-disable-devtools-self-xss-warnings",
+      "--edge-skip-compat-layer-relaunch",
+      "--enable-automation",
+      "--disable-infobars",
+      "--disable-search-engine-choice-screen",
+      "--disable-sync",
+      "--enable-unsafe-swiftshader",
+      "--headless",
+      "--hide-scrollbars",
+      "--mute-audio",
+      "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+      "--no-sandbox",
+      "--user-data-dir=/tmp/playwright_chromiumdev_profile-hAFHNU",
+      "--remote-debugging-pipe",
+      "--no-startup-window",
+      ""
+    ]
+  },
+  "pool-diagnostic": {
+    "version": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/145.0.7632.0",
+      "revision": "@0bbdf2913883391365383b0a5dfe7bf9fd1a5213",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+      "jsVersion": "14.5.201.1"
+    },
+    "samples": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 38,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 48,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 49,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 49,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 47,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 47,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "before-play",
+        "pids": 50,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 50,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "after-playback-advance",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "after-narration-onset",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 59,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "after-visible-explorer",
+        "pids": 60,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "after-all-browser-checks",
+        "pids": 60,
+        "events": "max 0",
+        "browserThreads": 17,
+        "browserForegroundComms": 3,
+        "audioUtilityThreads": [
+          7
+        ]
+      },
+      {
+        "phase": "after-browser-close",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      }
+    ],
+    "audioObservations": [
+      {
+        "kind": "AUDIO_OBSERVATION",
+        "time": 0.119932,
+        "audioBytes": 63,
+        "frames": 7,
+        "paused": false
+      },
+      {
+        "kind": "AUDIO_PAST_ONSET",
+        "time": 2.510378,
+        "audioBytes": 26841,
+        "frames": 64,
+        "paused": false
+      }
+    ],
+    "mediaEvents": [
+      {
+        "event": "playerEventsAdded",
+        "data": {
+          "playerId": "02EAC092D7C4DA2CBD323449D4CAB456",
+          "events": [
+            {
+              "timestamp": 1297.076577,
+              "value": "{\"created\":\"2026-10-24 15:41:19.517755 UTC\",\"event\":\"kMediaLogCreated\"}"
+            },
+            {
+              "timestamp": 1297.07673,
+              "value": "{\"event\":\"kWebMediaPlayerCreated\",\"origin_url\":\"file:///\"}"
+            },
+            {
+              "timestamp": 1297.076786,
+              "value": "{\"event\":\"kLoad\",\"url\":\"file:///tmp/output/bundle/lesson.mp4\"}"
+            },
+            {
+              "timestamp": 1297.137412,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kStarting\"}"
+            },
+            {
+              "timestamp": 1297.137878,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kSuspended\"}"
+            },
+            {
+              "timestamp": 1297.156958,
+              "value": "{\"event\":\"kSuspended\"}"
+            },
+            {
+              "timestamp": 1297.18588,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kResuming\"}"
+            },
+            {
+              "timestamp": 1297.207946,
+              "value": "{\"event\":\"kPipelineStateChange\",\"pipeline_state\":\"kPlaying\"}"
+            },
+            {
+              "timestamp": 1297.212874,
+              "value": "{\"dimensions\":\"1280x720\",\"event\":\"kVideoSizeChanged\"}"
+            },
+            {
+              "timestamp": 1297.137841,
+              "value": "{\"duration\":86.048177,\"event\":\"kDurationChanged\"}"
+            },
+            {
+              "timestamp": 1297.217045,
+              "value": "{\"event\":\"kBufferingStateChanged\",\"video_buffering_state\":{\"state\":\"BUFFERING_HAVE_ENOUGH\"}}"
+            },
+            {
+              "timestamp": 1297.211222,
+              "value": "{\"audio_buffering_state\":{\"state\":\"BUFFERING_HAVE_ENOUGH\"},\"event\":\"kBufferingStateChanged\"}"
+            },
+            {
+              "timestamp": 1297.217726,
+              "value": "{\"event\":\"kBufferingStateChanged\",\"pipeline_buffering_state\":{\"for_suspended_start\":false,\"state\":\"BUFFERING_HAVE_ENOUGH\"}}"
+            },
+            {
+              "timestamp": 1297.185838,
+              "value": "{\"event\":\"kPlay\"}"
+            }
+          ]
+        }
+      },
+      {
+        "event": "playerPropertiesChanged",
+        "data": {
+          "playerId": "02EAC092D7C4DA2CBD323449D4CAB456",
+          "properties": [
+            {
+              "name": "kVideoDecoderName",
+              "value": "VpxVideoDecoder"
+            },
+            {
+              "name": "kIsStreaming",
+              "value": "false"
+            },
+            {
+              "name": "kFrameUrl",
+              "value": "file:///tmp/output/bundle/interactive-video.html"
+            },
+            {
+              "name": "kAudioTracks",
+              "value": "[{\"bytes per channel\":2,\"bytes per frame\":2,\"channel layout\":\"MONO\",\"channels\":1,\"codec\":\"opus\",\"codec delay\":312,\"discard decoder delay\":true,\"encryption scheme\":\"Unencrypted\",\"has extra data\":true,\"profile\":\"unknown\",\"sample format\":\"Signed 16-bit\",\"samples per second\":48000,\"seek preroll\":\"80000us\"}]"
+            },
+            {
+              "name": "kResolution",
+              "value": "1280x720"
+            },
+            {
+              "name": "kRendererName",
+              "value": "RendererImpl"
+            },
+            {
+              "name": "kTotalBytes",
+              "value": "0x398834"
+            },
+            {
+              "name": "kMaxDuration",
+              "value": "86.048177"
+            },
+            {
+              "name": "kFrameTitle",
+              "value": "A flag is not a verdict. \u2014 Interactive video"
+            },
+            {
+              "name": "kIsPlatformAudioDecoder",
+              "value": "false"
+            },
+            {
+              "name": "kAudioDecoderName",
+              "value": "FFmpegAudioDecoder"
+            },
+            {
+              "name": "kVideoTracks",
+              "value": "[{\"alpha mode\":\"is_opaque\",\"codec\":\"vp9\",\"coded size\":\"1280x720\",\"color space\":{\"matrix\":\"UNSPECIFIED\",\"primaries\":\"UNSPECIFIED\",\"range\":\"LIMITED\",\"transfer\":\"UNSPECIFIED\"},\"encryption scheme\":\"Unencrypted\",\"has extra data\":false,\"hdr metadata\":{},\"natural size\":\"1280x720\",\"orientation\":\"0\u00b0\",\"profile\":\"vp9 profile0\",\"visible rect\":\"0,0 1280x720\"}]"
+            },
+            {
+              "name": "kIsRangeHeaderSupported",
+              "value": "false"
+            },
+            {
+              "name": "kIsVideoDecryptingDemuxerStream",
+              "value": "false"
+            },
+            {
+              "name": "kStartTime",
+              "value": "0.0"
+            },
+            {
+              "name": "kBitrate",
+              "value": "350540"
+            },
+            {
+              "name": "kIsPlatformVideoDecoder",
+              "value": "false"
+            },
+            {
+              "name": "kIsSingleOrigin",
+              "value": "true"
+            },
+            {
+              "name": "kIsAudioDecryptingDemuxerStream",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      {
+        "event": "playerMessagesLogged",
+        "data": {
+          "playerId": "02EAC092D7C4DA2CBD323449D4CAB456",
+          "messages": [
+            {
+              "level": "info",
+              "message": "FFmpegDemuxer: created video stream, config codec: vp9, profile: vp9 profile0, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: false, encryption scheme: Unencrypted, rotation: 0\u00b0, flipped: 0, color space: {primaries:INVALID, transfer:INVALID, matrix:INVALID, range:INVALID}"
+            },
+            {
+              "level": "info",
+              "message": "FFmpegDemuxer: created audio stream, config codec: opus, profile: unknown, bytes_per_channel: 2, channel_layout: MONO, channels: 1, samples_per_second: 48000, sample_format: Signed 16-bit, bytes_per_frame: 2, seek_preroll: 80000us, codec_delay: 312, has extra data: true, encryption scheme: Unencrypted, discard decoder delay: true, target_output_channel_layout: NONE, target_output_sample_format: Unknown sample format"
+            },
+            {
+              "level": "info",
+              "message": "Effective playback rate changed from 0 to 1"
+            },
+            {
+              "level": "info",
+              "message": "Selected FFmpegAudioDecoder for audio decoding, config: codec: opus, profile: unknown, bytes_per_channel: 2, channel_layout: MONO, channels: 1, samples_per_second: 48000, sample_format: Signed 16-bit, bytes_per_frame: 2, seek_preroll: 80000us, codec_delay: 312, has extra data: true, encryption scheme: Unencrypted, discard decoder delay: true, target_output_channel_layout: STEREO, target_output_sample_format: Unknown sample format"
+            },
+            {
+              "level": "info",
+              "message": "Cannot select DecryptingVideoDecoder for video decoding"
+            },
+            {
+              "level": "info",
+              "message": "Selected VpxVideoDecoder for video decoding, config: codec: vp9, profile: vp9 profile0, level: not available, alpha_mode: is_opaque, coded size: [1280,720], visible rect: [0,0,1280,720], natural size: [1280,720], has extra data: false, encryption scheme: Unencrypted, rotation: 0\u00b0, flipped: 0, color space: {primaries:INVALID, transfer:INVALID, matrix:INVALID, range:INVALID}"
+            }
+          ]
+        }
+      },
+      {
+        "event": "playerEventsAdded",
+        "data": {
+          "playerId": "02EAC092D7C4DA2CBD323449D4CAB456",
+          "events": [
+            {
+              "timestamp": 1299.856291,
+              "value": "{\"event\":\"kSeek\",\"seek_target\":57.875}"
+            }
+          ]
+        }
+      }
+    ],
+    "beforePlayArgv": [
+      "/ms-playwright/chromium_headless_shell-1208/chrome-linux/headless_shell",
+      "--no-zygote",
+      "--renderer-process-limit=1",
+      "--num-raster-threads=1",
+      "--disable-gpu",
+      "--disable-software-rasterizer",
+      "--disable-field-trial-config",
+      "--disable-background-networking",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-back-forward-cache",
+      "--disable-breakpad",
+      "--disable-client-side-phishing-detection",
+      "--disable-component-extensions-with-background-pages",
+      "--disable-component-update",
+      "--no-default-browser-check",
+      "--disable-default-apps",
+      "--disable-dev-shm-usage",
+      "--disable-extensions",
+      "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints",
+      "--allow-pre-commit-input",
+      "--disable-hang-monitor",
+      "--disable-ipc-flooding-protection",
+      "--disable-popup-blocking",
+      "--disable-prompt-on-repost",
+      "--disable-renderer-backgrounding",
+      "--force-color-profile=srgb",
+      "--metrics-recording-only",
+      "--no-first-run",
+      "--password-store=basic",
+      "--use-mock-keychain",
+      "--no-service-autorun",
+      "--export-tagged-pdf",
+      "--disable-search-engine-choice-screen",
+      "--unsafely-disable-devtools-self-xss-warnings",
+      "--edge-skip-compat-layer-relaunch",
+      "--enable-automation",
+      "--disable-infobars",
+      "--disable-search-engine-choice-screen",
+      "--disable-sync",
+      "--enable-unsafe-swiftshader",
+      "--headless",
+      "--hide-scrollbars",
+      "--mute-audio",
+      "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+      "--no-sandbox",
+      "--user-data-dir=/tmp/playwright_chromiumdev_profile-rQyk5p",
+      "--remote-debugging-pipe",
+      "--no-startup-window",
+      "--enable-features=CDPScreenshotNewSurface,BrowserThreadPoolAdjustment:min/2",
+      ""
+    ]
+  },
+  "argvComparison": {
+    "allOtherArgumentsSameInOrder": true,
+    "oneMergedFeatureValue": "CDPScreenshotNewSurface,BrowserThreadPoolAdjustment:min/2",
+    "variableProfilePathExcluded": true,
+    "matchedBaselineAllOtherArgumentsSameInOrder": true
+  },
+  "baseline-matched": {
+    "version": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/145.0.7632.0",
+      "revision": "@0bbdf2913883391365383b0a5dfe7bf9fd1a5213",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+      "jsVersion": "14.5.201.1"
+    },
+    "samples": [
+      {
+        "phase": "before-render-browser",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-render-browser-launch",
+        "pids": 43,
+        "events": "max 0",
+        "browserThreads": 22,
+        "browserForegroundComms": 8,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-lesson-model-checks",
+        "pids": 52,
+        "events": "max 0",
+        "browserThreads": 22,
+        "browserForegroundComms": 8,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-film-frames",
+        "pids": 55,
+        "events": "max 0",
+        "browserThreads": 22,
+        "browserForegroundComms": 8,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-static-formats",
+        "pids": 55,
+        "events": "max 0",
+        "browserThreads": 22,
+        "browserForegroundComms": 8,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-static-browser-close",
+        "pids": 7,
+        "events": "max 0",
+        "browserThreads": null,
+        "browserForegroundComms": null,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "before-video-navigation",
+        "pids": 58,
+        "events": "max 0",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "after-video-navigation",
+        "pids": 61,
+        "events": "max 0",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "before-play",
+        "pids": 61,
+        "events": "max 0",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 0",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "audio-startup-poll",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      },
+      {
+        "phase": "playback-failure",
+        "pids": 61,
+        "events": "max 3",
+        "browserThreads": 29,
+        "browserForegroundComms": 15,
+        "audioUtilityThreads": []
+      }
+    ],
+    "beforePlayArgv": [
+      "/ms-playwright/chromium_headless_shell-1208/chrome-linux/headless_shell",
+      "--no-zygote",
+      "--renderer-process-limit=1",
+      "--num-raster-threads=1",
+      "--disable-gpu",
+      "--disable-software-rasterizer",
+      "--disable-field-trial-config",
+      "--disable-background-networking",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-back-forward-cache",
+      "--disable-breakpad",
+      "--disable-client-side-phishing-detection",
+      "--disable-component-extensions-with-background-pages",
+      "--disable-component-update",
+      "--no-default-browser-check",
+      "--disable-default-apps",
+      "--disable-dev-shm-usage",
+      "--disable-extensions",
+      "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints",
+      "--enable-features=CDPScreenshotNewSurface",
+      "--allow-pre-commit-input",
+      "--disable-hang-monitor",
+      "--disable-ipc-flooding-protection",
+      "--disable-popup-blocking",
+      "--disable-prompt-on-repost",
+      "--disable-renderer-backgrounding",
+      "--force-color-profile=srgb",
+      "--metrics-recording-only",
+      "--no-first-run",
+      "--password-store=basic",
+      "--use-mock-keychain",
+      "--no-service-autorun",
+      "--export-tagged-pdf",
+      "--disable-search-engine-choice-screen",
+      "--unsafely-disable-devtools-self-xss-warnings",
+      "--edge-skip-compat-layer-relaunch",
+      "--enable-automation",
+      "--disable-infobars",
+      "--disable-search-engine-choice-screen",
+      "--disable-sync",
+      "--enable-unsafe-swiftshader",
+      "--headless",
+      "--hide-scrollbars",
+      "--mute-audio",
+      "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+      "--no-sandbox",
+      "--user-data-dir=/tmp/playwright_chromiumdev_profile-TlUILV",
+      "--remote-debugging-pipe",
+      "--no-startup-window",
+      ""
+    ]
+  },
+  "observerScriptSha256": {
+    "baseline-diagnostic": "32d7baa47bd4d4aa04a7c49d505ee804dfcee4b214b27df0abc78bfeffc12e42",
+    "baseline-matched": "32d7baa47bd4d4aa04a7c49d505ee804dfcee4b214b27df0abc78bfeffc12e42",
+    "pool-diagnostic": "32d7baa47bd4d4aa04a7c49d505ee804dfcee4b214b27df0abc78bfeffc12e42"
+  }
+}

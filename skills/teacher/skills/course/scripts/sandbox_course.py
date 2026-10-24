@@ -372,7 +372,7 @@ def _execute(course: Path, output: Path, image: str, *, mode: str,
         tools.mkdir()
         copy_tools(tools)
         (tools / 'supervisor.py').write_text(SUPERVISOR)
-        (tools / 'chromium').write_text('#!/bin/sh\nexec /ms-playwright/chromium_headless_shell-1208/chrome-linux/headless_shell --no-zygote --renderer-process-limit=1 --num-raster-threads=1 --disable-gpu --disable-software-rasterizer "$@"\n')
+        (tools / 'chromium').write_text('#!/bin/sh\nexec python3 /tools/course/scripts/chromium_wrapper.py "$@"\n')
         for path in staging.rglob('*'):
             path.chmod(0o500 if path.is_dir() else 0o400)
         (tools / 'chromium').chmod(0o500)
