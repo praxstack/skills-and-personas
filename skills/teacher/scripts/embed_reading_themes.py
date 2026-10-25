@@ -26,8 +26,19 @@ class _Head(HTMLParser):
         self.head = None
         self.html = None
         self.metadata_end = 0
+        self.first_content = None
+
+    def handle_data(self, data):
+        content = data.lstrip("\ufeff \t\r\n\f")
+        if self.first_content is None and content:
+            line, col = self.getpos()
+            self.first_content = (sum(map(len, self.lines[:line - 1])) + col
+                                  + len(data) - len(content))
 
     def handle_starttag(self, tag, attrs):
+        if self.first_content is None:
+            line, col = self.getpos()
+            self.first_content = sum(map(len, self.lines[:line - 1])) + col
         values = dict(attrs)
         if tag == "meta" and ("charset" in values or
                 values.get("http-equiv", "").lower() == "content-security-policy"):
@@ -72,7 +83,10 @@ def embed_reading_themes(document: str) -> str:
     if parser.head is not None:
         position = max(parser.head, parser.metadata_end)
         return document[:position] + block + document[position:]
-    position = max(parser.html or 0, parser.metadata_end)
+    # A headless document can omit both start tags while retaining its doctype.
+    # Insert after the leading prolog, before actual content, to preserve mode.
+    position = max(parser.html or 0, parser.metadata_end,
+                   parser.first_content if parser.first_content is not None else len(document))
     return document[:position] + "<head>" + block + "</head>" + document[position:]
 
 

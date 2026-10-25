@@ -44,6 +44,18 @@ class ReadingThemes(unittest.TestCase):
                 if 'window.engine' in html:
                     self.assertLess(out.index('id="reading-themes-script"'), out.index('window.engine'))
 
+    def test_headless_documents_preserve_doctype_and_prolog(self):
+        for prolog in ('<!doctype html>',
+                       '<!-- Before -->\n<!DOCTYPE html>\n<!-- After -->\n',
+                       '\ufeff<!doctype html>\n'):
+            for content in ('<title>T</title><p>Lesson</p>', 'Lesson', ''):
+                with self.subTest(prolog=prolog, content=content):
+                    out = module.embed_reading_themes(prolog + content)
+                    self.assertTrue(out.startswith(prolog + '<head>'))
+                    self.assertEqual(out.count(prolog), 1)
+                    self.assertEqual(module.embed_reading_themes(out), out)
+                    self.assertTrue(out.endswith('</head>' + content))
+
     def test_preserves_csp_charset_and_authored_content(self):
         metadata = '<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'">'
         body = '<script>const example="<head>";</script><svg><path d="M0 0L3 4"/></svg><img src="untrusted.svg"><video src="data:video/mp4,AAAA"></video>'

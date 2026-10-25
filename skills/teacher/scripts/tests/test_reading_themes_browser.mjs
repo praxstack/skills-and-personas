@@ -31,6 +31,15 @@ const build = async (name, source) => {
   const result = spawnSync(process.env.PYTHON || 'python3', [join(root, 'scripts/embed_reading_themes.py'), path, '-o', path], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 };
+const headless = [
+  '<!doctype html><title>T</title><p>Lesson</p>',
+  '<!-- Before -->\n<!DOCTYPE html>\n<!-- After -->\n<title>T</title><p>Lesson</p>',
+  '<!doctype html>Lesson'
+];
+for (const [i, source] of headless.entries()) {
+  await writeFile(join(folder, `headless-original-${i}.html`), source);
+  await build(`headless-embedded-${i}.html`, source);
+}
 await build('lesson.html', markup);
 await build('next.html', markup);
 await build('blocked.html', markup.replace('<meta charset="utf-8">', '<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'; style-src \'none\'">'));
@@ -50,6 +59,18 @@ const rgb = hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).
 try {
   browser = await launch((await loadPlaywright()).chromium);
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: 'light', reducedMotion: 'reduce' });
+  const modePage = await context.newPage();
+  for (const i of headless.keys()) {
+    const modes = [];
+    for (const variant of ['original', 'embedded']) {
+      await modePage.goto(pathToFileURL(join(folder, `headless-${variant}-${i}.html`)).href);
+      modes.push(await modePage.evaluate(() => ({ mode: document.compatMode, doctype: document.doctype?.name ?? null })));
+      if (variant === 'embedded') assert.equal(await modePage.evaluate(() => window.__readingThemes.current), null);
+    }
+    assert.deepEqual(modes, [{ mode: 'CSS1Compat', doctype: 'html' }, { mode: 'CSS1Compat', doctype: 'html' }]);
+  }
+  await modePage.close();
+  results.push('Omitted html/head tags preserve the prolog, actual doctype and CSS1Compat');
   await context.addInitScript(() => {
     window.themeStorageCalls = [];
     for (const method of ['getItem', 'setItem', 'removeItem', 'clear']) {
