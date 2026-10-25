@@ -6,11 +6,12 @@ The picker offers five dark palettes, Graphite, Slate, Forest, Mocha and Indigo,
 
 ## Executed checks
 
-The capability and fixtures were checked at source commits `69a471b` and the standards-mode correction `65637d2`. Existing test sources and release gates were preserved.
+The capability and fixtures were checked at source commits `69a471b` the standards-mode correction `65637d2`, and export-panel fix `6bfc2c2`. Existing test sources and release gates were preserved.
 
-- Seven Python tests passed, covering injection, byte-idempotence, in-place output, document/CSP/charset preservation, palette structure, token coverage and nine prolog/doctype cases.
+- Eight Python tests passed, covering injection, byte-idempotence, in-place output, document/CSP/charset preservation, palette structure, token coverage and nine prolog/doctype cases.
 - Real Chromium checked all ten palettes under both device color schemes, direct offline files, reload, URL/query/hash preservation, local and dynamic link propagation, inline SVG colors with unchanged path geometry, typography, native radio arrows, modal focus containment, Escape/Done focus return, reduced motion and 390px layout. Existing CSP blocking remained effective.
 - Measured minimum text contrast was 7.465:1 against page and panel colors. Border contrast was at least 3.275:1; semantic diagram colors against their soft fills were at least 4.829:1. Initial palette values did not need adjustment.
+- The actual unchanged HTML video export template reproduced a 1.010:1 light-system note-panel contrast when `--wash` was missing. The mapper includes that token; note, caption and selected-chapter panels then passed across all ten palettes and both device schemes, with a minimum measured contrast of 10.936:1. Light print/reset checks also passed.
 - All ten desktop views and a phone view were inspected. Representative captures are below.
 - Existing Teacher core tests passed, 74 tests with two optional site-fixture skips in the provisioned runtime. The unchanged distribution verifier matched all 759 embedded compatibility files. These checks do not hash or certify the entire new wrapper; release source manifests bind those bytes separately.
 
