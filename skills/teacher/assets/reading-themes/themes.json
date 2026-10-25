@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "palettes": [
+    {"id":"graphite","name":"Graphite","group":"Dark","bg":"#202328","panel":"#292d33","ink":"#eef0ee","muted":"#bdc5cd","accent":"#9ecbff","border":"#74818f"},
+    {"id":"slate","name":"Slate","group":"Dark","bg":"#1d2834","panel":"#263340","ink":"#edf1f5","muted":"#b8c7d6","accent":"#9cccf4","border":"#70869c"},
+    {"id":"forest","name":"Forest","group":"Dark","bg":"#1e2b25","panel":"#28372f","ink":"#edf1e8","muted":"#becdc0","accent":"#a9d3ed","border":"#74877b"},
+    {"id":"mocha","name":"Mocha","group":"Dark","bg":"#2b2421","panel":"#372e29","ink":"#f4ede3","muted":"#d3c1b2","accent":"#c2d3f3","border":"#938173"},
+    {"id":"indigo","name":"Indigo","group":"Dark","bg":"#242539","panel":"#2f3047","ink":"#eeedf5","muted":"#c5c3db","accent":"#b9ccff","border":"#8383a2"},
+    {"id":"midnight","name":"Midnight","group":"Night","bg":"#0e1219","panel":"#161c26","ink":"#d5dde6","muted":"#a6b3c4","accent":"#99bbdf","border":"#627186"},
+    {"id":"amber","name":"Amber","group":"Night","bg":"#17130d","panel":"#221d14","ink":"#e5d4b7","muted":"#c5b192","accent":"#debf88","border":"#8a785d"},
+    {"id":"ember","name":"Ember","group":"Night","bg":"#1b1111","panel":"#291b1a","ink":"#e8cebf","muted":"#c9aaa2","accent":"#d9b8a0","border":"#8d706a"},
+    {"id":"moss","name":"Moss","group":"Night","bg":"#101811","panel":"#19231b","ink":"#d6dfcb","muted":"#afc0a8","accent":"#b9cea6","border":"#6e826b"},
+    {"id":"plum","name":"Plum","group":"Night","bg":"#17121d","panel":"#221c2b","ink":"#ded3e4","muted":"#bfb0ca","accent":"#c7b7df","border":"#806f8b"}
+  ]
+}

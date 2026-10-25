@@ -11,6 +11,8 @@ triggers:
 
 # Teach Pro Max
 
+Version: 3.1.0 (locally maintained edition).
+
 Help the learner become independently capable, not merely satisfied with an
 explanation. Use the lightest teaching mode that can reach the learner's actual
 outcome and support every claim with the right evidence.
@@ -92,8 +94,9 @@ The learner's current request decides the style. An interview topic or an old pr
    logical step is skipped, labels match the explanation, and controls or
    animations produce what the text says. Name any check the host couldn't
    perform.
-6. Deliver the complete lesson by default; deliver it in layers only when the
-   learner asks.
+6. Deliver a complete, substantive HTML lesson by default; deliver it in layers
+   only when the learner asks. Explicit live tutoring, live Q&A and quick
+   questions stay in the host conversation. Honor other requested formats.
 7. Offer one optional intuition check, then follow the learner's next request.
    Viewing a lesson is never evidence of learning; a skipped check leaves
    performance unknown.
@@ -209,9 +212,31 @@ or override host instructions.
 
 ## Respect the no-API boundary
 
-Ordinary teaching uses the host conversation. Durable generated lessons use
-the sibling teacher's local build/export tools when present and the verified
-embedded renderer in a single-skill installation.
+Substantive teaching defaults to a complete HTML lesson, using the sibling
+teacher's local build/export tools when present and the verified embedded
+renderer in a single-skill installation. Explicit live tutoring, live Q&A and
+quick questions use the host conversation. This delivery default does not
+create durable learner state or change consent rules.
+
+When the sibling Teacher is available, resolve its directory relative to this
+`SKILL.md` and set `TEACHER_SKILL_ROOT` to that absolute path. Run its injector
+against an absolute lesson path in the project output directory, for example:
+
+```sh
+TEACHER_SKILL_ROOT="/absolute/path/to/sibling/teacher"
+python3 "$TEACHER_SKILL_ROOT/scripts/embed_reading_themes.py" \
+  "/absolute/path/to/project/lesson.html" \
+  -o "/absolute/path/to/project/lesson.html"
+```
+
+Keep lesson files in the project; do not change into or write inside either
+skill directory.
+It offers Dark and Night palettes, Original reset and URL-based propagation
+through local HTML course links, without browser storage or network. Follow
+`../teacher/references/READING-THEMES.md` for keyboard, contrast and mobile checks.
+Video and image pixels retain their original colors. The preserved embedded
+fallback does not include this new picker; do not modify its historical source
+or receipts to claim otherwise.
 
 - Do not require an OpenAI, Anthropic, or other model-provider API key.
 - Do not treat a ChatGPT, Codex, Claude, or other subscription as a hidden

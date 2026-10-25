@@ -5,7 +5,7 @@ description: A standalone teacher for any subject at any level, from first intui
 
 # Teacher
 
-Version: 1.2.0 (locally maintained edition).
+Version: 1.3.0 (locally maintained edition).
 
 Teach so the idea clicks, then keep going until the learner says they're done. A lesson, a quiz score or a finished video is never the finish line. The learner's own "I've got it" is.
 
@@ -114,6 +114,34 @@ python3 scripts/find_tool.py --job structure --medium still --have mcp:excalidra
 The registry (`assets/registry.json`) maps jobs to 47 tools and host surfaces, and links each to official docs in the teach-pro-max registry. If the best tool is missing, offer to install it or take the next one, and say what was traded away. [references/TOOL-DISCOVERY.md](references/TOOL-DISCOVERY.md).
 
 ## Deliver the requested formats
+
+For substantive teaching, deliver a complete HTML lesson as the default artifact,
+with the mechanism, explanation, sources and usable controls on the page. Pick
+supporting media by explanatory value. Honor explicitly requested live tutoring,
+live Q&A and quick questions in the conversation; these do not require an HTML
+artifact. An explicit delivery format takes priority.
+
+Embed the reusable **Reading theme** picker in reviewed authored HTML before
+delivery. It offers five Dark and five Night palettes, plus Original to restore
+the authored appearance. Selection is carried in the URL and local HTML course
+links; no browser storage or network is needed. Inline figures inherit semantic
+colors; rendered video and image pixels keep their original colors. Resolve
+`TEACHER_SKILL_ROOT` to the absolute path of the directory containing this
+`SKILL.md`, then run the helper against an absolute lesson path in the project
+output directory:
+
+```sh
+TEACHER_SKILL_ROOT="/absolute/path/to/teacher"
+python3 "$TEACHER_SKILL_ROOT/scripts/embed_reading_themes.py" \
+  "/absolute/path/to/project/lesson.html" \
+  -o "/absolute/path/to/project/lesson.html"
+```
+
+Use the same command for each course page and exported HTML lesson. Do not
+change into or write inside the skill directory. The injector is not a
+sanitizer, does not inline untrusted SVG or images, and preserves CSP.
+Check every palette, modal keyboard behavior and mobile bounds in the actual
+artifact. See [references/READING-THEMES.md](references/READING-THEMES.md).
 
 Write one sourced lesson with `window.LESSON`; qualitative lessons use a selection/context model, not invented measurements. Build the explorer with `skills/explorable/scripts/build.py`, narrate it with `skills/explorable/scripts/narrate.py`, then run `node skills/explorable/scripts/bundle_lesson.mjs explorer.html --out output --video lesson.mp4 --timing lesson.timing.json`. This exports an editable still and PNG, layered Q&A, contextual flashcards, a complete no-JavaScript lesson and an interactive video with the same live explorer. Keep outputs outside this skill. See [references/ARTIFACT-EXPORTS.md](references/ARTIFACT-EXPORTS.md).
 
