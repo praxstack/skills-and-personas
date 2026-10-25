@@ -96,8 +96,8 @@ def main() -> int:
     parser.add_argument("input", type=Path)
     parser.add_argument("-o", "--output", required=True, type=Path)
     args = parser.parse_args()
-    result = embed_reading_themes(args.input.read_text(encoding="utf-8"))
-    args.output.write_text(result, encoding="utf-8")
+    result = embed_reading_themes(args.input.read_bytes().decode("utf-8"))
+    args.output.write_bytes(result.encode("utf-8"))
     return 0
 
 

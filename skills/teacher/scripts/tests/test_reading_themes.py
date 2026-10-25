@@ -96,6 +96,29 @@ class ReadingThemes(unittest.TestCase):
             subprocess.run([sys.executable, str(SCRIPT), str(page), '-o', str(page)], check=True)
             self.assertEqual(page.read_bytes(), first)
 
+    def test_cli_preserves_authored_newline_bytes(self):
+        documents = (
+            '<!doctype html>\r\n<html><head><title>π</title></head>\r\n<body>café</body></html>\r\n'.encode('utf-8'),
+            '<!doctype html>\r<html><head><title>π</title></head>\r<body>café</body></html>\r'.encode('utf-8'),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for index, original in enumerate(documents):
+                for in_place in (False, True):
+                    with self.subTest(index=index, in_place=in_place):
+                        source = root / f'lesson-{index}-{in_place}.html'
+                        output = source if in_place else root / f'output-{index}.html'
+                        source.write_bytes(original)
+                        command = [sys.executable, str(SCRIPT), str(source), '-o', str(output)]
+                        subprocess.run(command, check=True, capture_output=True, text=True)
+                        injected = output.read_bytes()
+                        stripped = re.sub(rb'<!-- reading-themes:start -->.*?<!-- reading-themes:end -->',
+                                           b'', injected, flags=re.S)
+                        self.assertEqual(stripped, original)
+                        subprocess.run([sys.executable, str(SCRIPT), str(output), '-o', str(output)],
+                                       check=True, capture_output=True, text=True)
+                        self.assertEqual(output.read_bytes(), injected)
+
     def test_palette_shape_and_names(self):
         expected = ['graphite', 'slate', 'forest', 'mocha', 'indigo', 'midnight', 'amber', 'ember', 'moss', 'plum']
         self.assertEqual([p['id'] for p in DATA['palettes']], expected)
