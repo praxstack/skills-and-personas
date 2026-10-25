@@ -33,7 +33,7 @@
   --hl-blend: normal !important;
 }
 :root[data-reading-theme] body { background-color: var(--paper); color: var(--ink); }
-:root[data-reading-theme] a { color: var(--accent); }
+:root[data-reading-theme] a:not(.nb-btn-primary) { color: var(--accent); }
 /* Hide only the notebook's known Board button while a custom theme owns color. */
 :root[data-reading-theme] [title="Switch between paper, chalkboard, and following your theme"] { display: none !important; }
 .rt-launch, .rt-dialog {

@@ -15,6 +15,7 @@ const folder = await mkdtemp(join(tmpdir(), 'reading-themes-'));
 const screenshots = process.argv[2] ? resolve(process.argv[2]) : null;
 const palettes = JSON.parse(await readFile(join(root, 'assets/reading-themes/themes.json'), 'utf8')).palettes;
 const notebook = (await readFile(join(root, 'skills/lesson-notebook/assets/notebook.css'), 'utf8')).replace(/@font-face\s*\{[^}]*\}/g, '');
+const courseCSS = await readFile(join(root, 'skills/course/assets/engine/course.css'), 'utf8');
 const boardTitle = 'Switch between paper, chalkboard, and following your theme';
 const markup = `<!doctype html><html><head><meta charset="utf-8"><title>Theme fixture</title>
 <script>window.beforeEngine={theme:document.documentElement.dataset.readingTheme,paper:getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()}</script>
@@ -26,10 +27,12 @@ const markup = `<!doctype html><html><head><meta charset="utf-8"><title>Theme fi
 <button title="${boardTitle}">Board: chalk</button><button title="Board">Unrelated board control</button>
 <a id="local" href="next.html?lesson=2#proof">Next lesson</a><a id="external" href="https://example.org/source.html?source=1#fact">Source</a><a id="fragment" href="#proof">In-page</a><a id="media" href="data:video/mp4,AAAA">Media data</a><a id="download" download href="notes.html?keep=1">Download</a>
 </main></body></html>`;
-const build = async (name, source) => {
+const build = async (name, source, direct = false) => {
   const path = join(folder, name);
   await writeFile(path, source);
-  const result = spawnSync(process.env.PYTHON || 'python3', [join(root, 'scripts/embed_reading_themes.py'), path, '-o', path], { encoding: 'utf8' });
+  const directScript = 'import importlib.util,sys; from pathlib import Path; s=importlib.util.spec_from_file_location("themes",sys.argv[1]); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); p=Path(sys.argv[2]); p.write_bytes(m.embed_reading_themes(p.read_bytes().decode("utf-8")).encode("utf-8"))';
+  const args = direct ? ['-c', directScript, join(root, 'scripts/embed_reading_themes.py'), path] : [join(root, 'scripts/embed_reading_themes.py'), path, '-o', path];
+  const result = spawnSync(process.env.PYTHON || 'python3', args, { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
 };
 const headless = [
@@ -48,6 +51,18 @@ await build('export.html', exportedVideo);
 await build('lesson.html', markup);
 await build('next.html', markup);
 await build('blocked.html', markup.replace('<meta charset="utf-8">', '<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'; style-src \'none\'">'));
+await build('primary.html', `<!doctype html><html><head><meta charset="utf-8"><style>${notebook}\n${courseCSS}</style></head><body><main><div class="cs-actions"><a id="primary" class="nb-btn nb-btn-primary" href="next.html">Teach me (interactive)</a></div></main></body></html>`);
+await build('svg-authored.html', '<!doctype html><html><head><meta charset="utf-8"></head><body><svg><a id="svg-course" href="next.html?keep=1#svg"><text x="10" y="30">Next</text></a></svg></body></html>');
+await build('svg-dynamic.html', '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>');
+const separatorFixtures = [];
+for (const [i, separator] of ['\r','\v','\f','\x1c','\x1d','\x1e','\x85','\u2028','\u2029'].entries()) {
+  for (const blocked of [false, true]) {
+    const policy = blocked ? "default-src 'none'; script-src 'none'; style-src 'none'" : "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'";
+    const name = `separator-${i}-${blocked}.html`;
+    await build(name, `<!doctype html><!-- α${separator}β -->\n<html><head><!-- γ${separator}δ -->\n<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policy}"></head><body><p id="copy">Lesson π</p></body></html>`, true);
+    separatorFixtures.push({ name, blocked, separator: JSON.stringify(separator), policy });
+  }
+}
 const requests = [];
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
@@ -91,6 +106,89 @@ try {
     Object.defineProperty(document, 'cookie', { get() { window.themeStorageCalls.push('cookie:get'); return cookie.get.call(this); }, set(value) { window.themeStorageCalls.push('cookie:set'); return cookie.set.call(this, value); } });
   });
   await context.route('https://**/*', route => { throw Error(`Unexpected external request: ${route.request().url()}`); });
+  const round2Failures = [];
+  const round2Evidence = { svg: [], primaryMinimum: Infinity, separators: [] };
+  // Bounded watchdog: suppress after 20 SVG href writes so a regression cannot
+  // trap Chromium in an unbounded observer microtask loop.
+  const svgContext = await browser.newContext();
+  await svgContext.addInitScript(() => {
+    window.svgWrites = { count: 0, tripped: false };
+    const original = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function (name, value) {
+      if (this instanceof SVGAElement && name === 'href') {
+        window.svgWrites.count++;
+        if (window.svgWrites.count > 20) { window.svgWrites.tripped = true; return; }
+      }
+      return original.call(this, name, value);
+    };
+  });
+  for (const variant of ['authored', 'dynamic']) {
+    const svgPage = await svgContext.newPage();
+    await svgPage.goto(pathToFileURL(join(folder, `svg-${variant}.html`)).href);
+    const observed = await svgPage.evaluate(async variant => {
+      if (variant === 'dynamic') {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        const a = document.createElementNS(svg.namespaceURI, 'a'); a.id='svg-course';
+        a.setAttribute('href', 'next.html?keep=1#svg'); svg.append(a); document.body.append(svg);
+      }
+      window.__readingThemes.apply('graphite');
+      await new Promise(resolve => setTimeout(resolve, 20));
+      const settled = window.svgWrites.count;
+      window.__readingThemes.apply('graphite');
+      await new Promise(resolve => setTimeout(resolve, 20));
+      const a = document.getElementById('svg-course');
+      return { variant, ...window.svgWrites, settled, hrefType: Object.prototype.toString.call(a.href), href: a.getAttribute('href') };
+    }, variant);
+    round2Evidence.svg.push(observed);
+    if (observed.tripped || observed.count !== observed.settled || observed.count > 3) round2Failures.push({ finding:'SVG observer loop', ...observed });
+    else {
+      assert.equal(observed.hrefType, '[object SVGAnimatedString]');
+      const href = new URL(observed.href); assert.equal(href.searchParams.get('theme'), 'graphite'); assert.equal(href.searchParams.get('keep'), '1'); assert.equal(href.hash, '#svg');
+      await svgPage.getByRole('button', {name:'Reading theme: Graphite'}).click();
+      await svgPage.getByRole('button', {name:'Done', exact:true}).click();
+      assert.equal(await svgPage.evaluate(() => document.activeElement.classList.contains('rt-launch')), true);
+      await svgPage.evaluate(() => window.__readingThemes.apply(null));
+      assert.equal(new URL(await svgPage.locator('#svg-course').getAttribute('href')).searchParams.has('theme'), false);
+      const resetWrites = await svgPage.evaluate(async () => { await new Promise(resolve => setTimeout(resolve, 20)); return window.svgWrites; });
+      assert.equal(resetWrites.tripped, false); assert.equal(resetWrites.count, observed.count + 1);
+    }
+    await svgPage.close();
+  }
+  await svgContext.close();
+  const primaryPage = await context.newPage();
+  await primaryPage.goto(pathToFileURL(join(folder, 'primary.html')).href);
+  const primary = primaryPage.locator('#primary');
+  for (const scheme of ['light', 'dark']) {
+    await primaryPage.emulateMedia({colorScheme:scheme});
+    for (const palette of palettes) {
+      await primaryPage.evaluate(id => window.__readingThemes.apply(id), palette.id);
+      for (const state of ['normal', 'hover', 'focus']) {
+        await primaryPage.mouse.move(0, 0); await primary.evaluate(node => node.blur());
+        if (state === 'hover') await primary.hover();
+        if (state === 'focus') {
+          await primaryPage.keyboard.press('Tab'); await primary.focus();
+          assert.equal(await primary.evaluate(node => node.matches(':focus-visible')), true);
+          assert.ok(await primary.evaluate(node => parseFloat(getComputedStyle(node).outlineWidth) >= 3));
+        }
+        const colors = await primary.evaluate(node => { const s=getComputedStyle(node); return {foreground:s.color, background:s.backgroundColor}; });
+        const ratio = contrast(colors.foreground, colors.background);
+        round2Evidence.primaryMinimum = Math.min(round2Evidence.primaryMinimum, ratio);
+        if (ratio < 7) round2Failures.push({finding:'Course primary link contrast', scheme, palette:palette.id, state, ...colors, contrast:ratio});
+      }
+    }
+  }
+  await primaryPage.close();
+  const separatorPage = await context.newPage();
+  for (const fixture of separatorFixtures) {
+    await separatorPage.goto(pathToFileURL(join(folder, fixture.name)).href);
+    const observed = await separatorPage.evaluate(() => ({mode:document.compatMode,doctype:document.doctype?.name,copy:document.getElementById('copy')?.textContent,api:typeof window.__readingThemes,policy:document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content}));
+    if (observed.mode !== 'CSS1Compat' || observed.doctype !== 'html' || observed.copy !== 'Lesson π' || observed.api !== (fixture.blocked ? 'undefined' : 'object') || observed.policy !== fixture.policy) round2Failures.push({finding:'LF offset/CSP preservation', ...fixture, ...observed});
+    round2Evidence.separators.push({...fixture,...observed});
+  }
+  await separatorPage.close();
+  console.log(JSON.stringify({round2Evidence:{svg:round2Evidence.svg, primaryMinimum:round2Evidence.primaryMinimum, separatorFixtures:round2Evidence.separators.length}, round2Failures}, null, 2));
+  assert.deepEqual(round2Failures, []);
+  results.push('Authored/dynamic SVG anchors settle with responsive controls; actual notebook/course primary links >=7:1 in normal/hover/focus; Unicode/control/CR separator CSP and standards mode preserved');
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));

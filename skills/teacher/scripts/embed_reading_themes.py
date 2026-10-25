@@ -22,7 +22,8 @@ BLOCK = re.compile(re.escape(START) + r".*?" + re.escape(END), re.S)
 class _Head(HTMLParser):
     def __init__(self, document: str):
         super().__init__(convert_charrefs=False)
-        self.lines = document.splitlines(keepends=True)
+        # HTMLParser.getpos() advances lines only at LF, not Unicode separators.
+        self.line_offsets = [0] + [i + 1 for i, char in enumerate(document) if char == "\n"]
         self.head = None
         self.html = None
         self.metadata_end = 0
@@ -32,22 +33,22 @@ class _Head(HTMLParser):
         content = data.lstrip("\ufeff \t\r\n\f")
         if self.first_content is None and content:
             line, col = self.getpos()
-            self.first_content = (sum(map(len, self.lines[:line - 1])) + col
+            self.first_content = (self.line_offsets[line - 1] + col
                                   + len(data) - len(content))
 
     def handle_starttag(self, tag, attrs):
         if self.first_content is None:
             line, col = self.getpos()
-            self.first_content = sum(map(len, self.lines[:line - 1])) + col
+            self.first_content = self.line_offsets[line - 1] + col
         values = dict(attrs)
         if tag == "meta" and ("charset" in values or
                 values.get("http-equiv", "").lower() == "content-security-policy"):
             line, col = self.getpos()
             self.metadata_end = max(self.metadata_end,
-                sum(map(len, self.lines[:line - 1])) + col + len(self.get_starttag_text()))
+                self.line_offsets[line - 1] + col + len(self.get_starttag_text()))
         if tag in ("head", "html") and getattr(self, tag) is None:
             line, col = self.getpos()
-            setattr(self, tag, sum(map(len, self.lines[:line - 1])) + col + len(self.get_starttag_text()))
+            setattr(self, tag, self.line_offsets[line - 1] + col + len(self.get_starttag_text()))
 
 
 def _palette_css(palettes: list[dict]) -> str:

@@ -26,7 +26,7 @@
     if (current) url.searchParams.set("theme", current);
     else url.searchParams.delete("theme");
     // Absolute URLs also work when the authored page uses a <base> element.
-    if (anchor.href !== url.href) anchor.setAttribute("href", url.href);
+    if (anchor.getAttribute("href") !== url.href) anchor.setAttribute("href", url.href);
   };
   const updateLinks = () => document.querySelectorAll("a[href]").forEach(updateLink);
   const apply = (id, { updateURL = true } = {}) => {

@@ -68,13 +68,30 @@ class ReadingThemes(unittest.TestCase):
         self.assertNotIn('unsafe-inline', out)
         self.assertEqual(module.embed_reading_themes(out), out)
 
+    def test_parser_offsets_follow_lf_only_with_comment_separators(self):
+        policy = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'">'
+        for separator in ('\r', '\v', '\f', '\x1c', '\x1d', '\x1e', '\x85', '\u2028', '\u2029'):
+            for headless in (False, True):
+                with self.subTest(separator=repr(separator), headless=headless):
+                    prolog = '<!doctype html><!-- α' + separator + 'β -->\n'
+                    html = (prolog + ('<html><head>' if not headless else '')
+                            + '<!-- γ' + separator + 'δ -->\n' + policy
+                            + ('</head><body>' if not headless else '') + '<p>Lesson π</p>')
+                    out = module.embed_reading_themes(html)
+                    expected = html.index(policy) + len(policy)
+                    self.assertTrue(out.startswith(html[:expected] + ('' if not headless else '<head>') + module.START))
+                    self.assertLess(out.index(policy), out.index(module.START))
+                    self.assertEqual(module.embed_reading_themes(out), out)
+                    if not headless:
+                        self.assertEqual(module.BLOCK.sub('', out), html)
+
     def test_cli_can_replace_input_in_place(self):
         with tempfile.TemporaryDirectory() as tmp:
             page = Path(tmp) / 'lesson.html'
-            page.write_text('<html><head></head><body>π</body></html>')
+            page.write_text('<html><head></head><body>π</body></html>', encoding='utf-8')
             result = subprocess.run([sys.executable, str(SCRIPT), str(page), '-o', str(page)], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn('π', page.read_text())
+            self.assertIn('π', page.read_text(encoding='utf-8'))
             first = page.read_bytes()
             subprocess.run([sys.executable, str(SCRIPT), str(page), '-o', str(page)], check=True)
             self.assertEqual(page.read_bytes(), first)
