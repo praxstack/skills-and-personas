@@ -4,6 +4,8 @@ Install both entries for the full current visual teaching engine:
 
 ```bash
 npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
+# Equivalent source mirror:
+npx skills add praxstack/skills --skill teacher teach-pro-max
 ```
 
 Teacher is the standalone implementation with 22 bundled modules. Teach Pro Max is the user entry and tutoring contract; it reads the sibling Teacher implementation when present. Ask the agent to use either installed entry for a complete visual explanation, with practice when requested.
