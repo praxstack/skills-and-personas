@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { loadPlaywright, launch } from '../../skills/visual-qa/scripts/pw.mjs';
+import { videoLesson } from '../../skills/explorable/scripts/bundle_templates.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const folder = await mkdtemp(join(tmpdir(), 'reading-themes-'));
@@ -40,6 +41,10 @@ for (const [i, source] of headless.entries()) {
   await writeFile(join(folder, `headless-original-${i}.html`), source);
   await build(`headless-embedded-${i}.html`, source);
 }
+const exportedVideo = videoLesson({title:'Exported reading surfaces',subtitle:'Actual export-template contrast fixture',sources:[],video:{captions:'WEBVTT\n\n1\n00:00:00.000 --> 00:00:01.000\nA readable caption.\n',scenes:[{start:0,dur:1,chapter:'Boundary',say:'A readable caption.',step:0,params:{}}]}});
+await writeFile(join(folder, 'export-original.html'), exportedVideo);
+await writeFile(join(folder, 'explorer.html'), '<!doctype html><title>Local fixture explorer</title>');
+await build('export.html', exportedVideo);
 await build('lesson.html', markup);
 await build('next.html', markup);
 await build('blocked.html', markup.replace('<meta charset="utf-8">', '<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'; style-src \'none\'">'));
@@ -55,6 +60,11 @@ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
 const results = [];
+const contrast = (foreground, background) => {
+  const luminance = color => color.match(/[\d.]+/g).slice(0, 3).map(Number).map(c => c / 255).map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4).reduce((sum, c, i) => sum + c * [.2126, .7152, .0722][i], 0);
+  const [low, high] = [luminance(foreground), luminance(background)].sort((a, b) => a - b);
+  return (high + .05) / (low + .05);
+};
 const rgb = hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`;
 try {
   browser = await launch((await loadPlaywright()).chromium);
@@ -95,6 +105,44 @@ try {
   assert.equal(await page.evaluate(() => Object.isFrozen(window.__readingThemes) && Object.isFrozen(window.__readingThemes.palettes) && window.__readingThemes.palettes.every(Object.isFrozen)), true);
   assert.equal(await page.evaluate(() => { try { window.__readingThemes.apply('invalid'); return false; } catch (e) { return e instanceof RangeError; } }), true);
   results.push('Original default, read-only API, zero storage/cookies');
+  const exportPage = await context.newPage();
+  await exportPage.goto(pathToFileURL(join(folder, 'export-original.html')).href);
+  assert.equal(await exportPage.evaluate(() => getComputedStyle(document.querySelector('.note')).backgroundColor), rgb('#edf2ec'));
+  await exportPage.goto(pathToFileURL(join(folder, 'export.html')).href);
+  let exportMin = Infinity;
+  const exportSurfaces = async () => exportPage.evaluate(() => ['.note', '#readable-captions', '.chapters button[aria-current="true"]'].map(selector => {
+    const node = document.querySelector(selector), style = getComputedStyle(node);
+    return { selector, foreground: style.color, background: style.backgroundColor };
+  }));
+  for (const scheme of ['light', 'dark']) {
+    await exportPage.emulateMedia({ colorScheme: scheme });
+    for (const palette of palettes) {
+      await exportPage.evaluate(id => window.__readingThemes.apply(id), palette.id);
+      const surfaces = await exportSurfaces();
+      for (const surface of surfaces) {
+        const ratio = contrast(surface.foreground, surface.background);
+        exportMin = Math.min(exportMin, ratio);
+        assert.ok(ratio >= 4.5, JSON.stringify({template:'videoLesson',scheme,palette:palette.id,...surface,contrast:ratio}));
+        assert.equal(surface.background, rgb(palette.panel));
+      }
+    }
+  }
+  await exportPage.evaluate(() => window.__readingThemes.apply('graphite'));
+  await exportPage.emulateMedia({ media: 'print', colorScheme: 'light' });
+  for (const surface of await exportSurfaces()) {
+    assert.equal(surface.background, rgb('#f3f4f5'));
+    assert.ok(contrast(surface.foreground, surface.background) >= 4.5, JSON.stringify(surface));
+  }
+  await exportPage.emulateMedia({ media: 'screen' });
+  await exportPage.evaluate(() => { document.getElementById('readable-captions').textContent='A readable caption.'; });
+  if (screenshots) {
+    await mkdir(screenshots, { recursive: true });
+    await exportPage.screenshot({ path: join(screenshots, 'actual-export-graphite.png'), fullPage: true });
+  }
+  await exportPage.evaluate(() => window.__readingThemes.apply(null));
+  for (const surface of await exportSurfaces()) assert.equal(surface.background, rgb('#edf2ec'));
+  await exportPage.close();
+  results.push(`Actual videoLesson export note/captions/current chapter: all palettes/device schemes and print, minimum contrast ${exportMin.toFixed(3)}:1`);
 
   const launcher = page.getByRole('button', { name: 'Reading theme: Original', exact: true });
   await launcher.click();

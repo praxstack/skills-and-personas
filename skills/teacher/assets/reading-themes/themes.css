@@ -5,6 +5,7 @@
   --paper: var(--rt-bg) !important;
   --paper-2: var(--rt-panel) !important;
   --card: var(--rt-panel) !important;
+  --wash: var(--rt-panel) !important;
   --ink: var(--rt-ink) !important;
   --ink-2: var(--rt-muted) !important;
   --muted: var(--rt-muted) !important;

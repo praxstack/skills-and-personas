@@ -53,10 +53,12 @@ control/figure borders reach 3:1. Semantic blue, coral red and green retain thei
 meaning independently of the link accent. Night blue is `#adc7e6`. Model colors
 are therefore still distinguishable on Amber and other warm palettes.
 
-The mapper covers notebook/course paper, panel, card, ink, muted, graphite,
+The mapper covers notebook/course paper, panel, card, wash, ink, muted, graphite,
 rules/line, accent, semantic colors and soft fills, on-blue text, focus,
-highlight, grid, margin, shadow and stroke-grain tokens. Inline SVG using these
-tokens inherits them without changing paths, coordinates, labels or geometry.
+highlight, grid, margin, shadow and stroke-grain tokens. Exported note, readable
+caption and current-chapter surfaces use the mapped wash, including light print
+colors. Inline SVG using these tokens inherits them without changing paths,
+coordinates, labels or geometry.
 Grid/margin decoration and chalk grain become transparent/disabled. Rendered
 video, canvas, raster and externally loaded image pixels keep their original
 colors; the picker states this limit. Hard-coded authored colors must be

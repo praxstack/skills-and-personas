@@ -2,6 +2,7 @@
 """Standard-library checks for portable authored-HTML theme injection."""
 import importlib.util
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -106,6 +107,22 @@ class ReadingThemes(unittest.TestCase):
             self.assertGreaterEqual(contrast(p['bg'], blue), 4.5, (p['id'], 'on-blue'))
         print('\nMeasured contrast minima:', {k: round(v, 3) for k, v in minima.items()})
 
+    def test_actual_export_color_tokens_are_all_mapped(self):
+        template = ROOT / 'skills/explorable/scripts/bundle_templates.mjs'
+        js = r"""
+const {css,videoLesson}=await import(process.argv[1]);
+const data={title:'Export contrast',subtitle:'Reading surfaces',sources:[],video:{captions:'WEBVTT\n\n',scenes:[{start:0,dur:1,chapter:'Boundary',say:'A caption',step:0,params:{}}]}};
+console.log(JSON.stringify({html:videoLesson(data),tokens:[...new Set([...css.matchAll(/--([a-z0-9-]+):/g)].map(m=>m[1]))]}));
+"""
+        run = subprocess.run(['node', '--input-type=module', '-e', js, template.as_uri()], capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        exported = json.loads(run.stdout)
+        output = module.embed_reading_themes(exported['html'])
+        self.assertEqual(module.BLOCK.sub('', output), exported['html'])
+        theme_style = re.search(r'<style id="reading-themes-style">(.*?)</style>', output, re.S).group(1)
+        mapped = set(re.findall(r'--([a-z0-9-]+):', theme_style))
+        self.assertTrue(set(exported['tokens']) <= mapped, set(exported['tokens']) - mapped)
+
     def test_embedded_resources_are_local_and_safe_to_parse(self):
         output = module.embed_reading_themes('<html><head></head><body></body></html>')
         self.assertIn('type="application/json"', output)
@@ -117,7 +134,7 @@ class ReadingThemes(unittest.TestCase):
         for p in DATA['palettes']:
             self.assertIn(f'data-reading-theme="{p["id"]}"', output)
         css = (ROOT / 'assets/reading-themes/themes.css').read_text()
-        for token in ('paper', 'paper-2', 'card', 'ink', 'ink-2', 'graphite', 'graphite-2', 'rule', 'rule-soft', 'line', 'muted', 'accent', 'blue', 'red', 'green', 'blue-soft', 'red-soft', 'green-soft', 'on-blue', 'focus', 'highlight', 'grid', 'margin', 'shadow', 'stroke-grain'):
+        for token in ('paper', 'paper-2', 'card', 'wash', 'ink', 'ink-2', 'graphite', 'graphite-2', 'rule', 'rule-soft', 'line', 'muted', 'accent', 'blue', 'red', 'green', 'blue-soft', 'red-soft', 'green-soft', 'on-blue', 'focus', 'highlight', 'grid', 'margin', 'shadow', 'stroke-grain'):
             self.assertIn(f'--{token}:', css)
 
 
