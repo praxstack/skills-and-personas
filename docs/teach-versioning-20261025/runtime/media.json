@@ -1,0 +1,14 @@
+{
+  "manim": {
+    "produced": true,
+    "path": "manim/build/silent.mp4",
+    "bytes": 107881,
+    "sha256": "798510c6c8104eb2e70efbec69c99bdeb78dda9fc3b3098dbb30f6e3b3e48097"
+  },
+  "handdrawn": {
+    "produced": true,
+    "path": "handdrawn/build/probe.mp4",
+    "bytes": 21765,
+    "sha256": "cb27dac3723c9edc791448db8d9f27232df1b1fad82cdb833ecee827c0ddb45b"
+  }
+}

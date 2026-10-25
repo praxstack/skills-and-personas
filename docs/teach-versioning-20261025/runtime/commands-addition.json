@@ -1,0 +1,120 @@
+[
+  {
+    "label": "manim-addition-render",
+    "argv": [
+      "/Users/prax/.local/share/prax-teach/runtime/v3/venv/bin/python3",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/skills/teacher/skills/manim-video/scripts/render_manim.py",
+      "--project",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition",
+      "--workers",
+      "1",
+      "--max-minutes",
+      "2"
+    ],
+    "command": "/Users/prax/.local/share/prax-teach/runtime/v3/venv/bin/python3 /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/skills/teacher/skills/manim-video/scripts/render_manim.py --project /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition --workers 1 --max-minutes 2",
+    "cwd": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025",
+    "exit": 0,
+    "timeout": false,
+    "elapsed_seconds": 3.546
+  },
+  {
+    "label": "manim-addition-ffprobe",
+    "argv": [
+      "ffprobe",
+      "-v",
+      "error",
+      "-count_frames",
+      "-show_format",
+      "-show_streams",
+      "-of",
+      "json",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4"
+    ],
+    "command": "ffprobe -v error -count_frames -show_format -show_streams -of json /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4",
+    "cwd": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025",
+    "exit": 0,
+    "timeout": false,
+    "elapsed_seconds": 0.098
+  },
+  {
+    "label": "manim-addition-decode",
+    "argv": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-i",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4",
+      "-f",
+      "null",
+      "-"
+    ],
+    "command": "ffmpeg -v error -i /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4 -f null -",
+    "cwd": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025",
+    "exit": 0,
+    "timeout": false,
+    "elapsed_seconds": 0.085
+  },
+  {
+    "label": "manim-addition-frame-0",
+    "argv": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-y",
+      "-ss",
+      "0.9",
+      "-i",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4",
+      "-frames:v",
+      "1",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition-frame-0.png"
+    ],
+    "command": "ffmpeg -v error -y -ss 0.9 -i /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4 -frames:v 1 /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition-frame-0.png",
+    "cwd": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025",
+    "exit": 0,
+    "timeout": false,
+    "elapsed_seconds": 0.191
+  },
+  {
+    "label": "manim-addition-frame-1",
+    "argv": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-y",
+      "-ss",
+      "1.9",
+      "-i",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4",
+      "-frames:v",
+      "1",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition-frame-1.png"
+    ],
+    "command": "ffmpeg -v error -y -ss 1.9 -i /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4 -frames:v 1 /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition-frame-1.png",
+    "cwd": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025",
+    "exit": 0,
+    "timeout": false,
+    "elapsed_seconds": 0.185
+  },
+  {
+    "label": "manim-addition-frame-2",
+    "argv": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-y",
+      "-ss",
+      "3.2",
+      "-i",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4",
+      "-frames:v",
+      "1",
+      "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition-frame-2.png"
+    ],
+    "command": "ffmpeg -v error -y -ss 3.2 -i /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/build/silent.mp4 -frames:v 1 /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition-frame-2.png",
+    "cwd": "/Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach-main-20261025",
+    "exit": 0,
+    "timeout": false,
+    "elapsed_seconds": 0.182
+  }
+]
