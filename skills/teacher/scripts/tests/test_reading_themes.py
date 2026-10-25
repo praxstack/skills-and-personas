@@ -155,7 +155,7 @@ const {css,videoLesson}=await import(process.argv[1]);
 const data={title:'Export contrast',subtitle:'Reading surfaces',sources:[],video:{captions:'WEBVTT\n\n',scenes:[{start:0,dur:1,chapter:'Boundary',say:'A caption',step:0,params:{}}]}};
 console.log(JSON.stringify({html:videoLesson(data),tokens:[...new Set([...css.matchAll(/--([a-z0-9-]+):/g)].map(m=>m[1]))]}));
 """
-        run = subprocess.run(['node', '--input-type=module', '-e', js, template.as_uri()], capture_output=True, text=True)
+        run = subprocess.run(['node', '--input-type=module', '-e', js, template.as_uri()], capture_output=True, text=True, encoding='utf-8')
         self.assertEqual(run.returncode, 0, run.stderr)
         exported = json.loads(run.stdout)
         output = module.embed_reading_themes(exported['html'])

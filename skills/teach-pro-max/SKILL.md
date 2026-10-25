@@ -218,9 +218,19 @@ renderer in a single-skill installation. Explicit live tutoring, live Q&A and
 quick questions use the host conversation. This delivery default does not
 create durable learner state or change consent rules.
 
-When the sibling Teacher is available, embed its Reading theme picker in each
-reviewed authored HTML lesson using
-`python3 ../teacher/scripts/embed_reading_themes.py lesson.html -o lesson.html`.
+When the sibling Teacher is available, resolve its directory relative to this
+`SKILL.md` and set `TEACHER_SKILL_ROOT` to that absolute path. Run its injector
+against an absolute lesson path in the project output directory, for example:
+
+```sh
+TEACHER_SKILL_ROOT="/absolute/path/to/sibling/teacher"
+python3 "$TEACHER_SKILL_ROOT/scripts/embed_reading_themes.py" \
+  "/absolute/path/to/project/lesson.html" \
+  -o "/absolute/path/to/project/lesson.html"
+```
+
+Keep lesson files in the project; do not change into or write inside either
+skill directory.
 It offers Dark and Night palettes, Original reset and URL-based propagation
 through local HTML course links, without browser storage or network. Follow
 `../teacher/references/READING-THEMES.md` for keyboard, contrast and mobile checks.

@@ -125,15 +125,21 @@ Embed the reusable **Reading theme** picker in reviewed authored HTML before
 delivery. It offers five Dark and five Night palettes, plus Original to restore
 the authored appearance. Selection is carried in the URL and local HTML course
 links; no browser storage or network is needed. Inline figures inherit semantic
-colors; rendered video and image pixels keep their original colors. From this
-Teacher directory:
+colors; rendered video and image pixels keep their original colors. Resolve
+`TEACHER_SKILL_ROOT` to the absolute path of the directory containing this
+`SKILL.md`, then run the helper against an absolute lesson path in the project
+output directory:
 
 ```sh
-python3 scripts/embed_reading_themes.py lesson.html -o lesson.html
+TEACHER_SKILL_ROOT="/absolute/path/to/teacher"
+python3 "$TEACHER_SKILL_ROOT/scripts/embed_reading_themes.py" \
+  "/absolute/path/to/project/lesson.html" \
+  -o "/absolute/path/to/project/lesson.html"
 ```
 
-Use the same command for each course page and exported HTML lesson. The injector
-is not a sanitizer, does not inline untrusted SVG or images, and preserves CSP.
+Use the same command for each course page and exported HTML lesson. Do not
+change into or write inside the skill directory. The injector is not a
+sanitizer, does not inline untrusted SVG or images, and preserves CSP.
 Check every palette, modal keyboard behavior and mobile bounds in the actual
 artifact. See [references/READING-THEMES.md](references/READING-THEMES.md).
 
