@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "components": {
+    "teacher": "1.3.0",
+    "teach-pro-max": "3.1.0"
+  },
+  "local_editions_unchanged": {
+    "teach": "1.2.0",
+    "prax-teach": "1.2.0",
+    "prax-teach-v2": "1.2.0",
+    "algo-sensei": "1.2.0",
+    "eli": "1.2.0",
+    "visualize": "1.2.0",
+    "concept-cartographer": "1.2.0",
+    "techtutor": "1.2.0",
+    "lecture-alchemist": "1.2.0"
+  },
+  "reading_themes": {
+    "dark": ["Graphite", "Slate", "Forest", "Mocha", "Indigo"],
+    "night": ["Midnight", "Amber", "Ember", "Moss", "Plum"],
+    "default": "Original",
+    "selection": "URL parameter carried across local HTML links; no learner-state persistence",
+    "scope": "HTML text, controls and inline SVG. Rendered video pixels retain original colors."
+  },
+  "historical_edition_provenance": "versions-1.2.0.json",
+  "embedded_compatibility_source": "preserved",
+  "installation": "npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max",
+  "version_meaning": "Locally maintained skill source versions, separate from runtime package versions and verification evidence. Local-only third-party bodies are not newly published by this catalog."
+}

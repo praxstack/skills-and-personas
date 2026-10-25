@@ -54,7 +54,9 @@ npx skills add praxstack/skills-and-personas --skill teacher
 
 Select both skills explicitly. The [skills.sh grouping](skills.sh.json) changes the repository page display; it does not enforce installation dependencies. See the [installation reference](docs/teaching/INSTALL.md) for the entry choices and [edition provenance](docs/teaching/versions-1.2.0.json).
 
-The teaching entries show `Version: 1.2.0 (locally maintained edition).` Their original frontmatter and teaching instructions are preserved. Local-only editions of other named teaching skills are recorded separately in the provenance manifest. This notice does not certify an upstream release or renumber runtime packages. Teach Pro Max and its embedded manifests retain their existing bytes and release numbering.
+Teacher 1.3.0 and Teach Pro Max 3.1.0 deliver substantive lessons through HTML. Each HTML lesson can include a reading-theme picker with five dark palettes and five night palettes. Text, controls and inline diagrams use the selected palette; rendered video artwork keeps its original colors. The choice follows course links without enabling learner-progress saving. See [reading themes](skills/teacher/references/READING-THEMES.md) and [current versions](docs/teaching/versions-current.json).
+
+Other locally maintained teaching editions remain 1.2.0. Their [historical edition provenance](docs/teaching/versions-1.2.0.json) distinguishes source variants and local-only bodies. Skill versions do not renumber runtime packages. The preserved embedded compatibility implementation retains its original source and manifests.
 
 Ask your agent: `Use teacher to explain how a neuron becomes a neural network, with a visual mechanism and an interactive example.` Request the formats you want. Practice and persistent learner records require explicit requests/consent.
 
