@@ -122,7 +122,7 @@ try {
       for (const surface of surfaces) {
         const ratio = contrast(surface.foreground, surface.background);
         exportMin = Math.min(exportMin, ratio);
-        assert.ok(ratio >= 4.5, JSON.stringify({template:'videoLesson',scheme,palette:palette.id,...surface,contrast:ratio}));
+        assert.ok(ratio >= 7, JSON.stringify({template:'videoLesson',scheme,palette:palette.id,...surface,contrast:ratio}));
         assert.equal(surface.background, rgb(palette.panel));
       }
     }
@@ -131,7 +131,7 @@ try {
   await exportPage.emulateMedia({ media: 'print', colorScheme: 'light' });
   for (const surface of await exportSurfaces()) {
     assert.equal(surface.background, rgb('#f3f4f5'));
-    assert.ok(contrast(surface.foreground, surface.background) >= 4.5, JSON.stringify(surface));
+    assert.ok(contrast(surface.foreground, surface.background) >= 7, JSON.stringify(surface));
   }
   await exportPage.emulateMedia({ media: 'screen' });
   await exportPage.evaluate(() => { document.getElementById('readable-captions').textContent='A readable caption.'; });
@@ -156,13 +156,17 @@ try {
       await dialog.getByRole('radio', { name: palette.name, exact: true }).check();
       const observed = await page.evaluate(() => {
         const style = getComputedStyle(document.documentElement);
-        return { current: window.__readingThemes.current, bg: getComputedStyle(document.body).backgroundColor, panel: getComputedStyle(document.querySelector('.fixture-panel')).backgroundColor,
+        return { current: window.__readingThemes.current, ink: getComputedStyle(document.body).color, panelInk: getComputedStyle(document.querySelector('.fixture-panel')).color, muted: getComputedStyle(document.querySelector('.fixture-panel p')).color, bg: getComputedStyle(document.body).backgroundColor, panel: getComputedStyle(document.querySelector('.fixture-panel')).backgroundColor,
           blue: getComputedStyle(document.getElementById('geometry')).stroke, red: style.getPropertyValue('--red').trim(), green: style.getPropertyValue('--green').trim(), grain: style.getPropertyValue('--stroke-grain').trim(), grid: style.getPropertyValue('--grid').trim(), font: getComputedStyle(document.body).fontFamily, geometry: document.getElementById('geometry').getAttribute('d'), url: location.href, local: document.getElementById('local').href,
           external: document.getElementById('external').getAttribute('href'), fragment: document.getElementById('fragment').getAttribute('href'), media: document.getElementById('media').getAttribute('href'), download: document.getElementById('download').getAttribute('href') };
       });
       assert.equal(observed.current, palette.id);
       assert.equal(observed.bg, rgb(palette.bg));
       assert.equal(observed.panel, rgb(palette.panel));
+      for (const [foreground, background, floor] of [[observed.ink, observed.bg, 7], [observed.panelInk, observed.panel, 7], [observed.muted, observed.panel, 4.5]]) {
+        const ratio = contrast(foreground, background);
+        assert.ok(ratio >= floor, JSON.stringify({ scheme, palette: palette.id, foreground, background, floor, contrast: ratio }));
+      }
       assert.equal(observed.blue, rgb(palette.group === 'Night' ? '#adc7e6' : '#9ecbff'));
       assert.equal(observed.red, '#efaa9f'); assert.equal(observed.green, '#afd2a6');
       assert.equal(observed.grain, 'none'); assert.equal(observed.grid, 'transparent');

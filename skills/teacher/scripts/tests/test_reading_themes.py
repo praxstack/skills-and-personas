@@ -89,13 +89,14 @@ class ReadingThemes(unittest.TestCase):
                 self.assertRegex(p[key], r'^#[0-9a-f]{6}$')
 
     def test_text_controls_and_semantic_colors_have_measured_contrast(self):
-        minima = {'text': 99, 'border': 99, 'semantic': 99}
+        minima = {'primary': 99, 'secondary': 99, 'border': 99, 'semantic': 99}
         for p in DATA['palettes']:
             for bg in ('bg', 'panel'):
                 for fg in ('ink', 'muted', 'accent'):
                     ratio = contrast(p[fg], p[bg])
-                    minima['text'] = min(minima['text'], ratio)
-                    self.assertGreaterEqual(ratio, 4.5, (p['id'], fg, bg, ratio))
+                    category = 'primary' if fg == 'ink' else 'secondary'
+                    minima[category] = min(minima[category], ratio)
+                    self.assertGreaterEqual(ratio, 7 if fg == 'ink' else 4.5, (p['id'], fg, bg, ratio))
                 ratio = contrast(p['border'], p[bg])
                 minima['border'] = min(minima['border'], ratio)
                 self.assertGreaterEqual(ratio, 3, (p['id'], 'border', bg, ratio))
