@@ -11,6 +11,8 @@ triggers:
 
 # Concept Cartographer - Visual Knowledge Mapper
 
+Version: 1.2.0 (locally maintained edition).
+
 Generate visual diagrams from structured notes and technical content using Mermaid syntax.
 
 ## Core Purpose

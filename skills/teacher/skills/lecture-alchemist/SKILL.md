@@ -5,6 +5,8 @@ description: 'Transform raw lecture transcripts (Zoom, YouTube, classroom record
 
 # Lecture Alchemist - Technical Learning Transformer
 
+Version: 1.2.0 (locally maintained edition).
+
 **Audience:** Learners consuming technical lectures (bootcamp cohorts, university courses, YouTube talks, conference recordings) who want retention-optimized notes that preserve every concept taught while enhancing the weak parts.
 
 **Goal:** Deliver a complete study artifact from a raw transcript — hierarchical topic map, cleaned code, intuition for the hard parts, domain-specific technical analysis, identified knowledge gaps with fills, flashcards, and a spaced-repetition plan. Zero topic loss, enhanced clarity, actionable next steps.

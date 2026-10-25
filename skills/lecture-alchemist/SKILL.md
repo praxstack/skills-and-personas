@@ -10,6 +10,8 @@ triggers:
 
 # Lecture Alchemist - Technical Learning Transformer
 
+Version: 1.2.0 (locally maintained edition).
+
 Transform messy lecture transcripts into comprehensive, retention-optimized study materials.
 
 ## Three Roles

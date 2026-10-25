@@ -1,0 +1,284 @@
+[
+  {
+    "id": "browser-voice",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "host:browser-voice (unverified; declare with --have)"
+  },
+  {
+    "id": "canvas",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "host:canvas (unverified; declare with --have)"
+  },
+  {
+    "id": "claude-artifact",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "host:artifact (declare with --have)"
+  },
+  {
+    "id": "concept-animation",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/concept-animation/SKILL.md; bin:python3; bin:node; bin:ffmpeg; node:playwright"
+  },
+  {
+    "id": "course",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/course/SKILL.md; bin:python3; bin:node"
+  },
+  {
+    "id": "cytoscape",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "d2",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:d2; network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "d3",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "edge-tts",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:edge-tts; py:edge_tts"
+  },
+  {
+    "id": "excalidraw",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only); host:excalidraw (declare with --have)"
+  },
+  {
+    "id": "explain-diagram",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/explain-diagram/SKILL.md; bin:python3"
+  },
+  {
+    "id": "explainer-video",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/explainer-video/SKILL.md; bin:python3; bin:ffmpeg; bin:node"
+  },
+  {
+    "id": "explorable",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/explorable/SKILL.md; bin:python3"
+  },
+  {
+    "id": "ffmpeg",
+    "discovery_status": "detected",
+    "verification_status": "render-tested (bounded probe)",
+    "note": "Actual H.264 encoding, probing and full video decoding exited 0."
+  },
+  {
+    "id": "graphviz",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:dot; network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "gsap",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; gsap not resolved; no render attempted."
+  },
+  {
+    "id": "handdrawn-js-video",
+    "discovery_status": "detected",
+    "verification_status": "render-tested (bounded probe)",
+    "note": "Original deterministic 2D canvas rendered through existing capture.mjs. Bundled full film kit not exercised."
+  },
+  {
+    "id": "hyperframes",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; hyperframes not resolved; no render attempted."
+  },
+  {
+    "id": "image-generation",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "host:image (declare with --have)"
+  },
+  {
+    "id": "jsxgraph",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "kokoro",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "py:kokoro"
+  },
+  {
+    "id": "kroki",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "lesson-notebook",
+    "discovery_status": "instructions",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/lesson-notebook/SKILL.md"
+  },
+  {
+    "id": "manim",
+    "discovery_status": "detected",
+    "verification_status": "render-tested (bounded probe)",
+    "note": "Original translation and labelled vector-addition FilmScenes rendered through existing wrapper/resolver."
+  },
+  {
+    "id": "matplotlib",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "py:matplotlib"
+  },
+  {
+    "id": "mermaid",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:mmdc; network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "motion",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; gsap not resolved; no render attempted."
+  },
+  {
+    "id": "motion-canvas",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; @motion-canvas/core not resolved; no render attempted."
+  },
+  {
+    "id": "narrate",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/explorable/SKILL.md; bin:node; bin:ffmpeg; py:kokoro_onnx; node:playwright"
+  },
+  {
+    "id": "observable-plot",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "p5",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "piper",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:piper"
+  },
+  {
+    "id": "plantuml",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:plantuml; network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "playwright",
+    "discovery_status": "detected",
+    "verification_status": "render-tested (bounded probe)",
+    "note": "Actual scoped Chromium frame capture. Other browser/API features untested."
+  },
+  {
+    "id": "plotly",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "py:plotly"
+  },
+  {
+    "id": "pyodide",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "react-flow",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; @xyflow/react / reactflow not resolved; no render attempted."
+  },
+  {
+    "id": "remotion",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; remotion not resolved; no render attempted."
+  },
+  {
+    "id": "revideo",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; @revideo/renderer not resolved; no render attempted."
+  },
+  {
+    "id": "roughjs",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "scribecast",
+    "discovery_status": "missing",
+    "verification_status": "missing tested prerequisite",
+    "note": "bin:scribecast; py:vidkit"
+  },
+  {
+    "id": "svg",
+    "discovery_status": "authoring",
+    "verification_status": "detected / unverified execution",
+    "note": "SVG can be authored directly; viewing is untested"
+  },
+  {
+    "id": "theatrejs",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; @theatre/core not resolved; no render attempted."
+  },
+  {
+    "id": "threejs",
+    "discovery_status": "detected",
+    "verification_status": "missing engine package in tested roots",
+    "note": "Raw discovery says detected from Node prerequisite only; three not resolved; no render attempted."
+  },
+  {
+    "id": "vega-lite",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  },
+  {
+    "id": "visual-qa",
+    "discovery_status": "detected",
+    "verification_status": "detected / unverified execution",
+    "note": "bundled instructions present: skills/visual-qa/SKILL.md; bin:node; bin:ffmpeg; bin:ffprobe; node:playwright"
+  },
+  {
+    "id": "wikimedia-commons",
+    "discovery_status": "unknown",
+    "verification_status": "unverified",
+    "note": "network:unverified (use --net to check reachability only)"
+  }
+]

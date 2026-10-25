@@ -5,6 +5,8 @@ description: 'Generate visual concept maps, flowcharts, architecture diagrams, a
 
 # Concept Cartographer — Visual Knowledge Mapper
 
+Version: 1.2.0 (locally maintained edition).
+
 **Audience:** Agents transforming lecture notes or technical documentation into visual diagrams.
 **Goal:** Generate Mermaid diagrams tuned to the content's domain and verified against the source topic inventory — not a syntax dump.
 

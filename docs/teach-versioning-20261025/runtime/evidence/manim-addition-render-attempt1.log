@@ -1,0 +1,36 @@
+1 segments, 60 frames at 1280x720@15; 0 done, 1 to render with 1 worker(s); python /Users/prax/.local/share/uv/tools/manim/bin/python
+  [ ] VectorAddition    0.00 ->    4.00     60 frames
+  FAILED VectorAddition: failed:
+      │
+│   116 │   │   try:                                                           │
+│ ❱ 117 │   │   │   self.film()                                                │
+│   118 │   │   │   self.finish()                                              │
+│   119 │   │   except _Stop:                                                  │
+│   120 │   │   │   pass                                                       │
+│                                                                              │
+│ /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach │
+│ -main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/source/ │
+│ scenes.py:27 in film                                                         │
+│                                                                              │
+│   24 │                                                                       │
+│   25 │   def film(self):                                                     │
+│   26 │   │   title = label('Vector addition: head to tail', [0, 2.75, 0], si │
+│ ❱ 27 │   │   x_axis = Arrow(point([-0.15,0,0]), point([2.6,0,0]), color='#B7 │
+│   28 │   │   y_axis = Arrow(point([0,-0.15,0]), point([0,1.65,0]), color='#B │
+│   29 │   │   origin = label('0', point([-0.15,-0.2,0]), size=26)             │
+│   30 │   │   x_labels = [label(str(i), point([i,-0.2,0]), size=26) for i in  │
+│                                                                              │
+│ /Users/prax/Developer/skills-and-personas-recovery-20261016/.worktrees/teach │
+│ -main-20261025/.superpowers/sdd/PLAN-20261025/runtime/manim-addition/source/ │
+│ scenes.py:13 in point                                                        │
+│                                                                              │
+│   10                                                                         │
+│   11                                                                         │
+│   12 def point(vector):                                                      │
+│ ❱ 13 │   return ORIGIN + UNIT*vector                                         │
+│   14                                                                         │
+│   15                                                                         │
+│   16 def label(text, at, color='#F4F1E8', size=34):                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+TypeError: can't multiply sequence by non-int of type 'float'
+
