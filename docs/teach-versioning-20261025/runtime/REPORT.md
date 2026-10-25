@@ -8,7 +8,7 @@ Original authored inputs were executed with existing provisioned local tools, wi
 
 ## Complete inventory
 
-[Capability matrix](capability-matrix.json) records all47 registry entries and separates raw discovery from actual runtime evidence. [Package resolution](package-probe.json) checks the workspace, teacher, scoped Node and global npm roots. Eight optional JavaScript engine packages are absent in those roots despite raw registry detection from Node alone. CDN-only/host-only capabilities remain unverified; missing Python/CLI prerequisites are explicit. Detection is not a successful render, and absence in these roots does not mean no copy exists anywhere on disk.
+[Capability matrix](capability-matrix.json) records all47 registry entries and separates raw discovery from actual runtime evidence. [Package resolution](package-probe.json) checks the workspace, teacher, scoped Node and global npm roots. Eight optional video routes lack their mapped engine packages in those roots despite raw registry detection from Node alone. CDN-only/host-only capabilities remain unverified; missing Python/CLI prerequisites are explicit. Detection is not a successful render, and absence in these roots does not mean no copy exists anywhere on disk.
 
 Kokoro ONNX, the standard lesson/course renderer and visual QA have scoped prerequisites available but were not executed in this optional-engine probe. Their actual course-level results are recorded with the GATE DA suite separately. Manim prose mentions0.21.0 while actual resolved runtime is0.22.0; these receipts bind the actual version.
 
