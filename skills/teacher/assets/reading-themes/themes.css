@@ -1,0 +1,84 @@
+/* The injector prepends palette declarations from themes.json. Scoped overrides
+   keep authored typography and meaningful figure geometry intact. */
+:root[data-reading-theme] {
+  color-scheme: dark !important;
+  --paper: var(--rt-bg) !important;
+  --paper-2: var(--rt-panel) !important;
+  --card: var(--rt-panel) !important;
+  --ink: var(--rt-ink) !important;
+  --ink-2: var(--rt-muted) !important;
+  --muted: var(--rt-muted) !important;
+  --graphite: var(--rt-muted) !important;
+  --graphite-2: var(--rt-muted) !important;
+  --rule: var(--rt-border) !important;
+  --rule-soft: var(--rt-border) !important;
+  --line: var(--rt-border) !important;
+  --border: var(--rt-border) !important;
+  --accent: var(--rt-accent) !important;
+  --blue: var(--rt-blue) !important;
+  --red: #efaa9f !important;
+  --green: #afd2a6 !important;
+  --blue-soft: color-mix(in srgb, var(--rt-blue) 15%, var(--rt-panel)) !important;
+  --red-soft: color-mix(in srgb, #efaa9f 15%, var(--rt-panel)) !important;
+  --green-soft: color-mix(in srgb, #afd2a6 15%, var(--rt-panel)) !important;
+  --accent-soft: color-mix(in srgb, var(--rt-accent) 15%, var(--rt-panel)) !important;
+  --on-blue: var(--rt-bg) !important;
+  --focus: var(--rt-accent) !important;
+  --highlight: color-mix(in srgb, var(--rt-accent) 20%, var(--rt-panel)) !important;
+  --grid: transparent !important;
+  --margin: transparent !important;
+  --shadow: transparent !important;
+  --stroke-grain: none !important;
+  --hl-blend: normal !important;
+}
+:root[data-reading-theme] body { background-color: var(--paper); color: var(--ink); }
+:root[data-reading-theme] a { color: var(--accent); }
+/* Hide only the notebook's known Board button while a custom theme owns color. */
+:root[data-reading-theme] [title="Switch between paper, chalkboard, and following your theme"] { display: none !important; }
+.rt-launch, .rt-dialog {
+  box-sizing: border-box;
+  color: var(--ink, #202328);
+  background: var(--card, #faf8f2);
+  border: 1px solid var(--rule, #74818f);
+  border-radius: 12px;
+  font: 400 1rem/1.5 system-ui, sans-serif;
+  letter-spacing: normal;
+}
+.rt-launch { position: fixed; z-index: 900; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); min-height: 44px; padding: 8px 14px; cursor: pointer; }
+.rt-dialog { width: min(720px, calc(100% - 24px)); max-width: calc(100% - 24px); max-height: calc(100% - 24px); padding: 24px; overflow: auto; }
+.rt-dialog::backdrop { background: #0009; }
+.rt-dialog *, .rt-dialog *::before, .rt-dialog *::after { box-sizing: border-box; }
+.rt-dialog h2 { margin: 0 0 8px; font: 650 1.4rem/1.3 system-ui, sans-serif; color: inherit; }
+.rt-dialog p { margin: 0 0 16px; font: inherit; }
+.rt-dialog fieldset { min-width: 0; margin: 0 0 18px; padding: 0; border: 0; }
+.rt-dialog legend { margin-bottom: 8px; padding: 0; font-weight: 650; }
+.rt-cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.rt-card { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; min-height: 88px; padding: 10px 8px; color: var(--rt-preview-ink); background: var(--rt-preview-bg); border: 2px solid var(--rt-preview-border); border-radius: 8px; cursor: pointer; }
+.rt-card input { appearance: auto; position: static; opacity: 1; width: 24px; height: 24px; min-width: 24px; min-height: 24px; margin: 0; accent-color: var(--rt-preview-ink); }
+.rt-card .rt-aa { font: 600 1.25rem/1 Georgia, serif; }
+.rt-card .rt-name { flex-basis: 100%; font: 500 .875rem/1.3 system-ui, sans-serif; overflow-wrap: anywhere; }
+.rt-card:has(input:checked) { border-color: var(--rt-preview-ink); box-shadow: inset 0 0 0 1px var(--rt-preview-ink); }
+.rt-card:focus-within { outline: 3px solid var(--focus, #2862a7); outline-offset: 2px; }
+.rt-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+.rt-actions button { min-height: 44px; padding: 8px 16px; font: inherit; color: inherit; background: var(--paper-2, #fff); border: 1px solid var(--rule, #74818f); border-radius: 6px; cursor: pointer; }
+.rt-launch:focus-visible, .rt-actions button:focus-visible { outline: 3px solid var(--focus, #2862a7); outline-offset: 3px; }
+@media (max-width: 520px) {
+  .rt-dialog { padding: 18px; }
+  .rt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rt-card { min-height: 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-launch, .rt-dialog, .rt-dialog * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .rt-launch, .rt-dialog { display: none !important; }
+  :root[data-reading-theme] {
+    color-scheme: light !important;
+    --rt-bg: #ffffff !important; --rt-panel: #f3f4f5 !important;
+    --rt-ink: #202328 !important; --rt-muted: #46515c !important;
+    --rt-accent: #245a8c !important; --rt-border: #697581 !important;
+    --rt-blue: #245a8c !important; --red: #a12e28 !important;
+    --green: #276536 !important; --on-blue: #ffffff !important;
+    --red-soft: #f7e8e5 !important; --green-soft: #e7f0e5 !important;
+  }
+}
