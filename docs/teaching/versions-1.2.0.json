@@ -1,0 +1,594 @@
+{
+  "schema_version": 1,
+  "local_edition": "1.2.0",
+  "observed_on": "2026-10-25",
+  "baseline_commit": "305f7294e3d68eb0ee8d561e46de4495211b7a4c",
+  "product_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+  "meaning": "A locally maintained edition notice after the existing skill title, or after frontmatter when no title exists. It is not an upstream release, package/runtime version, behavioral revision or acceptance claim. Original frontmatter is byte-identical. Source observations describe the pre-edition snapshot, not a current installation assertion.",
+  "body_hash_method": "SHA-256 of original bytes following the second --- frontmatter delimiter, including the original leading newline. Remove exactly one inserted newline + edition_notice + newline before comparing an edition body.",
+  "repository_editions": [
+    {
+      "path": "skills/teacher/SKILL.md",
+      "original_sha256": "40be152a1e7604827eec7548c16ee521c018bf7437768fd61e51f6ca1c108a3e",
+      "body_sha256": "1720577dadb9f580948cd974e58e5794d819f0edc39ec2fe4de76e3db7dac1d9",
+      "edition_skill_sha256": "edeaa9f2fe5954946f01cf5630c074fe3bf05a3cb66bfee50d2155254d0942d5",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": true,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/teacher/skills/algo-sensei/SKILL.md",
+      "original_sha256": "c4174b2eecadb97de14bbf05f5a87134306ac3a08e2d16a6ce43c3784bb67886",
+      "body_sha256": "722afe290e0f592165e596d622da416e106aff5aa3efb1589c9575a69e9c7849",
+      "edition_skill_sha256": "9facfa309a81ebd6c5f379abb037ffd083afff3cdfb055d15cf0810eaff39f90",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": true,
+      "upstream_provenance": {
+        "upstream": "https://github.com/karanb192/algo-sensei",
+        "source_path": "algo-sensei",
+        "source_commit": null,
+        "license": "MIT, see its LICENSE"
+      },
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/teacher/skills/eli/SKILL.md",
+      "original_sha256": "a60aafacdf4d8a2849cc2a26f64cd21716e43c4798b81d1de2b5261e2f2787e3",
+      "body_sha256": "85802a0089e16e6888e9f9cd98d1550fb83172f3710fe34a69c822959a5a7f13",
+      "edition_skill_sha256": "3455a1d8720b72415caedda9c295c1e692825e08e8cc69ca36cf4fc854de6035",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": false,
+      "upstream_provenance": {
+        "upstream": "Prax's local skill library (16 Oct 2026 snapshot)",
+        "source_path": "eli",
+        "source_commit": null,
+        "license": "Prax's own"
+      },
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/concept-cartographer/SKILL.md",
+      "original_sha256": "0bd940753bf5e7395245658ba2ab918981bc2f970855a945fec6393ac00d08ae",
+      "body_sha256": "440e2afd063ab57cc380b7d37c15d39b35636da61e8b2e9bd1ae55ddf32d9341",
+      "edition_skill_sha256": "e586a5da5157cc3eb3fcc2d9328ebece52eb6463d764683caf3c707780728cf9",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": false,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "new-skills/concept-cartographer/SKILL.md",
+      "original_sha256": "d15efe7f53b2585fec1a391be05405e2c935331f5c5865da1f88f24ea5da66a7",
+      "body_sha256": "37d4d43d2179a2595f5d3504db5585a41404f4d76f7bdc6b81c40f67847ac8da",
+      "edition_skill_sha256": "d09a4fbc7551c714e1a5889484b871c5c826b1e28c89e44f41a9519ea7a88aa5",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": true,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/teacher/skills/concept-cartographer/SKILL.md",
+      "original_sha256": "d15efe7f53b2585fec1a391be05405e2c935331f5c5865da1f88f24ea5da66a7",
+      "body_sha256": "37d4d43d2179a2595f5d3504db5585a41404f4d76f7bdc6b81c40f67847ac8da",
+      "edition_skill_sha256": "d09a4fbc7551c714e1a5889484b871c5c826b1e28c89e44f41a9519ea7a88aa5",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": true,
+      "upstream_provenance": {
+        "upstream": "https://github.com/praxstack/skills-and-personas",
+        "source_path": "new-skills/concept-cartographer",
+        "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
+        "license": "MIT (repo)"
+      },
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/techtutor/SKILL.md",
+      "original_sha256": "2c2ebb28bec9c61862c072bfb08d9d4c0268b99508d56e7edf11b18521b16b8b",
+      "body_sha256": "6fc890e2db40dd7a91233589761cff939864f42becbf5b8803518160cde1c4d7",
+      "edition_skill_sha256": "bc476985ea150a57ce32b517f37606909a3f243b65ecc2ad934f60eaa4899509",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": null,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "new-skills/techtutor/SKILL.md",
+      "original_sha256": "d2009922ce850acb9342fdf6a56d189087a141251ebefc4fcdcb1cf7cf7f3cd0",
+      "body_sha256": "57190b0492574ac21ab3b08ee5314f33526f80ff6e26ea66ff6d47aee5e92fa6",
+      "edition_skill_sha256": "1528810086c8e97a1813c57f3384607895c2d9106855cf72acf72fe72b906d8e",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": null,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/teacher/skills/techtutor/SKILL.md",
+      "original_sha256": "d2009922ce850acb9342fdf6a56d189087a141251ebefc4fcdcb1cf7cf7f3cd0",
+      "body_sha256": "57190b0492574ac21ab3b08ee5314f33526f80ff6e26ea66ff6d47aee5e92fa6",
+      "edition_skill_sha256": "1528810086c8e97a1813c57f3384607895c2d9106855cf72acf72fe72b906d8e",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": null,
+      "upstream_provenance": {
+        "upstream": "https://github.com/praxstack/skills-and-personas",
+        "source_path": "new-skills/techtutor",
+        "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
+        "license": "MIT (repo)"
+      },
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/lecture-alchemist/SKILL.md",
+      "original_sha256": "1a65be1b5154e76fee1360f9db569c1bbae3f8d536d170569405f34b29248015",
+      "body_sha256": "95931574713d7ae33178a30eee95e8261d2c627ee805d6133348579d14c1fc3d",
+      "edition_skill_sha256": "cb88197a327d0f3b746973c7f04b149088acaaf491220eb378f0337b5dd8a5f8",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": null,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "new-skills/lecture-alchemist/SKILL.md",
+      "original_sha256": "250c807c0fd4297918ae6b8f6539a388bd3cac627bcaffa866177ed31dbdf25f",
+      "body_sha256": "0f000e7b0abecf6760d0b9f11600ce54146e1abf7282a5025b36ed0b2449e1de",
+      "edition_skill_sha256": "e6c179f7c7b004397800702435b171921ca40df47295ca5e80ff8ceaab8b1cef",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": null,
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "path": "skills/teacher/skills/lecture-alchemist/SKILL.md",
+      "original_sha256": "250c807c0fd4297918ae6b8f6539a388bd3cac627bcaffa866177ed31dbdf25f",
+      "body_sha256": "0f000e7b0abecf6760d0b9f11600ce54146e1abf7282a5025b36ed0b2449e1de",
+      "edition_skill_sha256": "e6c179f7c7b004397800702435b171921ca40df47295ca5e80ff8ceaab8b1cef",
+      "source_kind": "preserved repository variant",
+      "source_commit": "cb162db17b1b0d14429b202323dbdf79db7b75b8",
+      "canonical_local_body_match": null,
+      "upstream_provenance": {
+        "upstream": "https://github.com/praxstack/skills-and-personas",
+        "source_path": "new-skills/lecture-alchemist",
+        "source_commit": "67f94397b1bd984e778715aa40b8f40459ab6daa",
+        "license": "MIT (repo)"
+      },
+      "edition_notice_placement": "after_title"
+    }
+  ],
+  "canonical_local_source_observations": [
+    {
+      "name": "teacher",
+      "path": "~/.agents/skills/teacher",
+      "resolved_path": "~/.local/share/prax-teach/releases/v3.0.2-ea37c73/teacher",
+      "skill_sha256": "40be152a1e7604827eec7548c16ee521c018bf7437768fd61e51f6ca1c108a3e",
+      "body_sha256": "1720577dadb9f580948cd974e58e5794d819f0edc39ec2fe4de76e3db7dac1d9",
+      "skill_bytes": 18454,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    },
+    {
+      "name": "teach",
+      "path": "~/.agents/skills/teach",
+      "resolved_path": "~/.agents/plugins/mattpocock-local/skills/teach",
+      "skill_sha256": "a32df9dcdfc0c4fdc1c98e1ed3940c5f56b84c1aa90ff60346f32b8b53915b43",
+      "body_sha256": "a77b7959155e286fcde71369cbdd106fc30d17901b46e015070da3cd23490b07",
+      "skill_bytes": 9506,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution",
+      "license_status": "No license/notice found in installed skill or inspected plugin parents; local-only pending upstream confirmation."
+    },
+    {
+      "name": "prax-teach",
+      "path": "~/.agents/skills/prax-teach",
+      "resolved_path": "~/.agents/plugins/agent-stack/skills/prax-teach",
+      "skill_sha256": "e04ca0e53fc1f9f89d8cff8588c09144a2f44a54e7f9cd7a925fdc28f0dd2280",
+      "body_sha256": "87e7744b623bfbaec74e74803dcf6fd18fe6b53126bfadc98155394f753b45ae",
+      "skill_bytes": 13588,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution",
+      "license_status": "No license/notice found in installed skill or inspected plugin parents; local-only pending upstream confirmation."
+    },
+    {
+      "name": "prax-teach-v2",
+      "path": "~/.agents/skills/prax-teach-v2",
+      "resolved_path": "~/.agents/skill-library/prax-teach-v2",
+      "skill_sha256": "abeceb3cf98ece70ddaec6017e95efc64fe93a2ac8c3e86314b691be1e942ede",
+      "body_sha256": "687ac2366fa6364c78bfa33cba16ee6420f91187c7ea2cf136eaf24a61ab608b",
+      "skill_bytes": 1596,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    },
+    {
+      "name": "algo-sensei",
+      "path": "~/.agents/skills/algo-sensei",
+      "resolved_path": "~/.agents/skill-library/algo-sensei",
+      "skill_sha256": "c4174b2eecadb97de14bbf05f5a87134306ac3a08e2d16a6ce43c3784bb67886",
+      "body_sha256": "722afe290e0f592165e596d622da416e106aff5aa3efb1589c9575a69e9c7849",
+      "skill_bytes": 4779,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    },
+    {
+      "name": "eli",
+      "path": "~/.agents/skills/eli",
+      "resolved_path": "~/.agents/skill-library/eli",
+      "skill_sha256": "9b38988fb3368e1f83e9df3b5d32cb52e15e0003f07d602a58a00ab806dd5cc5",
+      "body_sha256": "1069f875ab0ea5ba2cd191aa25dbbb026740226575de5d1dcfadeef6a3a667f7",
+      "skill_bytes": 3760,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    },
+    {
+      "name": "visualize",
+      "path": "~/.agents/skills/visualize",
+      "resolved_path": "~/.agents/skills/visualize",
+      "skill_sha256": "6dbdd56fc7943bdf9fb80bf1a62de45a37383222aafe5233eefcd64149d01038",
+      "body_sha256": "d22afcefcccb42707c9f839ad4c6859ea692f9206f3731f307fb8ea2d32d3a00",
+      "skill_bytes": 10609,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution",
+      "license_status": "No license/notice found in installed skill or inspected plugin parents; local-only pending upstream confirmation."
+    },
+    {
+      "name": "concept-cartographer",
+      "path": "~/.agents/skills/concept-cartographer",
+      "resolved_path": "~/Developer/skills-and-personas-recovery-20261016/new-skills/concept-cartographer",
+      "skill_sha256": "d15efe7f53b2585fec1a391be05405e2c935331f5c5865da1f88f24ea5da66a7",
+      "body_sha256": "37d4d43d2179a2595f5d3504db5585a41404f4d76f7bdc6b81c40f67847ac8da",
+      "skill_bytes": 6931,
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    },
+    {
+      "name": "techtutor",
+      "path": "~/.agents/skills/techtutor",
+      "status": "absent",
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    },
+    {
+      "name": "lecture-alchemist",
+      "path": "~/.agents/skills/lecture-alchemist",
+      "status": "absent",
+      "distribution_scope": "observation only; not a claim of byte-identical repository distribution"
+    }
+  ],
+  "local_only_editions": [
+    {
+      "name": "teach",
+      "local_edition": "1.2.0",
+      "distribution_scope": "local-only staging; skill content is not imported into public source",
+      "source_path": "~/.agents/plugins/mattpocock-local/skills/teach",
+      "original_files": [
+        {
+          "path": "GLOSSARY-FORMAT.md",
+          "sha256": "9b99859ec28437668130d8f2ce5a342938970f8a1ed4fd38c3eab4f4b5fff210",
+          "bytes": 2122,
+          "mode": "0o644"
+        },
+        {
+          "path": "LEARNING-RECORD-FORMAT.md",
+          "sha256": "701fa34b6748aa89e6c960ffb815257f481a7d77fb2900f9028f7edf3fdd6052",
+          "bytes": 2747,
+          "mode": "0o644"
+        },
+        {
+          "path": "MISSION-FORMAT.md",
+          "sha256": "8cacbb3c0644d3ae0ea4965564797099401a6930a23f7cf462918576587f2418",
+          "bytes": 1540,
+          "mode": "0o644"
+        },
+        {
+          "path": "RESOURCES-FORMAT.md",
+          "sha256": "e9cacf34026e11a8d1c8f9de88abe5bcbf654f4ebdb25cae8c0de0d5f48f44ec",
+          "bytes": 1924,
+          "mode": "0o644"
+        },
+        {
+          "path": "SKILL.md",
+          "sha256": "a32df9dcdfc0c4fdc1c98e1ed3940c5f56b84c1aa90ff60346f32b8b53915b43",
+          "bytes": 9506,
+          "mode": "0o644"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "sha256": "5856f3ae8aec742f1499c640aecdd5f1d6af5fa210a7c6ec794de8263a6f733f",
+          "bytes": 139,
+          "mode": "0o644"
+        }
+      ],
+      "edition_skill_sha256": "96685c9acd2c6ad5f51ec1d37a4ad9004e46ceb4ab26da19610eaaa7f2681bd9",
+      "staged_path": ".superpowers/sdd/PLAN-20261025/local-editions/teach",
+      "license_status": "Unverified; keep local-only pending upstream confirmation.",
+      "edition_notice_placement": "after_frontmatter"
+    },
+    {
+      "name": "prax-teach",
+      "local_edition": "1.2.0",
+      "distribution_scope": "local-only staging; skill content is not imported into public source",
+      "source_path": "~/.agents/plugins/agent-stack/skills/prax-teach",
+      "original_files": [
+        {
+          "path": "GLOSSARY-FORMAT.md",
+          "sha256": "d177def491519d97873291f2e860d8f1d60ead78feecb82eee022177958069c6",
+          "bytes": 2131,
+          "mode": "0o644"
+        },
+        {
+          "path": "LEARNING-RECORD-FORMAT.md",
+          "sha256": "855f81017625256584bbf62bd5edb9b0c86605c4cc1139c56acc36b802595d17",
+          "bytes": 2777,
+          "mode": "0o644"
+        },
+        {
+          "path": "MISSION-FORMAT.md",
+          "sha256": "8da6d3ac84eb2eb19f17c260b6acf01c560d3ac7a4501c415eea0e985602f4d7",
+          "bytes": 1553,
+          "mode": "0o644"
+        },
+        {
+          "path": "RESOURCES-FORMAT.md",
+          "sha256": "2bc634a64b0d0daa10904f9222e7aa0d361420dfacabbf092fbe3a72222edc08",
+          "bytes": 1926,
+          "mode": "0o644"
+        },
+        {
+          "path": "SKILL.md",
+          "sha256": "e04ca0e53fc1f9f89d8cff8588c09144a2f44a54e7f9cd7a925fdc28f0dd2280",
+          "bytes": 13588,
+          "mode": "0o644"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "sha256": "add8e65648a74c67381a6d9045087049815f5d8f3ca31078bf84313d5c58afc7",
+          "bytes": 201,
+          "mode": "0o644"
+        },
+        {
+          "path": "assets/visualization-router.png",
+          "sha256": "1711b1f4a685c0fb648c9b7e01125b60fa397ce89a78df68e87e6b9b47c9c1bd",
+          "bytes": 260357,
+          "mode": "0o644"
+        },
+        {
+          "path": "assets/visualization-router.svg",
+          "sha256": "03a817b95ee2236cfd32d8ea54e8578abe8d3f080317adf2719ff125a59e7370",
+          "bytes": 7126,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/VISUALIZATION-RESEARCH.md",
+          "sha256": "2931faf70bfd631f880444d5cda3a1513f5190ffdfb87ebb41ae580020ac0ed3",
+          "bytes": 5574,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/VISUALIZATION-ROUTER.md",
+          "sha256": "ef22cd7966b4060dff22787710670963a3d91641b6dcc5ae89469e33a8ed88e2",
+          "bytes": 16001,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/VISUALIZATION-TOOL-REGISTRY.md",
+          "sha256": "db4b0e25853fbd358ee1a8e5a4ffb21dcc53758296acd9a109f61c9ad943ee3e",
+          "bytes": 7442,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/visualization-tool-registry.json",
+          "sha256": "39e7978bec1509b45cd6ee308953117314a4605cfbe78f27b8a842d5b8a3e7ef",
+          "bytes": 54952,
+          "mode": "0o644"
+        },
+        {
+          "path": "scripts/find_visualization_tool.py",
+          "sha256": "20f5463e64b5244f389f4d25fdf854c7f8571cdd1d5a96eb50ac5c9ba9b8b2ad",
+          "bytes": 8433,
+          "mode": "0o755"
+        },
+        {
+          "path": "scripts/test_visualization_registry.py",
+          "sha256": "a3119a65194a5c60e6d137b417613cec1d32613a3066bf65f04dfa9fcb3ac3e3",
+          "bytes": 3786,
+          "mode": "0o755"
+        }
+      ],
+      "edition_skill_sha256": "5aaedbd20c95fc66477b9f6a1b6601e22de296376d4e78170ee8c58f2da61829",
+      "staged_path": ".superpowers/sdd/PLAN-20261025/local-editions/prax-teach",
+      "license_status": "Unverified; keep local-only pending upstream confirmation.",
+      "edition_notice_placement": "after_frontmatter"
+    },
+    {
+      "name": "algo-sensei",
+      "local_edition": "1.2.0",
+      "distribution_scope": "local-only staging; skill content is not imported into public source",
+      "source_path": "~/.agents/skill-library/algo-sensei",
+      "original_files": [
+        {
+          "path": ".gitignore",
+          "sha256": "a243a4e19e19ff5dcb3ce1fa54b02dd8fdf65a0b93728f427c18e2403b06389f",
+          "bytes": 546,
+          "mode": "0o644"
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "sha256": "fdb1a26a414d7f215f71a5aa4313f9f78690325e709f24a3854a7b82a4f6f519",
+          "bytes": 3791,
+          "mode": "0o644"
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "3b2ca73e81ad589330ec03f71c1448034b65186e81982e518ee48110aad35b0a",
+          "bytes": 1081,
+          "mode": "0o644"
+        },
+        {
+          "path": "README.md",
+          "sha256": "e102d6031dd5a513a587ee39f8f6f32cb5428390081df771ba59abe1f7f044eb",
+          "bytes": 10433,
+          "mode": "0o644"
+        },
+        {
+          "path": "SKILL.md",
+          "sha256": "c4174b2eecadb97de14bbf05f5a87134306ac3a08e2d16a6ce43c3784bb67886",
+          "bytes": 4779,
+          "mode": "0o644"
+        },
+        {
+          "path": "demo/README.md",
+          "sha256": "6b714771a2894f6af92adec886d8044b3d17ae189ecc4c92b8d4262494c946c2",
+          "bytes": 318,
+          "mode": "0o644"
+        },
+        {
+          "path": "demo/demo.gif",
+          "sha256": "0fdadb4a501e216b27b7bb4d6affda4d00f702f6035ad8230516397c7c6ec5cd",
+          "bytes": 501078,
+          "mode": "0o644"
+        },
+        {
+          "path": "docs/dsa-cheatsheet.md",
+          "sha256": "dcf0b9fe5d30fe84869db651ed3f8bcf0d9a000dc78eb9448f666a47cde3f498",
+          "bytes": 7902,
+          "mode": "0o644"
+        },
+        {
+          "path": "modes/hint-mode.md",
+          "sha256": "84b18ca52c52845873a8639524b6548d86f422e4b8a25f856b8d701d04349f87",
+          "bytes": 6612,
+          "mode": "0o644"
+        },
+        {
+          "path": "modes/interview-mode.md",
+          "sha256": "bc175659e6f7c1cb3f15d7b76eff9f3b03e4f341f0148c08d62d1a3d22f87835",
+          "bytes": 8567,
+          "mode": "0o644"
+        },
+        {
+          "path": "modes/pattern-mapper-mode.md",
+          "sha256": "c18ce0af247a2194c56074b220a02c3b024aaf4eb22a1f20017d04990bf4a64c",
+          "bytes": 7703,
+          "mode": "0o644"
+        },
+        {
+          "path": "modes/review-mode.md",
+          "sha256": "3191d8ae92a663b86f5ef9f60bcf9b2c55f4949f19baf16485971dadc58e0bf4",
+          "bytes": 7867,
+          "mode": "0o644"
+        },
+        {
+          "path": "modes/tutor-mode.md",
+          "sha256": "bbbdb24f4ceed4f32b3c2c2f9c1b97ed323ca98f13a8cd4f86337c4efb3f36ea",
+          "bytes": 5035,
+          "mode": "0o644"
+        },
+        {
+          "path": "templates/solutions/solution-template.md",
+          "sha256": "40795844e2fb97b7e2d6233c5b284535b3c5700877c7677ffc5e385e9f42905a",
+          "bytes": 7282,
+          "mode": "0o644"
+        }
+      ],
+      "edition_skill_sha256": "9facfa309a81ebd6c5f379abb037ffd083afff3cdfb055d15cf0810eaff39f90",
+      "staged_path": ".superpowers/sdd/PLAN-20261025/local-editions/algo-sensei",
+      "license_status": "MIT notice retained",
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "name": "eli",
+      "local_edition": "1.2.0",
+      "distribution_scope": "local-only staging; skill content is not imported into public source",
+      "source_path": "~/.agents/skill-library/eli",
+      "original_files": [
+        {
+          "path": "SKILL.md",
+          "sha256": "9b38988fb3368e1f83e9df3b5d32cb52e15e0003f07d602a58a00ab806dd5cc5",
+          "bytes": 3760,
+          "mode": "0o644"
+        }
+      ],
+      "edition_skill_sha256": "9bce37141ccb2e3ed632680af8a22ac5d0e74e4dc5d0cac63f26b02c181ac9b3",
+      "staged_path": ".superpowers/sdd/PLAN-20261025/local-editions/eli",
+      "license_status": "Existing Teacher provenance attributes eli to Prax; no broader license assertion",
+      "edition_notice_placement": "after_title"
+    },
+    {
+      "name": "visualize",
+      "local_edition": "1.2.0",
+      "distribution_scope": "local-only staging; skill content is not imported into public source",
+      "source_path": "~/.agents/skills/visualize",
+      "original_files": [
+        {
+          "path": "SKILL.md",
+          "sha256": "6dbdd56fc7943bdf9fb80bf1a62de45a37383222aafe5233eefcd64149d01038",
+          "bytes": 10609,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/art.md",
+          "sha256": "5f723db2fc8ed740785f4198092435306b221ec6458c9c58b50eba6df8f1a88d",
+          "bytes": 2031,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/catalog.md",
+          "sha256": "adc6bdc3cbf92a59f7f0417c31b0db3bfe6f502246b75efd5aaf0d4064f7e1a8",
+          "bytes": 5254,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/charts.md",
+          "sha256": "317632b724a4b8b5777cde7db8373fb265485dc0cbd783e1b70bf0b276aeee8b",
+          "bytes": 7569,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/components.md",
+          "sha256": "564f5733b756a4567ef6a75ed778ac4931fbd09b91220c30acc2b130a0508ec2",
+          "bytes": 8688,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/diagrams.md",
+          "sha256": "78c66ae0b6359b132839a0680d007e5516086f7f121604079449bd338d2ff7ef",
+          "bytes": 7078,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/foundations.md",
+          "sha256": "3f1b24c540c3bf2f99b1f56e11861920d2aea344df71e9ce67b91bfffcad7940",
+          "bytes": 6979,
+          "mode": "0o644"
+        },
+        {
+          "path": "references/mockups.md",
+          "sha256": "0e063501dc4d14ed66e109cfe22a8273b33eb140bd83cc6c908b5bee4dac2788",
+          "bytes": 2261,
+          "mode": "0o644"
+        }
+      ],
+      "edition_skill_sha256": "6cf9bcdfae53005c83a99dcb715ce35b064c18824e56c056ef2fa114327e4d04",
+      "staged_path": ".superpowers/sdd/PLAN-20261025/local-editions/visualize",
+      "license_status": "Unverified; keep local-only pending upstream confirmation.",
+      "edition_notice_placement": "after_title"
+    }
+  ],
+  "protected_teach_pro_max": {
+    "path": "skills/teach-pro-max",
+    "git_tree_object": "55429cf3ed42a00e70a8fb6ab69271ced7a60b6a",
+    "policy": "Preserve every byte and embedded manifest/version; no 1.2.0 edition notice is applied here."
+  },
+  "installation": {
+    "full_current_engine": [
+      "teacher",
+      "teach-pro-max"
+    ],
+    "full_command": "npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max",
+    "standalone_command": "npx skills add praxstack/skills-and-personas --skill teacher",
+    "teacher_bundled_modules": 22,
+    "grouping_enforces_dependencies": false
+  },
+  "root_owned_local_edition": {
+    "name": "prax-teach-v2",
+    "local_edition": "1.2.0",
+    "distribution_scope": "local-only; staged separately by installation owner",
+    "source_path": "~/.agents/skill-library/prax-teach-v2",
+    "original_skill_sha256": "abeceb3cf98ece70ddaec6017e95efc64fe93a2ac8c3e86314b691be1e942ede",
+    "constraint": "Preserve .engine, PACKAGE-MANIFEST.json, configure.py and verification contract. No public import or governing change in this metadata task."
+  },
+  "edition_notice": "Version: 1.2.0 (locally maintained edition)."
+}

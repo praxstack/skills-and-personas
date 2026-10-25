@@ -5,6 +5,8 @@ description: Explain any topic in a detailed, interactive, visual HTML explainer
 
 # eli
 
+Version: 1.2.0 (locally maintained edition).
+
 Explain logically and interactively. Produce a self-contained HTML page that
 helps a mature reader decide, not just understand. `/eli5` stays the
 dead-simple picture mode. This skill adds depth, evidence, and control.

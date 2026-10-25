@@ -38,19 +38,23 @@ The canonical, production-ready portfolio lives in `new-skills/` — 38 skills t
 
 ## Visual teaching: Teacher and Teach Pro Max
 
-`teacher` is the accepted general visual teacher. It gives the complete explanation first, then offers optional practice. It produces mechanism-led stills, interactive explorers, layered Q&A, flashcards, narrated video and interactive video from one sourced lesson model. Courses can resume with explicit consent; a complete static explanation remains available.
+`teacher` is the standalone visual teaching implementation, with 22 bundled modules. It gives the complete explanation first, then offers optional practice. It produces mechanism-led stills, interactive explorers, layered Q&A, flashcards, narrated video and interactive video from one sourced lesson model. Courses can resume with explicit consent; a complete static explanation remains available.
 
-Install the standalone teacher:
+`teach-pro-max` is the user entry and tutoring contract. It uses its sibling `teacher` when available, with a self-contained compatibility engine when installed alone. Install both entries for the full current engine:
+
+```bash
+npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
+```
+
+Teacher also works on its own:
 
 ```bash
 npx skills add praxstack/skills-and-personas --skill teacher
 ```
 
-To retain the `teach-pro-max` invocation, install both entries together. That compatibility entry uses its sibling `teacher` when present and a bundled engine when installed alone:
+Select both skills explicitly. The [skills.sh grouping](skills.sh.json) changes the repository page display; it does not enforce installation dependencies. See the [installation reference](docs/teaching/INSTALL.md) for the entry choices and [edition provenance](docs/teaching/versions-1.2.0.json).
 
-```bash
-npx skills add praxstack/skills-and-personas --skill teacher teach-pro-max
-```
+The teaching entries show `Version: 1.2.0 (locally maintained edition).` Their original frontmatter and teaching instructions are preserved. Local-only editions of other named teaching skills are recorded separately in the provenance manifest. This notice does not certify an upstream release or renumber runtime packages. Teach Pro Max and its embedded manifests retain their existing bytes and release numbering.
 
 Ask your agent: `Use teacher to explain how a neuron becomes a neural network, with a visual mechanism and an interactive example.` Request the formats you want. Practice and persistent learner records require explicit requests/consent.
 

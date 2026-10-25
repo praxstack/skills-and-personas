@@ -56,28 +56,35 @@
     "algo-sensei": {
       "files": 13,
       "license": "MIT, see its LICENSE",
+      "local_changes": [
+        "2026-10-25: add Version: 1.2.0 (locally maintained edition). after the SKILL title; original frontmatter, teaching instructions, license and upstream provenance preserved."
+      ],
       "source_commit": null,
       "source_path": "algo-sensei",
-      "tree_sha256": "3efed3a4e851e3aa7fb2c476d45d518d62df319ad00f660a1f519561cb83276d",
+      "tree_sha256": "2600d966fd1ac9b773f2c5eb0489b0864aef3bf67dd5f05f744224132325e24c",
       "upstream": "https://github.com/karanb192/algo-sensei"
     },
     "concept-cartographer": {
       "files": 2,
       "license": "MIT (repo)",
+      "local_changes": [
+        "2026-10-25: add Version: 1.2.0 (locally maintained edition). after the SKILL title; original frontmatter, teaching instructions, license and upstream provenance preserved."
+      ],
       "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
       "source_path": "new-skills/concept-cartographer",
-      "tree_sha256": "3a0b953ad4f6fe1238825cffaf88ba15250effc85a3a3808336ab3d1c647869f",
+      "tree_sha256": "d01507bb81b635e0fc9fe38dfef2391f7de6fd63929fd6705a96341f62b54358",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "eli": {
       "files": 1,
       "license": "Prax's own",
       "local_changes": [
-        "SKILL.md: a plain-language self-check to use when /unslop isn't installed (it isn't bundled)."
+        "SKILL.md: a plain-language self-check to use when /unslop isn't installed (it isn't bundled).",
+        "2026-10-25: add Version: 1.2.0 (locally maintained edition). after the SKILL title; original frontmatter, existing local self-check, license and upstream provenance preserved."
       ],
       "source_commit": null,
       "source_path": "eli",
-      "tree_sha256": "718dccbbf9fb9f995ddcfebf1adb76117d495c19e458b7116e3d5652eea8f527",
+      "tree_sha256": "c40fc7b384a75c338500c14340c11c3eacd05ea59d4d333dc4448a148f97fbf8",
       "upstream": "Prax's local skill library (16 Oct 2026 snapshot)"
     },
     "explainer-video": {
@@ -131,9 +138,12 @@
     "lecture-alchemist": {
       "files": 6,
       "license": "MIT (repo)",
+      "local_changes": [
+        "2026-10-25: add Version: 1.2.0 (locally maintained edition). after the SKILL title; original frontmatter, teaching instructions, license and upstream provenance preserved."
+      ],
       "source_commit": "67f94397b1bd984e778715aa40b8f40459ab6daa",
       "source_path": "new-skills/lecture-alchemist",
-      "tree_sha256": "606864c5d0d48bc5879b00c28915fd43b7cfe3fdf1a874e6539e9f5f4a9453a6",
+      "tree_sha256": "31e4b082a7862e60d3f9d16ed4fabbd09af5519d179d7eee2bf5076612807c05",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "manim-video": {
@@ -202,9 +212,12 @@
     "techtutor": {
       "files": 8,
       "license": "MIT (repo)",
+      "local_changes": [
+        "2026-10-25: add Version: 1.2.0 (locally maintained edition). after the SKILL title; original frontmatter, teaching instructions, license and upstream provenance preserved."
+      ],
       "source_commit": "14e3f71926c59258c51dd6e731b343aa20283601",
       "source_path": "new-skills/techtutor",
-      "tree_sha256": "8b78906700ce05105b5f9b5f83188153c5e6019955607663d9211e14749f1d2e",
+      "tree_sha256": "4372aee3dc67d6c849dffea8db024cb280f30afa3c49d4ac17342a817b82a852",
       "upstream": "https://github.com/praxstack/skills-and-personas"
     },
     "theatrejs-video": {

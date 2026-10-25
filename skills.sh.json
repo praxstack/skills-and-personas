@@ -3,7 +3,7 @@
   "groupings": [
     {
       "title": "Visual teaching",
-      "description": "A general explanation-first visual teacher, plus its compatible Teach Pro Max invocation.",
+      "description": "Select teacher and teach-pro-max together for the full current engine: standalone Teacher with 22 bundled modules, plus the Teach Pro Max tutoring entry.",
       "skills": [
         "teacher",
         "teach-pro-max"
